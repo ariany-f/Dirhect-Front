@@ -4,7 +4,8 @@ import Inicio from '@pages/Inicio';
 import PrimeiroAcesso from '@pages/PrimeiroAcesso';
 import SenhaDeAcesso from '@pages/PrimeiroAcesso/senha-acesso';
 import Login from '@pages/Login';
-import Seguranca from './pages/Login/seguranca';
+import EsqueciASenha from '@pages/EsqueciASenha';
+import Seguranca from '@pages/EsqueciASenha/seguranca';
 
 function AppRouter() {
 
@@ -16,7 +17,8 @@ function AppRouter() {
         <Route path="/primeiro-acesso" element={<PrimeiroAcesso />} />
         <Route path="/primeiro-acesso/senha-acesso" element={<SenhaDeAcesso />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/login/seguranca" element={<Seguranca />} />
+        <Route path="/esqueci-a-senha" element={<EsqueciASenha />} />
+        <Route path="/esqueci-a-senha/seguranca" element={<Seguranca />} />
       </Routes>
     </BrowserRouter>
   )
