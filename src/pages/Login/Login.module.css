@@ -1,0 +1,9 @@
+.link {
+    text-decoration: none;
+}
+
+.containerBottom {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}

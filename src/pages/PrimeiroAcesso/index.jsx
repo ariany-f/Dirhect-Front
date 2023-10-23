@@ -9,6 +9,7 @@ import Texto from "@components/Texto"
 import Titulo from "@components/Titulo"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import { useState } from "react"
+import { Link } from "react-router-dom"
 
 function PrimeiroAcesso() {
     const [email, setEmail] = useState('')
@@ -31,7 +32,9 @@ function PrimeiroAcesso() {
                         <Texto>O código de acesso foi enviado parao e-mail corporativo cadastrado!</Texto>
                     </Frame>
                 </Frame>
-                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                <Link to="/primeiro-acesso/senha-acesso">
+                    <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                </Link>
                 <PrecisoDeAjuda/>
             </MainContainer>
         </MainSection>

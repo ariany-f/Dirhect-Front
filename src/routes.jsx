@@ -6,6 +6,7 @@ import SenhaDeAcesso from '@pages/PrimeiroAcesso/senha-acesso';
 import Login from '@pages/Login';
 import EsqueciASenha from '@pages/EsqueciASenha';
 import Seguranca from '@pages/EsqueciASenha/seguranca';
+import RedefinirSenha from '@pages/EsqueciASenha/redefinir';
 
 function AppRouter() {
 
@@ -19,6 +20,7 @@ function AppRouter() {
         <Route path="/login" element={<Login />} />
         <Route path="/esqueci-a-senha" element={<EsqueciASenha />} />
         <Route path="/esqueci-a-senha/seguranca" element={<Seguranca />} />
+        <Route path="/esqueci-a-senha/redefinir" element={<RedefinirSenha />} />
       </Routes>
     </BrowserRouter>
   )

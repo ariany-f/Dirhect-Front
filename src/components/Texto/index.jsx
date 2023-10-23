@@ -1,7 +1,7 @@
 import {styled} from "styled-components";
 
 const Paragrafo = styled.p`
-    color: var(--black);
+    color: ${ props => props.$color};
     font-feature-settings: 'clig' off, 'liga' off;
     font-family: var(--font-secondaria);
     font-size: 14px;
@@ -13,9 +13,9 @@ const Paragrafo = styled.p`
     display: flex;
 `
 
-function Texto({ children, weight = 400}) {
+function Texto({ children, weight = 400, color = 'var(--black)'}) {
     return (
-        <Paragrafo $weight={Number(weight)}>
+        <Paragrafo $color={color} $weight={Number(weight)}>
             {children}
         </Paragrafo>
     )

@@ -9,6 +9,7 @@ const BotaoEstilizado = styled.button`
     font-family: var(--fonte-primaria);
     font-size: 16px;
     font-weight: 700;
+    width: 100%;
     line-height: 150%; /* 24px */
 `
 

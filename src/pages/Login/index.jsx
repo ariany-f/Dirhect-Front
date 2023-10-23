@@ -1,4 +1,5 @@
 import Banner from "@components/Banner"
+import Texto from "@components/Texto"
 import Botao from "@components/Botao"
 import CampoTexto from "@components/CampoTexto"
 import MainSection from "@components/MainSection"
@@ -8,6 +9,9 @@ import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import { useState } from "react"
+import { Link } from "react-router-dom"
+import styles from './Login.module.css'
+import CheckboxContainer from "@components/CheckboxContainer"
 
 function Login() {
     const [email, setEmail] = useState('')
@@ -26,7 +30,14 @@ function Login() {
                 <Frame>
                     <CampoTexto name="email" valor={email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
                     <CampoTexto name="senha" valor={senha} setValor={setSenha} type="password" label="Senha" placeholder="Digite sua senha" />
+                    <div className={styles.containerBottom}>
+                        <CheckboxContainer />
+                        <Link className={styles.link} to="/esqueci-a-senha">
+                            <Texto weight="800" color="var(--primaria)">Esqueci minha senha</Texto>
+                        </Link>
+                    </div>
                 </Frame>
+
                 <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
                 <PrecisoDeAjuda/>
             </MainContainer>
