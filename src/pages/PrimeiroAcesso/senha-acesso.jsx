@@ -8,7 +8,7 @@ import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
-import BotaoVoltar from "../../components/BotaoVoltar"
+import BotaoVoltar from "@components/BotaoVoltar"
 import { useState } from "react"
 
 function SenhaDeAcesso() {
