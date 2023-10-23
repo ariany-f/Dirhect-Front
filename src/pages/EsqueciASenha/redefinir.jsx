@@ -35,7 +35,7 @@ function RedefinirSenha() {
                     <CampoTexto name="confirmar-senha" valor={confirmarSenha} setValor={setConfirmarSenha} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
                     <RegrasCriacaoSenha />
                 </Frame>
-                <Link to="/esqueci-a-senha/seguranca">
+                <Link to="/login">
                     <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
                 </Link>
                 <PrecisoDeAjuda/>
