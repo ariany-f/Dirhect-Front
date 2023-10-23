@@ -58,7 +58,7 @@ function CamposVerificacao({ label, valor, setValor }) {
         }
     ]
 
-    function changeValores(value, id) {
+    function changeValores(evento, value, id) {
         
         setValor(digitosDisponiveis.map(campo => {
             if(campo.id === id) {
@@ -66,13 +66,22 @@ function CamposVerificacao({ label, valor, setValor }) {
             }
             return campo;
         }))
+    }
 
+    const handleKeyPress = (e) => {
         const active = document.activeElement;
-        if (active?.nextElementSibling) {
-            console.log(active.nextElementSibling);
-            active.nextElementSibling.focus();
+        
+        if (e.keyCode !== 8) {
+            if (active?.nextElementSibling) {
+                active.nextElementSibling.focus();
+            }
         }
-
+        else
+        {
+            if (active?.previousElementSibling) {
+                active.previousElementSibling.focus();
+            }
+        }
     }
 
     return (
@@ -81,7 +90,7 @@ function CamposVerificacao({ label, valor, setValor }) {
             <div className={styles.inputs}>
                 {digitosDisponiveis.map((digito, index) => {
                     return (
-                        <Campo key={index+1} maxLength={1} name="digito" id={index+1} type="text" value={valor[index]?.preenchimento} onChange={evento => changeValores(evento.target.value, index+1)}></Campo>
+                        <Campo key={index+1} maxLength={1} name="digito" id={index+1} type="text" value={(valor[index]?.preenchimento) ?? ''} onChange={evento => changeValores(evento, evento.target.value, index+1)} onKeyUp={(evento) => handleKeyPress(evento)}></Campo>
                     )
                 })}
             </div>    
