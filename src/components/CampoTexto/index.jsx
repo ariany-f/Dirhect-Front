@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import styles from './CampoTexto.module.css'
 import styled from 'styled-components'
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
+import { FaEnvelope } from 'react-icons/fa'
+import { BsSearch } from 'react-icons/bs'
 
 const Campo = styled.input`
     border-radius: 8px;
@@ -13,6 +16,24 @@ const Campo = styled.input`
     align-self: stretch;
     font-weight: 600;
     margin-top: 10px;
+
+    ~ .icon {
+        bottom: 22px;
+        cursor: pointer;
+        position: absolute;
+    }
+
+    & ~.icon.start {
+        left: 16px;
+    }
+    & ~.icon.end {
+        right: 16px;
+    }
+
+    &[type=email],
+    &[type=search] {
+        padding-left: 50px;
+    }
 
     &::placeholder {
         color: var(--neutro-200);
@@ -45,13 +66,37 @@ const Campo = styled.input`
     }
 `
 
-function CampoTexto({ label, type='text', placeholder }) {
-    const [email, setEmail] = useState('')
+function CampoTexto({ label, type='text', placeholder, valor, setValor }) {
+    const [visibilityPassword, setvisibilityPassword] = useState(false)
+
+    function passwordVisibilityChange() {
+       setvisibilityPassword(!visibilityPassword);
+    }
+
+    const temIcone = (type, visibility) => {
+
+        var element = '';
+        switch(type)
+        {
+            case 'password':
+               element = visibility ? <AiFillEyeInvisible onClick={passwordVisibilityChange} size={20} className="icon end" /> : <AiFillEye onClick={passwordVisibilityChange} size={20} className="icon end" />;
+            break;
+            case 'email':
+                    element = <FaEnvelope size={20} className="icon start" />;
+            break;
+            case 'search':
+                    element = <BsSearch size={20} className="icon start" />;
+            break;
+            default:
+        }
+        return element;
+    };
 
     return (
         <div className={styles.inputContainer}>
             <label className={styles.label}>{label}</label>
-            <Campo type={type} value={email} onChange={evento => setEmail(evento.target.value)} placeholder={placeholder}></Campo>
+            <Campo type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={evento => setValor(evento.target.value)} placeholder={placeholder}></Campo>
+            {temIcone(type, visibilityPassword)}
         </div>
     )
 }

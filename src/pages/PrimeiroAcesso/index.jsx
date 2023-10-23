@@ -8,8 +8,12 @@ import SubTitulo from "@components/SubTitulo"
 import Texto from "@components/Texto"
 import Titulo from "@components/Titulo"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
+import { useState } from "react"
 
 function PrimeiroAcesso() {
+    const [email, setEmail] = useState('')
+    const [codigo, setCodigo] = useState('')
+
     return (
         <MainSection>
             <Banner />
@@ -21,8 +25,8 @@ function PrimeiroAcesso() {
                     </SubTitulo>
                 </Titulo>
                 <Frame>
-                    <CampoTexto type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
-                    <CampoTexto label="Código de acesso" placeholder="Digite o código de acesso" />
+                    <CampoTexto valor={email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
+                    <CampoTexto valor={codigo} setValor={setCodigo} label="Código de acesso" placeholder="Digite o código de acesso" />
                     <Frame estilo="vermilion" padding="16px">
                         <Texto>O código de acesso foi enviado parao e-mail corporativo cadastrado!</Texto>
                     </Frame>

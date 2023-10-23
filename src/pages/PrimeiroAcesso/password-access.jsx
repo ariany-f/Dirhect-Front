@@ -8,21 +8,30 @@ import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
+import BotaoVoltar from "../../components/BotaoVoltar"
+import { useState } from "react"
 
 function SenhaDeAcesso() {
+    
+    const [senha, setSenha] = useState('')
+    const [confirmarSenha, setConfirmarSenha] = useState('')
+
     return (
         <MainSection>
             <Banner />
             <MainContainer>
-                <Titulo>
-                    <h2>Senha de Acesso</h2>
-                    <SubTitulo>
-                        Sua senha é de uso individual e intransferível. Essa informação é importante para o acesso restrito na sua conta. Seus dados pessoais são confidenciais e de sua responsabilidade.
-                    </SubTitulo>
-                </Titulo>
                 <Frame>
-                    <CampoTexto type="password" label="Senha" placeholder="Digite sua senha" />
-                    <CampoTexto type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
+                    <BotaoVoltar />
+                    <Titulo>
+                        <h2>Senha de acesso</h2>
+                        <SubTitulo>
+                            Sua senha é de uso individual e intransferível. Essa informação é importante para o acesso restrito na sua conta. Seus dados pessoais são confidenciais e de sua responsabilidade.
+                        </SubTitulo>
+                    </Titulo>
+                </Frame>
+                <Frame>
+                    <CampoTexto valor={senha} setValor={setSenha} type="password" label="Senha" placeholder="Digite sua senha" />
+                    <CampoTexto valor={confirmarSenha} setValor={setConfirmarSenha} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
                     <RegrasCriacaoSenha />
                 </Frame>
                 <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
