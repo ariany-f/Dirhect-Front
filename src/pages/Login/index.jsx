@@ -24,8 +24,8 @@ function Login() {
                     </SubTitulo>
                 </Titulo>
                 <Frame>
-                    <CampoTexto valor={email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
-                    <CampoTexto valor={senha} setValor={setSenha} type="password" label="Senha" placeholder="Digite sua senha" />
+                    <CampoTexto name="email" valor={email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
+                    <CampoTexto name="senha" valor={senha} setValor={setSenha} type="password" label="Senha" placeholder="Digite sua senha" />
                 </Frame>
                 <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
                 <PrecisoDeAjuda/>

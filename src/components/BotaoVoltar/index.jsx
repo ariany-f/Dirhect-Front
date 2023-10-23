@@ -9,6 +9,7 @@ const Anchor = styled.a`
     font-family: var(--fonte-primaria);
     font-size: 14px;
     display: flex;
+    cursor: pointer;
     align-items: center;
     & .icon {
         fill: var(--primaria);

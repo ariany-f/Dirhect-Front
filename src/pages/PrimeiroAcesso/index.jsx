@@ -25,8 +25,8 @@ function PrimeiroAcesso() {
                     </SubTitulo>
                 </Titulo>
                 <Frame>
-                    <CampoTexto valor={email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
-                    <CampoTexto valor={codigo} setValor={setCodigo} label="Código de acesso" placeholder="Digite o código de acesso" />
+                    <CampoTexto name="email" valor={email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
+                    <CampoTexto name="codigo" valor={codigo} setValor={setCodigo} label="Código de acesso" placeholder="Digite o código de acesso" />
                     <Frame estilo="vermilion" padding="16px">
                         <Texto>O código de acesso foi enviado parao e-mail corporativo cadastrado!</Texto>
                     </Frame>

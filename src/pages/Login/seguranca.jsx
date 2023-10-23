@@ -1,20 +1,18 @@
 import Banner from "@components/Banner"
 import Botao from "@components/Botao"
-import CampoTexto from "@components/CampoTexto"
 import MainSection from "@components/MainSection"
 import Frame from "@components/Frame"
 import MainContainer from "@components/MainContainer"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
-import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
-import BotaoVoltar from "../../components/BotaoVoltar"
+import BotaoVoltar from "@components/BotaoVoltar"
 import { useState } from "react"
+import CamposVerificacao from "@components/CamposVerificacao"
 
-function SenhaDeAcesso() {
+function Seguranca() {
     
-    const [senha, setSenha] = useState('')
-    const [confirmarSenha, setConfirmarSenha] = useState('')
+    const [codigo, setCodigo] = useState([])
 
     return (
         <MainSection>
@@ -23,16 +21,14 @@ function SenhaDeAcesso() {
                 <Frame>
                     <BotaoVoltar />
                     <Titulo>
-                        <h2>Senha de acesso</h2>
+                        <h2>Segurança</h2>
                         <SubTitulo>
-                            Sua senha é de uso individual e intransferível. Essa informação é importante para o acesso restrito na sua conta. Seus dados pessoais são confidenciais e de sua responsabilidade.
+                            Enviamos um código token para o celular e e-mail cadastrados
                         </SubTitulo>
                     </Titulo>
                 </Frame>
                 <Frame>
-                    <CampoTexto valor={senha} setValor={setSenha} type="password" label="Senha" placeholder="Digite sua senha" />
-                    <CampoTexto valor={confirmarSenha} setValor={setConfirmarSenha} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
-                    <RegrasCriacaoSenha />
+                    <CamposVerificacao valor={codigo} setValor={setCodigo} label="Código de autenticação" />
                 </Frame>
                 <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
                 <PrecisoDeAjuda/>
@@ -41,4 +37,4 @@ function SenhaDeAcesso() {
     )
 }
 
-export default SenhaDeAcesso
+export default Seguranca

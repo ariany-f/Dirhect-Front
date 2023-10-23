@@ -21,6 +21,7 @@ const Campo = styled.input`
         bottom: 22px;
         cursor: pointer;
         position: absolute;
+        fill: var(--neutro-600);
     }
 
     & ~.icon.start {
@@ -66,7 +67,7 @@ const Campo = styled.input`
     }
 `
 
-function CampoTexto({ label, type='text', placeholder, valor, setValor }) {
+function CampoTexto({ label, type='text', placeholder, valor, setValor, name }) {
     const [visibilityPassword, setvisibilityPassword] = useState(false)
 
     function passwordVisibilityChange() {
@@ -95,7 +96,7 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor }) {
     return (
         <div className={styles.inputContainer}>
             <label className={styles.label}>{label}</label>
-            <Campo type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={evento => setValor(evento.target.value)} placeholder={placeholder}></Campo>
+            <Campo name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={evento => setValor(evento.target.value)} placeholder={placeholder}></Campo>
             {temIcone(type, visibilityPassword)}
         </div>
     )
