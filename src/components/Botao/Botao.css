@@ -1,0 +1,121 @@
+/** Sizes */
+.small {
+    padding: 8px 12px;
+}
+
+.medium {
+    padding: 10px 16px;
+}
+
+.large {
+    padding: 16px 24px;
+}
+
+/** Vermilion */
+.vermilion.filled {
+    background-color: var(--primaria);
+    color: var(--white);
+}
+
+.vermilion.default {
+    color: var(--primaria);
+    border-color: var(--primaria);
+}
+
+.vermilion.outline {
+    background-color: var(--vermilion-50);
+    color: var(--primaria);
+}
+
+.vermilion.filled:hover {
+    background-color: var(--vermilion-400);
+}
+
+.vermilion.default:hover {
+    background-color: var(--vermilion-50);
+}
+
+.vermilion.outline:hover {
+    background-color: var(--vermilion-200);
+}
+
+.vermilion.filled:disabled {
+    background-color: var(--vermilion-200);
+    color: var(--vermilion-700);
+}
+
+.vermilion.default:disabled {
+    background-color: var(--vermilion-700);
+    color: var(--primaria);
+}
+
+.vermilion.outline:disabled {
+    background-color: var(--vermilion-50);
+    color: var(--primaria);
+}
+
+/** Astra */
+.astra.filled {
+    background-color: var(--secundaria);
+    color: var(--black);
+}
+
+.astra.default {
+    color: var(--astra-400);
+    border-color: var(--astra-400);
+}
+
+.astra.outline {
+    background-color: var(--astra-50);
+    color: var(--astra-400);
+}
+
+.astra.filled:hover {
+    background-color: var(--astra-300);
+}
+
+.astra.default:hover {
+    background-color: var(--astra-50);
+}
+
+.astra.outline:hover {
+    background-color: var(--astra-100);
+}
+
+.astra.filled:disabled {
+    background-color: var(--secundaria);
+    color: var(--black);
+}
+
+.astra.default:disabled {
+    color: var(--astra-400);
+    background: none;
+}
+
+.astra.outline:disabled {
+    background-color: var(--astra-50);
+    color: var(--astra-400);
+}
+
+/** Neutral */
+.neutro.default {
+    border: var(--neutro-200);
+    background: none;
+    color: var(--black);
+    border-width: 2px;
+    border-style: solid;
+}
+
+.neutro.default:hover {
+    border: var(--neutro-200);
+    background-color: var(--neutro-100);
+    border-width: 2px;
+    border-style: solid;
+}
+
+.neutro.default:disabled {
+    background-color: none;
+    border: var(--neutro-400);
+    border-width: 2px;
+    border-style: solid;
+}

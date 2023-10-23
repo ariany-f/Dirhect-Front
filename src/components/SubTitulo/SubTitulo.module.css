@@ -1,0 +1,8 @@
+.texto p{
+    font-family: var(--fonte-secundaria);
+    font-weight: 300;
+    color: var(--neutro-600);
+    font-size: 16px;
+    margin: 0;
+    line-height: 24px; /* 150% */
+}

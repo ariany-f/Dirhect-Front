@@ -1,0 +1,9 @@
+.texto h2{
+    font-family: var(--fonte-secundaria);
+    font-size: 32px;
+    font-weight: 800;
+    font-style: normal;
+    color: var(--black);
+    margin: 0;
+    line-height: 38px; /* 118.75% */
+}
