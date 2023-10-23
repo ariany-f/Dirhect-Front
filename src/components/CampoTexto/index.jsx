@@ -95,7 +95,9 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name }) 
 
     return (
         <div className={styles.inputContainer}>
+            {(label) ?
             <label className={styles.label}>{label}</label>
+            : ''}
             <Campo name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={evento => setValor(evento.target.value)} placeholder={placeholder}></Campo>
             {temIcone(type, visibilityPassword)}
         </div>

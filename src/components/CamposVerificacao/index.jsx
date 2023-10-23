@@ -61,7 +61,9 @@ function CamposVerificacao({ label, valor, setValor, numeroDigitos = 6 }) {
 
     return (
         <div className={styles.inputContainer}>
-            <label className={styles.label}>{label}</label>
+            {(label) ?
+                <label className={styles.label}>{label}</label>
+            : ''}
             <div className={styles.inputs}>
                 {digitosDisponiveis.map((digito, index) => {
                     return (
