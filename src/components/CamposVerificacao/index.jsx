@@ -24,39 +24,14 @@ const Campo = styled.input`
     }
 `
 
-function CamposVerificacao({ label, valor, setValor }) {
+function CamposVerificacao({ label, valor, setValor, numeroDigitos = 6 }) {
     
-    const digitosDisponiveis = [
-        {
-            'id': 1,
-            'preenchimento': valor[0]?.preenchimento
-        },
-        
-        {
-            'id': 2,
-            'preenchimento': valor[1]?.preenchimento
-        },
-        
-        {
-            'id': 3,
-            'preenchimento': valor[2]?.preenchimento
-        },
-        
-        {
-            'id': 4,
-            'preenchimento': valor[3]?.preenchimento
-        },
-        
-        {
-            'id': 5,
-            'preenchimento': valor[4]?.preenchimento
-        },
-        
-        {
-            'id': 6,
-            'preenchimento': valor[5]?.preenchimento
-        }
-    ]
+    const digitosDisponiveis = [];
+
+    for(var i=0;i<numeroDigitos;i++)
+    {
+        digitosDisponiveis[i] = {id: (i+1), preenchimento: valor[i]?.preenchimento}
+    }
 
     function changeValores(evento, value, id) {
         
