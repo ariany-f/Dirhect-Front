@@ -1,18 +1,18 @@
-import Banner from "../../components/Banner"
-import Botao from "../../components/Botao"
-import CampoTexto from "../../components/CampoTexto"
-import ContainerPrincipal from "../../components/ContainerPrincipal"
-import Frame from "../../components/Frame"
-import Main from "../../components/Main"
-import PrecisoDeAjuda from "../../components/PrecisoDeAjuda"
-import SubTitulo from "../../components/SubTitulo"
-import Titulo from "../../components/Titulo"
+import Banner from "@components/Banner"
+import Botao from "@components/Botao"
+import CampoTexto from "@components/CampoTexto"
+import MainSection from "@components/MainSection"
+import Frame from "@components/Frame"
+import MainContainer from "@components/MainContainer"
+import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
+import SubTitulo from "@components/SubTitulo"
+import Titulo from "@components/Titulo"
 
 function Login() {
     return (
-        <ContainerPrincipal>
+        <MainSection>
             <Banner />
-            <Main>
+            <MainContainer>
                 <Titulo>
                     <h2>Bem-vindo</h2>
                     <SubTitulo>
@@ -25,8 +25,8 @@ function Login() {
                 </Frame>
                 <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
                 <PrecisoDeAjuda/>
-            </Main>
-        </ContainerPrincipal>
+            </MainContainer>
+        </MainSection>
     )
 }
 

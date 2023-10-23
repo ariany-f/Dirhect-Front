@@ -5,27 +5,25 @@ import MainSection from "@components/MainSection"
 import Frame from "@components/Frame"
 import MainContainer from "@components/MainContainer"
 import SubTitulo from "@components/SubTitulo"
-import Texto from "@components/Texto"
 import Titulo from "@components/Titulo"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
+import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 
-function PrimeiroAcesso() {
+function SenhaDeAcesso() {
     return (
         <MainSection>
             <Banner />
             <MainContainer>
                 <Titulo>
-                    <h2>Bem-vindo, RH!</h2>
+                    <h2>Senha de Acesso</h2>
                     <SubTitulo>
-                        Estamos muito felizes em recebê-lo aqui. Este é o seu primeiro passo, para começar informe seu e-mail corporativo:
+                        Sua senha é de uso individual e intransferível. Essa informação é importante para o acesso restrito na sua conta. Seus dados pessoais são confidenciais e de sua responsabilidade.
                     </SubTitulo>
                 </Titulo>
                 <Frame>
-                    <CampoTexto type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
-                    <CampoTexto label="Código de acesso" placeholder="Digite o código de acesso" />
-                    <Frame estilo="vermilion" padding="16px">
-                        <Texto>O código de acesso foi enviado parao e-mail corporativo cadastrado!</Texto>
-                    </Frame>
+                    <CampoTexto type="password" label="Senha" placeholder="Digite sua senha" />
+                    <CampoTexto type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
+                    <RegrasCriacaoSenha />
                 </Frame>
                 <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
                 <PrecisoDeAjuda/>
@@ -34,4 +32,4 @@ function PrimeiroAcesso() {
     )
 }
 
-export default PrimeiroAcesso
+export default SenhaDeAcesso

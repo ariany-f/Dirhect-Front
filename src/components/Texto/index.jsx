@@ -15,11 +15,9 @@ const Paragrafo = styled.p`
 
 function Texto({ children, weight = 400}) {
     return (
-        <>
-            <Paragrafo $weight={Number(weight)}>
-                {children}
-            </Paragrafo>
-        </>
+        <Paragrafo $weight={Number(weight)}>
+            {children}
+        </Paragrafo>
     )
 }
 
