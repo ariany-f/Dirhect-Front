@@ -12,3 +12,10 @@
     background: var(--secundaria);
     border-radius: 8px;
 }
+
+.link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    gap: 10px;
+}

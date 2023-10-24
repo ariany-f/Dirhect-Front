@@ -1,8 +1,8 @@
-function Dashboard() {
+function Colaboradores() {
     const url = window.location.pathname;
     return (
        <>{url}</>
     )
 }
 
-export default Dashboard
+export default Colaboradores

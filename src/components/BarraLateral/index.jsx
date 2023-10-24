@@ -5,6 +5,7 @@ import { RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill,
 import { BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
+import { Link, useLocation } from "react-router-dom"
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -38,24 +39,29 @@ const Logo = styled.img`
 
 
 function BarraLateral() {
+    const location = useLocation();
     return (
         <BarraLateralEstilizada>
              <Logo src="/imagens/logo.png" alt="Logo Multi Benefícios" />
             <nav>
                 <NavTitulo>Menu principal</NavTitulo>
                 <ListaEstilizada>
-                    <ItemNavegacao ativo={true}>
-                        <AiFillHome size={20} className="icon" />
-                        Home
-                    </ItemNavegacao>
+                    <Link className="link" to="/dashboard">
+                        <ItemNavegacao ativo={(location.pathname === '/dashboard')}>
+                            <AiFillHome size={20} className="icon" />
+                            Home
+                        </ItemNavegacao>
+                    </Link>
                     <ItemNavegacao ativo={false}>
                         <RiFilePaperFill size={20} className="icon" />
                         Extrato
                     </ItemNavegacao>
-                    <ItemNavegacao ativo={false}>
-                        <RiUser3Fill size={20} className="icon" />
-                        Colaboradores
-                    </ItemNavegacao>
+                    <Link className="link" to="/dashboard/colaboradores">
+                        <ItemNavegacao ativo={(location.pathname === '/dashboard/colaboradores')}>
+                            <RiUser3Fill size={20} className="icon" />
+                            Colaboradores
+                        </ItemNavegacao>
+                    </Link>
                     <ItemNavegacao ativo={false}>
                         <RiTeamFill size={20} className="icon" />
                         Departamentos

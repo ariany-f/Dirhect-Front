@@ -1,6 +1,7 @@
 import { styled } from "styled-components"
 
 const ItemListaEstilizado = styled.li`
+    width: -webkit-fill-available;
     display: flex;
     cursor: pointer;
     color: ${ props => props.$ativo ? 'var(--secundaria)' : 'var(--white)' };

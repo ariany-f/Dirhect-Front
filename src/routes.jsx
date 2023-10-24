@@ -10,6 +10,7 @@ import RedefinirSenha from '@pages/EsqueciASenha/redefinir';
 import Dashboard from '@pages/Dashboard';
 import Autenticado from '@common/Autenticado'
 import Publico from '@common/Publico'
+import Colaboradores from '@pages/Colaboradores';
 
 function AppRouter() {
 
@@ -28,6 +29,7 @@ function AppRouter() {
         </Route>
         <Route path="/dashboard" element={<Autenticado/>}>
           <Route index element={<Dashboard />} />
+          <Route path="colaboradores" element={<Colaboradores />} />
         </Route>
       </Routes>
     </BrowserRouter>
