@@ -52,12 +52,12 @@ function SelecionarEmpresa() {
     const empresas = [
         {
             id: 1,
-            cnpj: 28418539000184,
+            cnpj: '28.418.539/0001-84',
             nome: 'Soluções Industriais Ltda'
         },
         {
             id: 2,
-            cnpj: 62143112000159,
+            cnpj: '62.143.112/0001-59',
             nome: 'System Ltda'
         }
     ];
