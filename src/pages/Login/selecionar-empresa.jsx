@@ -1,8 +1,4 @@
-import Banner from "@components/Banner"
 import Botao from "@components/Botao"
-import MainSection from "@components/MainSection"
-import MainContainer from "@components/MainContainer"
-import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
 import styled from "styled-components"
@@ -54,44 +50,40 @@ function SelecionarEmpresa() {
     };
 
     return (
-        <MainSection>
-            <Banner />
-            <MainContainer>
-                <Titulo>
-                    <h2>Selecione uma empresa</h2>
-                </Titulo>
-                <Wrapper>
-                    {empresas.map(empresa => {
-                        return (
-                            <Item 
-                                key={empresa.id} 
-                                $active={selected === empresa.nome}
-                                onClick={nome => handleSelectChange(empresa.nome)}>
-                                <div className={styles.cardEmpresa}>
-                                    {(selected === empresa.nome) ?
-                                        <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
-                                        : <RiBuildingLine className={styles.buildingIcon} size={20} />
-                                    }
-                                    <div className={styles.DadosEmpresa}>
-                                        <h6>{empresa.nome}</h6>
-                                        <div>{empresa.cnpj}</div>
-                                    </div>
+        <>
+            <Titulo>
+                <h2>Selecione uma empresa</h2>
+            </Titulo>
+            <Wrapper>
+                {empresas.map(empresa => {
+                    return (
+                        <Item 
+                            key={empresa.id} 
+                            $active={selected === empresa.nome}
+                            onClick={nome => handleSelectChange(empresa.nome)}>
+                            <div className={styles.cardEmpresa}>
+                                {(selected === empresa.nome) ?
+                                    <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
+                                    : <RiBuildingLine className={styles.buildingIcon} size={20} />
+                                }
+                                <div className={styles.DadosEmpresa}>
+                                    <h6>{empresa.nome}</h6>
+                                    <div>{empresa.cnpj}</div>
                                 </div>
-                                <RadioButton
-                                    value={empresa.nome}
-                                    checked={selected === empresa.nome}
-                                    onSelected={(nome) => handleSelectChange}
-                                />
-                            </Item>
-                        )
-                    })}
-                </Wrapper>
-                <Link to="/dashboard">
-                    <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
-                </Link>
-                <PrecisoDeAjuda />
-            </MainContainer>
-        </MainSection>
+                            </div>
+                            <RadioButton
+                                value={empresa.nome}
+                                checked={selected === empresa.nome}
+                                onSelected={(nome) => handleSelectChange}
+                            />
+                        </Item>
+                    )
+                })}
+            </Wrapper>
+            <Link to="/dashboard">
+                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+            </Link>
+        </>
     )
 }
 
