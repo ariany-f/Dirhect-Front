@@ -11,6 +11,7 @@ import Dashboard from '@pages/Dashboard';
 import Autenticado from '@common/Autenticado'
 import Publico from '@common/Publico'
 import Colaboradores from '@pages/Colaboradores';
+import NaoEncontrada from '@pages/NaoEncontrada';
 
 function AppRouter() {
 
@@ -26,6 +27,7 @@ function AppRouter() {
           <Route path="esqueci-a-senha" element={<EsqueciASenha />} />
           <Route path="esqueci-a-senha/seguranca" element={<Seguranca />} />
           <Route path="esqueci-a-senha/redefinir" element={<RedefinirSenha />} />
+          <Route path="*" element={<NaoEncontrada />}></Route>
         </Route>
         <Route path="/dashboard" element={<Autenticado/>}>
           <Route index element={<Dashboard />} />
