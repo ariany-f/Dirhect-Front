@@ -1,0 +1,92 @@
+import { styled } from "styled-components"
+import ItemNavegacao from "./ItemNavegacao"
+import { AiFillHome } from "react-icons/ai"
+import { RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill } from "react-icons/ri"
+import { BiSolidDashboard } from "react-icons/bi"
+import { LuSparkles } from "react-icons/lu"
+import "./BarraLateral.css"
+
+const ListaEstilizada = styled.ul`
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 236px;
+`
+const BarraLateralEstilizada = styled.aside`
+    display: inline-flex;
+    padding: 26px 0px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+    flex-shrink: 0;
+    background: var(--gradient-gradient-1, linear-gradient(180deg, #FF3C00 0%, #FF7B32 100%));
+`
+const NavTitulo = styled.p`
+    color: var(--white);
+    opacity: 0.5;
+    display: flex;
+    padding: 10px 30px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    weight: 300;
+`
+
+const Logo = styled.img`
+    padding: 0px 30px;
+`
+
+
+function BarraLateral() {
+    return (
+        <BarraLateralEstilizada>
+             <Logo src="/imagens/logo.png" alt="Logo Multi Benefícios" />
+            <nav>
+                <NavTitulo>Menu principal</NavTitulo>
+                <ListaEstilizada>
+                    <ItemNavegacao ativo={true}>
+                        <AiFillHome className="icon" />
+                        Home
+                    </ItemNavegacao>
+                    <ItemNavegacao ativo={false}>
+                        <RiFilePaperFill className="icon" />
+                        Extrato
+                    </ItemNavegacao>
+                    <ItemNavegacao ativo={false}>
+                        <RiUser3Fill className="icon" />
+                        Colaboradores
+                    </ItemNavegacao>
+                    <ItemNavegacao ativo={false}>
+                        <RiTeamFill className="icon" />
+                        Departamentos
+                    </ItemNavegacao>
+                    <ItemNavegacao ativo={false}>
+                        <RiBankCardFill className="icon" />
+                        Cartões
+                    </ItemNavegacao>
+                    <ItemNavegacao ativo={false}>
+                        <BiSolidDashboard className="icon" />
+                        Benefícios
+                    </ItemNavegacao>
+                    <ItemNavegacao ativo={false}>
+                        <RiTrophyFill className="icon" />
+                        Premiações
+                    </ItemNavegacao>
+                    <ItemNavegacao ativo={false}>
+                        <RiFileListFill className="icon" />
+                        Despesas
+                    </ItemNavegacao>
+                </ListaEstilizada>
+                <NavTitulo>Para sua empresa</NavTitulo>
+                <ListaEstilizada>
+                    <ItemNavegacao>
+                        <LuSparkles className="icon" />
+                        Vantagens <div className="novidade">Novidade</div>
+                    </ItemNavegacao>
+                </ListaEstilizada>
+            </nav>
+        </BarraLateralEstilizada>
+    )
+}
+
+export default BarraLateral

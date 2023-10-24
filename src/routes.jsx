@@ -8,6 +8,7 @@ import SelecionarEmpresa from '@pages/Login/selecionar-empresa';
 import EsqueciASenha from '@pages/EsqueciASenha';
 import Seguranca from '@pages/EsqueciASenha/seguranca';
 import RedefinirSenha from '@pages/EsqueciASenha/redefinir';
+import Dashboard from '@pages/Dashboard';
 
 function AppRouter() {
 
@@ -23,6 +24,7 @@ function AppRouter() {
         <Route path="/esqueci-a-senha" element={<EsqueciASenha />} />
         <Route path="/esqueci-a-senha/seguranca" element={<Seguranca />} />
         <Route path="/esqueci-a-senha/redefinir" element={<RedefinirSenha />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   )
