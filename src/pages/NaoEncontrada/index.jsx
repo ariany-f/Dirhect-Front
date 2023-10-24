@@ -2,7 +2,7 @@ import styles from './NaoEncontrada.module.css'
 import EstilosGlobais from '@components/GlobalStyles'
 import MainSection from "@components/MainSection"
 import Botao from "@components/Botao"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import imagem404 from './imagem404.png'
 
@@ -26,6 +26,8 @@ const ContainerNaoEncontrada = styled.div`
 `
 
 function NaoEncontrada() {
+    const navigate = useNavigate();
+
     return (
         <>
             <EstilosGlobais />
@@ -40,7 +42,7 @@ function NaoEncontrada() {
                             <Link to="/login">
                                 <Botao estilo="vermilion" size="medium" filled>Acessar minha conta</Botao>
                             </Link>
-                            <Link to="https://aqbankbeneficios.com.br/">
+                            <Link onClick={() => navigate(-1)}>
                                 <Botao estilo="" size="medium" filled>Voltar para o site</Botao>
                             </Link>
                         </div>
