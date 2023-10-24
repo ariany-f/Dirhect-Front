@@ -17,6 +17,15 @@ const RightItems = styled.div`
     gap: 48px;
 `
 
+const ItemEmpresa = styled.p`
+    font-family: var(--fonte-secundaria);
+    color: var(--black);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 142.857% */
+`
+
 const Cabecalho = ({ titulo, nomeEmpresa }) => {
     return (
         <HeaderEstilizado>
@@ -24,7 +33,7 @@ const Cabecalho = ({ titulo, nomeEmpresa }) => {
                 <RightItems>
                     <PrecisoDeAjuda />
                     <RiNotificationLine size={18} className={styles.icon} />
-                    <h6>{nomeEmpresa}</h6>
+                    <ItemEmpresa>{nomeEmpresa}</ItemEmpresa>
                 </RightItems>
         </HeaderEstilizado>
     )
