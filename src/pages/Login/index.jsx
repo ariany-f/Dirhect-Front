@@ -37,8 +37,9 @@ function Login() {
                         </Link>
                     </div>
                 </Frame>
-
-                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                <Link to="/login/selecionar-empresa">
+                    <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                </Link>
                 <PrecisoDeAjuda/>
             </MainContainer>
         </MainSection>

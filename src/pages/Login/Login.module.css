@@ -1,9 +1,23 @@
 .link {
     text-decoration: none;
 }
-
 .containerBottom {
     display: flex;
     width: 100%;
     justify-content: space-between;
+}
+.cardEmpresa {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.DadosEmpresa {
+    display: flex;
+    flex-direction: column;
+}
+.buildingIcon {
+    padding: 13px;
+    border-radius: 8px;
+    background-color: var(--vermilion-50);
+    border: none;
 }
