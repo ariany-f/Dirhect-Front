@@ -8,6 +8,7 @@ import styled from "styled-components"
 import { useState } from "react"
 import { RiBuildingLine } from "react-icons/ri"
 import styles from './Login.module.css'
+import { Link } from "react-router-dom"
 
 const Wrapper = styled.div`
     display: flex;
@@ -103,7 +104,9 @@ function SelecionarEmpresa() {
                         )
                     })}
                 </Wrapper>
-                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                <Link to="/dashboard">
+                    <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                </Link>
                 <PrecisoDeAjuda />
             </MainContainer>
         </MainSection>
