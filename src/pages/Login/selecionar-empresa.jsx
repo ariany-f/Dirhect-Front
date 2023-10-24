@@ -6,7 +6,7 @@ import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import Titulo from "@components/Titulo"
 import styled from "styled-components"
 import { useState } from "react"
-import { HiOutlineBuildingOffice2 } from "react-icons/hi2"
+import { RiBuildingLine } from "react-icons/ri"
 import styles from './Login.module.css'
 
 const Wrapper = styled.div`
@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const Item = styled.div`
+    cursor: pointer;
     border-width: 1px;
     border-style: solid;
     border-radius: 16px;
@@ -77,9 +78,15 @@ function SelecionarEmpresa() {
                 <Wrapper>
                     {empresas.map(empresa => {
                         return (
-                            <Item key={empresa.id} $active={selected === empresa.nome}>
+                            <Item 
+                                key={empresa.id} 
+                                $active={selected === empresa.nome}
+                                onClick={nome => handleSelectChange(empresa.nome)}>
                                 <div className={styles.cardEmpresa}>
-                                    <HiOutlineBuildingOffice2 className={styles.buildingIcon} size={20 }/>
+                                    {(selected === empresa.nome) ?
+                                        <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
+                                        : <RiBuildingLine className={styles.buildingIcon} size={20} />
+                                    }
                                     <div className={styles.DadosEmpresa}>
                                         <h6>{empresa.nome}</h6>
                                         <div>{empresa.cnpj}</div>

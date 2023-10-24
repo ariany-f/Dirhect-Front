@@ -21,3 +21,7 @@
     background-color: var(--vermilion-50);
     border: none;
 }
+.vermilion {
+    fill: var(--primaria);
+    border-color: var(--primaria);
+}
