@@ -29,12 +29,12 @@ const ItemEmpresa = styled.p`
 const Cabecalho = ({ titulo, nomeEmpresa }) => {
     return (
         <HeaderEstilizado>
-                <h6>{titulo}</h6>
-                <RightItems>
-                    <PrecisoDeAjuda />
-                    <RiNotificationLine size={18} className={styles.icon} />
-                    <ItemEmpresa>{nomeEmpresa}</ItemEmpresa>
-                </RightItems>
+            <h6>{titulo}</h6>
+            <RightItems>
+                <PrecisoDeAjuda />
+                <RiNotificationLine size={18} className={styles.icon} />
+                <ItemEmpresa>{nomeEmpresa}</ItemEmpresa>
+            </RightItems>
         </HeaderEstilizado>
     )
 }
