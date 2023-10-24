@@ -1,6 +1,10 @@
 import { styled } from "styled-components"
 
 const ItemListaEstilizado = styled.li`
+    -moz-transition: all .1s ease;
+    -o-transition: all .1s ease;
+    -webkit-transition: all .1s ease;
+    transition: all .2s ease;
     width: -webkit-fill-available;
     display: flex;
     cursor: pointer;
@@ -27,6 +31,7 @@ const ItemListaEstilizado = styled.li`
 
     &:hover{
         color: var(--secundaria);
+        background-color: var(--vermilion-600);
     }
 `
 
