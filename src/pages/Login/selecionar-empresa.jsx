@@ -4,6 +4,7 @@ import MainSection from "@components/MainSection"
 import MainContainer from "@components/MainContainer"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import Titulo from "@components/Titulo"
+import RadioButton from "@components/RadioButton"
 import styled from "styled-components"
 import { useState } from "react"
 import { RiBuildingLine } from "react-icons/ri"
@@ -29,23 +30,6 @@ const Item = styled.div`
     align-items: center;
     width: 94%;
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
-`;
-
-const RadioButton = styled.input`
-    cursor: pointer;
-    appearance: none;
-    border-radius: 50%;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #999;
-    transition: 0.2s all linear;
-    margin-right: 5px;
-    position: relative;
-    top: 4px;
-    &:checked {
-        accent-color: var(--primaria);
-        border: 5px solid var(--primaria);
-    }
 `;
 
 function SelecionarEmpresa() {
@@ -94,11 +78,9 @@ function SelecionarEmpresa() {
                                     </div>
                                 </div>
                                 <RadioButton
-                                    type="radio"
-                                    name="radio"
                                     value={empresa.nome}
                                     checked={selected === empresa.nome}
-                                    onChange={event => handleSelectChange(event.target.value)}
+                                    onSelected={(nome) => handleSelectChange}
                                 />
                             </Item>
                         )
