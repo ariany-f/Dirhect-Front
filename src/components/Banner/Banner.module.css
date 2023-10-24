@@ -36,7 +36,6 @@
         list-style: none;
     }
     & li svg *{
-        fill: var(--astra-100);
         color: var(--astra-100);
     }
 }

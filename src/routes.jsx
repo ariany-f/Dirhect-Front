@@ -27,12 +27,12 @@ function AppRouter() {
           <Route path="esqueci-a-senha" element={<EsqueciASenha />} />
           <Route path="esqueci-a-senha/seguranca" element={<Seguranca />} />
           <Route path="esqueci-a-senha/redefinir" element={<RedefinirSenha />} />
-          <Route path="*" element={<NaoEncontrada />}></Route>
         </Route>
         <Route path="/dashboard" element={<Autenticado/>}>
           <Route index element={<Dashboard />} />
           <Route path="colaboradores" element={<Colaboradores />} />
         </Route>
+        <Route path="*" element={<NaoEncontrada />}></Route>
       </Routes>
     </BrowserRouter>
   )
