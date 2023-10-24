@@ -6,7 +6,7 @@ const RdBtn = styled.input`
     border-radius: 50%;
     width: 16px;
     height: 16px;
-    border: 2px solid #999;
+    border: 2px solid var(--neutro-300);
     transition: 0.2s all linear;
     margin-right: 5px;
     position: relative;
