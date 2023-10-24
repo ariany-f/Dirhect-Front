@@ -29,7 +29,7 @@ const NavTitulo = styled.p`
     align-items: center;
     gap: 10px;
     align-self: stretch;
-    weight: 300;
+    font-weight: 300;
 `
 
 const Logo = styled.img`
