@@ -6,6 +6,7 @@ import { BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
+import logo from '/imagens/logo.png'
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -42,7 +43,7 @@ function BarraLateral() {
     const location = useLocation();
     return (
         <BarraLateralEstilizada>
-             <Logo src="/imagens/logo.png" alt="Logo Multi Benefícios" />
+             <Logo src={logo} alt="Logo Multi Benefícios" />
             <nav>
                 <NavTitulo>Menu principal</NavTitulo>
                 <ListaEstilizada>

@@ -1,3 +1,41 @@
-.banner img{
-    height: 100%;
+.container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+.banner {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+.logo {
+    position: absolute;
+    top: 40px;
+}
+.bottomBanner {
+    position: absolute;
+    bottom: 82px;
+    padding: 0 83px;
+    text-align: center;
+    display: flex;
+    gap: 24px;
+    flex-direction: column;
+    & .texto {
+        color: var(--astra-100);font-weight: 800;
+        font-size: 28px;
+        font-family: var(--fonte-secundaria);
+        line-height: 30px; /* 107.143% */
+    }
+}
+
+.ul {
+    display: flex;
+    gap: 24px;
+    & li {
+        list-style: none;
+    }
+    & li svg *{
+        fill: var(--astra-100);
+        color: var(--astra-100);
+    }
 }
