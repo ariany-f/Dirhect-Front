@@ -6,12 +6,15 @@ import { PiForkKnifeFill, PiFirstAidKitFill } from 'react-icons/pi'
 import { BiSolidBook } from 'react-icons/bi'
 import { CgPill } from 'react-icons/cg'
 import { MdComputer } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 
 function Banner() {
     return (
         <div className={styles.container}>
             <img className={styles.banner} src={imagem} alt="Imagem Cartões"/>
-            <img className={styles.logo} src={logo} alt="Logo"/>
+            <Link to="/login" className={styles.logo} >
+                <img src={logo} alt="Logo"/>
+            </Link>
             <div className={styles.bottomBanner}>
                 <p className={styles.texto}>
                     Múltiplos benefícios reunidos em um só cartão.
