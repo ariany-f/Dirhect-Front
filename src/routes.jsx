@@ -18,13 +18,13 @@ function AppRouter() {
       <Routes>
         <Route path="/" element={<Publico/>}>
           <Route index element={<Inicio />} />
-          <Route path="/primeiro-acesso" element={<PrimeiroAcesso />} />
-          <Route path="/primeiro-acesso/senha-acesso" element={<SenhaDeAcesso />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/login/selecionar-empresa" element={<SelecionarEmpresa />} />
-          <Route path="/esqueci-a-senha" element={<EsqueciASenha />} />
-          <Route path="/esqueci-a-senha/seguranca" element={<Seguranca />} />
-          <Route path="/esqueci-a-senha/redefinir" element={<RedefinirSenha />} />
+          <Route path="primeiro-acesso" element={<PrimeiroAcesso />} />
+          <Route path="primeiro-acesso/senha-acesso" element={<SenhaDeAcesso />} />
+          <Route path="login" element={<Login />} />
+          <Route path="login/selecionar-empresa" element={<SelecionarEmpresa />} />
+          <Route path="esqueci-a-senha" element={<EsqueciASenha />} />
+          <Route path="esqueci-a-senha/seguranca" element={<Seguranca />} />
+          <Route path="esqueci-a-senha/redefinir" element={<RedefinirSenha />} />
         </Route>
         <Route path="/dashboard" element={<Autenticado/>}>
           <Route index element={<Dashboard />} />
