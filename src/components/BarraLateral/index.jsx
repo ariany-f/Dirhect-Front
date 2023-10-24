@@ -45,42 +45,42 @@ function BarraLateral() {
                 <NavTitulo>Menu principal</NavTitulo>
                 <ListaEstilizada>
                     <ItemNavegacao ativo={true}>
-                        <AiFillHome className="icon" />
+                        <AiFillHome size={20} className="icon" />
                         Home
                     </ItemNavegacao>
                     <ItemNavegacao ativo={false}>
-                        <RiFilePaperFill className="icon" />
+                        <RiFilePaperFill size={20} className="icon" />
                         Extrato
                     </ItemNavegacao>
                     <ItemNavegacao ativo={false}>
-                        <RiUser3Fill className="icon" />
+                        <RiUser3Fill size={20} className="icon" />
                         Colaboradores
                     </ItemNavegacao>
                     <ItemNavegacao ativo={false}>
-                        <RiTeamFill className="icon" />
+                        <RiTeamFill size={20} className="icon" />
                         Departamentos
                     </ItemNavegacao>
                     <ItemNavegacao ativo={false}>
-                        <RiBankCardFill className="icon" />
+                        <RiBankCardFill size={20} className="icon" />
                         Cartões
                     </ItemNavegacao>
                     <ItemNavegacao ativo={false}>
-                        <BiSolidDashboard className="icon" />
+                        <BiSolidDashboard size={20} className="icon" />
                         Benefícios
                     </ItemNavegacao>
                     <ItemNavegacao ativo={false}>
-                        <RiTrophyFill className="icon" />
+                        <RiTrophyFill size={20} className="icon" />
                         Premiações
                     </ItemNavegacao>
                     <ItemNavegacao ativo={false}>
-                        <RiFileListFill className="icon" />
+                        <RiFileListFill size={20} className="icon" />
                         Despesas
                     </ItemNavegacao>
                 </ListaEstilizada>
                 <NavTitulo>Para sua empresa</NavTitulo>
                 <ListaEstilizada>
                     <ItemNavegacao>
-                        <LuSparkles className="icon" />
+                        <LuSparkles size={20} className="icon" />
                         Vantagens <div className="novidade">Novidade</div>
                     </ItemNavegacao>
                 </ListaEstilizada>
