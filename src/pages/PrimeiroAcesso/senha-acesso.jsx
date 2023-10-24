@@ -10,6 +10,7 @@ import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 import BotaoVoltar from "@components/BotaoVoltar"
 import { useState } from "react"
+import { Link } from "react-router-dom"
 
 function SenhaDeAcesso() {
     
@@ -34,7 +35,9 @@ function SenhaDeAcesso() {
                     <CampoTexto name="confirmar-senha" valor={confirmarSenha} setValor={setConfirmarSenha} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
                     <RegrasCriacaoSenha />
                 </Frame>
-                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                <Link to="/dashboard">
+                    <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                </Link>
                 <PrecisoDeAjuda/>
             </MainContainer>
         </MainSection>
