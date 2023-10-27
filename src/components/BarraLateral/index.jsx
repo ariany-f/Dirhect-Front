@@ -57,39 +57,51 @@ function BarraLateral() {
                         <RiFilePaperFill size={20} className="icon" />
                         Extrato
                     </ItemNavegacao>
-                    <Link className="link" to="/dashboard/colaboradores">
-                        <ItemNavegacao ativo={(location.pathname === '/dashboard/colaboradores')}>
+                    <Link className="link" to="/dashboard/colaborador">
+                        <ItemNavegacao ativo={(location.pathname === '/dashboard/colaborador')}>
                             <RiUser3Fill size={20} className="icon" />
                             Colaboradores
                         </ItemNavegacao>
                     </Link>
-                    <ItemNavegacao ativo={false}>
-                        <RiTeamFill size={20} className="icon" />
-                        Departamentos
-                    </ItemNavegacao>
-                    <ItemNavegacao ativo={false}>
-                        <RiBankCardFill size={20} className="icon" />
-                        Cartões
-                    </ItemNavegacao>
-                    <ItemNavegacao ativo={false}>
-                        <BiSolidDashboard size={20} className="icon" />
-                        Benefícios
-                    </ItemNavegacao>
-                    <ItemNavegacao ativo={false}>
-                        <RiTrophyFill size={20} className="icon" />
-                        Premiações
-                    </ItemNavegacao>
-                    <ItemNavegacao ativo={false}>
-                        <RiFileListFill size={20} className="icon" />
-                        Despesas
-                    </ItemNavegacao>
+                    <Link className="link" to="/dashboard/departamento">
+                        <ItemNavegacao ativo={(location.pathname === '/dashboard/departamento')}>
+                            <RiTeamFill size={20} className="icon" />
+                            Departamentos
+                        </ItemNavegacao>
+                    </Link>
+                    <Link className="link" to="/dashboard/cartao">
+                        <ItemNavegacao ativo={(location.pathname === '/dashboard/cartao')}>
+                            <RiBankCardFill size={20} className="icon" />
+                            Cartões
+                        </ItemNavegacao>
+                    </Link>
+                    <Link className="link" to="/dashboard/beneficio">
+                        <ItemNavegacao ativo={(location.pathname === '/dashboard/beneficio')}>
+                            <BiSolidDashboard size={20} className="icon" />
+                            Benefícios
+                        </ItemNavegacao>
+                    </Link>
+                    <Link className="link" to="/dashboard/premiacao">
+                        <ItemNavegacao ativo={(location.pathname === '/dashboard/premiacao')}>
+                            <RiTrophyFill size={20} className="icon" />
+                            Premiações
+                        </ItemNavegacao>
+                    </Link>
+                    <Link className="link" to="/dashboard/despesa">
+                        <ItemNavegacao ativo={(location.pathname === '/dashboard/despesa')}>
+                            <RiFileListFill size={20} className="icon" />
+                            Despesas
+                        </ItemNavegacao>
+                    </Link>
                 </ListaEstilizada>
                 <NavTitulo>Para sua empresa</NavTitulo>
                 <ListaEstilizada>
-                    <ItemNavegacao>
-                        <LuSparkles size={20} className="icon" />
-                        Vantagens <div className="novidade">Novidade</div>
-                    </ItemNavegacao>
+                    <Link className="link" to="/dashboard/colaborador">
+                        <ItemNavegacao>
+                            <LuSparkles size={20} className="icon" />
+                            Vantagens <div className="novidade">Novidade</div>
+                        </ItemNavegacao>
+                    </Link>
                 </ListaEstilizada>
             </nav>
         </BarraLateralEstilizada>
