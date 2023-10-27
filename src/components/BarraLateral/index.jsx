@@ -40,64 +40,89 @@ const Logo = styled.img`
 
 
 function BarraLateral() {
+
     const location = useLocation();
+
+    const itensMenu = [
+        {
+            "id": 1,
+            "url": "/",
+            "pageTitulo": "Plataforma RH",
+            "icone": <AiFillHome size={20} className="icon" />,
+            "itemTitulo": "Home"
+        },
+        {
+            "id": 2,
+            "url": "/extrato",
+            "pageTitulo": "Extrato",
+            "icone": <RiFilePaperFill titulo="Extrato" size={20} className="icon" />,
+            "itemTitulo": "Extrato"
+        },
+        {
+            "id": 3,
+            "url": "/colaborador",
+            "pageTitulo": "Colaboradores",
+            "icone": <RiUser3Fill size={20} className="icon" />,
+            "itemTitulo": "Colaboradores"
+        },
+        {
+            "id": 4,
+            "url": "/departamento",
+            "pageTitulo": "Departamentos",
+            "icone": <RiTeamFill size={20} className="icon" />,
+            "itemTitulo": "Departamentos"
+        },
+        {
+            "id": 5,
+            "url": "/cartao",
+            "pageTitulo": "Cartões",
+            "icone": <RiBankCardFill size={20} className="icon" />,
+            "itemTitulo": "Cartões"
+        },
+        {
+            "id": 6,
+            "url": "/beneficio",
+            "pageTitulo": "Benefícios",
+            "icone": <BiSolidDashboard size={20} className="icon" />,
+            "itemTitulo": "Benefícios"
+        },
+        {
+            "id": 7,
+            "url": "/premiacao",
+            "pageTitulo": "Premiações",
+            "icone": <RiTrophyFill size={20} className="icon" />,
+            "itemTitulo": "Premiações"
+        },
+        {
+            "id": 8,
+            "url": "/despesa",
+            "pageTitulo": "Despesas",
+            "icone": <RiFileListFill size={20} className="icon" />,
+            "itemTitulo": "Despesas"
+        }
+    ];
+
     return (
         <BarraLateralEstilizada>
              <Logo src={logo} alt="Logo Multi Benefícios" />
             <nav>
                 <NavTitulo>Menu principal</NavTitulo>
                 <ListaEstilizada>
-                    <Link className="link" to="/dashboard">
-                        <ItemNavegacao ativo={(location.pathname === '/dashboard')}>
-                            <AiFillHome size={20} className="icon" />
-                            Home
-                        </ItemNavegacao>
-                    </Link>
-                    <ItemNavegacao ativo={false}>
-                        <RiFilePaperFill size={20} className="icon" />
-                        Extrato
-                    </ItemNavegacao>
-                    <Link className="link" to="/dashboard/colaborador">
-                        <ItemNavegacao ativo={(location.pathname === '/dashboard/colaborador')}>
-                            <RiUser3Fill size={20} className="icon" />
-                            Colaboradores
-                        </ItemNavegacao>
-                    </Link>
-                    <Link className="link" to="/dashboard/departamento">
-                        <ItemNavegacao ativo={(location.pathname === '/dashboard/departamento')}>
-                            <RiTeamFill size={20} className="icon" />
-                            Departamentos
-                        </ItemNavegacao>
-                    </Link>
-                    <Link className="link" to="/dashboard/cartao">
-                        <ItemNavegacao ativo={(location.pathname === '/dashboard/cartao')}>
-                            <RiBankCardFill size={20} className="icon" />
-                            Cartões
-                        </ItemNavegacao>
-                    </Link>
-                    <Link className="link" to="/dashboard/beneficio">
-                        <ItemNavegacao ativo={(location.pathname === '/dashboard/beneficio')}>
-                            <BiSolidDashboard size={20} className="icon" />
-                            Benefícios
-                        </ItemNavegacao>
-                    </Link>
-                    <Link className="link" to="/dashboard/premiacao">
-                        <ItemNavegacao ativo={(location.pathname === '/dashboard/premiacao')}>
-                            <RiTrophyFill size={20} className="icon" />
-                            Premiações
-                        </ItemNavegacao>
-                    </Link>
-                    <Link className="link" to="/dashboard/despesa">
-                        <ItemNavegacao ativo={(location.pathname === '/dashboard/despesa')}>
-                            <RiFileListFill size={20} className="icon" />
-                            Despesas
-                        </ItemNavegacao>
-                    </Link>
+                    {itensMenu.map((item) => {
+                        return (
+                            <Link key={item.id} className="link" to={item.url}>
+                                <ItemNavegacao ativo={(location.pathname === item.url)}>
+                                    {item.icone}
+                                    {item.itemTitulo}
+                                </ItemNavegacao>
+                            </Link>
+                        )
+                    })}
                 </ListaEstilizada>
                 <NavTitulo>Para sua empresa</NavTitulo>
                 <ListaEstilizada>
-                    <Link className="link" to="/dashboard/colaborador">
-                        <ItemNavegacao>
+                    <Link className="link" titulo="Vantagens" to="/vantagens">
+                        <ItemNavegacao ativo={(location.pathname === '/vantagens')}>
                             <LuSparkles size={20} className="icon" />
                             Vantagens <div className="novidade">Novidade</div>
                         </ItemNavegacao>

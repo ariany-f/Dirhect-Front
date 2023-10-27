@@ -26,7 +26,60 @@ const ItemEmpresa = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-const Cabecalho = ({ titulo, nomeEmpresa }) => {
+const Cabecalho = ({ nomeEmpresa }) => {
+
+    const titulos = [
+        {
+            "id": 1,
+            "url": "/",
+            "pageTitulo": "Plataforma RH"
+        },
+        {
+            "id": 2,
+            "url": "/extrato",
+            "pageTitulo": "Extrato"
+        },
+        {
+            "id": 3,
+            "url": "/colaborador",
+            "pageTitulo": "Colaboradores"
+        },
+        {
+            "id": 4,
+            "url": "/departamento",
+            "pageTitulo": "Departamentos"
+        },
+        {
+            "id": 5,
+            "url": "/cartao",
+            "pageTitulo": "Cartões"
+        },
+        {
+            "id": 6,
+            "url": "/beneficio",
+            "pageTitulo": "Benefícios"
+        },
+        {
+            "id": 7,
+            "url": "/premiacao",
+            "pageTitulo": "Premiações"
+        },
+        {
+            "id": 8,
+            "url": "/despesa",
+            "pageTitulo": "Despesas"
+        }
+    ];
+
+    const titulo = titulos.map((item) => {
+        if(item.url == window.location.pathname)
+        {
+            return item.pageTitulo
+        }
+        return ''
+    })
+
+    console.log(titulo);
     return (
         <HeaderEstilizado>
             <h6>{titulo}</h6>

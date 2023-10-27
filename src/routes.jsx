@@ -47,7 +47,6 @@ function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Publico/>}>
-          <Route index element={<Inicio />} />
           <Route path="primeiro-acesso" element={<PrimeiroAcesso />} />
           <Route path="primeiro-acesso/senha-acesso" element={<SenhaDeAcesso />} />
           <Route path="login" element={<Login />} />
@@ -56,7 +55,7 @@ function AppRouter() {
           <Route path="esqueci-a-senha/seguranca" element={<Seguranca />} />
           <Route path="esqueci-a-senha/redefinir" element={<RedefinirSenha />} />
         </Route>
-        <Route path="/dashboard" element={<Autenticado/>}>
+        <Route path="/" element={<Autenticado/>}>
           <Route index element={<Dashboard />} />
           
           <Route path="colaborador" element={<Colaboradores />} />
