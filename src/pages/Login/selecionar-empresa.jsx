@@ -80,7 +80,7 @@ function SelecionarEmpresa() {
                     )
                 })}
             </Wrapper>
-            <Link to="/dashboard">
+            <Link to="/">
                 <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
             </Link>
         </>

@@ -29,7 +29,7 @@ function SenhaDeAcesso() {
             <CampoTexto name="confirmar-senha" valor={confirmarSenha} setValor={setConfirmarSenha} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
             <RegrasCriacaoSenha />
         </Frame>
-        <Link to="/dashboard">
+        <Link to="/">
             <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
         </Link>
     </>

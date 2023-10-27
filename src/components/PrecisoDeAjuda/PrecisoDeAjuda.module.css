@@ -1,3 +1,6 @@
 .link {
     text-decoration: none;
+    border: 1px solid var(--neutro-200);
+    border-radius: 8px;
+    padding: 11px;
 }
