@@ -1,0 +1,16 @@
+.subtitulo {
+    color: var(--neutro-600);
+    font-size: 12px;
+    font-family: var(--fonte-secundaria);
+    font-weight: 500;
+}
+.cardsColaborador {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+}
+.icon * {
+    stroke: var(--white);
+}

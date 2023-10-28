@@ -12,11 +12,6 @@
     padding: 16px 24px!important;
 }
 
-/** Hover */
-button:hover {
-    background-color: var(--neutro-300);
-}
-
 /** Vermilion */
 .vermilion.filled {
     background-color: var(--primaria);
