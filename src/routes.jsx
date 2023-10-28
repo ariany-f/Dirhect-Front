@@ -11,6 +11,9 @@ import Dashboard from '@pages/Dashboard';
 import Autenticado from '@common/Autenticado'
 import Publico from '@common/Publico'
 import Colaboradores from '@pages/Colaboradores';
+import ColaboradoresCadastrados from '@pages/Colaboradores/cadastrados';
+import ColaboradoresAguardando from '@pages/Colaboradores/aguardando-cadastro';
+import ColaboradoresDesativados from '@pages/Colaboradores/desativados';
 import NaoEncontrada from '@pages/NaoEncontrada';
 import AdicionarCnpj from '@pages/AdicionarCnpj';
 import AdicionarCelular from '@pages/AdicionarCelular';
@@ -58,7 +61,12 @@ function AppRouter() {
         <Route path="/" element={<Autenticado/>}>
           <Route index element={<Dashboard />} />
           
-          <Route path="colaborador" element={<Colaboradores />} />
+          <Route path="colaborador" element={<Colaboradores />} >
+              <Route index element={<ColaboradoresCadastrados />} />
+              <Route path="aguardando-cadastro" element={<ColaboradoresAguardando />} />
+              <Route path="desativados" element={<ColaboradoresDesativados />} />
+          </Route>
+
           <Route path="colaborador/detalhes" element={<ColaboradorDetalhes />} />
           <Route path="colaborador/registro" element={<ColaboradorRegistro />} />
           <Route path="colaborador/registro/sucesso" element={<ColaboradorRegistroSucesso />} />

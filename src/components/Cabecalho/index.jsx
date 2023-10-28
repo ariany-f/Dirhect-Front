@@ -63,48 +63,48 @@ const Cabecalho = ({ nomeEmpresa }) => {
     const titulos = [
         {
             "id": 1,
-            "url": "/",
+            "url": "",
             "pageTitulo": "Plataforma RH"
         },
         {
             "id": 2,
-            "url": "/extrato",
+            "url": "extrato",
             "pageTitulo": "Extrato"
         },
         {
             "id": 3,
-            "url": "/colaborador",
+            "url": "colaborador",
             "pageTitulo": "Colaboradores"
         },
         {
             "id": 4,
-            "url": "/departamento",
+            "url": "departamento",
             "pageTitulo": "Departamentos"
         },
         {
             "id": 5,
-            "url": "/cartao",
+            "url": "cartao",
             "pageTitulo": "Cartões"
         },
         {
             "id": 6,
-            "url": "/beneficio",
+            "url": "beneficio",
             "pageTitulo": "Benefícios"
         },
         {
             "id": 7,
-            "url": "/premiacao",
+            "url": "premiacao",
             "pageTitulo": "Premiações"
         },
         {
             "id": 8,
-            "url": "/despesa",
+            "url": "despesa",
             "pageTitulo": "Despesas"
         }
     ];
 
     const titulo = titulos.map((item) => {
-        if(item.url == location.pathname)
+        if(item.url == location.pathname.split("/")[1].split("/"))
         {
             return item.pageTitulo
         }
