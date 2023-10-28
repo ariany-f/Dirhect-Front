@@ -30,7 +30,7 @@ function Colaboradores() {
                 <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
             </BotaoGrupo>
 
-            <CampoTexto name="search" width={'320px'} valor={search} setValor={setSearch} type="search" label="" placeholder="Buscar um departamento" />
+            <CampoTexto name="search" width={'320px'} valor={search} setValor={setSearch} type="search" label="" placeholder="Buscar um time" />
             
             <DataTableColaboradores colaboradores={colaboradores} />
 
