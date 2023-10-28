@@ -29,16 +29,16 @@ function DepartamentoCard({department}) {
                         Colaboradores:&nbsp;
                         <NumeroColaboradores weight={700}>{clbdr.length}</NumeroColaboradores>
                     </div>
-                    : ''}
+                : ''}
             </div>
             <div className={styles.right}>
                 <Texto weight={500}>Benefícios configurados</Texto>
                 <div className={styles.beneficios}>
-                {department.benefits.map((benefit, index) => {
-                    return (
-                        <BadgeBeneficio key={index} nomeBeneficio={benefit}/>
-                    )
-                })}
+                    {department.benefits.map((benefit, index) => {
+                        return (
+                            <BadgeBeneficio key={index} nomeBeneficio={benefit}/>
+                        )
+                    })}
                 </div>
             </div>
         </div>

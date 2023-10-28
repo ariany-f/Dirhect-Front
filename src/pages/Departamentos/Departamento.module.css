@@ -1,0 +1,6 @@
+.subtitulo {
+    color: var(--neutro-600);
+    font-size: 12px;
+    font-family: var(--fonte-secundaria);
+    font-weight: 500;
+}

@@ -16,6 +16,7 @@ const Campo = styled.input`
     align-self: stretch;
     font-weight: 600;
     margin-top: 10px;
+    width: ${ props => props.$width ?  props.$width : 'inherit' };
 
     ~ .icon {
         bottom: 22px;
@@ -67,7 +68,7 @@ const Campo = styled.input`
     }
 `
 
-function CampoTexto({ label, type='text', placeholder, valor, setValor, name }) {
+function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit' }) {
     const [visibilityPassword, setvisibilityPassword] = useState(false)
 
     function passwordVisibilityChange() {
@@ -98,7 +99,7 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name }) 
             {(label) ?
             <label className={styles.label}>{label}</label>
             : ''}
-            <Campo name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={evento => setValor(evento.target.value)} placeholder={placeholder}></Campo>
+            <Campo $width={width} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={evento => setValor(evento.target.value)} placeholder={placeholder}></Campo>
             {temIcone(type, visibilityPassword)}
         </div>
     )
