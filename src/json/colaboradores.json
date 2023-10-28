@@ -1,0 +1,58 @@
+[
+    {
+        "public_id": "dc4a93b9-3000-4bd5-b5ab-90243b8bc9e1",
+        "name": "Jader Afonso",
+        "email": "jader.afonso@gmail.com",
+        "document": "42596632177",
+        "phone_number": "11990253050",
+        "phone_code": "55",
+        "requested_card_enum": 0,
+        "requested_card_date": null,
+        "departments": {
+            "Tecnologia": "755476fc-9d4b-4091-b94c-dffd0c06049e"
+        },
+        "user": {
+            "public_id": "26cdca43-6e39-4802-95d2-1a89608bbedf",
+            "name": "Jader Afonso",
+            "email": "jader.afonso@gmail.com",
+            "is_holding": 0,
+            "status": 1,
+            "document": "42245039052",
+            "phone_number": "Telefone",
+            "phone_code": "55",
+            "phone_verified_at": null,
+            "date_birth": null,
+            "created_at": "2023-10-02T18:39:09.000000Z",
+            "updated_at": "2023-10-02T18:39:09.000000Z"
+        }
+    },
+    {
+        "public_id": "51ebe476-2c3a-4e58-9576-1a9d83bec5a3",
+        "name": "Paulo Coelho",
+        "email": "paulo.coelho@oracle.com",
+        "document": "12347977567",
+        "phone_number": "11988557666",
+        "phone_code": "55",
+        "requested_card_enum": 3,
+        "requested_card_date": null,
+        "departments": {
+            "Comercial": "cacbf01b-7ef7-4c0f-a15a-f4c82e0f0e4b",
+            "Tecnologia": "755476fc-9d4b-4091-b94c-dffd0c06049e",
+            "Administrativo": "4d54a79e-9fc9-4926-8bcc-1574ca8467c9"
+        },
+        "user": {
+            "public_id": "4d1cb68a-fe9f-4313-9ab2-c5a63284e751",
+            "name": "Paulo Coelho",
+            "email": "paulo.coelho@oracle.com",
+            "is_holding": 0,
+            "status": 1,
+            "document": "12347977567",
+            "phone_number": "11988557666",
+            "phone_code": "55",
+            "phone_verified_at": null,
+            "date_birth": "1985-01-20T03:00:00.000000Z",
+            "created_at": "2023-10-03T18:38:21.000000Z",
+            "updated_at": "2023-10-03T18:38:21.000000Z"
+        }
+    }
+]

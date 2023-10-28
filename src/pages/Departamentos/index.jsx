@@ -1,7 +1,15 @@
+import DepartamentoCard from '@components/DepartamentoCard';
+import departments from '@json/departments.json'
+
 function Departamentos() {
-    const url = window.location.pathname;
     return (
-       <>{url}</>
+        <>
+            {departments.map(department => {
+                return (
+                   <DepartamentoCard key={department.public_id} department={department}/>
+                )
+            })}
+        </>
     )
 }
 

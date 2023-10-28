@@ -11,6 +11,7 @@ export default defineConfig({
       { find: '@pages', replacement: path.resolve(__dirname, './src/pages') },
       { find: '@components', replacement: path.resolve(__dirname, './src/components') },
       { find: '@common', replacement: path.resolve(__dirname, './src/common') },
+      { find: '@json', replacement: path.resolve(__dirname, './src/json') },
     ]
   }
 })
