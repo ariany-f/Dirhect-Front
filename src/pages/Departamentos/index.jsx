@@ -28,11 +28,13 @@ function Departamentos() {
 
             <CampoTexto name="search" width={'320px'} valor={search} setValor={setSearch} type="search" label="" placeholder="Buscar um departamento" />
             
-            {departments.map(department => {
-                return (
-                   <DepartamentoCard key={department.public_id} department={department}/>
-                )
-            })}
+            <div className={styles.cardsDepartamento}>
+                {departments.map(department => {
+                    return (
+                    <DepartamentoCard key={department.public_id} department={department}/>
+                    )
+                })}
+            </div>
         </>
     )
 }
