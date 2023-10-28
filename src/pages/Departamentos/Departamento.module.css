@@ -11,3 +11,6 @@
     gap: 8px;
     align-self: stretch;
 }
+.icon * {
+    stroke: var(--white);
+}

@@ -1,14 +1,20 @@
 /** Sizes */
 .small {
-    padding: 8px 12px;
+    padding: 8px 12px!important;
+    font-size: 12px!important;
 }
 
 .medium {
-    padding: 10px 16px;
+    padding: 10px 16px!important;
 }
 
 .large {
-    padding: 16px 24px;
+    padding: 16px 24px!important;
+}
+
+/** Hover */
+button:hover {
+    background-color: var(--neutro-300);
 }
 
 /** Vermilion */
@@ -118,4 +124,23 @@
     border: var(--neutro-400);
     border-width: 2px;
     border-style: solid;
+}
+
+/** Based Black */
+.black.filled {
+    background-color: var(--black);
+    color: var(--white);
+    border-width: 1px;
+    border-color: var(--black);
+    border-style: solid;
+}
+.black.filled:hover {
+    background-color: var(--neutro-700);
+    border-width: 1px;
+    border-style: solid;
+}
+
+/** Button for tab */
+.tab {
+    width: fit-content!important;
 }
