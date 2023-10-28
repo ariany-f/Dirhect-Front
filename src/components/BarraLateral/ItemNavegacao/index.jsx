@@ -20,6 +20,7 @@ const ItemListaEstilizado = styled.li`
     border-right: ${ props => props.$ativo ? '3px solid var(--secundaria)' : 'none' };
 
     & .icon {
+        box-sizing: initial;
         fill: ${ props => props.$ativo ? 'var(--secundaria)' : 'var(--white)' };
         color: ${ props => props.$ativo ? 'var(--secundaria)' : 'var(--white)' };
     }

@@ -12,6 +12,7 @@ const Anchor = styled.a`
     cursor: pointer;
     align-items: center;
     & .icon {
+        box-sizing: initial;
         fill: var(--primaria);
     }
 `

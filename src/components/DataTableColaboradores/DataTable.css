@@ -2256,9 +2256,6 @@
       color: #3c5ece;
       border-color: transparent;
     }
-    .p-button.p-button-link:enabled:hover .p-button-label, .p-button.p-button-link:not(button):not(a):not(.p-disabled):hover .p-button-label {
-      text-decoration: underline;
-    }
     .p-button.p-button-link:enabled:focus, .p-button.p-button-link:not(button):not(a):not(.p-disabled):focus {
       background: transparent;
       box-shadow: 0 0 0 0.1rem #bbc7ee;

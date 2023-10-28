@@ -129,6 +129,7 @@ hr {
 }
 a {
   background-color: transparent;
+  text-decoration: none; 
 }
 abbr[title] {
   border-bottom: none; 

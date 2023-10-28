@@ -19,6 +19,7 @@ const Campo = styled.input`
     width: ${ props => props.$width ?  props.$width : 'inherit' };
 
     ~ .icon {
+        box-sizing: initial;
         bottom: 22px;
         cursor: pointer;
         position: absolute;

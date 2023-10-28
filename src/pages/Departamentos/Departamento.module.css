@@ -12,5 +12,6 @@
     align-self: stretch;
 }
 .icon * {
+    box-sizing: initial;
     stroke: var(--white);
 }

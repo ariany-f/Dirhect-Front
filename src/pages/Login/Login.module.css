@@ -17,6 +17,7 @@
     line-height: 24px; /* 150% */
 }
 .buildingIcon {
+    box-sizing: initial;
     padding: 13px;
     border-radius: 8px;
     background-color: var(--vermilion-50);

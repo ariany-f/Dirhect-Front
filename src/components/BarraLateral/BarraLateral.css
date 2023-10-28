@@ -1,5 +1,6 @@
 .icon {
     fill: var(--white);
+    box-sizing: initial;
 }
 
 .novidade {
