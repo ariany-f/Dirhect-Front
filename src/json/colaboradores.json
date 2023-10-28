@@ -9,7 +9,8 @@
         "requested_card_enum": 0,
         "requested_card_date": null,
         "departments": {
-            "Tecnologia": "755476fc-9d4b-4091-b94c-dffd0c06049e"
+            "Tecnologia": "755476fc-9d4b-4091-b94c-dffd0c06049e",
+            "Financeiro": "4d54a79e-9fc9-4926-8bcc-1574ca8467c9"
         },
         "user": {
             "public_id": "26cdca43-6e39-4802-95d2-1a89608bbedf",
