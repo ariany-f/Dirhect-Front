@@ -18,12 +18,12 @@ const BotaoEstilizado = styled.button`
     align-items: center;
 `
 
-function Botao( {children, estilo = 'vermilion', model = 'filled', size = 'medium', tab = false} ) {
+function Botao( {children, estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null} ) {
 
     const classes = `${estilo} ${model} ${size} ${tab ? 'tab' : ''}`;
     
     return (
-        <BotaoEstilizado className={classes}>
+        <BotaoEstilizado onClick={aoClicar} className={classes}>
             {children}
         </BotaoEstilizado>
     )

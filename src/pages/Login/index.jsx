@@ -4,14 +4,37 @@ import CampoTexto from "@components/CampoTexto"
 import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
-import { useState } from "react"
 import { Link } from "react-router-dom"
 import styles from './Login.module.css'
 import CheckboxContainer from "@components/CheckboxContainer"
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import ModalToken from '@components/ModalToken'
+import { useState } from "react";
 
 function Login() {
-    const [email, setEmail] = useState('')
-    const [senha, setSenha] = useState('')
+
+    const [modalOpened, setModalOpened] = useState(false)
+
+    function FecharModal()
+    {
+        setModalOpened(false);
+    }
+    
+    const { 
+        usuario,
+        setEmail,
+        setPassword,
+        setCode,
+        submeterLogin,
+        solicitarCodigo
+    } = useSessaoUsuarioContext()
+    
+    const sendData = (evento) => {
+        evento.preventDefault();
+        solicitarCodigo()
+        setModalOpened(true)
+    }
+
 
     return (
         <>
@@ -22,8 +45,8 @@ function Login() {
                 </SubTitulo>
             </Titulo>
             <Frame>
-                <CampoTexto name="email" valor={email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
-                <CampoTexto name="senha" valor={senha} setValor={setSenha} type="password" label="Senha" placeholder="Digite sua senha" />
+                <CampoTexto name="email" valor={usuario.email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
+                <CampoTexto name="senha" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
                 <div className={styles.containerBottom}>
                     <CheckboxContainer />
                     <Link className={styles.link} to="/esqueci-a-senha">
@@ -31,9 +54,9 @@ function Login() {
                     </Link>
                 </div>
             </Frame>
-            <Link to="/login/selecionar-empresa">
-                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
-            </Link>
+            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+            
+            <ModalToken usuario={usuario} aoFechar={FecharModal} aoClicar={submeterLogin} setCode={setCode} opened={modalOpened} />
         </>
     )
 }

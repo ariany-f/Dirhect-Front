@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Inicio from '@pages/Inicio';
 import PrimeiroAcesso from '@pages/PrimeiroAcesso';
 import SenhaDeAcesso from '@pages/PrimeiroAcesso/senha-acesso';
 import Login from '@pages/Login';
@@ -9,6 +8,7 @@ import Seguranca from '@pages/EsqueciASenha/seguranca';
 import RedefinirSenha from '@pages/EsqueciASenha/redefinir';
 import Dashboard from '@pages/Dashboard';
 import Autenticado from '@common/Autenticado'
+import PrimeiroAcessoCommon from '@common/PrimeiroAcesso'
 import Publico from '@common/Publico'
 import Colaboradores from '@pages/Colaboradores';
 import ColaboradoresCadastrados from '@pages/Colaboradores/cadastrados';
@@ -43,67 +43,72 @@ import BeneficioOndeUsar from './pages/Beneficios/onde-usar';
 import BeneficioSelecionarTipoRecarga from './pages/Beneficios/selecao-tipo-recarga';
 import BeneficioSelecionarAlvoRecarga from './pages/Beneficios/selecao-alvo-recarga';
 import BeneficioEditarValor from './pages/Beneficios/editar-valor';
+import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario";
 
 function AppRouter() {
-
+  
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Publico/>}>
-          <Route path="primeiro-acesso" element={<PrimeiroAcesso />} />
-          <Route path="primeiro-acesso/senha-acesso" element={<SenhaDeAcesso />} />
-          <Route path="login" element={<Login />} />
-          <Route path="login/selecionar-empresa" element={<SelecionarEmpresa />} />
-          <Route path="esqueci-a-senha" element={<EsqueciASenha />} />
-          <Route path="esqueci-a-senha/seguranca" element={<Seguranca />} />
-          <Route path="esqueci-a-senha/redefinir" element={<RedefinirSenha />} />
-        </Route>
-        <Route path="/" element={<Autenticado/>}>
-          <Route index element={<Dashboard />} />
-          
-          <Route path="colaborador" element={<Colaboradores />} >
-              <Route index element={<ColaboradoresCadastrados />} />
-              <Route path="aguardando-cadastro" element={<ColaboradoresAguardando />} />
-              <Route path="desativados" element={<ColaboradoresDesativados />} />
-          </Route>
+      <SessaoUsuarioProvider>
+        <Routes>
+            <Route path="/primeiro-acesso" element={<PrimeiroAcessoCommon/>}>
+              <Route index element={<PrimeiroAcesso />} />
+              <Route path="senha-acesso/" element={<SenhaDeAcesso />} />
+            </Route>
+            <Route path="/login" element={<Publico/>}>
+              <Route index element={<Login />} />
+              <Route path="selecionar-empresa" element={<SelecionarEmpresa />} />
+            </Route>
+            <Route path="/esqueci-a-senha" element={<Publico/>}>
+              <Route index element={<EsqueciASenha />} />
+              <Route path="seguranca" element={<Seguranca />} />
+              <Route path="redefinir" element={<RedefinirSenha />} />
+            </Route>
+            <Route path="/" element={<Autenticado/>}>
+              <Route index element={<Dashboard />} />
+              <Route path="colaborador" element={<Colaboradores />} >
+                  <Route index element={<ColaboradoresCadastrados />} />
+                  <Route path="aguardando-cadastro" element={<ColaboradoresAguardando />} />
+                  <Route path="desativados" element={<ColaboradoresDesativados />} />
+              </Route>
+              <Route path="colaborador/detalhes" element={<ColaboradorDetalhes />} />
+              <Route path="colaborador/registro" element={<ColaboradorRegistro />} />
+              <Route path="colaborador/registro/sucesso" element={<ColaboradorRegistroSucesso />} />
+            
+              <Route path="departamento" element={<Departamentos />} />
+              <Route path="departamento/detalhes" element={<DepartamentoDetalhes />} />
+            
+              <Route path="premiacao" element={<Premiacoes />} />
+              <Route path="premiacao/detalhes" element={<PremiacaoDetalhes />} />
+              <Route path="premiacao/registro" element={<PremiacaoRegistro />} />
+              <Route path="premiacao/editar-valor" element={<PremiacaoEditarValor />} />
+              <Route path="premiacao/selecao-premiados" element={<PremiacaoSelecaoPremiados />} />
+              
+              <Route path="despesa" element={<Despesas />} />
+              <Route path="despesa/adiantar-saldo" element={<DespesaAdiantarSaldo />} />
+              <Route path="despesa/selecao-tipo-adiantamento" element={<DespesaSelecionarTipoAdiantamento />} />
+              <Route path="despesa/selecao-alvo-adiantamento" element={<DespesaSelecionarAlvoAdiantamento />} />
+              <Route path="despesa/editar-valor" element={<DespesaEditarValor />} />
+              <Route path="despesa/detalhes-adiantamento" element={<DespesaDetalhesAdiantamento />} />
+              <Route path="despesa/detalhes" element={<DespesaDetalhes />} />
+              
+              <Route path="cartao" element={<Cartoes />} />
+              <Route path="cartao/detalhes" element={<CartaoDetalhes />} />
+              <Route path="cartao/solicitar-segunda-via" element={<CartaoSolicitarSegundaVia />} />
+              
+              <Route path="beneficio" element={<Beneficios />} />
+              <Route path="beneficio/onde-usar" element={<BeneficioOndeUsar />} />
+              <Route path="beneficio/selecao-tipo-recarga" element={<BeneficioSelecionarTipoRecarga />} />
+              <Route path="beneficio/selecao-alvo-recarga" element={<BeneficioSelecionarAlvoRecarga />} />
+              <Route path="beneficio/editar-valor" element={<BeneficioEditarValor />} />
 
-          <Route path="colaborador/detalhes" element={<ColaboradorDetalhes />} />
-          <Route path="colaborador/registro" element={<ColaboradorRegistro />} />
-          <Route path="colaborador/registro/sucesso" element={<ColaboradorRegistroSucesso />} />
-         
-          <Route path="departamento" element={<Departamentos />} />
-          <Route path="departamento/detalhes" element={<DepartamentoDetalhes />} />
-         
-          <Route path="premiacao" element={<Premiacoes />} />
-          <Route path="premiacao/detalhes" element={<PremiacaoDetalhes />} />
-          <Route path="premiacao/registro" element={<PremiacaoRegistro />} />
-          <Route path="premiacao/editar-valor" element={<PremiacaoEditarValor />} />
-          <Route path="premiacao/selecao-premiados" element={<PremiacaoSelecaoPremiados />} />
-          
-          <Route path="despesa" element={<Despesas />} />
-          <Route path="despesa/adiantar-saldo" element={<DespesaAdiantarSaldo />} />
-          <Route path="despesa/selecao-tipo-adiantamento" element={<DespesaSelecionarTipoAdiantamento />} />
-          <Route path="despesa/selecao-alvo-adiantamento" element={<DespesaSelecionarAlvoAdiantamento />} />
-          <Route path="despesa/editar-valor" element={<DespesaEditarValor />} />
-          <Route path="despesa/detalhes-adiantamento" element={<DespesaDetalhesAdiantamento />} />
-          <Route path="despesa/detalhes" element={<DespesaDetalhes />} />
-          
-          <Route path="cartao" element={<Cartoes />} />
-          <Route path="cartao/detalhes" element={<CartaoDetalhes />} />
-          <Route path="cartao/solicitar-segunda-via" element={<CartaoSolicitarSegundaVia />} />
-          
-          <Route path="beneficio" element={<Beneficios />} />
-          <Route path="beneficio/onde-usar" element={<BeneficioOndeUsar />} />
-          <Route path="beneficio/selecao-tipo-recarga" element={<BeneficioSelecionarTipoRecarga />} />
-          <Route path="beneficio/selecao-alvo-recarga" element={<BeneficioSelecionarAlvoRecarga />} />
-          <Route path="beneficio/editar-valor" element={<BeneficioEditarValor />} />
-
-          <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
-          <Route path="adicionar-celular" element={<AdicionarCelular />} />
-          <Route path="adicionar-email" element={<AdicionarEmail />} />
-        </Route>
-        <Route path="*" element={<NaoEncontrada />}></Route>
-      </Routes>
+              <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
+              <Route path="adicionar-celular" element={<AdicionarCelular />} />
+              <Route path="adicionar-email" element={<AdicionarEmail />} />
+            </Route>
+            <Route path="*" element={<NaoEncontrada />}></Route>
+          </Routes>
+        </SessaoUsuarioProvider>
     </BrowserRouter>
   )
 }

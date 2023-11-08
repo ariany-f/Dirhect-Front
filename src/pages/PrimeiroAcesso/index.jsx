@@ -4,12 +4,16 @@ import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Texto from "@components/Texto"
 import Titulo from "@components/Titulo"
-import { useState } from "react"
 import { Link } from "react-router-dom"
+import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
 
 function PrimeiroAcesso() {
-    const [email, setEmail] = useState('')
-    const [codigo, setCodigo] = useState('')
+    
+    const { 
+        usuario,
+        setEmail,
+        setAccessCode
+    } = usePrimeiroAcessoContext()
 
     return (
         <>
@@ -20,8 +24,8 @@ function PrimeiroAcesso() {
                 </SubTitulo>
             </Titulo>
             <Frame>
-                <CampoTexto name="email" valor={email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
-                <CampoTexto name="codigo" valor={codigo} setValor={setCodigo} label="Código de acesso" placeholder="Digite o código de acesso" />
+                <CampoTexto name="email" valor={usuario.email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
+                <CampoTexto name="codigo" valor={usuario.access_code} setValor={setAccessCode} label="Código de acesso" placeholder="Digite o código de acesso" />
                 <Frame estilo="vermilion" padding="16px">
                     <Texto>O código de acesso foi enviado parao e-mail corporativo cadastrado!</Texto>
                 </Frame>

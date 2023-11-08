@@ -5,13 +5,16 @@ const Campo = styled.input`
     border-radius: 8px;
     outline: .4px solid var(--neutro-200);
     background: var(--background-label);
-    padding: 22px 16px;
+    padding: 2vh 1vw!important;
     border: none;
     display: flex;
     align-items: center;
     align-self: stretch;
     font-weight: 600;
     margin-top: 10px;
+    line-height: 1.5vh!important;
+    width: 3vw!important;
+    color: var(--black);
 
     &:active {
         outline-color: var(--primaria);

@@ -5,13 +5,33 @@ import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 import BotaoVoltar from "@components/BotaoVoltar"
+import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
+import ModalToken from "../../components/ModalToken"
 import { useState } from "react"
-import { Link } from "react-router-dom"
 
 function SenhaDeAcesso() {
-    
-    const [senha, setSenha] = useState('')
-    const [confirmarSenha, setConfirmarSenha] = useState('')
+
+    const [modalOpened, setModalOpened] = useState(false)
+
+    function FecharModal()
+    {
+        setModalOpened(false);
+    }
+
+    const { 
+        usuario, 
+        setPassword, 
+        setPasswordConfirmation, 
+        setCode,
+        solicitarCodigo,
+        validarCodigo
+    } = usePrimeiroAcessoContext()
+
+    const sendData = (evento) => {
+        evento.preventDefault();
+        solicitarCodigo()
+        setModalOpened(true)
+    }
 
     return (
        <>
@@ -25,13 +45,13 @@ function SenhaDeAcesso() {
             </Titulo>
         </Frame>
         <Frame>
-            <CampoTexto name="senha" valor={senha} setValor={setSenha} type="password" label="Senha" placeholder="Digite sua senha" />
-            <CampoTexto name="confirmar-senha" valor={confirmarSenha} setValor={setConfirmarSenha} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
+            <CampoTexto name="senha" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
+            <CampoTexto name="confirmar-senha" valor={usuario.password_confirmation} setValor={setPasswordConfirmation} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
             <RegrasCriacaoSenha />
         </Frame>
-        <Link to="/">
-            <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
-        </Link>
+        <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+        
+        <ModalToken usuario={usuario} aoFechar={FecharModal} aoClicar={validarCodigo} setCode={setCode} opened={modalOpened} />
     </>
     )
 }

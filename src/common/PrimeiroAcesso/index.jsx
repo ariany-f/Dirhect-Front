@@ -6,19 +6,21 @@ import Container from "@components/Container"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import { Outlet } from "react-router-dom";
 import RodapePublico from "../../components/RodapePublico";
+import { PrimeiroAcessoProvider } from "../../contexts/PrimeiroAcesso";
 
-function Publico() {
-
+function PrimeiroAcessoCommon() {
     return (
         <>
             <EstilosGlobais />
             <MainSection>
                 <Banner />
                 <Container>
-                    <MainContainer>
-                        <Outlet />
-                        <PrecisoDeAjuda/>
-                    </MainContainer>
+                    <PrimeiroAcessoProvider>
+                        <MainContainer>
+                            <Outlet/>
+                            <PrecisoDeAjuda/>
+                        </MainContainer>
+                    </PrimeiroAcessoProvider>
                     <RodapePublico />
                 </Container>
             </MainSection>
@@ -26,4 +28,4 @@ function Publico() {
     )
 }
 
-export default Publico
+export default PrimeiroAcessoCommon
