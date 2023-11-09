@@ -94,6 +94,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                     response.data.data.token_access,
                     response.data.data.expires_at
                 )
+                navegar('/login/selecionar-empresa')
             })
             .catch(erro => {
                 console.error(erro)

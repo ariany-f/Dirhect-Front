@@ -36,9 +36,9 @@ function PrimeiroAcesso() {
                     <Texto>O código de acesso foi enviado parao e-mail corporativo cadastrado!</Texto>
                 </Frame>
             </Frame>
-            {/* <Link to="/primeiro-acesso/senha-acesso"> */}
-                <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
-            {/* </Link> */}
+            <Link to="/primeiro-acesso/senha-acesso">
+                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
+            </Link>
         </>
     )
 }

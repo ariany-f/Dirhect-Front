@@ -7,9 +7,9 @@ export class ArmazenadorToken {
         sessionStorage.setItem(EXPIRATION, expiration)
     }
     static get AccessToken() {
-        sessionStorage.getItem(ACCESS_TOKEN)
+        return sessionStorage.getItem(ACCESS_TOKEN)
     }
     static get ExpirationToken() {
-        sessionStorage.getItem(EXPIRATION)
+        return sessionStorage.getItem(EXPIRATION)
     }
 }

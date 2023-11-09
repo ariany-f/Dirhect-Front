@@ -4,7 +4,6 @@ import BarraLateral from "@components/BarraLateral"
 import Cabecalho from "@components/Cabecalho"
 import MainContainer from "@components/MainContainer"
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
 
 function Autenticado() {
 

@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom'
 import { FaWallet } from 'react-icons/fa'
 import styled from 'styled-components'
 import './Dashboard.css'
+import http from '@http'
+import { useEffect } from 'react'
+import { ArmazenadorToken } from '../../utils'
 
 const AddSaldo = styled.div`
     display: flex;
@@ -18,12 +21,21 @@ const AddSaldo = styled.div`
 `
 
 function Dashboard() {
-    const registerIsComplete = false;
+    const registerIsComplete = true;
     const saldo = 'R$ 244.038,91';
+
+    useEffect(() => {
+        const token = ArmazenadorToken.AccessToken
+        http.get('api/checkout')
+            .then(response => {
+                console.log(response)
+            })
+            .catch(erro => console.log(erro))
+    }, [])
 
     return (
        <>
-        {(registerIsComplete) ? 
+        {(!registerIsComplete) ? 
             <Titulo>
                 <SubTitulo>Ficamos muito felizes em ver você por aqui 🧡</SubTitulo>
                 <h6>Complete as etapas de contratação e ofereça a seus colaboradores uma experiência completa em benefícios e vantagens que só a AQBank Multibenefícios oferece!</h6>

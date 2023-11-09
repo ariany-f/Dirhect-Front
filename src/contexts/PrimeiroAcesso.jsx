@@ -76,13 +76,13 @@ export const PrimeiroAcessoProvider = ({ children }) => {
 
     const validarAcesso = () => {
         
-        http.post('api/auth/access/check/email/code', usuario)
-        .then((response) => {
-            console.log(response)
-        })
-        .catch(erro => {
-            console.error(erro)
-        })
+        // http.post('api/auth/access/check/email/code', usuario)
+        // .then((response) => {
+        //     console.log(response)
+        // })
+        // .catch(erro => {
+        //     console.error(erro)
+        // })
 
         // http.post('api/auth/access/check/', usuario)
         //     .then(() => {
@@ -96,9 +96,15 @@ export const PrimeiroAcessoProvider = ({ children }) => {
 
     const solicitarCodigo = () => {
 
-        http.post('api/auth/access/first/', usuario)
-            .then(() => {
-                
+        let data = {};
+        data.email = usuario.email
+        data.access_code = usuario.access_code
+        data.password = usuario.password
+        data.password_confirmation = usuario.password_confirmation
+
+        http.post('api/auth/access/first/', data)
+            .then((response) => {
+                console.log(response)
             })
             .catch(erro => {
                 console.error(erro)
