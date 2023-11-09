@@ -1,4 +1,4 @@
-import axios from 'axios';
+import http from '@http';
 import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +19,8 @@ export const PrimeiroAcessoContext = createContext({
     setPassword: () => null,
     setPasswordConfirmation: () => null,
     solicitarCodigo: () => null,
-    validarCodigo: () => null
+    validarCodigo: () => null,
+    validarAcesso: () => null
 })
 
 export const usePrimeiroAcessoContext = () => {
@@ -73,9 +74,29 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         })
     }
 
-    const solicitarCodigo = () => {
+    const validarAcesso = () => {
         
-        axios.post('https://beta-aqbeneficios.aqbank.com.br/api/auth/access/first/', usuario)
+        http.post('api/auth/access/check/email/code', usuario)
+        .then((response) => {
+            console.log(response)
+        })
+        .catch(erro => {
+            console.error(erro)
+        })
+
+        // http.post('api/auth/access/check/', usuario)
+        //     .then(() => {
+                
+        //     })
+        //     .catch(erro => {
+        //         console.error(erro)
+        //     })
+
+    }
+
+    const solicitarCodigo = () => {
+
+        http.post('api/auth/access/first/', usuario)
             .then(() => {
                 
             })
@@ -85,7 +106,7 @@ export const PrimeiroAcessoProvider = ({ children }) => {
     }
 
     const validarCodigo = () => {
-        axios.post('https://beta-aqbeneficios.aqbank.com.br/api/auth/access/first/validate', usuario)
+        http.post('api/auth/access/first/validate', usuario)
             .then(() => {
                 navegar('/login')
             })
@@ -103,7 +124,8 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         setPassword,
         setPasswordConfirmation,
         solicitarCodigo,
-        validarCodigo
+        validarCodigo,
+        validarAcesso
     }
 
     return (<PrimeiroAcessoContext.Provider value={contexto}>

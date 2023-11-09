@@ -20,10 +20,11 @@ const ChBtn = styled.input`
     }
 `;
 
-function CheckboxContainer() {
+function CheckboxContainer({ valor, setValor }) {
+
     return (
         <div className={styles.checkboxContainer}>
-            <ChBtn type="checkbox"></ChBtn>
+            <ChBtn value={valor} onChange={evento => setValor(evento.target.checked)} type="checkbox"></ChBtn>
             <Texto weight="800">Lembrar de mim</Texto>
         </div>
     )

@@ -22,6 +22,7 @@ function Login() {
     
     const { 
         usuario,
+        setRemember,
         setEmail,
         setPassword,
         setCode,
@@ -48,7 +49,7 @@ function Login() {
                 <CampoTexto name="email" valor={usuario.email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
                 <CampoTexto name="senha" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
                 <div className={styles.containerBottom}>
-                    <CheckboxContainer />
+                    <CheckboxContainer valor={usuario.remember} setValor={setRemember} />
                     <Link className={styles.link} to="/esqueci-a-senha">
                         <Texto weight="800" color="var(--primaria)">Esqueci minha senha</Texto>
                     </Link>

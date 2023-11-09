@@ -1,16 +1,19 @@
-import axios from 'axios';
+import http from '@http';
 import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArmazenadorToken } from '../utils';
 
 const usuarioInicial = {
     email: '',
     password: '',
+    remember: false,
     code: []
 }
 
 export const SessaoUsuarioContext = createContext({
     usuario: usuarioInicial,
     erros: {},
+    setRemember: () => null,
     setEmail: () => null,
     setPassword: () => null,
     setCode: () => null,
@@ -28,6 +31,14 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const [usuario, setUsuario] = useState(usuarioInicial)
 
+    const setRemember = (remember) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                remember
+            }
+        })
+    }
     const setEmail = (email) => {
         setUsuario(estadoAnterior => {
             return {
@@ -55,7 +66,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const solicitarCodigo = () => {
 
-        axios.post('https://beta-aqbeneficios.aqbank.com.br/api/auth/code', usuario)
+        http.post('api/auth/code', usuario)
             .then(() => {
 
             })
@@ -76,11 +87,13 @@ export const SessaoUsuarioProvider = ({ children }) => {
         })
 
         usuario.code = sendCode
-        usuario.remember = false
 
-        axios.post('https://beta-aqbeneficios.aqbank.com.br/api/auth/token', usuario)
-            .then(() => {
-                
+        http.post('api/auth/token', usuario)
+            .then((response) => {
+                ArmazenadorToken.definitToken(
+                    response.data.data.token_access,
+                    response.data.data.expires_at
+                )
             })
             .catch(erro => {
                 console.error(erro)
@@ -90,6 +103,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const contexto = {
         usuario,
+        setRemember,
         setEmail,
         setPassword,
         setCode,
