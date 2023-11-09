@@ -18,6 +18,17 @@ const Overlay = styled.div`
     left: 0;
 `
 
+const ReenviarCodigoBotao = styled.div`
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--neutro-300);
+    &.active {
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--primaria);
+    }
+`
+
 const DialogEstilizado = styled.dialog`
     display: flex;
     flex-direction: column;
@@ -66,20 +77,38 @@ const DialogEstilizado = styled.dialog`
     }
 `
 
-function ModalToken({ opened = false, usuario, setCode, aoClicar, aoFechar }) {
+function ModalToken({ opened = false, usuario, setCode, aoClicar, aoFechar, aoReenviar }) {
 
     let [timer, setTimer] = useState(60)
 
     useEffect(() => {
-        if (!timer) return;
+
+        if (!timer){
+            document.getElementById('reenviar').classList.add("active")
+            return
+        }; 
+
+        if(!opened) {
+            setTimer(60)
+        }
     
         const intervalId = setInterval(() => {
-            setTimer(timer - 1);
+            setTimer(timer - 1)
         }, 1000);
-    
-        return () => clearInterval(intervalId);
         
+        return () => clearInterval(intervalId);
+    
       }, [timer]);
+
+      function reenviarCodigo()
+      {
+            if(timer === 0)
+            {
+                document.getElementById('reenviar').classList.remove("active")
+                setTimer(60)
+                aoReenviar()
+            }
+      }
 
     return(
         <>
@@ -104,10 +133,12 @@ function ModalToken({ opened = false, usuario, setCode, aoClicar, aoFechar }) {
                         </Texto>
                         <CamposVerificacao valor={usuario.code} setValor={setCode} label="Código de autenticação" />
                         <Frame alinhamento="center">
-                            <Texto weight="300" color="var(--neutro-300)">
-                                Reenviar Código
-                                <b>{timer}s</b>
-                            </Texto>
+                            <ReenviarCodigoBotao onClick={reenviarCodigo} id="reenviar">Reenviar Código</ReenviarCodigoBotao>
+                            {timer > 0 ?
+                                <Texto weight="300" color="var(--neutro-300)">
+                                    <b>{timer}s</b>
+                                </Texto>
+                            : '' }
                         </Frame>
                     </Frame>
                     <Botao aoClicar={aoClicar} estilo="vermilion" size="medium" filled>Confirmar</Botao>

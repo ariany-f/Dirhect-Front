@@ -39,7 +39,7 @@ function SelecionarEmpresa() {
 
         http.get('api/admin/company')
             .then(response => {
-                response.data.data.companies.map((item) => {
+                response.data.companies.map((item) => {
                     if(!(empresas.filter(e => e.public_id === item.public_id).length > 0))
                     {
                         setEmpresas(estadoAnterior => [...estadoAnterior, item])

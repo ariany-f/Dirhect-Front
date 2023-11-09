@@ -15,11 +15,6 @@ function Login() {
 
     const [modalOpened, setModalOpened] = useState(false)
 
-    function FecharModal()
-    {
-        setModalOpened(false);
-    }
-    
     const { 
         usuario,
         setRemember,
@@ -36,6 +31,9 @@ function Login() {
         setModalOpened(true)
     }
 
+    const sendCode = () => {
+        submeterLogin()
+    }
 
     return (
         <>
@@ -57,7 +55,7 @@ function Login() {
             </Frame>
             <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
             
-            <ModalToken usuario={usuario} aoFechar={FecharModal} aoClicar={submeterLogin} setCode={setCode} opened={modalOpened} />
+            <ModalToken usuario={usuario} aoReenviar={solicitarCodigo} aoFechar={() => setModalOpened(false)} aoClicar={sendCode} setCode={setCode} opened={modalOpened} />
         </>
     )
 }

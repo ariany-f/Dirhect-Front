@@ -18,6 +18,7 @@ export const SessaoUsuarioContext = createContext({
     setPassword: () => null,
     setCode: () => null,
     solicitarCodigo: () => null,
+    submeterLogout: () => null,
     submeterLogin: () => null
 })
 
@@ -30,6 +31,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
     const navegar = useNavigate()
 
     const [usuario, setUsuario] = useState(usuarioInicial)
+    const [usuarioEstaLogado, setUsuarioEstaLogado] = useState(!!ArmazenadorToken.AccessToken)
 
     const setRemember = (remember) => {
         setUsuario(estadoAnterior => {
@@ -90,10 +92,11 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
         http.post('api/auth/token', usuario)
             .then((response) => {
-                ArmazenadorToken.definitToken(
-                    response.data.data.token_access,
-                    response.data.data.expires_at
+                ArmazenadorToken.definirToken(
+                    response.data.token_access,
+                    response.data.expires_at
                 )
+                setUsuarioEstaLogado(true)
                 navegar('/login/selecionar-empresa')
             })
             .catch(erro => {
@@ -101,14 +104,21 @@ export const SessaoUsuarioProvider = ({ children }) => {
             })
     }
 
+    const submeterLogout = () => {
+        ArmazenadorToken.efetuarLogout()
+        setUsuarioEstaLogado(false)
+    }
+
 
     const contexto = {
         usuario,
+        usuarioEstaLogado,
         setRemember,
         setEmail,
         setPassword,
         setCode,
         submeterLogin,
+        submeterLogout,
         solicitarCodigo
     }
 
