@@ -7,11 +7,20 @@ import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 import BotaoVoltar from "@components/BotaoVoltar"
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import * as Yup from 'yup'
 
 function RedefinirSenha() {
     
     const [senha, setSenha] = useState('')
     const [confirmarSenha, setConfirmarSenha] = useState('')
+
+    const validationSchema = Yup.object().shape({
+        password: Yup.string().required('Necessário digitar senha'),
+        passwordConfirmation: 
+        Yup.string()
+        .required('Necessário digitar confirmação de senha')
+        .oneOf([Yup.ref('password')], 'As senhas devem coincidir'),
+    });
 
     return (
         <>

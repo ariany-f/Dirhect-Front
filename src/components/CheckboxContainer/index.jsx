@@ -11,6 +11,11 @@ const ChBtn = styled.input`
     transition: 0.2s all linear;
     position: relative;
     border-radius: 2px;
+    ~ label {
+        font-weight: 800;
+        font-size: 12px;
+        cursor: pointer;
+    }
     &:checked {
         accent-color: var(--primaria);
         border: 5px solid var(--primaria);
@@ -20,12 +25,14 @@ const ChBtn = styled.input`
     }
 `;
 
-function CheckboxContainer({ valor, setValor }) {
+function CheckboxContainer({ valor, setValor, label, name }) {
 
     return (
         <div className={styles.checkboxContainer}>
-            <ChBtn value={valor} onChange={evento => setValor(evento.target.checked)} type="checkbox"></ChBtn>
-            <Texto weight="800">Lembrar de mim</Texto>
+            <ChBtn value={valor} id={name} onChange={evento => setValor(evento.target.checked)} type="checkbox"></ChBtn>
+            {(label) ?
+                <label htmlFor={name} className={styles.label}>{label}</label>
+            : ''}
         </div>
     )
 }

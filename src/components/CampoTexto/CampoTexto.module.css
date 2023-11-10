@@ -13,3 +13,13 @@
     align-self: stretch;
     position: relative;
 }
+
+.erroMessage {
+    color: var(--error);
+    font-feature-settings: 'clig' off, 'liga' off;
+    font-family: Inter;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 150% */
+}

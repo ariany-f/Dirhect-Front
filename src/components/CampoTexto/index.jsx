@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
 import { FaEnvelope } from 'react-icons/fa'
 import { BsSearch } from 'react-icons/bs'
+import * as Yup from 'yup'
 
 const Campo = styled.input`
     border-radius: 8px;
@@ -17,6 +18,10 @@ const Campo = styled.input`
     font-weight: 600;
     margin-top: 10px;
     width: ${ props => props.$width ?  props.$width : 'inherit' };
+
+    &.error {
+        outline: 1px solid var(--error);
+    }
 
     ~ .icon {
         box-sizing: initial;
@@ -69,11 +74,48 @@ const Campo = styled.input`
     }
 `
 
-function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit' }) {
+function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = []}) {
+
+    const classeCampoVazio = camposVazios.filter((val) => {
+        return val === name
+    })
+    
     const [visibilityPassword, setvisibilityPassword] = useState(false)
+    const [erro, setErro] = useState('')
 
     function passwordVisibilityChange() {
        setvisibilityPassword(!visibilityPassword);
+    }
+
+    const validationSchema = Yup.object().shape({
+        email: Yup.string().email('E-mail inválido'),
+        password: Yup.string().min(8, 'A senha deve conter no mínimo 8 caracteres'),
+    })
+
+    function changeValor(valor)
+    {
+        setValor(valor)
+
+        const CampoObject = {
+            [name]: valor
+        }
+
+        validationSchema
+            .validate(CampoObject, { abortEarly: false })
+            .then(valid => {
+                if(!!valid)
+                {
+                    document.getElementById(name).classList.remove('error')
+                    setErro('')
+                }
+            })
+            .catch(function (erro) {
+                if(typeof erro.inner == 'object')
+                {
+                    document.getElementById(name).classList.add('error')
+                    setErro(Object.values(erro.inner)[0].message)
+                }
+            })
     }
 
     const temIcone = (type, visibility) => {
@@ -96,13 +138,22 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
     };
 
     return (
-        <div className={styles.inputContainer}>
-            {(label) ?
-            <label className={styles.label}>{label}</label>
-            : ''}
-            <Campo $width={width} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={evento => setValor(evento.target.value)} placeholder={placeholder}></Campo>
-            {temIcone(type, visibilityPassword)}
-        </div>
+        <>
+            <div className={styles.inputContainer}>
+                {(label) ?
+                <label htmlFor={name} className={styles.label}>{label}</label>
+                : ''}
+                <Campo className={classeCampoVazio.includes(name) ? 'error' : ''} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento.target.value)} placeholder={placeholder} autoComplete="on"></Campo>
+                {temIcone(type, visibilityPassword)}
+            </div>
+
+            {classeCampoVazio.includes(name)?
+                <p className={styles.erroMessage}>Você deve preencher esse campo</p>
+                : (erro &&
+                    <p className={styles.erroMessage}>{erro}</p>
+                )
+            }            
+        </>
     )
 }
 
