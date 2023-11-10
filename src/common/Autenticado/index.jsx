@@ -3,20 +3,29 @@ import EstilosGlobais from '@components/GlobalStyles';
 import BarraLateral from "@components/BarraLateral"
 import Cabecalho from "@components/Cabecalho"
 import MainContainer from "@components/MainContainer"
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario";
 
 function Autenticado() {
 
+    const {
+        usuarioEstaLogado
+    } = useSessaoUsuarioContext()
+
     return (
         <>
-            <EstilosGlobais />
-            <MainSection>
-                <BarraLateral />
-                <MainContainer align="flex-start">
-                    <Cabecalho nomeEmpresa="Soluções Industriais Ltda" />
-                    <Outlet />
-                </MainContainer>
-            </MainSection>
+        {usuarioEstaLogado ?
+            <>
+                <EstilosGlobais />
+                <MainSection>
+                    <BarraLateral />
+                    <MainContainer align="flex-start">
+                        <Cabecalho nomeEmpresa="Soluções Industriais Ltda" />
+                        <Outlet />
+                    </MainContainer>
+                </MainSection>
+            </>
+        : <Navigate to="/login" replace={true}/>}
         </>
     )
 }

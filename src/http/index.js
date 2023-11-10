@@ -22,21 +22,13 @@ const rotasIgnoradasPelosErros = [
     'api/auth/access/first/validate'
 ]
 
-const logout = () => {
-    http.get('api/auth/logout')
-        .then(response => {
-            ArmazenadorToken.removerToken()
-        })
-        .catch(erro => console.error(erro))
-}
-
 http.interceptors.response.use(
     (response) => response.data,
     function (error) {
         if(!rotasIgnoradasPelosErros.includes(error.config.url) 
         && error.response.status === 401) {
             // Faz logout e envia usuário de volta pro login
-            return logout()
+            return  ArmazenadorToken.removerToken()
         }
         
         return Promise.reject(error);

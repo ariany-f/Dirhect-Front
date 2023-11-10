@@ -7,8 +7,7 @@ export class ArmazenadorToken {
         sessionStorage.setItem(EXPIRATION, expiration)
     }
     static removerToken() {
-        sessionStorage.removeItem(ACCESS_TOKEN)
-        sessionStorage.removeItem(REFRESH_TOKEN)
+        sessionStorage.clear()
     }
     static get AccessToken() {
         return sessionStorage.getItem(ACCESS_TOKEN)

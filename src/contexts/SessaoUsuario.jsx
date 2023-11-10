@@ -105,8 +105,8 @@ export const SessaoUsuarioProvider = ({ children }) => {
     }
 
     const submeterLogout = () => {
-        ArmazenadorToken.efetuarLogout()
         setUsuarioEstaLogado(false)
+        ArmazenadorToken.efetuarLogout()
     }
 
 
