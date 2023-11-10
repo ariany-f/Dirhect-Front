@@ -3,12 +3,18 @@
     justify-content: center;
     position: relative;
     flex-wrap: wrap;
+    max-width: -webkit-fill-available;
+    
 }
 .banner {
     height: 100vh;
     margin: 0;
     padding: 0;
     flex: 1;
+    max-width: 100vw;
+    @media screen and (max-width:768px) {
+        height: initial;
+    }
 }
 .logo {
     position: absolute;
@@ -17,11 +23,11 @@
 .bottomBanner {
     position: absolute;
     bottom: 82px;
-    padding: 0 83px;
     text-align: center;
     display: flex;
     gap: 24px;
     flex-direction: column;
+    align-items: center;
     & .texto {
         color: var(--astra-100);font-weight: 800;
         font-size: 28px;
