@@ -37,7 +37,7 @@ const DialogEstilizado = styled.dialog`
     border-radius: 16px;
     border: none;
     margin: 0 auto;
-    top: 220px;
+    top: 22vh;
     padding: 24px;
     & button.close {
         & .fechar {
