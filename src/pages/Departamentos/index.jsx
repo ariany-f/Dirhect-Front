@@ -1,11 +1,12 @@
-import DepartamentoCard from '@components/DepartamentoCard';
-import Botao from '@components/Botao';
-import BotaoGrupo from '@components/BotaoGrupo';
-import CampoTexto from '@components/CampoTexto';
+import DepartamentoCard from '@components/DepartamentoCard'
+import Botao from '@components/Botao'
+import BotaoGrupo from '@components/BotaoGrupo'
+import CampoTexto from '@components/CampoTexto'
 import departments from '@json/departments.json'
 import styles from './Departamento.module.css'
-import styled from 'styled-components';
-import { useState } from 'react';
+import styled from 'styled-components'
+import { useEffect, useState } from 'react'
+import http from '@http'
 import { GrAddCircle } from 'react-icons/gr'
 
 const CardText = styled.div`
@@ -28,6 +29,14 @@ const ConteudoFrame = styled.div`
 function Departamentos() {
 
     const [search, setSearch] = useState('');
+
+    useEffect(() => {
+        http.get('api/dashboard/department')
+            .then(response => {
+                console.log(response)
+            })
+            .catch(erro => console.log(erro))
+    }, [])
 
     return (
         <ConteudoFrame>

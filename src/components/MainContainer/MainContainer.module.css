@@ -2,7 +2,6 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    padding: 10vw;
     gap: 48px;
     width: inherit;
     flex: 1;

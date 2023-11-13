@@ -44,6 +44,7 @@ import BeneficioSelecionarTipoRecarga from './pages/Beneficios/selecao-tipo-reca
 import BeneficioSelecionarAlvoRecarga from './pages/Beneficios/selecao-alvo-recarga';
 import BeneficioEditarValor from './pages/Beneficios/editar-valor';
 import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario";
+import Extrato from './pages/Extrato';
 
 
 function AppRouter() {
@@ -65,6 +66,7 @@ function AppRouter() {
               <Route path="seguranca" element={<Seguranca />} />
               <Route path="redefinir" element={<RedefinirSenha />} />
             </Route>
+
             <Route path="/" element={<Autenticado/>}>
               <Route index element={<Dashboard />} />
               <Route path="colaborador" element={<Colaboradores />} >
@@ -72,12 +74,14 @@ function AppRouter() {
                   <Route path="aguardando-cadastro" element={<ColaboradoresAguardando />} />
                   <Route path="desativados" element={<ColaboradoresDesativados />} />
               </Route>
-              <Route path="colaborador/detalhes" element={<ColaboradorDetalhes />} />
+              <Route path="colaborador/detalhes/:id" element={<ColaboradorDetalhes />} />
               <Route path="colaborador/registro" element={<ColaboradorRegistro />} />
               <Route path="colaborador/registro/sucesso" element={<ColaboradorRegistroSucesso />} />
+
+              <Route path="extrato" element={<Extrato />} />
             
               <Route path="departamento" element={<Departamentos />} />
-              <Route path="departamento/detalhes" element={<DepartamentoDetalhes />} />
+              <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} />
             
               <Route path="premiacao" element={<Premiacoes />} />
               <Route path="premiacao/detalhes" element={<PremiacaoDetalhes />} />

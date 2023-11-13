@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import './Dashboard.css'
 import http from '@http'
 import { useEffect } from 'react'
-import { ArmazenadorToken } from '../../utils'
 
 const AddSaldo = styled.div`
     display: flex;
@@ -25,7 +24,6 @@ function Dashboard() {
     const saldo = 'R$ 244.038,91';
 
     useEffect(() => {
-        const token = ArmazenadorToken.AccessToken
         http.get('api/checkout')
             .then(response => {
                 console.log(response)

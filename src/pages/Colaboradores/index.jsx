@@ -5,6 +5,8 @@ import CampoTexto from '@components/CampoTexto';
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Colaboradores.module.css'
 import styled from "styled-components";
+import http from '@http'
+import { useEffect } from "react";
 
 import { Link, Outlet, useLocation } from "react-router-dom";
 
@@ -18,6 +20,15 @@ function Colaboradores() {
 
     const location = useLocation();
     const [search, setSearch] = useState('');
+
+    useEffect(() => {
+        http.get('api/dashboard/collaborator')
+            .then(response => {
+                console.log(response)
+            })
+            .catch(erro => console.log(erro))
+    }, [])
+
     
     return (
         <ConteudoFrame>

@@ -19,7 +19,7 @@ function Autenticado() {
                 <EstilosGlobais />
                 <MainSection>
                     <BarraLateral />
-                    <MainContainer align="flex-start">
+                    <MainContainer align="flex-start" padding="2.5vh 5vw">
                         <Cabecalho nomeEmpresa="Soluções Industriais Ltda" />
                         <Outlet />
                     </MainContainer>

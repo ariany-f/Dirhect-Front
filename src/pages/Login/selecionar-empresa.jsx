@@ -37,7 +37,7 @@ function SelecionarEmpresa() {
     useEffect(() => {
         const token = ArmazenadorToken.AccessToken
 
-        http.get('api/admin/company')
+        http.get('api/dashboard/company')
             .then(response => {
                 response.data.companies.map((item) => {
                     if(!(empresas.filter(e => e.public_id === item.public_id).length > 0))

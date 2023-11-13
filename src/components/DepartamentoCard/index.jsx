@@ -3,6 +3,7 @@ import styles from './Departamento.module.css'
 import styled from 'styled-components';
 import BadgeBeneficio from './BadgeBeneficio';
 import colaboradores from '@json/colaboradores.json'
+import { Link } from 'react-router-dom';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -21,6 +22,7 @@ function DepartamentoCard({department}) {
     });
 
     return (
+        <Link to={`/departamento/detalhes/${department.public_id}`}>
         <div className={styles.departamento}>
             <div className={styles.left}>
                 <Texto weight={700} className={styles.departmentName}>{department.name}</Texto>
@@ -42,6 +44,7 @@ function DepartamentoCard({department}) {
                 </div>
             </div>
         </div>
+        </Link>
     )
 }
 
