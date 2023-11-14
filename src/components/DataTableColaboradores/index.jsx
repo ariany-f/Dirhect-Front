@@ -18,7 +18,7 @@ function DataTableColaboradores({ colaboradores }) {
 
     return (
         <>
-            <DataTable value={colaboradores} selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} dataKey="id" selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }}>
+            <DataTable value={colaboradores} selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }}>
                 <Column field="name" sortable header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column field="email" header="E-mail" style={{ width: '35%' }}></Column>
                 <Column field="document" header="CPF" style={{ width: '20%' }}></Column>

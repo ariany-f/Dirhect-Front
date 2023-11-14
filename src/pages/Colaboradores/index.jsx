@@ -44,7 +44,9 @@ function Colaboradores() {
                         <Botao estilo={location.pathname == '/colaborador/desativados'?'black':''} size="small" tab>Desativados</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
+                <Link to="/colaborador/registro">
+                    <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
+                </Link>
             </BotaoGrupo>
 
             <CampoTexto name="search" width={'320px'} valor={search} setValor={setSearch} type="search" label="" placeholder="Buscar um time" />

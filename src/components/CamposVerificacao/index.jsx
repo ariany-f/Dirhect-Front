@@ -36,6 +36,16 @@ function CamposVerificacao({ label, valor, setValor, numeroDigitos = 6 }) {
         digitosDisponiveis[i] = {id: (i+1), preenchimento: valor[i]?.preenchimento}
     }
 
+    function onPaste(event) {
+        event.preventDefault()
+        const pasted = event.clipboardData.getData("text/plain")
+        const arrayPasted = pasted.split("").slice(0, numeroDigitos)
+        setValor(digitosDisponiveis.map(campo => {
+            campo.preenchimento = arrayPasted[campo.id-1];
+            return campo;
+        }))
+      }
+
     function changeValores(evento, value, id) {
         
         setValor(digitosDisponiveis.map(campo => {
@@ -70,7 +80,7 @@ function CamposVerificacao({ label, valor, setValor, numeroDigitos = 6 }) {
             <div className={styles.inputs}>
                 {digitosDisponiveis.map((digito, index) => {
                     return (
-                        <Campo key={index+1} maxLength={1} name="digito" id={index+1} type="text" value={(valor[index]?.preenchimento) ?? ''} onChange={evento => changeValores(evento, evento.target.value, index+1)} onKeyUp={(evento) => handleKeyPress(evento)}></Campo>
+                        <Campo onPaste={onPaste} key={index+1} maxLength={1} name="digito" id={index+1} type="text" value={(valor[index]?.preenchimento) ?? ''} onChange={evento => changeValores(evento, evento.target.value, index+1)} onKeyUp={(evento) => handleKeyPress(evento)}></Campo>
                     )
                 })}
             </div>    

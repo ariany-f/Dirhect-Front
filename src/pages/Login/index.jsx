@@ -4,7 +4,7 @@ import CampoTexto from "@components/CampoTexto"
 import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import styles from './Login.module.css'
 import CheckboxContainer from "@components/CheckboxContainer"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
@@ -13,12 +13,16 @@ import { useState } from "react"
 function Login() {
 
     const [classError, setClassError] = useState([])
+    const navegar = useNavigate()
 
     const { 
         usuario,
         setRemember,
         setDocument,
+        setEmail,
+        setCompanies,
         setPassword,
+        setCompanyPublicId,
         solicitarCodigo
     } = useSessaoUsuarioContext()
     
@@ -45,6 +49,13 @@ function Login() {
         if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
         {
             solicitarCodigo()
+                .then((response) => {
+                    setEmail(response.email)
+                    setCompanies(response.companies)
+                })
+                .then(() => {
+                    navegar('/login/selecionar-empresa')
+                })
         }
     }
 
@@ -69,7 +80,7 @@ function Login() {
                     </div>
                 </Frame>
             </form>
-            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+            <Botao aoClicar={evento => sendData(evento)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
             
           
         </>

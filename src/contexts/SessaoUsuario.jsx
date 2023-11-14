@@ -4,25 +4,27 @@ import { useNavigate } from 'react-router-dom';
 import { ArmazenadorToken } from '../utils';
 
 const usuarioInicial = {
-    document: '',
-    password: '',
-    company_public_id: '',
     email: '',
-    companies: [],
+    password: '',
+    document: '',
+    company_public_id: 'E4E7EB68-C584-443B-B5C6-38D682ECEBB0',
     remember: false,
+    companies: [],
     code: []
 }
 
 export const SessaoUsuarioContext = createContext({
     usuario: usuarioInicial,
     erros: {},
-    setCompanyPublicId: () => null,
+    setUsuarioEstaLogado: () => null,
     setCompanies: () => null,
     setRemember: () => null,
     setDocument: () => null,
+    setSessionCompany: () => null,
     setEmail: () => null,
     setPassword: () => null,
     setCode: () => null,
+    submeterCompanySession: () => null,
     solicitarCodigo: () => null,
     submeterLogout: () => null,
     submeterLogin: () => null
@@ -52,14 +54,6 @@ export const SessaoUsuarioProvider = ({ children }) => {
             return {
                 ...estadoAnterior,
                 document
-            }
-        })
-    }
-    const setCompanyPublicId = (company_public_id) => {
-        setUsuario(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                company_public_id
             }
         })
     }
@@ -95,14 +89,19 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
+    const setSessionCompany = (company_public_id) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                company_public_id
+            }
+        })
+    }
 
     const solicitarCodigo = () => {
-
-        http.post('api/auth/code', usuario)
+        return http.post('api/auth/code', usuario)
             .then((response) => {
-                setEmail(response.data.email)
-                setCompanies(response.data.companies)
-                navegar('/login/selecionar-empresa')
+                return response.data
             })
             .catch(erro => {
                 console.error(erro)
@@ -122,30 +121,27 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
         usuario.code = sendCode
 
-        http.post('api/auth/token', usuario)
+        return http.post('api/auth/token', usuario)
             .then((response) => {
                 ArmazenadorToken.definirToken(
                     response.data.token_access,
                     response.data.expires_at
                 )
-                setUsuarioEstaLogado(true)
-
-                selecionarCompanySession()
+                return response.data
             })
             .catch(erro => {
                 console.error(erro)
             })
     }
 
-    const selecionarCompanySession = () => {
-
+    const submeterCompanySession = () => {
         http.post(`api/dashboard/session/company/${usuario.company_public_id}`)
-        .then((response) => {
-            navegar('/')
-        })
-        .catch(erro => {
-            console.error(erro)
-        })
+            .then(() => {
+                navegar('/')
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
     }
 
     const submeterLogout = () => {
@@ -157,14 +153,17 @@ export const SessaoUsuarioProvider = ({ children }) => {
     const contexto = {
         usuario,
         usuarioEstaLogado,
-        setCompanyPublicId,
+        setUsuarioEstaLogado,
         setRemember,
         setDocument,
+        setEmail,
         setPassword,
         setCompanies,
         setCode,
+        setSessionCompany,
         submeterLogin,
         submeterLogout,
+        submeterCompanySession,
         solicitarCodigo
     }
 

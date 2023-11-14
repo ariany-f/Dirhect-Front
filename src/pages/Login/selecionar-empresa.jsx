@@ -2,10 +2,11 @@ import Botao from "@components/Botao"
 import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
 import styled from "styled-components"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { RiBuildingLine } from "react-icons/ri"
 import styles from './Login.module.css'
 import ModalToken from '@components/ModalToken'
+import http from '@http';
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import { useNavigate } from "react-router-dom"
 
@@ -31,37 +32,56 @@ const Item = styled.div`
 `;
 
 function SelecionarEmpresa() {
-
-    const navegar = useNavigate()
-
+    
     const { 
         usuario,
         setCode,
-        setCompanyPublicId,
+        setUsuarioEstaLogado,
+        setSessionCompany,
         submeterLogin,
-        solicitarCodigo
+        solicitarCodigo,
+        submeterCompanySession
     } = useSessaoUsuarioContext()
-
-    if(usuario.companies.length === 0)
-    {
-        navegar('/login')
-    }
-
-    const [modalOpened, setModalOpened] = useState(false)
-    const [empresas, setEmpresas] = useState(usuario.companies);
+    
+    const [empresas, setEmpresas] = useState(usuario?.companies ?? [])
     const [selected, setSelected] = useState(empresas[0]?.public_id)
+    const [modalOpened, setModalOpened] = useState(false)
+
+    const navegar = useNavigate()
+
+    useEffect(() => {
+        
+        if(usuario.companies.length === 0)
+        {
+            http.get(`api/dashboard/company/`)
+                .then((response) => {
+                    setEmpresas(response.data.companies)
+                })
+                .catch(erro => {
+                    navegar('/login')
+                })
+        }
+    }, [usuario, empresas])
 
     function handleSelectChange(value) {
         setSelected(value);
     }
 
     const selectCompany = () => {
-        setCompanyPublicId(selected)
-        setModalOpened(true)
+        if(selected)
+        {
+            setModalOpened(true)
+            setSessionCompany(selected)
+        }
     }
     
     const sendCode = () => {
-        submeterLogin()
+        submeterLogin().then((response) => {
+            setUsuarioEstaLogado(true)
+        })
+        .then(() => {
+            submeterCompanySession()
+        })
     }
 
     return (

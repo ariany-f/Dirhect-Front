@@ -111,7 +111,7 @@ function BarraLateral() {
                     {itensMenu.map((item) => {
                         return (
                             <Link key={item.id} className="link" to={item.url}>
-                                <ItemNavegacao ativo={(location.pathname === item.url)}>
+                                <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url)}>
                                     {item.icone}
                                     {item.itemTitulo}
                                 </ItemNavegacao>
