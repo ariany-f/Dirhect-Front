@@ -4,8 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { ArmazenadorToken } from '../utils';
 
 const usuarioInicial = {
-    email: '',
+    document: '',
     password: '',
+    company_public_id: '',
+    email: '',
+    companies: [],
     remember: false,
     code: []
 }
@@ -13,7 +16,10 @@ const usuarioInicial = {
 export const SessaoUsuarioContext = createContext({
     usuario: usuarioInicial,
     erros: {},
+    setCompanyPublicId: () => null,
+    setCompanies: () => null,
     setRemember: () => null,
+    setDocument: () => null,
     setEmail: () => null,
     setPassword: () => null,
     setCode: () => null,
@@ -41,6 +47,22 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
+    const setDocument = (document) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                document
+            }
+        })
+    }
+    const setCompanyPublicId = (company_public_id) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                company_public_id
+            }
+        })
+    }
     const setEmail = (email) => {
         setUsuario(estadoAnterior => {
             return {
@@ -56,7 +78,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 password
             }
         })
-    }  
+    }
     const setCode = (code) => {
         setUsuario(estadoAnterior => {
             return {
@@ -65,12 +87,22 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
+    const setCompanies = (companies) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                companies
+            }
+        })
+    }
 
     const solicitarCodigo = () => {
 
         http.post('api/auth/code', usuario)
-            .then(() => {
-
+            .then((response) => {
+                setEmail(response.data.email)
+                setCompanies(response.data.companies)
+                navegar('/login/selecionar-empresa')
             })
             .catch(erro => {
                 console.error(erro)
@@ -97,7 +129,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                     response.data.expires_at
                 )
                 setUsuarioEstaLogado(true)
-                navegar('/login/selecionar-empresa')
+                navegar('/')
             })
             .catch(erro => {
                 console.error(erro)
@@ -113,9 +145,11 @@ export const SessaoUsuarioProvider = ({ children }) => {
     const contexto = {
         usuario,
         usuarioEstaLogado,
+        setCompanyPublicId,
         setRemember,
-        setEmail,
+        setDocument,
         setPassword,
+        setCompanies,
         setCode,
         submeterLogin,
         submeterLogout,

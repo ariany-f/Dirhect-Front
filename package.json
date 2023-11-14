@@ -15,8 +15,10 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
+    "react-input-mask": "^2.0.4",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.17.0",
+    "remask": "^1.2.2",
     "styled-components": "^6.1.1",
     "yup": "^1.3.2"
   },

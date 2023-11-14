@@ -8,21 +8,17 @@ import { Link } from "react-router-dom"
 import styles from './Login.module.css'
 import CheckboxContainer from "@components/CheckboxContainer"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
-import ModalToken from '@components/ModalToken'
 import { useState } from "react"
 
 function Login() {
 
-    const [modalOpened, setModalOpened] = useState(false)
     const [classError, setClassError] = useState([])
 
     const { 
         usuario,
         setRemember,
-        setEmail,
+        setDocument,
         setPassword,
-        setCode,
-        submeterLogin,
         solicitarCodigo
     } = useSessaoUsuarioContext()
     
@@ -49,13 +45,9 @@ function Login() {
         if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
         {
             solicitarCodigo()
-            setModalOpened(true)
         }
     }
 
-    const sendCode = () => {
-        submeterLogin()
-    }
 
     return (
         <>
@@ -67,7 +59,7 @@ function Login() {
             </Titulo>
             <form>
                 <Frame>
-                    <CampoTexto camposVazios={classError} name="email" valor={usuario.email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
+                    <CampoTexto camposVazios={classError} patternMask={['999.999.999-99', '99.999.999/9999-99']} name="document" valor={usuario.document} setValor={setDocument} type="text" label="CPF/CNPJ" placeholder="Digite seu CPF/CNPJ" />
                     <CampoTexto camposVazios={classError} name="password" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
                     <div className={styles.containerBottom}>
                         <CheckboxContainer name="remember" valor={usuario.remember} setValor={setRemember} label="Lembrar de mim" />
@@ -79,7 +71,7 @@ function Login() {
             </form>
             <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
             
-            <ModalToken usuario={usuario} aoReenviar={solicitarCodigo} aoFechar={() => setModalOpened(false)} aoClicar={sendCode} setCode={setCode} opened={modalOpened} />
+          
         </>
     )
 }

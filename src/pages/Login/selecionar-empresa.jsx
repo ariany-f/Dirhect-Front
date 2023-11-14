@@ -2,12 +2,12 @@ import Botao from "@components/Botao"
 import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
 import styled from "styled-components"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { RiBuildingLine } from "react-icons/ri"
 import styles from './Login.module.css'
-import { Link } from "react-router-dom"
-import { ArmazenadorToken } from "../../utils"
-import http from '@http'
+import ModalToken from '@components/ModalToken'
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useNavigate } from "react-router-dom"
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,29 +32,38 @@ const Item = styled.div`
 
 function SelecionarEmpresa() {
 
-    const [empresas, setEmpresas] = useState([]);
-    
-    useEffect(() => {
-        const token = ArmazenadorToken.AccessToken
+    const navegar = useNavigate()
 
-        http.get('api/dashboard/company')
-            .then(response => {
-                response.data.companies.map((item) => {
-                    if(!(empresas.filter(e => e.public_id === item.public_id).length > 0))
-                    {
-                        setEmpresas(estadoAnterior => [...estadoAnterior, item])
-                    }
-                })
-            })
-            .catch(erro => console.log(erro))
-    }, [])
-   
-    
-    const [selected, setSelected] = useState(empresas[0]?.name)
+    const { 
+        usuario,
+        setCode,
+        setCompanyPublicId,
+        submeterLogin,
+        solicitarCodigo
+    } = useSessaoUsuarioContext()
+
+    if(usuario.companies.length === 0)
+    {
+        navegar('/login')
+    }
+
+    const [modalOpened, setModalOpened] = useState(false)
+    const [empresas, setEmpresas] = useState(usuario.companies);
+    const [selected, setSelected] = useState(empresas[0]?.public_id)
 
     function handleSelectChange(value) {
         setSelected(value);
-    };
+    }
+
+    const selectCompany = () => {
+        setCompanyPublicId(selected)
+        solicitarCodigo()
+        setModalOpened(true)
+    }
+    
+    const sendCode = () => {
+        submeterLogin()
+    }
 
     return (
         <>
@@ -68,10 +77,10 @@ function SelecionarEmpresa() {
                             return (
                                 <Item 
                                     key={idx} 
-                                    $active={selected === empresa.name}
-                                    onClick={name => handleSelectChange(empresa.name)}>
+                                    $active={selected === empresa.public_id}
+                                    onClick={public_id => handleSelectChange(empresa.public_id)}>
                                     <div className={styles.cardEmpresa}>
-                                        {(selected === empresa.name) ?
+                                        {(selected === empresa.public_id) ?
                                             <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                             : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                         }
@@ -81,19 +90,18 @@ function SelecionarEmpresa() {
                                         </div>
                                     </div>
                                     <RadioButton
-                                        value={empresa.name}
-                                        checked={selected === empresa.name}
-                                        onSelected={(name) => handleSelectChange}
+                                        value={empresa.public_id}
+                                        checked={selected === empresa.public_id}
+                                        onSelected={(public_id) => handleSelectChange}
                                     />
                                 </Item>
                             )
                         })}
                     </Wrapper>
-                    <Link to="/">
-                        <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
-                    </Link>
+                    <Botao estilo="vermilion" size="medium" filled aoClicar={selectCompany} >Confirmar</Botao>
+                    <ModalToken usuario={usuario} aoReenviar={solicitarCodigo} aoFechar={() => setModalOpened(false)} aoClicar={sendCode} setCode={setCode} opened={modalOpened} />
                 </>
-                }
+            }
         </>
     )
 }

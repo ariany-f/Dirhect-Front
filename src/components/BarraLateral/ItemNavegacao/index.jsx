@@ -5,7 +5,6 @@ const ItemListaEstilizado = styled.li`
     -o-transition: all .1s ease;
     -webkit-transition: all .1s ease;
     transition: all .2s ease;
-    width: -webkit-fill-available;
     display: flex;
     cursor: pointer;
     color: ${ props => props.$ativo ? 'var(--secundaria)' : 'var(--white)' };
@@ -17,6 +16,7 @@ const ItemListaEstilizado = styled.li`
     font-weight: 700;
     line-height: 20px; /* 142.857% */
     gap: 12px;
+    width: 100%;
     border-right: ${ props => props.$ativo ? '3px solid var(--secundaria)' : 'none' };
 
     & .icon {

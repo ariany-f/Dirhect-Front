@@ -5,6 +5,7 @@ import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
 import { FaEnvelope } from 'react-icons/fa'
 import { BsSearch } from 'react-icons/bs'
 import * as Yup from 'yup'
+import { mask as masker, unMask } from "remask"
 
 const Campo = styled.input`
     border-radius: 8px;
@@ -74,7 +75,7 @@ const Campo = styled.input`
     }
 `
 
-function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = []}) {
+function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = []}) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -92,9 +93,17 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
         password: Yup.string().min(8, 'A senha deve conter no mínimo 8 caracteres'),
     })
 
-    function changeValor(valor)
+    function changeValor(evento, patternMask)
     {
-        setValor(valor)
+        const valor = evento.target.value
+        if(patternMask.length > 0)
+        {
+            setValor(masker(unMask(valor), patternMask))
+        }
+        else
+        {
+            setValor(valor)
+        }
 
         const CampoObject = {
             [name]: valor
@@ -143,7 +152,7 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
                 {(label) ?
                 <label htmlFor={name} className={styles.label}>{label}</label>
                 : ''}
-                <Campo className={classeCampoVazio.includes(name) ? 'error' : ''} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento.target.value)} placeholder={placeholder} autoComplete="on"></Campo>
+                <Campo className={classeCampoVazio.includes(name) ? 'error' : ''} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                 {temIcone(type, visibilityPassword)}
             </div>
 
