@@ -4,7 +4,7 @@ import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import Botao from "@components/Botao"
 import { Link, useNavigate } from 'react-router-dom'
-import { BsFillPersonCheckFill } from 'react-icons/bs'
+import { BsPersonCheck } from 'react-icons/bs'
 
 function ColaboradorRegistroSucesso() {
 
@@ -13,7 +13,7 @@ function ColaboradorRegistroSucesso() {
     return (
         <>
             <MainContainer align="center" padding="5vw 25vw">
-                <BsFillPersonCheckFill size={100}/>
+                <BsPersonCheck size={100}/>
                 <Titulo>
                     <h6>Colaborador cadastrado</h6>
                     <SubTitulo fontSize="14px" color="var(--black)" weight="400">Seu colaborador recebeu um <b>e-mail para confirmar seu cadastro</b> e assim conseguir acesso a plataforma</SubTitulo>
