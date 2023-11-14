@@ -22,7 +22,6 @@ function Login() {
         setEmail,
         setCompanies,
         setPassword,
-        setCompanyPublicId,
         solicitarCodigo
     } = useSessaoUsuarioContext()
     
