@@ -46,7 +46,6 @@ import BeneficioEditarValor from './pages/Beneficios/editar-valor';
 import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario";
 import Extrato from './pages/Extrato';
 
-
 function AppRouter() {
   
   return (

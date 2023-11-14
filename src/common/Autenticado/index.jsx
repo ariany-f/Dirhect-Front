@@ -11,7 +11,7 @@ function Autenticado() {
     const {
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
-
+    
     return (
         <>
         {usuarioEstaLogado ?
