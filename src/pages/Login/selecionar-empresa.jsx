@@ -57,7 +57,6 @@ function SelecionarEmpresa() {
 
     const selectCompany = () => {
         setCompanyPublicId(selected)
-        solicitarCodigo()
         setModalOpened(true)
     }
     

@@ -129,11 +129,23 @@ export const SessaoUsuarioProvider = ({ children }) => {
                     response.data.expires_at
                 )
                 setUsuarioEstaLogado(true)
-                navegar('/')
+
+                selecionarCompanySession()
             })
             .catch(erro => {
                 console.error(erro)
             })
+    }
+
+    const selecionarCompanySession = () => {
+
+        http.post(`api/dashboard/session/company/${usuario.company_public_id}`)
+        .then((response) => {
+            navegar('/')
+        })
+        .catch(erro => {
+            console.error(erro)
+        })
     }
 
     const submeterLogout = () => {
