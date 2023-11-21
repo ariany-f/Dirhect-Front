@@ -8,6 +8,7 @@ import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import http from '@http'
 import { GrAddCircle } from 'react-icons/gr'
+import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 
 const CardText = styled.div`
     display: flex;
@@ -29,6 +30,7 @@ const ConteudoFrame = styled.div`
 function Departamentos() {
 
     const [search, setSearch] = useState('');
+    const [modalOpened, setModalOpened] = useState(false)
 
     useEffect(() => {
         http.get('api/dashboard/department')
@@ -45,7 +47,7 @@ function Departamentos() {
                     <Botao estilo="black" size="small" tab>Departamentos</Botao>
                     <Botao estilo="" size="small" tab>Colaboradores sem departamento</Botao>
                 </BotaoGrupo>
-                <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
             </BotaoGrupo>
 
             <CardText>
@@ -61,6 +63,7 @@ function Departamentos() {
                     )
                 })}
             </div>
+            <ModalAdicionarDepartamento aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </ConteudoFrame>
     )
 }

@@ -1,5 +1,5 @@
 import http from '@http';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArmazenadorToken } from '../utils';
 
@@ -7,7 +7,7 @@ const usuarioInicial = {
     email: '',
     password: '',
     document: '',
-    company_public_id: 'E4E7EB68-C584-443B-B5C6-38D682ECEBB0',
+    company_public_id: '',
     remember: false,
     companies: [],
     code: []
@@ -31,6 +31,7 @@ export const SessaoUsuarioContext = createContext({
 })
 
 export const useSessaoUsuarioContext = () => {
+
     return useContext(SessaoUsuarioContext);
 }
 

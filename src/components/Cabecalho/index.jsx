@@ -56,7 +56,7 @@ const ItemUsuario = styled.div`
         height: 40px;
     }
 `
-const Cabecalho = ({ nomeEmpresa }) => {
+const Cabecalho = ({ nomeEmpresa, aoClicar = null }) => {
     
     const location = useLocation();
 
@@ -111,7 +111,7 @@ const Cabecalho = ({ nomeEmpresa }) => {
     });
 
     return (
-        <HeaderEstilizado>
+        <HeaderEstilizado onClick={aoClicar}>
             <h6>{titulo}</h6>
             <RightItems>
                 <div className={styles.divisor}>
@@ -119,9 +119,7 @@ const Cabecalho = ({ nomeEmpresa }) => {
                     <RiNotificationLine size={18} className={styles.icon} />
                 </div>
                 <div className={styles.divisor}>
-                    <Link className={styles.link} to="/login/selecionar-empresa">
-                        <ItemEmpresa>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
-                    </Link>
+                    <ItemEmpresa>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
                     <ItemUsuario>
                         <div className="user">{'S'}</div>
                         <MdOutlineKeyboardArrowDown />

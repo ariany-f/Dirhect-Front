@@ -102,6 +102,12 @@ function BarraLateral() {
         }
     ];
 
+    const home = [
+        'adicionar-cnpj',
+        'adicionar-email',
+        'adicionar-celular'
+    ]
+
     return (
         <BarraLateralEstilizada>
              <Logo src={logo} alt="Logo Multi Benefícios" />
@@ -111,7 +117,7 @@ function BarraLateral() {
                     {itensMenu.map((item) => {
                         return (
                             <Link key={item.id} className="link" to={item.url}>
-                                <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url)}>
+                                <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url) || (home.includes(location.pathname.split('/')[1]) && item.url == '/')}>
                                     {item.icone}
                                     {item.itemTitulo}
                                 </ItemNavegacao>

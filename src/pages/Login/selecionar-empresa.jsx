@@ -36,6 +36,7 @@ function SelecionarEmpresa() {
     const { 
         usuario,
         setCode,
+        setCompanies,
         setUsuarioEstaLogado,
         setSessionCompany,
         submeterLogin,
@@ -53,12 +54,13 @@ function SelecionarEmpresa() {
         
         if(usuario.companies.length === 0)
         {
-            http.get(`api/dashboard/company/`)
+            http.get(`api/dashboard/company`)
                 .then((response) => {
                     setEmpresas(response.data.companies)
+                    setCompanies(response.data.companies)
                 })
                 .catch(erro => {
-                    navegar('/login')
+                    console.log(erro)
                 })
         }
     }, [usuario, empresas])

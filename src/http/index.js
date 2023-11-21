@@ -18,7 +18,7 @@ http.interceptors.request.use(function (config) {
 const rotasIgnoradasPelosErros = [
     'api/auth/token',
     'api/auth/code',
-    'api/auth/access/first/',
+    'api/auth/access/first',
     'api/auth/access/first/validate'
 ]
 
