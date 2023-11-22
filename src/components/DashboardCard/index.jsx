@@ -89,7 +89,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     <div className={styles.card_dashboard}>
                         <Frame estilo="spaced">
                             <Titulo><h6>Colaboradores</h6></Titulo>
-                            <Link><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
+                            <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
                         </Frame>
                         <div className={styles.transacao}>
                             <div className={styles.right}>
@@ -97,7 +97,9 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                 <Texto weight={800}><FaUser />&nbsp;&nbsp;{colaboradores.length}</Texto>
                             </div>
                         </div>
-                        <Botao>Cadastrar novo colaborador</Botao>
+                        <Link to="/colaborador/registro">
+                            <Botao>Cadastrar novo colaborador</Botao>
+                        </Link>
                     </div>
                 </div>
             </div>
