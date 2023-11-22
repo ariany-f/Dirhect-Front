@@ -45,7 +45,8 @@
     align-items: flex-start;
     align-content: flex-start;
     gap: 24px;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
+    width: 100%;
 }
 .card_dashboard {
     border: 1px solid var(--neutro-200);
@@ -57,11 +58,13 @@
     align-self: stretch;
     gap: 24px;
     flex-direction: column;
+    flex: 1;
 }
 .empilhado {
     gap: 24px;
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 .rightalign {
     text-align: right;
