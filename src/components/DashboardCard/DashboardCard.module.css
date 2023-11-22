@@ -49,7 +49,7 @@
 }
 .card_dashboard {
     border: 1px solid var(--neutro-200);
-    border-radius: 8px;
+    border-radius: 16px;
     display: flex;
     padding: 20px 24px;
     justify-content: space-between;
