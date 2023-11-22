@@ -100,6 +100,11 @@ export const SessaoUsuarioProvider = ({ children }) => {
     }
 
     const solicitarCodigo = () => {
+
+      //  var sendDocument = usuario.document.replace(/[^a-zA-Z0-9 ]/g, '')
+        
+      //  usuario.document = sendDocument
+
         return http.post('api/auth/code', usuario)
             .then((response) => {
                 return response.data

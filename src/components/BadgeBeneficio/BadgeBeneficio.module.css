@@ -1,0 +1,15 @@
+.beneficio{
+    background-color: var(--neutro-100);
+    padding: 4px 8px;
+    border-radius: 8px;
+    display: flex;
+    gap: 4px;
+    & p {
+        color: var(--neutro-600);
+        font-weight: 700;
+    }
+    & svg * {
+        color: var(--neutro-600);
+        fill: var(--neutro-600);
+    }
+}

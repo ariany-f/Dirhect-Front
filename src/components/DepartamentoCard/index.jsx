@@ -1,7 +1,7 @@
 import Texto from '@components/Texto'
 import styles from './Departamento.module.css'
 import styled from 'styled-components';
-import BadgeBeneficio from './BadgeBeneficio';
+import BadgeBeneficio from '@components/BadgeBeneficio';
 import colaboradores from '@json/colaboradores.json'
 import { Link } from 'react-router-dom';
 

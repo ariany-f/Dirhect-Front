@@ -177,7 +177,8 @@ function ColaboradorRegistro() {
     }
 
     const adicionarColaborador = () => {
-        var sendDocument = collaborator.document.replace(/[^a-zA-Z0-9 ]/g, '');
+        
+        var sendDocument = collaborator.document.replace(/[^a-zA-Z0-9 ]/g, '')
 
         collaborator.document = sendDocument
 

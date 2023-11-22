@@ -1,0 +1,41 @@
+[{
+    "userDashResource": {
+        "public_id": "26cdca43-6e39-4802-95d2-1a89608bbedf",
+        "name": "Jader Afonso",
+        "status": 1,
+        "total_benefit_balance": 500,
+        "last_transaction":  {
+            "cancelled_at": null,
+            "paid_at": "2023-09-10 10:00:00",
+            "total_amount": "100.00",
+            "benefits": [
+                {
+                    "public_id": "3e981619-d3e9-42d6-1234-af13257ec3bd",
+                    "name": "Refeição"
+                },
+                {
+                    "public_id": "3e981619-d3e9-42d6-6789-af13257ec3bd",
+                    "name": "Combustível"
+                }
+            ]
+        },
+        "transactions": [
+            {
+                "public_id": "hhfhg-6785-cbiuGBRBVNIRV-cndidsubvu",
+                "name": null
+            },
+            {
+                "public_id": "hhfhg-6785-adgarevfytu-cndidsubvu",
+                "name": null
+            }
+        ],
+        "notifications": {
+            "public_id": "233d6705-8j9o-462a-86bc-81ab70ee4751",
+            "promotion_offer": 1,
+            "transactions": 0,
+            "benefits": 1,
+            "created_at": "2023-10-23T14:19:10.000000Z",
+            "updated_at": "2023-10-23T14:19:12.000000Z"
+        }
+    }
+}]

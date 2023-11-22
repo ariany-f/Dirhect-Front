@@ -1,6 +1,9 @@
-import { RiBusFill, RiComputerLine, RiShoppingCartFill } from 'react-icons/ri'
+import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill } from 'react-icons/ri'
+import { FaTheaterMasks } from 'react-icons/fa'
+import { BiBookReader } from 'react-icons/bi'
 import { PiForkKnifeFill } from 'react-icons/pi'
-import styles from './../Departamento.module.css'
+import { MdOutlineMedicalServices  } from 'react-icons/md'
+import styles from '@components/BadgeBeneficio/BadgeBeneficio.module.css'
 
 const icones = [
     {
@@ -22,6 +25,26 @@ const icones = [
         "id": 4,
         "name": "Home Office",
         "icone": <RiComputerLine />
+    },
+    {
+        "id": 5,
+        "name": "Combustível",
+        "icone": <RiGasStationFill />
+    },
+    {
+        "id": 6,
+        "name": "Cultura",
+        "icone": <FaTheaterMasks />
+    },
+    {
+        "id": 7,
+        "name": "Educação",
+        "icone": <BiBookReader  />
+    },
+    {
+        "id": 8,
+        "name": "Saúde",
+        "icone": <MdOutlineMedicalServices />
     }
 ]
 

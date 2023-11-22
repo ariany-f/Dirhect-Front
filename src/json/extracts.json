@@ -1,0 +1,98 @@
+[
+    {
+        "status": "success",
+        "total_benefit_balance": "500.00",
+        "transactions": {
+            "data": [
+                {
+                    "public_id": "transaction1_public_id",
+                    "paid_at": "2023-10-01 12:00:00",
+                    "cancelled_at": null,
+                    "payer": {
+                        "cnpj": "123456789",
+                        "name": "Payer 1"
+                    },
+                    "total_amount": "100.00",
+                    "benefit_name": "Pagamento de Outubro"
+                },
+                {
+                    "public_id": "transaction2_public_id",
+                    "paid_at": null,
+                    "cancelled_at": "2023-10-24 07:04:58",
+                    "payer": {
+                        "cnpj": "987654321",
+                        "name": "Payer 2"
+                    },
+                    "total_amount": "200.00",
+                    "benefit_name": "Refeição"
+                },
+                {
+                    "public_id": "transaction5_public_id",
+                    "paid_at": "2023-10-03 15:00:00",
+                    "cancelled_at": "2023-10-24 07:05:29",
+                    "payer": {
+                        "cnpj": "333333333",
+                        "name": "Payer 5"
+                    },
+                    "total_amount": "500.00",
+                    "benefit_name": "Refeição"
+                },
+                {
+                    "public_id": "transaction6_public_id",
+                    "paid_at": "2023-10-03 16:00:00",
+                    "cancelled_at": "2023-10-24 07:05:30",
+                    "payer": {
+                        "cnpj": "444444444",
+                        "name": "Payer 6"
+                    },
+                    "total_amount": "600.00",
+                    "benefit_name": "Combustível"
+                },
+                {
+                    "public_id": "transaction7_public_id",
+                    "paid_at": "2023-10-04 17:00:00",
+                    "cancelled_at": "2023-10-24 07:05:42",
+                    "payer": {
+                        "cnpj": "555555555",
+                        "name": "Payer 7"
+                    },
+                    "total_amount": "700.00",
+                    "benefit_name": "Pagamento de Outubro"
+                },
+                {
+                    "public_id": "transaction8_public_id",
+                    "paid_at": "2023-10-04 18:00:00",
+                    "cancelled_at": "2023-10-24 07:05:44",
+                    "payer": {
+                        "cnpj": "666666666",
+                        "name": "Payer 8"
+                    },
+                    "total_amount": "800.00",
+                    "benefit_name": "Refeição"
+                },
+                {
+                    "public_id": "transaction11_out_transfer",
+                    "paid_at": "2023-10-24 07:51:12",
+                    "cancelled_at": null,
+                    "payer": {
+                        "name": "Jader Afonso Lira",
+                        "user": 4
+                    },
+                    "total_amount": "-85.33",
+                    "benefit_name": "Pagamento de Outubro"
+                },
+                {
+                    "public_id": "transaction11_in_transfer",
+                    "paid_at": "2023-10-24 07:53:52",
+                    "cancelled_at": null,
+                    "payer": {
+                        "name": "Jader Afonso Lira",
+                        "user": 4
+                    },
+                    "total_amount": "85.33",
+                    "benefit_name": "Refeição"
+                }
+            ]
+        }
+    }
+]

@@ -1,52 +1,81 @@
-import SubTitulo from '@components/SubTitulo'
-import Titulo from '@components/Titulo'
-import { Link } from 'react-router-dom'
-import { FaWallet } from 'react-icons/fa'
-import styled from 'styled-components'
-import './Dashboard.css'
 import http from '@http'
-import { useEffect } from 'react'
-
-const AddSaldo = styled.div`
-    display: flex;
-    color: var(--primaria);
-    font-family: var(--secundaria);
-    font-size: 14px;
-    font-weight: 700;
-    gap: 8px;
-    & svg * {
-        fill: var(--primaria);
-    }
-`
+import { useEffect, useState } from 'react'
+import IncompleteSteps from '../../components/DashboardCard/incomplete'
+import DashboardCard from '../../components/DashboardCard'
+import extracts from '@json/extracts.json'
+import dashboardResources from '@json/dashboard_resources.json'
 
 function Dashboard() {
-    const registerIsComplete = true;
-    const saldo = 'R$ 244.038,91';
+
+    const registerIsComplete = true
+    const [colaboradores, setColaboradores] = useState([])
+    const [dashboardData, setDashboardData] = useState({
+            saldo: 0,
+            transactions: extracts,
+            lastTransaction: dashboardResources[0].userDashResource.last_transaction
+    })
+
+    const setSaldo = (saldo) => {
+        setDashboardData(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                saldo
+            }
+        })
+    }
+    const setTransactions = (transactions) => {
+        setDashboardData(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                transactions
+            }
+        })
+    }
+    const setLastTransaction = (lastTransaction) => {
+        setDashboardData(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                lastTransaction
+            }
+        })
+    }
 
     useEffect(() => {
-        http.get('api/checkout')
-            .then(response => {
-                console.log(response)
-            })
-            .catch(erro => console.log(erro))
+
+        setSaldo(dashboardResources[0].userDashResource.total_benefit_balance)
+
+        /**
+         * Dados necessários para exibição no painel do usuário
+         */
+        // http.get('api/dashboard/user')
+        // .then(response => {
+        //     console.log(response)
+        // })
+        // .catch(erro => {
+        //     console.error(erro)
+        // })
+
+        /**
+         * Pegar colaboradores
+         */
+        http.get('api/dashboard/collaborator')
+        .then(response => {
+            if(response.data)
+            {
+                setColaboradores(response.data.collaborators)
+            }
+        })
+        .catch(erro => {
+            console.error(erro)
+        })
     }, [])
 
     return (
        <>
         {(!registerIsComplete) ? 
-            <Titulo>
-                <SubTitulo>Ficamos muito felizes em ver você por aqui 🧡</SubTitulo>
-                <h6>Complete as etapas de contratação e ofereça a seus colaboradores uma experiência completa em benefícios e vantagens que só a AQBank Multibenefícios oferece!</h6>
-            </Titulo>
+            <IncompleteSteps />
         :
-            <div className="saldo">
-                <p>Saldo disponível</p>
-                <h2>{saldo}</h2>
-                <AddSaldo>
-                    <FaWallet/>
-                    <Link className="link">Adicionar saldo</Link>
-                </AddSaldo>
-            </div>
+            <DashboardCard dashboardData={dashboardData} colaboradores={colaboradores} />
         }
        </>
     )
