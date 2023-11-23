@@ -8,13 +8,24 @@ import { CgPill } from 'react-icons/cg'
 import { MdComputer } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import { Skeleton } from 'primereact/skeleton'
+import { useEffect, useRef, useState } from 'react'
 
 function Banner() {
+
+    const [image, setImage] = useState(false)
+    const ref = useRef()
+
+    useEffect(() => {
+        if(imagem){
+            setImage(true)
+        }
+    }, [imagem])
+
     return (
         <div className={styles.container}>
-            {imagem?
-                <img className={styles.banner} src={imagem} alt="Imagem Cartões"/>
-                : <Skeleton variant="rectangular" width={600} height={1000} />
+            {image ?
+                <img ref={ref} className={styles.banner} src={imagem} alt="Imagem Cartões"/>
+                : <Skeleton variant="rectangular" width={600} height={980} />
             }
             
             <Link to="/login" className={styles.logo} >
