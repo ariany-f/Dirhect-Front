@@ -7,11 +7,16 @@ import { BiSolidBook } from 'react-icons/bi'
 import { CgPill } from 'react-icons/cg'
 import { MdComputer } from 'react-icons/md'
 import { Link } from 'react-router-dom'
+import { Skeleton } from 'primereact/skeleton'
 
 function Banner() {
     return (
         <div className={styles.container}>
-            <img className={styles.banner} src={imagem} alt="Imagem Cartões"/>
+            {imagem?
+                <img className={styles.banner} src={imagem} alt="Imagem Cartões"/>
+                : <Skeleton variant="rectangular" width={600} height={1000} />
+            }
+            
             <Link to="/login" className={styles.logo} >
                 <img src={logo} alt="Logo"/>
             </Link>
