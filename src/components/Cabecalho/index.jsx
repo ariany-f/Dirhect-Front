@@ -7,6 +7,7 @@ import { BsArrowLeftRight } from 'react-icons/bs'
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
 import { useState } from "react"
 import Menu from "@components/Menu"
+import { ArmazenadorToken } from './../../utils';
 
 const HeaderEstilizado = styled.header`
     display: flex;
@@ -128,7 +129,7 @@ const Cabecalho = ({ nomeEmpresa, aoClicar = null }) => {
                 <div className={styles.divisor}>
                     <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
                     <ItemUsuario onClick={toggleMenu}>
-                        <div className="user">{'S'}</div>
+                        <div className="user">{ArmazenadorToken.UserName.charAt(0)}</div>
                         <MdOutlineKeyboardArrowDown />
                     </ItemUsuario>
                 </div>

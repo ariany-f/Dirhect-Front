@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArmazenadorToken } from '../utils';
 
 const usuarioInicial = {
+    name: '',
     email: '',
     password: '',
     document: '',
@@ -22,6 +23,7 @@ export const SessaoUsuarioContext = createContext({
     setDocument: () => null,
     setSessionCompany: () => null,
     setEmail: () => null,
+    setName: () => null,
     setPassword: () => null,
     setCode: () => null,
     submeterCompanySession: () => null,
@@ -66,6 +68,14 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
+    const setName = (name) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                name
+            }
+        })
+    }
     const setPassword = (password) => {
         setUsuario(estadoAnterior => {
             return {
@@ -103,6 +113,11 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
         return http.post('api/auth/code', usuario)
             .then((response) => {
+                ArmazenadorToken.definirUsuario(
+                    'Teste',
+                    response.data.email,
+                    usuario.document
+                )
                 return response
             })
             .catch(erro => {
@@ -137,13 +152,22 @@ export const SessaoUsuarioProvider = ({ children }) => {
     }
 
     const submeterCompanySession = () => {
-        http.post(`api/dashboard/session/company/${usuario.company_public_id}`)
-            .then(() => {
-                navegar('/')
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
+        if(!ArmazenadorToken.UserCompanyPublicId && usuario.company_public_id)
+        {
+            ArmazenadorToken.definirCompany(
+                usuario.company_public_id
+            )
+        }
+        if(ArmazenadorToken.UserCompanyPublicId)
+        {
+            http.post(`api/dashboard/session/company/${ArmazenadorToken.UserCompanyPublicId}`)
+                .then(() => {
+                    navegar('/')
+                })
+                .catch(erro => {
+                    console.error(erro)
+                })
+        }
     }
 
     const submeterLogout = () => {
@@ -169,6 +193,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         setPassword,
         setCompanies,
         setCode,
+        setName,
         setSessionCompany,
         submeterLogin,
         submeterLogout,
