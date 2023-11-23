@@ -1,10 +1,12 @@
 import http from '@http';
 import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArmazenadorToken } from '../utils';
 
 const usuarioInicial = {
     code: '',
     access_code: '',
+    document: '',
     email: '',
     password: '',
     password_confirmation: ''
@@ -14,6 +16,7 @@ export const PrimeiroAcessoContext = createContext({
     usuario: usuarioInicial,
     erros: {},
     setCode: () => null,
+    setDocument: () => null,
     setAccessCode: () => null,
     setEmail: () => null,
     setPassword: () => null,
@@ -54,6 +57,14 @@ export const PrimeiroAcessoProvider = ({ children }) => {
             return {
                 ...estadoAnterior,
                 email
+            }
+        })
+    }
+    const setDocument = (document) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                document
             }
         })
     }
@@ -98,13 +109,17 @@ export const PrimeiroAcessoProvider = ({ children }) => {
 
         let data = {};
         data.email = usuario.email
+        data.document = usuario.document
         data.access_code = usuario.access_code
         data.password = usuario.password
         data.password_confirmation = usuario.password_confirmation
 
-        http.post('api/auth/access/first/', data)
+        http.post('api/auth/access/first', data)
             .then((response) => {
-                console.log(response)
+                if(response.data)
+                {
+                    setEmail(response.data.email)
+                }
             })
             .catch(erro => {
                 console.error(erro)
@@ -112,9 +127,25 @@ export const PrimeiroAcessoProvider = ({ children }) => {
     }
 
     const validarCodigo = () => {
+
+        var sendCode = '';
+
+        usuario.code.map(item => {
+            if(typeof item.preenchimento !== undefined)
+            {
+                sendCode += item.preenchimento
+            }
+        })
+
+        usuario.code = sendCode
+
         http.post('api/auth/access/first/validate', usuario)
-            .then(() => {
-                navegar('/login')
+            .then((response) => {
+                ArmazenadorToken.definirToken(
+                    response.data.token_access,
+                    response.data.expires_at
+                )
+                navegar('/')
             })
             .catch(erro => {
                 console.error(erro)
@@ -127,6 +158,7 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         setCode,
         setAccessCode,
         setEmail,
+        setDocument,
         setPassword,
         setPasswordConfirmation,
         solicitarCodigo,

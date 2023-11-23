@@ -101,16 +101,12 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const solicitarCodigo = () => {
 
-      //  var sendDocument = usuario.document.replace(/[^a-zA-Z0-9 ]/g, '')
-        
-      //  usuario.document = sendDocument
-
         return http.post('api/auth/code', usuario)
             .then((response) => {
-                return response.data
+                return response
             })
             .catch(erro => {
-                console.error(erro)
+                return erro
             })
     }
 
@@ -151,8 +147,15 @@ export const SessaoUsuarioProvider = ({ children }) => {
     }
 
     const submeterLogout = () => {
-        setUsuarioEstaLogado(false)
-        ArmazenadorToken.efetuarLogout()
+        http.get('api/auth/logout')
+            .then((response) => {
+                ArmazenadorToken.removerToken()
+                setUsuarioEstaLogado(false)
+                navegar('/')
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
     }
 
 

@@ -6,6 +6,7 @@ import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import http from '@http'
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario";
+import axios from "axios";
         
 const Col12 = styled.div`
     display: flex;
@@ -33,6 +34,8 @@ function AdicionarCnpj() {
     const { 
         usuario,
     } = useSessaoUsuarioContext()
+
+    const navegar = useNavigate()
 
     const [classError, setClassError] = useState([])
     const [company, setCompany] = useState({
@@ -137,11 +140,26 @@ function AdicionarCnpj() {
     const adicionarCnpj = () => {
         http.post('api/dashboard/company', company)
         .then((response) => {
-            console.log(response)
+            navegar("/")
         })
         .catch(erro => {
             alert(erro)
             console.error(erro)
+        })
+    }
+    
+    const ChangeCep = (value) => 
+    {
+        setCep(value)
+        axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
+        .then((response) => {
+            if(response.data)
+            {
+                setLogradouro(response.data.logradouro)
+                setBairro(response.data.bairro)
+                setCidade(response.data.localidade)
+                setUf(response.data.uf)
+            }
         })
     }
 
@@ -221,7 +239,7 @@ function AdicionarCnpj() {
                         patternMask={['99999-999']} 
                         name="address_postal_code" 
                         valor={company.address_postal_code} 
-                        setValor={setCep} 
+                        setValor={ChangeCep} 
                         type="text" 
                         label="CEP" 
                         placeholder="Digite o CEP da Empresa" />

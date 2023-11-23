@@ -44,7 +44,7 @@ function AdicionarCelular() {
                 <Col6>
                     <CampoTexto 
                         camposVazios={classError} 
-                        patternMask={['99 9999 9999']} 
+                        patternMask={['99 9999-9999', '99 99999-9999']} 
                         name="celular" 
                         valor={celular} 
                         setValor={setCelular} 

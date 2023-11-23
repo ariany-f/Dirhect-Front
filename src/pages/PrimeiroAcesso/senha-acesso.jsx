@@ -51,7 +51,7 @@ function SenhaDeAcesso() {
         </Frame>
         <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
         
-        <ModalToken usuario={usuario} aoFechar={FecharModal} aoClicar={validarCodigo} setCode={setCode} opened={modalOpened} />
+        <ModalToken usuario={usuario} aoFechar={FecharModal} aoReenviar={solicitarCodigo} aoClicar={validarCodigo} setCode={setCode} opened={modalOpened} />
     </>
     )
 }

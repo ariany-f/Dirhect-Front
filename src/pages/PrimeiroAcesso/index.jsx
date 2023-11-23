@@ -6,12 +6,16 @@ import Texto from "@components/Texto"
 import Titulo from "@components/Titulo"
 import { Link } from "react-router-dom"
 import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
+import { useState } from "react"
 
 function PrimeiroAcesso() {
+
+    const [classError, setClassError] = useState([])
     
     const { 
         usuario,
         setEmail,
+        setDocument,
         setAccessCode,
         validarAcesso
     } = usePrimeiroAcessoContext()
@@ -30,7 +34,7 @@ function PrimeiroAcesso() {
                 </SubTitulo>
             </Titulo>
             <Frame>
-                <CampoTexto name="email" valor={usuario.email} setValor={setEmail} type="email" label="E-mail corporativo" placeholder="Digite seu e-mail corporativo" />
+                <CampoTexto camposVazios={classError} patternMask={['999.999.999-99', '99.999.999/9999-99']} name="document" valor={usuario.document} setValor={setDocument} type="text" label="CPF/CNPJ" placeholder="Digite seu CPF/CNPJ" />
                 <CampoTexto name="codigo" valor={usuario.access_code} setValor={setAccessCode} label="Código de acesso" placeholder="Digite o código de acesso" />
                 <Frame estilo="vermilion" padding="16px">
                     <Texto>O código de acesso foi enviado parao e-mail corporativo cadastrado!</Texto>

@@ -7,6 +7,7 @@ import http from '@http'
 import styled from "styled-components"
 import { RiQuestionLine } from "react-icons/ri"
 import { useNavigate } from "react-router-dom"
+import axios from "axios"
  
 const Col12 = styled.div`
     display: flex;
@@ -41,6 +42,8 @@ const ContainerButton = styled.div`
 `
 
 function ColaboradorRegistro() {
+
+    const navegar = useNavigate()
 
     const [collaborator, setCollaborator] = useState({
         requested_card_enum: 17,
@@ -184,11 +187,26 @@ function ColaboradorRegistro() {
 
         http.post('api/dashboard/collaborator', collaborator)
         .then((response) => {
-            console.log(response)
+            navegar("/")
         })
         .catch(erro => {
             alert(erro)
             console.error(erro)
+        })
+    }
+
+    const ChangeCep = (value) => 
+    {
+        setCep(value)
+        axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
+        .then((response) => {
+            if(response.data)
+            {
+                setLogradouro(response.data.logradouro)
+                setBairro(response.data.bairro)
+                setCidade(response.data.localidade)
+                setUf(response.data.uf)
+            }
         })
     }
 
@@ -232,7 +250,7 @@ function ColaboradorRegistro() {
                 <Col6>
                     <CampoTexto 
                         camposVazios={classError} 
-                        patternMask={['99 9999 9999']} 
+                        patternMask={['99 9999-9999', '99 99999-9999']} 
                         name="phone_number" 
                         valor={collaborator.phone_number} 
                         setValor={setCelular} 
@@ -257,7 +275,7 @@ function ColaboradorRegistro() {
                         patternMask={['99999-999']} 
                         name="address_postal_code" 
                         valor={collaborator.address_postal_code} 
-                        setValor={setCep} 
+                        setValor={ChangeCep} 
                         type="text" 
                         label="CEP" 
                         placeholder="Digite o CEP do colaborador" />

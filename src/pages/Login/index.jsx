@@ -49,11 +49,17 @@ function Login() {
         {
             solicitarCodigo()
                 .then((response) => {
-                    setEmail(response.email)
-                    setCompanies(response.companies)
+                    if(response.data)
+                    {
+                        setEmail(response.data.email)
+                        setCompanies(response.data.companies)
+                    }
                 })
                 .then(() => {
                     navegar('/login/selecionar-empresa')
+                })
+                .catch(erro => {
+                    console.error(erro)
                 })
         }
     }

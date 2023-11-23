@@ -5,6 +5,8 @@ import styles from './Cabecalho.module.css'
 import { Link, useLocation } from "react-router-dom"
 import { BsArrowLeftRight } from 'react-icons/bs'
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
+import { useState } from "react"
+import Menu from "@components/Menu"
 
 const HeaderEstilizado = styled.header`
     display: flex;
@@ -59,6 +61,7 @@ const ItemUsuario = styled.div`
 const Cabecalho = ({ nomeEmpresa, aoClicar = null }) => {
     
     const location = useLocation();
+    const [menuOpened, setMenuOpened] = useState(false)
 
     const titulos = [
         {
@@ -110,8 +113,12 @@ const Cabecalho = ({ nomeEmpresa, aoClicar = null }) => {
         }
     });
 
+    function toggleMenu(){
+        setMenuOpened(!menuOpened)
+    }
+
     return (
-        <HeaderEstilizado onClick={aoClicar}>
+        <HeaderEstilizado>
             <h6>{titulo}</h6>
             <RightItems>
                 <div className={styles.divisor}>
@@ -119,13 +126,14 @@ const Cabecalho = ({ nomeEmpresa, aoClicar = null }) => {
                     <RiNotificationLine size={18} className={styles.icon} />
                 </div>
                 <div className={styles.divisor}>
-                    <ItemEmpresa>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
-                    <ItemUsuario>
+                    <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
+                    <ItemUsuario onClick={toggleMenu}>
                         <div className="user">{'S'}</div>
                         <MdOutlineKeyboardArrowDown />
                     </ItemUsuario>
                 </div>
             </RightItems>
+            <Menu opened={menuOpened} aoFechar={() => setMenuOpened(false)} />
         </HeaderEstilizado>
     )
 }

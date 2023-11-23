@@ -116,6 +116,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     const { 
         usuario,
         setSessionCompany,
+        submeterCompanySession,
         setCompanies,
     } = useSessaoUsuarioContext()
 
@@ -146,6 +147,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         if(selected)
         {
             setSessionCompany(selected)
+            submeterCompanySession()
             aoFechar()
         }
     }

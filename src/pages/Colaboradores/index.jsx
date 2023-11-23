@@ -1,12 +1,8 @@
-import { useState } from "react";
 import Botao from '@components/Botao';
 import BotaoGrupo from '@components/BotaoGrupo';
-import CampoTexto from '@components/CampoTexto';
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Colaboradores.module.css'
 import styled from "styled-components";
-import http from '@http'
-import { useEffect } from "react";
 
 import { Link, Outlet, useLocation } from "react-router-dom";
 
@@ -19,16 +15,6 @@ const ConteudoFrame = styled.div`
 function Colaboradores() {
 
     const location = useLocation();
-    const [search, setSearch] = useState('');
-
-    useEffect(() => {
-        http.get('api/dashboard/collaborator')
-            .then(response => {
-                console.log(response)
-            })
-            .catch(erro => console.log(erro))
-    }, [])
-
     
     return (
         <ConteudoFrame>
@@ -48,10 +34,7 @@ function Colaboradores() {
                     <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
                 </Link>
             </BotaoGrupo>
-
-            <CampoTexto name="search" width={'320px'} valor={search} setValor={setSearch} type="search" label="" placeholder="Buscar um time" />
             <Outlet/>
-
         </ConteudoFrame>
     )
 }
