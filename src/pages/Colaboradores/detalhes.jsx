@@ -1,5 +1,3 @@
-import http from '@http'
-import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import BotaoVoltar from "@components/BotaoVoltar"
 import BotaoGrupo from "@components/BotaoGrupo"
@@ -8,33 +6,21 @@ import Titulo from "@components/Titulo"
 import Frame from "@components/Frame"
 import Container from "@components/Container"
 import styles from './Colaboradores.module.css'
-import { Skeleton } from 'primereact/skeleton';
+import { Skeleton } from 'primereact/skeleton'
+import { ArmazenadorToken } from './../../utils'
 
 function ColaboradorDetalhes() {
 
     let { id } = useParams()
-    const [colaborador, setColaborador] = useState({})
-
-    useEffect(() => {
-        http.get(`api/dashboard/collaborator/${id}`)
-            .then(response => {
-                if(response.collaborator)
-                {
-                    setColaborador(response.collaborator)
-                }
-            })
-            .catch(erro => console.log(erro))
-    }, [])
-
     const location = useLocation();
 
     return (
         <Frame>
             <Container gap="32px">
                 <BotaoVoltar />
-                    {colaborador.name ? 
+                    {ArmazenadorToken.UserName ? 
                         <Titulo>
-                            <h3>{colaborador.name}</h3>
+                            <h3>{ArmazenadorToken.UserName}</h3>
                         </Titulo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
                     }
