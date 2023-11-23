@@ -1,6 +1,7 @@
 import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
 import Texto from '@components/Texto'
+import Container from '@components/Container'
 import Frame from '@components/Frame'
 import BadgeBeneficio from '@components/BadgeBeneficio'
 import { Link } from 'react-router-dom'
@@ -8,6 +9,7 @@ import { FaWallet, FaArrowRight, FaUser } from 'react-icons/fa'
 import { CiCircleCheck, CiCircleRemove } from 'react-icons/ci'
 import styles from './DashboardCard.module.css'
 import styled from 'styled-components'
+import { Skeleton } from 'primereact/skeleton'
 
 const AddSaldo = styled.div`
     display: flex;
@@ -28,13 +30,15 @@ let Real = new Intl.NumberFormat('pt-BR', {
 
 function DashboardCard({ dashboardData, colaboradores = [] }){
     return (
-        <div>
+        <Container gap="32px">
             <div className={styles.saldo}>
                 <p>Saldo disponível</p>
-                <h2>{Real.format(dashboardData?.saldo)}</h2>
+                {dashboardData?.saldo ?
+                    <h2>{Real.format(dashboardData?.saldo)}</h2>
+                : <Skeleton variant="rectangular" width={200} height={50} />
+                }
                 <AddSaldo>
-                    <FaWallet/>
-                    <Link className={styles.link}>Adicionar saldo</Link>
+                    <FaWallet/><Link className={styles.link}>Adicionar saldo</Link>
                 </AddSaldo>
             </div>
             <div className={styles.wrapper_cards}>
@@ -51,7 +55,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         <div className={styles.rightalign}>
                             <Texto weight={500} color={'var(--neutro-500)'}>Data da recarga</Texto>
                             {new Date(dashboardData.lastTransaction.paid_at).toLocaleDateString("pt-BR")}
-                            </div>
+                        </div>
                     </Frame>
                     <div className={styles.transacao}>
                         <div className={styles.right}>
@@ -103,7 +107,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     </div>
                 </div>
             </div>
-        </div> 
+        </Container> 
     )
 }
 

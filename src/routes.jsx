@@ -19,6 +19,10 @@ import AdicionarCnpj from '@pages/AdicionarCnpj';
 import AdicionarCelular from '@pages/AdicionarCelular';
 import AdicionarEmail from '@pages/AdicionarEmail';
 import ColaboradorDetalhes from '@pages/Colaboradores/detalhes';
+import ColaboradorDadosPessoais from '@pages/Colaboradores/Detalhes/dados-pessoais';
+import ColaboradorCartoes from '@pages/Colaboradores/Detalhes/cartoes';
+import ColaboradorSaldo from '@pages/Colaboradores/Detalhes/saldo';
+import ColaboradorCarteiras from '@pages/Colaboradores/Detalhes/carteiras';
 import ColaboradorRegistro from '@pages/Colaboradores/Registro/registro';
 import ColaboradorRegistroSucesso from '@pages/Colaboradores/Registro/sucesso';
 import Departamentos from '@pages/Departamentos';
@@ -73,7 +77,12 @@ function AppRouter() {
                   <Route path="aguardando-cadastro" element={<ColaboradoresAguardando />} />
                   <Route path="desativados" element={<ColaboradoresDesativados />} />
               </Route>
-              <Route path="colaborador/detalhes/:id" element={<ColaboradorDetalhes />} />
+              <Route path="colaborador/detalhes/:id" element={<ColaboradorDetalhes />} >
+                  <Route index element={<ColaboradorDadosPessoais />} />
+                  <Route path="cartoes" element={<ColaboradorCartoes />} />
+                  <Route path="saldo" element={<ColaboradorSaldo />} />
+                  <Route path="carteiras" element={<ColaboradorCarteiras />} />
+              </Route>
               <Route path="colaborador/registro" element={<ColaboradorRegistro />} />
               <Route path="colaborador/registro/sucesso" element={<ColaboradorRegistroSucesso />} />
 

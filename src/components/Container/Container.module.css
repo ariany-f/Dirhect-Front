@@ -1,7 +1,6 @@
 .container {
     display: flex;
     flex-direction: column;
-    gap: 48px;
     width: -webkit-fill-available;
     flex: 1;
 }
