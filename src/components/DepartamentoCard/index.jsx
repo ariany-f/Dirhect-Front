@@ -26,12 +26,10 @@ function DepartamentoCard({department}) {
         <div className={styles.departamento}>
             <div className={styles.left}>
                 <Texto weight={700} className={styles.departmentName}>{department.name}</Texto>
-                {(clbdr.length) ?
-                    <div className={styles.recuo} weight={500} color="var(--neutro-500)">
-                        Colaboradores:&nbsp;
-                        <NumeroColaboradores weight={700}>{clbdr.length}</NumeroColaboradores>
-                    </div>
-                : ''}
+                <div className={styles.recuo} weight={500} color="var(--neutro-500)">
+                    Colaboradores:&nbsp;
+                    <NumeroColaboradores weight={700}>{clbdr.length}</NumeroColaboradores>
+                </div>
             </div>
             <div className={styles.right}>
                 <Texto weight={500}>Benefícios configurados</Texto>

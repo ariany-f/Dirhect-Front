@@ -8,6 +8,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
+import http from '@http';
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -117,7 +118,21 @@ function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar }) {
     const navegar = useNavigate()
   
     const adicionarDepartamento = () => {
+        const data = {
+            status: 10,
+            name: nome,
+            description: ''
+        }
         
+        http.post('api/dashboard/department', data)
+            .then((response) => {
+                // Receber id do departamento para ir para a tela de adicionar colaboradoers
+                // Depois vai pro detalhe do departamento pra adicionar benefícios
+                aoFechar() //Provisorio
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
     }
 
     return(
