@@ -10,6 +10,14 @@
         color: var(--neutro-600);
     }
 }
+
+.percent {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 30vw;
+}
+
 .badge_success{
     display: flex;
     gap: 4px;
@@ -40,6 +48,9 @@
     text-decoration: none;
     cursor: pointer;
     color: var(--primaria);
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 .wrapper_cards {
     display: inline-flex;

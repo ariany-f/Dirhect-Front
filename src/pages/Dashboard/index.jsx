@@ -1,13 +1,12 @@
 import http from '@http'
 import { useEffect, useState } from 'react'
-import IncompleteSteps from '../../components/DashboardCard/incomplete'
-import DashboardCard from '../../components/DashboardCard'
+import IncompleteSteps from '@components/DashboardCard/IncompleteSteps'
+import DashboardCard from '@components/DashboardCard'
 import extracts from '@json/extracts.json'
 import dashboardResources from '@json/dashboard_resources.json'
 
 function Dashboard() {
 
-    const registerIsComplete = true
     const [colaboradores, setColaboradores] = useState([])
     const [dashboardData, setDashboardData] = useState({
             saldo: 0,
@@ -72,8 +71,8 @@ function Dashboard() {
 
     return (
        <>
-        {(!registerIsComplete) ? 
-            <IncompleteSteps />
+        {(!colaboradores.length || !dashboardData.transactions.length) ? 
+            <IncompleteSteps transactions={dashboardData.transactions} colaboradores={colaboradores} />
         :
             <DashboardCard dashboardData={dashboardData} colaboradores={colaboradores} />
         }
