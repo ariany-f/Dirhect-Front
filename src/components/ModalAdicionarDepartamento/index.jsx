@@ -141,6 +141,7 @@ function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar }) {
                     
                     <Frame padding="24px 0px">
                         <CampoTexto 
+                                numeroCaracteres={50}
                                 camposVazios={classError} 
                                 valor={nome} 
                                 type="text" 

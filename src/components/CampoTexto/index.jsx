@@ -75,12 +75,12 @@ const Campo = styled.input`
     }
 `
 
-function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], required = true}) {
+function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], required = true, numeroCaracteres = null}) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
     })
-    
+    const [caracteresDigitados, setCaracteresDigitados] = useState(0)
     const [visibilityPassword, setvisibilityPassword] = useState(false)
     const [erro, setErro] = useState('')
 
@@ -95,18 +95,21 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
 
     function changeValor(evento, patternMask)
     {
-        const valor = evento.target.value
+        const valorCampo = evento.target.value
+
         if(patternMask.length > 0)
         {
-            setValor(masker(unMask(valor), patternMask))
+            setValor(masker(unMask(valorCampo), patternMask))
         }
         else
         {
-            setValor(valor)
+            setValor(valorCampo)
         }
+        
+        setCaracteresDigitados(valorCampo.length)
 
         const CampoObject = {
-            [name]: valor
+            [name]: valorCampo
 
         }
 
@@ -155,6 +158,9 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
                 : ''}
                 <Campo className={(classeCampoVazio.includes(name) ? 'error' : '')} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                 {temIcone(type, visibilityPassword)}
+                {numeroCaracteres &&
+                    <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>
+                }
             </div>
 
             {classeCampoVazio.includes(name)?

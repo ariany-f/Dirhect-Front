@@ -26,7 +26,9 @@ import ColaboradorCarteiras from '@pages/Colaboradores/Detalhes/carteiras';
 import ColaboradorRegistro from '@pages/Colaboradores/Registro/registro';
 import ColaboradorRegistroSucesso from '@pages/Colaboradores/Registro/sucesso';
 import Departamentos from '@pages/Departamentos';
+import DepartamentoLista from '@pages/Departamentos/lista';
 import DepartamentoDetalhes from '@pages/Departamentos/detalhes';
+import DepartamentoColaboradores from '@pages/Departamentos/colaboradores-sem-departamento';
 import Premiacoes from '@pages/Premiacoes';
 import PremiacaoDetalhes from '@pages/Premiacoes/detalhes';
 import PremiacaoRegistro from '@pages/Premiacoes/registro';
@@ -88,8 +90,12 @@ function AppRouter() {
 
               <Route path="extrato" element={<Extrato />} />
             
-              <Route path="departamento" element={<Departamentos />} />
-              <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} />
+              <Route path="departamento" element={<Departamentos />} >
+                  <Route index element={<DepartamentoLista />} />
+                  <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
+                  <Route path="detalhes/:id" element={<DepartamentoDetalhes />} />
+              </Route>
+            
             
               <Route path="premiacao" element={<Premiacoes />} />
               <Route path="premiacao/detalhes" element={<PremiacaoDetalhes />} />
