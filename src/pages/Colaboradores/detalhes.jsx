@@ -7,20 +7,33 @@ import Frame from "@components/Frame"
 import Container from "@components/Container"
 import styles from './Colaboradores.module.css'
 import { Skeleton } from 'primereact/skeleton'
-import { ArmazenadorToken } from './../../utils'
+import http from '@http'
+import { useEffect, useState } from 'react';
 
 function ColaboradorDetalhes() {
 
     let { id } = useParams()
     const location = useLocation();
+    const [colaborador, setColaborador] = useState({})
+
+    useEffect(() => {
+        http.get(`api/dashboard/collaborator/${id}`)
+            .then(response => {
+                if(response.collaborator)
+                {
+                    setColaborador(response.collaborator)
+                }
+            })
+            .catch(erro => console.log(erro))
+    }, [])
 
     return (
         <Frame>
             <Container gap="32px">
-                <BotaoVoltar />
-                    {ArmazenadorToken.UserName ? 
+                <BotaoVoltar linkFixo="/colaborador" />
+                    {colaborador.name ? 
                         <Titulo>
-                            <h3>{ArmazenadorToken.UserName}</h3>
+                            <h3>{colaborador.name}</h3>
                         </Titulo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
                     }
@@ -32,7 +45,7 @@ function ColaboradorDetalhes() {
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/cartoes` ? 'black':''} size="small" tab>Cartões</Botao>
                     </Link>
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/saldo`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/saldo` ? 'black':''} size="small" tab>Saldo</Botao>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/saldo` ? 'black':''} size="small" tab>Saldo em benefícios</Botao>
                     </Link>
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/carteiras`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/carteiras` ? 'black':''} size="small" tab>Carteiras</Botao>

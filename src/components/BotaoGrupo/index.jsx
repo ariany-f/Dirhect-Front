@@ -6,7 +6,7 @@ const Grupo = styled.div`
     justify-content: ${ props => props.$align ? props.$align : 'center'};
 `
 
-function BotaoGrupo({ children, align = 'center'}) {
+function BotaoGrupo({ children, align = 'start'}) {
     return (
         <Grupo $align={align}>
             {children}

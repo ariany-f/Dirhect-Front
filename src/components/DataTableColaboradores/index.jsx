@@ -11,7 +11,6 @@ function DataTableColaboradores({ colaboradores }) {
 
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
@@ -32,13 +31,6 @@ function DataTableColaboradores({ colaboradores }) {
         navegar(`/colaborador/detalhes/${value.public_id}`)
     }
 
-    useEffect(() => {
-        if(colaboradores.length)
-        {
-            setLoading(false)
-        }
-    }, [colaboradores]);
-
     return (
         <>
             <div className="flex justify-content-end">
@@ -46,7 +38,7 @@ function DataTableColaboradores({ colaboradores }) {
                     <CampoTexto name="search" width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                 </span>
             </div>
-            <DataTable loading={loading} value={colaboradores} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados colaboradores" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }}>
+            <DataTable value={colaboradores} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados colaboradores" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }}>
                 <Column field="name" header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column field="email" header="E-mail" style={{ width: '35%' }}></Column>
                 <Column field="document" header="CPF" style={{ width: '20%' }}></Column>

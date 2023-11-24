@@ -4,14 +4,15 @@ import './Frame.css'
 const DivFrame = styled.div`
     align-items: ${ props => props.$alinhamento ? props.$alinhamento : 'flex-start' };
     padding: ${ props => props.$padding ? props.$padding : '0' };
+    gap: ${ props => props.$gap ? props.$gap : '16px' };
 `
 
-function Frame({ children, estilo = "", alinhamento, padding}) {
+function Frame({ children, estilo = "", alinhamento, padding, gap="16px"}) {
 
     const estiloAplicado = 'frame' + ' ' + estilo;
     
     return (
-        <DivFrame $alinhamento={alinhamento} $padding={padding} className={estiloAplicado}>
+        <DivFrame $gap={gap} $alinhamento={alinhamento} $padding={padding} className={estiloAplicado}>
             {children}
         </DivFrame>
     )

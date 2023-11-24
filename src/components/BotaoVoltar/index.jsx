@@ -17,12 +17,12 @@ const Anchor = styled.a`
     }
 `
 
-function BotaoVoltar() {
+function BotaoVoltar({ linkFixo = null }) {
 
     const navigate = useNavigate();
 
     return (
-        <Anchor onClick={() => navigate(-1)}>
+        <Anchor onClick={() => linkFixo ? navigate(linkFixo) : navigate(-1)}>
             <MdKeyboardArrowLeft size={18} className="icon"/>&nbsp;Voltar
         </Anchor>
     )

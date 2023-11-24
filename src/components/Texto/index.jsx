@@ -4,7 +4,7 @@ const Paragrafo = styled.p`
     color: ${ props => props.$color};
     font-feature-settings: 'clig' off, 'liga' off;
     font-family: var(--font-secondaria);
-    font-size: 14px;
+    font-size: ${ props => props.$size ? props.$size : '14px' };
     font-style: normal;
     font-weight: ${ props => props.$weight ? props.$weight : '400' };
     text-align: ${ props => props.$alinhamento ? props.$alinhamento : 'left' };
@@ -13,9 +13,9 @@ const Paragrafo = styled.p`
     display: flex;
 `
 
-function Texto({ children, weight = 400, color = 'var(--black)'}) {
+function Texto({ children, weight = 400, color = 'var(--black)', size = '14px'}) {
     return (
-        <Paragrafo $color={color} $weight={Number(weight)}>
+        <Paragrafo $color={color} $size={size} $weight={Number(weight)}>
             {children}
         </Paragrafo>
     )

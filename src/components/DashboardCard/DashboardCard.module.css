@@ -39,6 +39,7 @@
 .link {
     text-decoration: none;
     cursor: pointer;
+    color: var(--primaria);
 }
 .wrapper_cards {
     display: inline-flex;
