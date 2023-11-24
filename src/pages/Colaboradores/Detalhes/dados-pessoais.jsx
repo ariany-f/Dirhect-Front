@@ -53,8 +53,10 @@ function ColaboradorDadosPessoais() {
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Nome social</Texto>
-                {colaborador.name ?
-                    <Texto weight="800">{colaborador?.name}</Texto>
+                {colaborador ?
+                    (colaborador.social ?
+                        <Texto weight="800">{colaborador?.social}</Texto>
+                        : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>CPF</Texto>
