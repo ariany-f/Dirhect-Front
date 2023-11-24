@@ -3,7 +3,7 @@ import { MdOutlineChevronRight } from 'react-icons/md'
 import { IoMdSettings } from 'react-icons/io'
 import { IoCardSharp } from 'react-icons/io5'
 import { RiUserFollowFill, RiLogoutCircleLine } from 'react-icons/ri'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 
 const DialogEstilizado = styled.dialog`
@@ -55,10 +55,19 @@ const DialogEstilizado = styled.dialog`
 
 function Menu({ opened = false, aoFechar }){
 
+
     const { 
         usuario,
         submeterLogout,
     } = useSessaoUsuarioContext()
+
+    const navegar = useNavigate()
+
+    function Sair() {
+        submeterLogout()
+        navegar('/login')
+    }
+    
 
     return (
         <>
@@ -93,7 +102,7 @@ function Menu({ opened = false, aoFechar }){
                                 <MdOutlineChevronRight size={20} />
                             </Link>
                         </li>
-                        <li onClick={submeterLogout}>
+                        <li onClick={Sair}>
                             <Link className="link">
                                 <div className="group">
                                     <RiLogoutCircleLine size={20} className="icon sair"/>
