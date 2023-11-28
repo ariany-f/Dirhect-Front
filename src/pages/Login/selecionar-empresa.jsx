@@ -56,7 +56,7 @@ function SelecionarEmpresa() {
         {
             http.get(`api/dashboard/company`)
                 .then((response) => {
-                    if(response.data)
+                    if(response !== undefined || response.data !== undefined)
                     {
                         setEmpresas(response.data.companies)
                         setCompanies(response.data.companies)

@@ -5,11 +5,59 @@ import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import BotaoVoltar from "@components/BotaoVoltar"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 
 function EsqueciASenha() {
     
-    const [Cpf, setCpf] = useState('')
+    const [classError, setClassError] = useState([])
+    const navegar = useNavigate()
+
+    const {
+        usuario,
+        setDocument,
+        setEmail,
+        solicitarCodigoRecuperacaoSenha
+    } = useSessaoUsuarioContext()
+
+    const sendData = (evento) => {
+        evento.preventDefault()
+
+        document.querySelectorAll('input').forEach(function(element) {
+            if(element.value !== '')
+            {
+                if(classError.includes(element.name))
+                {
+                    setClassError(classError.filter(item => item !== element.name))
+                }
+            }
+            else
+            {
+                if(!classError.includes(element.name))
+                {
+                    setClassError(estadoAnterior => [...estadoAnterior, element.name])
+                }
+            }
+        })
+
+        if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
+        {
+            solicitarCodigoRecuperacaoSenha()
+                .then((response) => {
+                    if(response === undefined || response.data === undefined)
+                    { 
+                        alert(response.response.data.data.message)
+                    }
+                    else{
+                        setEmail(response.data.email)
+                        navegar('/esqueci-a-senha/seguranca')
+                    }
+                })
+                .catch(erro => {
+                    console.error(erro)
+                })
+        }
+    }
 
     return (
         <>
@@ -22,12 +70,12 @@ function EsqueciASenha() {
                     </SubTitulo>
                 </Titulo>
             </Frame>
-            <Frame>
-                <CampoTexto name="cpf" valor={Cpf} setValor={setCpf} label="CPF do responsável" placeholder="Digite o CPF do responsável" />
-            </Frame>
-            <Link to="/esqueci-a-senha/seguranca">
-                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
-            </Link>
+            <form>
+                <Frame>
+                    <CampoTexto camposVazios={classError} patternMask={['999.999.999-99']} name="document" valor={usuario.document} setValor={setDocument} label="CPF do responsável" placeholder="Digite o CPF do responsável" />
+                </Frame>
+            </form>
+            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
         </>
     )
 }

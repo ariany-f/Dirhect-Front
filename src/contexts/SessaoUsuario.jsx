@@ -14,8 +14,16 @@ const usuarioInicial = {
     code: []
 }
 
+const recuperacaoSenhaInicial = {
+    token: '',
+    password: '',
+    confirm_password: '',
+    publicId: ''
+}
+
 export const SessaoUsuarioContext = createContext({
     usuario: usuarioInicial,
+    recuperacaoSenha: recuperacaoSenhaInicial,
     erros: {},
     setUsuarioEstaLogado: () => null,
     setCompanies: () => null,
@@ -26,10 +34,17 @@ export const SessaoUsuarioContext = createContext({
     setName: () => null,
     setPassword: () => null,
     setCode: () => null,
+    setRecuperacaoToken:() => null,
+    setRecuperacaoPassword:() => null,
+    setRecuperacaoConfirmPassword:() => null,
+    setRecuperacaoPublicId:() => null,
     submeterCompanySession: () => null,
     solicitarCodigo: () => null,
     submeterLogout: () => null,
-    submeterLogin: () => null
+    submeterLogin: () => null,
+    solicitarCodigoRecuperacaoSenha: () => null,
+    submeterRecuperacaoSenha: () => null,
+    redefinirSenha: () => null
 })
 
 export const useSessaoUsuarioContext = () => {
@@ -42,8 +57,41 @@ export const SessaoUsuarioProvider = ({ children }) => {
     const navegar = useNavigate()
 
     const [usuario, setUsuario] = useState(usuarioInicial)
+    const [recuperacaoSenha, setRecuperacaoSenha] = useState(recuperacaoSenhaInicial)
     const [usuarioEstaLogado, setUsuarioEstaLogado] = useState(!!ArmazenadorToken.AccessToken)
 
+    const setRecuperacaoToken = (token) => {
+        setRecuperacaoSenha(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                token
+            }
+        })
+    }
+    const setRecuperacaoPublicId = (publicId) => {
+        setRecuperacaoSenha(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                publicId
+            }
+        })
+    }
+    const setRecuperacaoPassword = (password) => {
+        setRecuperacaoSenha(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                password
+            }
+        })
+    }
+    const setRecuperacaoConfirmPassword = (confirm_password) => {
+        setRecuperacaoSenha(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                confirm_password
+            }
+        })
+    }
     const setRemember = (remember) => {
         setUsuario(estadoAnterior => {
             return {
@@ -113,11 +161,59 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
         return http.post('api/auth/code', usuario)
             .then((response) => {
-                ArmazenadorToken.definirUsuario(
-                    'Teste',
-                    response.data.email,
-                    usuario.document
-                )
+                if(typeof response.data !== undefined)
+                {
+                    ArmazenadorToken.definirUsuario(
+                        'Teste',
+                        response.data.email,
+                        usuario.document
+                    )
+                }
+                return response
+            })
+            .catch(erro => {
+                return erro
+            })
+    }
+
+    const solicitarCodigoRecuperacaoSenha = () => {
+
+        usuario.document = usuario.document.replace(/[^a-zA-Z0-9 ]/g, '')
+        return http.post('api/user/forgot', usuario)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro
+            })
+    }
+    
+    const submeterRecuperacaoSenha = () => {
+
+        var sendCode = '';
+
+        usuario.code.map(item => {
+            if(typeof item.preenchimento !== undefined)
+            {
+                sendCode += item.preenchimento
+            }
+        })
+
+        usuario.code = sendCode
+
+        return http.post('api/user/forgot/code/validation', usuario)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro
+            })
+    }
+
+    const redefinirSenha = () => {
+
+        return http.post(`api/user/password/reset/${recuperacaoSenha.publicId}`, recuperacaoSenha)
+            .then((response) => {
                 return response
             })
             .catch(erro => {
@@ -186,6 +282,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
     const contexto = {
         usuario,
         usuarioEstaLogado,
+        recuperacaoSenha,
         setUsuarioEstaLogado,
         setRemember,
         setDocument,
@@ -195,10 +292,17 @@ export const SessaoUsuarioProvider = ({ children }) => {
         setCode,
         setName,
         setSessionCompany,
+        setRecuperacaoToken,
+        setRecuperacaoPassword,
+        setRecuperacaoConfirmPassword,
+        setRecuperacaoPublicId,
         submeterLogin,
         submeterLogout,
         submeterCompanySession,
-        solicitarCodigo
+        solicitarCodigo,
+        solicitarCodigoRecuperacaoSenha,
+        submeterRecuperacaoSenha,
+        redefinirSenha
     }
 
     return (<SessaoUsuarioContext.Provider value={contexto}>

@@ -3,13 +3,33 @@ import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import BotaoVoltar from "@components/BotaoVoltar"
-import { useState } from "react"
 import CamposVerificacao from "@components/CamposVerificacao"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 
 function Seguranca() {
     
-    const [codigo, setCodigo] = useState([])
+    const {
+        usuario,
+        setCode,
+        submeterRecuperacaoSenha
+    } = useSessaoUsuarioContext()
+    
+    const navegar = useNavigate()
+
+    const sendData = (evento) => {
+        evento.preventDefault()
+        submeterRecuperacaoSenha()
+            .then((response) => {
+                if(response !== undefined || response.data !== undefined)
+                { 
+                    navegar('/esqueci-a-senha/redefinir')
+                }
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
+    }
 
     return (
         <>
@@ -22,12 +42,12 @@ function Seguranca() {
                     </SubTitulo>
                 </Titulo>
             </Frame>
-            <Frame>
-                <CamposVerificacao valor={codigo} setValor={setCodigo} label="Código de autenticação" />
-            </Frame>
-            <Link to="/esqueci-a-senha/redefinir">
-                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
-            </Link>
+            <form>
+                <Frame>
+                    <CamposVerificacao valor={usuario.code} setValor={setCode} label="Código de autenticação" />
+                </Frame>
+            </form>
+            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
         </>
     )
 }

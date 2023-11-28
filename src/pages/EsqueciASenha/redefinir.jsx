@@ -5,14 +5,26 @@ import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 import BotaoVoltar from "@components/BotaoVoltar"
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import * as Yup from 'yup'
+import { useEffect } from "react"
+import http from '@http'
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 
 function RedefinirSenha() {
     
-    const [senha, setSenha] = useState('')
-    const [confirmarSenha, setConfirmarSenha] = useState('')
+    const searchParams = new URLSearchParams(document.location.search)
+
+    const {
+        recuperacaoSenha,
+        setRecuperacaoToken,
+        setRecuperacaoPassword,
+        setRecuperacaoConfirmPassword,
+        setRecuperacaoPublicId,
+        redefinirSenha
+    } = useSessaoUsuarioContext()
+    
+    const navegar = useNavigate()
 
     const validationSchema = Yup.object().shape({
         password: Yup.string().required('Necessário digitar senha'),
@@ -21,6 +33,39 @@ function RedefinirSenha() {
         .required('Necessário digitar confirmação de senha')
         .oneOf([Yup.ref('password')], 'As senhas devem coincidir'),
     });
+
+    useEffect(() => {
+
+        /**
+         * Pegar colaboradores
+         */
+        http.get(`api/user/password/reset?${searchParams}`)
+        .then(response => {
+            if(response.data)
+            {
+                setRecuperacaoToken(response.data.token)
+                setRecuperacaoPublicId(response.data.user_public_id)
+            }
+            console.log(response)
+        })
+        .catch(erro => {
+            console.error(erro)
+        })
+    }, [])
+
+    const sendData = (evento) => {
+        evento.preventDefault()
+        redefinirSenha()
+            .then((response) => {
+                if(response !== undefined || response.data !== undefined)
+                {
+                    navegar('/login')
+                }
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
+    }
 
     return (
         <>
@@ -34,13 +79,11 @@ function RedefinirSenha() {
                 </Titulo>
             </Frame>
             <Frame>
-                <CampoTexto name="senha" valor={senha} setValor={setSenha} type="password" label="Senha" placeholder="Digite sua senha" />
-                <CampoTexto name="confirmar-senha" valor={confirmarSenha} setValor={setConfirmarSenha} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
+                <CampoTexto name="senha" valor={recuperacaoSenha.password} setValor={setRecuperacaoPassword} type="password" label="Senha" placeholder="Digite sua senha" />
+                <CampoTexto name="confirmar-senha" valor={recuperacaoSenha.confirm_password} setValor={setRecuperacaoConfirmPassword} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
                 <RegrasCriacaoSenha />
             </Frame>
-            <Link to="/login">
-                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
-            </Link>
+            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
         </>
     )
 }
