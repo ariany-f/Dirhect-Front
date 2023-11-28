@@ -15,3 +15,11 @@
     box-sizing: initial;
     stroke: var(--white);
 }
+.link {
+    text-decoration: none;
+    cursor: pointer;
+    color: inherit;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}

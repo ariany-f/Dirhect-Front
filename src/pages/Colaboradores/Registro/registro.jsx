@@ -3,6 +3,7 @@ import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import Titulo from "@components/Titulo"
 import Texto from "@components/Texto"
+import QuestionCard from '@components/QuestionCard'
 import SwitchInput from '@components/SwitchInput'
 import DropdownItens from '@components/DropdownItens'
 import CheckboxContainer from "@components/CheckboxContainer"
@@ -24,17 +25,6 @@ const Col12 = styled.div`
 const Col6 = styled.div`
     padding: 20px;
     width: 455px;
-`
-
-const QuestionCard = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-weight: 500;
-    & .question-icon {
-        margin-left: 8px;
-        cursor: pointer;
-    }
 `
 
 const ContainerButton = styled.div`
@@ -338,8 +328,7 @@ function ColaboradorRegistro() {
                 <Titulo>
                     <h6>Endereço do Colaborador</h6>
                 </Titulo>
-                <QuestionCard>
-                    <small>Porque precisamos do endereço?</small>
+                <QuestionCard element={<small>Porque precisamos do endereço?</small>}>
                     <RiQuestionLine className="question-icon" />
                 </QuestionCard>
             </Frame>

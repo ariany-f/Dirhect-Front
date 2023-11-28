@@ -3,23 +3,12 @@ import http from '@http'
 import Texto from '@components/Texto'
 import Frame from '@components/Frame'
 import Titulo from '@components/Titulo'
+import BotaoSemBorda from '@components/BotaoSemBorda'
 import ContainerHorizontal from '@components/ContainerHorizontal'
 import { Link, useParams } from "react-router-dom"
 import { Skeleton } from 'primereact/skeleton'
 import styles from './Detalhes.module.css'
-import styled from "styled-components"
 import { RiEditBoxFill } from 'react-icons/ri';
-
-const AlterarBotao = styled.div`
-    display: flex;
-    font-family: var(--secundaria);
-    font-size: 14px;
-    font-weight: 700;
-    gap: 8px;
-    & svg * {
-        fill: var(--primaria);
-    }
-`
 
 function ColaboradorDadosPessoais() {
 
@@ -76,10 +65,10 @@ function ColaboradorDadosPessoais() {
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </Frame>
-                    <AlterarBotao>
+                    <BotaoSemBorda>
                         <RiEditBoxFill size={18} />
                         <Link className={styles.link}>Alterar</Link>
-                    </AlterarBotao>
+                    </BotaoSemBorda>
                 </ContainerHorizontal>
                 <ContainerHorizontal width="50%">
                     <Frame gap="5px">
@@ -89,10 +78,10 @@ function ColaboradorDadosPessoais() {
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </Frame>
-                    <AlterarBotao>
+                    <BotaoSemBorda>
                         <RiEditBoxFill size={18} />
                         <Link className={styles.link}>Alterar</Link>
-                    </AlterarBotao>
+                    </BotaoSemBorda>
                 </ContainerHorizontal>
             </div>
         </>

@@ -1,5 +1,6 @@
 import SubTitulo from '@components/SubTitulo'
 import Container from '@components/Container'
+import BotaoSemBorda from '@components/BotaoSemBorda'
 import Texto from '@components/Texto'
 import Frame from '@components/Frame'
 import Steps from '@components/Steps'
@@ -16,17 +17,6 @@ const SpacedLine = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
-`
-
-const AlterarBotao = styled.div`
-    display: flex;
-    font-family: var(--secundaria);
-    font-size: 14px;
-    font-weight: 700;
-    gap: 8px;
-    & svg * {
-        color: var(--primaria);
-    }
 `
 
 const Card = styled.div`
@@ -101,11 +91,11 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
                     </Texto>
                     Cadastre seus colaboradores e peça os cartões para cada um.
                     {step === 2 &&
-                        <AlterarBotao>
+                        <BotaoSemBorda color="var(--primaria)">
                             <Link to="/colaborador/registro" className={styles.link}>
                                 Cadastrar Colaboradores&nbsp;<MdArrowCircleRight size={18} />
                             </Link>
-                        </AlterarBotao>
+                        </BotaoSemBorda>
                     }
                 </Card>
                 <Card className={step === 3 ? 'active' : ''}>
@@ -114,11 +104,11 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
                     </Texto>
                     Faça o deposito por cartão de crédito, boleto ou Pix.
                     {step === 3 &&
-                        <AlterarBotao>
+                        <BotaoSemBorda color="var(--primaria)">
                             <Link className={styles.link}>
                                 Depositar&nbsp;<MdArrowCircleRight size={18} />
                             </Link>
-                        </AlterarBotao>
+                        </BotaoSemBorda>
                     }
                 </Card>
             </div>

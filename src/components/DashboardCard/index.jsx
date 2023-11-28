@@ -4,24 +4,12 @@ import Texto from '@components/Texto'
 import Container from '@components/Container'
 import Frame from '@components/Frame'
 import BadgeBeneficio from '@components/BadgeBeneficio'
+import BotaoSemBorda from "@components/BotaoSemBorda"
 import { Link } from 'react-router-dom'
 import { FaWallet, FaArrowRight, FaUser, FaFileAlt } from 'react-icons/fa'
 import { CiCircleCheck, CiCircleRemove } from 'react-icons/ci'
 import styles from './DashboardCard.module.css'
-import styled from 'styled-components'
 import { Skeleton } from 'primereact/skeleton'
-
-const AddSaldo = styled.div`
-    display: flex;
-    color: ${ props => props.$color ? props.$color : 'var(--primaria)' };
-    font-family: var(--secundaria);
-    font-size: 14px;
-    font-weight: 700;
-    gap: 8px;
-    & svg * {
-        fill: ${ props => props.$color ? props.$color : 'var(--primaria)' };
-    }
-`
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -37,9 +25,9 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     <h2>{Real.format(dashboardData?.saldo)}</h2>
                 : <Skeleton variant="rectangular" width={200} height={50} />
                 }
-                <AddSaldo>
+                <BotaoSemBorda color="var(--primaria)">
                     <FaWallet/><Link className={styles.link}>Adicionar saldo</Link>
-                </AddSaldo>
+                </BotaoSemBorda>
             </div>
             <div className={styles.wrapper_cards}>
                 <div className={styles.card_dashboard}>
@@ -61,9 +49,9 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         <div className={styles.right}>
                             <Texto weight={500} color={'var(--neutro-500)'}>Valor da recarga</Texto>
                             <Texto weight={800} size="24px">{Real.format(dashboardData.lastTransaction.total_amount)}</Texto>
-                            <AddSaldo $color="var(--info)">
+                            <BotaoSemBorda color="var(--info)">
                                 <FaFileAlt /><Link className={styles.link}>Ver Detalhes</Link>
-                            </AddSaldo>
+                            </BotaoSemBorda>
                         </div>
                     </div>
                     <div className={styles.transacao}>
