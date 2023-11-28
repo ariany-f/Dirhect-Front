@@ -4,7 +4,8 @@ import styles from './Container.module.css'
 const DivContainer = styled.div`
     gap: ${ props => props.$gap ? props.$gap : '48px' };
     width: ${ props => props.$width ? props.$width : '100%' };
-    justify-content: ${ props => props.$align ? props.$align : 'space-between;' };
+    justify-content: ${ props => props.$align ? props.$align : 'space-between' };
+    align-items: center;
 `
 
 function Container({ children, align, gap = '48px', width='100%' }) {

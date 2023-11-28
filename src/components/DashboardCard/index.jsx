@@ -5,7 +5,7 @@ import Container from '@components/Container'
 import Frame from '@components/Frame'
 import BadgeBeneficio from '@components/BadgeBeneficio'
 import { Link } from 'react-router-dom'
-import { FaWallet, FaArrowRight, FaUser } from 'react-icons/fa'
+import { FaWallet, FaArrowRight, FaUser, FaFileAlt } from 'react-icons/fa'
 import { CiCircleCheck, CiCircleRemove } from 'react-icons/ci'
 import styles from './DashboardCard.module.css'
 import styled from 'styled-components'
@@ -13,13 +13,13 @@ import { Skeleton } from 'primereact/skeleton'
 
 const AddSaldo = styled.div`
     display: flex;
-    color: var(--primaria);
+    color: ${ props => props.$color ? props.$color : 'var(--primaria)' };
     font-family: var(--secundaria);
     font-size: 14px;
     font-weight: 700;
     gap: 8px;
     & svg * {
-        fill: var(--primaria);
+        fill: ${ props => props.$color ? props.$color : 'var(--primaria)' };
     }
 `
 
@@ -54,19 +54,22 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         </div>
                         <div className={styles.rightalign}>
                             <Texto weight={500} color={'var(--neutro-500)'}>Data da recarga</Texto>
-                            {new Date(dashboardData.lastTransaction.paid_at).toLocaleDateString("pt-BR")}
+                            <Texto>{new Date(dashboardData.lastTransaction.paid_at).toLocaleDateString("pt-BR")}</Texto>
                         </div>
                     </Frame>
                     <div className={styles.transacao}>
                         <div className={styles.right}>
                             <Texto weight={500} color={'var(--neutro-500)'}>Valor da recarga</Texto>
-                            <Texto weight={800}>{Real.format(dashboardData.lastTransaction.total_amount)}</Texto>
+                            <Texto weight={800} size="24px">{Real.format(dashboardData.lastTransaction.total_amount)}</Texto>
+                            <AddSaldo $color="var(--info)">
+                                <FaFileAlt /><Link className={styles.link}>Ver Detalhes</Link>
+                            </AddSaldo>
                         </div>
                     </div>
                     <div className={styles.transacao}>
                         <div className={styles.right}>
-                            <Texto weight={500} color={'var(--neutro-500)'}>Colaboradores que receberam</Texto>
-                            <div className={styles.transacao}><FaUser />&nbsp;&nbsp;<Texto weight={800}>{100}</Texto></div>
+                            <Texto size="14px" weight={500} color={'var(--neutro-500)'}>Colaboradores que receberam</Texto>
+                            <div className={styles.transacao}><FaUser />&nbsp;&nbsp;<Texto weight={800} size="16px">{100}</Texto></div>
                         </div>
                     </div>
                     <div className={styles.transacao}>
@@ -81,7 +84,9 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                             </div>
                         </div>
                     </div>
-                    <Botao>Fazer uma nova recarga</Botao>
+                    <div className={styles.buttonContainer}>
+                        <Botao>Fazer uma nova recarga</Botao>
+                    </div>
                 </div>
                 <div className={styles.empilhado}>
                     <div className={styles.card_dashboard}>
@@ -101,9 +106,11 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                 <Texto weight={800}><FaUser />&nbsp;&nbsp;{colaboradores.length}</Texto>
                             </div>
                         </div>
-                        <Link to="/colaborador/registro">
-                            <Botao>Cadastrar novo colaborador</Botao>
-                        </Link>
+                        <div className={styles.buttonContainer}>
+                            <Link to="/colaborador/registro">
+                                <Botao>Cadastrar novo colaborador</Botao>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -75,7 +75,7 @@ const Campo = styled.input`
     }
 `
 
-function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], required = true, numeroCaracteres = null}) {
+function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], required = true, numeroCaracteres = null, onEnter = null}) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -92,6 +92,13 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
         email: Yup.string().email('E-mail inválido'),
         password: Yup.string().min(8, 'A senha deve conter no mínimo 8 caracteres'),
     })
+
+    function validateKey(evento) {
+        if (evento.key === 'Enter') {
+            evento.preventDefault()
+            onEnter()
+        }
+    }
 
     function changeValor(evento, patternMask)
     {
@@ -156,7 +163,7 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
                 {(label) ?
                 <label htmlFor={name} className={styles.label}>{label}</label>
                 : ''}
-                <Campo className={(classeCampoVazio.includes(name) ? 'error' : '')} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                <Campo className={(classeCampoVazio.includes(name) ? 'error' : '')} onKeyDown={(evento) => validateKey(evento)} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&
                     <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>

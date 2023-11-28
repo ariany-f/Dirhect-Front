@@ -122,8 +122,8 @@ function AppRouter() {
               <Route path="beneficio/editar-valor" element={<BeneficioEditarValor />} />
 
               <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
-              <Route path="adicionar-celular" element={<AdicionarCelular />} />
-              <Route path="adicionar-email" element={<AdicionarEmail />} />
+              <Route path="adicionar-celular/:id" element={<AdicionarCelular />} />
+              <Route path="adicionar-email/:id" element={<AdicionarEmail />} />
             </Route>
             <Route path="*" element={<NaoEncontrada />}></Route>
           </Routes>

@@ -2,8 +2,14 @@ import CampoTexto from "@components/CampoTexto"
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import Titulo from "@components/Titulo"
-import { useState } from "react"
+import Texto from "@components/Texto"
+import SwitchInput from '@components/SwitchInput'
+import DropdownItens from '@components/DropdownItens'
+import CheckboxContainer from "@components/CheckboxContainer"
+import DepartamentosRecentes from "@components/DepartamentosRecentes"
+import { useState, useEffect } from "react"
 import http from '@http'
+import styles from './Registro.module.css'
 import styled from "styled-components"
 import { RiQuestionLine } from "react-icons/ri"
 import { useNavigate } from "react-router-dom"
@@ -12,13 +18,12 @@ import axios from "axios"
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
 `
 
 const Col6 = styled.div`
-    width: 50%;
-    max-width: 50%;
-    flex: 1;
     padding: 20px;
+    width: 455px;
 `
 
 const QuestionCard = styled.div`
@@ -35,6 +40,7 @@ const QuestionCard = styled.div`
 const ContainerButton = styled.div`
     display: flex;
     width: 100%;
+    padding: 20px;
     justify-content: space-between;
     & button {
         width: initial;
@@ -44,6 +50,25 @@ const ContainerButton = styled.div`
 function ColaboradorRegistro() {
 
     const navegar = useNavigate()
+    const [estados, setEstados] = useState([]);
+    const [classError, setClassError] = useState([])
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+        http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+        .then(response => {
+             response.map((item) => {
+                 let obj = {
+                     name: item.nome,
+                     code: item.sigla
+                 }
+                 if(!estados.includes(obj))
+                 {
+                     setEstados(estadoAnterior => [...estadoAnterior, obj]);
+                 }
+             })
+         })
+     }, [])
 
     const [collaborator, setCollaborator] = useState({
         requested_card_enum: 17,
@@ -59,9 +84,27 @@ function ColaboradorRegistro() {
         address_complement: '',
         address_city: '',
         address_state: '',
-        phone_number: ''
+        phone_number: '',
+        solicitar_cartao: false,
+        adicionar_department: false
     })
 
+    const setAdicionarDepartment = (adicionar_department) => {
+        setCollaborator(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                adicionar_department
+            }
+        })
+    }
+    const setSolicitarCartao = (solicitar_cartao) => {
+        setCollaborator(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                solicitar_cartao
+            }
+        })
+    }
     const setCep = (address_postal_code) => {
         setCollaborator(estadoAnterior => {
             return {
@@ -150,13 +193,20 @@ function ColaboradorRegistro() {
             }
         })
     }
-    const [classError, setClassError] = useState([])
-    const navigate = useNavigate();
+    const setDepartamentos = (departments) => {
+        setCollaborator(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                departments
+            }
+        })
+    }
 
     const sendData = (evento) => {
         evento.preventDefault()
 
-        document.querySelectorAll('input').forEach(function(element) {
+        document.querySelectorAll('input').forEach(function(element, index) {
+            
             if(element.value !== '' && (!element.classList.contains('not_required')))
             {
                 if(classError.includes(element.name))
@@ -187,7 +237,15 @@ function ColaboradorRegistro() {
 
         http.post('api/dashboard/collaborator', collaborator)
         .then((response) => {
-            navegar("/")
+            if(collaborator.solicitar_cartao)
+            {
+                // Adicionar id do colaborador para envio do cartão
+                navegar("/envio-cartao")
+            }
+            else
+            {
+                navegar("/colaborador")
+            }
         })
         .catch(erro => {
             alert(erro)
@@ -211,10 +269,12 @@ function ColaboradorRegistro() {
     }
 
     return (
-        <>
-            <Titulo>
-                <h6>Dados do Colaborador</h6>
-            </Titulo>
+        <form>
+            <Frame estilo="spaced">
+                <Titulo>
+                    <h6>Dados do Colaborador</h6>
+                </Titulo>
+            </Frame>
             <Col12 >
                 <Col6>
                     <CampoTexto 
@@ -259,6 +319,21 @@ function ColaboradorRegistro() {
                         placeholder="Digite o telefone do colaborador" />
                 </Col6>
             </Col12>
+            <Col12>
+                <Col6>
+                    <CheckboxContainer name="remember" valor={collaborator.adicionar_department} setValor={setAdicionarDepartment} label="Adicionar esse colaborador em um departamento" />
+                </Col6>
+            </Col12>
+            {collaborator.adicionar_department &&
+                <>
+                    <Frame estilo="spaced">
+                        <Titulo>
+                            <h6>Departamento</h6>
+                        </Titulo>
+                    </Frame>
+                    <DepartamentosRecentes setValor={setDepartamentos} />
+                </>
+            }
             <Frame estilo="spaced">
                 <Titulo>
                     <h6>Endereço do Colaborador</h6>
@@ -332,21 +407,20 @@ function ColaboradorRegistro() {
                         placeholder="Digite a address_city do colaborador" />
                 </Col6>
                 <Col6>
-                    <CampoTexto 
-                        camposVazios={classError} 
-                        name="address_state" 
-                        valor={collaborator.address_state} 
-                        setValor={setUf} 
-                        type="text" 
-                        label="UF" 
-                        placeholder="Digite a UF do colaborador" />
+                    <DropdownItens camposVazios={classError} valor={collaborator.address_state} setValor={setUf} options={estados} label="UF" name="address_state" placeholder="Digite a UF do colaborador"/>
+                </Col6>
+                <Col6>
+                    <div className={styles.ladoALado}>
+                        <Texto weight={700}>Solicitar cartão para o colaborador</Texto>
+                        <SwitchInput checked={collaborator.solicitar_cartao} onChange={setSolicitarCartao} />
+                    </div>
                 </Col6>
             </Col12>
             <ContainerButton>
                 <Botao aoClicar={() => navigate(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                 <Botao aoClicar={(evento) => sendData(evento)} estilo="vermilion" size="medium" filled>Adicionar Colaborador</Botao>
             </ContainerButton>
-        </>
+        </form>
     )
 }
 

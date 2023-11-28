@@ -5,8 +5,6 @@ import SubTitulo from '@components/SubTitulo'
 import Texto from '@components/Texto'
 import styles from './Detalhes.module.css'
 import styled from "styled-components"
-import { PiCardsFill } from 'react-icons/pi'
-import { MdOutlineChevronRight } from 'react-icons/md'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 

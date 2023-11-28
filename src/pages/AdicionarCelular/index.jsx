@@ -4,7 +4,7 @@ import SubTitulo from "@components/SubTitulo"
 import Botao from "@components/Botao"
 import { useState } from "react";
 import styled from "styled-components"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom"
         
 const Col12 = styled.div`
     display: flex;
@@ -29,6 +29,7 @@ const ContainerButton = styled.div`
 
 function AdicionarCelular() {
 
+    let { id } = useParams()
     const [classError, setClassError] = useState([])
     const [celular, setCelular] = useState('')
 

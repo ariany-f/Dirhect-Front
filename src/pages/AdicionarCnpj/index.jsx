@@ -1,11 +1,12 @@
 import CampoTexto from "@components/CampoTexto"
 import Titulo from "@components/Titulo"
 import Botao from "@components/Botao"
-import { useState } from "react";
+import { useEffect, useState } from "react"
+import DropdownItens from '@components/DropdownItens'
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import http from '@http'
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario";
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import axios from "axios";
         
 const Col12 = styled.div`
@@ -14,10 +15,8 @@ const Col12 = styled.div`
 `;
 
 const Col6 = styled.div`
-    width: 50%;
-    max-width: 50%;
-    flex: 1;
     padding: 20px;
+    width: 445px;
 `;
 
 const ContainerButton = styled.div`
@@ -35,7 +34,26 @@ function AdicionarCnpj() {
         usuario,
     } = useSessaoUsuarioContext()
 
+    const [estados, setEstados] = useState([]);
+
     const navegar = useNavigate()
+
+    useEffect(() => {
+       http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+       .then(response => {
+            response.map((item) => {
+                let obj = {
+                    name: item.nome,
+                    code: item.sigla
+                }
+                if(!estados.includes(obj))
+                {
+                    setEstados(estadoAnterior => [...estadoAnterior, obj]);
+                }
+            })
+        })
+    }, [])
+
 
     const [classError, setClassError] = useState([])
     const [company, setCompany] = useState({
@@ -296,14 +314,7 @@ function AdicionarCnpj() {
                         placeholder="Digite a address_city da Empresa" />
                 </Col6>
                 <Col6>
-                    <CampoTexto 
-                        camposVazios={classError} 
-                        name="address_state" 
-                        valor={company.address_state} 
-                        setValor={setUf} 
-                        type="text" 
-                        label="UF" 
-                        placeholder="Digite a UF da Empresa" />
+                    <DropdownItens camposVazios={classError} valor={company.address_state} setValor={setUf} options={estados} label="UF" name="address_state" placeholder="Digite a UF da Empresa"/>
                 </Col6>
             </Col12>
             <ContainerButton>

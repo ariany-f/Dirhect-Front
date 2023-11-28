@@ -10,18 +10,19 @@ const RdBtn = styled.input`
     transition: 0.2s all linear;
     margin-right: 5px;
     position: relative;
-    top: 4px;
+    top: ${ props => props.$top ? props.$top : '4px' };;
     &:checked {
         accent-color: var(--primaria);
         border: 5px solid var(--primaria);
     }
 `;
 
-function RadioButton({ value, checked, onSelected }) {
+function RadioButton({ value, checked, onSelected, top = '4px' }) {
     return (
         <RdBtn
             type="radio"
             name="radio"
+            $top={top}
             value={value}
             checked={checked}
             onChange={event => onSelected(event.target.value)}

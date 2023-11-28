@@ -13,9 +13,9 @@ const Paragrafo = styled.p`
     display: flex;
 `
 
-function Texto({ children, weight = 400, color = 'var(--black)', size = '14px'}) {
+function Texto({ children, weight = 400, color = 'var(--black)', size = '14px', aoClicar = ''}) {
     return (
-        <Paragrafo $color={color} $size={size} $weight={Number(weight)}>
+        <Paragrafo onClick={(evento) => aoClicar(evento)} $color={color} $size={size} $weight={Number(weight)}>
             {children}
         </Paragrafo>
     )
