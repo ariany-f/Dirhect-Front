@@ -93,9 +93,8 @@ function AppRouter() {
               <Route path="departamento" element={<Departamentos />} >
                   <Route index element={<DepartamentoLista />} />
                   <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
-                  <Route path="detalhes/:id" element={<DepartamentoDetalhes />} />
               </Route>
-            
+              <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} />
             
               <Route path="premiacao" element={<Premiacoes />} />
               <Route path="premiacao/detalhes" element={<PremiacaoDetalhes />} />
