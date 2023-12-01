@@ -5,6 +5,7 @@ import http from '@http'
 import BadgeBeneficio from '@components/BadgeBeneficio';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Skeleton } from 'primereact/skeleton';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -18,7 +19,7 @@ const NumeroColaboradores = styled.p`
 
 function DepartamentoCard({department}) {
     
-    const [clbdr, setClbdr] = useState([])
+    const [clbdr, setClbdr] = useState(null)
 
     useEffect(() => {
         http.get('api/dashboard/collaborator')
@@ -41,7 +42,11 @@ function DepartamentoCard({department}) {
                 <Texto weight={700} className={styles.departmentName}>{department.name}</Texto>
                 <div className={styles.recuo} weight={500} color="var(--neutro-500)">
                     Colaboradores:&nbsp;
-                    <NumeroColaboradores weight={700}>{clbdr.length}</NumeroColaboradores>
+                    {
+                        clbdr.length ? 
+                        <NumeroColaboradores weight={700}>{clbdr.length}</NumeroColaboradores>
+                        : <Skeleton variant="rectangular" width={10} height={20} />
+                    }
                 </div>
             </div>
             <div className={styles.right}>
