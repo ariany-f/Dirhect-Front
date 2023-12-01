@@ -42,8 +42,7 @@ function DepartamentoCard({department}) {
                 <Texto weight={700} className={styles.departmentName}>{department.name}</Texto>
                 <div className={styles.recuo} weight={500} color="var(--neutro-500)">
                     Colaboradores:&nbsp;
-                    {
-                        clbdr.length ? 
+                    {clbdr ? 
                         <NumeroColaboradores weight={700}>{clbdr.length}</NumeroColaboradores>
                         : <Skeleton variant="rectangular" width={10} height={20} />
                     }
