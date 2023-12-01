@@ -8,7 +8,7 @@ const Container = styled.div`
     font-size: 14px;
     font-weight: 700;
     gap: 8px;
-    & svg * {
+    & svg {
         fill: ${ props => props.$color ? props.$color : 'var(--primaria)' };
     }
 `

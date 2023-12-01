@@ -7,3 +7,22 @@
     gap: 8px;
     align-items: center;
 }
+.card_dashboard {
+    border: 1px solid var(--neutro-200);
+    border-radius: 16px;
+    display: flex;
+    padding: 20px 24px;
+    justify-content: space-between;
+    align-items: start;
+    align-self: stretch;
+    gap: 5px;
+    flex-direction: column;
+    flex: 1;
+    width: 65vw;
+}
+.subtitulo {
+    color: var(--neutro-600);
+    font-size: 12px;
+    font-family: var(--fonte-secundaria);
+    font-weight: 500;
+}

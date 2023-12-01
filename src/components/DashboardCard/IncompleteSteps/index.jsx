@@ -93,7 +93,7 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
                     {step === 2 &&
                         <BotaoSemBorda color="var(--primaria)">
                             <Link to="/colaborador/registro" className={styles.link}>
-                                Cadastrar Colaboradores&nbsp;<MdArrowCircleRight size={18} />
+                                Cadastrar Colaboradores&nbsp;<MdArrowCircleRight className='icon' size={18} />
                             </Link>
                         </BotaoSemBorda>
                     }
@@ -106,7 +106,7 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
                     {step === 3 &&
                         <BotaoSemBorda color="var(--primaria)">
                             <Link className={styles.link}>
-                                Depositar&nbsp;<MdArrowCircleRight size={18} />
+                                Depositar&nbsp;<MdArrowCircleRight className='icon' size={18} />
                             </Link>
                         </BotaoSemBorda>
                     }

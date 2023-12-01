@@ -49,10 +49,13 @@ import BeneficioOndeUsar from '@pages/Beneficios/onde-usar';
 import BeneficioSelecionarTipoRecarga from '@pages/Beneficios/selecao-tipo-recarga';
 import BeneficioSelecionarAlvoRecarga from '@pages/Beneficios/selecao-alvo-recarga';
 import BeneficioEditarValor from '@pages/Beneficios/editar-valor';
-import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario";
 import Extrato from '@pages/Extrato';
 import DepartamentoConfiguracaoBeneficios from '@pages/Departamentos/configuracao-beneficios';
 import DepartamentoListaColaboradores from '@pages/Departamentos/lista-colaboradores';
+import ColaboradorEnvioCartao from './pages/Colaboradores/Registro/envio-cartao';
+import ColaboradorDadosIniciais from './pages/Colaboradores/Registro/dados-iniciais';
+import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario";
+import ColaboradorBandeiraCartao from './pages/Colaboradores/Registro/bandeira-cartao';
 
 function AppRouter() {
   
@@ -87,8 +90,12 @@ function AppRouter() {
                   <Route path="saldo" element={<ColaboradorSaldo />} />
                   <Route path="carteiras" element={<ColaboradorCarteiras />} />
               </Route>
-              <Route path="colaborador/registro" element={<ColaboradorRegistro />} />
-              <Route path="colaborador/registro/sucesso" element={<ColaboradorRegistroSucesso />} />
+              <Route path="colaborador/registro" element={<ColaboradorRegistro />} >
+                    <Route index element={<ColaboradorDadosIniciais />} />
+                    <Route path="envio-cartao" element={<ColaboradorEnvioCartao />} />
+                    <Route path="bandeira-cartao" element={<ColaboradorBandeiraCartao />} />
+                    <Route path="sucesso" element={<ColaboradorRegistroSucesso />} />
+              </Route>
 
               <Route path="extrato" element={<Extrato />} />
             

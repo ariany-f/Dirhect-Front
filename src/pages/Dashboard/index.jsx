@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react'
 import IncompleteSteps from '@components/DashboardCard/IncompleteSteps'
 import DashboardCard from '@components/DashboardCard'
 import Container from '@components/Container'
-import extracts from '@json/extracts.json'
-import dashboardResources from '@json/dashboard_resources.json'
 import { Skeleton } from 'primereact/skeleton'
 import styled from 'styled-components'
 
@@ -28,9 +26,15 @@ function Dashboard() {
 
     const [colaboradores, setColaboradores] = useState(null)
     const [dashboardData, setDashboardData] = useState({
-            saldo: 0,
-            transactions: extracts,
-            lastTransaction: dashboardResources[0].userDashResource.last_transaction
+            userDashResource: {
+                total_benefit_balance: 0,
+                notifications: null,
+                name: '',
+                public_id: '',
+                status: 1
+            },
+            transactions: [],
+            lastTransaction: []
     })
 
     const setSaldo = (saldo) => {
@@ -60,18 +64,19 @@ function Dashboard() {
 
     useEffect(() => {
 
-        setSaldo(dashboardResources[0].userDashResource.total_benefit_balance)
-
         /**
          * Dados necessários para exibição no painel do usuário
          */
-        // http.get('api/dashboard/user')
-        // .then(response => {
-        //     console.log(response)
-        // })
-        // .catch(erro => {
-        //     console.error(erro)
-        // })
+        http.get('api/dashboard/user')
+        .then(response => {
+            setDashboardData(response.data)
+        })
+        .then(() => {
+            setSaldo(dashboardData.userDashResource.total_benefit_balance)
+        })
+        .catch(erro => {
+            console.error(erro)
+        })
 
         /**
          * Pegar colaboradores

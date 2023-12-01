@@ -21,8 +21,8 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
         <Container gap="32px">
             <div className={styles.saldo}>
                 <p>Saldo disponível</p>
-                {dashboardData?.saldo ?
-                    <h2>{Real.format(dashboardData?.saldo)}</h2>
+                {dashboardData?.userDashResource.total_benefit_balance ?
+                    <h2>{Real.format(dashboardData?.userDashResource.total_benefit_balance)}</h2>
                 : <Skeleton variant="rectangular" width={200} height={50} />
                 }
                 <BotaoSemBorda color="var(--primaria)">

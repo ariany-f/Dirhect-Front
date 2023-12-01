@@ -11,6 +11,12 @@ const Paragrafo = styled.p`
     line-height: 20px; /* 142.857% */
     align-items: center;
     display: flex;
+    & svg {
+        fill: ${ props => props.$color};
+    }
+    & svg * {
+        color: ${ props => props.$color};
+    }
 `
 
 function Texto({ children, weight = 400, color = 'var(--black)', size = '14px', aoClicar = ''}) {
