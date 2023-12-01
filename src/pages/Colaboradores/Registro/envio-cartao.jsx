@@ -174,21 +174,21 @@ function ColaboradorEnvioCartao() {
             <Frame>
                 <div className={styles.card_dashboard}>
                     <CardLine>
-                        <RadioButton top="0" value={1} checked={selectedAddressOption === 1} onSelected={setSelectedAddressOption}/>
+                        <RadioButton top="0" value={1} checked={selectedAddressOption === 1} onSelected={() => handleChange(1)}/>
                         <Link>
                             <Texto aoClicar={() => handleChange(1)} size="14px" weight={700}>Enviar para minha empresa</Texto>
                         </Link>
                     </CardLine>
                     
                     <CardLine>
-                        <RadioButton top="0" value={2} checked={selectedAddressOption === 2} onSelected={setSelectedAddressOption}/>
+                        <RadioButton top="0" value={2} checked={selectedAddressOption === 2} onSelected={() => handleChange(2)}/>
                         <Link>
                             <Texto aoClicar={() => handleChange(2)} size="14px" weight={700}>Enviar para o endereço do colaborador</Texto>
                         </Link>
                     </CardLine>
                     
                     <CardLine>
-                        <RadioButton top="0" value={3} checked={selectedAddressOption === 3} onSelected={setSelectedAddressOption}/>
+                        <RadioButton top="0" value={3} checked={selectedAddressOption === 3} onSelected={() => handleChange(2)}/>
                         <Link>
                             <Texto aoClicar={() => handleChange(3)} size="14px" weight={700}>Enviar para outro endereço</Texto>
                         </Link>
@@ -199,8 +199,7 @@ function ColaboradorEnvioCartao() {
                     <p className={styles.subtitulo}>Receba seu cartão com frete grátis e aproveite todas as vantagens!</p>
                 </CardText>
             </Frame>
-            {
-                colaborador.requested_card_enum === 3 &&
+            {selectedAddressOption && selectedAddressOption === 3 &&
                 <>
                     <Frame estilo="spaced">
                         <Titulo>

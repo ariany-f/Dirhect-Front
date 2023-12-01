@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import http from '@http'
+import { createContext, useContext, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const ColaboradorInicial = {
     name: '',
@@ -7,7 +8,7 @@ const ColaboradorInicial = {
     document: '',
     date_birth: '',
     phone_number: '',
-    phone_code: 55,
+    phone_code: '55',
     address_postal_code: '',
     address_street: '',
     address_number: '',
@@ -16,7 +17,7 @@ const ColaboradorInicial = {
     address_city: '',
     address_state: '',
     departments: [],
-    requested_card_enum: 3,
+    requested_card_enum: null,
     solicitar_cartao: false,
     adicionar_departamento: false,
     another_address_postal_code: '',
@@ -107,14 +108,9 @@ export const ColaboradorProvider = ({ children }) => {
             }
         })
     }
-     const setDepartments = (departments) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                departments
-            }
-        })
-    }
+    const setDepartments = (departments) => {
+        setColaborador(estadoAnterior => [...estadoAnterior, departments])
+    };
     const setAddressPostalCode = (address_postal_code) => {
         setColaborador(estadoAnterior => {
             return {

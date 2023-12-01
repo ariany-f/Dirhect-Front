@@ -1,28 +1,17 @@
-import CampoTexto from "@components/CampoTexto"
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import Titulo from "@components/Titulo"
+import Texto from "@components/Texto"
 import SubTitulo from "@components/SubTitulo"
-import SwitchInput from '@components/SwitchInput'
-import DropdownItens from '@components/DropdownItens'
 import { useState, useEffect } from "react"
-import http from '@http'
+import styles from './Registro.module.css'
 import styled from "styled-components"
-import { useNavigate } from "react-router-dom"
-import axios from "axios"
+import { MdOutlineChevronRight } from 'react-icons/md'
+import { Link, useNavigate } from "react-router-dom"
 import { useColaboradorContext } from "../../../contexts/Colaborador"
+import Mastercard from './../../../assets/Mastercard.svg'
+import Elo from './../../../assets/Elo.svg'
  
-const Col12 = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-`
-
-const Col6 = styled.div`
-    padding: 20px;
-    width: 455px;
-`
-
 const ContainerButton = styled.div`
     display: flex;
     width: 100%;
@@ -33,19 +22,37 @@ const ContainerButton = styled.div`
     }
 `
 
+const CardLine = styled.div`
+    padding: 16px 6px;
+    border-bottom: 1px solid var(--neutro-200);
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    &:nth-child(1) {
+        padding-top: 8px;
+    }
+    &:last-of-type {
+        border-bottom: none;
+        padding-bottom: 8px;
+    }
+    & svg * {
+        color: var(--primaria)
+    }
+`
+
 function ColaboradorBandeiraCartao() {
 
     const navegar = useNavigate()
     const [classError, setClassError] = useState([])
+    const [selectedBrand, setSelectedBrand] = useState(1)
 
     const { 
         colaborador,
-        setRequestedCardEnum,
         submeterUsuario
     } = useColaboradorContext()
     
-
-
     const sendData = (evento) => {
         evento.preventDefault()
 
@@ -70,7 +77,18 @@ function ColaboradorBandeiraCartao() {
         if(document.querySelectorAll("form .error").length === 0)
         {
             submeterUsuario()
+            .then(response => {
+                if(response.status == 'success')
+                {
+                    navegar('colaborador/registro/sucesso')
+                }
+            })
         }
+    }
+
+    function handleChange(valor)
+    {
+        setSelectedBrand(valor)
     }
 
     return (
@@ -84,7 +102,50 @@ function ColaboradorBandeiraCartao() {
                 </Titulo>
             </Frame>
             <Frame estilo="spaced">
-                
+                <div className={styles.card_dashboard}>
+                    <CardLine>
+                        <Texto aoClicar={() => handleChange(1)} weight="800">
+                            <div className={styles.listaVantagens}>
+                                <div className={styles.brand}>
+                                    <img src={Elo} />
+                                    &nbsp;Elo
+                                    <div className={styles.badge}>
+                                        <p>Recomendado</p>
+                                    </div>
+                                </div>
+                                <ul>
+                                    <li>90% nas principais plataformas de ensino</li>
+                                    <li>75% de desconto em diversas drogarias</li>
+                                    <li>Pague meia entrada em toda rede Cinemark</li>
+                                    <li>Pré-vendas de shows</li>
+                                </ul>
+                            </div>
+                        </Texto>
+                        <Link onClick={sendData}>
+                            <MdOutlineChevronRight size={20} />
+                        </Link>
+                    </CardLine>
+                    
+                    <CardLine>
+                        <Texto aoClicar={() => handleChange(1)} weight="800">
+                            <div className={styles.listaVantagens}>
+                                <div className={styles.brand}>
+                                    <img src={Mastercard} />
+                                    &nbsp;Mastercard
+                                </div>
+                                <ul>
+                                    <li>Aceito em mais de 4 milhões de estabelecimentos</li>
+                                    <li>Mastercard Surpreenda</li>
+                                    <li>Mastercard Global Service</li>
+                                </ul>
+                            </div>
+                        </Texto>
+                        <Link onClick={sendData}>
+                            <MdOutlineChevronRight size={20} />
+                        </Link>
+                        
+                    </CardLine>
+                </div>
             
             </Frame>
             <ContainerButton>
