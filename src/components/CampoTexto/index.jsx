@@ -11,7 +11,7 @@ const Campo = styled.input`
     border-radius: 8px;
     outline: .4px solid var(--neutro-200);
     background: var(--background-label);
-    padding: 22px 16px;
+    padding: ${ props => props.$padding ?  props.$padding : '22px 16px' };
     border: none;
     display: flex;
     align-items: center;
@@ -75,7 +75,7 @@ const Campo = styled.input`
     }
 `
 
-function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], required = true, numeroCaracteres = null, onEnter = null}) {
+function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -163,7 +163,7 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
                 {(label) ?
                 <label htmlFor={name} className={styles.label}>{label}</label>
                 : ''}
-                <Campo className={(classeCampoVazio.includes(name) ? 'error' : '')} onKeyDown={(evento) => validateKey(evento)} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                <Campo className={(classeCampoVazio.includes(name) ? 'error' : '')} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&
                     <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>
