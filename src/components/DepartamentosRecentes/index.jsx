@@ -59,10 +59,12 @@ function DepartamentosRecentes({ setValor }){
             })
     }
 
-    function handleChange(valor)
+    function handleChange(nomeDepartamento, idDepartamento)
     {
-        setSelectedDepartment(valor)
-        setValor([valor])
+        const obj = {}
+        obj[nomeDepartamento] = idDepartamento
+        setSelectedDepartment(idDepartamento)
+        setValor(obj)
     }
 
     return (
@@ -74,12 +76,13 @@ function DepartamentosRecentes({ setValor }){
                 {departamentos ?
                     departamentos.length ?
                         departamentos.map((department, index) => {
+                            
                             return (
-                                <Col3>
+                                <Col3 key={index}>
                                     <ContainerHorizontal align="start" gap="8px">
                                         <RadioButton top="0" value={department.public_id} checked={selectedDepartment ? (department.public_id == selectedDepartment) : (index === 0)} onSelected={setSelectedDepartment}/>
                                         <Link>
-                                            <Texto aoClicar={() => handleChange(department.public_id)} size="14px" weight={700}>{department.name}</Texto>
+                                            <Texto aoClicar={() => handleChange(department.name, department.public_id)} size="14px" weight={700}>{department.name}</Texto>
                                         </Link>
                                     </ContainerHorizontal>
                                 </Col3>

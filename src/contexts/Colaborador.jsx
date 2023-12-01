@@ -109,7 +109,14 @@ export const ColaboradorProvider = ({ children }) => {
         })
     }
     const setDepartments = (departments) => {
-        setColaborador(estadoAnterior => [...estadoAnterior, departments])
+        const departamentos = colaborador.departments
+        departamentos.push(departments)
+        setColaborador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                departamentos
+            }
+        })
     };
     const setAddressPostalCode = (address_postal_code) => {
         setColaborador(estadoAnterior => {

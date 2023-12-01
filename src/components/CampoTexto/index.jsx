@@ -26,7 +26,7 @@ const Campo = styled.input`
 
     ~ .icon {
         box-sizing: initial;
-        bottom: 22px;
+        top: 6vh;
         cursor: pointer;
         position: absolute;
         fill: var(--neutro-600);
@@ -168,14 +168,15 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
                 {numeroCaracteres &&
                     <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>
                 }
+                
+                {classeCampoVazio.includes(name)?
+                    <p className={styles.erroMessage}>Você deve preencher esse campo</p>
+                    : (erro ?
+                        <p className={styles.erroMessage}>{erro}</p>
+                        : <p className={styles.erroMessage}>&nbsp;</p>
+                    )
+                }
             </div>
-
-            {classeCampoVazio.includes(name)?
-                <p className={styles.erroMessage}>Você deve preencher esse campo</p>
-                : (erro &&
-                    <p className={styles.erroMessage}>{erro}</p>
-                )
-            }            
         </>
     )
 }

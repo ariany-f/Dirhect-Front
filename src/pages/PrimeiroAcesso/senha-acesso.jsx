@@ -8,6 +8,7 @@ import BotaoVoltar from "@components/BotaoVoltar"
 import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
 import ModalToken from "../../components/ModalToken"
 import { useState } from "react"
+import { ArmazenadorToken } from "../../utils"
 
 function SenhaDeAcesso() {
 
@@ -30,7 +31,26 @@ function SenhaDeAcesso() {
     const sendData = (evento) => {
         evento.preventDefault();
         solicitarCodigo()
-        setModalOpened(true)
+        .then(response => {
+            if(response.data.status === 'success')
+            {
+                ArmazenadorToken.definirUsuario(
+                    response.data.name,
+                    response.data.email,
+                    usuario.document
+                )
+                setModalOpened(true)
+            }
+            else
+            {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                return false
+            }
+        })
+        .catch(erro => {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+            return false
+        })
     }
 
     return (

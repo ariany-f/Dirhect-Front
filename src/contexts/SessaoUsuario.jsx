@@ -159,20 +159,17 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const solicitarCodigo = () => {
 
-        return http.post('api/auth/code', usuario)
+        var sendableContent = {
+            password: usuario.password,
+            document: usuario.document.replace(/[^a-zA-Z0-9 ]/g, '')
+        }
+
+        return http.post('api/auth/code', sendableContent)
             .then((response) => {
-                if(typeof response.data !== undefined)
-                {
-                    ArmazenadorToken.definirUsuario(
-                        'Teste',
-                        response.data.email,
-                        usuario.document
-                    )
-                }
                 return response
             })
             .catch(erro => {
-                return erro
+                return erro.response.data
             })
     }
 
@@ -224,26 +221,26 @@ export const SessaoUsuarioProvider = ({ children }) => {
     const submeterLogin = () => {
 
         var sendCode = '';
-
         usuario.code.map(item => {
             if(typeof item.preenchimento !== undefined)
             {
                 sendCode += item.preenchimento
             }
         })
+        var sendableContent = {
+            email: usuario.email,
+            password: usuario.password,
+            company_public_id: usuario.company_public_id,
+            code: sendCode,
+            remember: usuario.remember
+        }
 
-        usuario.code = sendCode
-
-        return http.post('api/auth/token', usuario)
+        return http.post('api/auth/token', sendableContent)
             .then((response) => {
-                ArmazenadorToken.definirToken(
-                    response.data.token_access,
-                    response.data.expires_at
-                )
-                return response.data
+                return response
             })
             .catch(erro => {
-                console.error(erro)
+                return erro.response.data
             })
     }
 

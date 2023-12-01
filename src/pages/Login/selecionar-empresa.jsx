@@ -2,13 +2,15 @@ import Botao from "@components/Botao"
 import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
 import styled from "styled-components"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { RiBuildingLine } from "react-icons/ri"
 import styles from './Login.module.css'
 import ModalToken from '@components/ModalToken'
 import http from '@http';
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import { useNavigate } from "react-router-dom"
+import { Toast } from 'primereact/toast'
+import { ArmazenadorToken } from "../../utils"
 
 const Wrapper = styled.div`
     display: flex;
@@ -47,6 +49,7 @@ function SelecionarEmpresa() {
     const [empresas, setEmpresas] = useState(usuario?.companies ?? [])
     const [selected, setSelected] = useState(empresas[0]?.public_id)
     const [modalOpened, setModalOpened] = useState(false)
+    const toast = useRef(null)
 
     const navegar = useNavigate()
 
@@ -82,15 +85,32 @@ function SelecionarEmpresa() {
     
     const sendCode = () => {
         submeterLogin().then((response) => {
-            setUsuarioEstaLogado(true)
+            if(response.data.status === 'success')
+            {
+                ArmazenadorToken.definirToken(
+                    response.data.token_access,
+                    response.data.expires_at
+                )
+                setUsuarioEstaLogado(true)
+                submeterCompanySession()
+            }
+            else
+            {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                setCode([])
+                return false
+            }
         })
-        .then(() => {
-            submeterCompanySession()
+        .catch(erro => {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+            setCode([])
+            return false
         })
     }
 
     return (
         <>
+            <Toast ref={toast} />
             <Titulo>
                 <h2>Selecione uma empresa</h2>
             </Titulo>

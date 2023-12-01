@@ -8,12 +8,15 @@ import { Link, useNavigate } from "react-router-dom"
 import styles from './Login.module.css'
 import CheckboxContainer from "@components/CheckboxContainer"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
-import { useState } from "react"
+import { useRef, useState } from "react"
+import { Toast } from 'primereact/toast'
+import { ArmazenadorToken } from "../../utils"
 
 function Login() {
 
     const [classError, setClassError] = useState([])
     const navegar = useNavigate()
+    const toast = useRef(null)
 
     const { 
         usuario,
@@ -49,19 +52,27 @@ function Login() {
         {
             solicitarCodigo()
                 .then((response) => {
-                    if(response === undefined || response.data === undefined)
+                    if(response.data.status === 'success')
                     {
-                        alert(response.response.data.data.message)
-                    }
-                    else
-                    {
+                        ArmazenadorToken.definirUsuario(
+                            response.data.name,
+                            response.data.email,
+                            usuario.document
+                        )
                         setEmail(response.data.email)
                         setCompanies(response.data.companies)
                         navegar('/login/selecionar-empresa')
                     }
+                    else
+                    {
+                        toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                        return false
+                    }
+                   
                 })
                 .catch(erro => {
-                    console.error(erro)
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+                    return false
                 })
         }
     }
@@ -69,6 +80,7 @@ function Login() {
 
     return (
         <>
+            <Toast ref={toast} />
             <Titulo>
                 <h2>Bem-vindo</h2>
                 <SubTitulo>
