@@ -19,7 +19,7 @@ function DepartamentoListaColaboradores() {
     }, [])
     
     useEffect(() => {
-        if(departamento && !setClbdr.length)
+        if(departamento && !clbdr.length)
         {
             http.get('api/dashboard/collaborator')
                 .then(response => {
