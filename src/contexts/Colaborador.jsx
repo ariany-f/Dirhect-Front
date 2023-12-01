@@ -267,8 +267,7 @@ export const ColaboradorProvider = ({ children }) => {
             return response
         })
         .catch(erro => {
-            alert(erro)
-            console.error(erro)
+            return erro.response.data
         })
     }
 

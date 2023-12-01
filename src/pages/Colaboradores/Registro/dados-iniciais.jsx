@@ -135,10 +135,6 @@ function ColaboradorDadosIniciais() {
         })
     }
 
-    const testeFuncaoDepartamentos = (valor) => {
-        setDepartments(valor)
-    }
-
     return (
         <form>
             <Frame estilo="spaced">
@@ -202,7 +198,7 @@ function ColaboradorDadosIniciais() {
                             <h6>Departamento</h6>
                         </Titulo>
                     </Frame>
-                    <DepartamentosRecentes setValor={testeFuncaoDepartamentos} />
+                    <DepartamentosRecentes setValor={setDepartments} />
                 </>
             }
             <Frame estilo="spaced">

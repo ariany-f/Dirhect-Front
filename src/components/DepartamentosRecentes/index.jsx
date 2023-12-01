@@ -31,17 +31,6 @@ function DepartamentosRecentes({ setValor }){
     const [selectedDepartment, setSelectedDepartment] = useState(null)
     const [nomeDepartamento, setNomeDepartamento] = useState('')
     
-    useEffect(() => {
-        http.get('api/dashboard/department')
-            .then(response => {
-                if(response.data.departments)
-                {
-                    setDepartamentos(response.data.departments)
-                }
-            })
-            .catch(erro => console.log(erro))
-    }, [departamentos])
-    
     const adicionarDepartamento = () => {
         const data = {
             status: 10,
@@ -51,13 +40,30 @@ function DepartamentosRecentes({ setValor }){
         
         http.post('api/dashboard/department', data)
             .then((response) => {
-                setNomeDepartamento('')
-                
+                setNomeDepartamento('')                
             })
             .catch(erro => {
                 console.error(erro)
             })
     }
+    
+    useEffect(() => {
+        http.get('api/dashboard/department')
+            .then(response => {
+                if(response.data.departments)
+                {
+                    setDepartamentos(response.data.departments)
+                    if(departamentos.length && selectedDepartment === null)
+                    {
+                        const obj = {}
+                        obj[departamentos[0].name] = departamentos[0].public_id
+                        setSelectedDepartment(departamentos[0].public_id)
+                        setValor(obj)
+                    }
+                }
+            })
+            .catch(erro => console.log(erro))
+    }, [nomeDepartamento])
 
     function handleChange(nomeDepartamento, idDepartamento)
     {

@@ -78,7 +78,7 @@ function ColaboradorBandeiraCartao() {
         {
             submeterUsuario()
             .then(response => {
-                if(response.status == 'success')
+                if(response.data.status == 'success')
                 {
                     navegar('colaborador/registro/sucesso')
                 }
