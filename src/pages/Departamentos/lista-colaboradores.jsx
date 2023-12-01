@@ -19,17 +19,20 @@ function DepartamentoListaColaboradores() {
     }, [])
     
     useEffect(() => {
-        http.get('api/dashboard/collaborator')
-            .then(response => {
-                if(response.data.collaborators.length)
-                {
-                    const filtered = response.data.collaborators.filter(colaborador => {
-                        return (departamento.name in colaborador.departments)
-                    })
-                    setClbdr(filtered)
-                }
-            })
-            .catch(erro => console.log(erro))
+        if(departamento)
+        {
+            http.get('api/dashboard/collaborator')
+                .then(response => {
+                    if(response.data.collaborators.length)
+                    {
+                        const filtered = response.data.collaborators.filter(colaborador => {
+                            return (departamento.name in colaborador.departments)
+                        })
+                        setClbdr(filtered)
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
     }, [])
    
     return (
