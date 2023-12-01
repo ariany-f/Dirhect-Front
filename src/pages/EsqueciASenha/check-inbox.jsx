@@ -3,9 +3,9 @@ import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import { Link, useNavigate } from "react-router-dom"
-import Success from './../../assets/Sucess.svg'
+import Inbox from './../../assets/Inbox.svg'
 
-function RedefinirSenhaSucesso() {
+function RedefinirSenhaCheckInbox() {
     
     const navegar = useNavigate()
 
@@ -13,16 +13,15 @@ function RedefinirSenhaSucesso() {
         <>
             <Frame>
                 <Titulo>
-                    <img src={Success}/>
-                    <h2>Senha redefinida</h2>
+                    <img src={Inbox}/>
+                    <h2>Verifique seu e-mail</h2>
                     <SubTitulo>
-                        Acesso sua conta e ofereça os melhores benefícios aos seus colaboradores
+                        Enviamos um link de recuperação para o seu e-mail cadastrado. Verifique sua caixa de entrada para redefinir sua senha.
                     </SubTitulo>
                 </Titulo>
             </Frame>
-            <Botao aoClicar={() =>navegar('/login')} estilo="vermilion" size="medium" filled>Acessar minha plataforma</Botao>
         </>
     )
 }
 
-export default RedefinirSenhaSucesso
+export default RedefinirSenhaCheckInbox

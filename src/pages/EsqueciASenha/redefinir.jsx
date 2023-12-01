@@ -62,7 +62,7 @@ function RedefinirSenha() {
             .then((response) => {
                 if(response !== undefined || response.data !== undefined)
                 {
-                    navegar('/login')
+                    navegar('/esqueci-minha-senha/sucesso')
                 }
             })
             .catch(erro => {

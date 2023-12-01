@@ -203,7 +203,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return response
             })
             .catch(erro => {
-                return erro
+                return erro.response.data
             })
     }
 

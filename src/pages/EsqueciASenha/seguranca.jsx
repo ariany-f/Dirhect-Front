@@ -6,6 +6,8 @@ import BotaoVoltar from "@components/BotaoVoltar"
 import CamposVerificacao from "@components/CamposVerificacao"
 import { Link, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { Toast } from 'primereact/toast'
+import { useRef } from "react"
 
 function Seguranca() {
     
@@ -16,23 +18,30 @@ function Seguranca() {
     } = useSessaoUsuarioContext()
     
     const navegar = useNavigate()
+    const toast = useRef(null)
 
     const sendData = (evento) => {
         evento.preventDefault()
         submeterRecuperacaoSenha()
             .then((response) => {
-                if(response !== undefined && response.data !== undefined && response.data.status !== 'error')
+                if(response.data.status === 'success')
                 { 
-                    navegar('/esqueci-a-senha/sucesso')
+                    navegar('/esqueci-a-senha/check-inbox')
+                }
+                else{
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                    return false
                 }
             })
             .catch(erro => {
-                console.error(erro)
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+                return false
             })
     }
 
     return (
         <>
+            <Toast ref={toast} />
             <Frame>
                 <BotaoVoltar />
                 <Titulo>
