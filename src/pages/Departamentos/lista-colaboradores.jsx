@@ -9,6 +9,14 @@ function DepartamentoListaColaboradores() {
     let { id } = useParams()
     const [departamento, setDepartamento] = useState(null)
     const [clbdr, setClbdr] = useState([])
+
+    useEffect(() => {
+        http.get(`api/dashboard/department/${id}`)
+            .then(response => {
+                setDepartamento(response.department)
+            })
+            .catch(erro => console.log(erro))
+    }, [])
     
     useEffect(() => {
         http.get('api/dashboard/collaborator')
@@ -20,14 +28,6 @@ function DepartamentoListaColaboradores() {
                     })
                     setClbdr(filtered)
                 }
-            })
-            .catch(erro => console.log(erro))
-    }, [])
-
-    useEffect(() => {
-        http.get(`api/dashboard/department/${id}`)
-            .then(response => {
-                setDepartamento(response.department)
             })
             .catch(erro => console.log(erro))
     }, [])
