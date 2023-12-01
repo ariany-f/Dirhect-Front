@@ -17,3 +17,49 @@
         color: var(--white);
     }
 }
+
+.p-selectable-row {
+    margin-bottom: 8px;
+    border: 1px solid var(--neutro-200);
+    border-radius: 8px;
+    font-weight: 700;
+}
+.p-highlight {
+    background-color: var(--white);
+}
+.p-checkbox {
+    outline: none;
+    border: none;
+    border-radius: 2px;
+}
+.p-focus {
+    outline: none;
+    box-shadow: none;
+    border: none;
+}
+.p-checkbox-box {
+    cursor: pointer;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--neutro-300);
+    outline: none;
+    transition: 0.2s all linear;
+    position: relative;
+    border-radius: 2px;
+    &.p-highlight {
+        background-color: var(--primaria);
+        border-color: var(--neutro-300);
+    }
+    & svg *{
+        fill: var(--white);
+
+    }
+    &:checked {
+        accent-color: var(--primaria);
+        border: 5px solid var(--primaria);
+    }
+    &::after {
+        content: '';
+    }
+}

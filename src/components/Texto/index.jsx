@@ -1,3 +1,4 @@
+import { MdSignalCellularNull } from "react-icons/md";
 import {styled} from "styled-components";
 
 const Paragrafo = styled.p`
@@ -21,7 +22,7 @@ const Paragrafo = styled.p`
 
 function Texto({ children, weight = 400, color = 'var(--black)', size = '14px', aoClicar = null}) {
     return (
-        <Paragrafo onClick={(evento) => aoClicar(evento)} $color={color} $size={size} $weight={Number(weight)}>
+        <Paragrafo onClick={aoClicar ? (evento) => aoClicar(evento) : null} $color={color} $size={size} $weight={Number(weight)}>
             {children}
         </Paragrafo>
     )

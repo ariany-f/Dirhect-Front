@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-self: stretch;
-    & .vermilion {
+    &.vermilion {
         background-color: var(--vermilion-50);
     }
     &.spaced {

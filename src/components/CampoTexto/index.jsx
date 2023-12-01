@@ -26,7 +26,7 @@ const Campo = styled.input`
 
     ~ .icon {
         box-sizing: initial;
-        top: 6vh;
+        top: 30%;
         cursor: pointer;
         position: absolute;
         fill: var(--neutro-600);

@@ -12,6 +12,14 @@
     gap: 8px;
     align-self: stretch;
     position: relative;
+    & label {
+        + input{
+            + svg {
+                top: 6vh!important;
+            }
+        }
+    }
+    
 }
 
 .erroMessage {

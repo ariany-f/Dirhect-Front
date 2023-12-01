@@ -76,8 +76,7 @@ function ColaboradorBandeiraCartao() {
 
         if(document.querySelectorAll("form .error").length === 0)
         {
-            submeterUsuario()
-            .then(response => {
+            submeterUsuario().then(response => {
                 if(response.data.status == 'success')
                 {
                     navegar('colaborador/registro/sucesso')

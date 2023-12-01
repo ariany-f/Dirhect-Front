@@ -262,7 +262,7 @@ export const ColaboradorProvider = ({ children }) => {
 
         colaborador.document = sendDocument
 
-        http.post('api/dashboard/collaborator', colaborador)
+        return http.post('api/dashboard/collaborator', colaborador)
         .then((response) => {
             return response
         })
