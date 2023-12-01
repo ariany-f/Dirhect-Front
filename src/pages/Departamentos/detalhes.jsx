@@ -32,7 +32,10 @@ function DepartamentoDetalhes() {
     useEffect(() => {
         http.get(`api/dashboard/department/${id}`)
             .then(response => {
-                setDepartamento(response.department)
+                if(response.status === 'success')
+                {
+                    setDepartamento(response.department)
+                }
             })
             .catch(erro => console.log(erro))
     }, [])

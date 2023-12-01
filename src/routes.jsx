@@ -28,6 +28,7 @@ import ColaboradorRegistroSucesso from '@pages/Colaboradores/Registro/sucesso';
 import Departamentos from '@pages/Departamentos';
 import DepartamentoLista from '@pages/Departamentos/lista';
 import DepartamentoDetalhes from '@pages/Departamentos/detalhes';
+import DepartamentoAdicionarColaboradores from '@pages/Departamentos/adicionar-colaboradores';
 import DepartamentoColaboradores from '@pages/Departamentos/colaboradores-sem-departamento';
 import Premiacoes from '@pages/Premiacoes';
 import PremiacaoDetalhes from '@pages/Premiacoes/detalhes';
@@ -108,6 +109,7 @@ function AppRouter() {
                   <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
               </Route>
               
+              <Route path="departamento/:id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
               <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} >
                   <Route index element={<DepartamentoListaColaboradores />} />
                   <Route path="configuracao-beneficios" element={<DepartamentoConfiguracaoBeneficios />} />

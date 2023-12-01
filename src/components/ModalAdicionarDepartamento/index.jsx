@@ -126,9 +126,11 @@ function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar }) {
         
         http.post('api/dashboard/department', data)
             .then((response) => {
-                // Receber id do departamento para ir para a tela de adicionar colaboradoers
-                // Depois vai pro detalhe do departamento pra adicionar benefícios
-                aoFechar() //Provisorio
+                if(response.status === 'success')
+                {
+                    aoFechar()
+                    navegar(`/departamento/${response.public_id}/adicionar-colaboradores`)
+                }
             })
             .catch(erro => {
                 console.error(erro)
