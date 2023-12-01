@@ -1,9 +1,10 @@
 import Texto from '@components/Texto'
 import styles from './Departamento.module.css'
 import styled from 'styled-components';
+import http from '@http'
 import BadgeBeneficio from '@components/BadgeBeneficio';
-import colaboradores from '@json/colaboradores.json'
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -16,11 +17,23 @@ const NumeroColaboradores = styled.p`
 `
 
 function DepartamentoCard({department}) {
+    
+    const [clbdr, setClbdr] = useState([])
 
-    const clbdr = colaboradores.filter(colaborador => {
-        return colaborador.departments.hasOwnProperty(department.name)
-    });
-
+    useEffect(() => {
+        http.get('api/dashboard/collaborator')
+            .then(response => {
+                if(response.data.collaborators.length)
+                {
+                    const filtered = response.data.collaborators.filter(colaborador => {
+                        return (department.name in colaborador.departments)
+                    })
+                    setClbdr(filtered)
+                }
+            })
+            .catch(erro => console.log(erro))
+    }, [])
+    
     return (
         <Link to={`/departamento/detalhes/${department.public_id}`}>
         <div className={styles.departamento}>

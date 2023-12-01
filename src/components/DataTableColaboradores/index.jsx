@@ -38,7 +38,7 @@ function DataTableColaboradores({ colaboradores }) {
                     <CampoTexto name="search" width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                 </span>
             </div>
-            <DataTable value={colaboradores} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados colaboradores" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }}>
+            <DataTable value={colaboradores} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados colaboradores" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '70vw' }}>
                 <Column field="name" header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column field="email" header="E-mail" style={{ width: '35%' }}></Column>
                 <Column field="document" header="CPF" style={{ width: '20%' }}></Column>

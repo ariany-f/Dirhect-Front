@@ -38,8 +38,7 @@ function DepartamentoDetalhes() {
     addLocale('pt', {
         accept: 'Sim',
         reject: 'Não'
-    });
-
+    })
 
     useEffect(() => {
         http.get(`api/dashboard/department/${id}`)

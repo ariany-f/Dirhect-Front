@@ -1,6 +1,6 @@
 import http from '@http'
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import BotaoGrupo from "@components/BotaoGrupo"
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
@@ -13,7 +13,7 @@ import { Skeleton } from 'primereact/skeleton'
 import { FaPencilAlt } from 'react-icons/fa'
 import { MdCancel } from "react-icons/md"
 import styles from './Departamento.module.css'
-import './Detalhes.css'
+import './AdicionarColaboradores.css'
 import { Toast } from 'primereact/toast'
 import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
@@ -33,15 +33,21 @@ const ContainerButton = styled.div`
 const LadoALado = styled.div`
     display: flex;
     gap: 24px;
+    & span {
+        display: flex;
+        align-items: center;
+    }
 `
 
 function DepartamentoAdicionarColaboradores() {
 
     let { id } = useParams()
+    const navegar = useNavigate()
     const [departamento, setDepartamento] = useState(null)
     const [edicaoAberta, setEdicaoAberta] = useState(false)
     const [nomeDepartamento, setNomeDepartamento] = useState('')
     const [globalFilterValue, setGlobalFilterValue] = useState('')
+    const [colaboradores, setColaboradores] = useState([])
     const [selectedColaboradores, setSelectedColaboradores] = useState(null);
     const [rowClick, setRowClick] = useState(true)
     const [filters, setFilters] = useState({
@@ -60,7 +66,6 @@ function DepartamentoAdicionarColaboradores() {
             .catch(erro => console.log(erro))
     }, [edicaoAberta])
 
-    const [colaboradores, setColaboradores] = useState([])
 
     useEffect(() => {
         http.get('api/dashboard/collaborator')
@@ -89,6 +94,30 @@ function DepartamentoAdicionarColaboradores() {
             })
             .catch(erro => console.log(erro))
         }        
+    }
+
+    const adicionarColaborador = () => {
+
+        const obj = {}
+        obj[departamento.name] = departamento.public_id
+
+        selectedColaboradores.map((item) => {
+
+            let sendData = {
+                departments: obj
+
+            }
+
+            http.put(`api/dashboard/collaborator/${item.public_id}`, sendData)
+            .then(response => {
+                if(response.status === 'success')
+                {
+                    toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Adicionado com sucesso', life: 3000 });
+                    navegar(`/departamento/detalhes/${id}`)
+                }
+            })
+            .catch(erro => console.log(erro))
+        })
     }
     
     const onGlobalFilterChange = (value) => {
@@ -144,8 +173,8 @@ function DepartamentoAdicionarColaboradores() {
                     <ContainerButton>
                         <Botao aoClicar={() => navigate(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                         <LadoALado>
-                            <Texto weight={400}>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></Texto>
-                            <Botao estilo="vermilion" size="medium" filled>Adicionar Colaboradores</Botao>
+                            <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
+                            <Botao aoClicar={adicionarColaborador} estilo="vermilion" size="medium" filled>Adicionar Colaboradores</Botao>
                         </LadoALado>
                     </ContainerButton>
                 </>
