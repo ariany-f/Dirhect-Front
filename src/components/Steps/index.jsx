@@ -24,7 +24,7 @@ const Step = styled.div`
 function Steps({total, atual}){
     let rows = []
     for (let i = 0; i < total; i++) {
-        rows.push( (i < atual) ? <StepPreenchido /> : <Step /> )
+        rows.push( (i < atual) ? <StepPreenchido key={i} /> : <Step key={i} /> )
     }
     return (
         <ProgressSteps>
