@@ -25,9 +25,9 @@ function Departamentos() {
                     <Link to="/departamento">
                         <Botao estilo={location.pathname == '/departamento'?'black':''} size="small" tab>Departamentos</Botao>
                     </Link>
-                    <Link to="/departamento/colaboradores-sem-departamento">
+                    {/* <Link to="/departamento/colaboradores-sem-departamento">
                         <Botao estilo={location.pathname == '/departamento/colaboradores-sem-departamento'?'black':''} size="small" tab>Colaboradores sem departamento</Botao>
-                    </Link>
+                    </Link> */}
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
             </BotaoGrupo>

@@ -1,8 +1,8 @@
 import DepartamentoCard from '@components/DepartamentoCard'
 import CampoTexto from '@components/CampoTexto'
-import departments from '@json/departments.json'
 import styles from './Departamento.module.css'
 import styled from 'styled-components'
+import { Skeleton } from 'primereact/skeleton'
 import { useEffect, useState } from 'react'
 import http from '@http'
 
@@ -31,7 +31,7 @@ function DepartamentoLista() {
                 }
             })
             .catch(erro => console.log(erro))
-    }, [departamentos])
+    }, [])
 
     return (
         <>
@@ -42,7 +42,7 @@ function DepartamentoLista() {
                 <CampoTexto name="search" width={'320px'} valor={search} setValor={setSearch} type="search" label="" placeholder="Buscar um departamento" />
                 : <></>
             }
-            
+            {departamentos.length ?
             <div className={styles.cardsDepartamento}>
                 {departamentos.map(department => {
                     return (
@@ -50,6 +50,8 @@ function DepartamentoLista() {
                     )
                 })}
             </div>
+            : <Skeleton variant="rectangular" width={700} height={100} />
+            }
         </>
     )
 }

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ArmazenadorToken } from "../utils";
+import { ArmazenadorToken } from "../utils"
 
 const http = axios.create({
     baseURL: 'https://beta-aqbeneficios.aqbank.com.br/'
@@ -28,7 +28,7 @@ http.interceptors.response.use(
         if(!rotasIgnoradasPelosErros.includes(error.config.url) 
         && error.response.status === 401) {
             // Faz logout e envia usuário de volta pro login
-            return  ArmazenadorToken.removerToken()
+            return ArmazenadorToken.removerToken()
         }
         
         return Promise.reject(error);

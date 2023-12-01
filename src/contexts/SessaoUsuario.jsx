@@ -245,6 +245,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
     }
 
     const submeterCompanySession = () => {
+        
         if(!ArmazenadorToken.UserCompanyPublicId && usuario.company_public_id)
         {
             ArmazenadorToken.definirCompany(

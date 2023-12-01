@@ -1,6 +1,6 @@
 import http from '@http'
-import { useEffect, useState } from "react";
-import { useParams, Link, useLocation, Outlet } from 'react-router-dom'
+import { useEffect, useRef, useState } from "react";
+import { useParams, Link, useLocation, Outlet, useNavigate } from 'react-router-dom'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import BotaoVoltar from "@components/BotaoVoltar"
 import BotaoGrupo from "@components/BotaoGrupo"
@@ -9,12 +9,16 @@ import BotaoSemBorda from "@components/BotaoSemBorda"
 import Botao from "@components/Botao"
 import styled from 'styled-components'
 import Texto from "@components/Texto"
+import { Toast } from 'primereact/toast'
 import Titulo from "@components/Titulo"
 import { Skeleton } from 'primereact/skeleton'
 import { FaTrash } from 'react-icons/fa'
+import './Detalhes.css'
 import styles from './Departamento.module.css'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import { GrAddCircle } from 'react-icons/gr'
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
+import { addLocale } from 'primereact/api';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -27,7 +31,15 @@ function DepartamentoDetalhes() {
     let { id } = useParams()
     const [departamento, setDepartamento] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
-    const location = useLocation();
+    const location = useLocation()
+    const navegar = useNavigate()
+    const toast = useRef(null)
+
+    addLocale('pt', {
+        accept: 'Sim',
+        reject: 'Não'
+    });
+
 
     useEffect(() => {
         http.get(`api/dashboard/department/${id}`)
@@ -39,9 +51,33 @@ function DepartamentoDetalhes() {
             })
             .catch(erro => console.log(erro))
     }, [])
+
+    const excluirDepartamento = () => {
+        confirmDialog({
+            message: 'Você quer excluir esse departamento?',
+            header: 'Deletar',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                http.delete(`api/dashboard/department/${id}`)
+                .then(response => {
+                    if(response.status === 'success')
+                    {
+                        toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                        navegar('/departamento')
+                    }
+                })
+                .catch(erro => console.log(erro))
+            },
+            reject: () => {
+
+            },
+        });
+    }
    
     return (
         <ConteudoFrame>
+            <Toast ref={toast} />
+            <ConfirmDialog />
             <BotaoVoltar linkFixo={`/departamento`} />
             <Texto weight={500} size="12px">Departamento</Texto>
             {departamento ?
@@ -50,10 +86,10 @@ function DepartamentoDetalhes() {
                         <h3>{departamento.name}</h3>
                     </Titulo>
                     <BotaoSemBorda $color="var(--error)">
-                        <FaTrash /><Link className={styles.link}>Excluir Departamento</Link>
+                        <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Departamento</Link>
                     </BotaoSemBorda>
                 </BotaoGrupo>
-            : <Skeleton variant="rectangular" width={300} height={60} />
+            : <Skeleton variant="rectangular" width={300} height={35} />
             }
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
