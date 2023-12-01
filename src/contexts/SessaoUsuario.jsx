@@ -191,7 +191,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
     const submeterRecuperacaoSenha = () => {
 
         var sendCode = '';
-
+        
         usuario.code.map(item => {
             if(typeof item.preenchimento !== undefined)
             {

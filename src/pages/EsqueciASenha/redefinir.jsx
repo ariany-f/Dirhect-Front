@@ -43,10 +43,13 @@ function RedefinirSenha() {
         .then(response => {
             if(response.data)
             {
+                if(response.data.status === 'error')
+                {
+                    alert(response.data.message)
+                }
                 setRecuperacaoToken(response.data.token)
                 setRecuperacaoPublicId(response.data.user_public_id)
             }
-            console.log(response)
         })
         .catch(erro => {
             console.error(erro)

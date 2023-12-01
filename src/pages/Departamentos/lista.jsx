@@ -31,7 +31,7 @@ function DepartamentoLista() {
                 }
             })
             .catch(erro => console.log(erro))
-    }, [])
+    }, [departamentos])
 
     return (
         <>

@@ -21,9 +21,9 @@ function Seguranca() {
         evento.preventDefault()
         submeterRecuperacaoSenha()
             .then((response) => {
-                if(response !== undefined || response.data !== undefined)
+                if(response !== undefined && response.data !== undefined && response.data.status !== 'error')
                 { 
-                    navegar('/esqueci-a-senha/redefinir')
+                    navegar('/esqueci-a-senha/sucesso')
                 }
             })
             .catch(erro => {

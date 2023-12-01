@@ -56,6 +56,7 @@ import ColaboradorEnvioCartao from './pages/Colaboradores/Registro/envio-cartao'
 import ColaboradorDadosIniciais from './pages/Colaboradores/Registro/dados-iniciais';
 import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario";
 import ColaboradorBandeiraCartao from './pages/Colaboradores/Registro/bandeira-cartao';
+import RedefinirSenhaSucesso from './pages/EsqueciASenha/sucesso';
 
 function AppRouter() {
   
@@ -75,6 +76,7 @@ function AppRouter() {
               <Route index element={<EsqueciASenha />} />
               <Route path="seguranca" element={<Seguranca />} />
               <Route path="redefinir" element={<RedefinirSenha />} />
+              <Route path="sucesso" element={<RedefinirSenhaSucesso />} />
             </Route>
 
             <Route path="/" element={<Autenticado/>}>
