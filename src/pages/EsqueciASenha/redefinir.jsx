@@ -73,7 +73,6 @@ function RedefinirSenha() {
     return (
         <>
             <Frame>
-                <BotaoVoltar />
                 <Titulo>
                     <h2>Redefinir senha</h2>
                     <SubTitulo>
