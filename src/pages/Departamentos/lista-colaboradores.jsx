@@ -19,7 +19,7 @@ function DepartamentoListaColaboradores() {
     }, [])
     
     useEffect(() => {
-        if(departamento)
+        if(departamento && !setClbdr.length)
         {
             http.get('api/dashboard/collaborator')
                 .then(response => {
@@ -33,7 +33,7 @@ function DepartamentoListaColaboradores() {
                 })
                 .catch(erro => console.log(erro))
         }
-    }, [])
+    }, [departamento])
    
     return (
         <Frame>
