@@ -19,7 +19,7 @@ const Paragrafo = styled.p`
     }
 `
 
-function Texto({ children, weight = 400, color = 'var(--black)', size = '14px', aoClicar = ''}) {
+function Texto({ children, weight = 400, color = 'var(--black)', size = '14px', aoClicar = null}) {
     return (
         <Paragrafo onClick={(evento) => aoClicar(evento)} $color={color} $size={size} $weight={Number(weight)}>
             {children}
