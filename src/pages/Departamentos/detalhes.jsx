@@ -99,12 +99,14 @@ function DepartamentoDetalhes() {
                         <Botao estilo={location.pathname == `/departamento/detalhes/${id}/configuracao-beneficios`?'black':''} size="small" tab>Configuração de Benefícios</Botao>
                     </Link>
                 </BotaoGrupo>
-                <BotaoGrupo>
-                    <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
-                        <AiFillQuestionCircle className="question-icon" size={20} />
-                    </QuestionCard>
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar benefício</Botao>
-                </BotaoGrupo>
+                {location.pathname == `/departamento/detalhes/${id}/configuracao-beneficios` &&
+                    <BotaoGrupo>
+                        <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
+                            <AiFillQuestionCircle className="question-icon" size={20} />
+                        </QuestionCard>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar benefício</Botao>
+                    </BotaoGrupo>
+                }
             </BotaoGrupo>
             <Outlet />
             <ModalAdicionarDepartamento aoFechar={() => setModalOpened(false)} opened={modalOpened} />
