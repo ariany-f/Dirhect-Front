@@ -7,11 +7,17 @@ function ColaboradoresCadastrados() {
     const [colaboradores, setColaboradores] = useState([])
 
     useEffect(() => {
-        http.get('api/dashboard/collaborator')
-            .then(response => {
-                setColaboradores(response.data.collaborators)
-            })
-            .catch(erro => console.log(erro))
+        if(!colaboradores.length)
+        {
+            http.get('api/dashboard/collaborator')
+                .then(response => {
+                    if(response.data.collaborators.length)
+                    {
+                        setColaboradores(response.data.collaborators)
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
     }, [])
 
     return (
