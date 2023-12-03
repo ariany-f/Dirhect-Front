@@ -59,6 +59,10 @@ import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario";
 import ColaboradorBandeiraCartao from './pages/Colaboradores/Registro/bandeira-cartao';
 import RedefinirSenhaCheckInbox from './pages/EsqueciASenha/check-inbox';
 import RedefinirSenhaSucesso from './pages/EsqueciASenha/sucesso';
+import MeusDados from './pages/MeusDados'
+import MeusDadosDadosGerais from './pages/MeusDados/dados-gerais'
+import MeusDadosEndereco from './pages/MeusDados/endereco'
+import MeusDadosDadosFaturamento from './pages/MeusDados/dados-faturamento'
 
 function AppRouter() {
   
@@ -142,6 +146,12 @@ function AppRouter() {
               <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
               <Route path="adicionar-celular/:id" element={<AdicionarCelular />} />
               <Route path="adicionar-email/:id" element={<AdicionarEmail />} />
+
+              <Route path="usuario" element={<MeusDados />} >
+                    <Route index element={<MeusDadosDadosGerais />} />
+                    <Route path="endereco" element={<MeusDadosEndereco />} />
+                    <Route path="dados-faturamento" element={<MeusDadosDadosFaturamento />} />
+              </Route>
             </Route>
             <Route path="*" element={<NaoEncontrada />}></Route>
           </Routes>
