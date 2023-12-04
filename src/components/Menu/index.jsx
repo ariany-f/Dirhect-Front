@@ -5,6 +5,7 @@ import { IoCardSharp } from 'react-icons/io5'
 import { RiUserFollowFill, RiLogoutCircleLine } from 'react-icons/ri'
 import { Link, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useEffect } from "react"
 
 const DialogEstilizado = styled.dialog`
     display: inline-flex;
@@ -55,7 +56,6 @@ const DialogEstilizado = styled.dialog`
 
 function Menu({ opened = false, aoFechar }){
 
-
     const { 
         usuario,
         submeterLogout,
@@ -64,19 +64,29 @@ function Menu({ opened = false, aoFechar }){
     const navegar = useNavigate()
 
     function Sair() {
+        if(opened)
+        {
+            aoFechar()
+        }
         submeterLogout()
         navegar('/login')
     }
-    
 
+    const FecharMenu = () => {
+        if(opened)
+       {
+            aoFechar()
+       }
+    }
+    
     return (
         <>
         {opened &&
             <DialogEstilizado>
                 <nav>
                     <ul>
-                        <li>
-                            <Link className="link">
+                        <li onClick={() => FecharMenu()}>
+                            <Link className="link" to="/usuario">
                                 <div className="group">
                                     <IoMdSettings size={20} className="icon"/>
                                     Meus dados
@@ -84,7 +94,7 @@ function Menu({ opened = false, aoFechar }){
                                 <MdOutlineChevronRight size={20} />
                             </Link>
                         </li>
-                        <li>
+                        <li onClick={() => FecharMenu()}>
                             <Link className="link">
                                 <div className="group">
                                     <IoCardSharp size={20} className="icon"/>
@@ -93,7 +103,7 @@ function Menu({ opened = false, aoFechar }){
                                 <MdOutlineChevronRight size={20} />
                             </Link>
                         </li>
-                        <li>
+                        <li onClick={() => FecharMenu()}>
                             <Link className="link">
                                 <div className="group">
                                     <RiUserFollowFill size={20} className="icon"/>

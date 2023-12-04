@@ -51,32 +51,31 @@ function Login() {
         if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
         {
             solicitarCodigo()
-                .then((response) => {
-                    if(response.data.status === 'success')
-                    {
-                        ArmazenadorToken.definirUsuario(
-                            response.data.name,
-                            response.data.email,
-                            usuario.document
-                        )
-                        setEmail(response.data.email)
-                        setCompanies(response.data.companies)
-                        navegar('/login/selecionar-empresa')
-                    }
-                    else
-                    {
-                        toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
-                        return false
-                    }
-                   
-                })
-                .catch(erro => {
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+            .then((response) => {
+                if(response.data.status === 'success')
+                {
+                    ArmazenadorToken.definirUsuario(
+                        response.data.name,
+                        response.data.email,
+                        usuario.document
+                    )
+                    setEmail(response.data.email)
+                    setCompanies(response.data.companies)
+                    navegar('/login/selecionar-empresa')
+                }
+                else
+                {
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
                     return false
-                })
+                }
+                
+            })
+            .catch(erro => {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+                return false
+            })
         }
     }
-
 
     return (
         <>

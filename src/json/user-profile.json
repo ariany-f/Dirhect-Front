@@ -1,0 +1,35 @@
+{
+    "public_id": "26cdca43-6e39-4802-95d2-1a89608bbedf",
+    "name": "Jader Afonso",
+    "email": "jader.afonso@gmail.com",
+    "document": "42245039052",
+    "phone_number": "11984979026",
+    "company_name": "Dig Play Tech",
+    "company_document": "31565991000183",
+    "status": 1,
+    "address": {
+        "id": 2,
+        "public_id": "7e96c07f-a867-41f6-b14d-85e8b5f41a39",
+        "user_id": 4,
+        "collaborator_id": 1,
+        "postal_code": "04710090",
+        "street": "R Doutor Jose Aureo Bustamante",
+        "number": "455",
+        "complement": "CJ 55",
+        "district": "Vila Sao Francisco",
+        "city": "Sao Paulo",
+        "state": "SP",
+        "main_address": 1,
+        "deleted_at": null,
+        "created_at": "2023-10-03T18:38:21.000000Z",
+        "updated_at": "2023-10-03T18:38:21.000000Z"
+    },
+    "notifications": {
+        "public_id": "233d6705-8j9o-462a-86bc-81ab70ee4751",
+        "promotion_offer": 1,
+        "transactions": 0,
+        "benefits": 1,
+        "created_at": "2023-10-23T14:19:10.000000Z",
+        "updated_at": "2023-10-23T14:19:12.000000Z"
+    }
+}

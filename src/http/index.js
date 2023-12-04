@@ -16,14 +16,11 @@ http.interceptors.request.use(function (config) {
 });
 
 const rotasIgnoradasPelosErros = [
-    'api/auth/token',
     'api/auth/code',
-    'api/auth/access/first',
-    'api/auth/access/first/validate'
 ]
 
 http.interceptors.response.use(
-    (response) => response.data,
+    (response) => (response.data) ? response.data : response,
     function (error) {
         if(!rotasIgnoradasPelosErros.includes(error.config.url) 
         && error.response.status === 401) {
