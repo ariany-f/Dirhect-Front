@@ -2,6 +2,7 @@ import http from '@http'
 import { useEffect, useState } from 'react'
 import userProfile from '@json/user-profile.json'
 import Titulo from '@components/Titulo'
+import SubTitulo from '@components/SubTitulo'
 import Texto from '@components/Texto'
 import Frame from '@components/Frame'
 import BotaoSemBorda from '@components/BotaoSemBorda'
@@ -26,7 +27,7 @@ function MeusDadosDadosFaturamento() {
         // .catch(erro => {
         //     console.error(erro)
         // })
-       
+
     }, [])
 
     function formataCNPJ(cnpj) {
@@ -36,8 +37,11 @@ function MeusDadosDadosFaturamento() {
 
     return (
         <>
-         <Titulo><h6>CNPJ</h6></Titulo>
-         <div className={styles.card_dashboard}>
+            <Titulo>
+                <h6>CNPJ</h6>
+                <SubTitulo>Para comprovantes fiscais</SubTitulo>
+            </Titulo>
+            <div className={styles.card_dashboard}>
                 <Texto>CNPJ</Texto>
                 {userProfile.company_document ?
                     <Texto weight="800">{formataCNPJ(userProfile?.company_document)}</Texto>
@@ -70,7 +74,10 @@ function MeusDadosDadosFaturamento() {
                     </BotaoSemBorda>
                 </ContainerHorizontal>
             </div>
-            <Titulo><h6>E-mail</h6></Titulo>
+            <Titulo>
+                <h6>E-mail</h6>
+                <SubTitulo>Para comprovantes fiscais</SubTitulo>
+            </Titulo>
             <div className={styles.card_dashboard}>
                 <ContainerHorizontal width="50%">
                     <Frame gap="5px">
@@ -86,9 +93,12 @@ function MeusDadosDadosFaturamento() {
                     </BotaoSemBorda>
                 </ContainerHorizontal>
             </div>
-            <Titulo><h6>Endereço</h6></Titulo>
+            <Titulo>
+                <h6>Endereço</h6>
+                <SubTitulo>Para comprovantes fiscais</SubTitulo>
+            </Titulo>
             <div className={styles.card_dashboard}>
-            <Texto>CEP</Texto>
+                <Texto>CEP</Texto>
                 {userProfile.address.postal_code ?
                     <Texto weight="800">{userProfile?.address.postal_code}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />

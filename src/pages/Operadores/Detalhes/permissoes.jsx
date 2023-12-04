@@ -38,40 +38,29 @@ function OperadorPermissoes() {
 
     const [checkedBen, setCheckedBen] = useState(false);
     const [checkedPrem, setCheckedPrem] = useState(true);
+    const [checkedClbrd, setCheckedClbrd] = useState(true);
     const [checkedDesp, setCheckedDesp] = useState(true);
 
     return (
         <>
             <Titulo>
-                <h6>Carteiras</h6>
-                <SubTitulo>Você pode ativar ou desativar as carteiras do seu colaborador</SubTitulo>
+                <h6>Permissões de uso</h6>
             </Titulo>
-            <CardText>
-                <SubTitulo>O colaborador escolhe qual saldo quer utilizar selecionando o tipo de carteira em seu aplicativo.</SubTitulo>
-            </CardText>
             <div className={styles.card_dashboard}>
                 <CardLine>
-                    <Texto weight="800">Benefícios</Texto>
-                    {checkedBen ? 
-                        <Texto weight="700" color="var(--primaria)">Ativo</Texto>
-                    : <Texto weight="700">Fixo</Texto>
-                    }
+                    <Texto weight="800">Adicionar saldo</Texto>
                     <SwitchInput checked={checkedBen} onChange={setCheckedBen} />
                 </CardLine>
                 <CardLine>
-                    <Texto weight="800">Premiações</Texto>
-                    {checkedPrem ? 
-                        <Texto weight="700" color="var(--primaria)">Ativo</Texto>
-                    : <Texto weight="700">Fixo</Texto>
-                    }
+                    <Texto weight="800">Recarregar benefícios</Texto>
                     <SwitchInput checked={checkedPrem} onChange={setCheckedPrem} />
                 </CardLine>
                 <CardLine>
-                    <Texto weight="800">Despesas</Texto>
-                    {checkedDesp ? 
-                        <Texto weight="700" color="var(--primaria)">Ativo</Texto>
-                    : <Texto weight="700">Fixo</Texto>
-                    }
+                    <Texto weight="800">Adicionar colaboradores</Texto>
+                    <SwitchInput checked={checkedClbrd} onChange={setCheckedClbrd} />
+                </CardLine>
+                <CardLine>
+                    <Texto weight="800">Controle de despesas</Texto>
                     <SwitchInput checked={checkedDesp} onChange={setCheckedDesp} />
                 </CardLine>
             </div>
