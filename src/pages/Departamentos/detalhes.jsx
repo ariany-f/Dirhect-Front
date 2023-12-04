@@ -19,6 +19,7 @@ import { AiFillQuestionCircle } from 'react-icons/ai'
 import { GrAddCircle } from 'react-icons/gr'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api';
+import ModalDepartamentoAdicionarBeneficio from '../../components/ModalDepartamentoAdicionarBeneficio';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -30,7 +31,7 @@ function DepartamentoDetalhes() {
 
     let { id } = useParams()
     const [departamento, setDepartamento] = useState(null)
-    const [modalOpened, setModalOpened] = useState(false)
+    const [modalBeneficioOpened, setModalBeneficioOpened] = useState(false)
     const location = useLocation()
     const navegar = useNavigate()
     const toast = useRef(null)
@@ -104,12 +105,12 @@ function DepartamentoDetalhes() {
                         <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
                             <AiFillQuestionCircle className="question-icon" size={20} />
                         </QuestionCard>
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar benefício</Botao>
+                        <Botao aoClicar={() => setModalBeneficioOpened(true)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar benefício</Botao>
                     </BotaoGrupo>
                 }
             </BotaoGrupo>
             <Outlet />
-            <ModalAdicionarDepartamento aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+            <ModalDepartamentoAdicionarBeneficio aoFechar={() => setModalBeneficioOpened(false)} opened={modalBeneficioOpened} />
         </ConteudoFrame>
     )
 }

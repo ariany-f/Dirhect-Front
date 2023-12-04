@@ -3,16 +3,24 @@ import EstilosGlobais from '@components/GlobalStyles'
 import BarraLateral from "@components/BarraLateral"
 import Cabecalho from "@components/Cabecalho"
 import MainContainer from "@components/MainContainer"
-import { Navigate, Outlet } from "react-router-dom"
+import { Navigate, Outlet, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import ModalCnpj from '@components/ModalCnpj'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 function Autenticado() {
 
     const {
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
+
+    const navegar = useNavigate()
+
+    useEffect(() => {
+        if(!usuarioEstaLogado) {
+            navegar('/login')
+        }
+    })
     
     
     const selectCompany = () => {

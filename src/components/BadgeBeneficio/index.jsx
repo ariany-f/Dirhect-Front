@@ -2,7 +2,7 @@ import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill } from 
 import { FaTheaterMasks } from 'react-icons/fa'
 import { BiBookReader } from 'react-icons/bi'
 import { PiForkKnifeFill } from 'react-icons/pi'
-import { MdOutlineMedicalServices  } from 'react-icons/md'
+import { MdOutlineMedicalServices, MdOutlineFastfood } from 'react-icons/md'
 import styles from '@components/BadgeBeneficio/BadgeBeneficio.module.css'
 
 const icones = [
@@ -14,7 +14,7 @@ const icones = [
     {
         "id": 2,
         "name": "Refeição",
-        "icone": <PiForkKnifeFill />
+        "icone": <MdOutlineFastfood />
     },
     {
         "id": 3,
@@ -45,20 +45,37 @@ const icones = [
         "id": 8,
         "name": "Saúde",
         "icone": <MdOutlineMedicalServices />
+    },
+    {
+        "id": 9,
+        "name": "Auxílio Alimentação",
+        "icone": <PiForkKnifeFill />
     }
 ]
 
-function BadgeBeneficio({ nomeBeneficio }) {
+function BadgeBeneficio({ nomeBeneficio, layout = 'inline' }) {
     return (
         icones.map(item => {
             if(item.name == nomeBeneficio)
             {
-                return (
-                    <div key={item.id} className={styles.beneficio}>
-                        {item.icone}
-                        <p>{item.name}</p>
-                    </div>
-                )
+                if(layout == 'inline')
+                {
+                    return (
+                        <div key={item.id} className={styles.beneficio}>
+                            {item.icone}
+                            <p>{item.name}</p>
+                        </div>
+                    )
+                }
+                else if(layout == 'grid')
+                {
+                    return (
+                        <div key={item.id} className={styles.beneficio_grid}>
+                            {item.icone}
+                            <p>{item.name}</p>
+                        </div>
+                    )
+                }
             }
         })
     )

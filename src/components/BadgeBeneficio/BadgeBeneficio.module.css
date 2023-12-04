@@ -13,3 +13,23 @@
         fill: var(--neutro-600);
     }
 }
+
+.beneficio_grid{
+    cursor: pointer;
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px;
+    font-size: 14px;
+    border-radius: 8px;
+    display: flex;
+    flex-grow: 1;
+    width: 100px;
+    border: 1px solid var(--neutro-200);
+    & p {
+        color: var(--neutro-600);
+        font-weight: 700;
+    }
+    & svg * {
+        color: var(--neutro-600);
+    }
+}
