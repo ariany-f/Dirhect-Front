@@ -59,10 +59,9 @@ const ItemUsuario = styled.div`
         height: 40px;
     }
 `
-const Cabecalho = ({ nomeEmpresa, aoClicar = null }) => {
+const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) => {
     
     const location = useLocation();
-    const [menuOpened, setMenuOpened] = useState(false)
 
     const titulos = [
         {
@@ -134,7 +133,7 @@ const Cabecalho = ({ nomeEmpresa, aoClicar = null }) => {
                     </ItemUsuario>
                 </div>
             </RightItems>
-            <Menu opened={menuOpened} aoFechar={() => setMenuOpened(false)} />
+            <Menu opened={menuOpened} aoFechar={toggleMenu} />
         </HeaderEstilizado>
     )
 }

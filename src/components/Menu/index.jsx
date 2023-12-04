@@ -73,10 +73,7 @@ function Menu({ opened = false, aoFechar }){
     }
 
     const FecharMenu = () => {
-        if(opened)
-       {
-            aoFechar()
-       }
+        aoFechar()
     }
     
     return (

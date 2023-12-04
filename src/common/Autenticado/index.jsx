@@ -20,6 +20,19 @@ function Autenticado() {
     }
 
     const [modalOpened, setModalOpened] = useState(false)
+    const [menuOpened, setMenuOpened] = useState(false)
+
+    
+    function toggleMenu(){
+        setMenuOpened(!menuOpened)
+    }
+    
+    function fechaMenu(){
+        if(menuOpened)
+        {
+            setMenuOpened(false)
+        }
+    }
     
     return (
         <>
@@ -28,8 +41,8 @@ function Autenticado() {
                 <EstilosGlobais />
                 <MainSection>
                     <BarraLateral />
-                    <MainContainer align="flex-start" padding="2.5vh 5vw">
-                        <Cabecalho aoClicar={selectCompany} nomeEmpresa="Soluções Industriais Ltda" />
+                    <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 5vw">
+                        <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa="Soluções Industriais Ltda" />
                         <Outlet />
                     </MainContainer>
                 </MainSection>

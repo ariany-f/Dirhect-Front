@@ -8,9 +8,9 @@ const DivContainer = styled.div`
     padding: ${ props => props.$padding ? props.$padding : '5vw 10vw' };
 `
 
-function MainContainer({ children, align, padding = '10vw' }) {
+function MainContainer({ children, align, padding = '10vw', aoClicar }) {
     return (
-        <DivContainer $align={align} $padding={padding} className={styles.main}>
+        <DivContainer onClick={(evento) => aoClicar()} $align={align} $padding={padding} className={styles.main}>
             {children}
         </DivContainer>
     )
