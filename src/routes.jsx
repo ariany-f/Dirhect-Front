@@ -63,6 +63,14 @@ import MeusDados from './pages/MeusDados'
 import MeusDadosDadosGerais from './pages/MeusDados/dados-gerais'
 import MeusDadosEndereco from './pages/MeusDados/endereco'
 import MeusDadosDadosFaturamento from './pages/MeusDados/dados-faturamento'
+import Operador from './pages/Operadores';
+import OperadorRegistro from './pages/Operadores/Registro/registro';
+import OperadorRegistroPermissoes from './pages/Operadores/Registro/permissoes';
+import OperadorRegistroSucesso from './pages/Operadores/Registro/sucesso';
+import OperadorRegistroSelecionar from './pages/Operadores/Registro/selecionar';
+import OperadorDetalhes from './pages/Operadores/detalhes/';
+import OperadorDados from './pages/Operadores/Detalhes/dados';
+import OperadorPermissoes from './pages/Operadores/Detalhes/permissoes';
 
 function AppRouter() {
   
@@ -104,6 +112,17 @@ function AppRouter() {
                     <Route path="envio-cartao" element={<ColaboradorEnvioCartao />} />
                     <Route path="bandeira-cartao" element={<ColaboradorBandeiraCartao />} />
                     <Route path="sucesso" element={<ColaboradorRegistroSucesso />} />
+              </Route>
+
+              <Route path="operador" element={<Operador/>} />
+              <Route path="operador/registro" element={<OperadorRegistro />} >
+                    <Route index element={<OperadorRegistroSelecionar />} />
+                    <Route path="permissoes" element={<OperadorRegistroPermissoes />} />
+                    <Route path="sucesso" element={<OperadorRegistroSucesso />} />
+              </Route>
+              <Route path="operador/detalhes/:id" element={<OperadorDetalhes />} >
+                  <Route index element={<OperadorDados />} />
+                  <Route path="permissoes" element={<OperadorPermissoes />} />
               </Route>
 
               <Route path="extrato" element={<Extrato />} />

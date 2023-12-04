@@ -104,7 +104,7 @@ function Menu({ opened = false, aoFechar }){
                             </Link>
                         </li>
                         <li onClick={() => FecharMenu()}>
-                            <Link className="link">
+                            <Link className="link" to="/operador">
                                 <div className="group">
                                     <RiUserFollowFill size={20} className="icon"/>
                                     Operadores

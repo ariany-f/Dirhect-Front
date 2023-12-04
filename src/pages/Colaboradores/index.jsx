@@ -1,8 +1,8 @@
-import Botao from '@components/Botao';
-import BotaoGrupo from '@components/BotaoGrupo';
+import Botao from '@components/Botao'
+import BotaoGrupo from '@components/BotaoGrupo'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Colaboradores.module.css'
-import styled from "styled-components";
+import styled from "styled-components"
 
 import { Link, Outlet, useLocation } from "react-router-dom";
 
