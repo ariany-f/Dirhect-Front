@@ -11,6 +11,9 @@ const Container = styled.div`
     & svg {
         fill: ${ props => props.$color ? props.$color : 'var(--primaria)' };
     }
+    & a{
+        color: ${ props => props.$color ? props.$color : 'var(--primaria)' };
+    }
 `
 
 function BotaoSemBorda({ children, color = 'var(--primaria)'}) {
