@@ -10,7 +10,7 @@ const DivContainer = styled.div`
 
 function MainContainer({ children, align, padding = '10vw', aoClicar }) {
     return (
-        <DivContainer onClick={(evento) => aoClicar()} $align={align} $padding={padding} className={styles.main}>
+        <DivContainer onClick={aoClicar ? (evento) => aoClicar(evento) : null} $align={align} $padding={padding} className={styles.main}>
             {children}
         </DivContainer>
     )
