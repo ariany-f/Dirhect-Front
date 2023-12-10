@@ -1,5 +1,5 @@
 import http from '@http'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Titulo from '@components/Titulo'
 import SubTitulo from '@components/SubTitulo'
 import Texto from '@components/Texto'
@@ -10,10 +10,16 @@ import { Skeleton } from 'primereact/skeleton'
 import styles from './MeusDados.module.css'
 import { Link } from 'react-router-dom'
 import { RiEditBoxFill } from 'react-icons/ri'
+import { Toast } from 'primereact/toast'
+import ModalAlterar from "@components/ModalAlterar"
 
 function MeusDadosDadosFaturamento() {
 
     const [userProfile, setUserProfile] = useState([])
+    const [modalOpened, setModalOpened] = useState(false)
+    const [parametroEdicao, setParametroEdicao] = useState(null)
+    const [dadoEdicao, setDadoEdicao] = useState(null)
+    const toast = useRef(null)
 
     useEffect(() => {
         /**
@@ -30,7 +36,32 @@ function MeusDadosDadosFaturamento() {
              })
          }
 
-    }, [userProfile])
+    }, [userProfile, modalOpened])
+
+    function editarUsuario(dado){
+
+        let type = (dado !== 'address') ? 'billing_data' : 'addresses'
+        let editableParams = {}
+        editableParams[parametroEdicao] = dado
+        let obj = {}
+        obj[type] = editableParams
+
+        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        .then(response => {
+            if(response.status === 'success')
+            {
+                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                setModalOpened(false)
+            }
+        })
+        .catch(erro => console.log(erro))
+    }
+    
+    function AbrirModalEditarUsuario(parametro, dado_antigo){
+        setParametroEdicao(parametro)
+        setDadoEdicao(dado_antigo)
+        setModalOpened(true)
+    }
 
     function formataCNPJ(cnpj) {
         cnpj = cnpj.replace(/[^\d]/g, "");
@@ -39,6 +70,7 @@ function MeusDadosDadosFaturamento() {
 
     return (
         <>
+            <Toast ref={toast} />
             <Titulo>
                 <h6>CNPJ</h6>
                 <SubTitulo>Para comprovantes fiscais</SubTitulo>
@@ -66,7 +98,7 @@ function MeusDadosDadosFaturamento() {
                         </Frame>
                         <BotaoSemBorda>
                             <RiEditBoxFill size={18} />
-                            <Link className={styles.link}>Alterar</Link>
+                            <Link  onClick={() => AbrirModalEditarUsuario('inscricao_municipal', userProfile?.billing_data.CNPJ.document)} className={styles.link}>Alterar</Link>
                         </BotaoSemBorda>
                     </>
                      : <Skeleton variant="rectangular" width={200} height={25} />
@@ -84,7 +116,7 @@ function MeusDadosDadosFaturamento() {
                         </Frame>
                         <BotaoSemBorda>
                             <RiEditBoxFill size={18} />
-                            <Link className={styles.link}>Alterar</Link>
+                            <Link onClick={() => AbrirModalEditarUsuario('inscricao_estadual', userProfile?.billing_data.CNPJ.document)} className={styles.link}>Alterar</Link>
                         </BotaoSemBorda>
                     </>
                      : <Skeleton variant="rectangular" width={200} height={25} />
@@ -108,7 +140,7 @@ function MeusDadosDadosFaturamento() {
                         </Frame>
                         <BotaoSemBorda>
                             <RiEditBoxFill size={18} />
-                            <Link className={styles.link}>Alterar</Link>
+                            <Link onClick={() => AbrirModalEditarUsuario('email', userProfile?.billing_data.email.email)} className={styles.link}>Alterar</Link>
                         </BotaoSemBorda>
                     </>
                      : <Skeleton variant="rectangular" width={200} height={25} />
@@ -177,13 +209,14 @@ function MeusDadosDadosFaturamento() {
                             </Frame>
                             <BotaoSemBorda>
                                 <RiEditBoxFill size={18} />
-                                <Link className={styles.link}>Alterar</Link>
+                                <Link onClick={() => AbrirModalEditarUsuario('address', userProfile?.billing_data.addresses)} className={styles.link}>Alterar</Link>
                             </BotaoSemBorda>
                         </>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                 </ContainerHorizontal>
             </div>
+            <ModalAlterar dadoAntigo={dadoEdicao} parametroParaEditar={parametroEdicao} aoClicar={editarUsuario} opened={modalOpened} aoFechar={() => setModalOpened(!modalOpened)} />
         </>
     )
 }
