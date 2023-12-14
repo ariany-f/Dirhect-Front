@@ -169,16 +169,19 @@ function AdicionarCnpj() {
     const ChangeCep = (value) => 
     {
         setCep(value)
-        axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
-        .then((response) => {
-            if(response.data)
-            {
-                setLogradouro(response.data.logradouro)
-                setBairro(response.data.bairro)
-                setCidade(response.data.localidade)
-                setUf(response.data.uf)
-            }
-        })
+        if(value.length > 8)
+        {
+            axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
+            .then((response) => {
+                if(response.data)
+                {
+                    setLogradouro(response.data.logradouro)
+                    setBairro(response.data.bairro)
+                    setCidade(response.data.localidade)
+                    setUf(response.data.uf)
+                }
+            })
+        }
     }
 
     const sendData = (evento) => {

@@ -9,7 +9,6 @@ import { useEffect, useState } from "react"
 import styled from "styled-components"
 import styles from './ModalAlterar.module.css'
 import axios from "axios"
-import { useColaboradorContext } from "../../contexts/Colaborador"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -87,18 +86,15 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
     const [estados, setEstados] = useState([]);
     const [label, setLabel] = useState('')
     const [address, setAddress] = useState(false)
-    
-    const {
-        colaborador,
-        setAddressStreet,
-        setAddressNumber,
-        setAddressComplement,
-        setAddressDistrict,
-        setAddressCity,
-        setAddressState,
-        setAddressPostalCode,
-    } = useColaboradorContext()
 
+    const [address_postal_code, setAddressPostalCode] = useState('')
+    const [address_street, setAddressStreet] = useState('')
+    const [address_number, setAddressNumber] = useState('')
+    const [address_complement, setAddressComplement] = useState('')
+    const [address_district, setAddressDistrict] = useState('')
+    const [address_city, setAddressCity] = useState('')
+    const [address_state, setAddressState] = useState('')
+    
     useEffect(() => {
         setAddress(false)
         switch(parametroParaEditar)
@@ -123,18 +119,34 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
                 setLabel('Inscrição Municipal')
             break;
 
-            case 'address':
+            case 'addresses':
                 setAddress(true)
             break;
         }
+        
+        /** Definir se o dado alterável será um endereço ou um dado único */
         if(!alteravel)
         {
             if(dadoAntigo && typeof dadoAntigo !== 'object') {
+                /** Preenche o input com o dado atual */
                 setAlteravel(dadoAntigo)
             }
             else
             {
-                if(!estados)
+                /** Preenche os inputs com os dados atuais */
+                if(dadoAntigo)
+                {
+                    setAddressPostalCode(dadoAntigo.address_postal_code)
+                    setAddressStreet(dadoAntigo.address_street)
+                    setAddressNumber(dadoAntigo.address_number)
+                    setAddressComplement(dadoAntigo.address_complement)
+                    setAddressDistrict(dadoAntigo.address_district)
+                    setAddressCity(dadoAntigo.address_city)
+                    setAddressState(dadoAntigo.address_state)
+                }
+
+                /** Preenche dropdown de estados */
+                if(!estados.length)
                 {
                     http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
                     .then(response => {
@@ -152,29 +164,55 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
                 }
             }
         }
-    })
+    }, [parametroParaEditar, dadoAntigo, alteravel, estados])
     
     const ChangeCep = (value) => 
     {
         setAddressPostalCode(value)
-        axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
-        .then((response) => {
-            if(response.data)
-            {
-                setAddressStreet(response.data.logradouro)
-                setAddressDistrict(response.data.bairro)
-                setAddressCity(response.data.localidade)
-                setAddressState(response.data.uf)
-            }
-        })
+        if(value.length > 8)
+        {
+            axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
+            .then((response) => {
+                if(response.data)
+                {
+                    setAddressStreet(response.data.logradouro)
+                    setAddressDistrict(response.data.bairro)
+                    setAddressCity(response.data.localidade)
+                    setAddressState(response.data.uf)
+                }
+            })
+        }
     }
 
     const salvarDados = () => {
-        aoClicar(alteravel)
+        if(parametroParaEditar != 'addresses')
+        {
+            aoClicar(alteravel)
+        }
+        else
+        {
+            let send = {
+                address_postal_code: address_postal_code,
+                address_street: address_street,
+                address_number: address_number,
+                address_complement: address_complement,
+                address_district: address_district,
+                address_city: address_city,
+                address_state: address_state
+            }
+            aoClicar(send)
+        }
     }
 
     const fecharModal = () => {
         setAlteravel('')
+        setAddressPostalCode('')
+        setAddressStreet('')
+        setAddressNumber('')
+        setAddressComplement('')
+        setAddressDistrict('')
+        setAddressCity('')
+        setAddressState('')
         aoFechar()
     }
 
@@ -202,7 +240,7 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
                                             camposVazios={classError} 
                                             patternMask={['99999-999']} 
                                             name="address_postal_code" 
-                                            valor={colaborador.address_postal_code} 
+                                            valor={address_postal_code} 
                                             setValor={ChangeCep} 
                                             type="text" 
                                             label="CEP" 
@@ -214,7 +252,7 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
                                         <CampoTexto 
                                             camposVazios={classError} 
                                             name="address_street" 
-                                            valor={colaborador.address_street} 
+                                            valor={address_street} 
                                             setValor={setAddressStreet} 
                                             type="text" 
                                             label="Logradouro" 
@@ -224,7 +262,7 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
                                         <CampoTexto 
                                             camposVazios={classError} 
                                             name="address_district" 
-                                            valor={colaborador.address_district} 
+                                            valor={address_district} 
                                             setValor={setAddressDistrict} 
                                             type="text" 
                                             label="Bairro" 
@@ -234,7 +272,7 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
                                         <CampoTexto 
                                             camposVazios={classError} 
                                             name="address_number" 
-                                            valor={colaborador.address_number} 
+                                            valor={address_number} 
                                             setValor={setAddressNumber} 
                                             type="text" 
                                             label="Número" 
@@ -243,7 +281,7 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
                                     <Col6>
                                         <CampoTexto 
                                             name="address_complement" 
-                                            valor={colaborador.address_complement} 
+                                            valor={address_complement} 
                                             setValor={setAddressComplement} 
                                             type="text" 
                                             label="Complemento (opcional)" 
@@ -253,14 +291,14 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
                                         <CampoTexto 
                                             camposVazios={classError} 
                                             name="address_city" 
-                                            valor={colaborador.address_city} 
+                                            valor={address_city} 
                                             setValor={setAddressCity} 
                                             type="text" 
                                             label="Cidade" 
                                             placeholder="Digite a address_city do colaborador" />
                                     </Col6>
                                     <Col6>
-                                        <DropdownItens camposVazios={classError} valor={colaborador.address_state} setValor={setAddressState} options={estados} label="UF" name="address_state" placeholder="Digite a UF do colaborador"/>
+                                        <DropdownItens camposVazios={classError} valor={address_state} setValor={setAddressState} options={estados} label="UF" name="address_state" placeholder="Digite a UF do colaborador"/>
                                     </Col6>
                                 </Col12>
                             </div>

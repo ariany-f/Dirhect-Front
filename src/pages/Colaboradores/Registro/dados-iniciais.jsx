@@ -123,16 +123,20 @@ function ColaboradorDadosIniciais() {
     const ChangeCep = (value) => 
     {
         setAddressPostalCode(value)
-        axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
-        .then((response) => {
-            if(response.data)
-            {
-                setAddressStreet(response.data.logradouro)
-                setAddressDistrict(response.data.bairro)
-                setAddressCity(response.data.localidade)
-                setAddressState(response.data.uf)
-            }
-        })
+        
+        if(value.length > 8)
+        {
+            axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
+            .then((response) => {
+                if(response.data)
+                {
+                    setAddressStreet(response.data.logradouro)
+                    setAddressDistrict(response.data.bairro)
+                    setAddressCity(response.data.localidade)
+                    setAddressState(response.data.uf)
+                }
+            })
+        }
     }
 
     return (

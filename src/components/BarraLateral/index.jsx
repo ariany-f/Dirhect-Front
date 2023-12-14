@@ -1,7 +1,7 @@
 import { styled } from "styled-components"
 import ItemNavegacao from "./ItemNavegacao"
 import { AiFillHome } from "react-icons/ai"
-import { RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill } from "react-icons/ri"
+import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill } from "react-icons/ri"
 import { BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
@@ -89,16 +89,35 @@ function BarraLateral() {
         {
             "id": 7,
             "url": "/premiacao",
-            "pageTitulo": "Premiações",
-            "icone": <RiTrophyFill size={20} className="icon" />,
-            "itemTitulo": "Premiações"
+            "pageTitulo": "Saldo Livre",
+            "icone": <RiHandCoinFill size={20} className="icon" />,
+            "itemTitulo": "Saldo Livre"
         },
+        // {
+        //     "id": 7,
+        //     "url": "/premiacao",
+        //     "pageTitulo": "Premiações",
+        //     "icone": <RiTrophyFill size={20} className="icon" />,
+        //     "itemTitulo": "Premiações"
+        // }
+    ];
+    
+    const novidadeBadge = <div className="novidade">Em breve</div>;
+
+    const itensEmBreveMenu = [
         {
             "id": 8,
             "url": "/despesa",
             "pageTitulo": "Despesas",
             "icone": <RiFileListFill size={20} className="icon" />,
             "itemTitulo": "Despesas"
+        },
+        {
+            "id": 9,
+            "url": "/vantagens",
+            "pageTitulo": "Vantagens",
+            "icone": <LuSparkles size={20} className="icon" />,
+            "itemTitulo": "Vantagens"
         }
     ];
 
@@ -127,12 +146,16 @@ function BarraLateral() {
                 </ListaEstilizada>
                 <NavTitulo>Para sua empresa</NavTitulo>
                 <ListaEstilizada>
-                    <Link className="link" titulo="Vantagens" to="/vantagens">
-                        <ItemNavegacao ativo={(location.pathname === '/vantagens')}>
-                            <LuSparkles size={20} className="icon" />
-                            Vantagens <div className="novidade">Novidade</div>
-                        </ItemNavegacao>
-                    </Link>
+                    {itensEmBreveMenu.map((item) => {
+                        return (
+                            <Link key={item.id} className="link" to={item.url}>
+                                <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url) || (home.includes(location.pathname.split('/')[1]) && item.url == '/')}>
+                                    {item.icone}
+                                    {item.itemTitulo}{novidadeBadge}
+                                </ItemNavegacao>
+                            </Link>
+                        )
+                    })}
                 </ListaEstilizada>
             </nav>
         </BarraLateralEstilizada>

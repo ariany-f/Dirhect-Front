@@ -11,6 +11,7 @@ import styles from './MeusDados.module.css'
 import { Link } from 'react-router-dom'
 import { RiEditBoxFill } from 'react-icons/ri'
 import { Toast } from 'primereact/toast'
+import { ArmazenadorToken } from './../../utils'
 import ModalAlterar from "@components/ModalAlterar"
 
 function MeusDadosDadosFaturamento() {
@@ -40,7 +41,7 @@ function MeusDadosDadosFaturamento() {
 
     function editarUsuario(dado){
 
-        let type = (dado !== 'address') ? 'billing_data' : 'addresses'
+        let type = ((dado !== 'address') ? 'billing_data' : 'addresses')
         let editableParams = {}
         editableParams[parametroEdicao] = dado
         let obj = {}
@@ -209,7 +210,7 @@ function MeusDadosDadosFaturamento() {
                             </Frame>
                             <BotaoSemBorda>
                                 <RiEditBoxFill size={18} />
-                                <Link onClick={() => AbrirModalEditarUsuario('address', userProfile?.billing_data.addresses)} className={styles.link}>Alterar</Link>
+                                <Link onClick={() => AbrirModalEditarUsuario('addresses', userProfile?.billing_data.addresses)} className={styles.link}>Alterar</Link>
                             </BotaoSemBorda>
                         </>
                         : <Skeleton variant="rectangular" width={200} height={25} />
