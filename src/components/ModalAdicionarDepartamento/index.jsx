@@ -132,7 +132,7 @@ function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar, aoSuce
                     aoSucesso.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                     setTimeout(() => {
                         navegar(`/departamento/${response.public_id}/adicionar-colaboradores`)
-                    }, 500);
+                    }, 700);
                 }
             })
             .catch(erro => {
