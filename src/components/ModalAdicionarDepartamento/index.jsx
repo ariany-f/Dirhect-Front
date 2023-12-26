@@ -110,7 +110,7 @@ const CardText = styled.div`
     background: var(--neutro-100);
 `
 
-function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar }) {
+function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar, aoSucesso }) {
 
     const [nome, setNome] = useState('')
     const [classError, setClassError] = useState([])
@@ -129,7 +129,10 @@ function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar }) {
                 if(response.status === 'success')
                 {
                     aoFechar()
-                    navegar(`/departamento/${response.public_id}/adicionar-colaboradores`)
+                    aoSucesso.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                    setTimeout(() => {
+                        navegar(`/departamento/${response.public_id}/adicionar-colaboradores`)
+                    }, 500);
                 }
             })
             .catch(erro => {
@@ -140,41 +143,44 @@ function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar }) {
     return(
         <>
             {opened &&
-            <Overlay>
-                <DialogEstilizado id="modal-add-departamento" open={opened}>
-                    <Frame>
-                        <Titulo>
-                             <form method="dialog">
-                                <button className="close" onClick={aoFechar} formMethod="dialog">
-                                    <RiCloseFill size={20} className="fechar" />  
-                                </button>
-                            </form>
-                            <h6>Criar departamento</h6>
-                            <SubTitulo>
-                                Digite o nome do seu novo departamento:
-                            </SubTitulo>
-                        </Titulo>
-                    </Frame>
-                    
-                    <Frame padding="24px 0px">
-                        <CampoTexto 
-                                numeroCaracteres={50}
-                                camposVazios={classError} 
-                                valor={nome} 
-                                type="text" 
-                                setValor={setNome} 
-                                placeholder="ex. Administrativo"
-                                label="Nome do departamento" 
-                            />
-                    </Frame>
-                    <form method="dialog">
-                        <div className={styles.containerBottom}>
-                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                            <Botao aoClicar={adicionarDepartamento} estilo="vermilion" size="medium" filled>Confirmar</Botao>
-                        </div>
-                    </form>
-                </DialogEstilizado>
-            </Overlay>}
+            <>
+                <Overlay>
+                    <DialogEstilizado id="modal-add-departamento" open={opened}>
+                        <Frame>
+                            <Titulo>
+                                <form method="dialog">
+                                    <button className="close" onClick={aoFechar} formMethod="dialog">
+                                        <RiCloseFill size={20} className="fechar" />  
+                                    </button>
+                                </form>
+                                <h6>Criar departamento</h6>
+                                <SubTitulo>
+                                    Digite o nome do seu novo departamento:
+                                </SubTitulo>
+                            </Titulo>
+                        </Frame>
+                        
+                        <Frame padding="24px 0px">
+                            <CampoTexto 
+                                    numeroCaracteres={50}
+                                    camposVazios={classError} 
+                                    valor={nome} 
+                                    type="text" 
+                                    setValor={setNome} 
+                                    placeholder="ex. Administrativo"
+                                    label="Nome do departamento" 
+                                />
+                        </Frame>
+                        <form method="dialog">
+                            <div className={styles.containerBottom}>
+                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                                <Botao aoClicar={adicionarDepartamento} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                            </div>
+                        </form>
+                    </DialogEstilizado>
+                </Overlay>
+            </>
+            }
         </>
     )
 }

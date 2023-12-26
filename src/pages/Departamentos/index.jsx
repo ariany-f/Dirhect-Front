@@ -2,10 +2,11 @@ import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import styles from './Departamento.module.css'
 import styled from 'styled-components'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { GrAddCircle } from 'react-icons/gr'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Toast } from 'primereact/toast'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -17,9 +18,11 @@ function Departamentos() {
 
     const [modalOpened, setModalOpened] = useState(false)
     const location = useLocation();
+    const toast = useRef(null)
 
     return (
         <ConteudoFrame>
+            <Toast ref={toast} />
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
                     <Link to="/departamento">
@@ -32,7 +35,7 @@ function Departamentos() {
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
             </BotaoGrupo>
             <Outlet />
-            <ModalAdicionarDepartamento aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+            <ModalAdicionarDepartamento aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </ConteudoFrame>
     )
 }
