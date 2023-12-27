@@ -96,8 +96,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         },
         {
             "id": 7,
-            "url": "premiacao",
-            "pageTitulo": "Premiações"
+            "url": "saldo-livre",
+            "pageTitulo": "Saldo Livre"
         },
         {
             "id": 8,

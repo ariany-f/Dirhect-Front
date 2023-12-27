@@ -138,11 +138,11 @@ function AppRouter() {
                   <Route path="configuracao-beneficios" element={<DepartamentoConfiguracaoBeneficios />} />
               </Route>
             
-              <Route path="premiacao" element={<Premiacoes />} />
-              <Route path="premiacao/detalhes" element={<PremiacaoDetalhes />} />
-              <Route path="premiacao/registro" element={<PremiacaoRegistro />} />
-              <Route path="premiacao/editar-valor" element={<PremiacaoEditarValor />} />
-              <Route path="premiacao/selecao-premiados" element={<PremiacaoSelecaoPremiados />} />
+              <Route path="saldo-livre" element={<Premiacoes />} />
+              <Route path="saldo-livre/detalhes" element={<PremiacaoDetalhes />} />
+              <Route path="saldo-livre/registro" element={<PremiacaoRegistro />} />
+              <Route path="saldo-livre/editar-valor" element={<PremiacaoEditarValor />} />
+              <Route path="saldo-livre/selecao-premiados" element={<PremiacaoSelecaoPremiados />} />
               
               <Route path="despesa" element={<Despesas />} />
               <Route path="despesa/adiantar-saldo" element={<DespesaAdiantarSaldo />} />

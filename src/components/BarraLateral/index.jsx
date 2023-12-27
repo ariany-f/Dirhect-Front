@@ -88,7 +88,7 @@ function BarraLateral() {
         },
         {
             "id": 7,
-            "url": "/premiacao",
+            "url": "/saldo-livre",
             "pageTitulo": "Saldo Livre",
             "icone": <RiHandCoinFill size={20} className="icon" />,
             "itemTitulo": "Saldo Livre"
