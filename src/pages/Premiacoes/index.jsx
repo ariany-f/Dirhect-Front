@@ -7,6 +7,7 @@ import styles from './SaldoLivre.module.css'
 import styled from "styled-components"
 import { Link } from "react-router-dom"
 import DataTablePremiacoes from '../../components/DataTablePremiacoes';
+import Management from './../../assets/Management.svg'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -68,6 +69,7 @@ function Premiacoes() {
                 
                 <ContainerSemRegistro>
                     <section className={styles.container}>
+                        <img src={Management} />
                         <h6>Você não configurou nenhum benefício para esse departamento</h6>
                         <p>Aqui você verá todos os benefícios configurados.</p>
                     </section>
