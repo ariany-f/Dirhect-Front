@@ -25,7 +25,7 @@ function Beneficios() {
                 <BotaoSemBorda color="var(--primaria)">
                     <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
                 </BotaoSemBorda>
-                <Link to="/">
+                <Link to="/beneficio/selecao-tipo-recarga">
                     <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Disponibilizar benefícios</Botao>
                 </Link>
             </BotaoGrupo>

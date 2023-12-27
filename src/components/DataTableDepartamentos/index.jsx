@@ -47,31 +47,31 @@ function DataTableDepartamentos({ departamentos }) {
 
     const representativeBodyTemplate = (rowData) => {
         return (
-            <>
-            <Texto weight={700} className={styles.departmentName}>{rowData.name}</Texto>
-            <div className={styles.departamento}>
-                <div className={styles.left}>
-                    <div className={styles.recuo} color="var(--neutro-500)">
-                        Colaboradores:&nbsp;<NumeroColaboradores weight={700}>{rowData?.collaborators_count ?? 0}</NumeroColaboradores>
+            <div style={{ padding: '20px'}}>
+                <Texto weight={700} className={styles.departmentName}>{rowData.name}</Texto>
+                <div className={styles.departamento}>
+                    <div className={styles.left}>
+                        <div className={styles.recuo} color="var(--neutro-500)">
+                            Colaboradores:&nbsp;<NumeroColaboradores weight={700}>{rowData?.collaborators_count ?? 0}</NumeroColaboradores>
+                        </div>
                     </div>
-                </div>
-                <div className={styles.right}>
-                    <Texto weight={300}>Benefícios configurados</Texto>
-                    <div className={styles.beneficios}>
-                        {rowData.benefits.length === 0
-                        ?
-                            <FaBan size={10} />
-                        :
-                            rowData.benefits.map((benefit, index) => {
-                                return (
-                                    <BadgeBeneficio key={index} nomeBeneficio={benefit}/>
-                                )
-                            })
-                        }
+                    <div className={styles.right}>
+                        <Texto weight={300}>Benefícios configurados</Texto>
+                        <div className={styles.beneficios}>
+                            {rowData.benefits.length === 0
+                            ?
+                                <FaBan size={10} />
+                            :
+                                rowData.benefits.map((benefit, index) => {
+                                    return (
+                                        <BadgeBeneficio key={index} nomeBeneficio={benefit}/>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
-            </>
         );
     };
 
