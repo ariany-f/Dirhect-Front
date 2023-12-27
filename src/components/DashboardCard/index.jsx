@@ -21,7 +21,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
         <Container gap="32px">
             <div className={styles.saldo}>
                 <p>Saldo disponível</p>
-                {dashboardData?.userDashResource.total_benefit_balance ?
+                {dashboardData?.userDashResource.public_id ?
                     <h2>{Real.format(dashboardData?.userDashResource.total_benefit_balance)}</h2>
                 : <Skeleton variant="rectangular" width={200} height={50} />
                 }
