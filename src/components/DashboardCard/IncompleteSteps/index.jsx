@@ -105,7 +105,7 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
                     Faça o deposito por cartão de crédito, boleto ou Pix.
                     {step === 3 &&
                         <BotaoSemBorda color="var(--primaria)">
-                            <Link className={styles.link}>
+                            <Link to={'/beneficio/selecao-tipo-recarga'} className={styles.link}>
                                 Depositar&nbsp;<MdArrowCircleRight className='icon' size={18} />
                             </Link>
                         </BotaoSemBorda>
