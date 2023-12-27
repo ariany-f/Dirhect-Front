@@ -11,6 +11,14 @@
     }
 }
 
+.icon {
+    fill: var(--white);
+    color: var(--white);
+    & * {
+        stroke: var(--white);
+    }
+}
+
 .percent {
     display: flex;
     flex-direction: column;

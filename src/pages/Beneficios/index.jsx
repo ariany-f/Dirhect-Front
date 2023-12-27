@@ -2,6 +2,8 @@ import http from '@http'
 import { useEffect } from "react";
 import BotaoGrupo from '@components/BotaoGrupo'
 import BotaoSemBorda from '@components/BotaoSemBorda'
+import Botao from '@components/Botao'
+import { GrAddCircle } from 'react-icons/gr'
 import styles from './Beneficios.module.css'
 import { FaMapPin } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -23,6 +25,9 @@ function Beneficios() {
                 <BotaoSemBorda color="var(--primaria)">
                     <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
                 </BotaoSemBorda>
+                <Link to="/">
+                    <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Disponibilizar benefícios</Botao>
+                </Link>
             </BotaoGrupo>
         </>
     )
