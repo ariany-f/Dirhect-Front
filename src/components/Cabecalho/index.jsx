@@ -72,7 +72,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         {
             "id": 2,
             "url": "extrato",
-            "pageTitulo": "Extrato"
+            "pageTitulo": "Extrato da conta"
         },
         {
             "id": 3,

@@ -2,9 +2,6 @@ import http from '@http'
 import { useEffect, useState } from "react";
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
-import Texto from '@components/Texto'
-import SubTitulo from '@components/SubTitulo'
-import Frame from '@components/Frame'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './SaldoLivre.module.css'
 import styled from "styled-components"

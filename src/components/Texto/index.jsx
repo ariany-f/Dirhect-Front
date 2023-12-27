@@ -11,6 +11,7 @@ const Paragrafo = styled.p`
     text-align: ${ props => props.$alinhamento ? props.$alinhamento : 'left' };
     line-height: 20px; /* 142.857% */
     align-items: center;
+    width: ${ props => props.$width ? props.$width : 'inherit' };
     display: flex;
     & svg {
         fill: ${ props => props.$color};
@@ -20,9 +21,9 @@ const Paragrafo = styled.p`
     }
 `
 
-function Texto({ children, weight = 400, color = 'var(--black)', size = '14px', aoClicar = null}) {
+function Texto({ children, weight = 400, color = 'var(--black)', size = '14px', aoClicar = null, width = 'inherit'}) {
     return (
-        <Paragrafo onClick={aoClicar ? (evento) => aoClicar(evento) : null} $color={color} $size={size} $weight={Number(weight)}>
+        <Paragrafo onClick={aoClicar ? (evento) => aoClicar(evento) : null} $color={color} $width={width} $size={size} $weight={Number(weight)}>
             {children}
         </Paragrafo>
     )

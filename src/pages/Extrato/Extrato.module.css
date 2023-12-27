@@ -11,6 +11,15 @@
     }
 }
 
+.icon {
+    fill: var(--white);
+    color: var(--white);
+    & path{
+        color: var(--white);
+        stroke: var(--white);
+    }
+}
+
 .percent {
     display: flex;
     flex-direction: column;
@@ -126,5 +135,22 @@
         display: flex;
         gap: 16px;
         color: var(--neutro-600);
+    }
+}
+
+.extrato_grid{
+    cursor: pointer;
+    gap: 12px;
+    padding: 10px;
+    display: flex;
+    flex-grow: 1;
+    width: max-content;
+    & p {
+        color: var(--neutro-950);
+        font-weight: 500;
+        font-size: 12px;
+    }
+    & svg * {
+        color: var(--neutro-950);
     }
 }
