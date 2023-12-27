@@ -11,10 +11,12 @@ import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import { useRef, useState } from "react"
 import { Toast } from 'primereact/toast'
 import { ArmazenadorToken } from "../../utils"
+import Loading from "../../components/Loading"
 
 function Login() {
 
     const [classError, setClassError] = useState([])
+    const [loading, setLoading] = useState(false)
     const navegar = useNavigate()
     const toast = useRef(null)
 
@@ -30,7 +32,7 @@ function Login() {
     
     const sendData = (evento) => {
         evento.preventDefault()
-
+        
         document.querySelectorAll('input').forEach(function(element) {
             if(element.value !== '')
             {
@@ -50,6 +52,7 @@ function Login() {
 
         if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
         {
+            setLoading(true)
             solicitarCodigo()
             .then((response) => {
                 if(response.data.status === 'success')
@@ -66,12 +69,14 @@ function Login() {
                 else
                 {
                     toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                    setLoading(false)
                     return false
                 }
                 
             })
             .catch(erro => {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+                setLoading(false)
                 return false
             })
         }
@@ -80,6 +85,7 @@ function Login() {
     return (
         <>
             <Toast ref={toast} />
+            <Loading opened={loading} />
             <Titulo>
                 <h2>Bem-vindo</h2>
                 <SubTitulo>

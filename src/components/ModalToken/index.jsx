@@ -110,40 +110,49 @@ function ModalToken({ opened = false, usuario, setCode, aoClicar, aoFechar, aoRe
             }
       }
 
+      function confirmarCodigo()
+      {
+            setCode([])
+            aoClicar()
+      }
+
     return(
         <>
             {opened &&
-            <Overlay>
-                <DialogEstilizado id="modal-token" open={opened}>
-                    <Frame>
-                        <Titulo>
-                            <form method="dialog">
-                                <button className="close" onClick={aoFechar} formMethod="dialog">
-                                    <RiCloseFill size={20} className="fechar" />  
-                                </button>
-                            </form>
-                            <h6>Código de segurança</h6>               
-                            <SubTitulo>
-                                Digite o código de 6 dígitos, enviado para seu celular e e-mail:
-                            </SubTitulo>
-                        </Titulo>
-                        <Texto weight="800" color="var(--primaria)">
-                            <AiOutlineMail className="icon" size={18} />
-                            &nbsp;{usuario.email}
-                        </Texto>
-                        <CamposVerificacao valor={usuario.code} setValor={setCode} label="Código de autenticação" />
-                        <Frame alinhamento="center">
-                            <ReenviarCodigoBotao onClick={reenviarCodigo} id="reenviar">Reenviar Código</ReenviarCodigoBotao>
-                            {timer > 0 ?
-                                <Texto weight="300" color="var(--neutro-300)">
-                                    <b>{timer}s</b>
-                                </Texto>
-                            : '' }
+            <>
+                <Overlay>
+                    <DialogEstilizado id="modal-token" open={opened}>
+                        <Frame>
+                            <Titulo>
+                                <form method="dialog">
+                                    <button className="close" onClick={aoFechar} formMethod="dialog">
+                                        <RiCloseFill size={20} className="fechar" />  
+                                    </button>
+                                </form>
+                                <h6>Código de segurança</h6>               
+                                <SubTitulo>
+                                    Digite o código de 6 dígitos, enviado para seu celular e e-mail:
+                                </SubTitulo>
+                            </Titulo>
+                            <Texto weight="800" color="var(--primaria)">
+                                <AiOutlineMail className="icon" size={18} />
+                                &nbsp;{usuario.email}
+                            </Texto>
+                            <CamposVerificacao valor={usuario.code} setValor={setCode} label="Código de autenticação" />
+                            <Frame alinhamento="center">
+                                <ReenviarCodigoBotao onClick={reenviarCodigo} id="reenviar">Reenviar Código</ReenviarCodigoBotao>
+                                {timer > 0 ?
+                                    <Texto weight="300" color="var(--neutro-300)">
+                                        <b>{timer}s</b>
+                                    </Texto>
+                                : '' }
+                            </Frame>
                         </Frame>
-                    </Frame>
-                    <Botao aoClicar={aoClicar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
-                </DialogEstilizado>
-            </Overlay>}
+                        <Botao aoClicar={confirmarCodigo} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                    </DialogEstilizado>
+                </Overlay>
+            </>
+            }
         </>
     )
 }

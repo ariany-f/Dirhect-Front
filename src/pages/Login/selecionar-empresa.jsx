@@ -11,6 +11,7 @@ import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import { useNavigate } from "react-router-dom"
 import { Toast } from 'primereact/toast'
 import { ArmazenadorToken } from "../../utils"
+import Loading from "@components/Loading"
 
 const Wrapper = styled.div`
     display: flex;
@@ -48,6 +49,7 @@ function SelecionarEmpresa() {
     
     const [empresas, setEmpresas] = useState(usuario?.companies ?? [])
     const [selected, setSelected] = useState(empresas[0]?.public_id)
+    const [loading, setLoading] = useState(false)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
 
@@ -84,26 +86,41 @@ function SelecionarEmpresa() {
     }
     
     const sendCode = () => {
+
+        setLoading(true)
+
         submeterLogin().then((response) => {
-            if(response.data.status === 'success')
+            if(response.data)
             {
-                ArmazenadorToken.definirToken(
-                    response.data.token_access,
-                    response.data.expires_at
-                )
-                setUsuarioEstaLogado(true)
-                submeterCompanySession()
+                if(response.data.status === 'success')
+                {
+                    ArmazenadorToken.definirToken(
+                        response.data.token_access,
+                        response.data.expires_at
+                    )
+                    setUsuarioEstaLogado(true)
+                    submeterCompanySession()
+                }
+                else
+                {
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                    setCode([])
+                    setLoading(false)
+                    return false
+                }
             }
             else
             {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: response.message })
                 setCode([])
+                setLoading(false)
                 return false
             }
         })
         .catch(erro => {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
             setCode([])
+            setLoading(false)
             return false
         })
     }
@@ -111,6 +128,7 @@ function SelecionarEmpresa() {
     return (
         <>
             <Toast ref={toast} />
+            <Loading opened={loading} />
             <Titulo>
                 <h2>Selecione uma empresa</h2>
             </Titulo>
