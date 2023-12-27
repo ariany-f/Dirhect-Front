@@ -2,12 +2,12 @@ import { styled } from "styled-components"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import { RiNotificationLine } from "react-icons/ri"
 import styles from './Cabecalho.module.css'
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { BsArrowLeftRight } from 'react-icons/bs'
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
-import { useState } from "react"
 import Menu from "@components/Menu"
 import { ArmazenadorToken } from './../../utils';
+import { useState } from "react"
 
 const HeaderEstilizado = styled.header`
     display: flex;
@@ -61,7 +61,9 @@ const ItemUsuario = styled.div`
 `
 const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) => {
     
-    const location = useLocation();
+    const location = useLocation()
+    const navegar = useNavigate()
+    const [usuarioEstaLogado, setUsuarioEstaLogado] = useState(!!ArmazenadorToken.AccessToken)
 
     const titulos = [
         {
@@ -116,26 +118,32 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     function toggleMenu(){
         setMenuOpened(!menuOpened)
     }
-
-    return (
-        <HeaderEstilizado>
-            <h6>{titulo}</h6>
-            <RightItems>
-                <div className={styles.divisor}>
-                    <PrecisoDeAjuda />
-                    <RiNotificationLine size={18} className={styles.icon} />
-                </div>
-                <div className={styles.divisor}>
-                    <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
-                    <ItemUsuario onClick={toggleMenu}>
-                        <div className="user">{ArmazenadorToken.UserName.charAt(0)}</div>
-                        <MdOutlineKeyboardArrowDown />
-                    </ItemUsuario>
-                </div>
-            </RightItems>
-            <Menu opened={menuOpened} aoFechar={toggleMenu} />
-        </HeaderEstilizado>
-    )
+    if(usuarioEstaLogado)
+    {
+        return (
+            <HeaderEstilizado>
+                <h6>{titulo}</h6>
+                <RightItems>
+                    <div className={styles.divisor}>
+                        <PrecisoDeAjuda />
+                        <RiNotificationLine size={18} className={styles.icon} />
+                    </div>
+                    <div className={styles.divisor}>
+                        <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
+                        <ItemUsuario onClick={toggleMenu}>
+                            <div className="user">{ArmazenadorToken.UserName.charAt(0)}</div>
+                            <MdOutlineKeyboardArrowDown />
+                        </ItemUsuario>
+                    </div>
+                </RightItems>
+                <Menu opened={menuOpened} aoFechar={toggleMenu} />
+            </HeaderEstilizado>
+        )
+    }
+    else
+    {
+        navegar('/login')
+    }
 }
 
 export default Cabecalho

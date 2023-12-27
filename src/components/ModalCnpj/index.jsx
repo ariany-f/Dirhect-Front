@@ -10,6 +10,7 @@ import http from '@http'
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import styles from './ModalCnpj.module.css'
 import { CiCirclePlus } from "react-icons/ci"
+import { ArmazenadorToken } from "../../utils"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -121,7 +122,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     } = useSessaoUsuarioContext()
 
     const [empresas, setEmpresas] = useState(usuario?.companies ?? [])
-    const [selected, setSelected] = useState(empresas[0]?.public_id)
+    const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
 
     useEffect(() => {
