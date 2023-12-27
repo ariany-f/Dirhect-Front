@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { Skeleton } from 'primereact/skeleton'
 import { useEffect, useState } from 'react'
 import http from '@http'
+import DataTableDepartamentos from '../../components/DataTableDepartamentos'
 
 const CardText = styled.div`
     display: flex;
@@ -23,15 +24,18 @@ function DepartamentoLista() {
     const [departamentos, setDepartamentos] = useState([])
 
     useEffect(() => {
-        http.get('api/dashboard/department')
-            .then(response => {
-                if(response.data.departments)
-                {
-                    setDepartamentos(response.data.departments)
-                }
-            })
-            .catch(erro => console.log(erro))
-    }, [])
+        if(departamentos.length === 0)
+        {
+            http.get('api/dashboard/department')
+                .then(response => {
+                    if(response.data.departments)
+                    {
+                        setDepartamentos(response.data.departments)
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
+    }, [departamentos])
 
     return (
         <>
@@ -43,13 +47,9 @@ function DepartamentoLista() {
                 : <></>
             }
             {departamentos.length ?
-            <div className={styles.cardsDepartamento}>
-                {departamentos.map(department => {
-                    return (
-                    <DepartamentoCard key={department.public_id} department={department}/>
-                    )
-                })}
-            </div>
+            <>
+                <DataTableDepartamentos departamentos={departamentos} />
+            </>
             : <Skeleton variant="rectangular" width={700} height={100} />
             }
         </>

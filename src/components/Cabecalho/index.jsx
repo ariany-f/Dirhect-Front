@@ -118,7 +118,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     function toggleMenu(){
         setMenuOpened(!menuOpened)
     }
-    if(usuarioEstaLogado)
+    if(usuarioEstaLogado && ArmazenadorToken.UserName)
     {
         return (
             <HeaderEstilizado>

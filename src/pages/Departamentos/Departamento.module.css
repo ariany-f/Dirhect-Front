@@ -23,3 +23,15 @@
     align-items: center;
     display: flex;
 }
+
+.departamento {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 40vw;
+}
+
+.recuo {
+    display: flex;
+    font-weight: 500;
+}
