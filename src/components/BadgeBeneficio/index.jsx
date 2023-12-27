@@ -10,6 +10,7 @@ const icones = [
         "id": 1,
         "name": "Alimentação",
         "flexible_value": false,
+        "description": "Mercados, supermercados e aplicativo de delivery.",
         "food_meal_one_category": false,
         "icone": <RiShoppingCartFill />
     },
@@ -17,6 +18,7 @@ const icones = [
         "id": 2,
         "name": "Refeição",
         "flexible_value": false,
+        "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
         "icone": <MdOutlineFastfood />
     },
@@ -24,6 +26,7 @@ const icones = [
         "id": 3,
         "name": "Mobilidade",
         "flexible_value": true,
+        "description": "Postos de combustível, estacionamentos, pedágio, carros por aplicativo, recarga de bilhete de transporte e passagens de ônibus e trem.",
         "food_meal_one_category": false,
         "icone": <RiBusFill />
     },
@@ -31,6 +34,7 @@ const icones = [
         "id": 4,
         "name": "Home Office",
         "flexible_value": true,
+        "description": "Compra de cadeira ergométrica, itens de papelaria, assistência técnica de computador e custeio de contas de energia e internet",
         "food_meal_one_category": false,
         "icone": <RiComputerLine />
     },
@@ -38,6 +42,7 @@ const icones = [
         "id": 5,
         "name": "Combustível",
         "flexible_value": true,
+        "description": "",
         "food_meal_one_category": false,
         "icone": <RiGasStationFill />
     },
@@ -45,6 +50,7 @@ const icones = [
         "id": 6,
         "name": "Cultura",
         "flexible_value": true,
+        "description": "Streaming de vídeo e música, bancas de jornais, jogos online, ingressos para shows teatros e museus, instrumentos musicais, escolas de arte e música e parques de diversões, zoológicos e aquários.",
         "food_meal_one_category": false,
         "icone": <FaTheaterMasks />
     },
@@ -52,6 +58,7 @@ const icones = [
         "id": 7,
         "name": "Educação",
         "flexible_value": true,
+        "description": "Cursos online e presenciais, cursos de extensão, cursos e app de idiomas, ensino superior e técnico, eventos e feiras profissionais e livrarias e papelarias",
         "food_meal_one_category": false,
         "icone": <BiBookReader  />
     },
@@ -59,6 +66,7 @@ const icones = [
         "id": 8,
         "name": "Saúde",
         "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
         "icone": <MdOutlineMedicalServices />
     },
@@ -66,6 +74,7 @@ const icones = [
         "id": 9,
         "name": "Auxílio Alimentação",
         "flexible_value": false,
+        "description": "Alimentação e Refeição, tudo em uma só categoria.",
         "food_meal_one_category": true,
         "icone": <PiForkKnifeFill />
     }
