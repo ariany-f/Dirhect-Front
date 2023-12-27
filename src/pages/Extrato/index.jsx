@@ -1,10 +1,9 @@
 import http from '@http'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import Container from '@components/Container'
 import Botao from '@components/Botao'
 import Texto from '@components/Texto'
-import SubTitulo from '@components/SubTitulo'
+import Frame from "@components/Frame"
 import BotaoGrupo from '@components/BotaoGrupo'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Extrato.module.css'
@@ -79,32 +78,34 @@ function Extrato() {
 
 
     return (
-        <Container gap="32px">
-            <div className={styles.saldo}>
-                <p>Saldo disponível</p>
-                {dashboardData?.userDashResource.public_id ?
-                    <h2>{Real.format(dashboardData?.userDashResource.total_benefit_balance)}</h2>
-                : <Skeleton variant="rectangular" width={200} height={50} />
-                }
-            </div>
-            
-            <BotaoGrupo align="end">
-                <BotaoGrupo>
-                    <Texto width={'350px'}>Você pode fazer suas recargas utilizando essas formas de pagamento:</Texto>
-                    {metodosPagamento.map(item => {
-                        return (
-                            <div key={item.id} className={styles.extrato_grid}>
-                                {item.icone}
-                                <p>{item.name}{item.name === 'Cartão de Crédito' ? <small> em até 12x</small> : ''}</p>
-                            </div>
-                        )
-                    })}
-                    <Link to="/">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Saldo</Botao>
-                    </Link>
+        <Frame>
+            <Container gap="32px">
+                <div className={styles.saldo}>
+                    <p>Saldo disponível</p>
+                    {dashboardData?.userDashResource.public_id ?
+                        <h2>{Real.format(dashboardData?.userDashResource.total_benefit_balance)}</h2>
+                    : <Skeleton variant="rectangular" width={200} height={50} />
+                    }
+                </div>
+                
+                <BotaoGrupo align="end">
+                    <BotaoGrupo>
+                        <Texto width={'350px'}>Você pode fazer suas recargas utilizando essas formas de pagamento:</Texto>
+                        {metodosPagamento.map(item => {
+                            return (
+                                <div key={item.id} className={styles.extrato_grid}>
+                                    {item.icone}
+                                    <p>{item.name}{item.name === 'Cartão de Crédito' ? <small> em até 12x</small> : ''}</p>
+                                </div>
+                            )
+                        })}
+                        <Link to="/">
+                            <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Saldo</Botao>
+                        </Link>
+                    </BotaoGrupo>
                 </BotaoGrupo>
-            </BotaoGrupo>
-        </Container>
+            </Container>
+        </Frame>
     )
 }
 

@@ -1,7 +1,16 @@
+import BotaoVoltar from "@components/BotaoVoltar"
+import Container from "@components/Container"
+import Frame from "@components/Frame"
 function BeneficioOndeUsar() {
-    const url = window.location.pathname;
+    
     return (
-       <>{url}</>
+       <>
+       <Frame>
+            <Container gap="32px">
+                <BotaoVoltar linkFixo="/beneficios" />
+            </Container>
+        </Frame>
+       </>
     )
 }
 

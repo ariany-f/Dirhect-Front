@@ -287,7 +287,7 @@ function ColaboradorDadosIniciais() {
                 </Col6>
             </Col12>
             <ContainerButton>
-                <Botao aoClicar={() => navigate(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
+                <Botao aoClicar={() => navigate('/colaborador')} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                 <Botao aoClicar={(evento) => sendData(evento)} estilo="vermilion" size="medium" filled>Adicionar Colaborador</Botao>
             </ContainerButton>
         </form>
