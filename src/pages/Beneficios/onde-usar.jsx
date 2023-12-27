@@ -137,7 +137,7 @@ function BeneficioOndeUsar() {
        <>
        <Frame>
             <Container gap="24px">
-                <BotaoVoltar linkFixo="/beneficios" />
+                <BotaoVoltar linkFixo="/beneficio" />
                 <Titulo>
                     <h6>Onde Usar</h6>
                 </Titulo>
