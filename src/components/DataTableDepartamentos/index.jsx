@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Texto from '@components/Texto';
-import http from '@http'
 import './DataTable.css'
 
 const NumeroColaboradores = styled.p`

@@ -2726,7 +2726,7 @@
       transition: box-shadow 0.3s;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
     }
     .p-datatable thead > tr {
       display: flex;
@@ -2786,6 +2786,9 @@
     }
     .p-datatable .p-datatable-tbody > tr.p-datatable-dragpoint-bottom > td {
       box-shadow: inset 0 -2px 0 0 #ced6f1;
+    }
+    .p-datatable.p-datatable-selectable .p-datatable-tbody > tr.p-selectable-row {
+      align-items: center;
     }
     .p-datatable.p-datatable-selectable .p-datatable-tbody > tr.p-selectable-row:not(.p-highlight):not(.p-datatable-emptymessage):hover {
       background: #edf0fA;

@@ -1,4 +1,3 @@
-import DepartamentoCard from '@components/DepartamentoCard'
 import CampoTexto from '@components/CampoTexto'
 import styles from './Departamento.module.css'
 import styled from 'styled-components'
@@ -50,7 +49,13 @@ function DepartamentoLista() {
             <>
                 <DataTableDepartamentos departamentos={departamentos} />
             </>
-            : <Skeleton variant="rectangular" width={700} height={100} />
+            :   <>
+                    <Skeleton variant="rectangular" width={320} height={70} />
+                    <br/><br/>
+                    <Skeleton variant="rectangular" width={1000} height={80} />
+                    <Skeleton variant="rectangular" width={1000} height={80} />
+                    <Skeleton variant="rectangular" width={1000} height={80} />
+                </>
             }
         </>
     )
