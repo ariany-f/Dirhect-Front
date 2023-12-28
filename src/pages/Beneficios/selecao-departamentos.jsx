@@ -66,6 +66,10 @@ function BeneficioSelecionarDepartamentos() {
         setGlobalFilterValue(value);
     };
 
+    const representativeCountTemplate = (rowData) => {
+        return rowData.collaborators_count
+    }
+
     return (
         <Frame>
             <Toast ref={toast} />
@@ -85,6 +89,7 @@ function BeneficioSelecionarDepartamentos() {
                     <DataTable value={departamentos} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados departamentos" selectionMode={rowClick ? null : 'checkbox'} selection={selectedDepartamentos} onSelectionChange={(e) => setSelectedDepartamentos(e.value)} tableStyle={{ minWidth: '70vw' }}>
                         <Column selectionMode="multiple"></Column>
                         <Column field="name" header="Nome"></Column>
+                        <Column body={representativeCountTemplate} header="Colaboradores"></Column>
                     </DataTable>
                     <ContainerButton>
                         <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
