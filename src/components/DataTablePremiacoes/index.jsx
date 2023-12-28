@@ -35,7 +35,7 @@ function DataTablePremiacoes({ premiacoes }) {
         <>
             <div className="flex justify-content-end">
                 <span className="p-input-icon-left">
-                    <CampoTexto name="search" width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar premiação" />
+                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar premiação" />
                 </span>
             </div>
             <DataTable value={premiacoes} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados registros" selection={selectedPremiacao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '70vw' }}>

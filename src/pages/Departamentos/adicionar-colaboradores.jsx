@@ -12,6 +12,7 @@ import SubTitulo from "@components/SubTitulo"
 import { Skeleton } from 'primereact/skeleton'
 import { FaPencilAlt } from 'react-icons/fa'
 import { MdCancel } from "react-icons/md"
+import Loading from "@components/Loading"
 import styles from './Departamento.module.css'
 import './AdicionarColaboradores.css'
 import { Toast } from 'primereact/toast'
@@ -43,6 +44,7 @@ function DepartamentoAdicionarColaboradores() {
 
     let { id } = useParams()
     const navegar = useNavigate()
+    const [loading, setLoading] = useState(false)
     const [departamento, setDepartamento] = useState(null)
     const [edicaoAberta, setEdicaoAberta] = useState(false)
     const [nomeDepartamento, setNomeDepartamento] = useState('')
@@ -98,6 +100,7 @@ function DepartamentoAdicionarColaboradores() {
 
     const adicionarColaborador = () => {
 
+        setLoading(true)
         const obj = {}
         obj[departamento.name] = departamento.public_id
 
@@ -105,7 +108,6 @@ function DepartamentoAdicionarColaboradores() {
 
             let sendData = {
                 departments: obj
-
             }
 
             http.put(`api/dashboard/collaborator/${item.public_id}`, sendData)
@@ -113,10 +115,18 @@ function DepartamentoAdicionarColaboradores() {
                 if(response.status === 'success')
                 {
                     toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Adicionado com sucesso', life: 3000 });
-                    navegar(`/departamento/detalhes/${id}`)
+                    setTimeout(() => {
+                        navegar(`/departamento/detalhes/${id}`)
+                    }, 700);
+                }
+                else
+                {
+                    setLoading(false)
                 }
             })
-            .catch(erro => console.log(erro))
+            .catch(erro => {
+                setLoading(false)
+            })
         })
     }
     
@@ -132,6 +142,7 @@ function DepartamentoAdicionarColaboradores() {
     return (
         <Frame>
             <Toast ref={toast} />
+            <Loading opened={loading} />
             <Texto weight={500} size="12px">Nome do departamento</Texto>
             {departamento ?
                 <>
@@ -163,7 +174,7 @@ function DepartamentoAdicionarColaboradores() {
                     </Titulo>
                     <div className="flex justify-content-end">
                         <span className="p-input-icon-left">
-                            <CampoTexto name="search" width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
+                            <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                         </span>
                     </div>
                     <DataTable value={colaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>

@@ -100,6 +100,12 @@ function DepartamentoDetalhes() {
                         <Botao estilo={location.pathname == `/departamento/detalhes/${id}/configuracao-beneficios`?'black':''} size="small" tab>Configuração de Benefícios</Botao>
                     </Link>
                 </BotaoGrupo>
+                
+                {location.pathname == `/departamento/detalhes/${id}` &&
+                    <BotaoGrupo>
+                        <Botao aoClicar={() => navegar(`/departamento/${id}/adicionar-colaboradores`)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar colaboradores</Botao>
+                    </BotaoGrupo>
+                }
                 {location.pathname == `/departamento/detalhes/${id}/configuracao-beneficios` &&
                     <BotaoGrupo>
                         <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>

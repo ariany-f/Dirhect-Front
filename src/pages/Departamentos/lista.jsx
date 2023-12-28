@@ -42,7 +42,7 @@ function DepartamentoLista() {
                 <p className={styles.subtitulo}>Sempre que cadastrar um novo colaborador, você terá a opção de colocá-lo em um departamento, isso facilita na organização e na recarga de benefícios.</p>
             </CardText>
             {departamentos.lenght ?
-                <CampoTexto name="search" width={'320px'} valor={search} setValor={setSearch} type="search" label="" placeholder="Buscar um departamento" />
+                <CampoTexto  width={'320px'} valor={search} setValor={setSearch} type="search" label="" placeholder="Buscar um departamento" />
                 : <></>
             }
             {departamentos.length ?
