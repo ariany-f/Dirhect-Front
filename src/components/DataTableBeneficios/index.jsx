@@ -17,12 +17,10 @@ let Real = new Intl.NumberFormat('pt-BR', {
 
 function DataTableBeneficios({ beneficios }) {
     
-    const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
-    const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -32,12 +30,6 @@ function DataTableBeneficios({ beneficios }) {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
-
-    function verDetalhes(value)
-    {
-        setSelectedCollaborator(value)
-        navegar(`/colaborador/detalhes/${value.public_id}`)
-    }
 
     const representativeAmountTemplate = (rowData) => {
          
@@ -85,7 +77,7 @@ function DataTableBeneficios({ beneficios }) {
                     <p style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona esses benefícios?</p>
                 </QuestionCard>
             </div>
-            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']}  emptyMessage="Não foram encontrados pedidos" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '70vw' }}>
+            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontrados pedidos" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '70vw' }}>
                 <Column body={representativeDescriptionTemplate} header="Nome do pedido" style={{ width: '35%' }}></Column>
                 <Column body={representativeCreatedTemplate} header="Data de criação" style={{ width: '15%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '10%' }}></Column>
