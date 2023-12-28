@@ -35,11 +35,11 @@ function DataTableBeneficios({ beneficios }) {
          
             if(rowData.is_flexible)
             {
-                return (Real.format(rowData.amount_flexible))
+                return <b>{(Real.format(rowData.amount_flexible))}</b>
             }
             else
             {
-                return (Real.format(rowData.amount_fixed))
+                return <b>{(Real.format(rowData.amount_fixed))}</b>
             }
     };
 

@@ -48,7 +48,8 @@ import CartaoSolicitarSegundaVia from '@pages/Cartoes/solicitar-segunda-via';
 import Beneficios from '@pages/Beneficios';
 import BeneficioOndeUsar from '@pages/Beneficios/onde-usar';
 import BeneficioSelecionarTipoRecarga from '@pages/Beneficios/selecao-tipo-recarga';
-import BeneficioSelecionarAlvoRecarga from '@pages/Beneficios/selecao-alvo-recarga';
+import BeneficioSelecionarColaboradores from '@pages/Beneficios/selecao-colaboradores';
+import BeneficioSelecionarDepartamentos from '@pages/Beneficios/selecao-departamentos';
 import BeneficioEditarValor from '@pages/Beneficios/editar-valor';
 import Extrato from '@pages/Extrato';
 import DepartamentoConfiguracaoBeneficios from '@pages/Departamentos/configuracao-beneficios';
@@ -159,7 +160,8 @@ function AppRouter() {
               <Route path="beneficio" element={<Beneficios />} />
               <Route path="beneficio/onde-usar" element={<BeneficioOndeUsar />} />
               <Route path="beneficio/selecao-tipo-recarga" element={<BeneficioSelecionarTipoRecarga />} />
-              <Route path="beneficio/selecao-alvo-recarga" element={<BeneficioSelecionarAlvoRecarga />} />
+              <Route path="beneficio/selecao-colaboradores" element={<BeneficioSelecionarColaboradores />} />
+              <Route path="beneficio/selecao-departamentos" element={<BeneficioSelecionarDepartamentos />} />
               <Route path="beneficio/editar-valor" element={<BeneficioEditarValor />} />
 
               <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
@@ -167,9 +169,9 @@ function AppRouter() {
               <Route path="adicionar-email/:id" element={<AdicionarEmail />} />
 
               <Route path="usuario" element={<MeusDados />} >
-                    <Route index element={<MeusDadosDadosGerais />} />
-                    <Route path="endereco" element={<MeusDadosEndereco />} />
-                    <Route path="dados-faturamento" element={<MeusDadosDadosFaturamento />} />
+                  <Route index element={<MeusDadosDadosGerais />} />
+                  <Route path="endereco" element={<MeusDadosEndereco />} />
+                  <Route path="dados-faturamento" element={<MeusDadosDadosFaturamento />} />
               </Route>
             </Route>
             <Route path="*" element={<NaoEncontrada />}></Route>

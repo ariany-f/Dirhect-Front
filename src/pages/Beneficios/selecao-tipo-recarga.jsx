@@ -7,7 +7,7 @@ import Botao from '@components/Botao'
 import styled from 'styled-components'
 import { FaPencilAlt, FaUser } from 'react-icons/fa'
 import { HiUserGroup } from 'react-icons/hi'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Col12 = styled.div`
     display: flex;
@@ -18,6 +18,7 @@ const Col12 = styled.div`
 const Col6 = styled.div`
     padding: 10px;
     width: 455px;
+    display: flex;
 `
 
 const CardSelecao = styled.div`
@@ -27,9 +28,12 @@ const CardSelecao = styled.div`
     gap: 24px;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 `
 
 function BeneficioSelecionarTipoRecarga() {
+
+    const navegar = useNavigate()
    
     return (
        <>
@@ -39,24 +43,26 @@ function BeneficioSelecionarTipoRecarga() {
             <Col12>
                 <Col6>
                     <CardSelecao>
-                        <ContainerHorizontal>
-                            <FaUser size={20} />
-                            <Texto weight={700}>Individualmente</Texto>
-                        </ContainerHorizontal>
-                        <Frame alinhamento="center">
-                            <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
-                                <li>
-                                    Essa opção você selecionara cada colaborador e pode configurar o valor dos benefícios um a um ou selecionando todos
-                                </li>
-                            </ul>
+                        <Frame>
+                            <ContainerHorizontal gap={'16px'}>
+                                <FaUser size={20} />
+                                <Texto weight={700}>Individualmente</Texto>
+                            </ContainerHorizontal>
+                            <Frame alinhamento="center">
+                                <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                    <li>
+                                        Essa opção você selecionara cada colaborador e pode configurar o valor dos benefícios um a um ou selecionando todos
+                                    </li>
+                                </ul>
+                            </Frame>
                         </Frame>
-                        <Botao size="small">Recarregar por colaborador</Botao>
+                        <Botao aoClicar={() => navegar('/beneficio/selecao-colaboradores')} size="small">Recarregar por colaborador</Botao>
                     </CardSelecao>
                 </Col6>
                 <Col6>
                     <CardSelecao>
-                        <ContainerHorizontal>
-                            <HiUserGroup size={20} />
+                        <ContainerHorizontal gap={'16px'}>
+                            <HiUserGroup size={28} />
                             <Texto weight={700}>Departamento</Texto>
                         </ContainerHorizontal>
                         <Frame alinhamento="center">
@@ -73,7 +79,7 @@ function BeneficioSelecionarTipoRecarga() {
                             <FaPencilAlt />
                             <Link to={'/departamento'}>Configurar meus departamentos</Link>
                         </BotaoSemBorda>
-                        <Botao size="small">Recarregar por departamento</Botao>
+                        <Botao aoClicar={() => navegar('/beneficio/selecao-departamentos')} size="small">Recarregar por departamento</Botao>
                     </CardSelecao>
                 </Col6>
             </Col12>
