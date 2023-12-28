@@ -45,7 +45,7 @@ import DespesaDetalhes from '@pages/Despesas/detalhes';
 import Cartoes from '@pages/Cartoes';
 import CartaoDetalhes from '@pages/Cartoes/detalhes';
 import CartaoSolicitarSegundaVia from '@pages/Cartoes/solicitar-segunda-via';
-import Beneficios from '@pages/Beneficios';
+import Beneficios from '@pages/Beneficios/lista';
 import BeneficioOndeUsar from '@pages/Beneficios/onde-usar';
 import BeneficioSelecionarTipoRecarga from '@pages/Beneficios/selecao-tipo-recarga';
 import BeneficioSelecionarColaboradores from '@pages/Beneficios/selecao-colaboradores';
@@ -72,6 +72,7 @@ import OperadorRegistroSelecionar from './pages/Operadores/Registro/selecionar';
 import OperadorDetalhes from './pages/Operadores/detalhes/';
 import OperadorDados from './pages/Operadores/Detalhes/dados';
 import OperadorPermissoes from './pages/Operadores/Detalhes/permissoes';
+import RecargaBeneficios from './pages/Beneficios';
 
 function AppRouter() {
   
@@ -157,13 +158,15 @@ function AppRouter() {
               <Route path="cartao/detalhes" element={<CartaoDetalhes />} />
               <Route path="cartao/solicitar-segunda-via" element={<CartaoSolicitarSegundaVia />} />
               
-              <Route path="beneficio" element={<Beneficios />} />
-              <Route path="beneficio/onde-usar" element={<BeneficioOndeUsar />} />
-              <Route path="beneficio/selecao-tipo-recarga" element={<BeneficioSelecionarTipoRecarga />} />
-              <Route path="beneficio/selecao-colaboradores" element={<BeneficioSelecionarColaboradores />} />
-              <Route path="beneficio/selecao-departamentos" element={<BeneficioSelecionarDepartamentos />} />
-              <Route path="beneficio/editar-valor" element={<BeneficioEditarValor />} />
-
+              <Route path="/beneficio" element={<RecargaBeneficios/>}>
+                <Route index element={<Beneficios />} />
+                <Route path="onde-usar" element={<BeneficioOndeUsar />} />
+                <Route path="selecao-tipo-recarga" element={<BeneficioSelecionarTipoRecarga />} />
+                <Route path="selecao-colaboradores" element={<BeneficioSelecionarColaboradores />} />
+                <Route path="selecao-departamentos" element={<BeneficioSelecionarDepartamentos />} />
+                <Route path="editar-valor" element={<BeneficioEditarValor />} />
+              </Route>
+              
               <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
               <Route path="adicionar-celular/:id" element={<AdicionarCelular />} />
               <Route path="adicionar-email/:id" element={<AdicionarEmail />} />
