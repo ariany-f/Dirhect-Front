@@ -26,25 +26,27 @@ function Autenticado() {
         if(!usuarioEstaLogado) {
             navegar('/login')
         }
-
-        if(usuario.companies.length === 0)
-        {
-            http.get(`api/dashboard/company`)
-                .then((response) => {
-                    setCompanies(response.data.companies)
-                })
-                .catch(erro => {
-                    console.log(erro)
-                })
-        }
         else
         {
-            usuario.companies.map(item => {
-                if(item.public_id === ArmazenadorToken.UserCompanyPublicId)
-                {
-                    setEmpresa(item.name)
-                }
-            })
+            if(usuario.companies.length === 0)
+            {
+                http.get(`api/dashboard/company`)
+                    .then((response) => {
+                        setCompanies(response.data.companies)
+                    })
+                    .catch(erro => {
+                        console.log(erro)
+                    })
+            }
+            else
+            {
+                usuario.companies.map(item => {
+                    if(item.public_id === ArmazenadorToken.UserCompanyPublicId)
+                    {
+                        setEmpresa(item.name)
+                    }
+                })
+            }
         }
 
     }, [usuario, usuarioEstaLogado])
