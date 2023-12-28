@@ -171,7 +171,7 @@ function DepartamentoAdicionarColaboradores() {
                         <Column field="name" header="Nome Completo" style={{ width: '100%' }}></Column>
                     </DataTable>
                     <ContainerButton>
-                        <Botao aoClicar={() => navigate(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
+                        <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                         <LadoALado>
                             <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
                             <Botao aoClicar={adicionarColaborador} estilo="vermilion" size="medium" filled>Adicionar Colaboradores</Botao>
