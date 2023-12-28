@@ -50,7 +50,8 @@ function ColaboradorBandeiraCartao() {
 
     const { 
         colaborador,
-        submeterUsuario
+        submeterUsuario,
+        setBrandCardEnum,
     } = useColaboradorContext()
     
     const sendData = (evento) => {
@@ -77,6 +78,13 @@ function ColaboradorBandeiraCartao() {
         if(document.querySelectorAll("form .error").length === 0)
         {
             submeterUsuario().then(response => {
+                if(response.status)
+                {
+                    if(response.status == 'success')
+                    {
+                        navegar('colaborador/registro/sucesso')
+                    }
+                }
                 if(response.data.status == 'success')
                 {
                     navegar('colaborador/registro/sucesso')
@@ -88,6 +96,7 @@ function ColaboradorBandeiraCartao() {
     function handleChange(valor)
     {
         setSelectedBrand(valor)
+        setBrandCardEnum(valor)
     }
 
     return (
@@ -126,7 +135,7 @@ function ColaboradorBandeiraCartao() {
                     </CardLine>
                     
                     <CardLine>
-                        <Texto aoClicar={() => handleChange(1)} weight="800">
+                        <Texto aoClicar={() => handleChange(2)} weight="800">
                             <div className={styles.listaVantagens}>
                                 <div className={styles.brand}>
                                     <img src={Mastercard} />
@@ -148,7 +157,7 @@ function ColaboradorBandeiraCartao() {
             
             </Frame>
             <ContainerButton>
-                <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                <Botao aoClicar={() => navegar('/colaborador/registro')} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
             </ContainerButton>
         </form>
     )

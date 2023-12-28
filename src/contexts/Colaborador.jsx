@@ -16,6 +16,7 @@ const ColaboradorInicial = {
     address_district: '',
     address_city: '',
     address_state: '',
+    brand_card_enum: 1,
     departments: [],
     requested_card_enum: null,
     solicitar_cartao: false,
@@ -35,6 +36,7 @@ export const ColaboradorContext = createContext({
     setName: () => null,
     setEmail: () => null,
     setDocument: () => null,
+    setBrandCardEnum: () => null,
     setDateBirth: () => null,
     setPhoneNumber: () => null,
     setDepartments: () => null,
@@ -159,6 +161,14 @@ export const ColaboradorProvider = ({ children }) => {
             }
         })
     }
+    const setBrandCardEnum = (brand_card_enum) => {
+        setColaborador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                brand_card_enum
+            }
+        })
+    }
     const setAddressCity = (address_city) => {
         setColaborador(estadoAnterior => {
             return {
@@ -278,6 +288,7 @@ export const ColaboradorProvider = ({ children }) => {
         setEmail,
         setDocument,
         setDateBirth,
+        setBrandCardEnum,
         setPhoneNumber,
         setDepartments,
         setAddressPostalCode,
