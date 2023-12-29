@@ -167,6 +167,16 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                             </Texto>
                             <SubTitulo>Utilizar Alimentação e Refeição juntos em uma só categoria.</SubTitulo>
                         </div>
+                        {checkedAuxilio ?
+                            <div>
+                                Auxílio Alimentação
+                                <input placeholder="Valor fixo"/>
+                            </div>
+                            : 
+                            <>
+                            </>
+                        }
+
                         <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '8px', marginBottom: '8px'}} ></div>
                         <Titulo>
                             <h6 style={{ fontSize: '16px' }}>Benefício Flexível</h6>
