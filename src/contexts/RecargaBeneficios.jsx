@@ -37,14 +37,31 @@ export const RecargaBeneficiosProvider = ({ children }) => {
     const [recarga, setRecarga] = useState(recargaInicial)
 
     const setColaboradores = (collaborators) => {
+        if(collaborators.length === 0)
+        {
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    collaborators
+                }
+            })
+        }
+        else
+        {
+            const colaboradores = recarga.collaborators
+            colaboradores.push(collaborators)
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    colaboradores
+                }
+            })
+        }
+    }
+    const setAmountCollaborator = (collaborator) => {
         const colaboradores = recarga.collaborators
-        colaboradores.push(collaborators)
-        setRecarga(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                colaboradores
-            }
-        })
+        const colaborador = colaboradores.filter((el) => el === collaborator)
+        
     }
     const setNome = (name) => {
         setRecarga(estadoAnterior => {
@@ -54,7 +71,6 @@ export const RecargaBeneficiosProvider = ({ children }) => {
             }
         })
     }
-
     const contexto = {
         recarga,
         setColaboradores,

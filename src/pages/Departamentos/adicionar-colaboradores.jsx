@@ -57,7 +57,7 @@ function DepartamentoAdicionarColaboradores() {
     const [edicaoAberta, setEdicaoAberta] = useState(false)
     const [listaColaboradores, setListaColaboradores] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('')
-    const [selectedColaboradores, setSelectedColaboradores] = useState(null);
+    const [selectedColaboradores, setSelectedColaboradores] = useState(null)
     const [rowClick, setRowClick] = useState(true)
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },

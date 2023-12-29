@@ -3,7 +3,7 @@ import EstilosGlobais from '@components/GlobalStyles'
 import BarraLateral from "@components/BarraLateral"
 import Cabecalho from "@components/Cabecalho"
 import MainContainer from "@components/MainContainer"
-import { Navigate, Outlet, useNavigate } from "react-router-dom"
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import ModalCnpj from '@components/ModalCnpj'
 import { useEffect, useState } from "react"
@@ -20,6 +20,7 @@ function Autenticado() {
 
     const navegar = useNavigate()
     const [empresa, setEmpresa] = useState('')
+    const location = useLocation()
 
     useEffect(() => {
         
@@ -76,9 +77,13 @@ function Autenticado() {
             <>
                 <EstilosGlobais />
                 <MainSection>
-                    <BarraLateral />
+                    {location.pathname !== '/beneficio/editar-valor' &&                     
+                        <BarraLateral />
+                    }
                     <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 5vw">
-                        <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
+                        {location.pathname !== '/beneficio/editar-valor' &&   
+                            <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
+                        }
                         <Outlet />
                     </MainContainer>
                 </MainSection>

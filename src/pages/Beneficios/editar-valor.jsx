@@ -14,6 +14,7 @@ import styles from './Beneficios.module.css'
 import { Toast } from 'primereact/toast'
 import styled from 'styled-components';
 import { useRecargaBeneficiosContext } from '../../contexts/RecargaBeneficios';
+import DataTableBeneficiosEditarValor from "../../components/DataTableBeneficiosEditarValor";
 
 const ContainerButton = styled.div`
     display: flex;
@@ -39,14 +40,19 @@ function BeneficioEditarValor() {
     const navegar = useNavigate()
     const {
         recarga,
-        setNome
+        setNome,
+        setColaboradores
     } = useRecargaBeneficiosContext()
     const [loading, setLoading] = useState(false)
     const [edicaoAberta, setEdicaoAberta] = useState(false)
     const toast = useRef(null)
 
     useEffect(() => {
-      
+      if(!recarga.name)
+      {
+        setColaboradores([])
+        navegar(-1)
+      }
     }, [])
 
     const editarRecarga = (evento) => {
@@ -54,6 +60,12 @@ function BeneficioEditarValor() {
             evento.preventDefault()
             setEdicaoAberta(false)
         }
+    }
+
+    const voltar = () => {
+        setColaboradores([])
+        navegar(-1)
+
     }
 
     return (
@@ -82,10 +94,9 @@ function BeneficioEditarValor() {
                         }
                     
                     </BotaoGrupo>
-                    <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '18px', marginBottom: '18px'}} ></div>
-              
+                    <DataTableBeneficiosEditarValor recarga={recarga.collaborators} />
                     <ContainerButton>
-                        <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                        <Botao aoClicar={voltar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
                     </ContainerButton>
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
