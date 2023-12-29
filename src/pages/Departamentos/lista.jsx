@@ -5,6 +5,7 @@ import http from '@http'
 import DataTableDepartamentos from '@components/DataTableDepartamentos'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
+import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
@@ -30,6 +31,7 @@ const CardText = styled.div`
 
 function DepartamentoLista() {
 
+    const [loading, setLoading] = useState(false)
     const [departamentos, setDepartamentos] = useState([])
     const [modalOpened, setModalOpened] = useState(false)
     const location = useLocation()
@@ -49,14 +51,19 @@ function DepartamentoLista() {
     useEffect(() => {
         if(departamentos.length === 0)
         {
+            setLoading(true)
             http.get('api/dashboard/department')
                 .then(response => {
+                    setLoading(false)
                     if(response.data.departments)
                     {
                         setDepartamentos(response.data.departments)
                     }
                 })
-                .catch(erro => console.log(erro))
+                .catch(erro => {
+                    console.log(erro)
+                    setLoading(false)
+                })
         }
     }, [departamentos])
 
@@ -64,6 +71,7 @@ function DepartamentoLista() {
         <>
         <ConteudoFrame>
             <Toast ref={toast} />
+            <Loading opened={loading} />
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
                     <Link to="/departamento">
