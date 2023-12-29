@@ -1,10 +1,21 @@
-import CampoTexto from '@components/CampoTexto'
 import styles from './Departamento.module.css'
 import styled from 'styled-components'
-import { Skeleton } from 'primereact/skeleton'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import http from '@http'
 import DataTableDepartamentos from '@components/DataTableDepartamentos'
+import Botao from '@components/Botao'
+import BotaoGrupo from '@components/BotaoGrupo'
+import { GrAddCircle } from 'react-icons/gr'
+import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Toast } from 'primereact/toast'
+import { useDepartamentoContext } from '../../contexts/Departamento'
+
+const ConteudoFrame = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+`
 
 const CardText = styled.div`
     display: flex;
@@ -19,8 +30,21 @@ const CardText = styled.div`
 
 function DepartamentoLista() {
 
-    const [search, setSearch] = useState('');
     const [departamentos, setDepartamentos] = useState([])
+    const [modalOpened, setModalOpened] = useState(false)
+    const location = useLocation()
+    const toast = useRef(null)
+    const navegar = useNavigate()
+    
+    const {
+        setNome
+    } = useDepartamentoContext()
+
+
+    const adicionarNome = (nome) => {
+        setNome(nome)
+        navegar('/departamento/adicionar-colaboradores')
+    }
 
     useEffect(() => {
         if(departamentos.length === 0)
@@ -38,25 +62,25 @@ function DepartamentoLista() {
 
     return (
         <>
-            <CardText>
-                <p className={styles.subtitulo}>Sempre que cadastrar um novo colaborador, você terá a opção de colocá-lo em um departamento, isso facilita na organização e na recarga de benefícios.</p>
-            </CardText>
-            {departamentos.lenght ?
-                <CampoTexto  width={'320px'} valor={search} setValor={setSearch} type="search" label="" placeholder="Buscar um departamento" />
-                : <></>
-            }
-            {departamentos.length ?
-            <>
+        <ConteudoFrame>
+            <Toast ref={toast} />
+            <BotaoGrupo align="space-between">
+                <BotaoGrupo>
+                    <Link to="/departamento">
+                        <Botao estilo={'black'} size="small" tab>Departamentos</Botao>
+                    </Link>
+                    {/* <Link to="/departamento/lista/colaboradores-sem-departamento">
+                        <Botao estilo={''} size="small" tab>Colaboradores sem departamento</Botao>
+                    </Link> */}
+                </BotaoGrupo>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
+            </BotaoGrupo>
+                <CardText>
+                    <p className={styles.subtitulo}>Sempre que cadastrar um novo colaborador, você terá a opção de colocá-lo em um departamento, isso facilita na organização e na recarga de benefícios.</p>
+                </CardText>
                 <DataTableDepartamentos departamentos={departamentos} />
-            </>
-            :   <>
-                    <Skeleton variant="rectangular" width={320} height={70} />
-                    <br/><br/>
-                    <Skeleton variant="rectangular" width={1000} height={80} />
-                    <Skeleton variant="rectangular" width={1000} height={80} />
-                    <Skeleton variant="rectangular" width={1000} height={80} />
-                </>
-            }
+        </ConteudoFrame>
+        <ModalAdicionarDepartamento aoSalvar={adicionarNome} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }

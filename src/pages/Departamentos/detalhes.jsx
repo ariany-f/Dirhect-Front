@@ -62,7 +62,7 @@ function DepartamentoDetalhes() {
                     if(response.status === 'success')
                     {
                         toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                        navegar('/departamento')
+                        navegar('/departamento/lista')
                     }
                 })
                 .catch(erro => console.log(erro))

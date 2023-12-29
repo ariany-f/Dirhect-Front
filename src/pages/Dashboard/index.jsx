@@ -2,8 +2,7 @@ import http from '@http'
 import { useEffect, useState } from 'react'
 import IncompleteSteps from '@components/DashboardCard/IncompleteSteps'
 import DashboardCard from '@components/DashboardCard'
-import Container from '@components/Container'
-import { Skeleton } from 'primereact/skeleton'
+import Loading from '@components/Loading'
 import styled from 'styled-components'
 
 const WrapperCards = styled.div`
@@ -25,12 +24,13 @@ const CardsEmpilhados = styled.div`
 function Dashboard() {
 
     const [colaboradores, setColaboradores] = useState(null)
+    const [loadingOpened, setLoadingOpened] = useState(true)
     const [dashboardData, setDashboardData] = useState({
             userDashResource: {
                 total_benefit_balance: 0,
                 notifications: null,
-                name: '',
-                public_id: '',
+                name: null,
+                public_id: null,
                 status: 1
             },
             transactions: [],
@@ -63,34 +63,39 @@ function Dashboard() {
     }
 
     useEffect(() => {
-
-        /**
-         * Dados necessários para exibição no painel do usuário
-         */
-        http.get('api/dashboard/user')
-        .then(response => {
-            setDashboardData(response.data)
-        })
-        .then(() => {
-            setSaldo(dashboardData.userDashResource.total_benefit_balance)
-        })
-        .catch(erro => {
-            console.error(erro)
-        })
+        if(!dashboardData.userDashResource.public_id)
+        {
+            /**
+             * Dados necessários para exibição no painel do usuário
+             */
+            http.get('api/dashboard/user')
+            .then(response => {
+                setDashboardData(response.data)
+            })
+            .then(() => {
+                setSaldo(dashboardData.userDashResource.total_benefit_balance)
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
+        }
 
         /**
          * Pegar colaboradores
          */
-        http.get('api/dashboard/collaborator')
-        .then(response => {
-            if(response.data)
-            {
-                setColaboradores(response.data.collaborators)
-            }
-        })
-        .catch(erro => {
-            console.error(erro)
-        })
+        if(!colaboradores)
+        {
+            http.get('api/dashboard/collaborator')
+            .then(response => {
+                if(response.data)
+                {
+                    setColaboradores(response.data.collaborators)
+                }
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
+        }
     }, [])
 
     return (
@@ -104,16 +109,7 @@ function Dashboard() {
             }
         </>
         :
-            <Container gap="32px">
-                <Skeleton variant="rectangular" width={300} height={80} />
-                <WrapperCards>
-                    <Skeleton variant="rectangular" width={450} height={500} />
-                    <CardsEmpilhados>
-                        <Skeleton variant="rectangular" width={440} height={70} />
-                        <Skeleton variant="rectangular" width={440} height={270} />
-                    </CardsEmpilhados>
-                </WrapperCards>
-            </Container>
+            <Loading opened={loadingOpened} />
        }
        </>
     )

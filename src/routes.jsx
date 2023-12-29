@@ -25,7 +25,7 @@ import ColaboradorSaldo from '@pages/Colaboradores/Detalhes/saldo';
 import ColaboradorCarteiras from '@pages/Colaboradores/Detalhes/carteiras';
 import ColaboradorRegistro from '@pages/Colaboradores/Registro/registro';
 import ColaboradorRegistroSucesso from '@pages/Colaboradores/Registro/sucesso';
-import Departamentos from '@pages/Departamentos';
+import DepartamentosCommon from '@pages/Departamentos/common';
 import DepartamentoLista from '@pages/Departamentos/lista';
 import DepartamentoDetalhes from '@pages/Departamentos/detalhes';
 import DepartamentoAdicionarColaboradores from '@pages/Departamentos/adicionar-colaboradores';
@@ -129,15 +129,15 @@ function AppRouter() {
 
               <Route path="extrato" element={<Extrato />} />
             
-              <Route path="departamento" element={<Departamentos />} >
-                  <Route index element={<DepartamentoLista />} />
-                  <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
-              </Route>
-              
-              <Route path="departamento/:id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
-              <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} >
-                  <Route index element={<DepartamentoListaColaboradores />} />
-                  <Route path="configuracao-beneficios" element={<DepartamentoConfiguracaoBeneficios />} />
+              <Route path="departamento" element={<DepartamentosCommon />} >
+                <Route index element={<DepartamentoLista />} />
+                <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
+                <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
+                <Route path="adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
+                <Route path="detalhes/:id" element={<DepartamentoDetalhes />} >
+                    <Route index element={<DepartamentoListaColaboradores />} />
+                    <Route path="configuracao-beneficios" element={<DepartamentoConfiguracaoBeneficios />} />
+                </Route>
               </Route>
             
               <Route path="saldo-livre" element={<Premiacoes />} />

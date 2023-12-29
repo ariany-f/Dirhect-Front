@@ -20,6 +20,7 @@ import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components';
+import { useDepartamentoContext } from '../../contexts/Departamento';
 
 const ContainerButton = styled.div`
     display: flex;
@@ -44,12 +45,18 @@ function DepartamentoAdicionarColaboradores() {
 
     let { id } = useParams()
     const navegar = useNavigate()
+    const {
+        departamento,
+        setDepartamento,
+        setColaboradores,
+        setNome,
+        submeterDepartamento
+    } = useDepartamentoContext()
+
     const [loading, setLoading] = useState(false)
-    const [departamento, setDepartamento] = useState(null)
     const [edicaoAberta, setEdicaoAberta] = useState(false)
-    const [nomeDepartamento, setNomeDepartamento] = useState('')
+    const [listaColaboradores, setListaColaboradores] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('')
-    const [colaboradores, setColaboradores] = useState([])
     const [selectedColaboradores, setSelectedColaboradores] = useState(null);
     const [rowClick, setRowClick] = useState(true)
     const [filters, setFilters] = useState({
@@ -58,7 +65,7 @@ function DepartamentoAdicionarColaboradores() {
     const toast = useRef(null)
 
     useEffect(() => {
-        if(departamento.length === 0)
+        if(typeof id !== undefined && id !== null)
         {
             http.get("api/dashboard/department/"+id)
                 .then(response => {
@@ -69,13 +76,18 @@ function DepartamentoAdicionarColaboradores() {
                 })
                 .catch(erro => console.log(erro))
         }
-    }, [edicaoAberta, departamento])
+    }, [edicaoAberta])
 
 
     useEffect(() => {
+        console.log(departamento)
         http.get('api/dashboard/collaborator')
             .then(response => {
-                setColaboradores(response.data.collaborators)
+                console.log(response)
+                if(response.data)
+                {
+                    setListaColaboradores(response.data.collaborators)
+                }
             })
             .catch(erro => console.log(erro))
     }, [])
@@ -83,54 +95,22 @@ function DepartamentoAdicionarColaboradores() {
     const editarDepartamento = (evento) => {
         if (evento.key === 'Enter') {
             evento.preventDefault()
-            const obj = {
-                status: departamento.status,
-                name: nomeDepartamento,
-                description: departamento.description
-            }
-    
-            http.put(`api/dashboard/department/${id}`, obj)
-            .then(response => {
-                if(response.status === 'success')
-                {
-                    toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                    setEdicaoAberta(false)
-                }
-            })
-            .catch(erro => console.log(erro))
+            setEdicaoAberta(false)
         }
     }
 
     const adicionarColaborador = () => {
-
-        setLoading(true)
-        const obj = {}
-        obj[departamento.name] = departamento.public_id
-
-        selectedColaboradores.map((item) => {
-
-            let sendData = {
-                departments: obj
-            }
-
-            http.put(`api/dashboard/collaborator/${item.public_id}`, sendData)
-            .then(response => {
-                if(response.status === 'success')
-                {
-                    toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Adicionado com sucesso', life: 3000 });
-                    setTimeout(() => {
-                        navegar(`/departamento/detalhes/${id}`)
-                    }, 700);
-                }
-                else
-                {
-                    setLoading(false)
-                }
-            })
-            .catch(erro => {
-                setLoading(false)
-            })
-        })
+        if(selectedColaboradores && selectedColaboradores.length > 0)
+        {
+            setLoading(true)
+            setColaboradores(selectedColaboradores)
+            submeterDepartamento()
+            toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Departamento criado', life: 3000 });
+        }
+        else
+        {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você precisa selecionar colaboradores', life: 3000 });
+        }
     }
     
     const onGlobalFilterChange = (value) => {
@@ -153,7 +133,7 @@ function DepartamentoAdicionarColaboradores() {
                         {
                             edicaoAberta ? 
                                 <div style={{display: 'flex', justifyContent: 'start', alignItems: 'center', gap: '8px'}}>
-                                    <input autoFocus onKeyUp={(evento) => editarDepartamento(evento)} style={{fontSize: '28px',fontWeight: '700', width: '70%', boxSizing: 'border-box', height: '35px'}} type="text" value={nomeDepartamento} onChange={(evento) => setNomeDepartamento(evento.target.value)} placeholder={departamento.name}/>
+                                    <input autoFocus onKeyUp={(evento) => editarDepartamento(evento)} style={{fontSize: '28px',fontWeight: '700', width: '70%', boxSizing: 'border-box', height: '35px'}} type="text" value={departamento.name} onChange={(evento) => setNome(evento.target.value)} placeholder={departamento.name}/>
                                     <MdCancel style={{cursor: 'pointer', fill: 'var(--primaria)'}} size={24} onClick={() => setEdicaoAberta(false)} />
                                 </div>
                             :
@@ -180,7 +160,7 @@ function DepartamentoAdicionarColaboradores() {
                             <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                         </span>
                     </div>
-                    <DataTable value={colaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>
+                    <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>
                         <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                         <Column field="name" header="Nome Completo" style={{ width: '100%' }}></Column>
                     </DataTable>

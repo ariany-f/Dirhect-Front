@@ -8,7 +8,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
-import http from '@http';
+import { useDepartamentoContext } from "../../contexts/Departamento"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -110,35 +110,12 @@ const CardText = styled.div`
     background: var(--neutro-100);
 `
 
-function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar, aoSucesso }) {
+function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
 
-    const [nome, setNome] = useState('')
     const [classError, setClassError] = useState([])
+    const [nome, setNome] = useState('')
 
     const navegar = useNavigate()
-  
-    const adicionarDepartamento = () => {
-        const data = {
-            status: 10,
-            name: nome,
-            description: ''
-        }
-        
-        http.post('api/dashboard/department', data)
-            .then((response) => {
-                if(response.status === 'success')
-                {
-                    aoFechar()
-                    aoSucesso.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                    setTimeout(() => {
-                        navegar(`/departamento/${response.public_id}/adicionar-colaboradores`)
-                    }, 700);
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
-    }
 
     return(
         <>
@@ -174,7 +151,7 @@ function ModalAdicionarDepartamento({ opened = false, aoClicar, aoFechar, aoSuce
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={adicionarDepartamento} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={() => aoSalvar(nome)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>
