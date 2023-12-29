@@ -58,6 +58,7 @@ function BeneficioSelecionarColaboradores() {
     useEffect(() => {
         if(listaColaboradores.length === 0)
         {
+            setColaboradores([])
             http.get('api/dashboard/collaborator')
                 .then(response => {
                     setListaColaboradores(response.data.collaborators)
@@ -103,10 +104,10 @@ function BeneficioSelecionarColaboradores() {
                             </span>
                         </div>
                         <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>
-                            <Column selectionMode="multiple" headerStyle={{width: '10%', justifyContent: 'center'}}></Column>
-                            <Column field="name" header="Nome Completo" headerStyle={{width: '35%', justifyContent: 'center'}}></Column>
-                            <Column field="document" header="CPF" headerStyle={{width: '25%', justifyContent: 'center'}}></Column>
-                            <Column field="email" header="E-mail" headerStyle={{width: '30%', justifyContent: 'center'}}></Column>
+                            <Column selectionMode="multiple"></Column>
+                            <Column field="name" header="Nome Completo"></Column>
+                            <Column field="document" header="CPF"></Column>
+                            <Column field="email" header="E-mail"></Column>
                         </DataTable>
                         <ContainerButton>
                             <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>

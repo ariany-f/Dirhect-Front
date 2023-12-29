@@ -62,12 +62,6 @@ function BeneficioEditarValor() {
         }
     }
 
-    const voltar = () => {
-        setColaboradores([])
-        navegar(-1)
-
-    }
-
     return (
         <Frame>
             <Toast ref={toast} />
@@ -95,9 +89,6 @@ function BeneficioEditarValor() {
                     
                     </BotaoGrupo>
                     <DataTableBeneficiosEditarValor recarga={recarga.collaborators} />
-                    <ContainerButton>
-                        <Botao aoClicar={voltar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                    </ContainerButton>
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
             }

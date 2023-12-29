@@ -137,3 +137,12 @@
     }
 }
 
+.containerBottom {
+    margin-top: 50px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    & button {
+        width: initial;
+    }
+}

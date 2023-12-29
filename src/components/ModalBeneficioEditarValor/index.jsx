@@ -1,11 +1,14 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
+import SwitchInput from "@components/SwitchInput"
 import Titulo from "@components/Titulo"
+import Texto from "@components/Texto"
 import SubTitulo from "@components/SubTitulo"
 import { RiCloseFill } from 'react-icons/ri'
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
+import styles from '@pages/Beneficios/Beneficios.module.css'
 import http from '@http';
 import { useEffect } from "react"
 
@@ -15,6 +18,7 @@ const Overlay = styled.div`
     top: 0;
     right: 0;
     bottom: 0;
+    overflow-y: scroll;
     left: 0;
 `
 
@@ -30,14 +34,14 @@ const AdicionarCnpjBotao = styled.div`
 
 const DialogEstilizado = styled.dialog`
     display: flex;
-    width: 70vw;
+    width: 80vw;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 16px;
     border: none;
     margin: 0 auto;
-    top: 22vh;
+    margin-top: 1%;
     padding: 24px;
     & button.close {
         & .fechar {
@@ -109,9 +113,19 @@ const CardText = styled.div`
     background: var(--neutro-100);
 `
 
-function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar }) {
+const LadoALado = styled.div`
+    display: flex;
+    gap: 24px;
+    & span {
+        display: flex;
+        align-items: center;
+    }
+`
+
+function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecionados = [] }) {
 
     const [beneficios, setBeneficios] = useState([])
+    const [checkedAuxilio, setCheckedAuxilio] = useState(false)
 
     const navegar = useNavigate()
     useEffect(() => {
@@ -139,11 +153,36 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar }) {
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
                             </form>
-                            <h6>Valor dos benefícios</h6>
+                            <h5>Valor dos benefícios</h5>
                             <SubTitulo>Informe os valores e os benefícios que deseja disponibilizar para os colaboradores selecionados:</SubTitulo>
+                        </Titulo>
+                        <Texto weight={700}>Colaboradores selecionados&nbsp;<span style={{fontWeight: '600', color: 'var(--primaria)'}}>{selecionados.length}</span></Texto>
+                        <Titulo>
+                            <h6 style={{ fontSize: '16px' }}>Benefício Fixado</h6>
+                            <SubTitulo>Digite o valor total que permanecerá fixo dentro dessa categoria.</SubTitulo>
+                        </Titulo>
+                        <div style={{backgroundColor: 'var(--neutro-50)', width: '100%', padding: '16px', borderRadius: '16px'}}>
+                            <Texto weight="800">
+                                <b style={{fontSize: '14px'}}>Auxílio Alimentação&nbsp;</b><SwitchInput checked={checkedAuxilio} onChange={setCheckedAuxilio} />
+                            </Texto>
+                            <SubTitulo>Utilizar Alimentação e Refeição juntos em uma só categoria.</SubTitulo>
+                        </div>
+                        <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '8px', marginBottom: '8px'}} ></div>
+                        <Titulo>
+                            <h6 style={{ fontSize: '16px' }}>Benefício Flexível</h6>
+                            <SubTitulo>Digite o valor flexível que pode ser distribuído entre as categorias ou habilite a opção “Fixar Valor” e definindo o valor que será fixo por categoria.</SubTitulo>
                         </Titulo>
                     </Frame>
                     
+                    <form method="dialog">
+                        <div className={styles.containerBottom}>
+                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
+                            <LadoALado>
+                                <span>Total&nbsp;<Texto color='var(--primaria)' weight={700}></Texto></span>
+                                <Botao aoClicar={[]} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                            </LadoALado>
+                        </div>
+                    </form>
                 </DialogEstilizado>
             </Overlay>}
         </>

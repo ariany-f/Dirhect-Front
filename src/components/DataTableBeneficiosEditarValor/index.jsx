@@ -2,18 +2,39 @@ import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import './DataTable.css'
 import BotaoGrupo from '@components/BotaoGrupo'
+import Botao from '@components/Botao'
+import Texto from '@components/Texto'
 import styles from './Beneficios.module.css'
 import BotaoSemBorda from '@components/BotaoSemBorda'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaPencilAlt } from 'react-icons/fa'
 import { useRef, useState } from 'react'
 import ModalBeneficioEditarValor from '../ModalBeneficioEditarValor'
 import { Toast } from 'primereact/toast'
+import styled from 'styled-components'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
 });
+
+const ContainerButton = styled.div`
+    display: flex;
+    width: 100%;
+    padding: 20px 0;
+    justify-content: space-between;
+    & button {
+        width: initial;
+    }
+`
+const LadoALado = styled.div`
+    display: flex;
+    gap: 24px;
+    & span {
+        display: flex;
+        align-items: center;
+    }
+`
 
 function DataTableBeneficiosEditarValor({ recarga }) {
     
@@ -21,6 +42,7 @@ function DataTableBeneficiosEditarValor({ recarga }) {
     const [rowClick, setRowClick] = useState(true)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
+    const navegar = useNavigate()
 
     const representativeAmountAuxilioTemplate = (rowData) => {
         if(rowData.auxilio_alimentacao)
@@ -127,7 +149,11 @@ function DataTableBeneficiosEditarValor({ recarga }) {
         return (
            rowData.name
         )
-    };
+    }
+
+    const voltar = () => {
+        navegar(-1)
+    }
 
     function editarValores() {
         if(selectedColaboradores && selectedColaboradores.length !== 0)
@@ -162,7 +188,14 @@ function DataTableBeneficiosEditarValor({ recarga }) {
                 <Column body={representativeAmountEducacaoTemplate} header="Educação" style={{ width: '7%' }}></Column>
                 <Column body={representativeAmountSaldoLivreTemplate} header="Saldo Livre" style={{ width: '7%' }}></Column>
             </DataTable>
-            <ModalBeneficioEditarValor aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+            <ContainerButton>
+                <Botao aoClicar={voltar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                <LadoALado>
+                    <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
+                    <Botao aoClicar={[]} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                </LadoALado>
+            </ContainerButton>
+            <ModalBeneficioEditarValor selecionados={selectedColaboradores ?? 0} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
