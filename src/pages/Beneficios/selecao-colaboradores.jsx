@@ -39,13 +39,15 @@ const LadoALado = styled.div`
 function BeneficioSelecionarColaboradores() {
 
     const {
-        recarga
+        recarga,
+        setColaboradores,
+        setNome
     } = useRecargaBeneficiosContext()
 
     const [modalOpened, setModalOpened] = useState(false)
     const navegar = useNavigate()
     const [globalFilterValue, setGlobalFilterValue] = useState('')
-    const [colaboradores, setColaboradores] = useState([])
+    const [listaColaboradores, setListaColaboradores] = useState([])
     const [selectedColaboradores, setSelectedColaboradores] = useState(null);
     const [rowClick, setRowClick] = useState(true)
     const [filters, setFilters] = useState({
@@ -54,15 +56,15 @@ function BeneficioSelecionarColaboradores() {
     const toast = useRef(null)
 
     useEffect(() => {
-        if(colaboradores.length === 0)
+        if(listaColaboradores.length === 0)
         {
             http.get('api/dashboard/collaborator')
                 .then(response => {
-                    setColaboradores(response.data.collaborators)
+                    setListaColaboradores(response.data.collaborators)
                 })
                 .catch(erro => console.log(erro))
         }
-    }, [colaboradores])
+    }, [listaColaboradores])
     
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -73,15 +75,21 @@ function BeneficioSelecionarColaboradores() {
         setGlobalFilterValue(value);
     };
 
-    function selecionarBeneficios() {
+    const abrirNomearBeneficio = () => {
+        setColaboradores(selectedColaboradores)
         setModalOpened(true)
+    }
+
+    const nomearBeneficio = (nome) => {
+        setNome(nome)
+        navegar('/beneficio/editar-valor')
     }
 
     return (
         <>
             <Frame>
                 <Toast ref={toast} />
-                {colaboradores ?
+                {listaColaboradores ?
                     <>
                         <Titulo>
                             <h6>Selecione os colaboradores</h6>
@@ -94,7 +102,7 @@ function BeneficioSelecionarColaboradores() {
                                 <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                             </span>
                         </div>
-                        <DataTable value={colaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>
+                        <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>
                             <Column selectionMode="multiple" headerStyle={{width: '10%', justifyContent: 'center'}}></Column>
                             <Column field="name" header="Nome Completo" headerStyle={{width: '35%', justifyContent: 'center'}}></Column>
                             <Column field="document" header="CPF" headerStyle={{width: '25%', justifyContent: 'center'}}></Column>
@@ -104,14 +112,14 @@ function BeneficioSelecionarColaboradores() {
                             <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                             <LadoALado>
                                 <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
-                                <Botao aoClicar={() => selecionarBeneficios} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                                <Botao aoClicar={abrirNomearBeneficio} estilo="vermilion" size="medium" filled>Continuar</Botao>
                             </LadoALado>
                         </ContainerButton>
                     </>
                 : <Skeleton variant="rectangular" width={300} height={60} />
                 }
             </Frame>
-            <ModalRecarga opened={modalOpened} />
+            <ModalRecarga aoClicar={nomearBeneficio} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }

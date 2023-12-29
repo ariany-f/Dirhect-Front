@@ -110,34 +110,15 @@ const CardText = styled.div`
     background: var(--neutro-100);
 `
 
-function ModalRecarga({ opened = false, aoClicar, aoFechar, aoSucesso }) {
+function ModalRecarga({ opened = false, aoClicar, aoFechar }) {
 
     const [nome, setNome] = useState('')
     const [classError, setClassError] = useState([])
 
     const navegar = useNavigate()
   
-    const adicionarDepartamento = () => {
-        const data = {
-            status: 10,
-            name: nome,
-            description: ''
-        }
-        
-        http.post('api/dashboard/department', data)
-            .then((response) => {
-                if(response.status === 'success')
-                {
-                    aoFechar()
-                    aoSucesso.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                    setTimeout(() => {
-                        navegar(`/departamento/${response.public_id}/adicionar-colaboradores`)
-                    }, 700);
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
+    const abrirSelecaoBeneficio = () => {
+        aoClicar(nome)       
     }
 
     return(
@@ -153,9 +134,9 @@ function ModalRecarga({ opened = false, aoClicar, aoFechar, aoSucesso }) {
                                         <RiCloseFill size={20} className="fechar" />  
                                     </button>
                                 </form>
-                                <h6>Criar departamento</h6>
+                                <h6>Detalhes da transferência</h6>
                                 <SubTitulo>
-                                    Digite o nome do seu novo departamento:
+                                    Dê um nome para essa transferência:
                                 </SubTitulo>
                             </Titulo>
                         </Frame>
@@ -167,14 +148,14 @@ function ModalRecarga({ opened = false, aoClicar, aoFechar, aoSucesso }) {
                                     valor={nome} 
                                     type="text" 
                                     setValor={setNome} 
-                                    placeholder="ex. Administrativo"
-                                    label="Nome do departamento" 
+                                    placeholder="ex. Pagamento de Janeiro"
+                                    label="Nome da transferência" 
                                 />
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={adicionarDepartamento} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={abrirSelecaoBeneficio} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>

@@ -22,6 +22,8 @@ const recargaInicial = {
 export const RecargaBeneficiosContext = createContext({
     recarga: recargaInicial,
     erros: {},
+    setColaboradores: () => null,
+    setNome: () => null
 })
 
 export const useRecargaBeneficiosContext = () => {
@@ -34,8 +36,29 @@ export const RecargaBeneficiosProvider = ({ children }) => {
 
     const [recarga, setRecarga] = useState(recargaInicial)
 
+    const setColaboradores = (collaborators) => {
+        const colaboradores = recarga.collaborators
+        colaboradores.push(collaborators)
+        setRecarga(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                colaboradores
+            }
+        })
+    }
+    const setNome = (name) => {
+        setRecarga(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                name
+            }
+        })
+    }
+
     const contexto = {
-        recarga
+        recarga,
+        setColaboradores,
+        setNome
     }
 
     return (<RecargaBeneficiosContext.Provider value={contexto}>

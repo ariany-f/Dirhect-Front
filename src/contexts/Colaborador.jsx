@@ -119,7 +119,7 @@ export const ColaboradorProvider = ({ children }) => {
                 departamentos
             }
         })
-    };
+    }
     const setAddressPostalCode = (address_postal_code) => {
         console.log(colaborador)
         setColaborador(estadoAnterior => {
