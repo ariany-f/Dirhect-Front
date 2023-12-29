@@ -58,10 +58,17 @@ export const RecargaBeneficiosProvider = ({ children }) => {
             })
         }
     }
-    const setAmountCollaborator = (collaborator) => {
+    const setAmountAuxilioCollaborator = (collaborator, amount) => {
         const colaboradores = recarga.collaborators
         const colaborador = colaboradores.filter((el) => el === collaborator)
+        colaborador.auxilio = amount
         
+        setRecarga(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                colaboradores
+            }
+        })
     }
     const setNome = (name) => {
         setRecarga(estadoAnterior => {
