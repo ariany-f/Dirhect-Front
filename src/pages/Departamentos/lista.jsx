@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Skeleton } from 'primereact/skeleton'
 import { useEffect, useState } from 'react'
 import http from '@http'
-import DataTableDepartamentos from '../../components/DataTableDepartamentos'
+import DataTableDepartamentos from '@components/DataTableDepartamentos'
 
 const CardText = styled.div`
     display: flex;

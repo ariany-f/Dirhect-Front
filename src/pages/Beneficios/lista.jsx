@@ -1,14 +1,14 @@
 import http from '@http'
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 import BotaoGrupo from '@components/BotaoGrupo'
 import BotaoSemBorda from '@components/BotaoSemBorda'
 import Botao from '@components/Botao'
 import Container from '@components/Container'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Beneficios.module.css'
-import { FaMapPin } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import DataTableBeneficios from '../../components/DataTableBeneficios';
+import { FaMapPin } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
+import DataTableBeneficios from '@components/DataTableBeneficios'
 
 function Beneficios() {
 

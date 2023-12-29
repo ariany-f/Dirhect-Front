@@ -7,6 +7,7 @@ import QuestionCard from '@components/QuestionCard'
 import SwitchInput from '@components/SwitchInput'
 import DropdownItens from '@components/DropdownItens'
 import CheckboxContainer from "@components/CheckboxContainer"
+import Loading from "@components/Loading"
 import DepartamentosRecentes from "@components/DepartamentosRecentes"
 import { useState, useEffect } from "react"
 import http from '@http'
@@ -42,6 +43,7 @@ function ColaboradorDadosIniciais() {
 
     const navegar = useNavigate()
     const [estados, setEstados] = useState([]);
+    const [loading, setLoading] = useState(false)
     const [classError, setClassError] = useState([])
     const navigate = useNavigate();
 
@@ -116,7 +118,22 @@ function ColaboradorDadosIniciais() {
         }
         else
         {
-            submeterUsuario()
+            setLoading(true)
+            submeterUsuario().then(response => {
+                if(response.status)
+                {
+                    if(response.status == 'success')
+                    {
+                        navegar('/colaborador/registro/sucesso')
+                    }
+                }
+                if(response.data.status == 'success')
+                {
+                    navegar('/colaborador/registro/sucesso')
+                }
+            }).catch(erro => {
+                setLoading(false)
+            })
         }       
     }
 
@@ -141,6 +158,7 @@ function ColaboradorDadosIniciais() {
 
     return (
         <form>
+            <Loading opened={loading} />
             <Frame estilo="spaced">
                 <Titulo>
                     <h6>Dados do Colaborador</h6>

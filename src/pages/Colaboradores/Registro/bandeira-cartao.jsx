@@ -5,6 +5,7 @@ import Texto from "@components/Texto"
 import SubTitulo from "@components/SubTitulo"
 import { useState, useEffect } from "react"
 import styles from './Registro.module.css'
+import Loading from "@components/Loading"
 import styled from "styled-components"
 import { MdOutlineChevronRight } from 'react-icons/md'
 import { Link, useNavigate } from "react-router-dom"
@@ -46,6 +47,7 @@ function ColaboradorBandeiraCartao() {
 
     const navegar = useNavigate()
     const [classError, setClassError] = useState([])
+    const [loading, setLoading] = useState(false)
     const [selectedBrand, setSelectedBrand] = useState(1)
 
     const { 
@@ -77,18 +79,21 @@ function ColaboradorBandeiraCartao() {
 
         if(document.querySelectorAll("form .error").length === 0)
         {
+            setLoading(true)
             submeterUsuario().then(response => {
                 if(response.status)
                 {
                     if(response.status == 'success')
                     {
-                        navegar('colaborador/registro/sucesso')
+                        navegar('/colaborador/registro/sucesso')
                     }
                 }
                 if(response.data.status == 'success')
                 {
-                    navegar('colaborador/registro/sucesso')
+                    navegar('/colaborador/registro/sucesso')
                 }
+            }).catch(erro => {
+                setLoading(false)
             })
         }
     }
@@ -101,6 +106,7 @@ function ColaboradorBandeiraCartao() {
 
     return (
         <form>
+            <Loading opened={loading} />
             <Frame estilo="spaced">
                 <Titulo>
                     <h6>Bandeira do cartão</h6>

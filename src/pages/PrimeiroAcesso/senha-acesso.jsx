@@ -6,7 +6,7 @@ import Titulo from "@components/Titulo"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 import BotaoVoltar from "@components/BotaoVoltar"
 import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
-import ModalToken from "../../components/ModalToken"
+import ModalToken from "@components/ModalToken"
 import { useState } from "react"
 import { ArmazenadorToken } from "../../utils"
 

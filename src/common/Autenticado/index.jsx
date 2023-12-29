@@ -48,8 +48,7 @@ function Autenticado() {
                 })
             }
         }
-
-    }, [usuario, usuarioEstaLogado])
+    }, [usuarioEstaLogado, usuario])
     
     
     const selectCompany = () => {

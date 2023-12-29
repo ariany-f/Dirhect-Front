@@ -8,7 +8,7 @@ import Support from '../../../assets/Support.svg'
 
 function ColaboradorRegistroSucesso() {
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     return (
         <>
@@ -19,7 +19,7 @@ function ColaboradorRegistroSucesso() {
                     <SubTitulo fontSize="14px" color="var(--black)" weight="400">Seu colaborador recebeu um <b>e-mail para confirmar seu cadastro</b> e assim conseguir acesso a plataforma</SubTitulo>
                 </Titulo>
                 <div className={styles.ButtonContainer}>
-                    <Link onClick={() => navigate(-1)}>
+                    <Link onClick={navigate('/colaborador')}>
                         <Botao weight='light' estilo="neutro">Voltar</Botao>
                     </Link>
                     <Link to="/colaborador/registro">

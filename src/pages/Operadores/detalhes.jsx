@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
+import { Link, Outlet, useLocation, useParams } from 'react-router-dom'
 import BotaoVoltar from "@components/BotaoVoltar"
 import BotaoGrupo from "@components/BotaoGrupo"
 import Botao from "@components/Botao"
@@ -8,7 +8,7 @@ import Container from "@components/Container"
 import styles from './Operadores.module.css'
 import { Skeleton } from 'primereact/skeleton'
 import http from '@http'
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 
 function OperadorDetalhes() {
 

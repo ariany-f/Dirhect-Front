@@ -58,15 +58,18 @@ function DepartamentoAdicionarColaboradores() {
     const toast = useRef(null)
 
     useEffect(() => {
-        http.get("api/dashboard/department/"+id)
-            .then(response => {
-                if(response.status === 'success')
-                {
-                    setDepartamento(response.department)
-                }
-            })
-            .catch(erro => console.log(erro))
-    }, [edicaoAberta])
+        if(departamento.length === 0)
+        {
+            http.get("api/dashboard/department/"+id)
+                .then(response => {
+                    if(response.status === 'success')
+                    {
+                        setDepartamento(response.department)
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
+    }, [edicaoAberta, departamento])
 
 
     useEffect(() => {
@@ -95,7 +98,7 @@ function DepartamentoAdicionarColaboradores() {
                 }
             })
             .catch(erro => console.log(erro))
-        }        
+        }
     }
 
     const adicionarColaborador = () => {

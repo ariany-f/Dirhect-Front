@@ -1,12 +1,12 @@
 import http from '@http'
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './SaldoLivre.module.css'
 import styled from "styled-components"
 import { Link } from "react-router-dom"
-import DataTablePremiacoes from '../../components/DataTablePremiacoes';
+import DataTablePremiacoes from '@components/DataTablePremiacoes'
 import Management from './../../assets/Management.svg'
 
 const ConteudoFrame = styled.div`

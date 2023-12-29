@@ -1,7 +1,6 @@
 import http from '@http'
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react"
 import { useParams, Link, useLocation, Outlet, useNavigate } from 'react-router-dom'
-import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import BotaoVoltar from "@components/BotaoVoltar"
 import BotaoGrupo from "@components/BotaoGrupo"
 import QuestionCard from "@components/QuestionCard"
@@ -18,8 +17,8 @@ import styles from './Departamento.module.css'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import { GrAddCircle } from 'react-icons/gr'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
-import { addLocale } from 'primereact/api';
-import ModalDepartamentoAdicionarBeneficio from '../../components/ModalDepartamentoAdicionarBeneficio';
+import { addLocale } from 'primereact/api'
+import ModalDepartamentoAdicionarBeneficio from '@components/ModalDepartamentoAdicionarBeneficio'
 
 const ConteudoFrame = styled.div`
     display: flex;

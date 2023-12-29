@@ -54,25 +54,25 @@ import BeneficioEditarValor from '@pages/Beneficios/editar-valor';
 import Extrato from '@pages/Extrato';
 import DepartamentoConfiguracaoBeneficios from '@pages/Departamentos/configuracao-beneficios';
 import DepartamentoListaColaboradores from '@pages/Departamentos/lista-colaboradores';
-import ColaboradorEnvioCartao from './pages/Colaboradores/Registro/envio-cartao';
-import ColaboradorDadosIniciais from './pages/Colaboradores/Registro/dados-iniciais';
+import ColaboradorEnvioCartao from '@pages/Colaboradores/Registro/envio-cartao';
+import ColaboradorDadosIniciais from '@pages/Colaboradores/Registro/dados-iniciais';
 import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario";
-import ColaboradorBandeiraCartao from './pages/Colaboradores/Registro/bandeira-cartao';
-import RedefinirSenhaCheckInbox from './pages/EsqueciASenha/check-inbox';
-import RedefinirSenhaSucesso from './pages/EsqueciASenha/sucesso';
-import MeusDados from './pages/MeusDados'
-import MeusDadosDadosGerais from './pages/MeusDados/dados-gerais'
-import MeusDadosEndereco from './pages/MeusDados/endereco'
-import MeusDadosDadosFaturamento from './pages/MeusDados/dados-faturamento'
-import Operador from './pages/Operadores';
-import OperadorRegistro from './pages/Operadores/Registro/registro';
-import OperadorRegistroPermissoes from './pages/Operadores/Registro/permissoes';
-import OperadorRegistroSucesso from './pages/Operadores/Registro/sucesso';
-import OperadorRegistroSelecionar from './pages/Operadores/Registro/selecionar';
-import OperadorDetalhes from './pages/Operadores/detalhes/';
-import OperadorDados from './pages/Operadores/Detalhes/dados';
-import OperadorPermissoes from './pages/Operadores/Detalhes/permissoes';
-import RecargaBeneficios from './pages/Beneficios';
+import ColaboradorBandeiraCartao from '@pages/Colaboradores/Registro/bandeira-cartao'
+import RedefinirSenhaCheckInbox from '@pages/EsqueciASenha/check-inbox'
+import RedefinirSenhaSucesso from '@pages/EsqueciASenha/sucesso'
+import MeusDados from '@pages/MeusDados'
+import MeusDadosDadosGerais from '@pages/MeusDados/dados-gerais'
+import MeusDadosEndereco from '@pages/MeusDados/endereco'
+import MeusDadosDadosFaturamento from '@pages/MeusDados/dados-faturamento'
+import Operador from '@pages/Operadores'
+import OperadorRegistro from '@pages/Operadores/Registro/registro'
+import OperadorRegistroPermissoes from '@pages/Operadores/Registro/permissoes'
+import OperadorRegistroSucesso from '@pages/Operadores/Registro/sucesso'
+import OperadorRegistroSelecionar from '@pages/Operadores/Registro/selecionar'
+import OperadorDetalhes from '@pages/Operadores/detalhes'
+import OperadorDados from '@pages/Operadores/Detalhes/dados'
+import OperadorPermissoes from '@pages/Operadores/Detalhes/permissoes'
+import RecargaBeneficios from '@pages/Beneficios'
 
 function AppRouter() {
   

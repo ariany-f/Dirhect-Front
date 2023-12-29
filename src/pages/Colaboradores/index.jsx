@@ -4,11 +4,10 @@ import BotaoSemBorda from '@components/BotaoSemBorda'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Colaboradores.module.css'
 import styled from "styled-components"
-
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom"
 import { FaDownload } from 'react-icons/fa'
 import { useState } from 'react'
-import ModalImportarPlanilha from '../../components/ModalImportarPlanilha'
+import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
 
 const ConteudoFrame = styled.div`
     display: flex;

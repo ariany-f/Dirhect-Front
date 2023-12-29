@@ -1,5 +1,5 @@
 import http from '@http'
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
@@ -13,7 +13,9 @@ import { Toast } from 'primereact/toast'
 import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
-import styled from 'styled-components';
+import styled from 'styled-components'
+import { useRecargaBeneficiosContext } from "../../contexts/RecargaBeneficios"
+import ModalRecarga from '@components/ModalRecarga'
 
 const ContainerButton = styled.div`
     display: flex;
@@ -36,6 +38,11 @@ const LadoALado = styled.div`
 
 function BeneficioSelecionarColaboradores() {
 
+    const {
+        recarga
+    } = useRecargaBeneficiosContext()
+
+    const [modalOpened, setModalOpened] = useState(false)
     const navegar = useNavigate()
     const [globalFilterValue, setGlobalFilterValue] = useState('')
     const [colaboradores, setColaboradores] = useState([])
@@ -66,39 +73,46 @@ function BeneficioSelecionarColaboradores() {
         setGlobalFilterValue(value);
     };
 
+    function selecionarBeneficios() {
+        setModalOpened(true)
+    }
+
     return (
-        <Frame>
-            <Toast ref={toast} />
-            {colaboradores ?
-                <>
-                    <Titulo>
-                        <h6>Selecione os colaboradores</h6>
-                        <SubTitulo>
-                            Informe quais colaboradores você quer realizar a recarga de benefícios
-                        </SubTitulo>
-                    </Titulo>
-                    <div className="flex justify-content-end">
-                        <span className="p-input-icon-left">
-                            <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
-                        </span>
-                    </div>
-                    <DataTable value={colaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>
-                        <Column selectionMode="multiple" headerStyle={{width: '10%', justifyContent: 'center'}}></Column>
-                        <Column field="name" header="Nome Completo" headerStyle={{width: '35%', justifyContent: 'center'}}></Column>
-                        <Column field="document" header="CPF" headerStyle={{width: '25%', justifyContent: 'center'}}></Column>
-                        <Column field="email" header="E-mail" headerStyle={{width: '30%', justifyContent: 'center'}}></Column>
-                    </DataTable>
-                    <ContainerButton>
-                        <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
-                        <LadoALado>
-                            <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
-                            <Botao aoClicar={() => navegar('')} estilo="vermilion" size="medium" filled>Continuar</Botao>
-                        </LadoALado>
-                    </ContainerButton>
-                </>
-            : <Skeleton variant="rectangular" width={300} height={60} />
-            }
-        </Frame>
+        <>
+            <Frame>
+                <Toast ref={toast} />
+                {colaboradores ?
+                    <>
+                        <Titulo>
+                            <h6>Selecione os colaboradores</h6>
+                            <SubTitulo>
+                                Informe quais colaboradores você quer realizar a recarga de benefícios
+                            </SubTitulo>
+                        </Titulo>
+                        <div className="flex justify-content-end">
+                            <span className="p-input-icon-left">
+                                <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
+                            </span>
+                        </div>
+                        <DataTable value={colaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>
+                            <Column selectionMode="multiple" headerStyle={{width: '10%', justifyContent: 'center'}}></Column>
+                            <Column field="name" header="Nome Completo" headerStyle={{width: '35%', justifyContent: 'center'}}></Column>
+                            <Column field="document" header="CPF" headerStyle={{width: '25%', justifyContent: 'center'}}></Column>
+                            <Column field="email" header="E-mail" headerStyle={{width: '30%', justifyContent: 'center'}}></Column>
+                        </DataTable>
+                        <ContainerButton>
+                            <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
+                            <LadoALado>
+                                <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
+                                <Botao aoClicar={() => selecionarBeneficios} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                            </LadoALado>
+                        </ContainerButton>
+                    </>
+                : <Skeleton variant="rectangular" width={300} height={60} />
+                }
+            </Frame>
+            <ModalRecarga opened={modalOpened} />
+        </>
     )
 }
 

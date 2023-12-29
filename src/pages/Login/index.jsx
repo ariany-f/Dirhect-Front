@@ -11,7 +11,7 @@ import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import { useRef, useState } from "react"
 import { Toast } from 'primereact/toast'
 import { ArmazenadorToken } from "../../utils"
-import Loading from "../../components/Loading"
+import Loading from "@components/Loading"
 
 function Login() {
 
