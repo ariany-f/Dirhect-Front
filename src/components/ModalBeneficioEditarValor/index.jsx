@@ -130,6 +130,25 @@ const Beneficio = styled.div`
     border: 1px solid var(--neutro-200);
 `
 
+const Col12 = styled.div`
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    justify-content: space-between;
+`
+
+const Col6Input = styled.div`
+    flex: 1;
+    width: 50%;
+`
+
+const Col6 = styled.div`
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+`
+
 const CardText = styled.div`
     display: flex;
     padding: 10px 16px;
@@ -154,6 +173,12 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
 
     const [beneficios, setBeneficios] = useState([])
     const [checkedAuxilio, setCheckedAuxilio] = useState(false)
+    const [checkedSaude, setCheckedSaude] = useState(false)
+    const [checkedMobilidade, setCheckedMobilidade] = useState(false)
+    const [checkedHomeOffice, setCheckedHomeOffice] = useState(false)
+    const [checkedEducacao, setCheckedEducacao] = useState(false)
+    const [checkedCultura, setCheckedCultura] = useState(false)
+    const [checkedCombustivel, setCheckedCombustivel] = useState(false)
 
     const navegar = useNavigate()
     useEffect(() => {
@@ -223,30 +248,138 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                         
                         <CardBeneficio>
                             <Beneficio>
-                                <Texto weight={700}><PiFirstAidKitLight size={20} />&nbsp;Saúde</Texto>
-                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                <Col12>
+                                    <Col6>
+                                        <PiFirstAidKitLight size={20} /><Texto weight={700}>Saúde</Texto>
+                                    </Col6>
+                                    <Col6>
+                                        <Texto weight="800">
+                                            <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedSaude} onChange={setCheckedSaude} />
+                                        </Texto>
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6Input>
+                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                    </Col6Input>
+                                    {checkedSaude &&
+                                        <Col6Input>
+                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                        </Col6Input>
+                                    }
+                                </Col12>
                             </Beneficio>
                             <Beneficio>
-                                <Texto weight={700}><BiCar size={20} /> &nbsp;Mobilidade</Texto>
-                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                <Col12>
+                                    <Col6>
+                                        <BiCar size={20} /><Texto weight={700}>Mobilidade</Texto>
+                                    </Col6>
+                                    <Col6>
+                                        <Texto weight="800">
+                                            <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedMobilidade} onChange={setCheckedMobilidade} />
+                                        </Texto>
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6Input>
+                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                    </Col6Input>
+                                    {checkedMobilidade &&
+                                        <Col6Input>
+                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                        </Col6Input>
+                                    }
+                                </Col12>
                             </Beneficio>
                             <Beneficio>
-                                <Texto weight={700}><PiOfficeChair size={20} /> &nbsp;Home Office</Texto>
-                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                <Col12>
+                                    <Col6>
+                                        <PiOfficeChair size={20} /><Texto weight={700}>Home Office</Texto>
+                                    </Col6>
+                                    <Col6>
+                                        <Texto weight="800">
+                                            <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedHomeOffice} onChange={setCheckedHomeOffice} />
+                                        </Texto>
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6Input>
+                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                    </Col6Input>
+                                    {checkedHomeOffice &&    
+                                        <Col6Input>
+                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                        </Col6Input>
+                                    }
+                                </Col12>
                             </Beneficio>
                         </CardBeneficio>
                         <CardBeneficio>
                             <Beneficio>
-                                <Texto weight={700}><IoBookOutline size={20} />&nbsp;Educação</Texto>
-                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                <Col12>
+                                    <Col6>
+                                        <IoBookOutline size={20} /><Texto weight={700}>Educação</Texto>
+                                    </Col6>
+                                    <Col6>
+                                        <Texto weight="800">
+                                            <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedEducacao} onChange={setCheckedEducacao} />
+                                        </Texto>
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6Input>
+                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                    </Col6Input>
+                                    {checkedEducacao &&
+                                        <Col6Input>
+                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                        </Col6Input>
+                                    }
+                                </Col12>
                             </Beneficio>
                             <Beneficio>
-                                <Texto weight={700}><RiCoupon3Line size={20} /> &nbsp;Cultura</Texto>
-                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                <Col12>
+                                    <Col6>
+                                        <RiCoupon3Line size={20} /><Texto weight={700}>Cultura</Texto>
+                                    </Col6>
+                                    <Col6>
+                                        <Texto weight="800">
+                                            <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedCultura} onChange={setCheckedCultura} />
+                                        </Texto>
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6Input>
+                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                    </Col6Input>
+                                    {checkedCultura &&
+                                        <Col6Input>
+                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                        </Col6Input>
+                                    }
+                                </Col12>
                             </Beneficio>
                             <Beneficio>
-                                <Texto weight={700}><BsFuelPump size={18} /> &nbsp;Combustível</Texto>
-                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                <Col12>
+                                    <Col6>
+                                        <RiCoupon3Line BsFuelPump={18} /><Texto weight={700}>Combustível</Texto>
+                                    </Col6>
+                                    <Col6>
+                                        <Texto weight="800">
+                                            <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedCombustivel} onChange={setCheckedCombustivel} />
+                                        </Texto>
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6Input>
+                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                    </Col6Input>
+                                    {checkedCombustivel &&
+                                        <Col6Input>
+                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                        </Col6Input>
+                                    }
+                                </Col12>
                             </Beneficio>
                         </CardBeneficio>
                     </Frame>
