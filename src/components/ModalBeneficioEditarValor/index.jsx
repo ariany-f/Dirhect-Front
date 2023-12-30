@@ -3,14 +3,20 @@ import Frame from "@components/Frame"
 import SwitchInput from "@components/SwitchInput"
 import Titulo from "@components/Titulo"
 import Texto from "@components/Texto"
+import CampoTexto from "@components/CampoTexto"
 import SubTitulo from "@components/SubTitulo"
-import { RiCloseFill } from 'react-icons/ri'
+import { RiCloseFill, RiCoupon3Line, RiShoppingCartLine } from 'react-icons/ri'
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import styles from '@pages/Beneficios/Beneficios.module.css'
 import http from '@http';
 import { useEffect } from "react"
+import { BiCar } from "react-icons/bi"
+import { CiBurger, CiForkAndKnife } from "react-icons/ci"
+import { PiFirstAidKitLight, PiOfficeChair } from "react-icons/pi"
+import { IoBookOutline } from "react-icons/io5"
+import { BsFuelPump } from "react-icons/bs"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -100,7 +106,29 @@ const Item = styled.div`
     align-items: center;
     width: 94%;
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
-`;
+`
+
+const CardBeneficio = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    align-self: stretch;
+`
+
+const Beneficio = styled.div`
+   display: flex;
+    width: 308px;
+    padding: 16px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    align-self: stretch;
+    border-radius: 16px;
+    border: 1px solid var(--neutro-200);
+`
 
 const CardText = styled.div`
     display: flex;
@@ -168,20 +196,59 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                             <SubTitulo>Utilizar Alimentação e Refeição juntos em uma só categoria.</SubTitulo>
                         </div>
                         {checkedAuxilio ?
-                            <div>
-                                Auxílio Alimentação
-                                <input placeholder="Valor fixo"/>
-                            </div>
+                            <CardBeneficio>
+                                <Beneficio>
+                                        <Texto weight={700}><CiForkAndKnife size={18}/>&nbsp;Auxílio Alimentação</Texto>
+                                        <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                </Beneficio>
+                            </CardBeneficio>
                             : 
-                            <>
-                            </>
+                            <CardBeneficio>
+                                <Beneficio>
+                                    <Texto weight={700}><RiShoppingCartLine size={16} />&nbsp;Alimentação</Texto>
+                                    <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                </Beneficio>
+                                <Beneficio>
+                                    <Texto weight={700}><CiBurger size={20} /> &nbsp;Refeição</Texto>
+                                    <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                </Beneficio>
+                            </CardBeneficio>
                         }
 
-                        <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '8px', marginBottom: '8px'}} ></div>
+                        <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '4px', marginBottom: '4px'}} ></div>
                         <Titulo>
                             <h6 style={{ fontSize: '16px' }}>Benefício Flexível</h6>
                             <SubTitulo>Digite o valor flexível que pode ser distribuído entre as categorias ou habilite a opção “Fixar Valor” e definindo o valor que será fixo por categoria.</SubTitulo>
                         </Titulo>
+                        
+                        <CardBeneficio>
+                            <Beneficio>
+                                <Texto weight={700}><PiFirstAidKitLight size={20} />&nbsp;Saúde</Texto>
+                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                            </Beneficio>
+                            <Beneficio>
+                                <Texto weight={700}><BiCar size={20} /> &nbsp;Mobilidade</Texto>
+                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                            </Beneficio>
+                            <Beneficio>
+                                <Texto weight={700}><PiOfficeChair size={20} /> &nbsp;Home Office</Texto>
+                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                            </Beneficio>
+                        </CardBeneficio>
+                        <CardBeneficio>
+                            <Beneficio>
+                                <Texto weight={700}><IoBookOutline size={20} />&nbsp;Educação</Texto>
+                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                            </Beneficio>
+                            <Beneficio>
+                                <Texto weight={700}><RiCoupon3Line size={20} /> &nbsp;Cultura</Texto>
+                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                            </Beneficio>
+                            <Beneficio>
+                                <Texto weight={700}><BsFuelPump size={18} /> &nbsp;Combustível</Texto>
+                                <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                            </Beneficio>
+                        </CardBeneficio>
                     </Frame>
                     
                     <form method="dialog">
