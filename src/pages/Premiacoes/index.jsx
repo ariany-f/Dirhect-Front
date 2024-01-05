@@ -7,7 +7,9 @@ import styles from './SaldoLivre.module.css'
 import styled from "styled-components"
 import { Link } from "react-router-dom"
 import DataTablePremiacoes from '@components/DataTablePremiacoes'
+import QuestionCard from '@components/QuestionCard'
 import Management from './../../assets/Management.svg'
+import { AiFillQuestionCircle } from 'react-icons/ai'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -62,6 +64,9 @@ function Premiacoes() {
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
+            <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
+                <Link to={'/saldo-livre/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
+            </QuestionCard>
             {
                 premiacoes.length ?
                 <DataTablePremiacoes premiacoes={premiacoes} />

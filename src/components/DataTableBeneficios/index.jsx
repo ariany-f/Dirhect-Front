@@ -1,14 +1,14 @@
-import { DataTable } from 'primereact/datatable';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable'
+import { FilterMatchMode, FilterOperator } from 'primereact/api'
+import { Column } from 'primereact/column'
 import './DataTable.css'
-import Texto from '@components/Texto';
-import QuestionCard from '@components/QuestionCard';
-import CampoTexto from '@components/CampoTexto';
-import { useNavigate } from 'react-router-dom';
+import Texto from '@components/Texto'
+import QuestionCard from '@components/QuestionCard'
+import CampoTexto from '@components/CampoTexto'
+import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react';
-import BadgeStatusBeneficio from '../BadgeStatusBeneficio';
-import { AiFillQuestionCircle } from 'react-icons/ai';
+import BadgeStatusBeneficio from '../BadgeStatusBeneficio'
+import { AiFillQuestionCircle } from 'react-icons/ai'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',

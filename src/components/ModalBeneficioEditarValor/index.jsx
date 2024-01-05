@@ -16,7 +16,6 @@ import { BiCar } from "react-icons/bi"
 import { CiBurger, CiForkAndKnife } from "react-icons/ci"
 import { PiFirstAidKitLight, PiOfficeChair } from "react-icons/pi"
 import { IoBookOutline } from "react-icons/io5"
-import { BsFuelPump } from "react-icons/bs"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -26,16 +25,6 @@ const Overlay = styled.div`
     bottom: 0;
     overflow-y: scroll;
     left: 0;
-`
-
-const AdicionarCnpjBotao = styled.div`
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--primaria);
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
 `
 
 const DialogEstilizado = styled.dialog`
@@ -87,27 +76,6 @@ const DialogEstilizado = styled.dialog`
     }
 `
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    align-self: stretch;
-`;
-
-const Item = styled.div`
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 16px;
-    display: flex;
-    padding: 20px;
-    justify-content: space-between;
-    align-items: center;
-    width: 94%;
-    border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
-`
-
 const CardBeneficio = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -147,17 +115,6 @@ const Col6 = styled.div`
     display: inline-flex;
     align-items: center;
     gap: 8px;
-`
-
-const CardText = styled.div`
-    display: flex;
-    padding: 10px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    font-size: 14px;
-    background: var(--neutro-100);
 `
 
 const LadoALado = styled.div`

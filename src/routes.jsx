@@ -73,6 +73,7 @@ import OperadorDetalhes from '@pages/Operadores/detalhes'
 import OperadorDados from '@pages/Operadores/Detalhes/dados'
 import OperadorPermissoes from '@pages/Operadores/Detalhes/permissoes'
 import RecargaBeneficios from '@pages/Beneficios'
+import PremiacaoComoFunciona from './pages/Premiacoes/como-funciona';
 
 function AppRouter() {
   
@@ -142,6 +143,7 @@ function AppRouter() {
             
               <Route path="saldo-livre" element={<Premiacoes />} />
               <Route path="saldo-livre/detalhes" element={<PremiacaoDetalhes />} />
+              <Route path="saldo-livre/como-funciona" element={<PremiacaoComoFunciona />} />
               <Route path="saldo-livre/registro" element={<PremiacaoRegistro />} />
               <Route path="saldo-livre/editar-valor" element={<PremiacaoEditarValor />} />
               <Route path="saldo-livre/selecao-premiados" element={<PremiacaoSelecaoPremiados />} />
