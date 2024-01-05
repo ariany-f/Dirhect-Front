@@ -5,7 +5,7 @@ import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
 import { FaEnvelope } from 'react-icons/fa'
 import { BsSearch } from 'react-icons/bs'
 import * as Yup from 'yup'
-import { mask as masker, unMask } from "remask"
+import { currency, mask as masker, unMask } from "remask"
 
 const Campo = styled.input`
     border-radius: 8px;
@@ -106,7 +106,21 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
 
         if(patternMask.length > 0)
         {
-            setValor(masker(unMask(valorCampo), patternMask))
+            if(patternMask === 'BRL')
+            {
+                if(valorCampo.length > 0)
+                {
+                    setValor(currency.mask({ locale: 'pt-BR', currency: 'BRL', value: currency.unmask({ locale: 'pt-BR', currency: 'BRL', value: valorCampo }) }))
+                }
+                else
+                {
+                    setValor(currency.mask({ locale: 'pt-BR', currency: 'BRL', value: currency.unmask({ locale: 'pt-BR', currency: 'BRL', value: 0 }) }))
+                }
+            }
+            else
+            {
+                setValor(masker(unMask(valorCampo), patternMask))
+            }
         }
         else
         {

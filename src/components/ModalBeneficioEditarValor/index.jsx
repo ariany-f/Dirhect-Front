@@ -16,6 +16,7 @@ import { BiCar } from "react-icons/bi"
 import { CiBurger, CiForkAndKnife } from "react-icons/ci"
 import { PiFirstAidKitLight, PiOfficeChair } from "react-icons/pi"
 import { IoBookOutline } from "react-icons/io5"
+import { currency, mask as masker, unMask } from "remask"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -126,6 +127,11 @@ const LadoALado = styled.div`
     }
 `
 
+let Real = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+});
+
 function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecionados = [] }) {
 
     const [beneficios, setBeneficios] = useState([])
@@ -136,8 +142,29 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
     const [checkedEducacao, setCheckedEducacao] = useState(false)
     const [checkedCultura, setCheckedCultura] = useState(false)
     const [checkedCombustivel, setCheckedCombustivel] = useState(false)
+    const [auxilioAlimentacao, setAuxilioAlimentacao] = useState(Real.format(0))
+    const [alimentacao, setAlimentacao] = useState(Real.format(0))
+    const [refeicao, setRefeicao] = useState(Real.format(0))
+    const [saudeFlexivel, setSaudeFlexivel] = useState(Real.format(0))
+    const [saudeFixo, setSaudeFixo] = useState(Real.format(0))
+    const [mobilidadeFlexivel, setMobilidadeFlexivel] = useState(Real.format(0))
+    const [mobilidadeFixo, setMobilidadeFixo] = useState(Real.format(0))
+    const [homeOfficeFlexivel, setHomeOfficeFlexivel] = useState(Real.format(0))
+    const [homeOfficeFixo, setHomeOfficeFixo] = useState(Real.format(0))
+    const [educacaoFlexivel, setEducacaoFlexivel] = useState(Real.format(0))
+    const [educacaoFixo, setEducacaoFixo] = useState(Real.format(0))
+    const [culturaFlexivel, setCulturaFlexivel] = useState(Real.format(0))
+    const [culturaFixo, setCulturaFixo] = useState(Real.format(0))
+    const [combustivelFlexivel, setCombustivelFlexivel] = useState(Real.format(0))
+    const [combustivelFixo, setCombustivelFixo] = useState(Real.format(0))
+    const [total, setTotal] = useState(0)
 
     const navegar = useNavigate()
+
+    function removeMask(valor)
+    {
+        return currency.unmask({locale: 'pt-BR', currency: 'BRL', value: valor})
+    }
     useEffect(() => {
         if(beneficios.length === 0)
         {
@@ -149,7 +176,58 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                     console.error(erro)
                 })
         }
-    }, [beneficios])
+
+        if(checkedAuxilio)
+        {
+            setTotal((
+                removeMask(auxilioAlimentacao)
+                + removeMask(saudeFlexivel) + (checkedSaude ? (removeMask(saudeFixo)) : 0)
+                + removeMask(mobilidadeFlexivel) + (checkedMobilidade ? (removeMask(mobilidadeFixo)) : 0)
+                + removeMask(homeOfficeFlexivel) + (checkedHomeOffice ? (removeMask(homeOfficeFixo)) : 0)
+                + removeMask(educacaoFlexivel) + (checkedEducacao ? (removeMask(educacaoFixo)) : 0)
+                + removeMask(culturaFlexivel) + (checkedCultura ? (removeMask(culturaFixo)) : 0)
+                + removeMask(combustivelFlexivel) + (checkedCombustivel ? (removeMask(combustivelFixo)) : 0)
+                ) * selecionados.length)
+        }
+        else
+        {
+            setTotal((
+                removeMask(alimentacao) 
+                + removeMask(refeicao) 
+                + removeMask(saudeFlexivel) + (checkedSaude ? (removeMask(saudeFixo)) : 0)
+                + removeMask(mobilidadeFlexivel) + (checkedMobilidade ? (removeMask(mobilidadeFixo)) : 0)
+                + removeMask(homeOfficeFlexivel) + (checkedHomeOffice ? (removeMask(homeOfficeFixo)) : 0)
+                + removeMask(educacaoFlexivel) + (checkedEducacao ? (removeMask(educacaoFixo)) : 0)
+                + removeMask(culturaFlexivel) + (checkedCultura ? (removeMask(culturaFixo)) : 0)
+                + removeMask(combustivelFlexivel) + (checkedCombustivel ? (removeMask(combustivelFixo)) : 0)
+                ) * selecionados.length)
+        }
+        
+    }, [
+        beneficios, 
+        checkedAuxilio, 
+        auxilioAlimentacao, 
+        alimentacao, 
+        refeicao, 
+        checkedSaude, 
+        checkedMobilidade, 
+        checkedHomeOffice, 
+        checkedEducacao, 
+        checkedCultura, 
+        checkedCombustivel, 
+        saudeFlexivel, 
+        saudeFixo, 
+        mobilidadeFlexivel, 
+        mobilidadeFixo, 
+        homeOfficeFlexivel, 
+        homeOfficeFixo, 
+        educacaoFlexivel, 
+        educacaoFixo, 
+        culturaFlexivel, 
+        culturaFixo, 
+        combustivelFlexivel, 
+        combustivelFixo
+    ])
 
     return(
         <>
@@ -181,18 +259,18 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                             <CardBeneficio>
                                 <Beneficio>
                                         <Texto weight={700}><CiForkAndKnife size={18}/>&nbsp;Auxílio Alimentação</Texto>
-                                        <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                        <CampoTexto valor={auxilioAlimentacao} setValor={setAuxilioAlimentacao} patternMask={'BRL'} label="Valor fixo" placeholder="R$ 0,00"/>
                                 </Beneficio>
                             </CardBeneficio>
                             : 
                             <CardBeneficio>
                                 <Beneficio>
                                     <Texto weight={700}><RiShoppingCartLine size={16} />&nbsp;Alimentação</Texto>
-                                    <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                    <CampoTexto valor={alimentacao} setValor={setAlimentacao} patternMask={'BRL'} label="Valor fixo" placeholder="R$ 0,00"/>
                                 </Beneficio>
                                 <Beneficio>
                                     <Texto weight={700}><CiBurger size={20} /> &nbsp;Refeição</Texto>
-                                    <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                    <CampoTexto valor={refeicao} setValor={setRefeicao} patternMask={'BRL'} label="Valor fixo" placeholder="R$ 0,00"/>
                                 </Beneficio>
                             </CardBeneficio>
                         }
@@ -217,11 +295,11 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                 </Col12>
                                 <Col12>
                                     <Col6Input>
-                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                        <CampoTexto valor={saudeFlexivel} setValor={setSaudeFlexivel} patternMask={'BRL'} label="Valor flexível" placeholder="R$ 0,00"/>
                                     </Col6Input>
                                     {checkedSaude &&
                                         <Col6Input>
-                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                            <CampoTexto valor={saudeFixo} setValor={setSaudeFixo} patternMask={'BRL'} label="Valor fixo" placeholder="R$ 0,00"/>
                                         </Col6Input>
                                     }
                                 </Col12>
@@ -239,11 +317,11 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                 </Col12>
                                 <Col12>
                                     <Col6Input>
-                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                        <CampoTexto valor={mobilidadeFlexivel} setValor={setMobilidadeFlexivel} patternMask={'BRL'} label="Valor flexível" placeholder="R$ 0,00"/>
                                     </Col6Input>
                                     {checkedMobilidade &&
                                         <Col6Input>
-                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                            <CampoTexto valor={mobilidadeFixo} setValor={setMobilidadeFixo} patternMask={'BRL'} label="Valor fixo" placeholder="R$ 0,00"/>
                                         </Col6Input>
                                     }
                                 </Col12>
@@ -261,11 +339,11 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                 </Col12>
                                 <Col12>
                                     <Col6Input>
-                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                        <CampoTexto valor={homeOfficeFlexivel} setValor={setHomeOfficeFlexivel} patternMask={'BRL'} label="Valor flexível" placeholder="R$ 0,00"/>
                                     </Col6Input>
                                     {checkedHomeOffice &&    
                                         <Col6Input>
-                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                            <CampoTexto valor={homeOfficeFixo} setValor={setHomeOfficeFixo} patternMask={'BRL'} label="Valor fixo" placeholder="R$ 0,00"/>
                                         </Col6Input>
                                     }
                                 </Col12>
@@ -285,11 +363,11 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                 </Col12>
                                 <Col12>
                                     <Col6Input>
-                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                        <CampoTexto valor={educacaoFlexivel} setValor={setEducacaoFlexivel} patternMask={'BRL'} label="Valor flexível" placeholder="R$ 0,00"/>
                                     </Col6Input>
                                     {checkedEducacao &&
                                         <Col6Input>
-                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                            <CampoTexto valor={educacaoFixo} setValor={setEducacaoFixo} patternMask={'BRL'} label="Valor fixo" placeholder="R$ 0,00"/>
                                         </Col6Input>
                                     }
                                 </Col12>
@@ -307,11 +385,11 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                 </Col12>
                                 <Col12>
                                     <Col6Input>
-                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                        <CampoTexto valor={culturaFlexivel} setValor={setCulturaFlexivel} patternMask={'BRL'} label="Valor flexível" placeholder="R$ 0,00"/>
                                     </Col6Input>
                                     {checkedCultura &&
                                         <Col6Input>
-                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                            <CampoTexto valor={culturaFixo} setValor={setCulturaFixo} patternMask={'BRL'} label="Valor fixo" placeholder="R$ 0,00"/>
                                         </Col6Input>
                                     }
                                 </Col12>
@@ -329,11 +407,11 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                 </Col12>
                                 <Col12>
                                     <Col6Input>
-                                        <CampoTexto label="Valor flexível" placeholder="R$ 0,00"/>
+                                        <CampoTexto valor={combustivelFlexivel} setValor={setCombustivelFlexivel} patternMask={'BRL'} label="Valor flexível" placeholder="R$ 0,00"/>
                                     </Col6Input>
                                     {checkedCombustivel &&
                                         <Col6Input>
-                                            <CampoTexto label="Valor fixo" placeholder="R$ 0,00"/>
+                                            <CampoTexto valor={combustivelFixo} setValor={setCombustivelFixo} patternMask={'BRL'} label="Valor fixo" placeholder="R$ 0,00"/>
                                         </Col6Input>
                                     }
                                 </Col12>
@@ -345,7 +423,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                         <div className={styles.containerBottom}>
                             <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                             <LadoALado>
-                                <span>Total&nbsp;<Texto color='var(--primaria)' weight={700}></Texto></span>
+                                <span>Total&nbsp;<b>{Real.format(total)}</b><Texto color='var(--primaria)' weight={700}></Texto></span>
                                 <Botao aoClicar={[]} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </LadoALado>
                         </div>
