@@ -124,16 +124,6 @@ function DataTableBeneficiosEditarValor({ recarga }) {
             return <b>-</b>
         }
     }
-    const representativeAmountSaldoLivreTemplate = (rowData) => {
-        if(rowData.saldo_livre)
-        {
-            return <b>{(Real.format(rowData.saldo_livre))}</b>
-        }
-        else
-        {
-            return <b>-</b>
-        }
-    }
     const representativeAmountEducacaoTemplate = (rowData) => {
         if(rowData.educacao)
         {
@@ -177,16 +167,15 @@ function DataTableBeneficiosEditarValor({ recarga }) {
             <DataTable value={recarga[0]} selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ maxWidth: '100vw',minWidth: '90vw' }}>
                 <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                 <Column body={representativeDescriptionTemplate} header="Nome Completo" style={{ width: '15%' }}></Column>
-                <Column body={representativeAmountAuxilioTemplate} header="Auxilio Alimentação" style={{ width: '7%' }}></Column>
-                <Column body={representativeAmountAlimentacaoTemplate} header="Alimentação" style={{ width: '7%' }}></Column>
-                <Column body={representativeAmountRefeicaoTemplate} header="Refeição" style={{ width: '7%' }}></Column>
-                <Column body={representativeAmountMobilidadeTemplate} header="Mobilidade" style={{ width: '7%' }}></Column>
-                <Column body={representativeAmountSaudeTemplate} header="Saúde" style={{ width: '7%' }}></Column>
-                <Column body={representativeAmountCombustivelTemplate} header="Combustível" style={{ width: '7%' }}></Column>
-                <Column body={representativeAmountCulturaTemplate} header="Cultura" style={{ width: '7%' }}></Column>
-                <Column body={representativeAmountHomeOfficeTemplate} header="Home Office" style={{ width: '7%' }}></Column>
-                <Column body={representativeAmountEducacaoTemplate} header="Educação" style={{ width: '7%' }}></Column>
-                <Column body={representativeAmountSaldoLivreTemplate} header="Saldo Livre" style={{ width: '7%' }}></Column>
+                <Column body={representativeAmountAuxilioTemplate} header="Auxilio Alimentação" style={{ width: '7.5%' }}></Column>
+                <Column body={representativeAmountAlimentacaoTemplate} header="Alimentação" style={{ width: '7.5%' }}></Column>
+                <Column body={representativeAmountRefeicaoTemplate} header="Refeição" style={{ width: '7.5%' }}></Column>
+                <Column body={representativeAmountMobilidadeTemplate} header="Mobilidade" style={{ width: '7.5%' }}></Column>
+                <Column body={representativeAmountSaudeTemplate} header="Saúde" style={{ width: '7.5%' }}></Column>
+                <Column body={representativeAmountCombustivelTemplate} header="Combustível" style={{ width: '7.5%' }}></Column>
+                <Column body={representativeAmountCulturaTemplate} header="Cultura" style={{ width: '7.5%' }}></Column>
+                <Column body={representativeAmountHomeOfficeTemplate} header="Home Office" style={{ width: '7.5%' }}></Column>
+                <Column body={representativeAmountEducacaoTemplate} header="Educação" style={{ width: '7.5%' }}></Column>
             </DataTable>
             <ContainerButton>
                 <Botao aoClicar={voltar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
