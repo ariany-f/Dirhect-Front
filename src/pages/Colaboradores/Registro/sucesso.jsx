@@ -4,11 +4,47 @@ import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import Botao from "@components/Botao"
 import { Link, useNavigate } from 'react-router-dom'
-import Support from '../../../assets/Support.svg'
+import Support from '@assets/Support.svg'
+import { useColaboradorContext } from '../../../contexts/Colaborador'
 
 function ColaboradorRegistroSucesso() {
 
     const navigate = useNavigate()
+    const { 
+        colaborador,
+        setName,
+        setEmail,
+        setDocument,
+        setPhoneNumber,
+        setAddressPostalCode,
+        setAddressStreet,
+        setAdicionarDepartamento,
+        setAddressNumber,
+        setAddressComplement,
+        setAddressDistrict,
+        setAddressCity,
+        setAddressState,
+        setSolicitarCartao,
+        setDepartments,
+    } = useColaboradorContext()
+    
+    function cadastrarOutro() {
+        setName('')
+        setDocument('')
+        setEmail('')
+        setPhoneNumber('')
+        setAddressPostalCode('')
+        setAddressStreet('')
+        setAdicionarDepartamento(false)
+        setAddressNumber('')
+        setAddressComplement('')
+        setAddressDistrict('')
+        setAddressCity('')
+        setAddressState('')
+        setSolicitarCartao(false)
+        setDepartments([])
+        navigate('/colaborador/registro')
+    }
 
     return (
         <>
@@ -22,9 +58,7 @@ function ColaboradorRegistroSucesso() {
                     <Link onClick={navigate('/colaborador')}>
                         <Botao weight='light' estilo="neutro">Voltar</Botao>
                     </Link>
-                    <Link to="/colaborador/registro">
-                        <Botao weight='light' filled>Cadastrar outro</Botao>
-                    </Link>
+                    <Botao aoClicar={cadastrarOutro} weight='light' filled>Cadastrar outro</Botao>
                 </div>
             </MainContainer>
         </>

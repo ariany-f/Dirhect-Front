@@ -3,7 +3,7 @@ import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import { Link, useNavigate } from "react-router-dom"
-import Inbox from './../../assets/Inbox.svg'
+import Inbox from '@assets/Inbox.svg'
 
 function RedefinirSenhaCheckInbox() {
     

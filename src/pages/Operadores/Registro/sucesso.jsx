@@ -4,7 +4,7 @@ import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import Botao from "@components/Botao"
 import { Link, useNavigate } from 'react-router-dom'
-import Support from '../../../assets/Support.svg'
+import Support from '@assets/Support.svg'
 
 function OperadorRegistroSucesso() {
 

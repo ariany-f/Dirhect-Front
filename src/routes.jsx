@@ -73,7 +73,7 @@ import OperadorDetalhes from '@pages/Operadores/detalhes'
 import OperadorDados from '@pages/Operadores/Detalhes/dados'
 import OperadorPermissoes from '@pages/Operadores/Detalhes/permissoes'
 import RecargaBeneficios from '@pages/Beneficios'
-import PremiacaoComoFunciona from './pages/Premiacoes/como-funciona';
+import PremiacaoComoFunciona from './pages/Premiacoes/como-funciona'
 
 function AppRouter() {
   

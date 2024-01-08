@@ -8,7 +8,7 @@ import styled from "styled-components"
 import { Link } from "react-router-dom"
 import DataTablePremiacoes from '@components/DataTablePremiacoes'
 import QuestionCard from '@components/QuestionCard'
-import Management from './../../assets/Management.svg'
+import Management from '@assets/Management.svg'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 
 const ConteudoFrame = styled.div`

@@ -102,8 +102,15 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
 
     function changeValor(evento, patternMask)
     {
-        const valorCampo = evento.target.value
-
+        let valorCampo = null
+        if(type !== 'file')
+        {
+           valorCampo = evento.target.value
+        }
+        else {
+            valorCampo = evento.target.files[0]
+        }
+        
         if(patternMask.length > 0)
         {
             if(patternMask === 'BRL')
@@ -127,29 +134,32 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
             setValor(valorCampo)
         }
         
-        setCaracteresDigitados(valorCampo.length)
+        if(valorCampo)
+        {
+            setCaracteresDigitados(valorCampo.length)
 
-        const CampoObject = {
-            [name]: valorCampo
-
+            const CampoObject = {
+                [name]: valorCampo
+    
+            }
+    
+            validationSchema
+                .validate(CampoObject, { abortEarly: false })
+                .then(valid => {
+                    if(!!valid)
+                    {
+                        document.getElementById(name).classList.remove('error')
+                        setErro('')
+                    }
+                })
+                .catch(function (erro) {
+                    if(typeof erro.inner == 'object')
+                    {
+                        document.getElementById(name).classList.add('error')
+                        setErro(Object.values(erro.inner)[0].message)
+                    }
+                }) 
         }
-
-        validationSchema
-            .validate(CampoObject, { abortEarly: false })
-            .then(valid => {
-                if(!!valid)
-                {
-                    document.getElementById(name).classList.remove('error')
-                    setErro('')
-                }
-            })
-            .catch(function (erro) {
-                if(typeof erro.inner == 'object')
-                {
-                    document.getElementById(name).classList.add('error')
-                    setErro(Object.values(erro.inner)[0].message)
-                }
-            })
     }
 
     const temIcone = (type, visibility) => {

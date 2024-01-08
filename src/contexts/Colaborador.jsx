@@ -33,6 +33,7 @@ const ColaboradorInicial = {
 export const ColaboradorContext = createContext({
     colaborador: ColaboradorInicial,
     erros: {},
+    setPlanilha: () => null,
     setName: () => null,
     setEmail: () => null,
     setDocument: () => null,
@@ -265,7 +266,6 @@ export const ColaboradorProvider = ({ children }) => {
             }
         })
     }
-    
 
     const submeterUsuario = () => {
         

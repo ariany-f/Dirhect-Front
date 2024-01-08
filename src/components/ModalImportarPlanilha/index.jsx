@@ -1,16 +1,16 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import BotaoSemBorda from "@components/BotaoSemBorda"
-import CampoTexto from "@components/CampoTexto"
 import Titulo from "@components/Titulo"
-import SubTitulo from "@components/SubTitulo"
+import CampoTexto from "@components/CampoTexto"
 import { RiCloseFill } from 'react-icons/ri'
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import styled from "styled-components"
+import http from '@http'
 import styles from './ModalImportarPlanilha.module.css'
-import http from '@http';
 import { FaDownload } from "react-icons/fa"
+import { useColaboradorContext } from "../../contexts/Colaborador"
+import { useState } from "react"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -89,10 +89,23 @@ const CardText = styled.div`
 
 function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
 
-    const [nome, setNome] = useState('')
-
     const navegar = useNavigate()
-  
+
+    const [planilha, setPlanilha] = useState(null)
+
+    const submeterPlanilha = () => {
+        
+        const body = new FormData();
+        body.append('spreadsheet', planilha);
+       
+        http.post('api/dashboard/collaborator/import', body)
+        .then((response) => {
+            return response
+        })
+        .catch(erro => {
+            return erro.response.data
+        })
+    }
 
     return(
         <>
@@ -120,9 +133,10 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
                     <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '32px', marginBottom: '32px'}} ></div>
                     </Frame>
                     <form method="dialog">
-                            <Botao aoClicar={() => {}} estilo="vermilion" size="medium" filled>Enviar arquivo</Botao>
+                            <CampoTexto type="file" setValor={setPlanilha}></CampoTexto>
+                            <Botao aoClicar={submeterPlanilha} estilo="vermilion" size="medium" filled>Enviar arquivo</Botao>
                             <div className={styles.containerBottom}>
-                                <BotaoSemBorda onClick={() => {}} color="var(--primaria)"><FaDownload/> Baixar modelo</BotaoSemBorda>
+                                <BotaoSemBorda color="var(--primaria)"><FaDownload/><a href={'./src/assets/exemplo_colaboradores_001.xlsx'} target="_blank" download>Baixar modelo</a></BotaoSemBorda>
                             </div>
                     </form>
                 </DialogEstilizado>
