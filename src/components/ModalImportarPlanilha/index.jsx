@@ -130,7 +130,7 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
                        <CardText>
                             <p className={styles.subtitulo}>Atenção: Caso o envio dos cartões seja para a residência dos colaboradores é importante que os endereços sejam preenchidos no momento do cadastro.</p>
                         </CardText>
-                    <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '32px', marginBottom: '32px'}} ></div>
+                    <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '2px', marginBottom: '2px'}} ></div>
                     </Frame>
                     <form method="dialog">
                             <CampoTexto type="file" setValor={setPlanilha}></CampoTexto>
