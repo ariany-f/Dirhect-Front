@@ -102,8 +102,22 @@ function DepartamentoAdicionarColaboradores() {
         {
             setLoading(true)
             setColaboradores(selectedColaboradores)
-            submeterDepartamento()
-            toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Departamento criado', life: 3000 });
+            submeterDepartamento().then(response => {
+                if(response.status)
+                {
+                    if(response.status === 'success')
+                    {
+                        toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Departamento criado', life: 3000 });
+                        setTimeout(() => {
+                            navegar(`/departamento/detalhes/${response.public_id}`)
+                        }, "700");
+                    }
+                }
+                else
+                {
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar departamento', life: 3000 });
+                }
+            })
         }
         else
         {
