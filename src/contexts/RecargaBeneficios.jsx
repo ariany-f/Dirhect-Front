@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArmazenadorToken } from '../utils';
 
+/*BENEFIT TYPE ENUM */
 const COLLABORATOR = 1;
 const DEPARTMENT = 2;
 
@@ -23,7 +24,8 @@ export const RecargaBeneficiosContext = createContext({
     recarga: recargaInicial,
     erros: {},
     setColaboradores: () => null,
-    setNome: () => null
+    setNome: () => null,
+    setAmountAuxilioCollaborator: () => null
 })
 
 export const useRecargaBeneficiosContext = () => {
@@ -81,7 +83,8 @@ export const RecargaBeneficiosProvider = ({ children }) => {
     const contexto = {
         recarga,
         setColaboradores,
-        setNome
+        setNome,
+        setAmountAuxilioCollaborator
     }
 
     return (<RecargaBeneficiosContext.Provider value={contexto}>

@@ -76,12 +76,12 @@ function BeneficioSelecionarColaboradores() {
         setGlobalFilterValue(value);
     };
 
-    const abrirNomearBeneficio = () => {
+    function abrirNomearBeneficio()  {
         setColaboradores(selectedColaboradores)
         setModalOpened(true)
     }
 
-    const nomearBeneficio = (nome) => {
+    function nomearBeneficio(nome) {
         setNome(nome)
         navegar('/beneficio/editar-valor')
     }

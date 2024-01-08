@@ -21,12 +21,14 @@ function DepartamentoListaColaboradores() {
     useEffect(() => {
         if(departamento && !clbdr.length)
         {
+            const obj = {}
+            obj[departamento.name] = departamento.public_id
             http.get('api/dashboard/collaborator')
                 .then(response => {
                     if(response.data.collaborators.length)
                     {
                         const filtered = response.data.collaborators.filter(colaborador => {
-                            return (departamento.name in colaborador.departments)
+                            return (obj in colaborador.departments)
                         })
                         setClbdr(filtered)
                     }

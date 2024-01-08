@@ -20,11 +20,16 @@ const BotaoEstilizado = styled.button`
 function Botao( {children, estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold' } ) {
 
     const classes = `${estilo} ${model} ${size} ${weight} ${tab ? 'tab' : ''}`;
-    
+   
     return (
-        <BotaoEstilizado onClick={aoClicar} className={classes}>
-            {children}
-        </BotaoEstilizado>
+        aoClicar ?
+            <BotaoEstilizado onClick={aoClicar} className={classes}>
+                {children}
+            </BotaoEstilizado>
+        :
+            <BotaoEstilizado className={classes}>
+                {children}
+            </BotaoEstilizado>
     )
 }
 

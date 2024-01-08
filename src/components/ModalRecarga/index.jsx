@@ -117,8 +117,8 @@ function ModalRecarga({ opened = false, aoClicar, aoFechar }) {
 
     const navegar = useNavigate()
   
-    const abrirSelecaoBeneficio = () => {
-        aoClicar(nome)       
+    function abrirSelecaoBeneficio() {
+        aoClicar(nome)
     }
 
     return(

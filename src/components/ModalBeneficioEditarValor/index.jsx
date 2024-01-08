@@ -17,6 +17,7 @@ import { CiBurger, CiForkAndKnife } from "react-icons/ci"
 import { PiFirstAidKitLight, PiOfficeChair } from "react-icons/pi"
 import { IoBookOutline } from "react-icons/io5"
 import { currency, mask as masker, unMask } from "remask"
+import { useRecargaBeneficiosContext } from "../../contexts/RecargaBeneficios"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -134,6 +135,11 @@ let Real = new Intl.NumberFormat('pt-BR', {
 
 function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecionados = [] }) {
 
+    const {
+        recarga,
+        setAmountAuxilioCollaborator
+    } = useRecargaBeneficiosContext()
+
     const [beneficios, setBeneficios] = useState([])
     const [checkedAuxilio, setCheckedAuxilio] = useState(false)
     const [checkedSaude, setCheckedSaude] = useState(false)
@@ -228,6 +234,14 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
         combustivelFlexivel, 
         combustivelFixo
     ])
+
+    function salvarColaboradores() {
+      //  console.log(selecionados)
+        selecionados.map(item => {
+            setAmountAuxilioCollaborator(item, auxilioAlimentacao)
+        })
+        console.log(recarga)
+    }
 
     return(
         <>
@@ -397,7 +411,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                             <Beneficio>
                                 <Col12>
                                     <Col6>
-                                        <RiCoupon3Line BsFuelPump={18} /><Texto weight={700}>Combustível</Texto>
+                                        <RiCoupon3Line size={18} /><Texto weight={700}>Combustível</Texto>
                                     </Col6>
                                     <Col6>
                                         <Texto weight="800">
@@ -424,7 +438,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                             <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                             <LadoALado>
                                 <span>Total&nbsp;<b>{Real.format(total)}</b><Texto color='var(--primaria)' weight={700}></Texto></span>
-                                <Botao aoClicar={[]} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={salvarColaboradores} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </LadoALado>
                         </div>
                     </form>

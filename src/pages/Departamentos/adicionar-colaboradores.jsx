@@ -65,7 +65,7 @@ function DepartamentoAdicionarColaboradores() {
     const toast = useRef(null)
 
     useEffect(() => {
-        if(typeof id !== undefined && id !== null)
+        if(id && typeof id !== undefined && id !== null)
         {
             http.get("api/dashboard/department/"+id)
                 .then(response => {
@@ -76,14 +76,12 @@ function DepartamentoAdicionarColaboradores() {
                 })
                 .catch(erro => console.log(erro))
         }
-    }, [edicaoAberta])
+    }, [id, edicaoAberta])
 
 
     useEffect(() => {
-        console.log(departamento)
         http.get('api/dashboard/collaborator')
             .then(response => {
-                console.log(response)
                 if(response.data)
                 {
                     setListaColaboradores(response.data.collaborators)
