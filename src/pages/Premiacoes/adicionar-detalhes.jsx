@@ -78,7 +78,9 @@ function PremiacaoDetalhes() {
                 <ContainerButton>
                     <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
                     <LadoALado>
-                        <Botao aoClicar={() => {}} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                        <Link to="/saldo-livre/selecao-tipo-recarga">
+                            <Botao aoClicar={() => {}} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                        </Link>
                     </LadoALado>
                 </ContainerButton>
             </Frame>
