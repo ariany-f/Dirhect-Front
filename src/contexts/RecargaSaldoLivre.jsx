@@ -10,13 +10,6 @@ const DEPARTMENT = 2;
 const saldoLivreInicial = {
     name: "",
     description: "",
-    amount: 0,
-    flexible_value: 0,
-    is_flexible: false,
-    status: 1,
-    department_public_id: "",
-    benefit_type_enum: 1,
-    food_meal_one_category: false,
     collaborators: [],
     balance: []
 }
