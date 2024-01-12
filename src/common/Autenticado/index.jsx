@@ -12,12 +12,13 @@ import { ArmazenadorToken } from "../../utils"
 import styled from "styled-components"
 
 const MarginContainer = styled.div`
-    max-width: 940px;
+    max-width: 70vw;
     width: 100vw;
     display: inline-flex;
     flex-direction: column;
-    height: 100vh;
-    margin: 0 auto;
+    height: initial;
+    align-items: flex-start;
+    margin-left: 4vw;
 `
 
 function Autenticado() {
@@ -90,7 +91,7 @@ function Autenticado() {
                     {location.pathname !== '/beneficio/editar-valor' &&                     
                         <BarraLateral />
                     }
-                    <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 0">
+                    <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 0 7.5vh 0">
                         {location.pathname !== '/beneficio/editar-valor' &&   
                             <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
                         }
