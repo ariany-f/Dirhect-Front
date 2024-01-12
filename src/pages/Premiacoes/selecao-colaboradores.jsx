@@ -56,6 +56,13 @@ function PremiacaoSelecionarColaboradores() {
     const toast = useRef(null)
 
     useEffect(() => {
+        if(!recarga.name)
+        {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você deve adicionar detalhes da recarga', life: 3000 });
+            setTimeout(() => {
+                navegar(`/saldo-livre/adicionar-detalhes`)
+            }, "1500");
+        }
         if(listaColaboradores.length === 0)
         {
             setColaboradores([])
