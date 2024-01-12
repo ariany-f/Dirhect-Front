@@ -22,6 +22,10 @@ const BarraLateralEstilizada = styled.aside`
     gap: 32px;
     flex-shrink: 0;
     background: var(--gradient-gradient-1, linear-gradient(180deg, #FF3C00 0%, #FF7B32 100%));
+    
+    @media screen and (max-width: 760px) {
+        display: none;
+    }
 `
 const NavTitulo = styled.p`
     color: var(--white);

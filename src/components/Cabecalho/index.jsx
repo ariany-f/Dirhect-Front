@@ -16,12 +16,14 @@ const HeaderEstilizado = styled.header`
     height: fit-content;
     top: 0;
     padding: 0 6vw;
+    flex-wrap: wrap;
 `
 
 const RightItems = styled.nav`
     display: flex;
     align-items: center;
     gap: 48px;
+    flex-wrap: wrap;
 `
 
 const ItemEmpresa = styled.button`
