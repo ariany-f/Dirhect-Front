@@ -9,7 +9,7 @@ import BotaoSemBorda from '@components/BotaoSemBorda'
 import { Link, useNavigate } from 'react-router-dom'
 import { FaPencilAlt } from 'react-icons/fa'
 import { useRef, useState } from 'react'
-import ModalBeneficioEditarValor from '../ModalBeneficioEditarValor'
+import ModalSaldoLivreEditarValor from '../ModalSaldoLivreEditarValor'
 import { Toast } from 'primereact/toast'
 import styled from 'styled-components'
 
@@ -96,7 +96,7 @@ function DataTablePremiacaoEditarValor({ recarga }) {
                     <Botao aoClicar={() => {}} estilo="vermilion" size="medium" filled>Continuar</Botao>
                 </LadoALado>
             </ContainerButton>
-            <ModalBeneficioEditarValor selecionados={selectedColaboradores ?? 0} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+            <ModalSaldoLivreEditarValor selecionados={selectedColaboradores ?? 0} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
