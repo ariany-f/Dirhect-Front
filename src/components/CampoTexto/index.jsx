@@ -160,6 +160,9 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
                     }
                 }) 
         }
+        else{
+            setCaracteresDigitados(0)
+        }
     }
 
     const temIcone = (type, visibility) => {
