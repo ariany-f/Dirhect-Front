@@ -45,6 +45,7 @@ function DataTablePremiacaoEditarValor({ recarga }) {
     const navegar = useNavigate()
 
     const representativeAmountTemplate = (rowData) => {
+        console.log(rowData)
         if(rowData.amount)
         {
             return <b>{(Real.format(rowData.amount))}</b>

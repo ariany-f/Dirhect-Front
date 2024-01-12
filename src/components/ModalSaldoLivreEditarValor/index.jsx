@@ -11,7 +11,7 @@ import styled from "styled-components"
 import styles from '@pages/Beneficios/Beneficios.module.css'
 import http from '@http';
 import { useEffect } from "react"
-import { IoBookOutline } from "react-icons/io5"
+import { MdLocalAtm } from "react-icons/md"
 import { currency, mask as masker, unMask } from "remask"
 import { useRecargaSaldoLivreContext } from "../../contexts/RecargaSaldoLivre"
 
@@ -135,12 +135,11 @@ function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, seleci
 
     const {
         recarga,
-        setAmountAuxilioCollaborator
+        setBalance
     } = useRecargaSaldoLivreContext()
 
     const [beneficios, setBeneficios] = useState([])
     const [valor, setValor] = useState(Real.format(0))
-    
     const [total, setTotal] = useState(0)
 
     const navegar = useNavigate()
@@ -155,22 +154,25 @@ function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, seleci
         {
             http.get('api/dashboard/benefit')
                 .then((response) => {
-                    console.log(response)
+                    setBeneficios(response.data.benefits)
                 })
                 .catch(erro => {
                     console.error(erro)
                 })
         }
         
-        setTotal((removeMask(valor) ?? 0) * selecionados.length)
+        setTotal((removeMask(valor)) * selecionados.length)
 
     }, [beneficios, valor])
 
     function salvarColaboradores() {
         selecionados.map(item => {
-            setAmountAuxilioCollaborator(item, auxilioAlimentacao)
+            const obj = item
+            obj['amount'] = removeMask(valor)
+            setBalance(obj)
         })
-        console.log(recarga)
+        setValor(Real.format(0))
+        aoFechar()
     }
 
     return(
@@ -197,7 +199,7 @@ function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, seleci
                             <Beneficio>
                                 <Col12>
                                    <Col6>
-                                        <IoBookOutline size={20} /><Texto weight={700}>Saldo Livre</Texto>
+                                        <MdLocalAtm size={20} /><Texto weight={700}>Saldo Livre</Texto>
                                     </Col6>
                                 </Col12>
                                 <Col12>

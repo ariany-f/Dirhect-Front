@@ -17,16 +17,17 @@ const saldoLivreInicial = {
     department_public_id: "",
     benefit_type_enum: 1,
     food_meal_one_category: false,
-    collaborators: []
+    collaborators: [],
+    balance: []
 }
 
 export const RecargaSaldoLivreContext = createContext({
     recarga: saldoLivreInicial,
     erros: {},
     setColaboradores: () => null,
+    setBalance: () => null,
     setNome: () => null,
-    setMotivo: () => null,
-    setAmountAuxilioCollaborator: () => null
+    setMotivo: () => null
 })
 
 export const useRecargaSaldoLivreContext = () => {
@@ -61,17 +62,37 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
             })
         }
     }
-    const setAmountAuxilioCollaborator = (collaborator, amount) => {
-        const colaboradores = recarga.collaborators
-        const colaborador = colaboradores.filter((el) => el === collaborator)
-        colaborador.auxilio = amount
-        
-        setRecarga(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                colaboradores
+    const setBalance = (balance) => {
+        if(balance.length === 0)
+        {
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    balance
+                }
+            })
+        }
+        else
+        {
+            const saldolivre = recarga.balance
+            const exists = saldolivre.filter((item, index) => {
+                if(item.public_id === balance.public_id)
+                {
+                    saldolivre[index] = balance
+                }
+                return item.public_id === balance.public_id
+            })
+            if(exists.length === 0)
+            {
+                saldolivre.push(balance)
             }
-        })
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    saldolivre
+                }
+            })
+        }
     }
     const setMotivo = (description) => {
         setRecarga(estadoAnterior => {
@@ -92,9 +113,9 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
     const contexto = {
         recarga,
         setColaboradores,
+        setBalance,
         setNome,
-        setMotivo,
-        setAmountAuxilioCollaborator
+        setMotivo
     }
 
     return (<RecargaSaldoLivreContext.Provider value={contexto}>
