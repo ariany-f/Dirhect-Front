@@ -86,11 +86,11 @@ function Autenticado() {
             <>
                 <EstilosGlobais />
                 <MainSection>
-                    {location.pathname !== '/beneficio/editar-valor' &&                     
+                    {location.pathname !== '/beneficio/editar-valor' && location.pathname !== '/saldo-livre/editar-valor' &&                       
                         <BarraLateral />
                     }
                     <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 0 7.5vh 0">
-                        {location.pathname !== '/beneficio/editar-valor' &&   
+                        {location.pathname !== '/beneficio/editar-valor' && location.pathname !== '/saldo-livre/editar-valor' &&     
                             <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
                         }
                         <MarginContainer>

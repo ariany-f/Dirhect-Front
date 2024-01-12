@@ -14,7 +14,6 @@ import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components'
-import ModalRecarga from '@components/ModalRecarga'
 import { useRecargaSaldoLivreContext } from '../../contexts/RecargaSaldoLivre'
 
 const ContainerButton = styled.div`
@@ -40,8 +39,7 @@ function PremiacaoSelecionarColaboradores() {
 
     const {
         recarga,
-        setColaboradores,
-        setNome
+        setColaboradores
     } = useRecargaSaldoLivreContext()
 
     const [modalOpened, setModalOpened] = useState(false)
@@ -83,14 +81,9 @@ function PremiacaoSelecionarColaboradores() {
         setGlobalFilterValue(value);
     };
 
-    function abrirNomearBeneficio()  {
+    function editarValor(){
         setColaboradores(selectedColaboradores)
-        setModalOpened(true)
-    }
-
-    function nomearBeneficio(nome) {
-        setNome(nome)
-        navegar('/beneficio/editar-valor')
+        navegar('/saldo-livre/editar-valor')
     }
 
     return (
@@ -120,14 +113,13 @@ function PremiacaoSelecionarColaboradores() {
                             <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                             <LadoALado>
                                 <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
-                                <Botao aoClicar={abrirNomearBeneficio} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                                <Botao aoClicar={editarValor} estilo="vermilion" size="medium" filled>Continuar</Botao>
                             </LadoALado>
                         </ContainerButton>
                     </>
                 : <Skeleton variant="rectangular" width={300} height={60} />
                 }
             </Frame>
-            <ModalRecarga aoClicar={nomearBeneficio} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
