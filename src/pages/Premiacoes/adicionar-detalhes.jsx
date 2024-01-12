@@ -31,7 +31,7 @@ function PremiacaoDetalhes() {
                     <Titulo>
                         <h6>Detalhes da recarga</h6>
                     </Titulo>
-                    <CampoTexto numeroCaracteres={50} placeholder='ex. Pagamento de Janeiro' label='Nome da Recarga' />
+                    <CampoTexto valor={recarga.nome} setValor={setNome} numeroCaracteres={50} placeholder='ex. Pagamento de Janeiro' label='Nome da Recarga' />
                 </>
             </Frame>
         </>

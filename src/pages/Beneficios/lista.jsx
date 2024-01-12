@@ -10,6 +10,14 @@ import styles from './Beneficios.module.css'
 import { FaMapPin } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import DataTableBeneficios from '@components/DataTableBeneficios'
+import styled from 'styled-components'
+
+const ConteudoFrame = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+`
 
 function Beneficios() {
 
@@ -36,18 +44,20 @@ function Beneficios() {
 
     return (
         <>
-            <Loading opened={loading} />
-            <BotaoGrupo align="space-between">
-                <BotaoSemBorda color="var(--primaria)">
-                    <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
-                </BotaoSemBorda>
-                <Link to="/beneficio/selecao-tipo-recarga">
-                    <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Disponibilizar benefícios</Botao>
-                </Link>
-            </BotaoGrupo>
-            <Container>
-                <DataTableBeneficios beneficios={beneficios} />
-            </Container>
+            <ConteudoFrame>
+                <Loading opened={loading} />
+                <BotaoGrupo align="space-between">
+                    <BotaoSemBorda color="var(--primaria)">
+                        <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
+                    </BotaoSemBorda>
+                    <Link to="/beneficio/selecao-tipo-recarga">
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Disponibilizar benefícios</Botao>
+                    </Link>
+                </BotaoGrupo>
+                <Container>
+                    <DataTableBeneficios beneficios={beneficios} />
+                </Container>
+            </ConteudoFrame>
         </>
     )
 }

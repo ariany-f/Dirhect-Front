@@ -12,13 +12,11 @@ import { ArmazenadorToken } from "../../utils"
 import styled from "styled-components"
 
 const MarginContainer = styled.div`
-    max-width: 70vw;
-    width: 100vw;
     display: inline-flex;
     flex-direction: column;
     height: initial;
     align-items: flex-start;
-    margin-left: 4vw;
+    margin: 0 4vw;
 `
 
 function Autenticado() {
