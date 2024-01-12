@@ -29,7 +29,6 @@ function Beneficios() {
                     }
                 })
                 .catch(erro => {
-                    console.log(erro)
                     setLoading(false)
                 })
         }

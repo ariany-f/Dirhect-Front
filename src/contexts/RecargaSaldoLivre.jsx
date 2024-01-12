@@ -25,6 +25,7 @@ export const RecargaSaldoLivreContext = createContext({
     erros: {},
     setColaboradores: () => null,
     setNome: () => null,
+    setMotivo: () => null,
     setAmountAuxilioCollaborator: () => null
 })
 
@@ -72,6 +73,14 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
             }
         })
     }
+    const setMotivo = (description) => {
+        setRecarga(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                description
+            }
+        })
+    }
     const setNome = (name) => {
         setRecarga(estadoAnterior => {
             return {
@@ -84,6 +93,7 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
         recarga,
         setColaboradores,
         setNome,
+        setMotivo,
         setAmountAuxilioCollaborator
     }
 

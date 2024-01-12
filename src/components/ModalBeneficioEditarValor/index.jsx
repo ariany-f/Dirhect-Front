@@ -113,7 +113,7 @@ const Col6Input = styled.div`
 `
 
 const Col6 = styled.div`
-    flex: 1;
+    flex: 1 1 50%;
     display: inline-flex;
     align-items: center;
     gap: 8px;

@@ -9,6 +9,7 @@ import { Link } from "react-router-dom"
 import DataTablePremiacoes from '@components/DataTablePremiacoes'
 import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
+import Loading from '@components/Loading'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 
 const ConteudoFrame = styled.div`
@@ -37,29 +38,35 @@ const ContainerSemRegistro = styled.div`
 
 function Premiacoes() {
 
+    const [loading, setLoading] = useState(false)
     const [premiacoes, setPremiacoes] = useState([])
     
     useEffect(() => {
-        if(!premiacoes.length)
+        if(premiacoes.length === 0)
         {
-            http.get('api/dashboard/award')
+            setLoading(true)
+            http.get('api/dashboard/balance')
             .then(response => {
-                console.log(response)
-                if(response.data.award.length)
+                setLoading(false)
+                if(response.data.transactions)
                 {
-                    setPremiacoes(response.data.award)
+                    setPremiacoes(response.data.transactions)
                 }
             })
-            .catch(erro => console.log(erro))
+            .catch(erro => {
+                setLoading(false)
+                console.log(erro)
+            })
         }
     }, [])
 
     
     return (
         <ConteudoFrame>
+        <Loading opened={loading} />
             <BotaoGrupo align="end">
                 <BotaoGrupo>
-                    <Link to="/saldo-livre/selecao-tipo-recarga">
+                    <Link to="/saldo-livre/adicionar-detalhes">
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Saldo Livre</Botao>
                     </Link>
                 </BotaoGrupo>

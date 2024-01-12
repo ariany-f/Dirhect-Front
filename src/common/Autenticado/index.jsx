@@ -9,6 +9,16 @@ import ModalCnpj from '@components/ModalCnpj'
 import { useEffect, useState } from "react"
 import http from '@http'
 import { ArmazenadorToken } from "../../utils"
+import styled from "styled-components"
+
+const MarginContainer = styled.div`
+    max-width: 940px;
+    width: 100vw;
+    display: inline-flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0 auto;
+`
 
 function Autenticado() {
 
@@ -80,11 +90,13 @@ function Autenticado() {
                     {location.pathname !== '/beneficio/editar-valor' &&                     
                         <BarraLateral />
                     }
-                    <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 5vw">
+                    <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 0">
                         {location.pathname !== '/beneficio/editar-valor' &&   
                             <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
                         }
-                        <Outlet />
+                        <MarginContainer>
+                            <Outlet />
+                        </MarginContainer>
                     </MainContainer>
                 </MainSection>
                 <ModalCnpj aoFechar={() => setModalOpened(false)} opened={modalOpened} />

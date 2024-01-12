@@ -17,7 +17,7 @@ const Col12 = styled.div`
 
 const Col6 = styled.div`
     padding: 10px;
-    width: 35vw;
+    flex: 1 1 50%;
     display: flex;
 `
 
@@ -56,7 +56,7 @@ function PremiacaoSelecionarTipoRecarga() {
                                 </ul>
                             </Frame>
                         </Frame>
-                        <Botao aoClicar={() => navegar('/saldo-livre/selecao-colaboradores')} size="small">Recarregar por colaborador</Botao>
+                        <Botao aoClicar={() => navegar('/saldo-livre/selecao-colaboradores')} size="medium">Recarregar por colaborador</Botao>
                     </CardSelecao>
                 </Col6>
                 <Col6>
@@ -77,9 +77,9 @@ function PremiacaoSelecionarTipoRecarga() {
                         </Frame>
                         <BotaoSemBorda>
                             <FaPencilAlt />
-                            <Link to={'/departamento/lista'}>Configurar meus departamentos</Link>
+                            <Link to={'/departamento'}>Configurar meus departamentos</Link>
                         </BotaoSemBorda>
-                        <Botao aoClicar={() => navegar('/saldo-livre/selecao-departamentos')} size="small">Recarregar por departamento</Botao>
+                        <Botao aoClicar={() => navegar('/saldo-livre/selecao-departamentos')} size="medium">Recarregar por departamento</Botao>
                     </CardSelecao>
                 </Col6>
             </Col12>

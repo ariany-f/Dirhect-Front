@@ -12,9 +12,7 @@ const Col12 = styled.div`
 `;
 
 const Col6 = styled.div`
-    width: 50%;
-    max-width: 50%;
-    flex: 1;
+    flex: 1 1 50%;
     padding: 20px;
 `;
 

@@ -32,7 +32,7 @@ import DepartamentoAdicionarColaboradores from '@pages/Departamentos/adicionar-c
 import DepartamentoColaboradores from '@pages/Departamentos/colaboradores-sem-departamento'
 import RecargaPremiacoes from '@pages/Premiacoes'
 import Premiacoes from '@pages/Premiacoes/lista'
-import PremiacaoDetalhes from '@pages/Premiacoes/detalhes'
+import PremiacaoDetalhes from '@pages/Premiacoes/adicionar-detalhes'
 import PremiacaoSelecionarTipoRecarga from '@pages/Premiacoes/selecao-tipo-recarga'
 import PremiacaoEditarValor from '@pages/Premiacoes/editar-valor'
 import PremiacaoComoFunciona from '@pages/Premiacoes/como-funciona'
@@ -145,7 +145,7 @@ function AppRouter() {
             
               <Route path="saldo-livre" element={<RecargaPremiacoes/>}>
                 <Route index element={<Premiacoes />} />
-                <Route path="detalhes" element={<PremiacaoDetalhes />} />
+                <Route path="adicionar-detalhes" element={<PremiacaoDetalhes />} />
                 <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
                 <Route path="selecao-tipo-recarga" element={<PremiacaoSelecionarTipoRecarga />} />
                 <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />

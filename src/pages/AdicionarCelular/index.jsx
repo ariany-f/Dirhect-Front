@@ -12,10 +12,8 @@ const Col12 = styled.div`
 `;
 
 const Col6 = styled.div`
-    width: 50%;
-    max-width: 50%;
-    flex: 1;
     padding: 20px;
+    flex: 1 1 50%;
 `;
 
 const ContainerButton = styled.div`

@@ -104,10 +104,10 @@ function BeneficioSelecionarColaboradores() {
                             </span>
                         </div>
                         <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>
-                            <Column selectionMode="multiple"></Column>
-                            <Column field="name" header="Nome Completo"></Column>
-                            <Column field="document" header="CPF"></Column>
-                            <Column field="email" header="E-mail"></Column>
+                            <Column selectionMode="multiple" style={{ width: '13%' }}></Column>
+                            <Column field="name" header="Nome Completo" style={{ width: '29%' }}></Column>
+                            <Column field="document" header="CPF" style={{ width: '23%' }}></Column>
+                            <Column field="email" header="E-mail" style={{ width: '35%' }}></Column>
                         </DataTable>
                         <ContainerButton>
                             <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
