@@ -86,7 +86,7 @@ function BeneficioSelecionarDepartamentos() {
                             <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar departamento" />
                         </span>
                     </div>
-                    <DataTable value={departamentos} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados departamentos" selectionMode={rowClick ? null : 'checkbox'} selection={selectedDepartamentos} onSelectionChange={(e) => setSelectedDepartamentos(e.value)} tableStyle={{ minWidth: '70vw' }}>
+                    <DataTable value={departamentos} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados departamentos" selectionMode={rowClick ? null : 'checkbox'} selection={selectedDepartamentos} onSelectionChange={(e) => setSelectedDepartamentos(e.value)} tableStyle={{ minWidth: '68vw' }}>
                         <Column selectionMode="multiple" style={{ width: '15%' }}></Column>
                         <Column field="name" header="Nome" style={{ width: '70%' }}></Column>
                         <Column body={representativeCountTemplate} header="Colaboradores" style={{ width: '15%' }}></Column>

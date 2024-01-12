@@ -23,7 +23,6 @@ function PremiacaoDetalhes() {
     } = useRecargaSaldoLivreContext()
     
     return (
-      
         <>
             <Frame>
                 <Toast ref={toast} />

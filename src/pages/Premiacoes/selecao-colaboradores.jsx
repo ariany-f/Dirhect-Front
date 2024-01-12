@@ -103,7 +103,7 @@ function PremiacaoSelecionarColaboradores() {
                                 <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                             </span>
                         </div>
-                        <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '70vw' }}>
+                        <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '68vw' }}>
                             <Column selectionMode="multiple" style={{ width: '13%' }}></Column>
                             <Column field="name" header="Nome Completo" style={{ width: '29%' }}></Column>
                             <Column field="document" header="CPF" style={{ width: '23%' }}></Column>
