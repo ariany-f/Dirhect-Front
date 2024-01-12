@@ -76,7 +76,7 @@ const Col12 = styled.div`
 
 const Col6 = styled.div`
     padding: 10px;
-    width: 455px;
+    width: 35vw;
 `
 
 function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar, dadoAntigo }) {

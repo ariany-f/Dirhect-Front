@@ -1,62 +1,65 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import PrimeiroAcesso from '@pages/PrimeiroAcesso';
-import SenhaDeAcesso from '@pages/PrimeiroAcesso/senha-acesso';
-import Login from '@pages/Login';
-import SelecionarEmpresa from '@pages/Login/selecionar-empresa';
-import EsqueciASenha from '@pages/EsqueciASenha';
-import Seguranca from '@pages/EsqueciASenha/seguranca';
-import RedefinirSenha from '@pages/EsqueciASenha/redefinir';
-import Dashboard from '@pages/Dashboard';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import PrimeiroAcesso from '@pages/PrimeiroAcesso'
+import SenhaDeAcesso from '@pages/PrimeiroAcesso/senha-acesso'
+import Login from '@pages/Login'
+import SelecionarEmpresa from '@pages/Login/selecionar-empresa'
+import EsqueciASenha from '@pages/EsqueciASenha'
+import Seguranca from '@pages/EsqueciASenha/seguranca'
+import RedefinirSenha from '@pages/EsqueciASenha/redefinir'
+import Dashboard from '@pages/Dashboard'
 import Autenticado from '@common/Autenticado'
 import PrimeiroAcessoCommon from '@common/PrimeiroAcesso'
 import Publico from '@common/Publico'
-import Colaboradores from '@pages/Colaboradores';
-import ColaboradoresCadastrados from '@pages/Colaboradores/cadastrados';
-import ColaboradoresAguardando from '@pages/Colaboradores/aguardando-cadastro';
-import ColaboradoresDesativados from '@pages/Colaboradores/desativados';
-import NaoEncontrada from '@pages/NaoEncontrada';
-import AdicionarCnpj from '@pages/AdicionarCnpj';
-import AdicionarCelular from '@pages/AdicionarCelular';
-import AdicionarEmail from '@pages/AdicionarEmail';
-import ColaboradorDetalhes from '@pages/Colaboradores/detalhes';
-import ColaboradorDadosPessoais from '@pages/Colaboradores/Detalhes/dados-pessoais';
-import ColaboradorCartoes from '@pages/Colaboradores/Detalhes/cartoes';
-import ColaboradorSaldo from '@pages/Colaboradores/Detalhes/saldo';
-import ColaboradorCarteiras from '@pages/Colaboradores/Detalhes/carteiras';
-import ColaboradorRegistro from '@pages/Colaboradores/Registro/registro';
-import ColaboradorRegistroSucesso from '@pages/Colaboradores/Registro/sucesso';
-import Departamentos from '@pages/Departamentos';
-import DepartamentoLista from '@pages/Departamentos/lista';
-import DepartamentoDetalhes from '@pages/Departamentos/detalhes';
-import DepartamentoAdicionarColaboradores from '@pages/Departamentos/adicionar-colaboradores';
-import DepartamentoColaboradores from '@pages/Departamentos/colaboradores-sem-departamento';
-import Premiacoes from '@pages/Premiacoes';
-import PremiacaoDetalhes from '@pages/Premiacoes/detalhes';
-import PremiacaoRegistro from '@pages/Premiacoes/registro';
-import PremiacaoSelecaoPremiados from '@pages/Premiacoes/selecao-premiados';
-import PremiacaoEditarValor from '@pages/Premiacoes/editar-valor';
+import Colaboradores from '@pages/Colaboradores'
+import ColaboradoresCadastrados from '@pages/Colaboradores/cadastrados'
+import ColaboradoresAguardando from '@pages/Colaboradores/aguardando-cadastro'
+import ColaboradoresDesativados from '@pages/Colaboradores/desativados'
+import NaoEncontrada from '@pages/NaoEncontrada'
+import AdicionarCnpj from '@pages/AdicionarCnpj'
+import AdicionarCelular from '@pages/AdicionarCelular'
+import AdicionarEmail from '@pages/AdicionarEmail'
+import ColaboradorDetalhes from '@pages/Colaboradores/detalhes'
+import ColaboradorDadosPessoais from '@pages/Colaboradores/Detalhes/dados-pessoais'
+import ColaboradorCartoes from '@pages/Colaboradores/Detalhes/cartoes'
+import ColaboradorSaldo from '@pages/Colaboradores/Detalhes/saldo'
+import ColaboradorCarteiras from '@pages/Colaboradores/Detalhes/carteiras'
+import ColaboradorRegistro from '@pages/Colaboradores/Registro/registro'
+import ColaboradorRegistroSucesso from '@pages/Colaboradores/Registro/sucesso'
+import Departamentos from '@pages/Departamentos'
+import DepartamentoLista from '@pages/Departamentos/lista'
+import DepartamentoDetalhes from '@pages/Departamentos/detalhes'
+import DepartamentoAdicionarColaboradores from '@pages/Departamentos/adicionar-colaboradores'
+import DepartamentoColaboradores from '@pages/Departamentos/colaboradores-sem-departamento'
+import RecargaPremiacoes from '@pages/Premiacoes'
+import Premiacoes from '@pages/Premiacoes/lista'
+import PremiacaoDetalhes from '@pages/Premiacoes/detalhes'
+import PremiacaoSelecionarTipoRecarga from '@pages/Premiacoes/selecao-tipo-recarga'
+import PremiacaoEditarValor from '@pages/Premiacoes/editar-valor'
+import PremiacaoComoFunciona from '@pages/Premiacoes/como-funciona'
+import PremiacaoSelecionarColaboradores from '@pages/Premiacoes/selecao-colaboradores'
+import PremiacaoSelecionarDepartamentos from '@pages/Premiacoes/selecao-departamentos'
 import Despesas from '@pages/Despesas';
-import DespesaAdiantarSaldo from '@pages/Despesas/adiantar-saldo';
-import DespesaSelecionarTipoAdiantamento from '@pages/Despesas/selecao-tipo-adiantamento';
-import DespesaSelecionarAlvoAdiantamento from '@pages/Despesas/selecao-alvo-adiantamento';
-import DespesaEditarValor from '@pages/Despesas/editar-valor';
-import DespesaDetalhesAdiantamento from '@pages/Despesas/detalhes-adiantamento';
-import DespesaDetalhes from '@pages/Despesas/detalhes';
-import Cartoes from '@pages/Cartoes';
-import CartaoDetalhes from '@pages/Cartoes/detalhes';
-import CartaoSolicitarSegundaVia from '@pages/Cartoes/solicitar-segunda-via';
-import Beneficios from '@pages/Beneficios/lista';
-import BeneficioOndeUsar from '@pages/Beneficios/onde-usar';
-import BeneficioSelecionarTipoRecarga from '@pages/Beneficios/selecao-tipo-recarga';
-import BeneficioSelecionarColaboradores from '@pages/Beneficios/selecao-colaboradores';
-import BeneficioSelecionarDepartamentos from '@pages/Beneficios/selecao-departamentos';
-import BeneficioEditarValor from '@pages/Beneficios/editar-valor';
-import Extrato from '@pages/Extrato';
-import DepartamentoConfiguracaoBeneficios from '@pages/Departamentos/configuracao-beneficios';
-import DepartamentoListaColaboradores from '@pages/Departamentos/lista-colaboradores';
-import ColaboradorEnvioCartao from '@pages/Colaboradores/Registro/envio-cartao';
-import ColaboradorDadosIniciais from '@pages/Colaboradores/Registro/dados-iniciais';
-import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario";
+import DespesaAdiantarSaldo from '@pages/Despesas/adiantar-saldo'
+import DespesaSelecionarTipoAdiantamento from '@pages/Despesas/selecao-tipo-adiantamento'
+import DespesaSelecionarAlvoAdiantamento from '@pages/Despesas/selecao-alvo-adiantamento'
+import DespesaEditarValor from '@pages/Despesas/editar-valor'
+import DespesaDetalhesAdiantamento from '@pages/Despesas/detalhes-adiantamento'
+import DespesaDetalhes from '@pages/Despesas/detalhes'
+import Cartoes from '@pages/Cartoes'
+import CartaoDetalhes from '@pages/Cartoes/detalhes'
+import CartaoSolicitarSegundaVia from '@pages/Cartoes/solicitar-segunda-via'
+import RecargaBeneficios from '@pages/Beneficios'
+import Beneficios from '@pages/Beneficios/lista'
+import BeneficioOndeUsar from '@pages/Beneficios/onde-usar'
+import BeneficioSelecionarTipoRecarga from '@pages/Beneficios/selecao-tipo-recarga'
+import BeneficioSelecionarColaboradores from '@pages/Beneficios/selecao-colaboradores'
+import BeneficioSelecionarDepartamentos from '@pages/Beneficios/selecao-departamentos'
+import BeneficioEditarValor from '@pages/Beneficios/editar-valor'
+import Extrato from '@pages/Extrato'
+import DepartamentoConfiguracaoBeneficios from '@pages/Departamentos/configuracao-beneficios'
+import DepartamentoListaColaboradores from '@pages/Departamentos/lista-colaboradores'
+import ColaboradorEnvioCartao from '@pages/Colaboradores/Registro/envio-cartao'
+import ColaboradorDadosIniciais from '@pages/Colaboradores/Registro/dados-iniciais'
 import ColaboradorBandeiraCartao from '@pages/Colaboradores/Registro/bandeira-cartao'
 import RedefinirSenhaCheckInbox from '@pages/EsqueciASenha/check-inbox'
 import RedefinirSenhaSucesso from '@pages/EsqueciASenha/sucesso'
@@ -72,8 +75,7 @@ import OperadorRegistroSelecionar from '@pages/Operadores/Registro/selecionar'
 import OperadorDetalhes from '@pages/Operadores/detalhes'
 import OperadorDados from '@pages/Operadores/Detalhes/dados'
 import OperadorPermissoes from '@pages/Operadores/Detalhes/permissoes'
-import RecargaBeneficios from '@pages/Beneficios'
-import PremiacaoComoFunciona from './pages/Premiacoes/como-funciona'
+import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario"
 
 function AppRouter() {
   
@@ -141,12 +143,15 @@ function AppRouter() {
                 </Route>
               </Route>
             
-              <Route path="saldo-livre" element={<Premiacoes />} />
-              <Route path="saldo-livre/detalhes" element={<PremiacaoDetalhes />} />
-              <Route path="saldo-livre/como-funciona" element={<PremiacaoComoFunciona />} />
-              <Route path="saldo-livre/registro" element={<PremiacaoRegistro />} />
-              <Route path="saldo-livre/editar-valor" element={<PremiacaoEditarValor />} />
-              <Route path="saldo-livre/selecao-premiados" element={<PremiacaoSelecaoPremiados />} />
+              <Route path="saldo-livre" element={<RecargaPremiacoes/>}>
+                <Route index element={<Premiacoes />} />
+                <Route path="detalhes" element={<PremiacaoDetalhes />} />
+                <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
+                <Route path="selecao-tipo-recarga" element={<PremiacaoSelecionarTipoRecarga />} />
+                <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
+                <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
+                <Route path="editar-valor" element={<PremiacaoEditarValor />} />
+              </Route>
               
               <Route path="despesa" element={<Despesas />} />
               <Route path="despesa/adiantar-saldo" element={<DespesaAdiantarSaldo />} />

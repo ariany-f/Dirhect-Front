@@ -31,7 +31,7 @@ const CardSelecao = styled.div`
     justify-content: space-between;
 `
 
-function BeneficioSelecionarTipoRecarga() {
+function PremiacaoSelecionarTipoRecarga() {
 
     const navegar = useNavigate()
    
@@ -56,7 +56,7 @@ function BeneficioSelecionarTipoRecarga() {
                                 </ul>
                             </Frame>
                         </Frame>
-                        <Botao aoClicar={() => navegar('/beneficio/selecao-colaboradores')} size="small">Recarregar por colaborador</Botao>
+                        <Botao aoClicar={() => navegar('/saldo-livre/selecao-colaboradores')} size="small">Recarregar por colaborador</Botao>
                     </CardSelecao>
                 </Col6>
                 <Col6>
@@ -79,7 +79,7 @@ function BeneficioSelecionarTipoRecarga() {
                             <FaPencilAlt />
                             <Link to={'/departamento/lista'}>Configurar meus departamentos</Link>
                         </BotaoSemBorda>
-                        <Botao aoClicar={() => navegar('/beneficio/selecao-departamentos')} size="small">Recarregar por departamento</Botao>
+                        <Botao aoClicar={() => navegar('/saldo-livre/selecao-departamentos')} size="small">Recarregar por departamento</Botao>
                     </CardSelecao>
                 </Col6>
             </Col12>
@@ -87,4 +87,4 @@ function BeneficioSelecionarTipoRecarga() {
     )
 }
 
-export default BeneficioSelecionarTipoRecarga
+export default PremiacaoSelecionarTipoRecarga

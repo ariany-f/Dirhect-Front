@@ -23,7 +23,7 @@ const Col12 = styled.div`
 
 const Col6 = styled.div`
     padding: 20px;
-    width: 455px;
+    width: 35vw;
 `
 
 const ContainerButton = styled.div`
