@@ -150,7 +150,7 @@ function AppRouter() {
                 <Route path="selecao-tipo-recarga" element={<PremiacaoSelecionarTipoRecarga />} />
                 <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
                 <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
-                <Route path="editar-valor" element={<PremiacaoEditarValor />} />
+                <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
               </Route>
               
               <Route path="despesa" element={<Despesas />} />

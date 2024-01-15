@@ -83,7 +83,7 @@ function PremiacaoSelecionarColaboradores() {
 
     function editarValor(){
         setColaboradores(selectedColaboradores)
-        navegar('/saldo-livre/editar-valor')
+        navegar('/saldo-livre/editar-valor/colaboradores')
     }
 
     return (

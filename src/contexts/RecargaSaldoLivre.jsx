@@ -11,6 +11,7 @@ const saldoLivreInicial = {
     name: "",
     description: "",
     collaborators: [],
+    departamentos: [],
     balance: []
 }
 
@@ -18,6 +19,7 @@ export const RecargaSaldoLivreContext = createContext({
     recarga: saldoLivreInicial,
     erros: {},
     setColaboradores: () => null,
+    setDepartamentos: () => null,
     setBalance: () => null,
     setNome: () => null,
     setMotivo: () => null
@@ -51,6 +53,28 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
                 return {
                     ...estadoAnterior,
                     colaboradores
+                }
+            })
+        }
+    }
+    const setDepartamentos = (departamentos) => {
+        if(departamentos.length === 0)
+        {
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    departamentos
+                }
+            })
+        }
+        else
+        {
+            const departments = recarga.departamentos
+            departments.push(departamentos)
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    departments
                 }
             })
         }
@@ -106,6 +130,7 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
     const contexto = {
         recarga,
         setColaboradores,
+        setDepartamentos,
         setBalance,
         setNome,
         setMotivo

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import BotaoGrupo from "@components/BotaoGrupo"
-import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import Texto from "@components/Texto"
 import BotaoSemBorda from "@components/BotaoSemBorda"
@@ -12,36 +11,18 @@ import { MdCancel } from "react-icons/md"
 import Loading from "@components/Loading"
 import styles from './SaldoLivre.module.css'
 import { Toast } from 'primereact/toast'
-import styled from 'styled-components';
 import DataTablePremiacaoEditarValor from "../../components/DataTablePremiacaoEditarValor";
 import { useRecargaSaldoLivreContext } from "../../contexts/RecargaSaldoLivre";
-
-const ContainerButton = styled.div`
-    display: flex;
-    width: 100%;
-    padding: 20px;
-    justify-content: space-between;
-    & button {
-        width: initial;
-    }
-`
-
-const LadoALado = styled.div`
-    display: flex;
-    gap: 24px;
-    & span {
-        display: flex;
-        align-items: center;
-    }
-`
 
 function PremiacaoEditarValor() {
 
     const navegar = useNavigate()
+    let { tipo } = useParams()
     const {
         recarga,
         setNome,
-        setColaboradores
+        setColaboradores,
+        setDepartamentos,
     } = useRecargaSaldoLivreContext()
     const [loading, setLoading] = useState(false)
     const [edicaoAberta, setEdicaoAberta] = useState(false)
@@ -51,6 +32,7 @@ function PremiacaoEditarValor() {
       if(!recarga.name)
       {
         setColaboradores([])
+        setDepartamentos([])
         navegar(-1)
       }
     }, [])
@@ -86,9 +68,8 @@ function PremiacaoEditarValor() {
                                 </BotaoSemBorda>
                             </>
                         }
-                    
                     </BotaoGrupo>
-                    <DataTablePremiacaoEditarValor recarga={recarga.collaborators} />
+                    <DataTablePremiacaoEditarValor tipo={tipo} recarga={tipo === 'colaboradores' ? recarga.collaborators : recarga.departamentos} />
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
             }

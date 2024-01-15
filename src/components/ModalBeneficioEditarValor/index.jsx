@@ -236,7 +236,6 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
     ])
 
     function salvarColaboradores() {
-      //  console.log(selecionados)
         selecionados.map(item => {
             setAmountAuxilioCollaborator(item, auxilioAlimentacao)
         })

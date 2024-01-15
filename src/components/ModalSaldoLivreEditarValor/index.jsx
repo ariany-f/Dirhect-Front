@@ -131,7 +131,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
     currency: 'BRL',
 });
 
-function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, selecionados = [] }) {
+function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, selecionados = [], type="Colaboradores" }) {
 
     const {
         recarga,
@@ -165,7 +165,7 @@ function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, seleci
 
     }, [beneficios, valor])
 
-    function salvarColaboradores() {
+    function salvar() {
         selecionados.map(item => {
             const obj = item
             obj['amount'] = removeMask(valor)
@@ -190,7 +190,7 @@ function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, seleci
                             <h5>Valor da recarga</h5>
                             <SubTitulo>Informe o valor da recarga para os colaboradores selecionados:</SubTitulo>
                         </Titulo>
-                        <Texto weight={700}>Colaboradores selecionados&nbsp;<span style={{fontWeight: '600', color: 'var(--primaria)'}}>{selecionados.length}</span></Texto>
+                        <Texto weight={700}>{type} selecionados&nbsp;<span style={{fontWeight: '600', color: 'var(--primaria)'}}>{selecionados.length}</span></Texto>
                         <Titulo>
                             <h6 style={{ fontSize: '16px' }}>Saldo Livre</h6>
                             <SubTitulo>Digite o valor que permanecerá livre para o colaborador utilizar da melhor forma.</SubTitulo>
@@ -217,7 +217,7 @@ function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, seleci
                             <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                             <LadoALado>
                                 <span>Total&nbsp;<b>{Real.format(total)}</b><Texto color='var(--primaria)' weight={700}></Texto></span>
-                                <Botao aoClicar={salvarColaboradores} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={salvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </LadoALado>
                         </div>
                     </form>
