@@ -137,7 +137,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
 
     const {
         recarga,
-        setAmountAuxilioCollaborator
+        setAmount
     } = useRecargaBeneficiosContext()
 
     const [beneficios, setBeneficios] = useState([])
@@ -176,7 +176,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
         {
             http.get('api/dashboard/benefit')
                 .then((response) => {
-                    console.log(response)
+                    setBeneficios(response.data.benefits)
                 })
                 .catch(erro => {
                     console.error(erro)
@@ -210,6 +210,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
         }
         
     }, [
+        selecionados,
         beneficios, 
         checkedAuxilio, 
         auxilioAlimentacao, 
@@ -234,12 +235,28 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
         combustivelFlexivel, 
         combustivelFixo
     ])
-
-    function salvarColaboradores() {
+    
+    function salvar() {
         selecionados.map(item => {
-            setAmountAuxilioCollaborator(item, auxilioAlimentacao)
+            const obj = item
+            obj['refeicao'] = removeMask(refeicao)
+            obj['alimentacao'] = removeMask(alimentacao)
+            obj['auxilioAlimentacao'] = removeMask(auxilioAlimentacao)
+            obj['educacaoFlexivel'] = removeMask(educacaoFlexivel)
+            obj['educacaoFixo'] = removeMask(educacaoFixo)
+            obj['homeOfficeFlexivel'] = removeMask(homeOfficeFlexivel)
+            obj['homeOfficeFixo'] = removeMask(homeOfficeFixo)
+            obj['mobilidadeFlexivel'] = removeMask(mobilidadeFlexivel)
+            obj['mobilidadeFixo'] = removeMask(mobilidadeFixo)
+            obj['culturaFlexivel'] = removeMask(culturaFlexivel)
+            obj['culturaFixo'] = removeMask(culturaFixo)
+            obj['saudeFlexivel'] = removeMask(saudeFlexivel)
+            obj['saudeFixo'] = removeMask(saudeFixo)
+            obj['combustivelFlexivel'] = removeMask(combustivelFlexivel)
+            obj['combustivelFixo'] = removeMask(combustivelFixo)
+            setAmount(obj)
         })
-        console.log(recarga)
+        aoFechar()
     }
 
     return(
@@ -437,7 +454,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                             <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                             <LadoALado>
                                 <span>Total&nbsp;<b>{Real.format(total)}</b><Texto color='var(--primaria)' weight={700}></Texto></span>
-                                <Botao aoClicar={salvarColaboradores} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={salvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </LadoALado>
                         </div>
                     </form>

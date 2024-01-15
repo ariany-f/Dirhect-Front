@@ -11,16 +11,17 @@ const recargaInicial = {
     name: "",
     description: "",
     collaborators: [],
-    departamentos: []
+    departamentos: [],
+    benefits: []
 }
 
 export const RecargaBeneficiosContext = createContext({
     recarga: recargaInicial,
     erros: {},
+    setNome: () => null,
     setColaboradores: () => null,
     setDepartamentos: () => null,
-    setNome: () => null,
-    setAmountAuxilioCollaborator: () => null
+    setAmount: () => null,
 })
 
 export const useRecargaBeneficiosContext = () => {
@@ -42,6 +43,7 @@ export const RecargaBeneficiosProvider = ({ children }) => {
                     collaborators
                 }
             })
+            delete recarga['colaboradores']
         }
         else
         {
@@ -53,6 +55,7 @@ export const RecargaBeneficiosProvider = ({ children }) => {
                     colaboradores
                 }
             })
+            delete recarga['colaboradores']
         }
     }
     const setDepartamentos = (departamentos) => {
@@ -64,6 +67,7 @@ export const RecargaBeneficiosProvider = ({ children }) => {
                     departamentos
                 }
             })
+            delete recarga['departments']
         }
         else
         {
@@ -75,19 +79,43 @@ export const RecargaBeneficiosProvider = ({ children }) => {
                     departments
                 }
             })
+            delete recarga['departments']
         }
     }
-    const setAmountAuxilioCollaborator = (collaborator, amount) => {
-        const colaboradores = recarga.collaborators
-        const colaborador = colaboradores.filter((el) => el === collaborator)
-        colaborador.auxilio = amount
-        
-        setRecarga(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                colaboradores
+    const setAmount = (benefits) => {
+        if(benefits.length === 0)
+        {
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    benefits
+                }
+            })
+            delete recarga['beneficio']
+        }
+        else
+        {
+            const beneficio = recarga.benefits
+            const exists = beneficio.filter((item, index) => {
+                if(item.public_id === benefits.public_id)
+                {
+                    beneficio[index] = benefits
+                }
+                return item.public_id === benefits.public_id
+            })
+            if(exists.length === 0)
+            {
+                beneficio.push(benefits)
             }
-        })
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    beneficio
+                }
+            })
+            
+            delete recarga['beneficio']
+        }
     }
     const setNome = (name) => {
         setRecarga(estadoAnterior => {
@@ -102,7 +130,7 @@ export const RecargaBeneficiosProvider = ({ children }) => {
         setColaboradores,
         setDepartamentos,
         setNome,
-        setAmountAuxilioCollaborator
+        setAmount
     }
 
     return (<RecargaBeneficiosContext.Provider value={contexto}>

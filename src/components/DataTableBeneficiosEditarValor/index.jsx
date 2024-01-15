@@ -45,9 +45,9 @@ function DataTableBeneficiosEditarValor({ recarga }) {
     const navegar = useNavigate()
 
     const representativeAmountAuxilioTemplate = (rowData) => {
-        if(rowData.auxilio_alimentacao)
+        if(rowData.auxilioAlimentacao)
         {
-            return <b>{(Real.format(rowData.auxilio_alimentacao))}</b>
+            return <b>{(Real.format(rowData.auxilioAlimentacao))}</b>
         }
         else
         {
@@ -75,9 +75,9 @@ function DataTableBeneficiosEditarValor({ recarga }) {
         }
     }
     const representativeAmountMobilidadeTemplate = (rowData) => {
-        if(rowData.mobilidade)
+        if(rowData.mobilidadeFlexivel || rowData.mobilidadeFixo)
         {
-            return <b>{(Real.format(rowData.mobilidade))}</b>
+            return <b>{(Real.format(rowData.mobilidadeFlexivel + rowData.mobilidadeFixo))}</b>
         }
         else
         {
@@ -85,9 +85,9 @@ function DataTableBeneficiosEditarValor({ recarga }) {
         }
     }
     const representativeAmountSaudeTemplate = (rowData) => {
-        if(rowData.saude)
+        if(rowData.saudeFlexivel || rowData.saudeFixo)
         {
-            return <b>{(Real.format(rowData.saude))}</b>
+            return <b>{(Real.format(rowData.saudeFlexivel + rowData.saudeFixo))}</b>
         }
         else
         {
@@ -95,9 +95,9 @@ function DataTableBeneficiosEditarValor({ recarga }) {
         }
     }
     const representativeAmountCombustivelTemplate = (rowData) => {
-        if(rowData.combustivel)
+        if(rowData.combustivelFlexivel || rowData.combustivelFixo)
         {
-            return <b>{(Real.format(rowData.combustivel))}</b>
+            return <b>{(Real.format(rowData.combustivelFlexivel + rowData.combustivelFixo))}</b>
         }
         else
         {
@@ -105,9 +105,9 @@ function DataTableBeneficiosEditarValor({ recarga }) {
         }
     }
     const representativeAmountCulturaTemplate = (rowData) => {
-        if(rowData.cultura)
+        if(rowData.culturaFlexivel || rowData.culturaFixo)
         {
-            return <b>{(Real.format(rowData.cultura))}</b>
+            return <b>{(Real.format(rowData.culturaFlexivel + rowData.culturaFixo))}</b>
         }
         else
         {
@@ -115,9 +115,9 @@ function DataTableBeneficiosEditarValor({ recarga }) {
         }
     }
     const representativeAmountHomeOfficeTemplate = (rowData) => {
-        if(rowData.home_office)
+        if(rowData.homeOfficeFlexivel || rowData.homeOfficeFixo)
         {
-            return <b>{(Real.format(rowData.auxilio_alimentacao))}</b>
+            return <b>{(Real.format(rowData.homeOfficeFlexivel + rowData.homeOfficeFixo))}</b>
         }
         else
         {
@@ -125,9 +125,9 @@ function DataTableBeneficiosEditarValor({ recarga }) {
         }
     }
     const representativeAmountEducacaoTemplate = (rowData) => {
-        if(rowData.educacao)
+        if(rowData.educacaoFixo || rowData.educacaoFlexivel)
         {
-            return <b>{(Real.format(rowData.educacao))}</b>
+            return <b>{(Real.format(rowData.educacaoFixo + rowData.educacaoFlexivel))}</b>
         }
         else
         {
