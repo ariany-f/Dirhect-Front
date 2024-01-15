@@ -45,9 +45,14 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
     const navegar = useNavigate()
 
     const representativeAmountAuxilioTemplate = (rowData) => {
-        if(rowData.auxilioAlimentacao)
+        if('benefits' in rowData)
         {
-            return <b>{(Real.format(rowData.auxilioAlimentacao))}</b>
+            const saude = rowData.benefits.filter(item => {
+                if(item.name === 'Auxilio Alimentação'){
+                    return item
+                }
+            })
+            return <b>{(Real.format(saude[0].amount))}</b>
         }
         else
         {
@@ -55,9 +60,14 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountAlimentacaoTemplate = (rowData) => {
-        if(rowData.alimentacao)
+        if('benefits' in rowData)
         {
-            return <b>{(Real.format(rowData.alimentacao))}</b>
+            const saude = rowData.benefits.filter(item => {
+                if(item.name === 'Alimentação'){
+                    return item
+                }
+            })
+            return <b>{(Real.format(saude[0].amount))}</b>
         }
         else
         {
@@ -65,9 +75,14 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountRefeicaoTemplate = (rowData) => {
-        if(rowData.refeicao)
+        if('benefits' in rowData)
         {
-            return <b>{(Real.format(rowData.refeicao))}</b>
+            const saude = rowData.benefits.filter(item => {
+                if(item.name === 'Refeição'){
+                    return item
+                }
+            })
+            return <b>{(Real.format(saude[0].amount))}</b>
         }
         else
         {
@@ -75,9 +90,14 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountMobilidadeTemplate = (rowData) => {
-        if(rowData.mobilidadeFlexivel || rowData.mobilidadeFixo)
+        if('benefits' in rowData)
         {
-            return <b>{(Real.format(rowData.mobilidadeFlexivel + rowData.mobilidadeFixo))}</b>
+            const saude = rowData.benefits.filter(item => {
+                if(item.name === 'Mobilidade'){
+                    return item
+                }
+            })
+            return <b>{(Real.format(saude[0].amount + saude[0].flexible_value))}</b>
         }
         else
         {
@@ -85,9 +105,14 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountSaudeTemplate = (rowData) => {
-        if(rowData.saudeFlexivel || rowData.saudeFixo)
+        if('benefits' in rowData)
         {
-            return <b>{(Real.format(rowData.saudeFlexivel + rowData.saudeFixo))}</b>
+            const saude = rowData.benefits.filter(item => {
+                if(item.name === 'Saúde'){
+                    return item
+                }
+            })
+            return <b>{(Real.format(saude[0].amount + saude[0].flexible_value))}</b>
         }
         else
         {
@@ -95,9 +120,14 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountCombustivelTemplate = (rowData) => {
-        if(rowData.combustivelFlexivel || rowData.combustivelFixo)
+        if('benefits' in rowData)
         {
-            return <b>{(Real.format(rowData.combustivelFlexivel + rowData.combustivelFixo))}</b>
+            const saude = rowData.benefits.filter(item => {
+                if(item.name === 'Combustível'){
+                    return item
+                }
+            })
+            return <b>{(Real.format(saude[0].amount + saude[0].flexible_value))}</b>
         }
         else
         {
@@ -105,9 +135,14 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountCulturaTemplate = (rowData) => {
-        if(rowData.culturaFlexivel || rowData.culturaFixo)
+        if('benefits' in rowData)
         {
-            return <b>{(Real.format(rowData.culturaFlexivel + rowData.culturaFixo))}</b>
+            const saude = rowData.benefits.filter(item => {
+                if(item.name === 'Cultura'){
+                    return item
+                }
+            })
+            return <b>{(Real.format(saude[0].amount + saude[0].flexible_value))}</b>
         }
         else
         {
@@ -115,9 +150,14 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountHomeOfficeTemplate = (rowData) => {
-        if(rowData.homeOfficeFlexivel || rowData.homeOfficeFixo)
+        if('benefits' in rowData)
         {
-            return <b>{(Real.format(rowData.homeOfficeFlexivel + rowData.homeOfficeFixo))}</b>
+            const saude = rowData.benefits.filter(item => {
+                if(item.name === 'Home Office'){
+                    return item
+                }
+            })
+            return <b>{(Real.format(saude[0].amount + saude[0].flexible_value))}</b>
         }
         else
         {
@@ -125,9 +165,14 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountEducacaoTemplate = (rowData) => {
-        if(rowData.educacaoFixo || rowData.educacaoFlexivel)
+        if('benefits' in rowData)
         {
-            return <b>{(Real.format(rowData.educacaoFixo + rowData.educacaoFlexivel))}</b>
+            const saude = rowData.benefits.filter(item => {
+                if(item.name === 'Educação'){
+                    return item
+                }
+            })
+            return <b>{(Real.format(saude[0].amount + saude[0].flexible_value))}</b>
         }
         else
         {

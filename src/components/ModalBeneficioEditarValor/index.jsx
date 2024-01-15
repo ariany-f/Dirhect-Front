@@ -239,30 +239,90 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
     function salvar() {
         selecionados.map(item => {
             const obj = item
+            obj['benefits'] = []
             if(checkedAuxilio)
             {
-                obj['auxilioAlimentacao'] = removeMask(auxilioAlimentacao)
-                obj['refeicao'] = 0
-                obj['alimentacao'] = 0
+                obj['benefits'].push({
+                    name: 'Auxilio Alimentação',
+                    amount: removeMask(auxilioAlimentacao),
+                    food_meal_one_category: true
+                })
+                
+                obj['benefits'].push({
+                    name: 'Alimentação',
+                    amount: 0,
+                    food_meal_one_category: false
+                })
+                
+                obj['benefits'].push({
+                    name: 'Refeição',
+                    amount: 0,
+                    food_meal_one_category: false
+                })
             }
             else
             {
-                obj['auxilioAlimentacao'] = 0
-                obj['refeicao'] = removeMask(refeicao)
-                obj['alimentacao'] = removeMask(alimentacao)
+                obj['benefits'].push({
+                    name: 'Auxilio Alimentação',
+                    amount: 0,
+                    food_meal_one_category: true
+                })
+                
+                obj['benefits'].push({
+                    name: 'Alimentação',
+                    amount: removeMask(alimentacao),
+                    food_meal_one_category: false
+                })
+                
+                obj['benefits'].push({
+                    name: 'Refeição',
+                    amount: removeMask(refeicao),
+                    food_meal_one_category: false
+                })
             }
-            obj['educacaoFlexivel'] = removeMask(educacaoFlexivel)
-            obj['educacaoFixo'] = removeMask(educacaoFixo)
-            obj['homeOfficeFlexivel'] = removeMask(homeOfficeFlexivel)
-            obj['homeOfficeFixo'] = removeMask(homeOfficeFixo)
-            obj['mobilidadeFlexivel'] = removeMask(mobilidadeFlexivel)
-            obj['mobilidadeFixo'] = removeMask(mobilidadeFixo)
-            obj['culturaFlexivel'] = removeMask(culturaFlexivel)
-            obj['culturaFixo'] = removeMask(culturaFixo)
-            obj['saudeFlexivel'] = removeMask(saudeFlexivel)
-            obj['saudeFixo'] = removeMask(saudeFixo)
-            obj['combustivelFlexivel'] = removeMask(combustivelFlexivel)
-            obj['combustivelFixo'] = removeMask(combustivelFixo)
+            
+            obj['benefits'].push({
+                name: 'Educação',
+                amount: removeMask(educacaoFixo),
+                flexible_value: removeMask(educacaoFlexivel),
+                food_meal_one_category: false
+            })
+            
+            obj['benefits'].push({
+                name: 'Home Office',
+                amount: removeMask(homeOfficeFixo),
+                flexible_value: removeMask(homeOfficeFlexivel),
+                food_meal_one_category: false
+            })
+            
+            obj['benefits'].push({
+                name: 'Mobilidade',
+                amount: removeMask(mobilidadeFixo),
+                flexible_value: removeMask(mobilidadeFlexivel),
+                food_meal_one_category: false
+            })
+            
+            obj['benefits'].push({
+                name: 'Cultura',
+                amount: removeMask(culturaFixo),
+                flexible_value: removeMask(culturaFlexivel),
+                food_meal_one_category: false
+            })
+            
+            obj['benefits'].push({
+                name: 'Saúde',
+                amount: removeMask(saudeFixo),
+                flexible_value: removeMask(saudeFlexivel),
+                food_meal_one_category: false
+            })
+            
+            obj['benefits'].push({
+                name: 'Combustível',
+                amount: removeMask(combustivelFixo),
+                flexible_value: removeMask(combustivelFlexivel),
+                food_meal_one_category: false
+            })
+            
             setAmount(obj)
         })
         aoFechar()

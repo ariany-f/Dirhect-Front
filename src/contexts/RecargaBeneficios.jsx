@@ -131,21 +131,21 @@ export const RecargaBeneficiosProvider = ({ children }) => {
         obj['name'] = recarga.name
         obj['description'] = recarga.description
         obj['benefit_type_enum'] = recarga.collaborators.length > 0 ? COLLABORATOR : DEPARTMENT
-        obj['benefits'] = []
-        obj['benefits']['collaborators'] = []
-        obj['benefits']['departments'] = []
+        obj['collaborators'] = []
+        obj['departments'] = []
+
         if(recarga.collaborators.length > 0)
         {
             recarga.collaborators.map(item => {
                 let colaborador = item
-                obj['benefits']['collaborators'].push(colaborador)
+                obj['collaborators'].push(colaborador)
             })
         }
         if(recarga.departamentos.length > 0)
         {
             recarga.departamentos.map(item => {
                 let departamento = item
-                obj['benefits']['departments'].push(departamento)
+                obj['departments'].push(departamento)
             })
         }
         console.log(obj)
