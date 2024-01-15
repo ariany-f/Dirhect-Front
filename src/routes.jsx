@@ -171,7 +171,7 @@ function AppRouter() {
                 <Route path="selecao-tipo-recarga" element={<BeneficioSelecionarTipoRecarga />} />
                 <Route path="selecao-colaboradores" element={<BeneficioSelecionarColaboradores />} />
                 <Route path="selecao-departamentos" element={<BeneficioSelecionarDepartamentos />} />
-                <Route path="editar-valor" element={<BeneficioEditarValor />} />
+                <Route path="editar-valor/:tipo" element={<BeneficioEditarValor />} />
               </Route>
               
               <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />

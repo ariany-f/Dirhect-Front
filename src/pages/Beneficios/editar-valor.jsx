@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import BotaoGrupo from "@components/BotaoGrupo"
-import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import Texto from "@components/Texto"
 import BotaoSemBorda from "@components/BotaoSemBorda"
@@ -12,36 +11,18 @@ import { MdCancel } from "react-icons/md"
 import Loading from "@components/Loading"
 import styles from './Beneficios.module.css'
 import { Toast } from 'primereact/toast'
-import styled from 'styled-components';
 import { useRecargaBeneficiosContext } from '../../contexts/RecargaBeneficios';
 import DataTableBeneficiosEditarValor from "../../components/DataTableBeneficiosEditarValor";
-
-const ContainerButton = styled.div`
-    display: flex;
-    width: 100%;
-    padding: 20px;
-    justify-content: space-between;
-    & button {
-        width: initial;
-    }
-`
-
-const LadoALado = styled.div`
-    display: flex;
-    gap: 24px;
-    & span {
-        display: flex;
-        align-items: center;
-    }
-`
 
 function BeneficioEditarValor() {
 
     const navegar = useNavigate()
+    let { tipo } = useParams()
     const {
         recarga,
         setNome,
-        setColaboradores
+        setColaboradores,
+        setDepartamentos
     } = useRecargaBeneficiosContext()
     const [loading, setLoading] = useState(false)
     const [edicaoAberta, setEdicaoAberta] = useState(false)
@@ -51,6 +32,7 @@ function BeneficioEditarValor() {
       if(!recarga.name)
       {
         setColaboradores([])
+        setDepartamentos([])
         navegar(-1)
       }
     }, [])
@@ -88,7 +70,7 @@ function BeneficioEditarValor() {
                         }
                     
                     </BotaoGrupo>
-                    <DataTableBeneficiosEditarValor recarga={recarga.collaborators} />
+                    <DataTableBeneficiosEditarValor tipo={tipo} recarga={tipo === 'colaboradores' ? recarga.collaborators : recarga.departamentos} />
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
             }

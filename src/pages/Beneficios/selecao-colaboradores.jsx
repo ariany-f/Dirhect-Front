@@ -83,7 +83,7 @@ function BeneficioSelecionarColaboradores() {
 
     function nomearBeneficio(nome) {
         setNome(nome)
-        navegar('/beneficio/editar-valor')
+        navegar('/beneficio/editar-valor/colaboradores')
     }
 
     return (

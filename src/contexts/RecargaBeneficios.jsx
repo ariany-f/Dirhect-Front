@@ -10,20 +10,15 @@ const DEPARTMENT = 2;
 const recargaInicial = {
     name: "",
     description: "",
-    amount: 0,
-    flexible_value: 0,
-    is_flexible: false,
-    status: 1,
-    department_public_id: "",
-    benefit_type_enum: 1,
-    food_meal_one_category: false,
-    collaborators: []
+    collaborators: [],
+    departamentos: []
 }
 
 export const RecargaBeneficiosContext = createContext({
     recarga: recargaInicial,
     erros: {},
     setColaboradores: () => null,
+    setDepartamentos: () => null,
     setNome: () => null,
     setAmountAuxilioCollaborator: () => null
 })
@@ -60,6 +55,28 @@ export const RecargaBeneficiosProvider = ({ children }) => {
             })
         }
     }
+    const setDepartamentos = (departamentos) => {
+        if(departamentos.length === 0)
+        {
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    departamentos
+                }
+            })
+        }
+        else
+        {
+            const departments = recarga.departamentos
+            departments.push(departamentos)
+            setRecarga(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    departments
+                }
+            })
+        }
+    }
     const setAmountAuxilioCollaborator = (collaborator, amount) => {
         const colaboradores = recarga.collaborators
         const colaborador = colaboradores.filter((el) => el === collaborator)
@@ -83,6 +100,7 @@ export const RecargaBeneficiosProvider = ({ children }) => {
     const contexto = {
         recarga,
         setColaboradores,
+        setDepartamentos,
         setNome,
         setAmountAuxilioCollaborator
     }
