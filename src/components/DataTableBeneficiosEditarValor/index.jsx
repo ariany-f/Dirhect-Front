@@ -36,18 +36,18 @@ const LadoALado = styled.div`
     }
 `
 
-function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
+function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
     
-    const [selectedColaboradores, setSelectedColaboradores] = useState(null)
+    const [selectedItems, setSelectedItems] = useState(null)
     const [rowClick, setRowClick] = useState(true)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
 
     const representativeAmountAuxilioTemplate = (rowData) => {
-        if('benefits' in rowData)
+        if('beneficios' in rowData && rowData.beneficios.length > 0)
         {
-            const saude = rowData.benefits.filter(item => {
+            const saude = rowData.beneficios.filter(item => {
                 if(item.name === 'Auxilio Alimentação'){
                     return item
                 }
@@ -60,9 +60,9 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountAlimentacaoTemplate = (rowData) => {
-        if('benefits' in rowData)
+        if('beneficios' in rowData && rowData.beneficios.length > 0)
         {
-            const saude = rowData.benefits.filter(item => {
+            const saude = rowData.beneficios.filter(item => {
                 if(item.name === 'Alimentação'){
                     return item
                 }
@@ -75,9 +75,9 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountRefeicaoTemplate = (rowData) => {
-        if('benefits' in rowData)
+        if('beneficios' in rowData && rowData.beneficios.length > 0)
         {
-            const saude = rowData.benefits.filter(item => {
+            const saude = rowData.beneficios.filter(item => {
                 if(item.name === 'Refeição'){
                     return item
                 }
@@ -90,9 +90,9 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountMobilidadeTemplate = (rowData) => {
-        if('benefits' in rowData)
+        if('beneficios' in rowData && rowData.beneficios.length > 0)
         {
-            const saude = rowData.benefits.filter(item => {
+            const saude = rowData.beneficios.filter(item => {
                 if(item.name === 'Mobilidade'){
                     return item
                 }
@@ -105,9 +105,9 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountSaudeTemplate = (rowData) => {
-        if('benefits' in rowData)
+        if('beneficios' in rowData && rowData.beneficios.length > 0)
         {
-            const saude = rowData.benefits.filter(item => {
+            const saude = rowData.beneficios.filter(item => {
                 if(item.name === 'Saúde'){
                     return item
                 }
@@ -120,9 +120,9 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountCombustivelTemplate = (rowData) => {
-        if('benefits' in rowData)
+        if('beneficios' in rowData && rowData.beneficios.length > 0)
         {
-            const saude = rowData.benefits.filter(item => {
+            const saude = rowData.beneficios.filter(item => {
                 if(item.name === 'Combustível'){
                     return item
                 }
@@ -135,9 +135,9 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountCulturaTemplate = (rowData) => {
-        if('benefits' in rowData)
+        if('beneficios' in rowData && rowData.beneficios.length > 0)
         {
-            const saude = rowData.benefits.filter(item => {
+            const saude = rowData.beneficios.filter(item => {
                 if(item.name === 'Cultura'){
                     return item
                 }
@@ -150,9 +150,9 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountHomeOfficeTemplate = (rowData) => {
-        if('benefits' in rowData)
+        if('beneficios' in rowData && rowData.beneficios.length > 0)
         {
-            const saude = rowData.benefits.filter(item => {
+            const saude = rowData.beneficios.filter(item => {
                 if(item.name === 'Home Office'){
                     return item
                 }
@@ -165,9 +165,9 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
         }
     }
     const representativeAmountEducacaoTemplate = (rowData) => {
-        if('benefits' in rowData)
+        if('beneficios' in rowData && rowData.beneficios.length > 0)
         {
-            const saude = rowData.benefits.filter(item => {
+            const saude = rowData.beneficios.filter(item => {
                 if(item.name === 'Educação'){
                     return item
                 }
@@ -191,7 +191,7 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
     }
 
     function editarValores() {
-        if(selectedColaboradores && selectedColaboradores.length !== 0)
+        if(selectedItems && selectedItems.length !== 0)
         {
             setModalOpened(true)
         }
@@ -200,6 +200,8 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
             toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você deve selecionar os colaboradores', life: 3000 });
         }
     }
+    
+    const columnHeader = tipo === 'colaboradores' ? 'Nome Completo' : 'Departamento';
 
     return (
         <>
@@ -209,9 +211,9 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
                     <FaPencilAlt className={styles.icon} /><Link onClick={editarValores} className={styles.link}>Editar valor dos benefícios</Link>
                 </BotaoSemBorda>
             </BotaoGrupo>
-            <DataTable value={recarga[0]} selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ maxWidth: '100vw',minWidth: '90vw' }}>
+            <DataTable value={recarga[0]} selectionMode={rowClick ? null : 'checkbox'} selection={selectedItems} onSelectionChange={(e) => setSelectedItems(e.value)} tableStyle={{ maxWidth: '100vw',minWidth: '90vw' }}>
                 <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                <Column body={representativeDescriptionTemplate} header="Nome Completo" style={{ width: '15%' }}></Column>
+                <Column body={representativeDescriptionTemplate} header={columnHeader} style={{ width: '15%' }}></Column>
                 <Column body={representativeAmountAuxilioTemplate} header="Auxilio Alimentação" style={{ width: '7.5%' }}></Column>
                 <Column body={representativeAmountAlimentacaoTemplate} header="Alimentação" style={{ width: '7.5%' }}></Column>
                 <Column body={representativeAmountRefeicaoTemplate} header="Refeição" style={{ width: '7.5%' }}></Column>
@@ -225,11 +227,11 @@ function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
             <ContainerButton>
                 <Botao aoClicar={voltar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
                 <LadoALado>
-                    <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
+                    <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedItems ? selectedItems.length : 0}</Texto></span>
                     <Botao aoClicar={aoEnviar} estilo="vermilion" size="medium" filled>Continuar</Botao>
                 </LadoALado>
             </ContainerButton>
-            <ModalBeneficioEditarValor selecionados={selectedColaboradores ?? 0} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+            <ModalBeneficioEditarValor selecionados={selectedItems ?? 0} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }

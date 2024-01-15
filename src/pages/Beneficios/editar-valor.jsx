@@ -71,7 +71,7 @@ function BeneficioEditarValor() {
                         }
                     
                     </BotaoGrupo>
-                    <DataTableBeneficiosEditarValor aoEnviar={submeterRecarga} tipo={tipo} recarga={tipo === 'colaboradores' ? recarga.collaborators : recarga.departamentos} />
+                    <DataTableBeneficiosEditarValor aoEnviar={submeterRecarga} tipo={tipo} recarga={(tipo === 'colaboradores') ? recarga.collaborators : recarga.departamentos} />
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
             }
