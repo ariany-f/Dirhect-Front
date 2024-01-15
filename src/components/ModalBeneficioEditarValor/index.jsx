@@ -239,9 +239,18 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
     function salvar() {
         selecionados.map(item => {
             const obj = item
-            obj['refeicao'] = removeMask(refeicao)
-            obj['alimentacao'] = removeMask(alimentacao)
-            obj['auxilioAlimentacao'] = removeMask(auxilioAlimentacao)
+            if(checkedAuxilio)
+            {
+                obj['auxilioAlimentacao'] = removeMask(auxilioAlimentacao)
+                obj['refeicao'] = 0
+                obj['alimentacao'] = 0
+            }
+            else
+            {
+                obj['auxilioAlimentacao'] = 0
+                obj['refeicao'] = removeMask(refeicao)
+                obj['alimentacao'] = removeMask(alimentacao)
+            }
             obj['educacaoFlexivel'] = removeMask(educacaoFlexivel)
             obj['educacaoFixo'] = removeMask(educacaoFixo)
             obj['homeOfficeFlexivel'] = removeMask(homeOfficeFlexivel)

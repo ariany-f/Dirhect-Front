@@ -36,7 +36,7 @@ const LadoALado = styled.div`
     }
 `
 
-function DataTableBeneficiosEditarValor({ recarga }) {
+function DataTableBeneficiosEditarValor({ recarga, aoEnviar }) {
     
     const [selectedColaboradores, setSelectedColaboradores] = useState(null)
     const [rowClick, setRowClick] = useState(true)
@@ -181,7 +181,7 @@ function DataTableBeneficiosEditarValor({ recarga }) {
                 <Botao aoClicar={voltar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
                 <LadoALado>
                     <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
-                    <Botao aoClicar={() => {}} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                    <Botao aoClicar={aoEnviar} estilo="vermilion" size="medium" filled>Continuar</Botao>
                 </LadoALado>
             </ContainerButton>
             <ModalBeneficioEditarValor selecionados={selectedColaboradores ?? 0} aoFechar={() => setModalOpened(false)} opened={modalOpened} />

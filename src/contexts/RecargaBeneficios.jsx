@@ -22,6 +22,7 @@ export const RecargaBeneficiosContext = createContext({
     setColaboradores: () => null,
     setDepartamentos: () => null,
     setAmount: () => null,
+    submeterRecarga: () => null
 })
 
 export const useRecargaBeneficiosContext = () => {
@@ -125,12 +126,37 @@ export const RecargaBeneficiosProvider = ({ children }) => {
             }
         })
     }
+    const submeterRecarga = () => {
+        let obj = {}
+        obj['name'] = recarga.name
+        obj['description'] = recarga.description
+        obj['benefit_type_enum'] = recarga.collaborators.length > 0 ? COLLABORATOR : DEPARTMENT
+        obj['benefits'] = []
+        obj['benefits']['collaborators'] = []
+        obj['benefits']['departments'] = []
+        if(recarga.collaborators.length > 0)
+        {
+            recarga.collaborators.map(item => {
+                let colaborador = item
+                obj['benefits']['collaborators'].push(colaborador)
+            })
+        }
+        if(recarga.departamentos.length > 0)
+        {
+            recarga.departamentos.map(item => {
+                let departamento = item
+                obj['benefits']['departments'].push(departamento)
+            })
+        }
+        console.log(obj)
+    }
     const contexto = {
         recarga,
         setColaboradores,
         setDepartamentos,
         setNome,
-        setAmount
+        setAmount,
+        submeterRecarga
     }
 
     return (<RecargaBeneficiosContext.Provider value={contexto}>

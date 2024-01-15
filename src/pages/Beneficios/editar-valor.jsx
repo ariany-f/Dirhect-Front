@@ -22,7 +22,8 @@ function BeneficioEditarValor() {
         recarga,
         setNome,
         setColaboradores,
-        setDepartamentos
+        setDepartamentos,
+        submeterRecarga
     } = useRecargaBeneficiosContext()
     const [loading, setLoading] = useState(false)
     const [edicaoAberta, setEdicaoAberta] = useState(false)
@@ -70,7 +71,7 @@ function BeneficioEditarValor() {
                         }
                     
                     </BotaoGrupo>
-                    <DataTableBeneficiosEditarValor tipo={tipo} recarga={tipo === 'colaboradores' ? recarga.collaborators : recarga.departamentos} />
+                    <DataTableBeneficiosEditarValor aoEnviar={submeterRecarga} tipo={tipo} recarga={tipo === 'colaboradores' ? recarga.collaborators : recarga.departamentos} />
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
             }

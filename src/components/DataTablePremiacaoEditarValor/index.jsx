@@ -36,7 +36,7 @@ const LadoALado = styled.div`
     }
 `
 
-function DataTablePremiacaoEditarValor({ recarga, tipo }) {
+function DataTablePremiacaoEditarValor({ recarga, tipo, aoEnviar }) {
     
     const [selectedItems, setSelectedItems] = useState(null)
     const [rowClick, setRowClick] = useState(true)
@@ -95,7 +95,7 @@ function DataTablePremiacaoEditarValor({ recarga, tipo }) {
                 <Botao aoClicar={voltar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
                 <LadoALado>
                     <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedItems ? selectedItems.length : 0}</Texto></span>
-                    <Botao aoClicar={() => {}} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                    <Botao aoClicar={aoEnviar} estilo="vermilion" size="medium" filled>Continuar</Botao>
                 </LadoALado>
             </ContainerButton>
             <ModalSaldoLivreEditarValor selecionados={selectedItems ?? 0} aoFechar={() => setModalOpened(false)} opened={modalOpened} />

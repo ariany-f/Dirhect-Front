@@ -22,7 +22,8 @@ export const RecargaSaldoLivreContext = createContext({
     setDepartamentos: () => null,
     setBalance: () => null,
     setNome: () => null,
-    setMotivo: () => null
+    setMotivo: () => null,
+    submeterSaldoLivre: () => null
 })
 
 export const useRecargaSaldoLivreContext = () => {
@@ -127,13 +128,37 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
             }
         })
     }
+    const submeterSaldoLivre = () => {
+        let obj = {}
+        obj['name'] = recarga.name
+        obj['description'] = recarga.description
+        obj['balance'] = []
+        obj['balance']['collaborators'] = []
+        obj['balance']['departments'] = []
+        if(recarga.collaborators.length > 0)
+        {
+            recarga.collaborators.map(item => {
+                let colaborador = item
+                obj['balance']['collaborators'].push(colaborador)
+            })
+        }
+        if(recarga.departamentos.length > 0)
+        {
+            recarga.departamentos.map(item => {
+                let departamento = item
+                obj['balance']['departments'].push(departamento)
+            })
+        }
+        console.log(obj)
+    }
     const contexto = {
         recarga,
         setColaboradores,
         setDepartamentos,
         setBalance,
         setNome,
-        setMotivo
+        setMotivo,
+        submeterSaldoLivre
     }
 
     return (<RecargaSaldoLivreContext.Provider value={contexto}>

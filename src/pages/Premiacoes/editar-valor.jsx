@@ -23,6 +23,7 @@ function PremiacaoEditarValor() {
         setNome,
         setColaboradores,
         setDepartamentos,
+        submeterSaldoLivre
     } = useRecargaSaldoLivreContext()
     const [loading, setLoading] = useState(false)
     const [edicaoAberta, setEdicaoAberta] = useState(false)
@@ -69,7 +70,7 @@ function PremiacaoEditarValor() {
                             </>
                         }
                     </BotaoGrupo>
-                    <DataTablePremiacaoEditarValor tipo={tipo} recarga={tipo === 'colaboradores' ? recarga.collaborators : recarga.departamentos} />
+                    <DataTablePremiacaoEditarValor aoEnviar={submeterSaldoLivre} tipo={tipo} recarga={tipo === 'colaboradores' ? recarga.collaborators : recarga.departamentos} />
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
             }
