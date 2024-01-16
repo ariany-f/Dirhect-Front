@@ -86,7 +86,7 @@
     flex: 1;
 }
 .empilhado {
-    gap: 24px;
+    gap: 3px;
     display: flex;
     flex-direction: column;
     flex: 1;

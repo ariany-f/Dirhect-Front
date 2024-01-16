@@ -14,35 +14,38 @@ function AdicionarSaldo() {
             <div className={styles.wrapper_cards}>
                     <div className={styles.card_dashboard}>
                         <Frame estilo="spaced">
+                            <FaPix size={20} />
                             <div className={styles.empilhado}>
                                 <Texto weight={700}>
-                                    <FaPix size={20} />&nbsp;Pix
+                                    Pix
                                 </Texto>
-                                <p>
+                                <Texto weight={500}>
                                     A confirmação de pagamento demora em média alguns segundos.
-                                </p>
+                                </Texto>
                             </div>
                             <MdOutlineKeyboardArrowRight />
                         </Frame>
                         <Frame estilo="spaced">
+                            <FaBarcode size={20} />
                             <div className={styles.empilhado}>
                                 <Texto weight={700}>
-                                    <FaBarcode size={20} />&nbsp;Boleto Bancário
+                                    Boleto Bancário
                                 </Texto>
-                                <p>
+                                <Texto weight={500}>
                                     A confirmação de pagamento demora em média 3 dias úteis.
-                                </p>
+                                </Texto>
                             </div>
                             <MdOutlineKeyboardArrowRight />
                         </Frame>
                         <Frame estilo="spaced">
+                            <FaCreditCard size={20} />
                             <div className={styles.empilhado}>
                                 <Texto weight={700}>
-                                    <FaCreditCard size={20} />&nbsp;Cartão de Crédito
+                                    Cartão de Crédito
                                 </Texto>
-                                <p>
+                                <Texto weight={500}>
                                     A confirmação de pagamento demora em média alguns minutos.
-                                </p>
+                                </Texto>
                             </div>
                             <MdOutlineKeyboardArrowRight />
                         </Frame>
