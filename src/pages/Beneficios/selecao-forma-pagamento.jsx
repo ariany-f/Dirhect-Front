@@ -75,7 +75,7 @@ function BeneficioSelecionarFormaPagamento() {
                         <Texto>Você pode usar seus créditos em conjunto com <b>Pix, Boleto ou cartão de crédito</b>.</Texto>
 
                         <DottedLine margin="2px" />
-                        
+
                     </Frame>
                     <Frame gap="24px">
                         <CardLine>
