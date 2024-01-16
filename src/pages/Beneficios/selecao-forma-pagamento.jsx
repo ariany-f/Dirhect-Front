@@ -1,6 +1,6 @@
 import Titulo from '@components/Titulo'
 import SubTitulo from '@components/SubTitulo'
-import CheckBoxContainer from '@components/CheckBoxContainer'
+import CheckBoxContainer from '@components/CheckboxContainer'
 import ContainerHorizontal from '@components/ContainerHorizontal'
 import Botao from '@components/Botao'
 import Texto from '@components/Texto'
