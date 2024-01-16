@@ -7,7 +7,6 @@ const DivContainer = styled.div`
     width: ${ props => props.$width ? props.$width : '100%' };
     justify-content: ${ props => props.$align ? props.$align : 'space-between' };
     align-items: center;
-    flex-direction: column;
 `
 
 function Container({ children, align, gap = '48px', width='100%', padding='inherit' }) {

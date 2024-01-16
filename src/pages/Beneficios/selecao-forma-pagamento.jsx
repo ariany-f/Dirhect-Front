@@ -2,6 +2,8 @@ import Titulo from '@components/Titulo'
 import SubTitulo from '@components/SubTitulo'
 import CheckboxContainer from '@components/CheckboxContainer'
 import ContainerHorizontal from '@components/ContainerHorizontal'
+import Container from '@components/Container'
+import CampoTexto from '@components/CampoTexto'
 import Botao from '@components/Botao'
 import Texto from '@components/Texto'
 import Frame from '@components/Frame'
@@ -40,9 +42,15 @@ const ContainerButton = styled.div`
     }
 `
 
+let Real = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+});
+
 function BeneficioSelecionarFormaPagamento() {
     
     const [saldoConta, setSaldoConta] = useState(false)
+    const [useSaldo, setUseSaldo] = useState(Real.format(0))
     const [selectedPaymentOption, setSelectedPaymentOption] = useState(1)
     const [selectedDate, setSelectedDate] = useState(1)
     const navegar = useNavigate()
@@ -58,6 +66,15 @@ function BeneficioSelecionarFormaPagamento() {
         setSelectedDate(valor)
     }
 
+    function handleSaldoChange(valor)
+    {
+        setSaldoConta(valor)
+        if(!valor)
+        {
+            setUseSaldo(Real.format(0))
+        }
+    }
+
 
     return (
         <Frame padding="24px 0px">
@@ -69,13 +86,15 @@ function BeneficioSelecionarFormaPagamento() {
                 <SubTitulo>Escolha uma ou mais opção de pagamento</SubTitulo>
             </Titulo>
             <div className={styles.card_dashboard}>
-                <ContainerHorizontal width="50%" gap="24px" align="start" padding="16px">
+                <Container width="50%" gap="12px" align="start" padding="16px">
                     <Frame gap="24px">
-                        <CheckboxContainer fontSize="16px" name="saldo" valor={saldoConta} setValor={setSaldoConta} label="Saldo da Conta"/>
+                        <ContainerHorizontal>
+                            <CheckboxContainer fontSize="16px" name="saldo" valor={saldoConta} setValor={handleSaldoChange} label="Saldo da Conta"/>
+                            <b>R$ 1.500,00</b>
+                            <CampoTexto disabled={!saldoConta} placeholder="R$ 0,00" patternMask={'BRL'} valor={useSaldo} setValor={setUseSaldo} />
+                        </ContainerHorizontal>
                         <Texto>Você pode usar seus créditos em conjunto com <b>Pix, Boleto ou cartão de crédito</b>.</Texto>
-
                         <DottedLine margin="2px" />
-
                     </Frame>
                     <Frame gap="24px">
                         <CardLine>
@@ -102,7 +121,7 @@ function BeneficioSelecionarFormaPagamento() {
                     <CardText gap="8px" padding="16px">
                         <p className={styles.subtitulo}>O tempo para confirmação de pagamento para Pix e Cartão de crédito é de até 1 hora. Transferências realizadas por boleto demoram em média 3 dias úteis.</p>
                     </CardText>
-                </ContainerHorizontal>
+                </Container>
             </div>
             <Titulo>
                 <h6>Data de depósito dos benefícios</h6>

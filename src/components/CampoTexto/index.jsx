@@ -20,6 +20,11 @@ const Campo = styled.input`
     margin-top: 10px;
     width: ${ props => props.$width ?  props.$width : 'inherit' };
 
+    &:disabled {
+        background-color: #e9ecef;
+        color:#bdbdbd;
+    }
+
     &.error {
         outline: 1px solid var(--error);
     }
@@ -63,19 +68,20 @@ const Campo = styled.input`
         font-weight: 600;
         line-height: 20px; /* 142.857% */
     }
+    &:not(:disabled) {
+        &:active {
+            outline-color: var(--primaria);
+            background: var(--white);
+        }
 
-    &:active {
-        outline-color: var(--primaria);
-        background: var(--white);
-    }
-
-    &:focus {
-        outline-color: var(--primaria);
-        background: var(--white);
+        &:focus {
+            outline-color: var(--primaria);
+            background: var(--white);
+        }
     }
 `
 
-function CampoTexto({ label, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
+function CampoTexto({ label, disabled = false, type='text', placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -190,7 +196,7 @@ function CampoTexto({ label, type='text', placeholder, valor, setValor, name, wi
                 {(label) ?
                 <label htmlFor={name} className={styles.label}>{label}</label>
                 : ''}
-                <Campo className={(classeCampoVazio.includes(name) ? 'error' : '')} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                <Campo disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&
                     <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>
