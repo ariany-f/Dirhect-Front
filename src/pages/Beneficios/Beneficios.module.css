@@ -148,6 +148,10 @@
     }
 }
 
+.beneficios {
+    display: flex;
+}
+
 .containerBottom {
     margin-top: 50px;
     display: flex;

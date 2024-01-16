@@ -4,6 +4,7 @@ import Container from '@components/Container'
 import BadgeStatusBeneficio from '@components/BadgeStatusBeneficio'
 import ContainerHorizontal from '@components/ContainerHorizontal'
 import BotaoSemBorda from '@components/BotaoSemBorda'
+import BadgeBeneficio from "@components/BadgeBeneficio"
 import Texto from '@components/Texto'
 import Titulo from '@components/Titulo'
 import BotaoGrupo from '@components/BotaoGrupo'
@@ -24,7 +25,18 @@ const CodigoDiv = styled.div`
 
 function BeneficioPagamento() {
 
-    const [paymentType, setPaymentType] = useState('pix')
+    const [paymentType, setPaymentType] = useState('boleto')
+
+    const benefits = [
+        'Alimentação',
+        'Refeição',
+        'Auxílio Alimentação',
+        'Mobilidade',
+        'Saúde',
+        'Home Office',
+        'Educação',
+        'Cultura'
+    ]
 
     return (
         <Frame>
@@ -63,6 +75,13 @@ function BeneficioPagamento() {
                         <Frame estilo="spaced">
                             <div className={styles.empilhado}>
                                 <p>Benefícios disponibilizados</p>
+                                <div className={styles.beneficios}>
+                                    {benefits.map((benefit, index) => {
+                                        return (
+                                            <BadgeBeneficio layout="inline" key={index} nomeBeneficio={benefit}/>
+                                        )
+                                    })}
+                                </div>
                             </div>
                         </Frame>
                     </div>
@@ -80,7 +99,7 @@ function BeneficioPagamento() {
                                     <BotaoGrupo align="center">
                                         <Texto weight={600}>23794.15009 90033.744005 93000.211404 8 00000000000000</Texto>
                                         <BotaoSemBorda><RiFileCopyLine size={18}/> Copiar código</BotaoSemBorda>
-                                        <Botao fontSize="14px" size="200px"><RiFileDownloadLine className={styles.icon} size={18}/>Baixar boleto</Botao>
+                                        <Botao fontSize="14px" size="200px"><RiFileDownloadLine className={styles.icon} size={18}/>Visualizar boleto</Botao>
                                     </BotaoGrupo>
                                 </div>
                             </Frame>
