@@ -231,7 +231,7 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
                     <Botao aoClicar={aoEnviar} estilo="vermilion" size="medium" filled>Continuar</Botao>
                 </LadoALado>
             </ContainerButton>
-            <ModalBeneficioEditarValor selecionados={selectedItems ?? 0} aoFechar={() => {setModalOpened(false); setSelectedItems([])}} opened={modalOpened} />
+            <ModalBeneficioEditarValor selecionados={selectedItems ?? 0} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }

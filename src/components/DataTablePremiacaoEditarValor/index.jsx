@@ -98,7 +98,7 @@ function DataTablePremiacaoEditarValor({ recarga, tipo, aoEnviar }) {
                     <Botao aoClicar={aoEnviar} estilo="vermilion" size="medium" filled>Continuar</Botao>
                 </LadoALado>
             </ContainerButton>
-            <ModalSaldoLivreEditarValor selecionados={selectedItems ?? 0} aoFechar={() => {setModalOpened(false); setSelectedItems([])}} opened={modalOpened} />
+            <ModalSaldoLivreEditarValor selecionados={selectedItems ?? 0} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
