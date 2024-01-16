@@ -35,7 +35,7 @@ function Colaboradores() {
                         <Botao estilo={location.pathname == '/colaborador/desativados'?'black':''} size="small" tab>Desativados</Botao>
                     </Link>
                 </BotaoGrupo>
-                <BotaoGrupo>
+                <BotaoGrupo align="center">
                     <BotaoSemBorda color="var(--primaria)">
                         <FaDownload/><Link onClick={() => setModalOpened(true)} className={styles.link}>Importar planilha</Link>
                     </BotaoSemBorda>

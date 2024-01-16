@@ -107,7 +107,7 @@ function DepartamentoDetalhes() {
                     </BotaoGrupo>
                 }
                 {location.pathname == `/departamento/detalhes/${id}/configuracao-beneficios` &&
-                    <BotaoGrupo>
+                    <BotaoGrupo align="center">
                         <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
                             <AiFillQuestionCircle className="question-icon" size={20} />
                         </QuestionCard>
