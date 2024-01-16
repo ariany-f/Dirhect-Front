@@ -6,6 +6,7 @@ import Botao from '@components/Botao'
 import Texto from '@components/Texto'
 import Frame from '@components/Frame'
 import CardText from '@components/CardText'
+import DottedLine from '@components/DottedLine'
 import styles from './Beneficios.module.css'
 import { useState } from 'react'
 import styled from 'styled-components'
@@ -68,12 +69,12 @@ function BeneficioSelecionarFormaPagamento() {
                 <SubTitulo>Escolha uma ou mais opção de pagamento</SubTitulo>
             </Titulo>
             <div className={styles.card_dashboard}>
-                <ContainerHorizontal width="50%" align="start" padding="16px">
+                <ContainerHorizontal width="50%" gap="24px" align="start" padding="16px">
                     <Frame gap="24px">
                         <CheckBoxContainer fontSize="16px" name="saldo" valor={saldoConta} setValor={setSaldoConta} label="Saldo da Conta"/>
                         <Texto>Você pode usar seus créditos em conjunto com <b>Pix, Boleto ou cartão de crédito</b>.</Texto>
+                        <DottedLine margin="2px" />
                     </Frame>
-                    
                     <Frame gap="24px">
                         <CardLine>
                             <RadioButton name="payment_option" top="0" value={1} checked={selectedPaymentOption === 1} onSelected={() => handleChange(1)}/>
