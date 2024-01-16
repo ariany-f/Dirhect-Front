@@ -6,8 +6,6 @@
     font-size: 14px;
     border-radius: 8px;
     display: flex;
-    flex-grow: 1;
-    width: 100px;
     border: 1px solid var(--neutro-200);
     background-color: var(--alert-success-50);
     & p {
@@ -23,12 +21,10 @@
     font-size: 14px;
     border-radius: 8px;
     display: flex;
-    flex-grow: 1;
-    width: 100px;
-    border: 1px solid var(--neutro-200);
-    background-color: var(--alert-50);
+    border: 1px solid var(--warning-100);
+    background-color: var(--warning-50);
     & p {
-        color: var(--alert);
+        color: var(--warning);
         font-weight: 700;
     }
 }
@@ -40,8 +36,6 @@
     font-size: 14px;
     border-radius: 8px;
     display: flex;
-    flex-grow: 1;
-    width: 100px;
     border: 1px solid var(--neutro-200);
     background-color: var(--error-50);
     & p {

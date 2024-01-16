@@ -8,7 +8,7 @@ const statuses = [
     },
     {
         "id": 2,
-        "name": "Aguardando",
+        "name": "Aguardando pagamento",
         "className": "yellow"
     },
     {
