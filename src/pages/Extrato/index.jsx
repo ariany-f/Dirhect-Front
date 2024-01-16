@@ -59,6 +59,15 @@ function Extrato() {
         })
     }
 
+    const setTransactions = (transactions) => {
+        setDashboardData(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                transactions
+            }
+        })
+    }
+
     useEffect(() => {
         /**
          * Dados necessários para exibição no painel do usuário
@@ -69,12 +78,13 @@ function Extrato() {
         })
         .then(() => {
             setSaldo(dashboardData.userDashResource.total_benefit_balance)
+            setTransactions(dashboardData.transactions)
         })
         .catch(erro => {
             console.error(erro)
         })
 
-    }, [])
+    }, [dashboardData.transactions])
 
 
     return (
@@ -99,7 +109,7 @@ function Extrato() {
                                 </div>
                             )
                         })}
-                        <Link to="/">
+                        <Link to="/extrato/adicionar-saldo">
                             <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Saldo</Botao>
                         </Link>
                     </BotaoGrupo>

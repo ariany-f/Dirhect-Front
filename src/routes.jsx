@@ -56,6 +56,7 @@ import BeneficioSelecionarColaboradores from '@pages/Beneficios/selecao-colabora
 import BeneficioSelecionarDepartamentos from '@pages/Beneficios/selecao-departamentos'
 import BeneficioEditarValor from '@pages/Beneficios/editar-valor'
 import Extrato from '@pages/Extrato'
+import ExtratoAdicionarSaldo from '@pages/Extrato/adicionar-saldo'
 import DepartamentoConfiguracaoBeneficios from '@pages/Departamentos/configuracao-beneficios'
 import DepartamentoListaColaboradores from '@pages/Departamentos/lista-colaboradores'
 import ColaboradorEnvioCartao from '@pages/Colaboradores/Registro/envio-cartao'
@@ -133,6 +134,7 @@ function AppRouter() {
               </Route>
 
               <Route path="extrato" element={<Extrato />} />
+              <Route path="extrato/adicionar-saldo" element={<ExtratoAdicionarSaldo />} />
             
               <Route path="departamento" element={<Departamentos />} >
                 <Route index element={<DepartamentoLista />} />

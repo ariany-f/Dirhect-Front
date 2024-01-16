@@ -46,17 +46,16 @@ function Premiacoes() {
         if(premiacoes.length === 0)
         {
             setLoading(true)
-            http.get('api/dashboard/balance')
+            http.get('api/dashboard/award')
             .then(response => {
                 setLoading(false)
-                if(response.data.transactions)
+                if(response.data.award)
                 {
-                    setPremiacoes(response.data.transactions)
+                    setPremiacoes(response.data.award)
                 }
             })
             .catch(erro => {
                 setLoading(false)
-                console.log(erro)
             })
         }
     }, [])
@@ -79,12 +78,11 @@ function Premiacoes() {
                 premiacoes.length ?
                 <DataTablePremiacoes premiacoes={premiacoes} />
                 :
-                
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
-                        <h6>Você não configurou nenhum benefício para esse departamento</h6>
-                        <p>Aqui você verá todos os benefícios configurados.</p>
+                        <h6>Não há premiações registradas</h6>
+                        <p>Aqui você verá todas as premiações registradas.</p>
                     </section>
                 </ContainerSemRegistro>
             }
