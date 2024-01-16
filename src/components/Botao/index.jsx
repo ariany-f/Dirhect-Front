@@ -10,24 +10,24 @@ const BotaoEstilizado = styled.button`
     gap: 8px;
     padding: 16px 24px;
     font-family: var(--fonte-primaria);
-    font-size: 16px;
-    width: 100%;
+    font-size: ${ props => props.$fontSize ? props.$fontSize : '16px'};
+    width: ${ props => props.$size ? props.$size : '100%'};
     line-height: 150%; /* 24px */
     justify-content: center;
     align-items: center;
 `
 
-function Botao( {children, estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold' } ) {
+function Botao( {children, estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px' } ) {
 
     const classes = `${estilo} ${model} ${size} ${weight} ${tab ? 'tab' : ''}`;
    
     return (
         aoClicar ?
-            <BotaoEstilizado onClick={aoClicar} className={classes}>
+            <BotaoEstilizado $fontSize={fontSize} $size={size} onClick={aoClicar} className={classes}>
                 {children}
             </BotaoEstilizado>
         :
-            <BotaoEstilizado className={classes}>
+            <BotaoEstilizado $fontSize={fontSize} $size={size} className={classes}>
                 {children}
             </BotaoEstilizado>
     )

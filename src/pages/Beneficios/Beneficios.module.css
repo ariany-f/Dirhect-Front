@@ -19,6 +19,14 @@
     }
 }
 
+.icongreen {
+    fill: #32BCAD!important;
+    color: #32BCAD!important;
+    & * {
+        stroke: #32BCAD!important;
+    }
+}
+
 .percent {
     display: flex;
     flex-direction: column;
@@ -90,6 +98,11 @@
 }
 .rightalign {
     text-align: right;
+    justify-content: center;
+    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
     & p{
         justify-content: end;
     }
