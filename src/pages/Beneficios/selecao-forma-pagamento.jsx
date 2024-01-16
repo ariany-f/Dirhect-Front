@@ -71,7 +71,7 @@ function BeneficioSelecionarFormaPagamento() {
             <div className={styles.card_dashboard}>
                 <ContainerHorizontal width="50%" gap="24px" align="start" padding="16px">
                     <Frame gap="24px">
-                        <CheckBoxContainer fontSize="16px" name="saldo" valor={saldoConta} setValor={setSaldoConta} label="Saldo da Conta"/>
+                        <CheckboxContainer fontSize="16px" name="saldo" valor={saldoConta} setValor={setSaldoConta} label="Saldo da Conta"/>
                         <Texto>Você pode usar seus créditos em conjunto com <b>Pix, Boleto ou cartão de crédito</b>.</Texto>
 
                         <DottedLine margin="2px" />
