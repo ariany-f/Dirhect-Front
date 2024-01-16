@@ -24,16 +24,6 @@ const CardLine = styled.div`
     }
 `
 
-const CardText = styled.div`
-    display: flex;
-    padding: 10px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    background: var(--info-50);
-`
-
 function OperadorPermissoes() {
 
     const [checkedBen, setCheckedBen] = useState(false);

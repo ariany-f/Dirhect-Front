@@ -5,6 +5,7 @@ import Titulo from "@components/Titulo"
 import Texto from "@components/Texto"
 import SubTitulo from "@components/SubTitulo"
 import DropdownItens from '@components/DropdownItens'
+import CardText from '@components/CardText'
 import RadioButton from '@components/RadioButton'
 import { useState, useEffect } from "react"
 import http from '@http'
@@ -34,17 +35,6 @@ const ContainerButton = styled.div`
     & button {
         width: initial;
     }
-`
-const CardText = styled.div`
-    display: flex;
-    width: 584px;
-    flex-direction: column;
-    padding: 16px;
-    justify-content: left;
-    align-items: left;
-    gap: 4px;
-    border-radius: 8px;
-    background: var(--alert-success-50);
 `
 
 const CardLine = styled.div`
@@ -197,7 +187,7 @@ function ColaboradorEnvioCartao() {
                         </Link>
                     </CardLine>
                 </div>
-                <CardText>
+                <CardText gap="4px" padding="16px" background="var(--alert-success-50)">
                     <Texto color="var(--alert-success)" weight={700} ><MdLocalShipping className="icon" />&nbsp;Frete Grátis</Texto>
                     <p className={styles.subtitulo}>Receba seu cartão com frete grátis e aproveite todas as vantagens!</p>
                 </CardText>

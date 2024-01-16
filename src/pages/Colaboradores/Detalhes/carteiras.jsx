@@ -2,6 +2,7 @@ import { Skeleton } from 'primereact/skeleton'
 import SwitchInput from '@components/SwitchInput'
 import Titulo from '@components/Titulo'
 import SubTitulo from '@components/SubTitulo'
+import CardText from '@components/CardText'
 import Texto from '@components/Texto'
 import styles from './Detalhes.module.css'
 import styled from "styled-components"
@@ -24,16 +25,6 @@ const CardLine = styled.div`
     }
 `
 
-const CardText = styled.div`
-    display: flex;
-    padding: 10px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    background: var(--info-50);
-`
-
 function ColaboradorCarteiras() {
 
     const [checkedBen, setCheckedBen] = useState(false);
@@ -46,7 +37,7 @@ function ColaboradorCarteiras() {
                 <h6>Carteiras</h6>
                 <SubTitulo>Você pode ativar ou desativar as carteiras do seu colaborador</SubTitulo>
             </Titulo>
-            <CardText>
+            <CardText background="var(--info-50)">
                 <SubTitulo>O colaborador escolhe qual saldo quer utilizar selecionando o tipo de carteira em seu aplicativo.</SubTitulo>
             </CardText>
             <div className={styles.card_dashboard}>

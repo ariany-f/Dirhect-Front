@@ -18,6 +18,7 @@ import { PiFirstAidKitLight, PiOfficeChair } from "react-icons/pi"
 import { IoBookOutline } from "react-icons/io5"
 import { currency, mask as masker, unMask } from "remask"
 import { useRecargaBeneficiosContext } from "../../contexts/RecargaBeneficios"
+import DottedLine from "@components/DottedLine"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -373,8 +374,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                 </Beneficio>
                             </CardBeneficio>
                         }
-
-                        <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '4px', marginBottom: '4px'}} ></div>
+                        <DottedLine margin="4px"/>
                         <Titulo>
                             <h6 style={{ fontSize: '16px' }}>Benefício Flexível</h6>
                             <SubTitulo>Digite o valor flexível que pode ser distribuído entre as categorias ou habilite a opção “Fixar Valor” e definindo o valor que será fixo por categoria.</SubTitulo>

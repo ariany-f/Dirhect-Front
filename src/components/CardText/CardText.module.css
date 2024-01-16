@@ -1,0 +1,8 @@
+.cardText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 8px;
+    border-radius: 8px;
+}

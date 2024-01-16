@@ -14,6 +14,7 @@ import { useEffect } from "react"
 import { MdLocalAtm } from "react-icons/md"
 import { currency, mask as masker, unMask } from "remask"
 import { useRecargaSaldoLivreContext } from "../../contexts/RecargaSaldoLivre"
+import DottedLine from "@components/DottedLine"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -209,7 +210,7 @@ function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, seleci
                                 </Col12>
                             </Beneficio>
                         </CardBeneficio>
-                        <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '4px', marginBottom: '0'}} ></div>
+                        <DottedLine margin="2px"/>
                     </Frame>
                     
                     <form method="dialog">

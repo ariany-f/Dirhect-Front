@@ -99,17 +99,6 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-const CardText = styled.div`
-    display: flex;
-    padding: 10px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    font-size: 14px;
-    background: var(--neutro-100);
-`
-
 function ModalDepartamentoAdicionarBeneficio({ opened = false, aoClicar, aoFechar }) {
 
     const [beneficios, setBeneficios] = useState([])

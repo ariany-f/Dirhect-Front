@@ -1,21 +1,11 @@
 import DepartamentoCard from '@components/DepartamentoCard'
 import CampoTexto from '@components/CampoTexto'
+import CardText from '@components/CardText'
 import departments from '@json/departments.json'
 import styles from './Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import http from '@http'
-
-const CardText = styled.div`
-    display: flex;
-    width: 584px;
-    padding: 10px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    background: var(--neutro-100);
-`
 
 function DepartamentoColaboradores() {
 

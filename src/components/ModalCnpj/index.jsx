@@ -2,6 +2,7 @@ import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
+import CardText from "@components/CardText"
 import { useEffect, useState } from "react"
 import { RiCloseFill, RiBuildingLine } from 'react-icons/ri'
 import { useNavigate } from "react-router-dom"
@@ -100,17 +101,6 @@ const Item = styled.div`
     width: 94%;
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
-
-const CardText = styled.div`
-    display: flex;
-    padding: 10px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    font-size: 14px;
-    background: var(--neutro-100);
-`
 
 function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import http from '@http'
 import DataTableDepartamentos from '@components/DataTableDepartamentos'
+import CardText from '@components/CardText'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
@@ -17,17 +18,6 @@ const ConteudoFrame = styled.div`
     flex-direction: column;
     gap: 24px;
     width: 100%;
-`
-
-const CardText = styled.div`
-    display: flex;
-    width: 584px;
-    padding: 10px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    background: var(--neutro-100);
 `
 
 function DepartamentoLista() {

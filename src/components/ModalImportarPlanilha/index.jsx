@@ -1,6 +1,7 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import BotaoSemBorda from "@components/BotaoSemBorda"
+import CardText from "@components/CardText"
 import Titulo from "@components/Titulo"
 import CampoTexto from "@components/CampoTexto"
 import { RiCloseFill } from 'react-icons/ri'
@@ -11,6 +12,7 @@ import styles from './ModalImportarPlanilha.module.css'
 import { FaDownload } from "react-icons/fa"
 import { useColaboradorContext } from "../../contexts/Colaborador"
 import { useState } from "react"
+import DottedLine from "@components/DottedLine"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -76,16 +78,6 @@ const DialogEstilizado = styled.dialog`
         align-self: stretch;
     }
 `
-const CardText = styled.div`
-    display: flex;
-    padding: 10px 16px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 32px;
-    gap: 32px;
-    border-radius: 8px;
-    background: var(--neutro-100);
-`
 
 function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
 
@@ -127,10 +119,10 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
                             <li>Baixe o modelo</li>
                             <li>Preencha o arquivo e salve em formato XLS e faça o upload</li>
                        </ul>
-                       <CardText>
+                       <CardText gap="32px">
                             <p className={styles.subtitulo}>Atenção: Caso o envio dos cartões seja para a residência dos colaboradores é importante que os endereços sejam preenchidos no momento do cadastro.</p>
                         </CardText>
-                    <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '2px', marginBottom: '2px'}} ></div>
+                        <DottedLine margin="2px"/>
                     </Frame>
                     <form method="dialog">
                             <CampoTexto type="file" setValor={setPlanilha}></CampoTexto>

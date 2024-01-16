@@ -15,6 +15,7 @@ import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components';
+import DottedLine from '@components/DottedLine';
 
 const ContainerButton = styled.div`
     display: flex;
@@ -91,7 +92,8 @@ function OperadorRegistroSelecionar() {
                     <Botao aoClicar={() => navegar('/colaborador/registro')} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar um novo colaborador</Botao>
                 </BotaoGrupo>
             </ConteudoFrame>
-            <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '18px', marginBottom: '18px'}} ></div>
+            
+            <DottedLine />
 
             <div className="flex justify-content-end">
                 <span className="p-input-icon-left">

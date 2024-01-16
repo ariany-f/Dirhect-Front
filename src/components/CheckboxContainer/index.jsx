@@ -13,7 +13,7 @@ const ChBtn = styled.input`
     border-radius: 2px;
     ~ label {
         font-weight: 800;
-        font-size: 12px;
+        font-size: ${ props => props.$fontSize ? props.$fontSize : '12px' };
         cursor: pointer;
     }
     &:checked {
@@ -25,11 +25,11 @@ const ChBtn = styled.input`
     }
 `;
 
-function CheckboxContainer({ valor, setValor, label, name }) {
+function CheckboxContainer({ valor, setValor, label, name, fontSize='12px' }) {
 
     return (
         <div className={styles.checkboxContainer}>
-            <ChBtn value={valor} id={name} onChange={evento => setValor(evento.target.checked)} type="checkbox"></ChBtn>
+            <ChBtn $fontSize={fontSize} value={valor} id={name} onChange={evento => setValor(evento.target.checked)} type="checkbox"></ChBtn>
             {(label) ?
                 <label htmlFor={name} className={styles.label}>{label}</label>
             : ''}

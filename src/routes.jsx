@@ -76,6 +76,8 @@ import OperadorDetalhes from '@pages/Operadores/detalhes'
 import OperadorDados from '@pages/Operadores/Detalhes/dados'
 import OperadorPermissoes from '@pages/Operadores/Detalhes/permissoes'
 import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario"
+import BeneficioSelecionarFormaPagamento from './pages/Beneficios/selecao-forma-pagamento'
+import BeneficioPagamento from './pages/Beneficios/pagamento'
 
 function AppRouter() {
   
@@ -173,6 +175,8 @@ function AppRouter() {
                 <Route path="selecao-departamentos" element={<BeneficioSelecionarDepartamentos />} />
                 <Route path="editar-valor/:tipo" element={<BeneficioEditarValor />} />
               </Route>
+              <Route path="/beneficio/selecao-forma-pagamento" element={<BeneficioSelecionarFormaPagamento />} />
+              <Route path="/beneficio/pagamento" element={<BeneficioPagamento />} />
               
               <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
               <Route path="adicionar-celular/:id" element={<AdicionarCelular />} />

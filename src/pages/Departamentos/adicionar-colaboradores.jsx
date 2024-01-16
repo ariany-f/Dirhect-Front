@@ -21,6 +21,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components';
 import { useDepartamentoContext } from '../../contexts/Departamento';
+import DottedLine from '@components/DottedLine';
 
 const ContainerButton = styled.div`
     display: flex;
@@ -160,7 +161,7 @@ function DepartamentoAdicionarColaboradores() {
                         }
                     
                     </BotaoGrupo>
-                    <div style={{width: '100%', borderBottom: '1px dotted var(--neutro-300)', marginTop: '18px', marginBottom: '18px'}} ></div>
+                    <DottedLine />
                     <Titulo>
                         <h6>Selecione os colaboradores</h6>
                         <SubTitulo>
