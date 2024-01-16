@@ -50,6 +50,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
 function BeneficioSelecionarFormaPagamento() {
     
     const [saldoConta, setSaldoConta] = useState(false)
+    const [data, setData] = useState()
     const [useSaldo, setUseSaldo] = useState(Real.format(0))
     const [selectedPaymentOption, setSelectedPaymentOption] = useState(1)
     const [selectedDate, setSelectedDate] = useState(1)
@@ -129,7 +130,7 @@ function BeneficioSelecionarFormaPagamento() {
             </Titulo>
             
             <div className={styles.card_dashboard}>
-                <ContainerHorizontal width="50%" align="start" padding="16px">
+                <Container width="50%" align="start" padding="16px">
                     <Frame gap="24px">
                         <CardLine>
                             <RadioButton name="date_option" top="0" value={1} checked={selectedDate === 1} onSelected={() => handleDateChange(1)}/>
@@ -138,14 +139,17 @@ function BeneficioSelecionarFormaPagamento() {
                             </Link>
                         </CardLine>
                         
-                        <CardLine>
-                            <RadioButton name="date_option" top="0" value={2} checked={selectedDate === 2} onSelected={() => handleDateChange(2)}/>
-                            <Link>
-                                <Texto aoClicar={() => handleDateChange(2)} size="16px" weight={700}>Agendar pagamento</Texto>
-                            </Link>
-                        </CardLine>
+                        <ContainerHorizontal>
+                            <CardLine>
+                                <RadioButton name="date_option" top="0" value={2} checked={selectedDate === 2} onSelected={() => handleDateChange(2)}/>
+                                <Link>
+                                    <Texto aoClicar={() => handleDateChange(2)} size="16px" weight={700}>Agendar pagamento</Texto>
+                                </Link>
+                            </CardLine>
+                            <CampoTexto disabled={selectedDate !== 2} type="date" valor={data} setValor={setData} />
+                        </ContainerHorizontal>
                     </Frame>
-                </ContainerHorizontal>
+                </Container>
             </div>
             
             <ContainerButton>
