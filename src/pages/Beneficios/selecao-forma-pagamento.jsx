@@ -5,6 +5,7 @@ import ContainerHorizontal from '@components/ContainerHorizontal'
 import Container from '@components/Container'
 import CampoTexto from '@components/CampoTexto'
 import Botao from '@components/Botao'
+import BotaoGrupo from '@components/BotaoGrupo'
 import Texto from '@components/Texto'
 import Frame from '@components/Frame'
 import CardText from '@components/CardText'
@@ -154,7 +155,10 @@ function BeneficioSelecionarFormaPagamento() {
             
             <ContainerButton>
                 <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
-                <Botao aoClicar={(evento) => {}} estilo="vermilion" size="medium" filled>Confirmar pagamento</Botao>
+                <BotaoGrupo align="center">
+                    Total<b>R$ 1.000,00</b>
+                    <Botao aoClicar={(evento) => {}} estilo="vermilion" size="medium" filled>Confirmar pagamento</Botao>
+                </BotaoGrupo>
             </ContainerButton>
         </Frame>
     )

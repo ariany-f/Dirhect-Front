@@ -4,6 +4,7 @@ const Grupo = styled.div`
     display: flex;
     gap: 16px;
     justify-content: ${ props => props.$align ? props.$align : 'center'};
+    align-items: ${ props => props.$align ? props.$align : 'center'};
 `
 
 function BotaoGrupo({ children, align = 'start'}) {
