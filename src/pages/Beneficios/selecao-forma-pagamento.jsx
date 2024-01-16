@@ -48,6 +48,7 @@ function BeneficioSelecionarFormaPagamento() {
     function handleChange(valor)
     {
         setSelectedPaymentOption(valor)
+        console.log(selectedPaymentOption)
     }
     
     function handleDateChange(valor)
@@ -74,21 +75,21 @@ function BeneficioSelecionarFormaPagamento() {
                     
                     <Frame gap="24px">
                         <CardLine>
-                            <RadioButton top="0" value={1} checked={selectedPaymentOption === 1} onSelected={() => handleChange(1)}/>
+                            <RadioButton name="payment_option" top="0" value={1} checked={selectedPaymentOption === 1} onSelected={() => handleChange(1)}/>
                             <Link>
                                 <Texto aoClicar={() => handleChange(1)} size="16px" weight={700}>Pix</Texto>
                             </Link>
                         </CardLine>
                         
                         <CardLine>
-                            <RadioButton top="0" value={2} checked={selectedPaymentOption === 2} onSelected={() => handleChange(2)}/>
+                            <RadioButton name="payment_option" top="0" value={2} checked={selectedPaymentOption === 2} onSelected={() => handleChange(2)}/>
                             <Link>
                                 <Texto aoClicar={() => handleChange(2)} size="16px" weight={700}>Boleto Bancário</Texto>
                             </Link>
                         </CardLine>
                         
                         <CardLine>
-                            <RadioButton top="0" value={3} checked={selectedPaymentOption === 3} onSelected={() => handleChange(2)}/>
+                            <RadioButton name="payment_option" top="0" value={3} checked={selectedPaymentOption === 3} onSelected={() => handleChange(3)}/>
                             <Link>
                                 <Texto aoClicar={() => handleChange(3)} size="16px" weight={700}>Cartão de Crédito</Texto>
                             </Link>
@@ -108,14 +109,14 @@ function BeneficioSelecionarFormaPagamento() {
                 <ContainerHorizontal width="50%" align="start" padding="16px">
                     <Frame gap="24px">
                         <CardLine>
-                            <RadioButton top="0" value={1} checked={selectedDate === 1} onSelected={() => handleDateChange(1)}/>
+                            <RadioButton name="date_option" top="0" value={1} checked={selectedDate === 1} onSelected={() => handleDateChange(1)}/>
                             <Link>
                                 <Texto aoClicar={() => handleDateChange(1)} size="16px" weight={700}>Pagar hoje</Texto>
                             </Link>
                         </CardLine>
                         
                         <CardLine>
-                            <RadioButton top="0" value={2} checked={selectedDate === 2} onSelected={() => handleDateChange(2)}/>
+                            <RadioButton name="date_option" top="0" value={2} checked={selectedDate === 2} onSelected={() => handleDateChange(2)}/>
                             <Link>
                                 <Texto aoClicar={() => handleDateChange(2)} size="16px" weight={700}>Agendar pagamento</Texto>
                             </Link>

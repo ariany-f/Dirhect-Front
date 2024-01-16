@@ -17,11 +17,11 @@ const RdBtn = styled.input`
     }
 `;
 
-function RadioButton({ value, checked, onSelected, top = '4px' }) {
+function RadioButton({ name, value, checked, onSelected, top = '4px' }) {
     return (
         <RdBtn
             type="radio"
-            name="radio"
+            name={name ?? 'radio'}
             $top={top}
             value={value}
             checked={checked}

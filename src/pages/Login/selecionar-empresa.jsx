@@ -152,6 +152,7 @@ function SelecionarEmpresa() {
                                         </div>
                                     </div>
                                     <RadioButton
+                                        name="selected_company"
                                         value={empresa.public_id}
                                         checked={selected === empresa.public_id}
                                         onSelected={(public_id) => handleSelectChange}
