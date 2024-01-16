@@ -11,6 +11,7 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import RadioButton from '../../components/RadioButton'
+import { FaPix, FaBarcode, FaCreditCard } from "react-icons/fa6";
 
 const CardLine = styled.div`
     padding: 16px 6px;
@@ -77,21 +78,21 @@ function BeneficioSelecionarFormaPagamento() {
                         <CardLine>
                             <RadioButton name="payment_option" top="0" value={1} checked={selectedPaymentOption === 1} onSelected={() => handleChange(1)}/>
                             <Link>
-                                <Texto aoClicar={() => handleChange(1)} size="16px" weight={700}>Pix</Texto>
+                                <Texto aoClicar={() => handleChange(1)} size="16px" weight={700}><FaPix size={20} />&nbsp;Pix</Texto>
                             </Link>
                         </CardLine>
                         
                         <CardLine>
                             <RadioButton name="payment_option" top="0" value={2} checked={selectedPaymentOption === 2} onSelected={() => handleChange(2)}/>
                             <Link>
-                                <Texto aoClicar={() => handleChange(2)} size="16px" weight={700}>Boleto Bancário</Texto>
+                                <Texto aoClicar={() => handleChange(2)} size="16px" weight={700}><FaBarcode size={20} />&nbsp;Boleto Bancário</Texto>
                             </Link>
                         </CardLine>
                         
                         <CardLine>
                             <RadioButton name="payment_option" top="0" value={3} checked={selectedPaymentOption === 3} onSelected={() => handleChange(3)}/>
                             <Link>
-                                <Texto aoClicar={() => handleChange(3)} size="16px" weight={700}>Cartão de Crédito</Texto>
+                                <Texto aoClicar={() => handleChange(3)} size="16px" weight={700}><FaCreditCard size={20} />&nbsp;Cartão de Crédito</Texto>
                             </Link>
                         </CardLine>
                     </Frame>
