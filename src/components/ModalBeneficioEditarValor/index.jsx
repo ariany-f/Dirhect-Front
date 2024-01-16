@@ -1,6 +1,7 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import SwitchInput from "@components/SwitchInput"
+import ContainerHorizontal from "@components/ContainerHorizontal"
 import Titulo from "@components/Titulo"
 import Texto from "@components/Texto"
 import CampoTexto from "@components/CampoTexto"
@@ -326,6 +327,21 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
 
             setAmount(obj)
         })
+        setAlimentacao(0)
+        setRefeicao(0)
+        setAuxilioAlimentacao(0)
+        setCulturaFixo(0)
+        setCulturaFlexivel(0)
+        setMobilidadeFixo(0)
+        setMobilidadeFlexivel(0)
+        setHomeOfficeFixo(0)
+        setHomeOfficeFlexivel(0)
+        setCombustivelFixo(0)
+        setCombustivelFlexivel(0)
+        setSaudeFixo(0)
+        setSaudeFlexivel(0)
+        setEducacaoFixo(0)
+        setEducacaoFlexivel(0)
         aoFechar()
     }
 
@@ -350,9 +366,9 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                             <SubTitulo>Digite o valor total que permanecerá fixo dentro dessa categoria.</SubTitulo>
                         </Titulo>
                         <div style={{backgroundColor: 'var(--neutro-50)', width: '100%', padding: '16px', borderRadius: '16px'}}>
-                            <Texto weight="800">
+                            <ContainerHorizontal align="start">
                                 <b style={{fontSize: '14px'}}>Auxílio Alimentação&nbsp;</b><SwitchInput checked={checkedAuxilio} onChange={setCheckedAuxilio} />
-                            </Texto>
+                            </ContainerHorizontal>
                             <SubTitulo>Utilizar Alimentação e Refeição juntos em uma só categoria.</SubTitulo>
                         </div>
                         {checkedAuxilio ?
