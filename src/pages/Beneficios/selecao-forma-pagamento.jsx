@@ -50,7 +50,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
 function BeneficioSelecionarFormaPagamento() {
     
     const [saldoConta, setSaldoConta] = useState(false)
-    const [data, setData] = useState()
+    const [data, setData] = useState('')
     const [useSaldo, setUseSaldo] = useState(Real.format(0))
     const [selectedPaymentOption, setSelectedPaymentOption] = useState(1)
     const [selectedDate, setSelectedDate] = useState(1)
