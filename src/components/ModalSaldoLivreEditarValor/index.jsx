@@ -4,12 +4,11 @@ import Titulo from "@components/Titulo"
 import Texto from "@components/Texto"
 import CampoTexto from "@components/CampoTexto"
 import SubTitulo from "@components/SubTitulo"
-import { RiCloseFill, RiCoupon3Line, RiShoppingCartLine } from 'react-icons/ri'
+import { RiCloseFill } from 'react-icons/ri'
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import styles from '@pages/Beneficios/Beneficios.module.css'
-import http from '@http';
 import { useEffect } from "react"
 import { MdLocalAtm } from "react-icons/md"
 import { currency, mask as masker, unMask } from "remask"
@@ -139,7 +138,6 @@ function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, seleci
         setBalance
     } = useRecargaSaldoLivreContext()
 
-    const [beneficios, setBeneficios] = useState([])
     const [valor, setValor] = useState(Real.format(0))
     const [total, setTotal] = useState(0)
 
@@ -151,20 +149,10 @@ function ModalSaldoLivreEditarValor({ opened = false, aoClicar, aoFechar, seleci
     }
     
     useEffect(() => {
-        if(beneficios.length === 0)
-        {
-            http.get('api/dashboard/benefit')
-                .then((response) => {
-                    setBeneficios(response.data.benefits)
-                })
-                .catch(erro => {
-                    console.error(erro)
-                })
-        }
-        
+               
         setTotal((removeMask(valor)) * selecionados.length)
 
-    }, [beneficios, valor])
+    }, [valor])
 
     function salvar() {
         selecionados.map(item => {

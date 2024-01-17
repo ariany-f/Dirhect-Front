@@ -2,6 +2,8 @@ import Titulo from '@components/Titulo'
 import SubTitulo from '@components/SubTitulo'
 import CheckboxContainer from '@components/CheckboxContainer'
 import ContainerHorizontal from '@components/ContainerHorizontal'
+import Cards from 'react-credit-cards-2'
+import 'react-credit-cards-2/dist/es/styles-compiled.css'
 import Container from '@components/Container'
 import CampoTexto from '@components/CampoTexto'
 import Botao from '@components/Botao'
@@ -16,6 +18,23 @@ import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import RadioButton from '../../components/RadioButton'
 import { FaPix, FaBarcode, FaCreditCard } from "react-icons/fa6";
+
+const Col12 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    width: 100%;
+    justify-content: space-between;
+`
+
+const Col6 = styled.div`
+    padding: 10px;
+    flex: 1 1 50%;
+`
+
+const Col4 = styled.div`
+    flex: 1 1 25%;
+`
 
 const CardLine = styled.div`
     padding: 16px 6px;
@@ -51,11 +70,24 @@ let Real = new Intl.NumberFormat('pt-BR', {
 function BeneficioSelecionarFormaPagamento() {
     
     const [saldoConta, setSaldoConta] = useState(false)
+    const [cardNumber, setCardNumber] = useState('')
+    const [cardCVV, setCardCVV] = useState('')
+    const [cardHolder, setCardHolder] = useState('')
+    const [cardMonth, setCardMonth] = useState('')
+    const [cardYear, setCardYear] = useState('')
     const [data, setData] = useState('')
     const [useSaldo, setUseSaldo] = useState(Real.format(0))
     const [selectedPaymentOption, setSelectedPaymentOption] = useState(1)
     const [selectedDate, setSelectedDate] = useState(1)
     const navegar = useNavigate()
+
+    const [state, setState] = useState({
+        number: '',
+        expiry: '',
+        cvc: '',
+        name: '',
+        focus: '',
+      });
     
     function handleChange(valor)
     {
@@ -76,7 +108,14 @@ function BeneficioSelecionarFormaPagamento() {
             setUseSaldo(Real.format(0))
         }
     }
-
+    
+    const handleInputChange = (value, name) => {
+        setState((prev) => ({ ...prev, [name]: value }));
+    }
+    
+    const handleInputFocus = (evt) => {
+        setState((prev) => ({ ...prev, focus: evt.target.name }));
+    }
 
     return (
         <Frame padding="24px 0px">
@@ -119,6 +158,35 @@ function BeneficioSelecionarFormaPagamento() {
                                 <Texto aoClicar={() => handleChange(3)} size="16px" weight={700}><FaCreditCard size={20} />&nbsp;Cartão de Crédito</Texto>
                             </Link>
                         </CardLine>
+                        {selectedPaymentOption === 3 &&
+                            <>
+                                <Col12>
+                                <Cards
+                                    cvc={state.cvc}
+                                    expiry={state.expiry}
+                                    focused={state.focus}
+                                    name={state.name}
+                                    number={state.number}
+                                    />
+                                </Col12>
+                                <Col12>
+                                    <Col6>
+                                        <CampoTexto label="Número do Cartão" name="number" valor={state.number} patternMask={['9999 999999 99999', '9999 9999 9999 9999']} setValor={handleInputChange} setFocus={handleInputFocus}/>
+                                    </Col6>
+                                    <Col6>
+                                        <CampoTexto label="Nome no Cartão" name="name" setFocus={handleInputFocus} setValor={handleInputChange}/>
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6>
+                                        <CampoTexto label="Código do Cartão" name="cvc" setFocus={handleInputFocus} setValor={handleInputChange}/>
+                                    </Col6>
+                                    <Col6>
+                                        <CampoTexto label="Validade do Cartão" name="expiry" patternMask={['99/99']} valor={state.expiry} setFocus={handleInputFocus} setValor={handleInputChange}/>
+                                    </Col6>
+                                </Col12>
+                            </>
+                        }
                     </Frame>
                     <CardText gap="8px" padding="16px">
                         <p className={styles.subtitulo}>O tempo para confirmação de pagamento para Pix e Cartão de crédito é de até 1 hora. Transferências realizadas por boleto demoram em média 3 dias úteis.</p>

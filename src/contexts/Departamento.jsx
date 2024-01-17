@@ -29,14 +29,27 @@ export const DepartamentoProvider = ({ children }) => {
     const [departamento, setDepartamento] = useState(departamentoInicial)
 
     const setColaboradores = (collaborators) => {
-        const colaboradores = departamento.collaborators
-        colaboradores.push(collaborators)
-        setDepartamento(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                colaboradores
-            }
-        })
+        if(departamento.collaborators && departamento.collaborators.length > 0)
+        {
+            const colaboradores = departamento.collaborators
+            colaboradores.push(collaborators)
+            
+            setDepartamento(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    colaboradores
+                }
+            })
+        }
+        else
+        {
+            setDepartamento(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    collaborators
+                }
+            })
+        }
     }
     const setNome = (name) => {
         setDepartamento(estadoAnterior => {

@@ -213,7 +213,6 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
         
     }, [
         selecionados,
-        beneficios, 
         checkedAuxilio, 
         auxilioAlimentacao, 
         alimentacao, 
