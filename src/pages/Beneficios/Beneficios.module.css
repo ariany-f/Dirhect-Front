@@ -150,6 +150,7 @@
 
 .beneficios {
     display: flex;
+    gap: 16px;
 }
 
 .containerBottom {

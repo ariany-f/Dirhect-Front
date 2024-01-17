@@ -12,7 +12,7 @@ import Botao from '@components/Botao'
 import styled from "styled-components"
 import styles from './Beneficios.module.css'
 import { Link } from "react-router-dom"
-import { RiFileCopyLine, RiFileUserLine, RiFileDownloadLine  } from "react-icons/ri"
+import { RiFileCopyLine, RiFileUserLine, RiFileDownloadLine, RiSearchEyeFill  } from "react-icons/ri"
 import { FaBarcode, FaPix, FaUser } from "react-icons/fa6"
 import { useState } from "react"
 
@@ -61,9 +61,9 @@ function BeneficioPagamento() {
                             <div className={styles.saldo}>
                                 <p>Valor total da recarga</p>
                                 <h2>R$ 1.000,00</h2>
-                                <BotaoSemBorda color="var(--info)">
+                                {/* <BotaoSemBorda color="var(--info)">
                                     <RiFileUserLine /><Link className={styles.link}>Ver detalhes</Link>
-                                </BotaoSemBorda>
+                                </BotaoSemBorda> */}
                             </div>
                         </Frame>
                         <Frame estilo="spaced">
@@ -96,10 +96,12 @@ function BeneficioPagamento() {
                             <Frame estilo="spaced">
                                 <div className={styles.empilhado}>
                                     <p>Código de barras</p>
-                                    <BotaoGrupo align="center">
+                                    <BotaoGrupo align="space-between" verticalalign="center">
                                         <Texto weight={600}>23794.15009 90033.744005 93000.211404 8 00000000000000</Texto>
-                                        <BotaoSemBorda><RiFileCopyLine size={18}/> Copiar código</BotaoSemBorda>
-                                        <Botao fontSize="14px" size="200px"><RiFileDownloadLine className={styles.icon} size={18}/>Visualizar boleto</Botao>
+                                        <BotaoGrupo>
+                                            <BotaoSemBorda><RiFileCopyLine size={18}/> Copiar código</BotaoSemBorda>
+                                            <Botao fontSize="14px" size="200px"><RiSearchEyeFill className={styles.icon} size={18}/>Visualizar boleto</Botao>
+                                        </BotaoGrupo>
                                     </BotaoGrupo>
                                 </div>
                             </Frame>

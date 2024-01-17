@@ -4,12 +4,12 @@ const Grupo = styled.div`
     display: flex;
     gap: 16px;
     justify-content: ${ props => props.$align ? props.$align : 'center'};
-    align-items: ${ props => props.$align ? props.$align : 'center'};
+    align-items: ${ props => props.$verticalalign ? props.$verticalalign : 'center'};
 `
 
-function BotaoGrupo({ children, align = 'start'}) {
+function BotaoGrupo({ children, align = 'start', verticalalign= 'center'}) {
     return (
-        <Grupo $align={align}>
+        <Grupo $verticalalign={verticalalign} $align={align}>
             {children}
         </Grupo>
     )
