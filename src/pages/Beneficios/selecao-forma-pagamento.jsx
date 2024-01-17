@@ -161,23 +161,20 @@ function BeneficioSelecionarFormaPagamento() {
                         {selectedPaymentOption === 3 &&
                             <>
                                 <Col12>
-                                <Cards
-                                    cvc={state.cvc}
-                                    expiry={state.expiry}
-                                    focused={state.focus}
-                                    name={state.name}
-                                    number={state.number}
-                                    />
-                                </Col12>
-                                <Col12>
                                     <Col6>
                                         <CampoTexto label="Número do Cartão" name="number" valor={state.number} patternMask={['9999 999999 99999', '9999 9999 9999 9999']} setValor={handleInputChange} setFocus={handleInputFocus}/>
-                                    </Col6>
-                                    <Col6>
                                         <CampoTexto label="Nome no Cartão" name="name" setFocus={handleInputFocus} setValor={handleInputChange}/>
                                     </Col6>
-                                </Col12>
-                                <Col12>
+                                    
+                                    <Col6>
+                                        <Cards
+                                            cvc={state.cvc}
+                                            expiry={state.expiry}
+                                            focused={state.focus}
+                                            name={state.name}
+                                            number={state.number}
+                                            />
+                                    </Col6>
                                     <Col6>
                                         <CampoTexto label="Código do Cartão" name="cvc" setFocus={handleInputFocus} setValor={handleInputChange}/>
                                     </Col6>
