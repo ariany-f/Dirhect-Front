@@ -12,7 +12,7 @@ import Botao from '@components/Botao'
 import styled from "styled-components"
 import styles from './Beneficios.module.css'
 import { Link } from "react-router-dom"
-import { RiFileCopyLine, RiFileUserLine, RiFileDownloadLine, RiSearchEyeFill  } from "react-icons/ri"
+import { RiFileCopyLine, RiSearchEyeFill  } from "react-icons/ri"
 import { FaBarcode, FaPix, FaUser } from "react-icons/fa6"
 import { useState } from "react"
 

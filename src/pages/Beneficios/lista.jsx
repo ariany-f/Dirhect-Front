@@ -40,7 +40,7 @@ function Beneficios() {
                     setLoading(false)
                 })
         }
-    }, [beneficios])
+    }, [])
 
     return (
         <>

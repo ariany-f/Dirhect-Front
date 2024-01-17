@@ -77,7 +77,7 @@ function DataTableBeneficios({ beneficios }) {
                     <p style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona esses benefícios?</p>
                 </QuestionCard>
             </div>
-            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontrados pedidos" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '65vw' }}>
                 <Column body={representativeDescriptionTemplate} header="Nome do pedido" style={{ width: '35%' }}></Column>
                 <Column body={representativeCreatedTemplate} header="Data de criação" style={{ width: '15%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '10%' }}></Column>

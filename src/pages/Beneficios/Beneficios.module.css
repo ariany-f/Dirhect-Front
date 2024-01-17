@@ -151,6 +151,7 @@
 .beneficios {
     display: flex;
     gap: 16px;
+    flex-wrap: wrap;
 }
 
 .containerBottom {

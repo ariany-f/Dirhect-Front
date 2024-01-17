@@ -61,24 +61,26 @@ function PremiacaoSelecionarTipoRecarga() {
                 </Col6>
                 <Col6>
                     <CardSelecao>
-                        <ContainerHorizontal gap={'16px'}>
-                            <HiUserGroup size={28} />
-                            <Texto weight={700}>Departamento</Texto>
-                        </ContainerHorizontal>
-                        <Frame alinhamento="center">
-                            <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
-                                <li>
-                                    Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
-                                </li>
-                                <li>
-                                    Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
-                                </li>
-                            </ul>
+                        <Frame>
+                            <ContainerHorizontal gap={'16px'}>
+                                <HiUserGroup size={28} />
+                                <Texto weight={700}>Departamento</Texto>
+                            </ContainerHorizontal>
+                            <Frame alinhamento="center">
+                                <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                    <li>
+                                        Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
+                                    </li>
+                                    <li>
+                                        Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
+                                    </li>
+                                </ul>
+                            </Frame>
+                            <BotaoSemBorda>
+                                <FaPencilAlt />
+                                <Link to={'/departamento'}>Configurar meus departamentos</Link>
+                            </BotaoSemBorda>
                         </Frame>
-                        <BotaoSemBorda>
-                            <FaPencilAlt />
-                            <Link to={'/departamento'}>Configurar meus departamentos</Link>
-                        </BotaoSemBorda>
                         <Botao aoClicar={() => navegar('/saldo-livre/selecao-departamentos')} size="medium">Recarregar por departamento</Botao>
                     </CardSelecao>
                 </Col6>
