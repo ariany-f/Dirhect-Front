@@ -31,7 +31,7 @@ function Cartoes() {
                 </BotaoGrupo>
                 <BotaoGrupo align="center">
                     <Link to="/colaborador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar colaborador</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
