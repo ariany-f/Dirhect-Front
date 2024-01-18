@@ -11,9 +11,10 @@
     gap: 8px;
     align-self: stretch;
 }
-.icon * {
+.icon *{
     box-sizing: initial;
-    stroke: var(--white);
+    color: var(--primaria);
+    stroke: var(--primaria);
 }
 .link {
     text-decoration: none;

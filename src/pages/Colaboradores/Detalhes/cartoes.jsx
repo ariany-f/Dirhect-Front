@@ -8,6 +8,7 @@ import { PiCardsFill } from 'react-icons/pi'
 import { MdOutlineChevronRight } from 'react-icons/md'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import ModalBloquearCartao from '../../../components/ModalBloquearCartao'
 
 const CardLine = styled.div`
     padding: 24px 0px;
@@ -27,11 +28,19 @@ const CardLine = styled.div`
 function ColaboradorCartoes() {
 
     const [cartoes, setCartoes] = useState({})
-    const [checked, setChecked] = useState(false);
+    const [checked, setChecked] = useState(false)
+    const [modalOpened, setModalOpened] = useState(false)
 
     function bloquearCartao()
     {
-        setChecked(!checked)
+        if(!checked)
+        {
+            setModalOpened(true)
+        }
+        else
+        {
+            setChecked(false)
+        }
     }
 
     return (
@@ -59,6 +68,7 @@ function ColaboradorCartoes() {
                     <SwitchInput checked={checked} onChange={bloquearCartao} />
                 </CardLine>
             </div>
+            <ModalBloquearCartao opened={modalOpened} aoClicar={() => setChecked(true)} aoFechar={() => setModalOpened(false)}/>
         </>
     )
 }
