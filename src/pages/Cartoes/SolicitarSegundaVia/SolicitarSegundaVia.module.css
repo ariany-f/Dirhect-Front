@@ -1,61 +1,35 @@
-.ButtonContainer {
-    display: flex;
-    gap: 16px;
-}
-.ladoALado {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
 .card_dashboard {
     border: 1px solid var(--neutro-200);
-    border-radius: 16px;
+    border-radius: 8px;
     display: flex;
-    padding: 20px 24px;
+    padding: 16px;
     justify-content: space-between;
     align-items: start;
     align-self: stretch;
-    gap: 5px;
     flex-direction: column;
     flex: 1;
     width: 65vw;
 }
+
+.wrapper_cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 16px;
+    align-self: stretch;
+}
+
 .subtitulo {
     color: var(--neutro-600);
     font-size: 12px;
     font-family: var(--fonte-secundaria);
     font-weight: 500;
 }
-.listaVantagens {
-    & .brand {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    & ul{
-        margin-top:8px;
-        & li {
-            margin:0 0 8px 0;
-            font-weight: 400;
-            font-size: 14px; 
-            line-height: 20px;
-            color: var(--black);
-        }
-    }
-}
-.badge {
-    background-color: var(--info-50);
-    padding: 8px;
-    border-radius: 8px;
-    display: flex;
-    gap: 4px;
-    & p {
-        color: var(--neutro-600);
-        font-weight: 700;
-        font-size: 12px; 
-    }
-    & svg * {
-        color: var(--neutro-600);
-        fill: var(--neutro-600);
+
+.icon {
+    &svg * {
+        color: var(--primaria);
+        fill: var(--primaria);
     }
 }
