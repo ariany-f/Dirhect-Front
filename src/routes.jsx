@@ -84,6 +84,7 @@ import BeneficioPagamento from './pages/Beneficios/pagamento'
 import CartoesLista from './pages/Cartoes/lista'
 import CartoesAtivados from './pages/Cartoes/ativados'
 import CartaoSolicitarSegundaViaAcompanhar from './pages/Cartoes/SolicitarSegundaVia/acompanhar'
+import CartaoSolicitarSegundaViaCommon from './pages/Cartoes/SolicitarSegundaVia/common'
 
 function AppRouter() {
   
@@ -174,10 +175,12 @@ function AppRouter() {
                 <Route path="ativados" element={<CartoesAtivados />} />
               </Route>
               <Route path="/cartao/detalhes/:id" element={<CartaoDetalhes />} />
-              <Route path="/cartao/solicitar-segunda-via/:id" element={<CartaoSolicitarSegundaVia />} />
-              <Route path="/cartao/solicitar-segunda-via/endereco/:id" element={<CartaoSolicitarSegundaViaEndereco />} />
-              <Route path="/cartao/solicitar-segunda-via/sucesso/:id" element={<CartaoSolicitarSegundaViaSucesso />} />
-              <Route path="/cartao/solicitar-segunda-via/entrega/acompanhar/:id" element={<CartaoSolicitarSegundaViaAcompanhar />} />
+              <Route path="/cartao/solicitar-segunda-via" element={<CartaoSolicitarSegundaViaCommon />} >
+                <Route path=":id" element={<CartaoSolicitarSegundaVia/>} />
+                <Route path=":id/endereco" element={<CartaoSolicitarSegundaViaEndereco />} />
+                <Route path=":id/sucesso" element={<CartaoSolicitarSegundaViaSucesso />} />
+                <Route path=":id/entrega/acompanhar" element={<CartaoSolicitarSegundaViaAcompanhar />} />
+              </Route>
               
               <Route path="/beneficio" element={<RecargaBeneficios/>}>
                 <Route index element={<Beneficios />} />

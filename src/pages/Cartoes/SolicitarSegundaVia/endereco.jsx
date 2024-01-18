@@ -30,7 +30,7 @@ function CartaoSolicitarSegundaViaEndereco() {
     }
 
     function salvar() {
-        navegar(`/cartao/solicitar-segunda-via/sucesso/${id}`)
+        navegar(`/cartao/solicitar-segunda-via/${id}/sucesso`)
     }
 
     return (
