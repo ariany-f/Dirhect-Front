@@ -11,6 +11,11 @@
     width: 70vw;
 }
 
+.ButtonContainer {
+    display: flex;
+    gap: 16px;
+}
+
 .wrapper_cards {
     display: flex;
     flex-direction: column;

@@ -6,6 +6,8 @@ import Texto from '@components/Texto'
 import styles from './SolicitarSegundaVia.module.css'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { useState } from 'react'
+import ModalSolicitarSegundaViaCartao from '../../../components/ModalSolicitarSegundaViaCartao'
 
 const ContainerButton = styled.div`
     display: flex;
@@ -21,23 +23,35 @@ function CartaoSolicitarSegundaViaEndereco() {
 
     const { id } = useParams()
     const navegar = useNavigate()
+    const [modalOpened, setModalOpened] = useState(false)
+    
+    function selecionarOpcao()  {
+        setModalOpened(true)
+    }
+
+    function salvar() {
+        navegar(`/cartao/solicitar-segunda-via/sucesso/${id}`)
+    }
 
     return (
-        <Frame gap="32px">
-            <Titulo>
-                <h6>Endereço de entrega</h6>
-                <SubTitulo>
-                    Confirme o endereço de entrega do novo cartão:
-                </SubTitulo>
-            </Titulo>
-            <div className={styles.wrapper_cards}>
-                
-            </div>
-            <ContainerButton>
-                <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                <Botao aoClicar={() => {}} estilo="vermilion" size="medium" filled>Continuar</Botao>
-            </ContainerButton>
-        </Frame>
+        <>
+            <Frame gap="32px">
+                <Titulo>
+                    <h6>Endereço de entrega</h6>
+                    <SubTitulo>
+                        Confirme o endereço de entrega do novo cartão:
+                    </SubTitulo>
+                </Titulo>
+                <div className={styles.wrapper_cards}>
+                    
+                </div>
+                <ContainerButton>
+                    <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                    <Botao aoClicar={selecionarOpcao} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                </ContainerButton>
+            </Frame>
+            <ModalSolicitarSegundaViaCartao aoClicar={salvar} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+        </>
     )
 }
 export default CartaoSolicitarSegundaViaEndereco
