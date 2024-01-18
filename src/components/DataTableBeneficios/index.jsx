@@ -7,6 +7,7 @@ import QuestionCard from '@components/QuestionCard'
 import CampoTexto from '@components/CampoTexto'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react';
+import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import BadgeStatusBeneficio from '../BadgeStatusBeneficio'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 
@@ -17,6 +18,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
 
 function DataTableBeneficios({ beneficios }) {
     
+    const navegar = useNavigate()
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -30,6 +32,11 @@ function DataTableBeneficios({ beneficios }) {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+    
+    function verDetalhes(value)
+    {
+        navegar(`/beneficio/pagamento/${value.public_id}`)
+    }
 
     const representativeAmountTemplate = (rowData) => {
          
@@ -77,13 +84,13 @@ function DataTableBeneficios({ beneficios }) {
                     <p style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona esses benefícios?</p>
                 </QuestionCard>
             </div>
-            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '65vw' }}>
+            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={5}  onSelectionChange={(e) => verDetalhes(e.value)} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '65vw' }}>
                 <Column body={representativeDescriptionTemplate} header="Nome do pedido" style={{ width: '35%' }}></Column>
                 <Column body={representativeCreatedTemplate} header="Data de criação" style={{ width: '15%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '10%' }}></Column>
                 <Column body={representativeSendedTemplate} header="Data do Envio" style={{ width: '15%' }}></Column>
                 <Column body={representativeAmountTemplate} header="Valor total(R$)" style={{ width: '20%' }}></Column>
-                {/* <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column> */}
+                <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
             </DataTable>
         </>
     )

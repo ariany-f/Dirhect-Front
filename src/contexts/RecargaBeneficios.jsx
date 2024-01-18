@@ -137,18 +137,32 @@ export const RecargaBeneficiosProvider = ({ children }) => {
         if(recarga.collaborators.length > 0)
         {
             recarga.collaborators.map(item => {
-                let colaborador = item
+                let colaborador = []
+                item.map(col => {
+                    let collaborator = []
+                    collaborator.public_id = col.public_id
+                    collaborator.all_benefits = col.all_benefits
+                    colaborador.push(collaborator)
+                })
                 obj['collaborators'].push(colaborador)
             })
         }
         if(recarga.departamentos.length > 0)
         {
             recarga.departamentos.map(item => {
-                let departamento = item
+                let departamento = []
+                item.map(col => {
+                    let department = []
+                    department.public_id = col.public_id
+                    department.all_benefits = col.all_benefits
+                    departamento.push(department)
+                })
                 obj['departments'].push(departamento)
             })
         }
         console.log(obj)
+
+        //post/recharge/benefit
     }
     const contexto = {
         recarga,

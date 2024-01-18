@@ -28,9 +28,10 @@ function Beneficios() {
         if(beneficios.length === 0)
         {
             setLoading(true)
-            http.get('api/dashboard/benefit')
+            http.get('api/dashboard/recharge/benefit')
                 .then(response => {
                     setLoading(false)
+                    console.log(response)
                     if(response.data.benefits)
                     {
                         setBeneficios(response.data.benefits)

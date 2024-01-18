@@ -46,9 +46,10 @@ function Premiacoes() {
         if(premiacoes.length === 0)
         {
             setLoading(true)
-            http.get('api/dashboard/award')
+            http.get('api/dashboard/recharge/free-balance')
             .then(response => {
                 setLoading(false)
+                console.log(response)
                 if(response.data.award)
                 {
                     setPremiacoes(response.data.award)

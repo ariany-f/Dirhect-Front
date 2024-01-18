@@ -45,9 +45,9 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
     const navegar = useNavigate()
 
     const representativeAmountAuxilioTemplate = (rowData) => {
-        if('beneficios' in rowData && rowData.beneficios.length > 0)
+        if('all_benefits' in rowData && rowData.all_benefits.length > 0)
         {
-            const saude = rowData.beneficios.filter(item => {
+            const saude = rowData.all_benefits.filter(item => {
                 if(item.name === 'Auxilio Alimentação'){
                     return item
                 }
@@ -60,9 +60,9 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
         }
     }
     const representativeAmountAlimentacaoTemplate = (rowData) => {
-        if('beneficios' in rowData && rowData.beneficios.length > 0)
+        if('all_benefits' in rowData && rowData.all_benefits.length > 0)
         {
-            const saude = rowData.beneficios.filter(item => {
+            const saude = rowData.all_benefits.filter(item => {
                 if(item.name === 'Alimentação'){
                     return item
                 }
@@ -75,9 +75,9 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
         }
     }
     const representativeAmountRefeicaoTemplate = (rowData) => {
-        if('beneficios' in rowData && rowData.beneficios.length > 0)
+        if('all_benefits' in rowData && rowData.all_benefits.length > 0)
         {
-            const saude = rowData.beneficios.filter(item => {
+            const saude = rowData.all_benefits.filter(item => {
                 if(item.name === 'Refeição'){
                     return item
                 }
@@ -90,9 +90,9 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
         }
     }
     const representativeAmountMobilidadeTemplate = (rowData) => {
-        if('beneficios' in rowData && rowData.beneficios.length > 0)
+        if('all_benefits' in rowData && rowData.all_benefits.length > 0)
         {
-            const saude = rowData.beneficios.filter(item => {
+            const saude = rowData.all_benefits.filter(item => {
                 if(item.name === 'Mobilidade'){
                     return item
                 }
@@ -105,9 +105,9 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
         }
     }
     const representativeAmountSaudeTemplate = (rowData) => {
-        if('beneficios' in rowData && rowData.beneficios.length > 0)
+        if('all_benefits' in rowData && rowData.all_benefits.length > 0)
         {
-            const saude = rowData.beneficios.filter(item => {
+            const saude = rowData.all_benefits.filter(item => {
                 if(item.name === 'Saúde'){
                     return item
                 }
@@ -120,9 +120,9 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
         }
     }
     const representativeAmountCombustivelTemplate = (rowData) => {
-        if('beneficios' in rowData && rowData.beneficios.length > 0)
+        if('all_benefits' in rowData && rowData.all_benefits.length > 0)
         {
-            const saude = rowData.beneficios.filter(item => {
+            const saude = rowData.all_benefits.filter(item => {
                 if(item.name === 'Combustível'){
                     return item
                 }
@@ -135,9 +135,9 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
         }
     }
     const representativeAmountCulturaTemplate = (rowData) => {
-        if('beneficios' in rowData && rowData.beneficios.length > 0)
+        if('all_benefits' in rowData && rowData.all_benefits.length > 0)
         {
-            const saude = rowData.beneficios.filter(item => {
+            const saude = rowData.all_benefits.filter(item => {
                 if(item.name === 'Cultura'){
                     return item
                 }
@@ -150,9 +150,9 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
         }
     }
     const representativeAmountHomeOfficeTemplate = (rowData) => {
-        if('beneficios' in rowData && rowData.beneficios.length > 0)
+        if('all_benefits' in rowData && rowData.all_benefits.length > 0)
         {
-            const saude = rowData.beneficios.filter(item => {
+            const saude = rowData.all_benefits.filter(item => {
                 if(item.name === 'Home Office'){
                     return item
                 }
@@ -165,9 +165,9 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
         }
     }
     const representativeAmountEducacaoTemplate = (rowData) => {
-        if('beneficios' in rowData && rowData.beneficios.length > 0)
+        if('all_benefits' in rowData && rowData.all_benefits.length > 0)
         {
-            const saude = rowData.beneficios.filter(item => {
+            const saude = rowData.all_benefits.filter(item => {
                 if(item.name === 'Educação'){
                     return item
                 }

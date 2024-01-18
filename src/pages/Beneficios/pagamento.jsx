@@ -11,10 +11,11 @@ import BotaoGrupo from '@components/BotaoGrupo'
 import Botao from '@components/Botao'
 import styled from "styled-components"
 import styles from './Beneficios.module.css'
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { RiFileCopyLine, RiSearchEyeFill  } from "react-icons/ri"
 import { FaBarcode, FaPix, FaUser } from "react-icons/fa6"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import http from '@http'
 
 const CodigoDiv = styled.div`
     padding: 10px;
@@ -25,8 +26,9 @@ const CodigoDiv = styled.div`
 
 function BeneficioPagamento() {
 
+    const { id } = useParams()
+    const [checkout, setCheckout] = useState(null)
     const [paymentType, setPaymentType] = useState('boleto')
-
     const benefits = [
         'Alimentação',
         'Refeição',
@@ -37,6 +39,20 @@ function BeneficioPagamento() {
         'Educação',
         'Cultura'
     ]
+
+    useEffect(() => {
+        const url = `api/checkout?source=recharge&&public_id=${id}`;
+        http.get(url)
+        .then((response) => {
+            if(response.data)
+            {
+                setCheckout(response.data)
+            }
+        })
+        .catch(erro => {
+            console.error(erro)
+        })  
+    }, [])
 
     return (
         <Frame>

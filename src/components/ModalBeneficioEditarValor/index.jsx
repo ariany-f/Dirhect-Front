@@ -240,22 +240,22 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
     function salvar() {
         selecionados.map(item => {
             const obj = item
-            obj['beneficios'] = []
+            obj['all_benefits'] = []
             if(checkedAuxilio)
             {
-                obj['beneficios'].push({
+                obj['all_benefits'].push({
                     name: 'Auxilio Alimentação',
                     amount: removeMask(auxilioAlimentacao),
                     food_meal_one_category: true
                 })
                 
-                obj['beneficios'].push({
+                obj['all_benefits'].push({
                     name: 'Alimentação',
                     amount: 0,
                     food_meal_one_category: false
                 })
                 
-                obj['beneficios'].push({
+                obj['all_benefits'].push({
                     name: 'Refeição',
                     amount: 0,
                     food_meal_one_category: false
@@ -263,61 +263,61 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
             }
             else
             {
-                obj['beneficios'].push({
+                obj['all_benefits'].push({
                     name: 'Auxilio Alimentação',
                     amount: 0,
                     food_meal_one_category: true
                 })
                 
-                obj['beneficios'].push({
+                obj['all_benefits'].push({
                     name: 'Alimentação',
                     amount: removeMask(alimentacao),
                     food_meal_one_category: false
                 })
                 
-                obj['beneficios'].push({
+                obj['all_benefits'].push({
                     name: 'Refeição',
                     amount: removeMask(refeicao),
                     food_meal_one_category: false
                 })
             }
             
-            obj['beneficios'].push({
+            obj['all_benefits'].push({
                 name: 'Educação',
                 amount: removeMask(educacaoFixo),
                 flexible_value: removeMask(educacaoFlexivel),
                 food_meal_one_category: false
             })
             
-            obj['beneficios'].push({
+            obj['all_benefits'].push({
                 name: 'Home Office',
                 amount: removeMask(homeOfficeFixo),
                 flexible_value: removeMask(homeOfficeFlexivel),
                 food_meal_one_category: false
             })
             
-            obj['beneficios'].push({
+            obj['all_benefits'].push({
                 name: 'Mobilidade',
                 amount: removeMask(mobilidadeFixo),
                 flexible_value: removeMask(mobilidadeFlexivel),
                 food_meal_one_category: false
             })
             
-            obj['beneficios'].push({
+            obj['all_benefits'].push({
                 name: 'Cultura',
                 amount: removeMask(culturaFixo),
                 flexible_value: removeMask(culturaFlexivel),
                 food_meal_one_category: false
             })
             
-            obj['beneficios'].push({
+            obj['all_benefits'].push({
                 name: 'Saúde',
                 amount: removeMask(saudeFixo),
                 flexible_value: removeMask(saudeFlexivel),
                 food_meal_one_category: false
             })
             
-            obj['beneficios'].push({
+            obj['all_benefits'].push({
                 name: 'Combustível',
                 amount: removeMask(combustivelFixo),
                 flexible_value: removeMask(combustivelFlexivel),

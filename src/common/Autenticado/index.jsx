@@ -42,7 +42,10 @@ function Autenticado() {
             {
                 http.get(`api/dashboard/company`)
                     .then((response) => {
-                        setCompanies(response.data.companies)
+                        if(response.data && response.data.length > 0)
+                        {
+                            setCompanies(response.data.companies)
+                        }
                     })
                     .catch(erro => {
                         console.log(erro)

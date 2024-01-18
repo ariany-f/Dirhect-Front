@@ -13,11 +13,12 @@ import Frame from '@components/Frame'
 import CardText from '@components/CardText'
 import DottedLine from '@components/DottedLine'
 import styles from './Beneficios.module.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import RadioButton from '../../components/RadioButton'
-import { FaPix, FaBarcode, FaCreditCard } from "react-icons/fa6";
+import { FaPix, FaBarcode, FaCreditCard } from "react-icons/fa6"
+import http from '@http'
 
 const Col12 = styled.div`
     display: flex;
@@ -68,26 +69,38 @@ let Real = new Intl.NumberFormat('pt-BR', {
 });
 
 function BeneficioSelecionarFormaPagamento() {
+
+    //FAZER GET DO CHECKOUT PARA PEGAR DADOS DE POPULAR A TELA COM O SOURCE RECHARGE E O PUBLIC_ID QUE VIRÁ NA URL
     
+    const { id } = useParams()
+    const [checkout, setCheckout] = useState(null)
     const [saldoConta, setSaldoConta] = useState(false)
-    const [cardNumber, setCardNumber] = useState('')
-    const [cardCVV, setCardCVV] = useState('')
-    const [cardHolder, setCardHolder] = useState('')
-    const [cardMonth, setCardMonth] = useState('')
-    const [cardYear, setCardYear] = useState('')
     const [data, setData] = useState('')
     const [useSaldo, setUseSaldo] = useState(Real.format(0))
     const [selectedPaymentOption, setSelectedPaymentOption] = useState(1)
     const [selectedDate, setSelectedDate] = useState(1)
     const navegar = useNavigate()
-
     const [state, setState] = useState({
         number: '',
         expiry: '',
         cvc: '',
         name: '',
         focus: '',
-      });
+    });
+
+    useEffect(() => {
+        const url = `api/checkout?source=recharge&&public_id=${id}`;
+        http.get(url)
+        .then((response) => {
+            if(response.data)
+            {
+                setCheckout(response.data)
+            }
+        })
+        .catch(erro => {
+            console.error(erro)
+        })  
+    }, [])
     
     function handleChange(valor)
     {

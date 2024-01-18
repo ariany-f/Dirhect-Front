@@ -138,18 +138,32 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
         if(recarga.collaborators.length > 0)
         {
             recarga.collaborators.map(item => {
-                let colaborador = item
+                let colaborador = []
+                item.map(col => {
+                    let collaborator = []
+                    collaborator.public_id = col.public_id
+                    collaborator.amount = col.amount
+                    colaborador.push(collaborator)
+                })
                 obj['balance']['collaborators'].push(colaborador)
             })
         }
         if(recarga.departamentos.length > 0)
         {
             recarga.departamentos.map(item => {
-                let departamento = item
+                let departamento = []
+                item.map(col => {
+                    let department = []
+                    department.public_id = col.public_id
+                    department.amount = col.amount
+                    departamento.push(department)
+                })
                 obj['balance']['departments'].push(departamento)
             })
         }
         console.log(obj)
+        
+        //post/recharge/free-balance
     }
     const contexto = {
         recarga,

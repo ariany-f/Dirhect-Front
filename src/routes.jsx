@@ -176,9 +176,9 @@ function AppRouter() {
                 <Route path="selecao-colaboradores" element={<BeneficioSelecionarColaboradores />} />
                 <Route path="selecao-departamentos" element={<BeneficioSelecionarDepartamentos />} />
                 <Route path="editar-valor/:tipo" element={<BeneficioEditarValor />} />
+                <Route path="selecao-forma-pagamento/:id" element={<BeneficioSelecionarFormaPagamento />} />
+                <Route path="pagamento/:id" element={<BeneficioPagamento />} />
               </Route>
-              <Route path="/beneficio/selecao-forma-pagamento" element={<BeneficioSelecionarFormaPagamento />} />
-              <Route path="/beneficio/pagamento" element={<BeneficioPagamento />} />
               
               <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
               <Route path="adicionar-celular/:id" element={<AdicionarCelular />} />
