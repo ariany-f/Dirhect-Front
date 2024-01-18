@@ -19,31 +19,31 @@ function CartaoSolicitarSegundaVia() {
                 </SubTitulo>
             </Titulo>
             <div className={styles.wrapper_cards}>
-                    <div className={styles.card_dashboard}>
-                        <Frame estilo="spaced">
-                            <div className={styles.empilhado}>
-                                <Texto size="14px" weight={700}>
-                                    Cartão foi roubado ou perdido
-                                </Texto>
-                            </div>
-                            <Link to={`/cartao/solicitar-segunda-via/endereco/${id}`}>
-                                <MdOutlineKeyboardArrowRight size={24} className={styles.icon}/>
-                            </Link>
-                        </Frame>
+                <div className={styles.card_dashboard}>
+                    <Frame estilo="spaced">
+                        <div className={styles.empilhado}>
+                            <Texto size="14px" weight={700}>
+                                Cartão foi roubado ou perdido
+                            </Texto>
+                        </div>
+                        <Link to={`/cartao/solicitar-segunda-via/endereco/${id}`}>
+                            <MdOutlineKeyboardArrowRight size={24} className={styles.icon}/>
+                        </Link>
+                    </Frame>
                 </div>
                 <div className={styles.card_dashboard}>
-                        <Frame estilo="spaced">
-                            <div className={styles.empilhado}>
-                                <Texto size="14px" weight={700}>
-                                    Cartão está danificado
-                                </Texto>
-                            </div>
-                            <Link to={`/cartao/solicitar-segunda-via/endereco/${id}`}>
-                                <MdOutlineKeyboardArrowRight size={24} className={styles.icon} />
-                            </Link>
-                        </Frame>
-                    </div>
+                    <Frame estilo="spaced">
+                        <div className={styles.empilhado}>
+                            <Texto size="14px" weight={700}>
+                                Cartão está danificado
+                            </Texto>
+                        </div>
+                        <Link to={`/cartao/solicitar-segunda-via/endereco/${id}`}>
+                            <MdOutlineKeyboardArrowRight size={24} className={styles.icon} />
+                        </Link>
+                    </Frame>
                 </div>
+            </div>
         </Frame>
     )
 }
