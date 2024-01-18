@@ -17,7 +17,6 @@ const ConteudoFrame = styled.div`
 function Cartoes() {
 
     const location = useLocation();
-    console.log(location.pathname)
 
     return (
         <ConteudoFrame>
