@@ -29,6 +29,11 @@ function ColaboradorCartoes() {
     const [cartoes, setCartoes] = useState({})
     const [checked, setChecked] = useState(false);
 
+    function bloquearCartao()
+    {
+        setChecked(!checked)
+    }
+
     return (
         <>
             <Titulo><h6>Cartão disponível</h6></Titulo>
@@ -45,13 +50,13 @@ function ColaboradorCartoes() {
                         <PiCardsFill size={18} />
                         &nbsp;2ª via do cartão
                     </Texto>
-                    <Link>
+                    <Link to="/cartao/solicitar-segunda-via/123">
                         <MdOutlineChevronRight size={20} />
                     </Link>
                 </CardLine>
                 <CardLine>
                     <Texto weight="800">Bloquear temporariamente</Texto>
-                    <SwitchInput checked={checked} onChange={setChecked} />
+                    <SwitchInput checked={checked} onChange={bloquearCartao} />
                 </CardLine>
             </div>
         </>

@@ -123,7 +123,6 @@ function AppRouter() {
                     <Route path="bandeira-cartao" element={<ColaboradorBandeiraCartao />} />
                     <Route path="sucesso" element={<ColaboradorRegistroSucesso />} />
               </Route>
-
               <Route path="operador" element={<Operador/>} />
               <Route path="operador/registro" element={<OperadorRegistro />} >
                     <Route index element={<OperadorRegistroSelecionar />} />
@@ -170,9 +169,9 @@ function AppRouter() {
               <Route path="/cartao" element={<Cartoes />} >
                 <Route index element={<CartoesLista />} />
                 <Route path="ativados" element={<CartoesAtivados />} />
-                <Route path="detalhes" element={<CartaoDetalhes />} />
-                <Route path="solicitar-segunda-via" element={<CartaoSolicitarSegundaVia />} />
               </Route>
+              <Route path="/cartao/detalhes" element={<CartaoDetalhes />} />
+              <Route path="/cartao/solicitar-segunda-via/:id" element={<CartaoSolicitarSegundaVia />} />
               
               <Route path="/beneficio" element={<RecargaBeneficios/>}>
                 <Route index element={<Beneficios />} />
