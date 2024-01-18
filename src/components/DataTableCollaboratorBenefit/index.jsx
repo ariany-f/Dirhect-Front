@@ -6,8 +6,7 @@ import Texto from '@components/Texto'
 import QuestionCard from '@components/QuestionCard'
 import CampoTexto from '@components/CampoTexto'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
+import { useEffect, useState } from 'react'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 
 let Real = new Intl.NumberFormat('pt-BR', {
@@ -58,11 +57,19 @@ function DataTableCollaboratorBenefit({ beneficios }) {
         )
     };
 
+    const alterarStatusBeneficio = () => {
+        console.log('q')
+    }
+    
+    const representativeStatusTemplate = (rowData) => {
+        return  <SwitchInput checked={rowData.status} onChange={alterarStatusBeneficio} />
+    };
+
     const representativeFixedValueTemplate = (rowData) => {
         return <b>{(Real.format(rowData.amount_fixed))}</b>
     }
     const representativeSendedTemplate = (rowData) => {
-        return <></>
+        return <>Devolver saldo</>
     }
 
     return (
@@ -81,7 +88,7 @@ function DataTableCollaboratorBenefit({ beneficios }) {
                 <Column body={representativeFlexibleValueTemplate} header="Valor Flexível" style={{ width: '10%' }}></Column>
                 <Column body={representativeAmountTemplate} header="Total(R$)" style={{ width: '20%' }}></Column>
                 <Column body={representativeSendedTemplate} header="Ação" style={{ width: '15%' }}></Column>
-                <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
+                <Column field="" header="Ativar/Desativar" style={{ width: '5%' }} body={representativeStatusTemplate}></Column>
             </DataTable>
         </>
     )
