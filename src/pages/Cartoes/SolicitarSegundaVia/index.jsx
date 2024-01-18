@@ -4,8 +4,12 @@ import SubTitulo from '@components/SubTitulo'
 import Texto from '@components/Texto'
 import styles from './SolicitarSegundaVia.module.css'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
+import { Link, useParams } from 'react-router-dom'
 
 function CartaoSolicitarSegundaVia() {
+
+    const { id } = useParams()
+
     return (
         <Frame gap="32px">
             <Titulo>
@@ -22,7 +26,9 @@ function CartaoSolicitarSegundaVia() {
                                     Cartão foi roubado ou perdido
                                 </Texto>
                             </div>
-                            <MdOutlineKeyboardArrowRight size={24} className={styles.icon}/>
+                            <Link to={`/cartao/solicitar-segunda-via/endereco/${id}`}>
+                                <MdOutlineKeyboardArrowRight size={24} className={styles.icon}/>
+                            </Link>
                         </Frame>
                 </div>
                 <div className={styles.card_dashboard}>
@@ -32,7 +38,9 @@ function CartaoSolicitarSegundaVia() {
                                     Cartão está danificado
                                 </Texto>
                             </div>
-                            <MdOutlineKeyboardArrowRight size={24} className={styles.icon} />
+                            <Link to={`/cartao/solicitar-segunda-via/endereco/${id}`}>
+                                <MdOutlineKeyboardArrowRight size={24} className={styles.icon} />
+                            </Link>
                         </Frame>
                     </div>
                 </div>
