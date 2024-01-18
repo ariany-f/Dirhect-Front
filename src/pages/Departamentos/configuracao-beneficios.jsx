@@ -1,7 +1,11 @@
 import http from '@http'
-import { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from "react"
+import { useParams } from 'react-router-dom'
 import Frame from "@components/Frame"
+import Titulo from "@components/Titulo"
+import SubTitulo from "@components/SubTitulo"
+import MainContainer from "@components/MainContainer"
+import Dashboard from '@assets/Dashboard.svg'
 
 function DepartamentoConfiguracaoBeneficios() {
 
@@ -9,17 +13,31 @@ function DepartamentoConfiguracaoBeneficios() {
     const [departamento, setDepartamento] = useState(null)
 
     useEffect(() => {
-        http.get(`api/dashboard/department/${id}`)
-            .then(response => {
-                console.log(response)
-                setDepartamento(response.department)
-            })
-            .catch(erro => console.log(erro))
-    }, [])
+        if(!departamento)
+        {
+            http.get(`api/dashboard/department/${id}`)
+                .then(response => {
+                    setDepartamento(response.department)
+                })
+                .catch(erro => console.log(erro))
+        }
+    }, [departamento])
    
     return (
         <Frame>
-           
+           {departamento && departamento.benefits.length ?
+            <></>
+           :
+           <Frame align="center">
+            <MainContainer align="center">
+                <img src={Dashboard} size={100}/>
+                <Titulo>
+                    <h6>Você não configurou nenhum benefício</h6>
+                    <SubTitulo>Aqui você verá todos os benefícios configurados</SubTitulo>
+                </Titulo>
+            </MainContainer>
+           </Frame>
+           }
         </Frame>
     )
 }

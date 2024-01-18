@@ -7,6 +7,7 @@ const DivContainer = styled.div`
     text-align: ${ props => props.$align ? props.$align : 'center' };
     padding: ${ props => props.$padding ? props.$padding : '5vw 10vw' };
     overflow-y: auto;
+    width: -webkit-fill-available;
 `
 
 function MainContainer({ children, align, padding = '10vw', aoClicar = null }) {
