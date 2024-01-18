@@ -49,8 +49,8 @@ function ColaboradorDadosPessoais() {
 
     function AbrirModalEditarColaborador(parametro, dado_antigo){
         setParametroEdicao(parametro)
-        setDadoEdicao(dado_antigo)
         setModalOpened(true)
+        setDadoEdicao(dado_antigo)
     }
 
     function formataCPF(cpf) {
@@ -111,7 +111,7 @@ function ColaboradorDadosPessoais() {
                 </BotaoSemBorda>
             </ContainerHorizontal>
         </div>
-        <ModalAlterar parametroParaEditar={parametroEdicao} dadoAntigo={dadoEdicao} aoClicar={editarColaborador} opened={modalOpened} aoFechar={() => setModalOpened(!modalOpened)} />
+        <ModalAlterar aoClicar={editarColaborador} opened={modalOpened} aoFechar={() => setModalOpened(!modalOpened)} parametroParaEditar={parametroEdicao} dadoAntigo={dadoEdicao}  />
         </>
     )
 }

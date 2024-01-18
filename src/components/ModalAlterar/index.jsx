@@ -80,8 +80,7 @@ const Col6 = styled.div`
 `
 
 function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar, dadoAntigo }) {
-
-    const [alteravel, setAlteravel] = useState('')
+    const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
     const [estados, setEstados] = useState([]);
     const [label, setLabel] = useState('')
@@ -125,43 +124,40 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
         }
         
         /** Definir se o dado alterável será um endereço ou um dado único */
-        if(!alteravel)
+        if(dadoAntigo && typeof dadoAntigo !== 'object') {
+            /** Preenche o input com o dado atual */
+            setAlteravel(dadoAntigo)
+        }
+        else
         {
-            if(dadoAntigo && typeof dadoAntigo !== 'object') {
-                /** Preenche o input com o dado atual */
-                setAlteravel(dadoAntigo)
-            }
-            else
+            /** Preenche os inputs com os dados atuais */
+            if(dadoAntigo)
             {
-                /** Preenche os inputs com os dados atuais */
-                if(dadoAntigo)
-                {
-                    setAddressPostalCode(dadoAntigo.address_postal_code)
-                    setAddressStreet(dadoAntigo.address_street)
-                    setAddressNumber(dadoAntigo.address_number)
-                    setAddressComplement(dadoAntigo.address_complement)
-                    setAddressDistrict(dadoAntigo.address_district)
-                    setAddressCity(dadoAntigo.address_city)
-                    setAddressState(dadoAntigo.address_state)
-                }
+                setAddressPostalCode(dadoAntigo.address_postal_code)
+                setAddressStreet(dadoAntigo.address_street)
+                setAddressNumber(dadoAntigo.address_number)
+                setAddressComplement(dadoAntigo.address_complement)
+                setAddressDistrict(dadoAntigo.address_district)
+                setAddressCity(dadoAntigo.address_city)
+                setAddressState(dadoAntigo.address_state)
+            }
 
-                /** Preenche dropdown de estados */
-                if(!estados.length)
-                {
-                    http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-                    .then(response => {
-                         response.map((item) => {
-                             let obj = {
-                                 name: item.nome,
-                                 code: item.sigla
-                             }
-                             if(!estados.includes(obj))
-                             {
-                                 setEstados(estadoAnterior => [...estadoAnterior, obj]);
-                             }
-                         })
-                     })
-                }
+            /** Preenche dropdown de estados */
+            if(!estados.length)
+            {
+                http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+                .then(response => {
+                        response.map((item) => {
+                            let obj = {
+                                name: item.nome,
+                                code: item.sigla
+                            }
+                            if(!estados.includes(obj))
+                            {
+                                setEstados(estadoAnterior => [...estadoAnterior, obj]);
+                            }
+                        })
+                    })
             }
         }
     }, [parametroParaEditar, dadoAntigo, alteravel, estados])
