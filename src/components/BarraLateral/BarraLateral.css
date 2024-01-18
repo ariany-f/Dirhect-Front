@@ -20,3 +20,11 @@
     display: flex;
     gap: 10px;
 }
+
+.link.disabled {
+    opacity: 0.5;
+}
+
+.link.disabled li{
+    cursor: default;
+}

@@ -152,7 +152,7 @@ function BarraLateral() {
                 <ListaEstilizada>
                     {itensEmBreveMenu.map((item) => {
                         return (
-                            <Link key={item.id} className="link" to={item.url}>
+                            <Link key={item.id} className="link disabled">
                                 <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url) || (home.includes(location.pathname.split('/')[1]) && item.url == '/')}>
                                     {item.icone}
                                     {item.itemTitulo}{novidadeBadge}
