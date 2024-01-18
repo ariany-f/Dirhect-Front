@@ -24,7 +24,7 @@ function Operador() {
         {
             http.get('api/dashboard/operator')
                 .then(response => {
-                    if(response.data.operators.length)
+                    if(response.data && response.data.operators.length)
                     {
                         setOperadores(response.data.operators)
                     }
