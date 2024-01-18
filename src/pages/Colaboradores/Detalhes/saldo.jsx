@@ -2,12 +2,33 @@ import Titulo from '@components/Titulo'
 import QuestionCard from '@components/QuestionCard'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import styled from 'styled-components'
+import DataTableCollaboratorBenefit from '../../../components/DataTableCollaboratorBenefit'
+import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import http from '@http'
 
 const DivPrincipal = styled.div`
     width: 65vw;
 `
 
 function ColaboradorSaldo() {
+
+    let { id } = useParams()
+    const [colaborador, setColaborador] = useState({})
+
+    useEffect(() => {
+        if(colaborador.length === 0)
+        {
+            http.get(`api/dashboard/collaborator/${id}`)
+                .then(response => {
+                    if (response.collaborator) {
+                        setColaborador(response.collaborator)
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
+    }, [colaborador])
+
     return (
         <DivPrincipal>
             <Titulo>
@@ -15,6 +36,7 @@ function ColaboradorSaldo() {
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
+            <DataTableCollaboratorBenefit beneficios={colaborador.user?.benefits}/>
         </DivPrincipal>
     )
 }
