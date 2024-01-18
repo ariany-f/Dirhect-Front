@@ -79,6 +79,8 @@ import OperadorPermissoes from '@pages/Operadores/Detalhes/permissoes'
 import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario"
 import BeneficioSelecionarFormaPagamento from './pages/Beneficios/selecao-forma-pagamento'
 import BeneficioPagamento from './pages/Beneficios/pagamento'
+import CartoesLista from './pages/Cartoes/lista'
+import CartoesAtivados from './pages/Cartoes/ativados'
 
 function AppRouter() {
   
@@ -157,17 +159,20 @@ function AppRouter() {
                 <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
               </Route>
               
-              <Route path="despesa" element={<Despesas />} />
+              {/* <Route path="despesa" element={<Despesas />} />
               <Route path="despesa/adiantar-saldo" element={<DespesaAdiantarSaldo />} />
               <Route path="despesa/selecao-tipo-adiantamento" element={<DespesaSelecionarTipoAdiantamento />} />
               <Route path="despesa/selecao-alvo-adiantamento" element={<DespesaSelecionarAlvoAdiantamento />} />
               <Route path="despesa/editar-valor" element={<DespesaEditarValor />} />
               <Route path="despesa/detalhes-adiantamento" element={<DespesaDetalhesAdiantamento />} />
-              <Route path="despesa/detalhes" element={<DespesaDetalhes />} />
+              <Route path="despesa/detalhes" element={<DespesaDetalhes />} /> */}
               
-              <Route path="cartao" element={<Cartoes />} />
-              <Route path="cartao/detalhes" element={<CartaoDetalhes />} />
-              <Route path="cartao/solicitar-segunda-via" element={<CartaoSolicitarSegundaVia />} />
+              <Route path="/cartao" element={<Cartoes />} >
+                <Route index element={<CartoesLista />} />
+                <Route path="ativados" element={<CartoesAtivados />} />
+                <Route path="detalhes" element={<CartaoDetalhes />} />
+                <Route path="solicitar-segunda-via" element={<CartaoSolicitarSegundaVia />} />
+              </Route>
               
               <Route path="/beneficio" element={<RecargaBeneficios/>}>
                 <Route index element={<Beneficios />} />
