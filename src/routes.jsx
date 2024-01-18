@@ -47,7 +47,9 @@ import DespesaDetalhesAdiantamento from '@pages/Despesas/detalhes-adiantamento'
 import DespesaDetalhes from '@pages/Despesas/detalhes'
 import Cartoes from '@pages/Cartoes'
 import CartaoDetalhes from '@pages/Cartoes/detalhes'
-import CartaoSolicitarSegundaVia from '@pages/Cartoes/solicitar-segunda-via'
+import CartaoSolicitarSegundaVia from '@pages/Cartoes/SolicitarSegundaVia'
+import CartaoSolicitarSegundaViaEndereco from '@pages/Cartoes/SolicitarSegundaVia/endereco'
+import CartaoSolicitarSegundaViaSucesso from '@pages/Cartoes/SolicitarSegundaVia/sucesso'
 import RecargaBeneficios from '@pages/Beneficios'
 import Beneficios from '@pages/Beneficios/lista'
 import BeneficioOndeUsar from '@pages/Beneficios/onde-usar'
@@ -81,6 +83,7 @@ import BeneficioSelecionarFormaPagamento from './pages/Beneficios/selecao-forma-
 import BeneficioPagamento from './pages/Beneficios/pagamento'
 import CartoesLista from './pages/Cartoes/lista'
 import CartoesAtivados from './pages/Cartoes/ativados'
+import CartaoSolicitarSegundaViaAcompanhar from './pages/Cartoes/SolicitarSegundaVia/acompanhar'
 
 function AppRouter() {
   
@@ -172,6 +175,9 @@ function AppRouter() {
               </Route>
               <Route path="/cartao/detalhes" element={<CartaoDetalhes />} />
               <Route path="/cartao/solicitar-segunda-via/:id" element={<CartaoSolicitarSegundaVia />} />
+              <Route path="/cartao/solicitar-segunda-via/endereco/:id" element={<CartaoSolicitarSegundaViaEndereco />} />
+              <Route path="/cartao/solicitar-segunda-via/sucesso/:id" element={<CartaoSolicitarSegundaViaSucesso />} />
+              <Route path="/cartao/solicitar-segunda-via/entrega/acompanhar/:id" element={<CartaoSolicitarSegundaViaAcompanhar />} />
               
               <Route path="/beneficio" element={<RecargaBeneficios/>}>
                 <Route index element={<Beneficios />} />
