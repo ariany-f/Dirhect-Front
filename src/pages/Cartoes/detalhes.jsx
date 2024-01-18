@@ -1,5 +1,10 @@
+import { useParams } from "react-router-dom";
+
 function CartaoDetalhes() {
-    const url = window.location.pathname;
+
+    const { id } = useParams()
+    const url = window.location.pathname
+    
     return (
        <>{url}</>
     )

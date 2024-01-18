@@ -173,7 +173,7 @@ function AppRouter() {
                 <Route index element={<CartoesLista />} />
                 <Route path="ativados" element={<CartoesAtivados />} />
               </Route>
-              <Route path="/cartao/detalhes" element={<CartaoDetalhes />} />
+              <Route path="/cartao/detalhes/:id" element={<CartaoDetalhes />} />
               <Route path="/cartao/solicitar-segunda-via/:id" element={<CartaoSolicitarSegundaVia />} />
               <Route path="/cartao/solicitar-segunda-via/endereco/:id" element={<CartaoSolicitarSegundaViaEndereco />} />
               <Route path="/cartao/solicitar-segunda-via/sucesso/:id" element={<CartaoSolicitarSegundaViaSucesso />} />
