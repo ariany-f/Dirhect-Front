@@ -132,38 +132,49 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
         let obj = {}
         obj['name'] = recarga.name
         obj['description'] = recarga.description
-        obj['balance'] = []
-        obj['balance']['collaborators'] = []
-        obj['balance']['departments'] = []
+        obj['balance'] = {}
+        obj['balance']['collaborators'] = {}
+        obj['balance']['departments'] = {}
         if(recarga.collaborators.length > 0)
         {
             recarga.collaborators.map(item => {
-                let colaborador = []
-                item.map(col => {
-                    let collaborator = []
+                let colaborador = {}
+                item.map((col, index) => {
+                    let collaborator = {}
                     collaborator.public_id = col.public_id
                     collaborator.amount = col.amount
-                    colaborador.push(collaborator)
+                    colaborador[index] = collaborator
                 })
-                obj['balance']['collaborators'].push(colaborador)
+                obj.balance['collaborators'] = colaborador
             })
         }
         if(recarga.departamentos.length > 0)
         {
             recarga.departamentos.map(item => {
-                let departamento = []
-                item.map(col => {
-                    let department = []
+                let departamento = {}
+                item.map((col, index) => {
+                    let department = {}
                     department.public_id = col.public_id
                     department.amount = col.amount
-                    departamento.push(department)
+                    departamento[index] = department
                 })
-                obj['balance']['departments'].push(departamento)
+                obj['balance']['departments'] = departamento
             })
         }
-        console.log(obj)
         
-        //post/recharge/free-balance
+        console.log(obj)
+        return sendRequest(obj)
+    }
+
+    function sendRequest(obj)
+    {
+        http.post('api/recharge/free-balance', obj)
+        .then((response) => {
+            return response
+        })
+        .catch(erro => {
+            return erro.response.data
+        })
     }
     const contexto = {
         recarga,

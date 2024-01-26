@@ -30,12 +30,13 @@ function BeneficioEditarValor() {
     const toast = useRef(null)
 
     useEffect(() => {
-      if(!recarga.name)
-      {
-        setColaboradores([])
-        setDepartamentos([])
-        navegar(-1)
-      }
+        
+    //   if(!recarga.name)
+    //   {
+    //     setColaboradores([])
+    //     setDepartamentos([])
+    //     navegar(-1)
+    //   }
     }, [])
 
     const editarRecarga = (evento) => {

@@ -58,7 +58,7 @@ function DataTableDepartamentos({ departamentos }) {
                     <div className={styles.right}>
                         <Texto weight={300}>Benefícios configurados</Texto>
                         <div className={styles.beneficios}>
-                            {rowData.benefits.length === 0
+                            {(!rowData.benefits) || rowData.benefits.length === 0
                             ?
                                 <FaBan size={10} />
                             :

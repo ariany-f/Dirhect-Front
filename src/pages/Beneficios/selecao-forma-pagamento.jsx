@@ -105,7 +105,6 @@ function BeneficioSelecionarFormaPagamento() {
     function handleChange(valor)
     {
         setSelectedPaymentOption(valor)
-        console.log(selectedPaymentOption)
     }
     
     function handleDateChange(valor)
@@ -120,6 +119,27 @@ function BeneficioSelecionarFormaPagamento() {
         {
             setUseSaldo(Real.format(0))
         }
+    }
+
+    function submeterCheckout()
+    {
+        const sendData = {}
+        sendData['payment_type_enum'] = '1'
+        sendData['balance_available'] = 0
+        sendData['is_scheduled_at'] = false
+        sendData['scheduled_at'] = 1
+        sendData['amount'] = 5000
+        sendData['item'] = {}
+        sendData['item']['source'] = 'recharge'
+        sendData['item']['public_id'] = id
+        sendData['item']['name'] = 'Recarga de Janeiro'
+        http.post('api/checkout', sendData)
+        .then((response) => {
+           console.log(response)
+        })
+        .catch(erro => {
+            console.error(erro)
+        })  
     }
     
     const handleInputChange = (value, name) => {
@@ -235,7 +255,7 @@ function BeneficioSelecionarFormaPagamento() {
                 <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                 <BotaoGrupo align="center">
                     Total<b>R$ 1.000,00</b>
-                    <Botao aoClicar={(evento) => {}} estilo="vermilion" size="medium" filled>Confirmar pagamento</Botao>
+                    <Botao aoClicar={(evento) => submeterCheckout()} estilo="vermilion" size="medium" filled>Confirmar pagamento</Botao>
                 </BotaoGrupo>
             </ContainerButton>
         </Frame>

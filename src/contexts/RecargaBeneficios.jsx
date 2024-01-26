@@ -129,6 +129,7 @@ export const RecargaBeneficiosProvider = ({ children }) => {
     const submeterRecarga = () => {
         let obj = {}
         obj['name'] = recarga.name
+        obj['recharge_amount'] = 0
         obj['description'] = recarga.description
         obj['benefit_type_enum'] = recarga.collaborators.length > 0 ? COLLABORATOR : DEPARTMENT
         obj['collaborators'] = []
@@ -136,34 +137,45 @@ export const RecargaBeneficiosProvider = ({ children }) => {
 
         if(recarga.collaborators.length > 0)
         {
-            recarga.collaborators.map(item => {
-                let colaborador = []
-                item.map(col => {
-                    let collaborator = []
-                    collaborator.public_id = col.public_id
-                    collaborator.all_benefits = col.all_benefits
-                    colaborador.push(collaborator)
+            recarga.collaborators.map((item, key) => {
+                let colaborador = {}
+                item.map((col, index) => {
+                    let collaborator = {}
+                    collaborator['public_id'] = col.public_id
+                    collaborator['all_benefits'] = col.all_benefits
+                    colaborador[index] = collaborator
                 })
-                obj['collaborators'].push(colaborador)
+                obj['collaborators'] = colaborador
             })
         }
         if(recarga.departamentos.length > 0)
         {
-            recarga.departamentos.map(item => {
-                let departamento = []
-                item.map(col => {
-                    let department = []
+            recarga.departamentos.map((item, key) => {
+                let departamento = {}
+                item.map((col, index) => {
+                    let department = {}
                     department.public_id = col.public_id
                     department.all_benefits = col.all_benefits
-                    departamento.push(department)
+                    departamento[index] = department
                 })
-                obj['departments'].push(departamento)
+                obj['departments'] = departamento
             })
         }
         console.log(obj)
-
-        //post/recharge/benefit
+        return sendRequest(obj)
     }
+
+    function sendRequest(obj)
+    {
+        http.post('api/recharge/benefits', obj)
+        .then((response) => {
+            return response
+        })
+        .catch(erro => {
+            return erro.response.data
+        })
+    }
+    
     const contexto = {
         recarga,
         setColaboradores,
