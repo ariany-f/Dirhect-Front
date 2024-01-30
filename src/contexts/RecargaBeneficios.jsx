@@ -10,6 +10,7 @@ const DEPARTMENT = 2;
 const recargaInicial = {
     name: "",
     description: "",
+    total: 0,
     collaborators: [],
     departamentos: [],
     benefits: []
@@ -21,6 +22,7 @@ export const RecargaBeneficiosContext = createContext({
     setNome: () => null,
     setColaboradores: () => null,
     setDepartamentos: () => null,
+    setTotal: () => null,
     setAmount: () => null,
     submeterRecarga: () => null
 })
@@ -30,8 +32,6 @@ export const useRecargaBeneficiosContext = () => {
 }
 
 export const RecargaBeneficiosProvider = ({ children }) => {
-
-    const navegar = useNavigate()
 
     const [recarga, setRecarga] = useState(recargaInicial)
 
@@ -125,16 +125,25 @@ export const RecargaBeneficiosProvider = ({ children }) => {
                 name
             }
         })
+    }  
+    
+    const setTotal = (total) => {
+        setRecarga(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                total
+            }
+        })
     }
     const submeterRecarga = () => {
         let obj = {}
         obj['name'] = recarga.name
-        obj['recharge_amount'] = 0
         obj['description'] = recarga.description
         obj['benefit_type_enum'] = recarga.collaborators.length > 0 ? COLLABORATOR : DEPARTMENT
         obj['collaborators'] = []
         obj['departments'] = []
 
+        let valueTotal = 0
         if(recarga.collaborators.length > 0)
         {
             recarga.collaborators.map((item, key) => {
@@ -144,9 +153,20 @@ export const RecargaBeneficiosProvider = ({ children }) => {
                     collaborator['public_id'] = col.public_id
                     collaborator['all_benefits'] = col.all_benefits
                     colaborador[index] = collaborator
+
+                    col.all_benefits.map(benefit => {
+                        valueTotal = valueTotal + benefit.amount
+                        if(benefit.flexible_value)
+                        {
+                            valueTotal = valueTotal + benefit.flexible_value
+                        }
+                    })
                 })
+                
+                obj['recharge_amount'] = valueTotal
                 obj['collaborators'] = colaborador
             })
+            
         }
         if(recarga.departamentos.length > 0)
         {
@@ -154,20 +174,29 @@ export const RecargaBeneficiosProvider = ({ children }) => {
                 let departamento = {}
                 item.map((col, index) => {
                     let department = {}
-                    department.public_id = col.public_id
-                    department.all_benefits = col.all_benefits
+                    department['public_id'] = col.public_id
+                    department['all_benefits'] = col.all_benefits
                     departamento[index] = department
+
+                    col.all_benefits.map(benefit => {
+                        valueTotal = valueTotal + benefit.amount
+                        if(benefit.flexible_value)
+                        {
+                            valueTotal = valueTotal + benefit.flexible_value
+                        }
+                    })
                 })
+                
+                obj['recharge_amount'] = valueTotal
                 obj['departments'] = departamento
             })
         }
-        console.log(obj)
         return sendRequest(obj)
     }
 
     function sendRequest(obj)
     {
-        http.post('api/recharge/benefits', obj)
+        return http.post('api/recharge/benefits', obj)
         .then((response) => {
             return response
         })
@@ -181,6 +210,7 @@ export const RecargaBeneficiosProvider = ({ children }) => {
         setColaboradores,
         setDepartamentos,
         setNome,
+        setTotal,
         setAmount,
         submeterRecarga
     }

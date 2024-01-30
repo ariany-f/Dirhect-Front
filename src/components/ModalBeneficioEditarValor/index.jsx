@@ -165,7 +165,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
     const [culturaFixo, setCulturaFixo] = useState(Real.format(0))
     const [combustivelFlexivel, setCombustivelFlexivel] = useState(Real.format(0))
     const [combustivelFixo, setCombustivelFixo] = useState(Real.format(0))
-    const [total, setTotal] = useState(0)
+    const [totalModal, setTotalModal] = useState(0)
 
     const navegar = useNavigate()
 
@@ -173,6 +173,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
     {
         return currency.unmask({locale: 'pt-BR', currency: 'BRL', value: valor})
     }
+
     useEffect(() => {
         if(beneficios.length === 0)
         {
@@ -187,7 +188,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
 
         if(checkedAuxilio)
         {
-            setTotal((
+            setTotalModal((
                 removeMask(auxilioAlimentacao)
                 + removeMask(saudeFlexivel) + (checkedSaude ? (removeMask(saudeFixo)) : 0)
                 + removeMask(mobilidadeFlexivel) + (checkedMobilidade ? (removeMask(mobilidadeFixo)) : 0)
@@ -199,7 +200,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
         }
         else
         {
-            setTotal((
+            setTotalModal((
                 removeMask(alimentacao) 
                 + removeMask(refeicao) 
                 + removeMask(saudeFlexivel) + (checkedSaude ? (removeMask(saudeFixo)) : 0)
@@ -543,7 +544,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                         <div className={styles.containerBottom}>
                             <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                             <LadoALado>
-                                <span>Total&nbsp;<b>{Real.format(total)}</b><Texto color='var(--primaria)' weight={700}></Texto></span>
+                                <span>Total&nbsp;<b>{Real.format(totalModal)}</b><Texto color='var(--primaria)' weight={700}></Texto></span>
                                 <Botao aoClicar={salvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </LadoALado>
                         </div>

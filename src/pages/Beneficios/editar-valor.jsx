@@ -21,8 +21,6 @@ function BeneficioEditarValor() {
     const {
         recarga,
         setNome,
-        setColaboradores,
-        setDepartamentos,
         submeterRecarga
     } = useRecargaBeneficiosContext()
     const [loading, setLoading] = useState(false)
@@ -30,7 +28,6 @@ function BeneficioEditarValor() {
     const toast = useRef(null)
 
     useEffect(() => {
-        
     //   if(!recarga.name)
     //   {
     //     setColaboradores([])
@@ -38,6 +35,16 @@ function BeneficioEditarValor() {
     //     navegar(-1)
     //   }
     }, [])
+
+    function sendData() {
+        submeterRecarga().then(response => {
+            
+            if(response.data.status && response.data.status === 'success')
+            {
+                navegar(`/beneficio/selecao-forma-pagamento/${response.data.recharge_public_id}`)
+            }
+        })
+    }
 
     const editarRecarga = (evento) => {
         if (evento.key === 'Enter') {
@@ -72,7 +79,7 @@ function BeneficioEditarValor() {
                         }
                     
                     </BotaoGrupo>
-                    <DataTableBeneficiosEditarValor aoEnviar={submeterRecarga} tipo={tipo} recarga={(tipo === 'colaboradores') ? recarga.collaborators : recarga.departamentos} />
+                    <DataTableBeneficiosEditarValor aoEnviar={sendData} tipo={tipo} recarga={(tipo === 'colaboradores') ? recarga.collaborators : recarga.departamentos} />
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
             }

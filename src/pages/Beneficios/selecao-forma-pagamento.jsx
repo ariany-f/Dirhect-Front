@@ -70,8 +70,6 @@ let Real = new Intl.NumberFormat('pt-BR', {
 
 function BeneficioSelecionarFormaPagamento() {
 
-    //FAZER GET DO CHECKOUT PARA PEGAR DADOS DE POPULAR A TELA COM O SOURCE RECHARGE E O PUBLIC_ID QUE VIRÁ NA URL
-    
     const { id } = useParams()
     const [checkout, setCheckout] = useState(null)
     const [saldoConta, setSaldoConta] = useState(false)
@@ -89,7 +87,8 @@ function BeneficioSelecionarFormaPagamento() {
     });
 
     useEffect(() => {
-        const url = `api/checkout?source=recharge&&public_id=${id}`;
+        const url = `api/checkout?source=recharge&public_id=${id}`;
+
         http.get(url)
         .then((response) => {
             if(response.data)
@@ -99,8 +98,8 @@ function BeneficioSelecionarFormaPagamento() {
         })
         .catch(erro => {
             console.error(erro)
-        })  
-    }, [])
+        })
+    }, [checkout, setCheckout])
     
     function handleChange(valor)
     {
@@ -124,15 +123,16 @@ function BeneficioSelecionarFormaPagamento() {
     function submeterCheckout()
     {
         const sendData = {}
-        sendData['payment_type_enum'] = '1'
-        sendData['balance_available'] = 0
-        sendData['is_scheduled_at'] = false
-        sendData['scheduled_at'] = 1
-        sendData['amount'] = 5000
+        sendData['payment_type_enum'] = selectedPaymentOption
+        sendData['balance_available'] = (checkout.item.balance_available ?? 0)
+        sendData['is_schedule_at'] = (selectedDate === 1 ? false : true)
+        sendData['schedule_at'] = selectedDate !== 1 ? data : ''
         sendData['item'] = {}
         sendData['item']['source'] = 'recharge'
         sendData['item']['public_id'] = id
-        sendData['item']['name'] = 'Recarga de Janeiro'
+        sendData['item']['amount'] = checkout.item.total_amount
+        sendData['item']['name'] = checkout.item.name
+
         http.post('api/checkout', sendData)
         .then((response) => {
            console.log(response)
@@ -164,10 +164,10 @@ function BeneficioSelecionarFormaPagamento() {
                     <Frame gap="24px">
                         <ContainerHorizontal>
                             <CheckboxContainer fontSize="16px" name="saldo" valor={saldoConta} setValor={handleSaldoChange} label="Saldo da Conta"/>
-                            <b>R$ 1.500,00</b>
+                            <b>{Real.format(checkout?.balance_available ?? 0)}</b>
                             <CampoTexto disabled={!saldoConta} placeholder="R$ 0,00" patternMask={'BRL'} valor={useSaldo} setValor={setUseSaldo} />
                         </ContainerHorizontal>
-                        <Texto>Você pode usar seus créditos em conjunto com <b>Pix, Boleto ou cartão de crédito</b>.</Texto>
+                        <Texto>Você pode usar seus créditos em conjunto com&nbsp;<b>Pix, Boleto ou cartão de crédito</b>.</Texto>
                         <DottedLine margin="2px" />
                     </Frame>
                     <Frame gap="24px">
@@ -254,7 +254,7 @@ function BeneficioSelecionarFormaPagamento() {
             <ContainerButton>
                 <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                 <BotaoGrupo align="center">
-                    Total<b>R$ 1.000,00</b>
+                    Total<b>{Real.format(checkout?.item.total_amount ?? 0)}</b>
                     <Botao aoClicar={(evento) => submeterCheckout()} estilo="vermilion" size="medium" filled>Confirmar pagamento</Botao>
                 </BotaoGrupo>
             </ContainerButton>
