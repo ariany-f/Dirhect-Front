@@ -68,11 +68,12 @@ function DepartamentoAdicionarColaboradores() {
     useEffect(() => {
         if(id && typeof id !== undefined && id !== null)
         {
-            http.get("api/dashboard/department/"+id)
+            http.get(`api/dashboard/department/${id}`)
                 .then(response => {
                     if(response.status === 'success')
                     {
-                        setDepartamento(response.department)
+                        setDepartamento(response)
+                        console.log(departamento)
                     }
                 })
                 .catch(erro => console.log(erro))
@@ -108,7 +109,7 @@ function DepartamentoAdicionarColaboradores() {
                 {
                     if(response.status === 'success')
                     {
-                        toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Departamento criado', life: 3000 });
+                        toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
                         setTimeout(() => {
                             navegar(`/departamento/detalhes/${response.public_id}`)
                         }, "700");
@@ -116,7 +117,7 @@ function DepartamentoAdicionarColaboradores() {
                 }
                 else
                 {
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar departamento', life: 3000 });
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar adicionar colaborador', life: 3000 });
                 }
             })
         }
@@ -152,7 +153,7 @@ function DepartamentoAdicionarColaboradores() {
                             :
                             <>
                                 <Titulo>
-                                    <h3>{departamento.name}</h3>
+                                    <h3>{departamento?.department?.name}</h3>
                                 </Titulo>
                                 <BotaoSemBorda $color="var(--error)">
                                     <FaPencilAlt /><Link onClick={() => setEdicaoAberta(true)} className={styles.link}>Editar</Link>

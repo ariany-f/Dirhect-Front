@@ -8,38 +8,20 @@ function DepartamentoListaColaboradores() {
 
     let { id } = useParams()
     const [departamento, setDepartamento] = useState(null)
-    const [clbdr, setClbdr] = useState([])
+    const [colaboradores, setColaboradores] = useState(null)
 
     useEffect(() => {
         http.get(`api/dashboard/department/${id}`)
             .then(response => {
                 setDepartamento(response.department)
+                setColaboradores(response.collaborators)
             })
             .catch(erro => console.log(erro))
     }, [])
-    
-    useEffect(() => {
-        if(departamento && !clbdr.length)
-        {
-            const obj = {}
-            obj[departamento.name] = departamento.public_id
-            http.get('api/dashboard/collaborator')
-                .then(response => {
-                    if(response.data.collaborators.length)
-                    {
-                        const filtered = response.data.collaborators.filter(colaborador => {
-                            return (obj in colaborador.departments)
-                        })
-                        setClbdr(filtered)
-                    }
-                })
-                .catch(erro => console.log(erro))
-        }
-    }, [departamento])
    
     return (
         <Frame>
-            <DataTableColaboradores colaboradores={clbdr} />
+            <DataTableColaboradores colaboradores={colaboradores ?? []} />
         </Frame>
     )
 }

@@ -29,10 +29,13 @@ export const DepartamentoProvider = ({ children }) => {
     const [departamento, setDepartamento] = useState(departamentoInicial)
 
     const setColaboradores = (collaborators) => {
+        
         if(departamento.collaborators && departamento.collaborators.length > 0)
         {
             const colaboradores = departamento.collaborators
-            colaboradores.push(collaborators)
+            collaborators.map(item => {
+                colaboradores.push(item)
+            })
             
             setDepartamento(estadoAnterior => {
                 return {
@@ -40,15 +43,12 @@ export const DepartamentoProvider = ({ children }) => {
                     colaboradores
                 }
             })
+
+            delete departamento['colaboradores']
         }
         else
         {
-            setDepartamento(estadoAnterior => {
-                return {
-                    ...estadoAnterior,
-                    collaborators
-                }
-            })
+            departamento.collaborators = collaborators
         }
     }
     const setNome = (name) => {
@@ -69,7 +69,15 @@ export const DepartamentoProvider = ({ children }) => {
     }
     
     const submeterDepartamento = () => {
-        return http.post('api/dashboard/department', departamento)
+       
+        const obj = {
+            name: departamento.department.name,
+            description: departamento.department.description,
+            status: departamento.department.status,
+            collaborators: departamento.collaborators
+        }
+        
+        return http.post('api/dashboard/department', obj)
             .then((response) => {
                 return response
             })
