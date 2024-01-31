@@ -25,7 +25,7 @@ function DepartamentoConfiguracaoBeneficios() {
    
     return (
         <Frame>
-           {departamento && departamento.benefits.length ?
+           {departamento && departamento.benefits && departamento?.benefits.length ?
             <></>
            :
            <Frame align="center">
