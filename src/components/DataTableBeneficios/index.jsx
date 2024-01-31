@@ -45,14 +45,14 @@ function DataTableBeneficios({ beneficios }) {
     };
 
     const representativeStatusTemplate = (rowData) => {
-        return <BadgeStatusBeneficio status={rowData.status} />
+        return <BadgeStatusBeneficio status={rowData.recharge_status_enum} />
     };
 
     const representativeDescriptionTemplate = (rowData) => {
         return (
             <>
                 <Texto weight={700} width={'100%'}>
-                    {rowData.description}
+                    {rowData.name}
                 </Texto>
                 <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
                     Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.collaborators_json.length}</p>
@@ -79,11 +79,11 @@ function DataTableBeneficios({ beneficios }) {
                 </QuestionCard>
             </div>
             <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={5}  onSelectionChange={(e) => verDetalhes(e.value)} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '65vw' }}>
-                <Column body={representativeDescriptionTemplate} header="Nome do pedido" style={{ width: '35%' }}></Column>
-                <Column body={representativeCreatedTemplate} header="Data de criação" style={{ width: '15%' }}></Column>
-                <Column body={representativeStatusTemplate} header="Status" style={{ width: '10%' }}></Column>
+                <Column body={representativeDescriptionTemplate} header="Nome do pedido" style={{ width: '20%' }}></Column>
+                <Column body={representativeCreatedTemplate} header="Data de criação" style={{ width: '20%' }}></Column>
+                <Column body={representativeStatusTemplate} header="Status" style={{ width: '15%' }}></Column>
                 <Column body={representativeSendedTemplate} header="Data do Envio" style={{ width: '15%' }}></Column>
-                <Column body={representativeAmountTemplate} header="Valor total(R$)" style={{ width: '20%' }}></Column>
+                <Column body={representativeAmountTemplate} header="Valor total(R$)" style={{ width: '15%' }}></Column>
                 <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
             </DataTable>
         </>
