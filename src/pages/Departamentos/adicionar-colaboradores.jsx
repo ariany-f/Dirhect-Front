@@ -72,8 +72,8 @@ function DepartamentoAdicionarColaboradores() {
                 .then(response => {
                     if(response.status === 'success')
                     {
-                        setDepartamento(response)
-                        console.log(departamento)
+                        setDepartamento(response.department)
+                        setColaboradores(response.department.collaborators)
                     }
                 })
                 .catch(erro => console.log(erro))
@@ -153,7 +153,7 @@ function DepartamentoAdicionarColaboradores() {
                             :
                             <>
                                 <Titulo>
-                                    <h3>{departamento?.department?.name}</h3>
+                                    <h3>{departamento?.name}</h3>
                                 </Titulo>
                                 <BotaoSemBorda $color="var(--error)">
                                     <FaPencilAlt /><Link onClick={() => setEdicaoAberta(true)} className={styles.link}>Editar</Link>

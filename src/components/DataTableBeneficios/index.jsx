@@ -39,15 +39,9 @@ function DataTableBeneficios({ beneficios }) {
     }
 
     const representativeAmountTemplate = (rowData) => {
-         
-            if(rowData.is_flexible)
-            {
-                return <b>{(Real.format(rowData.amount_flexible))}</b>
-            }
-            else
-            {
-                return <b>{(Real.format(rowData.amount_fixed))}</b>
-            }
+            
+            return <b>{(Real.format(rowData.recharge_amount))}</b>
+           
     };
 
     const representativeStatusTemplate = (rowData) => {
@@ -61,7 +55,7 @@ function DataTableBeneficios({ beneficios }) {
                     {rowData.description}
                 </Texto>
                 <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
-                    Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.users.length}</p>
+                    Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.collaborators_json.length}</p>
                 </div>
             </>
         )

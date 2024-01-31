@@ -32,9 +32,9 @@ function Beneficios() {
                 .then(response => {
                     setLoading(false)
                     console.log(response)
-                    if(response.data.benefits)
+                    if(response.data.recharges)
                     {
-                        setBeneficios(response.data.benefits)
+                        setBeneficios(response.data.recharges)
                     }
                 })
                 .catch(erro => {
