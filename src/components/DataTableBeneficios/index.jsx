@@ -5,7 +5,7 @@ import './DataTable.css'
 import Texto from '@components/Texto'
 import QuestionCard from '@components/QuestionCard'
 import CampoTexto from '@components/CampoTexto'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import BadgeStatusBeneficio from '../BadgeStatusBeneficio'
@@ -67,6 +67,9 @@ function DataTableBeneficios({ beneficios }) {
     const representativeSendedTemplate = (rowData) => {
         return <p style={{fontWeight: '400'}}>{new Date(rowData.updated_at).toLocaleDateString("pt-BR")}</p>
     }
+    const goToTemplate = (rowData) => {
+        return <Link to={`/beneficio/selecao-forma-pagamento/${rowData.public_id}`}><MdOutlineKeyboardArrowRight/></Link>
+    }
 
     return (
         <>
@@ -84,7 +87,7 @@ function DataTableBeneficios({ beneficios }) {
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '15%' }}></Column>
                 <Column body={representativeSendedTemplate} header="Data do Envio" style={{ width: '15%' }}></Column>
                 <Column body={representativeAmountTemplate} header="Valor total(R$)" style={{ width: '15%' }}></Column>
-                <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
+                <Column field="" header="" style={{ width: '5%' }}  body={goToTemplate}></Column>
             </DataTable>
         </>
     )
