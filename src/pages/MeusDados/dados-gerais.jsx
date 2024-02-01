@@ -11,14 +11,14 @@ import { Link } from 'react-router-dom'
 import { RiEditBoxFill } from 'react-icons/ri'
 import { ArmazenadorToken } from './../../utils'
 import { Toast } from 'primereact/toast'
-import ModalAlterar from "@components/ModalAlterar"
+import ModalAlterarTelefone from '../../components/ModalAlterar/telefone'
+import ModalAlterarEmail from '../../components/ModalAlterar/email'
 
 function MeusDadosDadosGerais() {
 
     const [userProfile, setUserProfile] = useState([])
-    const [modalOpened, setModalOpened] = useState(false)
-    const [parametroEdicao, setParametroEdicao] = useState(null)
-    const [dadoEdicao, setDadoEdicao] = useState(null)
+    const [modalTelefoneOpened, setModalTelefoneOpened] = useState(false)
+    const [modalEmailOpened, setModalEmailOpened] = useState(false)
     const toast = useRef(null)
 
     useEffect(() => {
@@ -35,32 +35,40 @@ function MeusDadosDadosGerais() {
                 console.error(erro)
             })
         }
-    }, [userProfile, modalOpened])
+    }, [userProfile, modalEmailOpened, modalTelefoneOpened])
 
-    function editarUsuario(dado){
-
+    function editarTelefone(telefone) {
         let contact_info = {}
-        contact_info[parametroEdicao] = dado
-
+        contact_info['phone_number'] = telefone
         let obj = {
             contact_info: contact_info
         }
-
         http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
         .then(response => {
             if(response.status === 'success')
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                setModalOpened(false)
+                setModalTelefoneOpened(false)
             }
         })
         .catch(erro => console.log(erro))
     }
-    
-    function AbrirModalEditarUsuario(parametro, dado_antigo){
-        setParametroEdicao(parametro)
-        setDadoEdicao(dado_antigo)
-        setModalOpened(true)
+
+    function editarEmail(email) {
+        let contact_info = {}
+        contact_info['email'] = email
+        let obj = {
+            contact_info: contact_info
+        }
+        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        .then(response => {
+            if(response.status === 'success')
+            {
+                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                setModalEmailOpened(false)
+            }
+        })
+        .catch(erro => console.log(erro))
     }
 
     function formataCNPJ(cnpj) {
@@ -111,7 +119,7 @@ function MeusDadosDadosGerais() {
                     </Frame>
                     <BotaoSemBorda>
                         <RiEditBoxFill size={18} />
-                        <Link onClick={() => AbrirModalEditarUsuario('phone_number', userProfile.contact_info.phone_number)} className={styles.link}>Alterar</Link>
+                        <Link onClick={() => {setModalTelefoneOpened(true)}} className={styles.link}>Alterar</Link>
                     </BotaoSemBorda>
                     </>
                     : <Skeleton variant="rectangular" width={200} height={25} />
@@ -129,14 +137,16 @@ function MeusDadosDadosGerais() {
                         </Frame>
                         <BotaoSemBorda>
                             <RiEditBoxFill size={18} />
-                            <Link onClick={() => AbrirModalEditarUsuario('email', userProfile.contact_info.email)} className={styles.link}>Alterar</Link>
+                            <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
                         </BotaoSemBorda>
                     </>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
             </ContainerHorizontal>
         </div>
-        <ModalAlterar dadoAntigo={dadoEdicao} parametroParaEditar={parametroEdicao} aoClicar={editarUsuario} opened={modalOpened} aoFechar={() => setModalOpened(!modalOpened)} />
+        <ModalAlterarTelefone dadoAntigo={userProfile?.contact_info?.phone_number ?? ''} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
+        <ModalAlterarEmail dadoAntigo={userProfile?.contact_info?.email ?? ''} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
+        
         </>
     )
 }

@@ -10,15 +10,15 @@ import { Skeleton } from 'primereact/skeleton'
 import styles from './Detalhes.module.css'
 import { RiEditBoxFill } from 'react-icons/ri'
 import { Toast } from 'primereact/toast'
-import ModalAlterar from "@components/ModalAlterar"
+import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
+import ModalAlterarEmail from '@components/ModalAlterar/email'
 
 function ColaboradorDadosPessoais() {
 
     let { id } = useParams()
     const [colaborador, setColaborador] = useState({})
-    const [modalOpened, setModalOpened] = useState(false)
-    const [parametroEdicao, setParametroEdicao] = useState(null)
-    const [dadoEdicao, setDadoEdicao] = useState(null)
+    const [modalTelefoneOpened, setModalTelefoneOpened] = useState(false)
+    const [modalEmailOpened, setModalEmailOpened] = useState(false)
     const toast = useRef(null)
 
     useEffect(() => {
@@ -29,28 +29,36 @@ function ColaboradorDadosPessoais() {
                 }
             })
             .catch(erro => console.log(erro))
-    }, [modalOpened])
+    }, [modalTelefoneOpened, modalEmailOpened])
 
-    function editarColaborador(dado){
-
+    function editarEmail(email) {
         let obj = {}
-        obj[parametroEdicao] = dado
-
+        obj['email'] = email
+      
         http.put(`api/dashboard/collaborator/${id}`, obj)
         .then(response => {
             if(response.status === 'success')
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                setModalOpened(false)
+                setModalTelefoneOpened(false)
             }
         })
         .catch(erro => console.log(erro))
     }
 
-    function AbrirModalEditarColaborador(parametro, dado_antigo){
-        setParametroEdicao(parametro)
-        setModalOpened(true)
-        setDadoEdicao(dado_antigo)
+    function editarTelefone(telefone) {
+        let obj = {}
+        obj['phone_number'] = telefone
+      
+        http.put(`api/dashboard/collaborator/${id}`, obj)
+        .then(response => {
+            if(response.status === 'success')
+            {
+                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                setModalTelefoneOpened(false)
+            }
+        })
+        .catch(erro => console.log(erro))
     }
 
     function formataCPF(cpf) {
@@ -94,7 +102,7 @@ function ColaboradorDadosPessoais() {
                 </Frame>
                 <BotaoSemBorda>
                     <RiEditBoxFill size={18} />
-                    <Link onClick={() => AbrirModalEditarColaborador('phone_number', colaborador.phone_number)} className={styles.link}>Alterar</Link>
+                    <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Alterar</Link>
                 </BotaoSemBorda>
             </ContainerHorizontal>
             <ContainerHorizontal width="50%">
@@ -107,11 +115,13 @@ function ColaboradorDadosPessoais() {
                 </Frame>
                 <BotaoSemBorda>
                     <RiEditBoxFill size={18} />
-                    <Link onClick={() => AbrirModalEditarColaborador('email', colaborador.email)} className={styles.link}>Alterar</Link>
+                    <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
                 </BotaoSemBorda>
             </ContainerHorizontal>
         </div>
-        <ModalAlterar aoClicar={editarColaborador} opened={modalOpened} aoFechar={() => setModalOpened(!modalOpened)} parametroParaEditar={parametroEdicao} dadoAntigo={dadoEdicao}  />
+        <ModalAlterarTelefone dadoAntigo={colaborador?.phone_number} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
+        <ModalAlterarEmail dadoAntigo={colaborador?.email} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
+       
         </>
     )
 }

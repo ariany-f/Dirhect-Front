@@ -13,11 +13,17 @@ import { RiEditBoxFill } from 'react-icons/ri'
 import { Toast } from 'primereact/toast'
 import { ArmazenadorToken } from './../../utils'
 import ModalAlterar from "@components/ModalAlterar"
+import ModalAlterarEmail from '../../components/ModalAlterar/email'
+import ModalAlterarInscricaoEstadual from '../../components/ModalAlterar/inscricao_estadual'
+import ModalAlterarInscricaoMunicipal from '../../components/ModalAlterar/inscricao_municipal'
 
 function MeusDadosDadosFaturamento() {
 
     const [userProfile, setUserProfile] = useState([])
     const [modalOpened, setModalOpened] = useState(false)
+    const [modalEmailOpened, setModalEmailOpened] = useState(false)
+    const [modalInscricaoEstadualOpened, setModalInscricaoEstadualOpened] = useState(false)
+    const [modalInscricaoMunicipalOpened, setModalInscricaoMunicipalOpened] = useState(false)
     const [parametroEdicao, setParametroEdicao] = useState(null)
     const [dadoEdicao, setDadoEdicao] = useState(null)
     const toast = useRef(null)
@@ -37,17 +43,13 @@ function MeusDadosDadosFaturamento() {
              })
          }
 
-    }, [userProfile, modalOpened])
+    }, [userProfile, modalOpened, modalEmailOpened])
 
-    function editarUsuario(dado){
+    function editarEndereco(dado){
+        let billing_data = {}
+        billing_data['billing_data'] = dado
 
-        let type = ((dado !== 'address') ? 'billing_data' : 'addresses')
-        let editableParams = {}
-        editableParams[parametroEdicao] = dado
-        let obj = {}
-        obj[type] = editableParams
-
-        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, billing_data)
         .then(response => {
             if(response.status === 'success')
             {
@@ -57,12 +59,58 @@ function MeusDadosDadosFaturamento() {
         })
         .catch(erro => console.log(erro))
     }
-    
-    function AbrirModalEditarUsuario(parametro, dado_antigo){
-        setParametroEdicao(parametro)
-        setDadoEdicao(dado_antigo)
-        setModalOpened(true)
+
+    function editarEmail(email) {
+        let billing_data = {}
+        billing_data['email'] = email
+        let obj = {
+            billing_data: billing_data
+        }
+        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        .then(response => {
+            if(response.status === 'success')
+            {
+                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                setModalEmailOpened(false)
+            }
+        })
+        .catch(erro => console.log(erro))
     }
+
+    function editarInscricaoEstadual(inscricao_estadual) {
+        let billing_data = {}
+        billing_data['inscricao_estadual'] = inscricao_estadual
+        let obj = {
+            billing_data: billing_data
+        }
+        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        .then(response => {
+            if(response.status === 'success')
+            {
+                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                setModalEmailOpened(false)
+            }
+        })
+        .catch(erro => console.log(erro))
+    }
+
+    function editarInscricaoMunicipal(inscricao_municipal) {
+        let billing_data = {}
+        billing_data['inscricao_municipal'] = inscricao_municipal
+        let obj = {
+            billing_data: billing_data
+        }
+        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        .then(response => {
+            if(response.status === 'success')
+            {
+                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                setModalEmailOpened(false)
+            }
+        })
+        .catch(erro => console.log(erro))
+    }
+    
 
     function formataCNPJ(cnpj) {
         cnpj = cnpj.replace(/[^\d]/g, "");
@@ -99,7 +147,7 @@ function MeusDadosDadosFaturamento() {
                         </Frame>
                         <BotaoSemBorda>
                             <RiEditBoxFill size={18} />
-                            <Link  onClick={() => AbrirModalEditarUsuario('inscricao_municipal', userProfile?.billing_data.CNPJ.document)} className={styles.link}>Alterar</Link>
+                            <Link  onClick={() => setModalInscricaoMunicipalOpened(true)} className={styles.link}>Alterar</Link>
                         </BotaoSemBorda>
                     </>
                      : <Skeleton variant="rectangular" width={200} height={25} />
@@ -117,7 +165,7 @@ function MeusDadosDadosFaturamento() {
                         </Frame>
                         <BotaoSemBorda>
                             <RiEditBoxFill size={18} />
-                            <Link onClick={() => AbrirModalEditarUsuario('inscricao_estadual', userProfile?.billing_data.CNPJ.document)} className={styles.link}>Alterar</Link>
+                            <Link onClick={() => setModalInscricaoEstadualOpened(true)} className={styles.link}>Alterar</Link>
                         </BotaoSemBorda>
                     </>
                      : <Skeleton variant="rectangular" width={200} height={25} />
@@ -141,7 +189,7 @@ function MeusDadosDadosFaturamento() {
                         </Frame>
                         <BotaoSemBorda>
                             <RiEditBoxFill size={18} />
-                            <Link onClick={() => AbrirModalEditarUsuario('email', userProfile?.billing_data.email.email)} className={styles.link}>Alterar</Link>
+                            <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
                         </BotaoSemBorda>
                     </>
                      : <Skeleton variant="rectangular" width={200} height={25} />
@@ -210,14 +258,18 @@ function MeusDadosDadosFaturamento() {
                             </Frame>
                             <BotaoSemBorda>
                                 <RiEditBoxFill size={18} />
-                                <Link onClick={() => AbrirModalEditarUsuario('addresses', userProfile?.billing_data.addresses)} className={styles.link}>Alterar</Link>
+                                <Link onClick={() => setModalOpened(true)} className={styles.link}>Alterar</Link>
                             </BotaoSemBorda>
                         </>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                 </ContainerHorizontal>
             </div>
-            <ModalAlterar dadoAntigo={dadoEdicao} parametroParaEditar={parametroEdicao} aoClicar={editarUsuario} opened={modalOpened} aoFechar={() => setModalOpened(!modalOpened)} />
+            <ModalAlterar dadoAntigo={userProfile?.billing_data?.addresses ?? []} aoClicar={editarEndereco} opened={modalOpened} aoFechar={() => setModalOpened(!modalOpened)} />
+            <ModalAlterarEmail dadoAntigo={userProfile?.billing_data?.email?.email ?? ''} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
+            <ModalAlterarInscricaoEstadual dadoAntigo={userProfile?.billing_data?.CNPJ?.document ?? ''} aoClicar={editarInscricaoEstadual} opened={modalInscricaoEstadualOpened} aoFechar={() => setModalInscricaoEstadualOpened(!modalInscricaoEstadualOpened)} />
+            <ModalAlterarInscricaoMunicipal dadoAntigo={userProfile?.billing_data?.CNPJ?.document ?? ''} aoClicar={editarInscricaoMunicipal} opened={modalInscricaoMunicipalOpened} aoFechar={() => setModalInscricaoMunicipalOpened(!modalInscricaoMunicipalOpened)} />
+      
         </>
     )
 }

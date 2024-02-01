@@ -79,12 +79,11 @@ const Col6 = styled.div`
     flex: 1 1 50%;
 `
 
-function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar, dadoAntigo }) {
+function ModalAlterar({ opened = false, aoClicar, aoFechar, dadoAntigo }) {
     const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
     const [estados, setEstados] = useState([]);
-    const [label, setLabel] = useState('')
-    const [address, setAddress] = useState(false)
+    const [address, setAddress] = useState(true)
 
     const [address_postal_code, setAddressPostalCode] = useState('')
     const [address_street, setAddressStreet] = useState('')
@@ -95,72 +94,37 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
     const [address_state, setAddressState] = useState('')
     
     useEffect(() => {
-        setAddress(false)
-        switch(parametroParaEditar)
+
+        /** Preenche os inputs com os dados atuais */
+        if(dadoAntigo)
         {
-            case 'phone_number':
-                setLabel('Telefone/Celular')
-            break;
-            
-            case 'email':
-                setLabel('E-mail')
-            break;
-
-            case 'cnpj':
-                setLabel('CNPJ')
-            break;
-
-            case 'inscricao_estadual':
-                setLabel('Inscrição Estadual')
-            break;
-
-            case 'inscricao_municipal':
-                setLabel('Inscrição Municipal')
-            break;
-
-            case 'addresses':
-                setAddress(true)
-            break;
+            setAddressPostalCode(dadoAntigo.address_postal_code)
+            setAddressStreet(dadoAntigo.address_street)
+            setAddressNumber(dadoAntigo.address_number)
+            setAddressComplement(dadoAntigo.address_complement)
+            setAddressDistrict(dadoAntigo.address_district)
+            setAddressCity(dadoAntigo.address_city)
+            setAddressState(dadoAntigo.address_state)
         }
-        
-        /** Definir se o dado alterável será um endereço ou um dado único */
-        if(dadoAntigo && typeof dadoAntigo !== 'object') {
-            /** Preenche o input com o dado atual */
-            setAlteravel(dadoAntigo)
-        }
-        else
+
+        /** Preenche dropdown de estados */
+        if(!estados.length)
         {
-            /** Preenche os inputs com os dados atuais */
-            if(dadoAntigo)
-            {
-                setAddressPostalCode(dadoAntigo.address_postal_code)
-                setAddressStreet(dadoAntigo.address_street)
-                setAddressNumber(dadoAntigo.address_number)
-                setAddressComplement(dadoAntigo.address_complement)
-                setAddressDistrict(dadoAntigo.address_district)
-                setAddressCity(dadoAntigo.address_city)
-                setAddressState(dadoAntigo.address_state)
-            }
-
-            /** Preenche dropdown de estados */
-            if(!estados.length)
-            {
-                http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-                .then(response => {
-                        response.map((item) => {
-                            let obj = {
-                                name: item.nome,
-                                code: item.sigla
-                            }
-                            if(!estados.includes(obj))
-                            {
-                                setEstados(estadoAnterior => [...estadoAnterior, obj]);
-                            }
-                        })
+            http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+            .then(response => {
+                    response.map((item) => {
+                        let obj = {
+                            name: item.nome,
+                            code: item.sigla
+                        }
+                        if(!estados.includes(obj))
+                        {
+                            setEstados(estadoAnterior => [...estadoAnterior, obj]);
+                        }
                     })
-            }
+                })
         }
-    }, [parametroParaEditar, dadoAntigo, alteravel, estados])
+    }, [dadoAntigo, alteravel, estados])
     
     const ChangeCep = (value) => 
     {
@@ -181,23 +145,16 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
     }
 
     const salvarDados = () => {
-        if(parametroParaEditar != 'addresses')
-        {
-            aoClicar(alteravel)
+        let send = {
+            address_postal_code: address_postal_code,
+            address_street: address_street,
+            address_number: address_number,
+            address_complement: address_complement,
+            address_district: address_district,
+            address_city: address_city,
+            address_state: address_state
         }
-        else
-        {
-            let send = {
-                address_postal_code: address_postal_code,
-                address_street: address_street,
-                address_number: address_number,
-                address_complement: address_complement,
-                address_district: address_district,
-                address_city: address_city,
-                address_state: address_state
-            }
-            aoClicar(send)
-        }
+        aoClicar(send)
     }
 
     const fecharModal = () => {
@@ -228,85 +185,75 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, parametroParaEditar,
                         </Titulo>
                     </Frame>
                     <Frame padding="24px 0px">
-                        {address ?
-                            <div style={{height: '35vh', overflowY: 'scroll', flexWrap: 'wrap'}}>
-                                <Col12 >
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            patternMask={['99999-999']} 
-                                            name="address_postal_code" 
-                                            valor={address_postal_code} 
-                                            setValor={ChangeCep} 
-                                            type="text" 
-                                            label="CEP" 
-                                            placeholder="Digite o CEP" />
-                                    </Col6>
-                                </Col12>
-                                <Col12>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="address_street" 
-                                            valor={address_street} 
-                                            setValor={setAddressStreet} 
-                                            type="text" 
-                                            label="Logradouro" 
-                                            placeholder="Digite o address_street do colaborador" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="address_district" 
-                                            valor={address_district} 
-                                            setValor={setAddressDistrict} 
-                                            type="text" 
-                                            label="Bairro" 
-                                            placeholder="Digite o Bairro do colaborador" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="address_number" 
-                                            valor={address_number} 
-                                            setValor={setAddressNumber} 
-                                            type="text" 
-                                            label="Número" 
-                                            placeholder="Digite o número do colaborador" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            name="address_complement" 
-                                            valor={address_complement} 
-                                            setValor={setAddressComplement} 
-                                            type="text" 
-                                            label="Complemento (opcional)" 
-                                            placeholder="Digite o address_complement do colaborador" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="address_city" 
-                                            valor={address_city} 
-                                            setValor={setAddressCity} 
-                                            type="text" 
-                                            label="Cidade" 
-                                            placeholder="Digite a address_city do colaborador" />
-                                    </Col6>
-                                    <Col6>
-                                        <DropdownItens camposVazios={classError} valor={address_state} setValor={setAddressState} options={estados} label="UF" name="address_state" placeholder="Digite a UF do colaborador"/>
-                                    </Col6>
-                                </Col12>
-                            </div>
-                            :
-                            <CampoTexto 
-                                camposVazios={classError} 
-                                valor={alteravel} 
-                                type="text" 
-                                setValor={setAlteravel} 
-                                label={label}
-                            />
-                        }
+                        <div style={{height: '35vh', overflowY: 'scroll', flexWrap: 'wrap'}}>
+                            <Col12 >
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        patternMask={['99999-999']} 
+                                        name="address_postal_code" 
+                                        valor={address_postal_code} 
+                                        setValor={ChangeCep} 
+                                        type="text" 
+                                        label="CEP" 
+                                        placeholder="Digite o CEP" />
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="address_street" 
+                                        valor={address_street} 
+                                        setValor={setAddressStreet} 
+                                        type="text" 
+                                        label="Logradouro" 
+                                        placeholder="Digite o address_street do colaborador" />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="address_district" 
+                                        valor={address_district} 
+                                        setValor={setAddressDistrict} 
+                                        type="text" 
+                                        label="Bairro" 
+                                        placeholder="Digite o Bairro do colaborador" />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="address_number" 
+                                        valor={address_number} 
+                                        setValor={setAddressNumber} 
+                                        type="text" 
+                                        label="Número" 
+                                        placeholder="Digite o número do colaborador" />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        name="address_complement" 
+                                        valor={address_complement} 
+                                        setValor={setAddressComplement} 
+                                        type="text" 
+                                        label="Complemento (opcional)" 
+                                        placeholder="Digite o address_complement do colaborador" />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="address_city" 
+                                        valor={address_city} 
+                                        setValor={setAddressCity} 
+                                        type="text" 
+                                        label="Cidade" 
+                                        placeholder="Digite a address_city do colaborador" />
+                                </Col6>
+                                <Col6>
+                                    <DropdownItens camposVazios={classError} valor={address_state} setValor={setAddressState} options={estados} label="UF" name="address_state" placeholder="Digite a UF do colaborador"/>
+                                </Col6>
+                            </Col12>
+                        </div>
                     </Frame>
                     <form method="dialog">
                         <div className={styles.containerBottom}>
