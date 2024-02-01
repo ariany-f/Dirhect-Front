@@ -4,7 +4,6 @@ import Titulo from "@components/Titulo"
 import BadgeBeneficio from "@components/BadgeBeneficio"
 import { RiCloseFill } from 'react-icons/ri'
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import styles from './ModalDepartamentoAdicionarBeneficio.module.css'
 import http from '@http';
@@ -17,16 +16,6 @@ const Overlay = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-`
-
-const AdicionarCnpjBotao = styled.div`
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--primaria);
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
 `
 
 const DialogEstilizado = styled.dialog`
