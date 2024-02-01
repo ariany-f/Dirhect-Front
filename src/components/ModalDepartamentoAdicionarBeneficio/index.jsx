@@ -105,14 +105,17 @@ function ModalDepartamentoAdicionarBeneficio({ opened = false, aoClicar, aoFecha
 
     const navegar = useNavigate()
     useEffect(() => {
-        http.get('api/dashboard/benefit')
-            .then((response) => {
-                console.log(response)
-            })
-            .catch(erro => {
-                console.error(erro)
-            })  
-    })
+        if(beneficios.length === 0)
+        {
+            http.get('api/dashboard/benefit')
+                .then((response) => {
+                    setBeneficios(response.data.benefit)
+                })
+                .catch(erro => {
+                    console.error(erro)
+                })  
+        }
+    }, [beneficios])
 
     const benefits = [
         'Alimentação',

@@ -46,7 +46,7 @@ function DepartamentoDetalhes() {
             .then(response => {
                 if(response.status === 'success')
                 {
-                    setDepartamento(response.department)
+                    setDepartamento(response.department[0])
                 }
             })
             .catch(erro => console.log(erro))

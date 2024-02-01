@@ -51,6 +51,7 @@ function DepartamentoAdicionarColaboradores() {
         setDepartamento,
         setColaboradores,
         setNome,
+        setNumeroColaboradores,
         submeterDepartamento
     } = useDepartamentoContext()
 
@@ -58,7 +59,6 @@ function DepartamentoAdicionarColaboradores() {
     const [edicaoAberta, setEdicaoAberta] = useState(false)
     const [listaColaboradores, setListaColaboradores] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('')
-    const [selectedColaboradores, setSelectedColaboradores] = useState(null)
     const [rowClick, setRowClick] = useState(true)
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -72,7 +72,7 @@ function DepartamentoAdicionarColaboradores() {
                 .then(response => {
                     if(response.status === 'success')
                     {
-                        setDepartamento(response.department)
+                        setDepartamento(response.department[0])
                         setColaboradores(response.department.collaborators)
                     }
                 })
@@ -100,31 +100,24 @@ function DepartamentoAdicionarColaboradores() {
     }
 
     const adicionarColaborador = () => {
-        if(selectedColaboradores && selectedColaboradores.length > 0)
-        {
-            setLoading(true)
-            setColaboradores(selectedColaboradores)
-            submeterDepartamento().then(response => {
-                if(response.status)
+        setLoading(true)
+        setColaboradores(departamento.collaborators)
+        submeterDepartamento().then(response => {0
+            if(response.status)
+            {
+                if(response.status === 'success')
                 {
-                    if(response.status === 'success')
-                    {
-                        toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
-                        setTimeout(() => {
-                            navegar(`/departamento/detalhes/${response.public_id}`)
-                        }, "700");
-                    }
+                    toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
+                    setTimeout(() => {
+                        navegar(`/departamento/detalhes/${response.public_id}`)
+                    }, "700");
                 }
-                else
-                {
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar adicionar colaborador', life: 3000 });
-                }
-            })
-        }
-        else
-        {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você precisa selecionar colaboradores', life: 3000 });
-        }
+            }
+            else
+            {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar adicionar colaborador', life: 3000 });
+            }
+        })
     }
     
     const onGlobalFilterChange = (value) => {
@@ -174,14 +167,14 @@ function DepartamentoAdicionarColaboradores() {
                             <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                         </span>
                     </div>
-                    <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '68vw' }}>
+                    <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={departamento.collaborators} onSelectionChange={(e) => setColaboradores(e.value)} tableStyle={{ minWidth: '68vw' }}>
                         <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                         <Column field="name" header="Nome Completo" style={{ width: '100%' }}></Column>
                     </DataTable>
                     <ContainerButton>
                         <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                         <LadoALado>
-                            <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
+                            <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{departamento.collaborators_count ? departamento.collaborators_count : 0}</Texto></span>
                             <Botao aoClicar={adicionarColaborador} estilo="vermilion" size="medium" filled>Adicionar Colaboradores</Botao>
                         </LadoALado>
                     </ContainerButton>

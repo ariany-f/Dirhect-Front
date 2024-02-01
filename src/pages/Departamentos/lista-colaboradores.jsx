@@ -13,8 +13,8 @@ function DepartamentoListaColaboradores() {
     useEffect(() => {
         http.get(`api/dashboard/department/${id}`)
             .then(response => {
-                setDepartamento(response.department)
-                setColaboradores(response.collaborators)
+                setDepartamento(response.department[0])
+                setColaboradores(response.department.collaborators)
             })
             .catch(erro => console.log(erro))
     }, [])

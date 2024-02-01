@@ -6,8 +6,8 @@ const departamentoInicial = {
     name: "",
     description: "",
     status: 10,
+    collaborators: [],
     collaborators_count: 0,
-    collaborators: []
 }
 
 export const DepartamentoContext = createContext({
@@ -29,37 +29,33 @@ export const DepartamentoProvider = ({ children }) => {
 
     const navegar = useNavigate()
     const [departamento, setDepartamento] = useState(departamentoInicial)
-
-    const setColaboradores = (collaborators) => {
-       
-        if(departamento.collaborators && departamento.collaborators.length > 0)
-        {
-            const colaboradores = departamento.collaborators
-
-            if(collaborators && Object.keys(collaborators).length > 0)
-            {
-                collaborators.map(item => {
-                    colaboradores.push(item)
-                })
-                
-                setNumeroColaboradores(Object.keys(colaboradores).length)
     
-                setDepartamento(estadoAnterior => {
-                    return {
-                        ...estadoAnterior,
-                        colaboradores
-                    }
-                })
-
-                delete departamento['colaboradores']
-            }
-        }
-        else
+    const setColaboradores = (collaborators) => {
+        
+        if(collaborators && Object.keys(collaborators).length > 0)
         {
-            if(collaborators && Object.keys(collaborators).length > 0)
+            if(departamento.collaborators && departamento.collaborators.length > 0)
+            {
+                if(collaborators && Object.keys(collaborators).length > 0)
+                {
+                    departamento.collaborators.map(item => {
+                        collaborators.filter(function(itm){
+                            return itm.public_id !== item.public_id
+                        });
+                    })
+
+                    setNumeroColaboradores(Object.keys(collaborators).length)
+                    setDepartamento(estadoAnterior => {
+                        return {
+                            ...estadoAnterior,
+                            collaborators
+                        }
+                    })
+                }
+            }
+            else
             {
                 setNumeroColaboradores(Object.keys(collaborators).length)
-                
                 setDepartamento(estadoAnterior => {
                     return {
                         ...estadoAnterior,
@@ -67,6 +63,16 @@ export const DepartamentoProvider = ({ children }) => {
                     }
                 })
             }
+        }
+        else
+        {
+            setNumeroColaboradores(0)
+            setDepartamento(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    collaborators
+                }
+            })
         }
     }
     const setNumeroColaboradores = (collaborators_count) => {
