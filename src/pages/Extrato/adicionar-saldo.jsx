@@ -5,9 +5,9 @@ import styles from './Extrato.module.css'
 import { FaBarcode, FaCreditCard, FaPix } from 'react-icons/fa6'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import { useState } from 'react'
-import ModalAdicionarSaldoBoletoBancario from '../../components/ModalAdicionarSaldoBoletoBancario'
-import ModalAdicionarSaldoPix from '../../components/ModalAdicionarSaldoPix'
-import ModalAdicionarSaldoCartao from '../../components/ModalAdicionarSaldoCartao'
+import ModalAdicionarSaldoBoletoBancario from '../../components/ModalAdicionarSaldo'
+import ModalAdicionarSaldoPix from '../../components/ModalAdicionarSaldo/pix'
+import ModalAdicionarSaldoCartao from '../../components/ModalAdicionarSaldo/cartao'
 import { Link } from 'react-router-dom'
 
 function AdicionarSaldo() {
