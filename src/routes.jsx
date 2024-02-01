@@ -57,7 +57,8 @@ import BeneficioSelecionarTipoRecarga from '@pages/Beneficios/selecao-tipo-recar
 import BeneficioSelecionarColaboradores from '@pages/Beneficios/selecao-colaboradores'
 import BeneficioSelecionarDepartamentos from '@pages/Beneficios/selecao-departamentos'
 import BeneficioEditarValor from '@pages/Beneficios/editar-valor'
-import Extrato from '@pages/Extrato'
+import ExtratoCommon from '@pages/Extrato'
+import Extrato from '@pages/Extrato/extrato'
 import ExtratoAdicionarSaldo from '@pages/Extrato/adicionar-saldo'
 import DepartamentoConfiguracaoBeneficios from '@pages/Departamentos/configuracao-beneficios'
 import DepartamentoListaColaboradores from '@pages/Departamentos/lista-colaboradores'
@@ -137,9 +138,10 @@ function AppRouter() {
                   <Route index element={<OperadorDados />} />
                   <Route path="permissoes" element={<OperadorPermissoes />} />
               </Route>
-
-              <Route path="extrato" element={<Extrato />} />
-              <Route path="extrato/adicionar-saldo" element={<ExtratoAdicionarSaldo />} />
+              <Route path="extrato" element={<ExtratoCommon />} >
+                <Route index element={<Extrato />} />
+                <Route path="adicionar-saldo" element={<ExtratoAdicionarSaldo />} />
+              </Route>
             
               <Route path="departamento" element={<Departamentos />} >
                 <Route index element={<DepartamentoLista />} />

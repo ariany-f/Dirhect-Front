@@ -12,7 +12,7 @@ const icones = [
         "flexible_value": false,
         "description": "Mercados, supermercados e aplicativo de delivery.",
         "food_meal_one_category": false,
-        "icone": <RiShoppingCartFill />
+        "icone": <RiShoppingCartFill size={20} />
     },
     {
         "id": 2,
@@ -20,7 +20,7 @@ const icones = [
         "flexible_value": false,
         "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
-        "icone": <MdOutlineFastfood />
+        "icone": <MdOutlineFastfood size={20} />
     },
     {
         "id": 3,
@@ -28,7 +28,7 @@ const icones = [
         "flexible_value": true,
         "description": "Postos de combustível, estacionamentos, pedágio, carros por aplicativo, recarga de bilhete de transporte e passagens de ônibus e trem.",
         "food_meal_one_category": false,
-        "icone": <RiBusFill />
+        "icone": <RiBusFill size={20} />
     },
     {
         "id": 4,
@@ -36,7 +36,7 @@ const icones = [
         "flexible_value": true,
         "description": "Compra de cadeira ergométrica, itens de papelaria, assistência técnica de computador e custeio de contas de energia e internet",
         "food_meal_one_category": false,
-        "icone": <RiComputerLine />
+        "icone": <RiComputerLine size={20} />
     },
     {
         "id": 5,
@@ -44,7 +44,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <RiGasStationFill />
+        "icone": <RiGasStationFill size={20} />
     },
     {
         "id": 6,
@@ -52,7 +52,7 @@ const icones = [
         "flexible_value": true,
         "description": "Streaming de vídeo e música, bancas de jornais, jogos online, ingressos para shows teatros e museus, instrumentos musicais, escolas de arte e música e parques de diversões, zoológicos e aquários.",
         "food_meal_one_category": false,
-        "icone": <FaTheaterMasks />
+        "icone": <FaTheaterMasks size={20} />
     },
     {
         "id": 7,
@@ -60,7 +60,7 @@ const icones = [
         "flexible_value": true,
         "description": "Cursos online e presenciais, cursos de extensão, cursos e app de idiomas, ensino superior e técnico, eventos e feiras profissionais e livrarias e papelarias",
         "food_meal_one_category": false,
-        "icone": <BiBookReader  />
+        "icone": <BiBookReader  size={20} />
     },
     {
         "id": 8,
@@ -68,7 +68,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <MdOutlineMedicalServices />
+        "icone": <MdOutlineMedicalServices size={20} />
     },
     {
         "id": 9,
@@ -76,7 +76,7 @@ const icones = [
         "flexible_value": false,
         "description": "Alimentação e Refeição, tudo em uma só categoria.",
         "food_meal_one_category": true,
-        "icone": <PiForkKnifeFill />
+        "icone": <PiForkKnifeFill size={20} />
     },
     {
         "id": 10,
@@ -84,7 +84,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <RiGasStationFill />
+        "icone": <RiGasStationFill size={20} />
     }
 ]
 
