@@ -17,6 +17,7 @@ http.interceptors.request.use(function (config) {
 
 const rotasIgnoradasPelosErros = [
     'api/auth/code',
+    'api/auth/logout'
 ]
 
 http.interceptors.response.use(
