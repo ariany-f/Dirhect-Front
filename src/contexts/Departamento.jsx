@@ -101,14 +101,24 @@ export const DepartamentoProvider = ({ children }) => {
     }
     
     const submeterDepartamento = () => {
-            
-        return http.post('api/dashboard/department', departamento)
+        if(departamento.public_id){
+            return http.patch(`api/dashboard/department/${departamento.public_id}`, departamento)
             .then((response) => {
                 return response
             })
             .catch(erro => {
                 return erro.response.data
             })
+        }
+        else{
+            return http.post('api/dashboard/department', departamento)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro.response.data
+            })
+        }
     }
 
     const contexto = {

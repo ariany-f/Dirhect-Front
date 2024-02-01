@@ -103,9 +103,8 @@ function ModalDepartamentoAdicionarBeneficio({ opened = false, aoClicar, aoFecha
 
     const [beneficios, setBeneficios] = useState([])
 
-    const navegar = useNavigate()
     useEffect(() => {
-        if(beneficios.length === 0)
+        if(beneficios && beneficios.length === 0)
         {
             http.get('api/dashboard/benefit')
                 .then((response) => {

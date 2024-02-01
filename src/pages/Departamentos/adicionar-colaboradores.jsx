@@ -109,7 +109,7 @@ function DepartamentoAdicionarColaboradores() {
                 {
                     toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
                     setTimeout(() => {
-                        navegar(`/departamento/detalhes/${response.public_id}`)
+                        navegar(`/departamento/detalhes/${id}`)
                     }, "700");
                 }
             }
