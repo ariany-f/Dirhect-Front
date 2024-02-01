@@ -7,7 +7,7 @@ import { BsArrowLeftRight } from 'react-icons/bs'
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
 import Menu from "@components/Menu"
 import { ArmazenadorToken } from './../../utils';
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const HeaderEstilizado = styled.header`
     display: flex;
@@ -66,7 +66,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     
     const location = useLocation()
     const navegar = useNavigate()
-    const [usuarioEstaLogado, setUsuarioEstaLogado] = useState(!!ArmazenadorToken.AccessToken)
+    const [usuarioEstaLogado, setUsuarioEstaLogado] = useState(true)
+
+    useEffect(() => {
+        setUsuarioEstaLogado(!!ArmazenadorToken.AccessToken)
+    }, [])
 
     const titulos = [
         {
@@ -121,6 +125,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     function toggleMenu(){
         setMenuOpened(!menuOpened)
     }
+
     if(usuarioEstaLogado && ArmazenadorToken.UserName)
     {
         return (

@@ -409,9 +409,9 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                         <PiFirstAidKitLight size={20} /><Texto weight={700}>Saúde</Texto>
                                     </Col6>
                                     <Col6>
-                                        <Texto weight="800">
+                                        <div style={{fontWeight: 800, display: 'flex', alignItems: 'center'}}>
                                             <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedSaude} onChange={setCheckedSaude} />
-                                        </Texto>
+                                        </div>
                                     </Col6>
                                 </Col12>
                                 <Col12>
@@ -431,9 +431,9 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                         <BiCar size={20} /><Texto weight={700}>Mobilidade</Texto>
                                     </Col6>
                                     <Col6>
-                                        <Texto weight="800">
+                                        <div style={{fontWeight: 800, display: 'flex', alignItems: 'center'}}>
                                             <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedMobilidade} onChange={setCheckedMobilidade} />
-                                        </Texto>
+                                        </div>
                                     </Col6>
                                 </Col12>
                                 <Col12>
@@ -453,9 +453,9 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                         <PiOfficeChair size={20} /><Texto weight={700}>Home Office</Texto>
                                     </Col6>
                                     <Col6>
-                                        <Texto weight="800">
+                                        <div style={{fontWeight: 800, display: 'flex', alignItems: 'center'}}>
                                             <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedHomeOffice} onChange={setCheckedHomeOffice} />
-                                        </Texto>
+                                        </div>
                                     </Col6>
                                 </Col12>
                                 <Col12>
@@ -477,9 +477,9 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                         <IoBookOutline size={20} /><Texto weight={700}>Educação</Texto>
                                     </Col6>
                                     <Col6>
-                                        <Texto weight="800">
+                                        <div style={{fontWeight: 800, display: 'flex', alignItems: 'center'}}>
                                             <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedEducacao} onChange={setCheckedEducacao} />
-                                        </Texto>
+                                        </div>
                                     </Col6>
                                 </Col12>
                                 <Col12>
@@ -499,9 +499,9 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                         <RiCoupon3Line size={20} /><Texto weight={700}>Cultura</Texto>
                                     </Col6>
                                     <Col6>
-                                        <Texto weight="800">
+                                        <div style={{fontWeight: 800, display: 'flex', alignItems: 'center'}}>
                                             <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedCultura} onChange={setCheckedCultura} />
-                                        </Texto>
+                                        </div>
                                     </Col6>
                                 </Col12>
                                 <Col12>
@@ -521,9 +521,9 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                         <RiCoupon3Line size={18} /><Texto weight={700}>Combustível</Texto>
                                     </Col6>
                                     <Col6>
-                                        <Texto weight="800">
+                                        <div style={{fontWeight: 800, display: 'flex', alignItems: 'center'}}>
                                             <b style={{fontSize: '10px'}}>Fixar valor&nbsp;</b><SwitchInput checked={checkedCombustivel} onChange={setCheckedCombustivel} />
-                                        </Texto>
+                                        </div>
                                     </Col6>
                                 </Col12>
                                 <Col12>
