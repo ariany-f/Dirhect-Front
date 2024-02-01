@@ -77,6 +77,14 @@ const icones = [
         "description": "Alimentação e Refeição, tudo em uma só categoria.",
         "food_meal_one_category": true,
         "icone": <PiForkKnifeFill />
+    },
+    {
+        "id": 10,
+        "name": "Vale Combustivel",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <RiGasStationFill />
     }
 ]
 
@@ -98,8 +106,10 @@ function BadgeBeneficio({ nomeBeneficio, layout = 'inline' }) {
                 {
                     return (
                         <div key={item.id} className={styles.beneficio_grid}>
-                            {item.icone}
-                            <p>{item.name}</p>
+                            <div className={styles.inside_grid}>
+                                {item.icone}
+                                <p>{item.name}</p>
+                            </div>
                         </div>
                     )
                 }

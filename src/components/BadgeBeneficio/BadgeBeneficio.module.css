@@ -15,16 +15,24 @@
 }
 
 .beneficio_grid{
-    cursor: pointer;
-    flex-direction: column;
-    gap: 24px;
-    padding: 16px;
-    font-size: 14px;
-    border-radius: 8px;
     display: flex;
-    flex-grow: 1;
-    width: 100px;
+    padding: 16px;
+    background-color: var(--neutro-50);
+    border-radius: 8px;
     border: 1px solid var(--neutro-200);
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    flex: 1 0 0;
+    align-self: stretch;
+    & .inside_grid {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 8px;
+    }
     & p {
         color: var(--neutro-600);
         font-weight: 700;

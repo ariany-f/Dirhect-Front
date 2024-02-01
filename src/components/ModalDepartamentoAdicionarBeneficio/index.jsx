@@ -108,24 +108,13 @@ function ModalDepartamentoAdicionarBeneficio({ opened = false, aoClicar, aoFecha
         {
             http.get('api/dashboard/benefit')
                 .then((response) => {
-                    setBeneficios(response.data.benefit)
+                    setBeneficios(response.data.benefits)
                 })
                 .catch(erro => {
                     console.error(erro)
                 })  
         }
     }, [beneficios])
-
-    const benefits = [
-        'Alimentação',
-        'Refeição',
-        'Auxílio Alimentação',
-        'Mobilidade',
-        'Saúde',
-        'Home Office',
-        'Educação',
-        'Cultura'
-    ]
 
     return(
         <>
@@ -143,9 +132,9 @@ function ModalDepartamentoAdicionarBeneficio({ opened = false, aoClicar, aoFecha
                         </Titulo>
                     </Frame>
                     <div className={styles.beneficios}>
-                        {benefits.map((benefit, index) => {
+                        {beneficios.map((benefit, index) => {
                             return (
-                                <BadgeBeneficio layout="grid" key={index} nomeBeneficio={benefit}/>
+                                <BadgeBeneficio layout="grid" key={benefit.public_id} nomeBeneficio={benefit.name}/>
                             )
                         })}
                     </div>

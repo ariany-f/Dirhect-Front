@@ -87,18 +87,21 @@ function BeneficioSelecionarFormaPagamento() {
     });
 
     useEffect(() => {
-        const url = `api/checkout?source=recharge&public_id=${id}`;
-
-        http.get(url)
-        .then((response) => {
-            if(response.data)
-            {
-                setCheckout(response.data)
-            }
-        })
-        .catch(erro => {
-            console.error(erro)
-        })
+        if(!checkout)
+        {
+            const url = `api/checkout?source=recharge&public_id=${id}`;
+    
+            http.get(url)
+            .then((response) => {
+                if(response.data)
+                {
+                    setCheckout(response.data)
+                }
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
+        }
     }, [checkout, setCheckout])
     
     function handleChange(valor)
