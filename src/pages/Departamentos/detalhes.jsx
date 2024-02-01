@@ -16,6 +16,7 @@ import './Detalhes.css'
 import styles from './Departamento.module.css'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import { GrAddCircle } from 'react-icons/gr'
+import Loading from '@components/Loading'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import ModalDepartamentoAdicionarBeneficio from '@components/ModalDepartamentoAdicionarBeneficio'
@@ -30,6 +31,7 @@ const ConteudoFrame = styled.div`
 function DepartamentoDetalhes() {
 
     let { id } = useParams()
+    const [loading, setLoading] = useState(false)
     const [departamento, setDepartamento] = useState(null)
     const [modalBeneficioOpened, setModalBeneficioOpened] = useState(false)
     const location = useLocation()
@@ -42,7 +44,8 @@ function DepartamentoDetalhes() {
     })
 
     useEffect(() => {
-        http.get(`api/dashboard/department/${id}`)
+        if(!departamento) {
+            http.get(`api/dashboard/department/${id}`)
             .then(response => {
                 if(response.status === 'success')
                 {
@@ -50,7 +53,8 @@ function DepartamentoDetalhes() {
                 }
             })
             .catch(erro => console.log(erro))
-    }, [])
+        }
+    })
 
     const excluirDepartamento = () => {
         confirmDialog({
@@ -58,12 +62,14 @@ function DepartamentoDetalhes() {
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
+                setLoading(true)
                 http.delete(`api/dashboard/department/${id}`)
                 .then(response => {
                     if(response.status === 'success')
                     {
                         toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                        navegar('/departamento/lista')
+                        setLoading(false)
+                        navegar('/departamento')
                     }
                 })
                 .catch(erro => console.log(erro))
@@ -77,6 +83,7 @@ function DepartamentoDetalhes() {
     return (
         <ConteudoFrame>
             <Toast ref={toast} />
+            <Loading opened={loading} />
             <ConfirmDialog />
             <BotaoVoltar linkFixo={`/departamento`} />
             <Texto weight={500} size="12px">Departamento</Texto>

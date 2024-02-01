@@ -6,6 +6,7 @@ const departamentoInicial = {
     name: "",
     description: "",
     status: 10,
+    public_id: '',
     collaborators: [],
     collaborators_count: 0,
 }
@@ -34,7 +35,7 @@ export const DepartamentoProvider = ({ children }) => {
         
         if(collaborators && Object.keys(collaborators).length > 0)
         {
-            if(departamento.collaborators && departamento.collaborators.length > 0)
+            if(departamento.collaborators && Object.keys(departamento.collaborators).length > 0)
             {
                 if(collaborators && Object.keys(collaborators).length > 0)
                 {
@@ -101,8 +102,9 @@ export const DepartamentoProvider = ({ children }) => {
     }
     
     const submeterDepartamento = () => {
-        if(departamento.public_id){
-            return http.patch(`api/dashboard/department/${departamento.public_id}`, departamento)
+        console.log(departamento.public_id)
+        if(departamento.public_id && departamento.public_id !== ''){
+            return http.put(`api/dashboard/department/${departamento.public_id}`, departamento)
             .then((response) => {
                 return response
             })

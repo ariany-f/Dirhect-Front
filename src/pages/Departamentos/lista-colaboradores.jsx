@@ -7,13 +7,11 @@ import DataTableColaboradores from '@components/DataTableColaboradores'
 function DepartamentoListaColaboradores() {
 
     let { id } = useParams()
-    const [departamento, setDepartamento] = useState(null)
     const [colaboradores, setColaboradores] = useState(null)
 
     useEffect(() => {
         http.get(`api/dashboard/department/${id}`)
             .then(response => {
-                setDepartamento(response.department[0])
                 setColaboradores(response.department.collaborators)
             })
             .catch(erro => console.log(erro))

@@ -23,24 +23,28 @@ const ConteudoFrame = styled.div`
 function DepartamentoLista() {
 
     const [loading, setLoading] = useState(false)
-    const [departamentos, setDepartamentos] = useState([])
+    const [departamentos, setDepartamentos] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const location = useLocation()
     const toast = useRef(null)
     const navegar = useNavigate()
     
     const {
-        setNome
+        setDepartamento,
+        setNome,
+        setDescription
     } = useDepartamentoContext()
 
 
     const adicionarNome = (nome) => {
-        setNome(nome)
-        navegar('/departamento/adicionar-colaboradores')
+            setDepartamento()
+            setDescription('')
+            setNome(nome)
+            navegar('/departamento/adicionar-colaboradores')
     }
 
     useEffect(() => {
-        if(departamentos.length === 0)
+        if(!departamentos)
         {
             setLoading(true)
             http.get('api/dashboard/department')
