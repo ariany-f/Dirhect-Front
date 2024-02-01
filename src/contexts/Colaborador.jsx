@@ -122,7 +122,6 @@ export const ColaboradorProvider = ({ children }) => {
         })
     }
     const setAddressPostalCode = (address_postal_code) => {
-        console.log(colaborador)
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,

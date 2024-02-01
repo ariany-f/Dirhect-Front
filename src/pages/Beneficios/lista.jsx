@@ -31,7 +31,6 @@ function Beneficios() {
             http.get('api/recharge/benefits')
                 .then(response => {
                     setLoading(false)
-                    console.log(response)
                     if(response.data.recharges)
                     {
                         setBeneficios(response.data.recharges)
