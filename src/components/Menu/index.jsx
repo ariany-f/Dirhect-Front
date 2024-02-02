@@ -1,11 +1,10 @@
 import styled from "styled-components"
 import { MdOutlineChevronRight } from 'react-icons/md'
 import { IoMdSettings } from 'react-icons/io'
-import { IoCardSharp } from 'react-icons/io5'
 import { RiUserFollowFill, RiLogoutCircleLine } from 'react-icons/ri'
 import { Link, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
-import { useEffect } from "react"
+import { ArmazenadorToken } from "../../utils"
 
 const DialogEstilizado = styled.dialog`
     display: inline-flex;
@@ -68,8 +67,15 @@ function Menu({ opened = false, aoFechar }){
         {
             aoFechar()
         }
-        submeterLogout()
-        navegar('/login')
+        submeterLogout().then(response => {
+            if(response.data.data.status === 'success')
+            {
+                ArmazenadorToken.removerToken()
+                navegar('/login')
+            }
+        }).catch(response => {
+            console.log(response)
+        })
     }
 
     const FecharMenu = () => {

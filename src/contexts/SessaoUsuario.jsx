@@ -259,14 +259,12 @@ export const SessaoUsuarioProvider = ({ children }) => {
     }
 
     const submeterLogout = () => {
-        http.get('api/auth/logout')
+        return http.get('api/auth/logout')
             .then((response) => {
-                ArmazenadorToken.removerToken()
-                setUsuarioEstaLogado(false)
-                navegar('/')
+                return response
             })
             .catch(erro => {
-                console.error(erro)
+                return erro.response
             })
     }
 

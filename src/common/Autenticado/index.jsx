@@ -105,7 +105,8 @@ function Autenticado() {
                 </MainSection>
                 <ModalCnpj aoClicar={() => setLoading(true)} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
             </>
-        : <Navigate to="/login" replace={true}/>}
+        : <></> // <Navigate to="/login" replace={true}/>
+        }
         </>
     )
 }

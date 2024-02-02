@@ -4,6 +4,7 @@ import IncompleteSteps from '@components/DashboardCard/IncompleteSteps'
 import DashboardCard from '@components/DashboardCard'
 import Loading from '@components/Loading'
 import styled from 'styled-components'
+import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
 
 const WrapperCards = styled.div`
     display: inline-flex;
@@ -22,6 +23,10 @@ const CardsEmpilhados = styled.div`
 `
 
 function Dashboard() {
+
+    const {
+        usuarioEstaLogado
+    } = useSessaoUsuarioContext()
 
     const [colaboradores, setColaboradores] = useState(null)
     const [loadingOpened, setLoadingOpened] = useState(true)
@@ -63,54 +68,61 @@ function Dashboard() {
     }
 
     useEffect(() => {
-        if(!dashboardData.userDashResource.public_id)
+        if(usuarioEstaLogado)
         {
+            if(!dashboardData.userDashResource.public_id)
+            {
+                /**
+                 * Dados necessários para exibição no painel do usuário
+                 */
+                http.get('api/dashboard/user')
+                .then(response => {
+                    setDashboardData(response.data)
+                })
+                .then(() => {
+                    setSaldo(dashboardData.userDashResource.total_benefit_balance)
+                })
+                .catch(erro => {
+                    console.error(erro)
+                })
+            }
+    
             /**
-             * Dados necessários para exibição no painel do usuário
+             * Pegar colaboradores
              */
-            http.get('api/dashboard/user')
-            .then(response => {
-                setDashboardData(response.data)
-            })
-            .then(() => {
-                setSaldo(dashboardData.userDashResource.total_benefit_balance)
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
+            if(!colaboradores)
+            {
+                http.get('api/dashboard/collaborator')
+                .then(response => {
+                    if(response.data)
+                    {
+                        setColaboradores(response.data.collaborators)
+                    }
+                })
+                .catch(erro => {
+                    console.error(erro)
+                })
+            }
         }
-
-        /**
-         * Pegar colaboradores
-         */
-        if(!colaboradores)
-        {
-            http.get('api/dashboard/collaborator')
-            .then(response => {
-                if(response.data)
-                {
-                    setColaboradores(response.data.collaborators)
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
-        }
-    }, [])
+    }, [usuarioEstaLogado])
 
     return (
-       <>
-       {colaboradores ?
         <>
-            {(!colaboradores.length || !dashboardData.transactions.length) ? 
-                <IncompleteSteps transactions={dashboardData.transactions} colaboradores={colaboradores} />
-            :
-                <DashboardCard dashboardData={dashboardData} colaboradores={colaboradores} />
+        {usuarioEstaLogado &&
+            <>
+            {colaboradores ?
+                <>
+                    {(!colaboradores.length || !dashboardData.transactions.length) ? 
+                        <IncompleteSteps transactions={dashboardData.transactions} colaboradores={colaboradores} />
+                    :
+                        <DashboardCard dashboardData={dashboardData} colaboradores={colaboradores} />
+                    }
+                </>
+                :
+                    <Loading opened={loadingOpened} />
             }
-        </>
-        :
-            <Loading opened={loadingOpened} />
-       }
+            </>
+        }
        </>
     )
 }

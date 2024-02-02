@@ -65,11 +65,19 @@ function SelecionarEmpresa() {
                     {
                         setEmpresas(response.data.companies)
                         setCompanies(response.data.companies)
+                        setSessionCompany(response.data.companies[0].public_id)
                     }
                 })
                 .catch(erro => {
                     console.log(erro)
                 })
+        }
+        else
+        {
+            if(!ArmazenadorToken.UserCompanyPublicId)
+            {
+                ArmazenadorToken.definirCompany(empresas[0].public_id)
+            }
         }
     }, [usuario, empresas])
 
@@ -82,6 +90,7 @@ function SelecionarEmpresa() {
         {
             setModalOpened(true)
             setSessionCompany(selected)
+            ArmazenadorToken.definirCompany(selected)
         }
     }
     

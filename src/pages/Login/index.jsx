@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom"
 import styles from './Login.module.css'
 import CheckboxContainer from "@components/CheckboxContainer"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Toast } from 'primereact/toast'
 import { ArmazenadorToken } from "../../utils"
 import Loading from "@components/Loading"
@@ -23,12 +23,21 @@ function Login() {
     const { 
         usuario,
         setRemember,
+        usuarioEstaLogado,
+        setUsuarioEstaLogado,
         setDocument,
         setEmail,
         setCompanies,
         setPassword,
         solicitarCodigo
     } = useSessaoUsuarioContext()
+
+    useEffect(() =>{
+        if(usuarioEstaLogado)
+        {
+            setUsuarioEstaLogado(false)
+        }
+    })
     
     const sendData = (evento) => {
         evento.preventDefault()

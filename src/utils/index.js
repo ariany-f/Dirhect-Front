@@ -19,8 +19,7 @@ export class ArmazenadorToken {
         sessionStorage.setItem(USER_DOCUMENT, document)
     }
     static removerToken() {
-        sessionStorage.clear()
-        window.location.href="/login"
+    return sessionStorage.clear()
     }
     static get AccessToken() {
         return sessionStorage.getItem(ACCESS_TOKEN)
