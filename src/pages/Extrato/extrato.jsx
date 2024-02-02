@@ -100,7 +100,7 @@ function Extrato() {
                 
                 <BotaoGrupo align="end">
                     <BotaoGrupo>
-                        <Texto width={'350px'}>Você pode fazer suas recargas utilizando essas formas de pagamento:</Texto>
+                        <Texto>Você pode fazer suas recargas utilizando essas formas de pagamento:</Texto>
                         {metodosPagamento.map(item => {
                             return (
                                 <div key={item.id} className={styles.extrato_grid}>
@@ -110,7 +110,7 @@ function Extrato() {
                             )
                         })}
                         <Link to="/extrato/adicionar-saldo">
-                            <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Saldo</Botao>
+                            <Botao outStyle={{textWrap: 'nowrap'}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Saldo</Botao>
                         </Link>
                     </BotaoGrupo>
                 </BotaoGrupo>

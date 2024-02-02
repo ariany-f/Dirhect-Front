@@ -15,19 +15,20 @@ const BotaoEstilizado = styled.button`
     line-height: 150%; /* 24px */
     justify-content: center;
     align-items: center;
+    ${props => props.$style ? props.$style : ''};
 `
 
-function Botao( {children, estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px' } ) {
+function Botao( {children, estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px', outStyle='' } ) {
 
     const classes = `${estilo} ${model} ${size} ${weight} ${tab ? 'tab' : ''}`;
    
     return (
         aoClicar ?
-            <BotaoEstilizado $fontSize={fontSize} $size={size} onClick={aoClicar} className={classes}>
+            <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} onClick={aoClicar} className={classes}>
                 {children}
             </BotaoEstilizado>
         :
-            <BotaoEstilizado $fontSize={fontSize} $size={size} className={classes}>
+            <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} className={classes}>
                 {children}
             </BotaoEstilizado>
     )

@@ -1,8 +1,12 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
+import Texto from "@components/Texto"
 import Titulo from "@components/Titulo"
+import CampoTexto from "@components/CampoTexto"
 import { RiCloseFill } from 'react-icons/ri'
 import styled from "styled-components"
+import styles from './ModalAdicionarSaldo.module.css'
+import { useState } from "react"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -11,16 +15,6 @@ const Overlay = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-`
-
-const AdicionarCnpjBotao = styled.div`
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--primaria);
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
 `
 
 const DialogEstilizado = styled.dialog`
@@ -71,7 +65,16 @@ const DialogEstilizado = styled.dialog`
         }
     }
 `
+
+let Real = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+});
+
 function ModalAdicionarSaldoBoletoBancario({ opened = false, aoClicar, aoFechar }) {   
+
+    const [valor, setValor] = useState(Real.format(0))
+
     return(
         <>
             {opened &&
@@ -87,7 +90,23 @@ function ModalAdicionarSaldoBoletoBancario({ opened = false, aoClicar, aoFechar 
                             <h6>Boleto bancário</h6>
                         </Titulo>
                     </Frame>
-                   
+                    <Frame padding="24px 0px">
+                        <Texto>Adicionar crédito</Texto>
+                        <CampoTexto 
+                                valor={valor}
+                                patternMask={'BRL'}
+                                type="text" 
+                                setValor={setValor} 
+                                placeholder="R$ 0,00"
+                                label="Valor do Boleto"
+                            />
+                    </Frame>
+                    <form method="dialog">
+                        <div className={styles.containerBottom}>
+                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                            <Botao aoClicar={() => aoSalvar(nome)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                        </div>
+                    </form>
                 </DialogEstilizado>
             </Overlay>}
         </>
