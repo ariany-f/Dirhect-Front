@@ -7,6 +7,7 @@ import { RiCloseFill } from 'react-icons/ri'
 import styled from "styled-components"
 import { useState } from "react"
 import styles from './ModalAdicionarSaldo.module.css'
+import { currency, mask as masker, unMask } from "remask"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -75,6 +76,11 @@ function ModalAdicionarSaldoPix({ opened = false, aoClicar, aoFechar }) {
 
     const [valor, setValor] = useState(Real.format(0))
 
+    function removeMask(valor)
+    {
+        return currency.unmask({locale: 'pt-BR', currency: 'BRL', value: valor})
+    }
+
     return(
         <>
             {opened &&
@@ -104,7 +110,7 @@ function ModalAdicionarSaldoPix({ opened = false, aoClicar, aoFechar }) {
                     <form method="dialog">
                         <div className={styles.containerBottom}>
                             <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                            <Botao aoClicar={() => aoSalvar(nome)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                            <Botao aoClicar={() => aoClicar(removeMask(valor))} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                         </div>
                     </form>
                 </DialogEstilizado>

@@ -9,12 +9,52 @@ import ModalAdicionarSaldoBoletoBancario from '../../components/ModalAdicionarSa
 import ModalAdicionarSaldoPix from '../../components/ModalAdicionarSaldo/pix'
 import ModalAdicionarSaldoCartao from '../../components/ModalAdicionarSaldo/cartao'
 import { Link } from 'react-router-dom'
+import http from '@http'
 
 function AdicionarSaldo() {
 
     const [modalBoletoOpened, setModalBoletoOpened] = useState(false)
     const [modalPixOpened, setModalPixOpened] = useState(false)
     const [modalCartaoOpened, setModalCartaoOpened] = useState(false)
+
+    function submitAdicionarSaldo(valor, card = null) {
+        console.log(card)
+        const obj = {}
+        obj['transaction_type_enum'] = 16
+        if(modalBoletoOpened)
+        {
+            obj['payment_type_enum'] = 2
+        }
+        if(modalPixOpened)
+        {
+            obj['payment_type_enum'] = 1
+        }
+        if(modalCartaoOpened)
+        {
+            obj['payment_type_enum'] = 3
+        }
+        obj['amount'] = valor
+
+        if(card)
+        {
+            obj['card'] = {
+                "installments": 1,
+                "installment_amount": valor,
+                "number": card.number,
+                "validate": card.expiry,
+                "cvv": card.cvc,
+                "holder": card.name
+            }
+        }
+
+        http.post('api/dashboard/balance', obj)
+        .then((response) => {
+            console.log(response)
+        })
+        .catch(erro => {
+            console.error(erro)
+        })
+    }
 
     return (
         <Frame gap="32px">
@@ -67,9 +107,9 @@ function AdicionarSaldo() {
                         </Link>
                     </div>
                 </div>
-                <ModalAdicionarSaldoBoletoBancario opened={modalBoletoOpened} aoFechar={() => setModalBoletoOpened(false)} />
-                <ModalAdicionarSaldoPix opened={modalPixOpened} aoFechar={() => setModalPixOpened(false)} />
-                <ModalAdicionarSaldoCartao opened={modalCartaoOpened} aoFechar={() => setModalCartaoOpened(false)} />
+                <ModalAdicionarSaldoBoletoBancario aoClicar={submitAdicionarSaldo} opened={modalBoletoOpened} aoFechar={() => setModalBoletoOpened(false)} />
+                <ModalAdicionarSaldoPix aoClicar={submitAdicionarSaldo} opened={modalPixOpened} aoFechar={() => setModalPixOpened(false)} />
+                <ModalAdicionarSaldoCartao aoClicar={submitAdicionarSaldo} opened={modalCartaoOpened} aoFechar={() => setModalCartaoOpened(false)} />
         </Frame>
     )
 }
