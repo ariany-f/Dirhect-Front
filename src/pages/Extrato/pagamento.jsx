@@ -62,82 +62,57 @@ function ExtratoPagamento() {
     return (
         <Frame>
             <Container gap="24px">
-                <BotaoVoltar linkFixo="/beneficio" />
-                <Container gap="12px">
-                    <Texto weight={500} size="12px">Nome da recarga</Texto>
-                    <Titulo>
-                        <ContainerHorizontal gap="12px" align='flex-start'>
-                            <h3>{checkout?.item.name}</h3>
-                            <CodigoDiv>Código <b>DSF4SDF75</b></CodigoDiv>
-                        </ContainerHorizontal>
-                    </Titulo>
-                    <BotaoGrupo align="space-between">
-                        <BadgeStatusBeneficio status={2} />
-                        <Texto>Criado em&nbsp;<b>13/09</b></Texto>
-                    </BotaoGrupo>
-                </Container>
-                <div className={styles.wrapper_cards}>
-                    <div className={styles.card_dashboard}>
-                        <Frame estilo="spaced">
-                            <div className={styles.saldo}>
-                                <p>Valor total da recarga</p>
-                                <h2>{Real.format(checkout?.item.total_amount ?? 0)}</h2>
-                                {/* <BotaoSemBorda color="var(--info)">
-                                    <RiFileUserLine /><Link className={styles.link}>Ver detalhes</Link>
-                                </BotaoSemBorda> */}
-                            </div>
-                        </Frame>
-                        <Frame estilo="spaced">
-                            <div className={styles.empilhado}>
-                                <p>Colaboradores que receberam</p>
-                                <b><FaUser />&nbsp;{checkout?.item.count_collaborators}</b>
-                            </div>
-                        </Frame>
-                        <Frame estilo="spaced">
-                            <div className={styles.empilhado}>
-                                <p>Benefícios disponibilizados</p>
-                                <div className={styles.beneficios}>
-                                    {benefits.map((benefit, index) => {
-                                        return (
-                                            <BadgeBeneficio layout="inline" key={index} nomeBeneficio={benefit}/>
-                                        )
-                                    })}
-                                </div>
-                            </div>
-                        </Frame>
-                    </div>
-                </div>
-                <Texto size="16px" weight={700}>Forma de pagamento</Texto>
+                <BotaoVoltar linkFixo="/extrato" />
                 <div className={styles.wrapper_cards}>
                     {paymentType === 'boleto' &&
-                        <div className={styles.card_dashboard}>
-                            <Frame estilo="spaced">
-                                <Texto weight={700}><FaBarcode/>&nbsp;Boleto Bancário</Texto>
-                            </Frame>
-                            <Frame estilo="spaced">
-                                <div className={styles.empilhado}>
-                                    <p>Código de barras</p>
-                                    <BotaoGrupo align="space-between" verticalalign="center">
-                                        <Texto weight={600}>23794.15009 90033.744005 93000.211404 8 00000000000000</Texto>
-                                        <BotaoGrupo>
-                                            <BotaoSemBorda><RiFileCopyLine size={18}/> Copiar código</BotaoSemBorda>
-                                            <Botao fontSize="14px" size="200px"><RiSearchEyeFill className={styles.icon} size={18}/>Visualizar boleto</Botao>
+                        <Container>
+                            <div className={styles.card_dashboard}>
+                                <Frame estilo="spaced">
+                                    <Texto weight={700}><FaBarcode/>&nbsp;Boleto Bancário</Texto>
+                                </Frame>
+                                <Frame estilo="spaced">
+                                    <div className={styles.empilhado}>
+                                        <p>Código de barras</p>
+                                        <BotaoGrupo align="space-between" verticalalign="center">
+                                            <Texto weight={600}>23794.15009 90033.744005 93000.211404 8 00000000000000</Texto>
+                                            <BotaoGrupo>
+                                                <BotaoSemBorda><RiFileCopyLine size={18}/> Copiar código</BotaoSemBorda>
+                                                <Botao fontSize="14px" size="200px"><RiSearchEyeFill className={styles.icon} size={18}/>Visualizar boleto</Botao>
+                                            </BotaoGrupo>
                                         </BotaoGrupo>
-                                    </BotaoGrupo>
-                                </div>
-                            </Frame>
-                            <Frame estilo="spaced">
-                                <div className={styles.empilhado}>
-                                    <p>Valor do boleto</p>
-                                    <b>{Real.format(checkout?.item.total_amount ?? 0)}</b>
-                                </div>
-                                
-                                <div className={styles.empilhado}>
-                                    <p>Data de vencimento</p>
-                                    <b>14/09/2023</b>
-                                </div>
-                            </Frame>
-                        </div>
+                                    </div>
+                                </Frame>
+                                <Frame estilo="spaced">
+                                    <div className={styles.empilhado}>
+                                        <p>Valor do boleto</p>
+                                        <b>{Real.format(checkout?.item.total_amount ?? 0)}</b>
+                                    </div>
+                                    
+                                    <div className={styles.empilhado}>
+                                        <p>Data de vencimento</p>
+                                        <b>14/09/2023</b>
+                                    </div>
+                                </Frame>
+                            </div>
+                            <div className={styles.card_dashboard}>
+                                <Frame estilo="spaced">                                    
+                                    <div className={styles.empilhado}>
+                                        <p>CNPJ</p>
+                                        <b>43.400.087/0001-05</b>
+                                    </div>
+                                    
+                                    <div className={styles.empilhado}>
+                                        <p>Razão social</p>
+                                        <b>Soluções Industriais Ltda.</b>
+                                    </div>
+
+                                    <div className={styles.empilhado}>
+                                        <p>Código da transação</p>
+                                        <b>8BA1E4DF-E82C-4209-ACDB-066E29BBF2E3</b>
+                                    </div>
+                                </Frame>
+                            </div>
+                        </Container>
                     }
                      {paymentType === 'pix' &&
                         <div className={styles.card_dashboard}>
