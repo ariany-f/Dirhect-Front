@@ -24,6 +24,11 @@ const CodigoDiv = styled.div`
     font-size: 14px;
 `
 
+let Real = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+});
+
 function BeneficioPagamento() {
 
     const { id } = useParams()
@@ -62,7 +67,7 @@ function BeneficioPagamento() {
                     <Texto weight={500} size="12px">Nome da recarga</Texto>
                     <Titulo>
                         <ContainerHorizontal gap="12px" align='flex-start'>
-                            <h3>Recarga de Janeiro</h3>
+                            <h3>{checkout?.item.name}</h3>
                             <CodigoDiv>Código <b>DSF4SDF75</b></CodigoDiv>
                         </ContainerHorizontal>
                     </Titulo>
@@ -76,7 +81,7 @@ function BeneficioPagamento() {
                         <Frame estilo="spaced">
                             <div className={styles.saldo}>
                                 <p>Valor total da recarga</p>
-                                <h2>R$ 1.000,00</h2>
+                                <h2>{Real.format(checkout?.item.total_amount ?? 0)}</h2>
                                 {/* <BotaoSemBorda color="var(--info)">
                                     <RiFileUserLine /><Link className={styles.link}>Ver detalhes</Link>
                                 </BotaoSemBorda> */}
@@ -85,7 +90,7 @@ function BeneficioPagamento() {
                         <Frame estilo="spaced">
                             <div className={styles.empilhado}>
                                 <p>Colaboradores que receberam</p>
-                                <b><FaUser />&nbsp;1.250</b>
+                                <b><FaUser />&nbsp;{checkout?.item.count_collaborators}</b>
                             </div>
                         </Frame>
                         <Frame estilo="spaced">
@@ -124,7 +129,7 @@ function BeneficioPagamento() {
                             <Frame estilo="spaced">
                                 <div className={styles.empilhado}>
                                     <p>Valor do boleto</p>
-                                    <b>R$ 1.000,00</b>
+                                    <b>{Real.format(checkout?.item.total_amount ?? 0)}</b>
                                 </div>
                                 
                                 <div className={styles.empilhado}>
@@ -154,7 +159,7 @@ function BeneficioPagamento() {
                             <Frame estilo="spaced">
                                 <div className={styles.empilhado}>
                                     <p>Valor do Pix</p>
-                                    <b>R$ 1.000,00</b>
+                                    <b>{Real.format(checkout?.item.total_amount ?? 0)}</b>
                                 </div>
                                 
                                 <div className={styles.empilhado}>
