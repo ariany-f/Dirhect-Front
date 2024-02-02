@@ -105,8 +105,6 @@ function Login() {
                 </Frame>
             </form>
             <Botao aoClicar={evento => sendData(evento)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
-            
-          
         </>
     )
 }

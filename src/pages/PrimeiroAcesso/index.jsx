@@ -4,13 +4,14 @@ import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Texto from "@components/Texto"
 import Titulo from "@components/Titulo"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
 import { useState } from "react"
 
 function PrimeiroAcesso() {
 
     const [classError, setClassError] = useState([])
+    const navegar = useNavigate()
     
     const { 
         usuario,
@@ -27,7 +28,7 @@ function PrimeiroAcesso() {
 
     return (
         <>
-            <Titulo>
+            <Titulo align="left">
                 <h2>Bem-vindo, RH!</h2>
                 <SubTitulo>
                     Estamos muito felizes em recebê-lo aqui. Este é o seu primeiro passo, para começar informe seu e-mail corporativo:
@@ -40,9 +41,7 @@ function PrimeiroAcesso() {
                     <Texto>O código de acesso foi enviado parao e-mail corporativo cadastrado!</Texto>
                 </Frame>
             </Frame>
-            <Link to="/primeiro-acesso/senha-acesso">
-                <Botao estilo="vermilion" size="medium" filled>Confirmar</Botao>
-            </Link>
+            <Botao aoClicar={evento => navegar('/primeiro-acesso/senha-acesso')} estilo="vermilion" size="big" filled>Confirmar</Botao>
         </>
     )
 }

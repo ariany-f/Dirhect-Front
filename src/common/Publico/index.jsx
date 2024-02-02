@@ -1,28 +1,27 @@
-import MainSection from "@components/MainSection"
+import MainSectionPublico from "@components/MainSectionPublico"
 import EstilosGlobais from '@components/GlobalStyles'
 import Banner from "@components/Banner"
 import MainContainer from "@components/MainContainer"
-import Container from "@components/Container"
+import RightContainer from "@components/RightContainer"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
-import { Outlet, useLocation } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 import RodapePublico from "@components/RodapePublico"
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 
 function Publico() {
 
     return (
         <>
             <EstilosGlobais />
-            <MainSection>
+            <MainSectionPublico>
                 <Banner />
-                <Container>
+                <RightContainer>
                     <MainContainer>
                         <Outlet />
                         <PrecisoDeAjuda/>
                     </MainContainer>
                     <RodapePublico />
-                </Container>
-            </MainSection>
+                </RightContainer>
+            </MainSectionPublico>
         </>
     )
 }

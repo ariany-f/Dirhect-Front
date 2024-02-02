@@ -1,10 +1,15 @@
+import styled from 'styled-components'
 import styles from './Titulo.module.css'
 
-function Titulo({ children }) {
+const DivContainer = styled.div`
+    text-align: ${ props => props.$align ? props.$align : 'center' };
+`
+
+function Titulo({ children, align='center' }) {
     return (
-        <div className={styles.texto}>
+        <DivContainer $align={align} className={styles.texto}>
             {children}
-        </div>
+        </DivContainer>
     )
 }
 

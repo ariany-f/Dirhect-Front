@@ -1,4 +1,4 @@
-import imagem from './cartoes-plataforma.png'
+import imagem from './homem-com-cartao.png'
 import styles from './Banner.module.css'
 import logo from '/imagens/logo.png'
 import { RiShoppingCartFill, RiBusFill, RiTrophyFill, RiOpenArmFill } from 'react-icons/ri'
@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from 'react'
 function Banner() {
 
     const [image, setImage] = useState(false)
-    const ref = useRef()
+    const ref = useRef(null)
 
     useEffect(() => {
         if(imagem){
@@ -27,14 +27,10 @@ function Banner() {
                 <img ref={ref} className={styles.banner} src={imagem} alt="Imagem Cartões"/>
                 : <Skeleton variant="rectangular" width={600} height={980} />
             }
-            
             <Link to="/login" className={styles.logo} >
                 <img src={logo} alt="Logo"/>
             </Link>
             <div className={styles.bottomBanner}>
-                <p className={styles.texto}>
-                    Múltiplos benefícios reunidos em um só cartão.
-                </p>
                 <ul className={styles.ul}>
                     <li><RiShoppingCartFill size={24} /></li>
                     <li><PiForkKnifeFill size={24} /></li>

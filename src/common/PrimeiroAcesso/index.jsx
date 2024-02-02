@@ -1,8 +1,8 @@
-import MainSection from "@components/MainSection"
+import MainSectionPublico from "@components/MainSectionPublico"
 import EstilosGlobais from '@components/GlobalStyles'
 import Banner from "@components/Banner"
 import MainContainer from "@components/MainContainer"
-import Container from "@components/Container"
+import RightContainer from "@components/RightContainer"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import { Outlet } from "react-router-dom"
 import RodapePublico from "@components/RodapePublico"
@@ -12,9 +12,9 @@ function PrimeiroAcessoCommon() {
     return (
         <>
             <EstilosGlobais />
-            <MainSection>
+            <MainSectionPublico>
                 <Banner />
-                <Container>
+                <RightContainer>
                     <PrimeiroAcessoProvider>
                         <MainContainer>
                             <Outlet/>
@@ -22,8 +22,8 @@ function PrimeiroAcessoCommon() {
                         </MainContainer>
                     </PrimeiroAcessoProvider>
                     <RodapePublico />
-                </Container>
-            </MainSection>
+                </RightContainer>
+            </MainSectionPublico>
         </>
     )
 }

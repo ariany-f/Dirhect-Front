@@ -10,7 +10,7 @@ const DivContainer = styled.div`
     width: -webkit-fill-available;
 `
 
-function MainContainer({ children, align, padding = '10vw', aoClicar = null }) {
+function MainContainer({ children, align, padding = '0 10vw', aoClicar = null }) {
     return (
         <DivContainer onClick={aoClicar ? (evento) => aoClicar(evento) : null} $align={align} $padding={padding} className={styles.main}>
             {children}

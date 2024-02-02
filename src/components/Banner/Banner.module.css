@@ -1,15 +1,15 @@
 .container {
     display: flex;
+    flex: 1 1 50%;
     justify-content: center;
     position: relative;
-    flex-wrap: wrap;
-    max-width: -webkit-fill-available;
-    
 }
 .banner {
     margin: 0;
     padding: 0;
-    flex: 1;
+    max-width: 50vw;
+    object-fit: cover;
+    object-position: center;
     min-height: -webkit-fill-available;
     @media screen and (max-width:768px) {
         height: initial;
@@ -18,10 +18,11 @@
 .logo {
     position: absolute;
     top: 40px;
+    width: 192px;
 }
 .bottomBanner {
     position: absolute;
-    bottom: 82px;
+    top: 88px;
     text-align: center;
     display: flex;
     gap: 24px;

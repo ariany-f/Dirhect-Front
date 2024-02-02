@@ -69,7 +69,7 @@ function SenhaDeAcesso() {
             <CampoTexto name="confirmar-senha" valor={usuario.password_confirmation} setValor={setPasswordConfirmation} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
             <RegrasCriacaoSenha />
         </Frame>
-        <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+        <Botao aoClicar={sendData} estilo="vermilion" size="big" filled>Confirmar</Botao>
         
         <ModalToken usuario={usuario} aoFechar={FecharModal} aoReenviar={solicitarCodigo} aoClicar={validarCodigo} setCode={setCode} opened={modalOpened} />
     </>
