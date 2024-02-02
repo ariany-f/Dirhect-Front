@@ -2,7 +2,6 @@ import { useOperadorContext } from '../../../contexts/Operador';
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import Texto from "@components/Texto"
-import CampoTexto from "@components/CampoTexto"
 import SwitchInput from '@components/SwitchInput'
 import RadioButton from '@components/RadioButton'
 import Titulo from "@components/Titulo"
