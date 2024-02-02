@@ -7,6 +7,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import ModalCnpj from '@components/ModalCnpj'
 import { useEffect, useState } from "react"
+import Loading from '@components/Loading'
 import http from '@http'
 import { ArmazenadorToken } from "../../utils"
 import styled from "styled-components"
@@ -61,7 +62,7 @@ function Autenticado() {
                 })
             }
         }
-    }, [usuarioEstaLogado, usuario])
+    }, [usuarioEstaLogado, usuario, empresa])
     
     
     const selectCompany = () => {
@@ -70,8 +71,8 @@ function Autenticado() {
 
     const [modalOpened, setModalOpened] = useState(false)
     const [menuOpened, setMenuOpened] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-    
     function toggleMenu(){
         setMenuOpened(!menuOpened)
     }
@@ -89,6 +90,7 @@ function Autenticado() {
             <>
                 <EstilosGlobais />
                 <MainSection>
+                    <Loading opened={loading} />
                     {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/saldo-livre/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/saldo-livre/editar-valor/colaboradores' &&                       
                         <BarraLateral />
                     }
@@ -97,11 +99,11 @@ function Autenticado() {
                             <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
                         }
                         <MarginContainer>
-                            <Outlet />
+                            <Outlet key={empresa} />
                         </MarginContainer>
                     </MainContainer>
                 </MainSection>
-                <ModalCnpj aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+                <ModalCnpj aoClicar={() => setLoading(true)} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
             </>
         : <Navigate to="/login" replace={true}/>}
         </>

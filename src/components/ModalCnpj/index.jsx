@@ -135,12 +135,16 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     }
     
     const selectCompany = () => {
-        if(selected)
-        {
+        aoClicar()
+        ArmazenadorToken.definirCompany(
+            selected
+        )
+
+        submeterCompanySession().then(response => {
             setSessionCompany(selected)
-            submeterCompanySession()
+        }).then(item => {
             aoFechar()
-        }
+        })
     }
 
     const navegarParaAdicionarCnpj = () => {

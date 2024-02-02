@@ -246,20 +246,14 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const submeterCompanySession = () => {
         
-        if(!ArmazenadorToken.UserCompanyPublicId && usuario.company_public_id)
-        {
-            ArmazenadorToken.definirCompany(
-                usuario.company_public_id
-            )
-        }
         if(ArmazenadorToken.UserCompanyPublicId)
         {
-            http.post(`api/dashboard/session/company/${ArmazenadorToken.UserCompanyPublicId}`)
-                .then(() => {
-                    navegar('/')
+            return http.post(`api/dashboard/session/company/${ArmazenadorToken.UserCompanyPublicId}`)
+                .then((response) => {
+                    return response
                 })
                 .catch(erro => {
-                    console.error(erro)
+                    return erro.response.data
                 })
         }
     }
