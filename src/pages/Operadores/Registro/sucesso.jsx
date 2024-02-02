@@ -14,7 +14,7 @@ function OperadorRegistroSucesso() {
         <>
             <MainContainer align="center" padding="5vw 25vw">
                 <img src={Support} size={100}/>
-                <Titulo>
+                <Titulo align="center">
                     <h6>Operador adicionado</h6>
                     <SubTitulo fontSize="14px" color="var(--black)" weight="400">Seu novo operador já pode acessar a plataforma de RH</SubTitulo>
                 </Titulo>

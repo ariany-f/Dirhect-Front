@@ -3,7 +3,7 @@
         border-color: var(--primaria);
     }
     &.p-focus {
-        border-color: var(--primaria);
+        border-color: var(--primaria)!important;
     }
     & .p-radiobutton-icon {
         background: var(--primaria);

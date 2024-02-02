@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 const OperadorInicial = {
     collaborator_public_id: '',
+    name: '',
     roles: {}
 }
 
@@ -11,6 +12,7 @@ export const OperadorContext = createContext({
     operador: OperadorInicial,
     setRoles: () => null,
     setPublicId: () => null,
+    setName: () => null,
     erros: {},
     submeterOperador: () => null
 })
@@ -42,6 +44,15 @@ export const OperadorProvider = ({ children }) => {
             }
         })
     }
+    
+    const setName = (name) => {
+        setOperador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                name
+            }
+        })
+    }
 
     const submeterOperador = () => {
         
@@ -58,6 +69,7 @@ export const OperadorProvider = ({ children }) => {
         operador,
         setRoles,
         setPublicId,
+        setName,
         submeterOperador
     }
 

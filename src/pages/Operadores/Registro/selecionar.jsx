@@ -58,7 +58,7 @@ function OperadorRegistroSelecionar() {
     
     const { 
         operador,
-        setRoles,
+        setName,
         setPublicId
     } = useOperadorContext()
 
@@ -71,22 +71,9 @@ function OperadorRegistroSelecionar() {
     }, [])
 
     const adicionarColaborador = () => {
-        const obj = {}
-        obj['collaborator_public_id'] = selectedColaborador.public_id
-        obj['roles'] = {
-            "status": true,
-            "all": false,
-            "read": true,
-            "financial": true,
-            "human_Resources": true
-        }
-        http.post('api/dashboard/operator', obj)
-        .then((response) => {
-            console.log(response)
-        })
-        .catch(erro => {
-            console.error(erro)
-        })
+        setPublicId(selectedColaborador.public_id)
+        setName(selectedColaborador.name)
+        navegar('/operador/registro/permissoes')
     }
     
     const onGlobalFilterChange = (value) => {
