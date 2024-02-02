@@ -42,10 +42,10 @@ function OperadorPermissoes() {
                     if (response.status === 'success') 
                     {
                         setOperador(response.operator)
-                        setCheckedBen(response.operator.roles.financial)
-                        setCheckedPrem(response.operator.roles.financial)
-                        setCheckedClbrd(response.operator.roles.human_Resources)
-                        setCheckedDesp(response.operator.roles.financial)
+                        setCheckedBen(response.operator.roles.all || response.operator.roles.financial)
+                        setCheckedPrem(response.operator.roles.all || response.operator.roles.financial)
+                        setCheckedClbrd(response.operator.roles.all || response.operator.roles.human_Resources)
+                        setCheckedDesp(response.operator.roles.all || response.operator.roles.financial)
                     }
                 })
                 .catch(erro => console.log(erro))
