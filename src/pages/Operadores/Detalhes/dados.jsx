@@ -13,17 +13,21 @@ import { RiEditBoxFill } from 'react-icons/ri';
 function OperadorDados() {
 
     let { id } = useParams()
-    const [operador, setOperador] = useState({})
+    const [operador, setOperador] = useState(null)
 
     useEffect(() => {
-        http.get(`api/dashboard/operator/${id}`)
-            .then(response => {
-                if (response.operator) {
-                    setOperador(response.operator)
-                }
-            })
-            .catch(erro => console.log(erro))
-    }, [])
+        if(!operador)
+        {
+            http.get(`api/dashboard/operator/${id}`)
+                .then(response => {
+                    if (response.status === 'success') 
+                    {
+                        setOperador(response.operator)
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
+    }, [operador])
 
 
     function formataCPF(cpf) {
@@ -37,20 +41,20 @@ function OperadorDados() {
 
             <div className={styles.card_dashboard}>
                 <Texto>Nome completo</Texto>
-                {operador.name ?
-                    <Texto weight="800">{operador?.name}</Texto>
+                {operador ?
+                    <Texto weight="800">{operador?.collaborator.name}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Nome social</Texto>
                 {operador ?
-                    (operador.social ?
-                        <Texto weight="800">{operador?.social}</Texto>
+                    (operador.collaborator.social ?
+                        <Texto weight="800">{operador?.collaborator.social}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>CPF</Texto>
-                {operador.document ?
-                    <Texto weight="800">{formataCPF(operador?.document)}</Texto>
+                {operador ?
+                    <Texto weight="800">{formataCPF(operador?.collaborator.document)}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
             </div>
@@ -60,8 +64,8 @@ function OperadorDados() {
                 <ContainerHorizontal width="50%">
                     <Frame gap="5px">
                         <Texto>Telefone/Celular</Texto>
-                        {operador.phone_number ?
-                            <Texto weight="800">{operador?.phone_number}</Texto>
+                        {operador ?
+                            <Texto weight="800">{operador?.collaborator.phone_number}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </Frame>
@@ -73,8 +77,8 @@ function OperadorDados() {
                 <ContainerHorizontal width="50%">
                     <Frame gap="5px">
                         <Texto>E-mail</Texto>
-                        {operador.email ?
-                            <Texto weight="800">{operador?.email}</Texto>
+                        {operador ?
+                            <Texto weight="800">{operador?.collaborator.email}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </Frame>

@@ -63,7 +63,22 @@ function OperadorRegistroSelecionar() {
 
     const adicionarColaborador = () => {
         selectedColaboradores.map((item) => {
-          
+            const obj = {}
+            obj['collaborator_public_id'] = item.public_id
+            obj['roles'] = {
+                "status": true,
+                "all": false,
+                "read": true,
+                "financial": true,
+                "human_Resources": true
+            }
+            http.post('api/dashboard/operator', obj)
+            .then((response) => {
+                console.log(response)
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
         })
     }
     
@@ -82,7 +97,7 @@ function OperadorRegistroSelecionar() {
             <ConteudoFrame>
                 <BotaoGrupo align="space-between">
                     <BotaoGrupo>
-                        <Titulo>
+                        <Titulo align="left">
                             <h6>Selecione o operador</h6>
                             <SubTitulo>
                                 Escolha um colaborador para ser o operador:

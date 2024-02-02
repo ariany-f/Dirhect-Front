@@ -14,26 +14,29 @@ function OperadorDetalhes() {
 
     let { id } = useParams()
     const location = useLocation();
-    const [operador, setOperador] = useState({})
+    const [operador, setOperador] = useState(null)
 
     useEffect(() => {
-        http.get(`api/dashboard/operator/${id}`)
-            .then(response => {
-                if(response.collaborator)
-                {
-                    setOperador(response.collaborator)
-                }
-            })
-            .catch(erro => console.log(erro))
-    }, [])
+        if(!operador)
+        {
+            http.get(`api/dashboard/operator/${id}`)
+                .then(response => {
+                    if (response.status === 'success') 
+                    {
+                        setOperador(response.operator)
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
+    }, [operador])
 
     return (
         <Frame>
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/operador" />
-                    {operador.name ? 
+                    {operador ? 
                         <Titulo>
-                            <h3>{operador.name}</h3>
+                            <h3>{operador?.collaborator?.name}</h3>
                         </Titulo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
                     }
@@ -41,7 +44,7 @@ function OperadorDetalhes() {
                     <Link className={styles.link} to={`/operador/detalhes/${id}`}>
                         <Botao estilo={location.pathname == `/operador/detalhes/${id}` ? 'black':''} size="small" tab>Dados</Botao>
                     </Link>
-                    <Link className={styles.link} to={`/operador/detalhes/${id}/cartoes`}>
+                    <Link className={styles.link} to={`/operador/detalhes/${id}/permissoes`}>
                         <Botao estilo={location.pathname == `/operador/detalhes/${id}/permissoes` ? 'black':''} size="small" tab>Permissões</Botao>
                     </Link>
                 </BotaoGrupo>

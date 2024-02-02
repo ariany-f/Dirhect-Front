@@ -1,12 +1,12 @@
 import { Skeleton } from 'primereact/skeleton'
 import SwitchInput from '@components/SwitchInput'
 import Titulo from '@components/Titulo'
-import SubTitulo from '@components/SubTitulo'
 import Texto from '@components/Texto'
 import styles from './Detalhes.module.css'
 import styled from "styled-components"
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import http from '@http'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 const CardLine = styled.div`
     padding: 24px 0px;
@@ -26,10 +26,31 @@ const CardLine = styled.div`
 
 function OperadorPermissoes() {
 
+    let { id } = useParams()
     const [checkedBen, setCheckedBen] = useState(false);
-    const [checkedPrem, setCheckedPrem] = useState(true);
-    const [checkedClbrd, setCheckedClbrd] = useState(true);
-    const [checkedDesp, setCheckedDesp] = useState(true);
+    const [checkedPrem, setCheckedPrem] = useState(false);
+    const [checkedClbrd, setCheckedClbrd] = useState(false);
+    const [checkedDesp, setCheckedDesp] = useState(false);
+
+    const [operador, setOperador] = useState(null)
+
+    useEffect(() => {
+        if(!operador)
+        {
+            http.get(`api/dashboard/operator/${id}`)
+                .then(response => {
+                    if (response.status === 'success') 
+                    {
+                        setOperador(response.operator)
+                        setCheckedBen(response.operator.roles.financial)
+                        setCheckedPrem(response.operator.roles.financial)
+                        setCheckedClbrd(response.operator.roles.human_Resources)
+                        setCheckedDesp(response.operator.roles.financial)
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
+    }, [operador])
 
     return (
         <>
