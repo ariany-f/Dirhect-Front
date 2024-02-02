@@ -59,3 +59,7 @@
         fill: var(--neutro-600);
     }
 }
+.icon * {
+    box-sizing: initial;
+    stroke: var(--white);
+}
