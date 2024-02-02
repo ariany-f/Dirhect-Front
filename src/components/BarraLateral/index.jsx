@@ -7,6 +7,7 @@ import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
 import logo from '/imagens/logo.png'
+import { useEffect, useRef, useState } from "react"
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -45,7 +46,17 @@ const Logo = styled.img`
 
 function BarraLateral() {
 
-    const location = useLocation();
+    const location = useLocation(); 
+
+    const [image, setImage] = useState(false)
+
+    const ref = useRef(null)
+
+    useEffect(() => {
+        if(logo){
+            setImage(true)
+        }
+    }, [logo])
 
     const itensMenu = [
         {
@@ -133,7 +144,10 @@ function BarraLateral() {
 
     return (
         <BarraLateralEstilizada>
-             <Logo src={logo} alt="Logo Multi Benefícios" />
+             {image ?
+                <Logo src={logo} ref={ref} alt="Logo Multi Benefícios" />
+                : ''
+            }
             <nav>
                 <NavTitulo>Menu principal</NavTitulo>
                 <ListaEstilizada>

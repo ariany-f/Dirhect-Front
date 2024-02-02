@@ -112,6 +112,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             "id": 8,
             "url": "despesa",
             "pageTitulo": "Despesas"
+        },
+        {
+            "id": 9,
+            "url": "operador",
+            "pageTitulo": "Operadores"
         }
     ];
 

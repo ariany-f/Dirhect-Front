@@ -18,7 +18,7 @@ function AdicionarSaldo() {
     const [modalCartaoOpened, setModalCartaoOpened] = useState(false)
 
     function submitAdicionarSaldo(valor, card = null) {
-        console.log(card)
+        
         const obj = {}
         obj['transaction_type_enum'] = 16
         if(modalBoletoOpened)

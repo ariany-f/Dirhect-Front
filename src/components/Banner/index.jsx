@@ -13,13 +13,18 @@ import { useEffect, useRef, useState } from 'react'
 function Banner() {
 
     const [image, setImage] = useState(false)
+    const [logotipo, setLogotipo] = useState(false)
     const ref = useRef(null)
+    const refLogo = useRef(null)
 
     useEffect(() => {
         if(imagem){
             setImage(true)
         }
-    }, [imagem])
+        if(logo){
+            setLogotipo(true)
+        }
+    }, [imagem, logo])
 
     return (
         <div className={styles.container}>
@@ -28,7 +33,10 @@ function Banner() {
                 : <Skeleton variant="rectangular" width={600} height={980} />
             }
             <Link to="/login" className={styles.logo} >
-                <img src={logo} alt="Logo"/>
+                {logotipo ?
+                    <img src={logo} ref={refLogo} alt="Logo"/>
+                    : ''
+                }
             </Link>
             <div className={styles.bottomBanner}>
                 <ul className={styles.ul}>
