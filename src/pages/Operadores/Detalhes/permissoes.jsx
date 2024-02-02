@@ -52,6 +52,34 @@ function OperadorPermissoes() {
         }
     }, [operador])
 
+    function alterarPermissoes(){
+        const obj = {}
+        
+        obj['collaborator_public_id'] = id
+
+        obj['roles'] = {
+            "status": false,
+            "all": (checkedBen && checkedClbrd && checkedDesp && checkedPrem),
+            "read": true,
+            "financial": false,
+            "human_Resources": false
+        }
+
+
+        http.put(`api/dashboard/operator/${id}`, obj)
+        .then(response => {
+            if (response.status === 'success') 
+            {
+                setOperador(response.operator)
+                setCheckedBen(response.operator.roles.all || response.operator.roles.financial)
+                setCheckedPrem(response.operator.roles.all || response.operator.roles.financial)
+                setCheckedClbrd(response.operator.roles.all || response.operator.roles.human_Resources)
+                setCheckedDesp(response.operator.roles.all || response.operator.roles.financial)
+            }
+        })
+        .catch(erro => console.log(erro))
+    }
+
     return (
         <>
             <Titulo>

@@ -1,0 +1,11 @@
+.p-radiobutton-box {
+    &.p-highlight {
+        border-color: var(--primaria);
+    }
+    &.p-focus {
+        border-color: var(--primaria);
+    }
+    & .p-radiobutton-icon {
+        background: var(--primaria);
+    }
+}

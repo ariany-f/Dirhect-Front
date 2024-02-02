@@ -13,9 +13,12 @@ import { GrAddCircle } from 'react-icons/gr'
 import { Toast } from 'primereact/toast'
 import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
+import { InputSwitch } from 'primereact/inputswitch';
 import { Column } from 'primereact/column'
 import styled from 'styled-components';
 import DottedLine from '@components/DottedLine';
+import { useOperadorContext } from '../../../contexts/Operador';
+import './DataTableStyle.css'
 
 const ContainerButton = styled.div`
     display: flex;
@@ -46,12 +49,18 @@ function OperadorRegistroSelecionar() {
     const navegar = useNavigate()
     const [globalFilterValue, setGlobalFilterValue] = useState('')
     const [colaboradores, setColaboradores] = useState([])
-    const [selectedColaboradores, setSelectedColaboradores] = useState(null);
+    const [selectedColaborador, setSelectedColaborador] = useState(null);
     const [rowClick, setRowClick] = useState(true)
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const toast = useRef(null)
+    
+    const { 
+        operador,
+        setRoles,
+        setPublicId
+    } = useOperadorContext()
 
     useEffect(() => {
         http.get('api/dashboard/collaborator')
@@ -62,23 +71,21 @@ function OperadorRegistroSelecionar() {
     }, [])
 
     const adicionarColaborador = () => {
-        selectedColaboradores.map((item) => {
-            const obj = {}
-            obj['collaborator_public_id'] = item.public_id
-            obj['roles'] = {
-                "status": true,
-                "all": false,
-                "read": true,
-                "financial": true,
-                "human_Resources": true
-            }
-            http.post('api/dashboard/operator', obj)
-            .then((response) => {
-                console.log(response)
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
+        const obj = {}
+        obj['collaborator_public_id'] = selectedColaborador.public_id
+        obj['roles'] = {
+            "status": true,
+            "all": false,
+            "read": true,
+            "financial": true,
+            "human_Resources": true
+        }
+        http.post('api/dashboard/operator', obj)
+        .then((response) => {
+            console.log(response)
+        })
+        .catch(erro => {
+            console.error(erro)
         })
     }
     
@@ -115,15 +122,15 @@ function OperadorRegistroSelecionar() {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                 </span>
             </div>
-            <DataTable value={colaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={selectedColaboradores} onSelectionChange={(e) => setSelectedColaboradores(e.value)} tableStyle={{ minWidth: '68vw' }}>
-                <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+            <DataTable value={colaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'radiobutton'} selection={selectedColaborador} onSelectionChange={(e) => setSelectedColaborador(e.value)} tableStyle={{ minWidth: '68vw' }}>
+                <Column selectionMode="single" headerStyle={{ width: '3rem' }}></Column>
                 <Column field="name" header="Nome Completo" style={{ width: '100%' }}></Column>
                 <Column field="email" header="E-mail corporativo" style={{ width: '100%' }}></Column>
             </DataTable>
             <ContainerButton>
                 <Botao aoClicar={() => navigate(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                 <LadoALado>
-                    <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaboradores ? selectedColaboradores.length : 0}</Texto></span>
+                    <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>1</Texto></span>
                     <Botao aoClicar={adicionarColaborador} estilo="vermilion" size="medium" filled>Continuar</Botao>
                 </LadoALado>
             </ContainerButton>

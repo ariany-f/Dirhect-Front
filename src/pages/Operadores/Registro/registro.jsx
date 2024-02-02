@@ -1,10 +1,13 @@
 import { Outlet } from "react-router-dom"
+import { OperadorProvider } from "../../../contexts/Operador"
+ 
 
 function OperadorRegistro() {
 
-
     return (
-       <Outlet />
+        <OperadorProvider>
+            <Outlet />
+        </OperadorProvider>
     )
 }
 
