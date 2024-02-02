@@ -86,6 +86,7 @@ import CartoesLista from './pages/Cartoes/lista'
 import CartoesAtivados from './pages/Cartoes/ativados'
 import CartaoSolicitarSegundaViaAcompanhar from './pages/Cartoes/SolicitarSegundaVia/acompanhar'
 import CartaoSolicitarSegundaViaCommon from './pages/Cartoes/SolicitarSegundaVia/common'
+import ExtratoPagamento from './pages/Extrato/pagamento'
 
 function AppRouter() {
   
@@ -141,6 +142,7 @@ function AppRouter() {
               <Route path="extrato" element={<ExtratoCommon />} >
                 <Route index element={<Extrato />} />
                 <Route path="adicionar-saldo" element={<ExtratoAdicionarSaldo />} />
+                <Route path="pagamento/:id" element={<ExtratoPagamento />} />
               </Route>
             
               <Route path="departamento" element={<Departamentos />} >

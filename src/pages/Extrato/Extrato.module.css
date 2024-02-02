@@ -141,6 +141,12 @@
     }
 }
 
+.beneficios {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
 .extrato_grid{
     cursor: pointer;
     gap: 12px;
