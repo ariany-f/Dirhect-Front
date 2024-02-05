@@ -59,7 +59,7 @@ function AdicionarCnpj() {
     const [company, setCompany] = useState({
         status: 6,
         document: '',
-        razaosocial: '',
+        social_reason: '',
         name: '',
         address_postal_code: '',
         address_street: '',
@@ -80,11 +80,11 @@ function AdicionarCnpj() {
             }
         })
     }
-    const setRazaoSocial = (razaosocial) => {
+    const setRazaoSocial = (social_reason) => {
         setCompany(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                razaosocial
+                social_reason
             }
         })
     }
@@ -230,8 +230,8 @@ function AdicionarCnpj() {
                 <Col6>
                     <CampoTexto 
                         camposVazios={classError} 
-                        name="razaosocial" 
-                        valor={company.razaosocial} 
+                        name="social_reason" 
+                        valor={company.social_reason} 
                         setValor={setRazaoSocial} 
                         type="text" 
                         label="Razão Social" 

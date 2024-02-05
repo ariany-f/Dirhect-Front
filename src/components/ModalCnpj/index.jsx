@@ -117,17 +117,14 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
     useEffect(() => {
         
-        if(usuario.companies.length === 0)
-        {
-            http.get(`api/dashboard/company`)
-                .then((response) => {
-                    setEmpresas(response.data.companies)
-                    setCompanies(response.data.companies)
-                })
-                .catch(erro => {
-                    console.log(erro)
-                })
-        }
+        http.get(`api/dashboard/company`)
+            .then((response) => {
+                setEmpresas(response.data.companies)
+                setCompanies(response.data.companies)
+            })
+            .catch(erro => {
+                console.log(erro)
+            })
     }, [usuario, empresas])
     
     function handleSelectChange(value) {
