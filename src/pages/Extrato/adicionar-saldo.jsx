@@ -20,7 +20,7 @@ function AdicionarSaldo() {
     function submitAdicionarSaldo(valor, card = null) {
         
         const obj = {}
-        obj['transaction_type_enum'] = 16
+        obj['transaction_type_enum'] = 3
         if(modalBoletoOpened)
         {
             obj['payment_type_enum'] = 2

@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from 'react';
 
 const balanceInicial = {
     payment_type_enum: 1,
-    transaction_type_enum: 0,
+    transaction_type_enum: 3,
     amount: '',
     card: {
         installments: 0,

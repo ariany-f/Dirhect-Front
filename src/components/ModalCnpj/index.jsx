@@ -116,8 +116,9 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     const navegar = useNavigate()
 
     useEffect(() => {
-        
-        http.get(`api/dashboard/company`)
+        if(opened)
+        {
+            http.get(`api/dashboard/company`)
             .then((response) => {
                 setEmpresas(response.data.companies)
                 setCompanies(response.data.companies)
@@ -125,6 +126,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
             .catch(erro => {
                 console.log(erro)
             })
+        }
     }, [usuario, empresas])
     
     function handleSelectChange(value) {
