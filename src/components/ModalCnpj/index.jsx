@@ -127,7 +127,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                 console.log(erro)
             })
         }
-    }, [usuario, empresas])
+    }, [empresas, opened])
     
     function handleSelectChange(value) {
         setSelected(value)
