@@ -4,9 +4,12 @@ import BotaoSemBorda from "@components/BotaoSemBorda"
 import CardText from "@components/CardText"
 import Titulo from "@components/Titulo"
 import CampoTexto from "@components/CampoTexto"
+import ContainerHorizontal from "@components/ContainerHorizontal"
+import Texto from "@components/Texto"
 import { RiCloseFill } from 'react-icons/ri'
 import { Link, useNavigate } from "react-router-dom"
 import styled from "styled-components"
+import Loading from '@components/Loading'
 import http from '@http'
 import styles from './ModalImportarPlanilha.module.css'
 import { FaDownload } from "react-icons/fa"
@@ -15,6 +18,8 @@ import { useRef, useState } from "react"
 import DottedLine from "@components/DottedLine"
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from "primereact/api"
+import { FaTrash } from "react-icons/fa";
+
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -83,9 +88,10 @@ const DialogEstilizado = styled.dialog`
 function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
 
     const navegar = useNavigate()
-
     const [planilha, setPlanilha] = useState(null)
-    const ref= useRef(null)
+    const [loading, setLoading] = useState(false)
+    
+    const ref = useRef(planilha)
 
     addLocale('pt', {
         accept: 'Sim',
@@ -93,36 +99,34 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
     })
 
     const submeterPlanilha = () => {
-
+        
         if(planilha)
         {
-            confirmDialog({
-                message: 'Importar planilha adicionada?',
-                header: 'Importar',
-                icon: 'pi pi-info-circle',
-                accept: () => {
-                    const body = new FormData();
-                    body.append('spreadsheet', planilha);
+            setLoading(true)
+            const body = new FormData();
+            body.append('spreadsheet', planilha);
+        
+            http.post('api/dashboard/collaborator/import', body)
+            .then((response) => {
                 
-                    http.post('api/dashboard/collaborator/import', body)
-                    .then((response) => {
-                        return response
-                    })
-                    .catch(erro => {
-                        return erro.response.data
-                    })
-                },
-                reject: () => {
-                    ref.current.click()
-                },
-            });
-
-            
+                setLoading(false)
+                return response
+            })
+            .catch(erro => {
+                setLoading(false)
+                return erro.response.data
+            })
         }
         else
         {
+            ref.current.value = null
             ref.current.click()
         }
+    }
+
+    const adicionarPlanilha = (valor) => 
+    {
+        setPlanilha(valor)
     }
 
     return(
@@ -130,6 +134,7 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
             {opened &&
             <Overlay>
                 <ConfirmDialog />
+                <Loading opened={loading} />
                 <DialogEstilizado id="modal-add-departamento" open={opened}>
                     <Frame>
                         <Titulo>
@@ -152,8 +157,14 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
                         <DottedLine margin="2px"/>
                     </Frame>
                     <form method="dialog" style={{display: 'flex', flexDirection: 'column'}}>
-                        <CampoTexto reference={ref} name="planilha" type="file" setValor={setPlanilha}></CampoTexto>
-                        <Botao aoClicar={submeterPlanilha} estilo="vermilion" size="medium" filled>Enviar arquivo</Botao>
+                        {planilha &&
+                            <ContainerHorizontal>
+                                <Texto>{planilha?.name}</Texto>
+                                <FaTrash style={{cursor: 'pointer'}} onClick={() => setPlanilha(null)} />
+                            </ContainerHorizontal>
+                        }
+                        <CampoTexto reference={ref} name="planilha" type="file" setValor={adicionarPlanilha}></CampoTexto>
+                        <Botao aoClicar={submeterPlanilha} estilo="vermilion" size="medium" filled>{!planilha ? 'Selecionar' : 'Enviar'} arquivo</Botao>
                         <div className={styles.containerBottom}>
                             <BotaoSemBorda color="var(--primaria)"><FaDownload/><a href={'./src/assets/exemplo_colaboradores_001.xlsx'} target="_blank" download>Baixar modelo</a></BotaoSemBorda>
                         </div>
