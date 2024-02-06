@@ -49,6 +49,10 @@ const Campo = styled.input`
         padding-left: 50px;
     }
 
+    &[type=file]{
+       display: none; 
+    }
+
     &::placeholder {
         color: var(--neutro-200);
         font-feature-settings: 'clig' off, 'liga' off;
@@ -81,7 +85,7 @@ const Campo = styled.input`
     }
 `
 
-function CampoTexto({ label, disabled = false, type='text',  setFocus, placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
+function CampoTexto({ label, disabled = false, type='text',  setFocus, placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -196,7 +200,7 @@ function CampoTexto({ label, disabled = false, type='text',  setFocus, placehold
                 {(label) ?
                 <label htmlFor={name} className={styles.label}>{label}</label>
                 : ''}
-                <Campo disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                <Campo ref={reference} disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&
                     <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>

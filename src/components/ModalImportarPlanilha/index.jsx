@@ -11,8 +11,10 @@ import http from '@http'
 import styles from './ModalImportarPlanilha.module.css'
 import { FaDownload } from "react-icons/fa"
 import { useColaboradorContext } from "../../contexts/Colaborador"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import DottedLine from "@components/DottedLine"
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
+import { addLocale } from "primereact/api"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -77,32 +79,57 @@ const DialogEstilizado = styled.dialog`
         gap: var(--spacing-spacing-8-px, 8px);
         align-self: stretch;
     }
-`
-
+`  
 function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
 
     const navegar = useNavigate()
 
     const [planilha, setPlanilha] = useState(null)
+    const ref= useRef(null)
+
+    addLocale('pt', {
+        accept: 'Sim',
+        reject: 'Importar outra planilha'
+    })
 
     const submeterPlanilha = () => {
-        
-        const body = new FormData();
-        body.append('spreadsheet', planilha);
-       
-        http.post('api/dashboard/collaborator/import', body)
-        .then((response) => {
-            return response
-        })
-        .catch(erro => {
-            return erro.response.data
-        })
+
+        if(planilha)
+        {
+            confirmDialog({
+                message: 'Importar planilha adicionada?',
+                header: 'Importar',
+                icon: 'pi pi-info-circle',
+                accept: () => {
+                    const body = new FormData();
+                    body.append('spreadsheet', planilha);
+                
+                    http.post('api/dashboard/collaborator/import', body)
+                    .then((response) => {
+                        return response
+                    })
+                    .catch(erro => {
+                        return erro.response.data
+                    })
+                },
+                reject: () => {
+                    ref.current.click()
+                },
+            });
+
+            
+        }
+        else
+        {
+            ref.current.click()
+        }
     }
 
     return(
         <>
             {opened &&
             <Overlay>
+                <ConfirmDialog />
                 <DialogEstilizado id="modal-add-departamento" open={opened}>
                     <Frame>
                         <Titulo>
@@ -124,12 +151,12 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
                         </CardText>
                         <DottedLine margin="2px"/>
                     </Frame>
-                    <form method="dialog">
-                            <CampoTexto type="file" setValor={setPlanilha}></CampoTexto>
-                            <Botao aoClicar={submeterPlanilha} estilo="vermilion" size="medium" filled>Enviar arquivo</Botao>
-                            <div className={styles.containerBottom}>
-                                <BotaoSemBorda color="var(--primaria)"><FaDownload/><a href={'./src/assets/exemplo_colaboradores_001.xlsx'} target="_blank" download>Baixar modelo</a></BotaoSemBorda>
-                            </div>
+                    <form method="dialog" style={{display: 'flex', flexDirection: 'column'}}>
+                        <CampoTexto reference={ref} name="planilha" type="file" setValor={setPlanilha}></CampoTexto>
+                        <Botao aoClicar={submeterPlanilha} estilo="vermilion" size="medium" filled>Enviar arquivo</Botao>
+                        <div className={styles.containerBottom}>
+                            <BotaoSemBorda color="var(--primaria)"><FaDownload/><a href={'./src/assets/exemplo_colaboradores_001.xlsx'} target="_blank" download>Baixar modelo</a></BotaoSemBorda>
+                        </div>
                     </form>
                 </DialogEstilizado>
             </Overlay>}
