@@ -8,7 +8,7 @@ import { useState } from 'react'
 import ModalAdicionarSaldoBoletoBancario from '../../components/ModalAdicionarSaldo'
 import ModalAdicionarSaldoPix from '../../components/ModalAdicionarSaldo/pix'
 import ModalAdicionarSaldoCartao from '../../components/ModalAdicionarSaldo/cartao'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import http from '@http'
 
 function AdicionarSaldo() {
@@ -16,6 +16,7 @@ function AdicionarSaldo() {
     const [modalBoletoOpened, setModalBoletoOpened] = useState(false)
     const [modalPixOpened, setModalPixOpened] = useState(false)
     const [modalCartaoOpened, setModalCartaoOpened] = useState(false)
+    const navegar = useNavigate()
 
     function submitAdicionarSaldo(valor, card = null) {
         
@@ -49,7 +50,13 @@ function AdicionarSaldo() {
 
         http.post('api/dashboard/balance', obj)
         .then((response) => {
-            console.log(response)
+            if(response.data)
+            {
+                if(response.data[0])
+                {
+                    navegar(`/extrato/adicionar-saldo/pagamento/${response.data[0][0].public_id}`)
+                }
+            }
         })
         .catch(erro => {
             console.error(erro)

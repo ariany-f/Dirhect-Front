@@ -1,0 +1,45 @@
+.green{
+    cursor: pointer;
+    flex-direction: column;
+    gap: 24px;
+    padding: 2px 8px;
+    font-size: 14px;
+    border-radius: 8px;
+    display: flex;
+    border: 1px solid var(--neutro-200);
+    background-color: var(--alert-success-50);
+    & p {
+        color: var(--alert-success);
+        font-weight: 700;
+    }
+}
+.yellow{
+    cursor: pointer;
+    flex-direction: column;
+    gap: 24px;
+    padding: 2px 8px;
+    font-size: 14px;
+    border-radius: 8px;
+    display: flex;
+    border: 1px solid var(--warning-100);
+    background-color: var(--warning-50);
+    & p {
+        color: var(--warning);
+        font-weight: 700;
+    }
+}
+.red{
+    cursor: pointer;
+    flex-direction: column;
+    gap: 24px;
+    padding: 2px 8px;
+    font-size: 14px;
+    border-radius: 8px;
+    display: flex;
+    border: 1px solid var(--neutro-200);
+    background-color: var(--error-50);
+    & p {
+        color: var(--error);
+        font-weight: 700;
+    }
+}

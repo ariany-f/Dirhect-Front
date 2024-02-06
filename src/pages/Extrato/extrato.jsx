@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 import { MdPix } from 'react-icons/md'
 import { FaBarcode } from 'react-icons/fa'
 import { RiBankCardLine } from 'react-icons/ri'
+import DataTableBalance from '../../components/DataTableBalance'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -38,6 +39,8 @@ const metodosPagamento = [
 
 function Extrato() {
 
+    const [transactions, setTransactions] = useState([])
+
     const [dashboardData, setDashboardData] = useState({
             userDashResource: {
                 total_benefit_balance: 0,
@@ -59,15 +62,6 @@ function Extrato() {
         })
     }
 
-    const setTransactions = (transactions) => {
-        setDashboardData(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                transactions
-            }
-        })
-    }
-
     useEffect(() => {
         /**
          * Dados necessários para exibição no painel do usuário
@@ -78,13 +72,29 @@ function Extrato() {
         })
         .then(() => {
             setSaldo(dashboardData.userDashResource.total_benefit_balance)
-            setTransactions(dashboardData.transactions)
         })
         .catch(erro => {
             console.error(erro)
         })
 
     }, [dashboardData.transactions])
+
+    useEffect(() => {
+        if(transactions.length === 0)
+        {
+            /**
+             * Dados necessários para exibição no painel do usuário
+             */
+            http.get('api/dashboard/balance')
+            .then((response) => {
+                setTransactions(response.data.transactions)
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
+        }
+
+    }, [transactions])
 
 
     return (
@@ -114,6 +124,9 @@ function Extrato() {
                         </Link>
                     </BotaoGrupo>
                 </BotaoGrupo>
+            </Container>
+            <Container>
+                <DataTableBalance balance={transactions} />
             </Container>
         </Frame>
     )

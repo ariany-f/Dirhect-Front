@@ -142,7 +142,7 @@ function AppRouter() {
               <Route path="extrato" element={<ExtratoCommon />} >
                 <Route index element={<Extrato />} />
                 <Route path="adicionar-saldo" element={<ExtratoAdicionarSaldo />} />
-                <Route path="pagamento/:id" element={<ExtratoPagamento />} />
+                <Route path="adicionar-saldo/pagamento/:id" element={<ExtratoPagamento />} />
               </Route>
             
               <Route path="departamento" element={<Departamentos />} >

@@ -46,7 +46,7 @@ function ExtratoPagamento() {
     ]
 
     useEffect(() => {
-        const url = `api/checkout?source=recharge&&public_id=${id}`;
+        const url = `api/checkout?source=balance&&public_id=${id}`;
         http.get(url)
         .then((response) => {
             if(response.data)

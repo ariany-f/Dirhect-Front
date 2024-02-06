@@ -246,12 +246,14 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
             {
                 obj['all_benefits'].push({
                     name: 'Auxilio Alimentação',
+                    public_id: "EDA897AB-7B7F-4F3F-9019-BF0D39F8B653",
                     amount: removeMask(auxilioAlimentacao),
                     food_meal_one_category: true
                 })
                 
                 obj['all_benefits'].push({
                     name: 'Alimentação',
+                    public_id: "0C03A344-0526-47A1-BCD4-755C67BC0751",
                     amount: 0,
                     food_meal_one_category: false
                 })
@@ -266,12 +268,14 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
             {
                 obj['all_benefits'].push({
                     name: 'Auxilio Alimentação',
+                    public_id: "EDA897AB-7B7F-4F3F-9019-BF0D39F8B653",
                     amount: 0,
                     food_meal_one_category: true
                 })
                 
                 obj['all_benefits'].push({
                     name: 'Alimentação',
+                    public_id: "0C03A344-0526-47A1-BCD4-755C67BC0751",
                     amount: removeMask(alimentacao),
                     food_meal_one_category: false
                 })
@@ -320,6 +324,7 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
             
             obj['all_benefits'].push({
                 name: 'Combustível',
+                public_id: "54501202-C159-4AC3-950E-C92801E9C459",
                 amount: removeMask(combustivelFixo),
                 flexible_value: removeMask(combustivelFlexivel),
                 food_meal_one_category: false
