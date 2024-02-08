@@ -84,6 +84,7 @@ function Dashboard() {
                 })
                 .catch(erro => {
                     console.error(erro)
+                    setLoadingOpened(false)
                 })
             }
     
@@ -101,6 +102,7 @@ function Dashboard() {
                 })
                 .catch(erro => {
                     console.error(erro)
+                    setLoadingOpened(false)
                 })
             }
         }
@@ -118,8 +120,8 @@ function Dashboard() {
                         <DashboardCard dashboardData={dashboardData} colaboradores={colaboradores} />
                     }
                 </>
-                :
-                    <Loading opened={loadingOpened} />
+            :
+                <Loading opened={loadingOpened} />
             }
             </>
         }
