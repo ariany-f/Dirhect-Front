@@ -17,7 +17,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
 });
 
 function DataTableBalance({ balance }) {
-    console.log(balance)
+    
     const navegar = useNavigate()
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({

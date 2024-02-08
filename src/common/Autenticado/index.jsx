@@ -39,11 +39,12 @@ function Autenticado() {
         }
         else
         {
+            
             if(usuario.companies.length === 0)
             {
                 http.get(`api/dashboard/company`)
                     .then((response) => {
-                        if(response.data && response.data.length > 0)
+                        if(response.data && Object.keys(response.data).length > 0)
                         {
                             setCompanies(response.data.companies)
                         }

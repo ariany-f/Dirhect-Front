@@ -31,7 +31,7 @@ function PrimeiroAcesso() {
             <Titulo align="left">
                 <h2>Bem-vindo, RH!</h2>
                 <SubTitulo>
-                    Estamos muito felizes em recebê-lo aqui. Este é o seu primeiro passo, para começar informe seu e-mail corporativo:
+                    Estamos muito felizes em recebê-lo aqui. Este é o seu primeiro passo, para começar informe seu CNPJ:
                 </SubTitulo>
             </Titulo>
             <Frame>
