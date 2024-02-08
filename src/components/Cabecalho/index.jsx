@@ -117,6 +117,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             "id": 9,
             "url": "operador",
             "pageTitulo": "Operadores"
+        },
+        {
+            "id": 10,
+            "url": "usuario",
+            "pageTitulo": "Meus dados"
         }
     ];
 
