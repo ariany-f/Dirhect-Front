@@ -6,6 +6,7 @@ import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import { Link, useNavigate } from "react-router-dom"
 import styles from './Login.module.css'
+import http from '@http';
 import CheckboxContainer from "@components/CheckboxContainer"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import { useEffect, useRef, useState } from "react"
@@ -38,6 +39,27 @@ function Login() {
             setUsuarioEstaLogado(false)
         }
     })
+
+    const AlreadyAccessed = () => {
+
+        const data = {
+            cpf: usuario.document
+        }
+        
+        http.post('api/auth/already-accessed', data)
+            .then((response) => {
+                if(response.data)
+                {
+                    if(!response.data.alreadyAccessed)
+                    {
+                        navegar('/primeiro-acesso')
+                    }
+                }
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
+    }
     
     const sendData = (evento) => {
         evento.preventDefault()
@@ -113,7 +135,8 @@ function Login() {
                     </div>
                 </Frame>
             </form>
-            <Botao aoClicar={evento => sendData(evento)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+            {/* <Botao aoClicar={evento => sendData(evento)} estilo="vermilion" size="medium" filled>Confirmar</Botao> */}
+            <Botao aoClicar={evento => AlreadyAccessed()} estilo="vermilion" size="medium" filled>Confirmar</Botao>
         </>
     )
 }

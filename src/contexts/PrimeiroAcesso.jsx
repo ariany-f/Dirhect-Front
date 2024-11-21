@@ -110,16 +110,17 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         let data = {};
         data.email = usuario.email
         data.document = usuario.document
-        data.access_code = usuario.access_code
+        data.code = usuario.code
         data.password = usuario.password
         data.password_confirmation = usuario.password_confirmation
 
-        http.post('api/auth/access/first', data)
+        http.post('api/auth/first-access', data)
             .then((response) => {
-                if(response.data)
-                {
-                    setEmail(response.data.email)
-                }
+                console.log(response)
+                // if(response.data)
+                // {
+                //     setEmail(response.data.email)
+                // }
             })
             .catch(erro => {
                 console.error(erro)
@@ -139,13 +140,14 @@ export const PrimeiroAcessoProvider = ({ children }) => {
 
         usuario.code = sendCode
 
-        http.post('api/auth/access/first/validate', usuario)
+        http.post('api/auth/first-access', usuario)
             .then((response) => {
-                ArmazenadorToken.definirToken(
-                    response.data.token_access,
-                    response.data.expires_at
-                )
-                navegar('/')
+                console.log(response);
+                // ArmazenadorToken.definirToken(
+                //     response.data.token_access,
+                //     response.data.expires_at
+                // )
+                // navegar('/')
             })
             .catch(erro => {
                 console.error(erro)

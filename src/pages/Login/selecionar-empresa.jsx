@@ -84,7 +84,7 @@ function SelecionarEmpresa() {
     function handleSelectChange(value) {
         setSelected(value);
     }
-
+    
     const selectCompany = () => {
         if(selected)
         {
