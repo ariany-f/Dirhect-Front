@@ -6,6 +6,7 @@ import RightContainer from "@components/RightContainer"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import { Outlet } from "react-router-dom"
 import RodapePublico from "@components/RodapePublico"
+import { Analytics } from "@vercel/analytics/react"
 
 function Publico() {
 
@@ -21,6 +22,7 @@ function Publico() {
                     </MainContainer>
                     <RodapePublico />
                 </RightContainer>
+                <Analytics />
             </MainSectionPublico>
         </>
     )
