@@ -39,6 +39,7 @@ export const SessaoUsuarioContext = createContext({
     setRecuperacaoConfirmPassword:() => null,
     setRecuperacaoPublicId:() => null,
     submeterCompanySession: () => null,
+    dadosUsuario: () => null,
     solicitarCodigo: () => null,
     submeterLogout: () => null,
     submeterLogin: () => null,
@@ -161,10 +162,23 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
         var sendableContent = {
             password: usuario.password,
-            document: usuario.document.replace(/[^a-zA-Z0-9 ]/g, '')
+            document: usuario.document.replace(/[^a-zA-Z0-9 ]/g, ''),
+            cpf: usuario.document
         }
 
         return http.post('api/auth/code', sendableContent)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro.response.data
+            })
+    }
+
+    
+    const dadosUsuario = () => {
+
+        return http.get('api/auth/me')
             .then((response) => {
                 return response
             })
@@ -290,6 +304,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         submeterLogout,
         submeterCompanySession,
         solicitarCodigo,
+        dadosUsuario,
         solicitarCodigoRecuperacaoSenha,
         submeterRecuperacaoSenha,
         redefinirSenha

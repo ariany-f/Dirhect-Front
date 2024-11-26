@@ -39,7 +39,6 @@ function Autenticado() {
         }
         else
         {
-            
             if(usuario.companies.length === 0)
             {
                 http.get(`api/dashboard/company`)

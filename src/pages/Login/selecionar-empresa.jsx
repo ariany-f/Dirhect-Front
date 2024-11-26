@@ -57,10 +57,12 @@ function SelecionarEmpresa() {
 
     useEffect(() => {
         
+        console.log(usuario.companies)
         if(usuario.companies.length === 0)
         {
-            http.get(`api/dashboard/company`)
+            http.post(`api/company/to-login`, {cpf: usuario.document})
                 .then((response) => {
+                    console.log(response)
                     if(response !== undefined || response.data !== undefined)
                     {
                         setEmpresas(response.data.companies)

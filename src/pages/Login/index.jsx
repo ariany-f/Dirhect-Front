@@ -30,7 +30,8 @@ function Login() {
         setEmail,
         setCompanies,
         setPassword,
-        solicitarCodigo
+        solicitarCodigo,
+        dadosUsuario,
     } = useSessaoUsuarioContext()
 
     useEffect(() =>{
@@ -53,6 +54,64 @@ function Login() {
                     if(!response.data.alreadyAccessed)
                     {
                         navegar('/primeiro-acesso')
+                    }
+                    else
+                    {
+                        document.querySelectorAll('input').forEach(function(element) {
+                            if(element.value !== '')
+                            {
+                                if(classError.includes(element.name))
+                                {
+                                    setClassError(classError.filter(item => item !== element.name))
+                                }
+                            }
+                            else
+                            {
+                                if(!classError.includes(element.name))
+                                {
+                                    setClassError(estadoAnterior => [...estadoAnterior, element.name])
+                                }
+                            }
+                        })
+                
+                        if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
+                        {
+                            setLoading(true)
+                            solicitarCodigo()
+                            .then((response) => {
+                                if(response.success)
+                                {
+                                    dadosUsuario()
+                                    .then((response) => {
+                                        console.log(response);
+                                        if(response.success)
+                                        {
+                                            ArmazenadorToken.definirUsuario(
+                                                response.data.user.name,
+                                                response.data.user.email,
+                                                response.data.user.cpf
+                                            )
+                                            setEmail(response.data.user.email)
+                                            setCompanies(response.data.user.companies)
+                                            navegar('/login/selecionar-empresa')
+                                        }
+                                    })
+                                   
+                                }
+                                else
+                                {
+                                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                                    setLoading(false)
+                                    return false
+                                }
+                                
+                            })
+                            .catch(erro => {
+                                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+                                setLoading(false)
+                                return false
+                            })
+                        }
                     }
                 }
             })
