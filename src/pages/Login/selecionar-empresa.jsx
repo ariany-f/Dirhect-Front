@@ -103,12 +103,12 @@ function SelecionarEmpresa() {
         submeterLogin().then((response) => {
             if(response.data)
             {
-                if(response.data.status === 'success')
+                if(response.success)
                 {
-                    ArmazenadorToken.definirToken(
-                        response.data.token_access,
-                        response.data.expires_at
-                    )
+                    // ArmazenadorToken.definirToken(
+                    //     response.data.token_access,
+                    //     response.data.expires_at
+                    // )
                     setUsuarioEstaLogado(true)
                     submeterCompanySession().then(response => {
                         navegar('/')

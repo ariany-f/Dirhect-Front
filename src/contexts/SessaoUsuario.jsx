@@ -243,13 +243,14 @@ export const SessaoUsuarioProvider = ({ children }) => {
         })
         var sendableContent = {
             email: usuario.email,
+            cpf: usuario.document,
             password: usuario.password,
             company_public_id: usuario.company_public_id,
             code: sendCode,
             remember: usuario.remember
         }
 
-        return http.post('api/auth/token', sendableContent)
+        return http.post('api/auth/code-validate', sendableContent)
             .then((response) => {
                 return response
             })
