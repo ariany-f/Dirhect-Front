@@ -13,7 +13,7 @@ const Select = styled.select`
     align-items: center;
     align-self: stretch;
     font-weight: 700;
-    margin-top: 10px;
+    margin-top: 2px;
     font-size: 14px;
     width: ${ props => props.$width ?  props.$width : 'inherit' };
     & option {
