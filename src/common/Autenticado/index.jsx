@@ -12,6 +12,7 @@ import http from '@http'
 import { ArmazenadorToken } from "../../utils"
 import styled from "styled-components"
 import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 const MarginContainer = styled.div`
     display: inline-flex;
@@ -104,6 +105,7 @@ function Autenticado() {
                         </MarginContainer>
                     </MainContainer>
                     <Analytics />
+                    <SpeedInsights />
                 </MainSection>
                 <ModalCnpj aoClicar={() => setLoading(true)} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
             </>

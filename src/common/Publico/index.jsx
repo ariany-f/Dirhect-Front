@@ -7,6 +7,8 @@ import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import { Outlet } from "react-router-dom"
 import RodapePublico from "@components/RodapePublico"
 import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/react"
+
 
 function Publico() {
 
@@ -23,6 +25,7 @@ function Publico() {
                     <RodapePublico />
                 </RightContainer>
                 <Analytics />
+                <SpeedInsights />
             </MainSectionPublico>
         </>
     )
