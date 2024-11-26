@@ -274,7 +274,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
     }
 
     const submeterLogout = () => {
-        return http.get('api/auth/logout')
+        return http.post('api/auth/logout')
             .then((response) => {
                 return response
             })
