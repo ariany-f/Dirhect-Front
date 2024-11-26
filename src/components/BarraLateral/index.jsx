@@ -18,6 +18,7 @@ const ListaEstilizada = styled.ul`
 const BarraLateralEstilizada = styled.aside`
     display: inline-flex;
     padding: 26px 0px;
+    min-height: 100vh;
     flex-direction: column;
     align-items: flex-start;
     gap: 32px;

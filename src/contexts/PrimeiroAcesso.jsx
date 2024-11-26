@@ -116,11 +116,16 @@ export const PrimeiroAcessoProvider = ({ children }) => {
 
         http.post('api/auth/first-access', data)
             .then((response) => {
+
                 console.log(response)
-                // if(response.data)
-                // {
-                //     setEmail(response.data.email)
-                // }
+                if(response.success)
+                {
+                    ArmazenadorToken.definirToken(
+                        response.data.auth.token,
+                        response.data.auth.expiration_at
+                    )
+                    navegar('/')
+                }
             })
             .catch(erro => {
                 console.error(erro)
