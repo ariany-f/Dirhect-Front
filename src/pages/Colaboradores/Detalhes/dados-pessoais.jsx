@@ -22,10 +22,10 @@ function ColaboradorDadosPessoais() {
     const toast = useRef(null)
 
     useEffect(() => {
-        http.get(`api/dashboard/collaborator/${id}`)
+        http.get(`api/collaborator/show/${id}`)
             .then(response => {
-                if (response.collaborator) {
-                    setColaborador(response.collaborator)
+                if (response.data.collaborator) {
+                    setColaborador(response.data.collaborator)
                 }
             })
             .catch(erro => console.log(erro))
@@ -35,7 +35,7 @@ function ColaboradorDadosPessoais() {
         let obj = {}
         obj['email'] = email
       
-        http.put(`api/dashboard/collaborator/${id}`, obj)
+        http.put(`api/collaborator/update/${id}`, obj)
         .then(response => {
             if(response.status === 'success')
             {
