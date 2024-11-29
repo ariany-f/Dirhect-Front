@@ -33,7 +33,7 @@ function DataTableOperadores({ operadores }) {
     
     const representativeNameTemplate = (rowData) => {
         return (
-           rowData.collaborator.name
+           rowData.user
         )
     }
     
@@ -57,9 +57,9 @@ function DataTableOperadores({ operadores }) {
                 </span>
             </div>
             <DataTable value={operadores} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados operadores" selection={selectedOperator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
-                <Column field="name" body={representativeNameTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
-                <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column>
-                <Column field="document" body={representativeDocumentTemplate} header="CPF" style={{ width: '20%' }}></Column>
+                <Column field="user" body={representativeNameTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
+                {/* <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column> */}
+                {/* <Column field="document" body={representativeDocumentTemplate} header="CPF" style={{ width: '20%' }}></Column> */}
                 <Column field="" header="" style={{ width: '10%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
             </DataTable>
         </>

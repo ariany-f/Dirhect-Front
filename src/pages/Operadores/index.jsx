@@ -22,11 +22,11 @@ function Operador() {
     useEffect(() => {
         if(!operadores.length)
         {
-            http.get('api/dashboard/operator')
+            http.get('api/operator/index')
                 .then(response => {
-                    if(response.data && response.data.operators.length)
+                    if(response.data && response.data.length)
                     {
-                        setOperadores(response.data.operators)
+                        setOperadores(response.data)
                     }
                 })
                 .catch(erro => console.log(erro))
