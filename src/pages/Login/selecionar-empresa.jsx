@@ -119,10 +119,9 @@ function SelecionarEmpresa() {
                         response.data.auth.expiration_at
                     )
                     setUsuarioEstaLogado(true)
-                    navegar('/')
-                    // submeterCompanySession().then(response => {
-                    //     navegar('/')
-                    // })
+                    submeterCompanySession().then(response => {
+                        navegar('/')
+                    })
                 }
                 else
                 {

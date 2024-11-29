@@ -175,8 +175,8 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                                                     : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                                 }
                                                 <div className={styles.DadosEmpresa}>
-                                                    <h6>{empresa.name}</h6>
-                                                    <div>{empresa.document}</div>
+                                                    <h6>{empresa.social_reason}</h6>
+                                                    <div>{empresa.cnpj}</div>
                                                 </div>
                                             </div>
                                             <RadioButton

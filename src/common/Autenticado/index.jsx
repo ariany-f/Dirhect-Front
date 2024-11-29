@@ -43,11 +43,11 @@ function Autenticado() {
         {
             if(usuario.companies.length === 0)
             {
-                http.get(`api/dashboard/company`)
+                http.get(`api/company/to-login`)
                     .then((response) => {
-                        if(response.data && Object.keys(response.data).length > 0)
+                        if(response && Object.keys(response).length > 0)
                         {
-                            setCompanies(response.data.companies)
+                            setCompanies(response)
                         }
                     })
                     .catch(erro => {
@@ -59,7 +59,7 @@ function Autenticado() {
                 usuario.companies.map(item => {
                     if(item.public_id === ArmazenadorToken.UserCompanyPublicId)
                     {
-                        setEmpresa(item.name)
+                        setEmpresa(item.social_reason)
                     }
                 })
             }
