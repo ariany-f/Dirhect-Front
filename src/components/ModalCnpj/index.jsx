@@ -118,10 +118,10 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     useEffect(() => {
         if(opened)
         {
-            http.get(`api/dashboard/company`)
+            http.post(`api/company/to-login`, {cpf: usuario.document})
             .then((response) => {
-                setEmpresas(response.data.companies)
-                setCompanies(response.data.companies)
+                setEmpresas(response)
+                setCompanies(response)
             })
             .catch(erro => {
                 console.log(erro)
