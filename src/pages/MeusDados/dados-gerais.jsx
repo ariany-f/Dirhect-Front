@@ -27,9 +27,9 @@ function MeusDadosDadosGerais() {
          */
         if(!Object.keys(userProfile).length)
         {
-            http.get('api/dashboard/user/profile')
+            http.get('api/auth/me')
             .then(response => {
-                setUserProfile(response.data.profileResource.general_info)
+                setUserProfile(response.data.user)
             })
             .catch(erro => {
                 console.error(erro)
@@ -88,16 +88,16 @@ function MeusDadosDadosGerais() {
             }
             <Texto>Nome fantasia</Texto>
             {Object.keys(userProfile)?.length ?
-                (userProfile.social_reason.fantasy_name ?
-                    <Texto weight="800">{userProfile?.social_reason.fantasy_name}</Texto>
+                (userProfile.companies[0].social_reason ?
+                    <Texto weight="800">{userProfile?.companies[0].social_reason}</Texto>
                     : '--')
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             {Object.keys(userProfile)?.length ?
                 <>
                     <Texto>CNPJ</Texto>
-                    {userProfile.social_reason.document ?
-                        <Texto weight="800">{formataCNPJ(userProfile?.social_reason.document)}</Texto>
+                    {userProfile.companies[0].cnpj ?
+                        <Texto weight="800">{formataCNPJ(userProfile?.companies[0].cnpj)}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                     </>
@@ -108,12 +108,12 @@ function MeusDadosDadosGerais() {
         <Titulo><h6>Informações de contato</h6></Titulo>
         <div className={styles.card_dashboard}>
             <ContainerHorizontal width="50%">
-                {Object.keys(userProfile)?.length ?
+                {(Object.keys(userProfile)?.length && userProfile.phones.length) ?
                     <>
                     <Frame gap="5px">
                         <Texto>Telefone/Celular</Texto>
-                        {userProfile.contact_info.phone_number ?
-                            <Texto weight="800">{userProfile?.contact_info.phone_number}</Texto>
+                        {userProfile.phones[0].phone_number ?
+                            <Texto weight="800">({userProfile?.phones[0].phone_code}) {userProfile?.phones[0].phone_number}</Texto>
                             : '---'
                         }
                     </Frame>
@@ -130,8 +130,8 @@ function MeusDadosDadosGerais() {
                     <>
                         <Frame gap="5px">
                             <Texto>E-mail</Texto>
-                            {userProfile.contact_info.email ?
-                                <Texto weight="800">{userProfile?.contact_info.email}</Texto>
+                            {userProfile.email ?
+                                <Texto weight="800">{userProfile?.email}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Frame>
@@ -144,8 +144,8 @@ function MeusDadosDadosGerais() {
                 }
             </ContainerHorizontal>
         </div>
-        <ModalAlterarTelefone dadoAntigo={userProfile?.contact_info?.phone_number ?? ''} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
-        <ModalAlterarEmail dadoAntigo={userProfile?.contact_info?.email ?? ''} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
+        <ModalAlterarTelefone dadoAntigo={(userProfile && userProfile.phones && userProfile.phones.length) ? ('(' + userProfile.phones[0].phone_code + ') ' + userProfile.phones[0].phone_number) : ''} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
+        <ModalAlterarEmail dadoAntigo={userProfile.email ?? ''} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
         
         </>
     )
