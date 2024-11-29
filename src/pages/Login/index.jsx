@@ -168,7 +168,7 @@ function Login() {
                     ArmazenadorToken.definirUsuario(
                         response.data.user.name,
                         response.data.user.email,
-                        usuario.document
+                        response.data.user.cpf,
                     )
 
                     dadosUsuario()

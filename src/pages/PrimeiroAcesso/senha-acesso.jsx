@@ -4,6 +4,7 @@ import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
+import { Link, useNavigate } from "react-router-dom"
 import BotaoVoltar from "@components/BotaoVoltar"
 import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
 import ModalToken from "@components/ModalToken"
@@ -17,6 +18,7 @@ function SenhaDeAcesso() {
     const [modalOpened, setModalOpened] = useState(false)
     const [classError, setClassError] = useState([])
     const [loading, setLoading] = useState(false)
+    const navegar = useNavigate()
     const toast = useRef(null)
 
     function FecharModal()
@@ -30,7 +32,9 @@ function SenhaDeAcesso() {
         setPasswordConfirmation, 
         setCode,
         solicitarCodigo,
+        solicitarCodigoLogin,
         solicitarNovoCodigo,
+        gerarBearer,
         validarCodigo
     } = usePrimeiroAcessoContext()
 
@@ -38,26 +42,60 @@ function SenhaDeAcesso() {
 
         evento.preventDefault();
 
-
         setLoading(true)
         solicitarCodigo()
         .then((response) => {
             if(response.success)
             {
-                ArmazenadorToken.definirToken(
-                    response.data.auth.token,
-                    response.data.auth.expiration_at
+                ArmazenadorToken.definirUsuario(
+                    response.data.user.name,
+                    response.data.user.email,
+                    response.data.user.cpf
                 )
+                usuario.document = response.data.user.cpf
                 setModalOpened(true)
-                
+                setLoading(false)
             }
             else
             {
                 if(response.message == "autenticação é necessária. código expirado")
                 {
-                    solicitarNovoCodigo()
+                    solicitarCodigoLogin()
                     .then((response) => {
-                        console.log(response)
+                        if(response.success)
+                        {
+                            toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código expirado, enviamos um novo código pra você!" })
+                            setLoading(false)
+                            setTimeout(() => {
+                                navegar('/primeiro-acesso')
+                            }, "1500");
+                        }
+                        else
+                        {
+                            toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código expirado, não foi possível gerar um novo código, contate o administrador" })
+                            setLoading(false)
+                            return false
+                        }
+                    })
+                }
+                else if( response.message == "código de acesso inválido")
+                {
+                    solicitarCodigoLogin()
+                    .then((response) => {
+                        if(response.success)
+                        {
+                            toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código inválido, enviamos um novo código pra você!" })
+                            setLoading(false)
+                            setTimeout(() => {
+                                navegar('/primeiro-acesso')
+                            }, "1500");
+                        }
+                        else
+                        {
+                            toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código inválido, não foi possível gerar um novo código, contate o administrador" })
+                            setLoading(false)
+                            return false
+                        }
                     })
                 }
                 else
@@ -71,6 +109,41 @@ function SenhaDeAcesso() {
         })
         .catch(erro => {
             toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
+            setLoading(false)
+            return false
+        })
+    }
+
+    const sendCode = () => {
+       
+        setLoading(true)
+
+        validarCodigo().then((response) => {
+            if(response.data)
+            {
+                if(response.success)
+                {
+                        navegar('/login')
+                }
+                else
+                {
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                    setCode([])
+                    setLoading(false)
+                    return false
+                }
+            }
+            else
+            {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: response.message })
+                setCode([])
+                setLoading(false)
+                return false
+            }
+        })
+        .catch(erro => {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
+            setCode([])
             setLoading(false)
             return false
         })
@@ -96,7 +169,7 @@ function SenhaDeAcesso() {
         </Frame>
         <Botao aoClicar={sendData} estilo="vermilion" size="big" filled>Confirmar</Botao>
         
-        <ModalToken usuario={usuario} aoFechar={FecharModal} aoReenviar={solicitarCodigo} aoClicar={validarCodigo} setCode={setCode} opened={modalOpened} />
+        <ModalToken usuario={usuario} aoFechar={FecharModal} aoReenviar={solicitarCodigoLogin} aoClicar={sendCode} setCode={setCode} opened={modalOpened} />
     </>
     )
 }

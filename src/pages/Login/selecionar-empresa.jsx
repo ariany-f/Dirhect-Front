@@ -42,7 +42,6 @@ function SelecionarEmpresa() {
         setCompanies,
         setUsuarioEstaLogado,
         setSessionCompany,
-        submeterLogin,
         gerarBearer,
         solicitarCodigoLogin,
         submeterCompanySession
@@ -58,12 +57,10 @@ function SelecionarEmpresa() {
 
     useEffect(() => {
         
-        console.log(usuario.companies)
         if(usuario.companies.length === 0)
         {
             http.post(`api/company/to-login`, {cpf: usuario.document})
                 .then((response) => {
-                    console.log(response)
                     if(response !== undefined || response.data !== undefined)
                     {
                         setEmpresas(response)
@@ -100,7 +97,6 @@ function SelecionarEmpresa() {
                     response.data.auth.token,
                     response.data.auth.expiration_at
                 )
-                console.log(response)
             })
         }
     }

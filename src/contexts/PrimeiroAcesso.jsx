@@ -24,6 +24,7 @@ export const PrimeiroAcessoContext = createContext({
     solicitarCodigo: () => null,
     solicitarCodigoLogin: () => null,
     solicitarNovoCodigo: () => null,
+    gerarBearer: () => null,
     validarCodigo: () => null
 })
 
@@ -107,12 +108,35 @@ export const PrimeiroAcessoProvider = ({ children }) => {
     const solicitarCodigoLogin = () => {
 
         var sendableContent = {
+            email: usuario.email,
             password: usuario.password,
             document: usuario.document.replace(/[^a-zA-Z0-9 ]/g, ''),
             cpf: usuario.document
         }
 
-        return http.post('api/auth/code-generate', sendableContent)
+        return http.post('api/auth/collaborator/first-access-code', sendableContent)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro.response.data
+            })
+    }
+    
+    const gerarBearer = () => {
+        var sendCode = '';
+        usuario.code.map(item => {
+            if(typeof item.preenchimento !== undefined)
+            {
+                sendCode += item.preenchimento
+            }
+        })
+        var sendableContent = {
+            cpf: usuario.document,
+            code: sendCode
+        }
+
+        return http.post('api/auth/bearer-token', sendableContent)
             .then((response) => {
                 return response
             })
@@ -125,6 +149,7 @@ export const PrimeiroAcessoProvider = ({ children }) => {
 
         let data = {};
         data.email = usuario.email
+        data.cpf = usuario.document
         data.document = usuario.document
         data.code = usuario.code
         data.password = usuario.password
@@ -175,9 +200,10 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         setDocument,
         setPassword,
         setPasswordConfirmation,
-        solicitarNovoCodigo,
         solicitarCodigo,
         solicitarCodigoLogin,
+        solicitarNovoCodigo,
+        gerarBearer,
         validarCodigo
     }
 
