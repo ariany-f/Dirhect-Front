@@ -30,7 +30,8 @@ function Login() {
         setEmail,
         setCompanies,
         setPassword,
-        solicitarCodigo,
+        solicitarCodigoLogin,
+        submeterLogin,
         dadosUsuario,
     } = useSessaoUsuarioContext()
 
@@ -77,25 +78,41 @@ function Login() {
                         if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
                         {
                             setLoading(true)
-                            solicitarCodigo()
+                            submeterLogin()
                             .then((response) => {
                                 if(response.success)
                                 {
-                                    dadosUsuario()
-                                    .then((response) => {
-                                        console.log(response);
-                                        if(response.success)
-                                        {
-                                            ArmazenadorToken.definirUsuario(
-                                                response.data.user.name,
-                                                response.data.user.email,
-                                                response.data.user.cpf
-                                            )
-                                            setEmail(response.data.user.email)
-                                            setCompanies(response.data.user.companies)
-                                            navegar('/login/selecionar-empresa')
-                                        }
-                                    })
+                                    // ArmazenadorToken.definirToken(
+                                    //     response.data.auth.token,
+                                    //     response.data.auth.expiration_at
+                                    // )
+
+                                    ArmazenadorToken.definirUsuario(
+                                        response.data.user.name,
+                                        response.data.user.email,
+                                        usuario.document
+                                    )
+                                    navegar('/login/selecionar-empresa')
+
+                                    // dadosUsuario()
+                                    // .then((response) => {
+                                    //     if(response.success)
+                                    //     {
+                                    //         ArmazenadorToken.definirUsuario(
+                                    //             response.data.user.name,
+                                    //             response.data.user.email,
+                                    //             response.data.user.cpf
+                                    //         )
+                                    //         setEmail(response.data.user.email)
+                                    //         setCompanies(response.data.user.companies)
+                                    //         navegar('/login/selecionar-empresa')
+                                    //     }
+                                    // })
+                                    // .catch(erro => {
+                                    //     toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+                                    //     setLoading(false)
+                                    //     return false
+                                    // })
                                    
                                 }
                                 else
@@ -143,18 +160,25 @@ function Login() {
         if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
         {
             setLoading(true)
-            solicitarCodigo()
+            solicitarCodigoLogin()
             .then((response) => {
-                if(response.data.status === 'success')
+                if(response.success)
                 {
+                    
                     ArmazenadorToken.definirUsuario(
-                        response.data.name,
-                        response.data.email,
+                        response.data.user.name,
+                        response.data.user.email,
                         usuario.document
                     )
-                    setEmail(response.data.email)
-                    setCompanies(response.data.companies)
-                    navegar('/login/selecionar-empresa')
+
+                    dadosUsuario()
+                    .then((response) => {
+                        if(response.success)
+                        {
+                            setCompanies(response.data.companies)
+                            navegar('/login/selecionar-empresa')
+                        }
+                    })
                 }
                 else
                 {

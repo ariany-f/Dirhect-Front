@@ -68,7 +68,7 @@ function Menu({ opened = false, aoFechar }){
             aoFechar()
         }
         submeterLogout().then(response => {
-            if(response.data.data.status === 'success')
+            if(response.success)
             {
                 ArmazenadorToken.removerToken()
                 navegar('/login')

@@ -21,6 +21,8 @@ http.interceptors.request.use(function (config) {
 
 const rotasIgnoradasPelosErros = [
     'api/auth/already-accessed',
+    'api/auth/first-access',
+    'api/auth/login',
     'api/auth/code',
     'api/auth/logout'
 ]
@@ -33,8 +35,7 @@ http.interceptors.response.use(
             // Faz logout e envia usuário de volta pro login
             return ArmazenadorToken.removerToken()
         }
-        
-        return Promise.reject(error);
+        return Promise.reject(error.response.data);
     }
 );
 

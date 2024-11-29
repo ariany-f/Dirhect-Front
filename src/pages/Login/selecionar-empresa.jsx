@@ -43,7 +43,8 @@ function SelecionarEmpresa() {
         setUsuarioEstaLogado,
         setSessionCompany,
         submeterLogin,
-        solicitarCodigo,
+        gerarBearer,
+        solicitarCodigoLogin,
         submeterCompanySession
     } = useSessaoUsuarioContext()
     
@@ -65,9 +66,9 @@ function SelecionarEmpresa() {
                     console.log(response)
                     if(response !== undefined || response.data !== undefined)
                     {
-                        setEmpresas(response.data.companies)
-                        setCompanies(response.data.companies)
-                        setSessionCompany(response.data.companies[0].public_id)
+                        setEmpresas(response)
+                        setCompanies(response)
+                        setSessionCompany(response[0].public_id)
                     }
                 })
                 .catch(erro => {
@@ -93,26 +94,35 @@ function SelecionarEmpresa() {
             setModalOpened(true)
             setSessionCompany(selected)
             ArmazenadorToken.definirCompany(selected)
+            solicitarCodigoLogin()
+            .then((response) => {
+                ArmazenadorToken.definirToken(
+                    response.data.auth.token,
+                    response.data.auth.expiration_at
+                )
+                console.log(response)
+            })
         }
     }
     
     const sendCode = () => {
-
+       
         setLoading(true)
 
-        submeterLogin().then((response) => {
+        gerarBearer().then((response) => {
             if(response.data)
             {
                 if(response.success)
                 {
-                    // ArmazenadorToken.definirToken(
-                    //     response.data.token_access,
-                    //     response.data.expires_at
-                    // )
+                    ArmazenadorToken.definirToken(
+                        response.data.auth.token,
+                        response.data.auth.expiration_at
+                    )
                     setUsuarioEstaLogado(true)
-                    submeterCompanySession().then(response => {
-                        navegar('/')
-                    })
+                    navegar('/')
+                    // submeterCompanySession().then(response => {
+                    //     navegar('/')
+                    // })
                 }
                 else
                 {
@@ -160,8 +170,8 @@ function SelecionarEmpresa() {
                                             : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                         }
                                         <div className={styles.DadosEmpresa}>
-                                            <h6>{empresa.name}</h6>
-                                            <div>{empresa.document}</div>
+                                            <h6>{empresa.social_reason}</h6>
+                                            <div>{empresa.cnpj}</div>
                                         </div>
                                     </div>
                                     <RadioButton
@@ -175,7 +185,7 @@ function SelecionarEmpresa() {
                         })}
                     </Wrapper>
                     <Botao estilo="vermilion" size="medium" filled aoClicar={selectCompany} >Confirmar</Botao>
-                    <ModalToken usuario={usuario} aoReenviar={solicitarCodigo} aoFechar={() => setModalOpened(false)} aoClicar={sendCode} setCode={setCode} opened={modalOpened} />
+                    <ModalToken usuario={usuario} aoReenviar={solicitarCodigoLogin} aoFechar={() => setModalOpened(false)} aoClicar={sendCode} setCode={setCode} opened={modalOpened} />
                 </>
             }
         </>

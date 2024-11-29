@@ -7,12 +7,17 @@ import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 import BotaoVoltar from "@components/BotaoVoltar"
 import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
 import ModalToken from "@components/ModalToken"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { Toast } from 'primereact/toast'
+import Loading from "@components/Loading"
 import { ArmazenadorToken } from "../../utils"
 
 function SenhaDeAcesso() {
 
     const [modalOpened, setModalOpened] = useState(false)
+    const [classError, setClassError] = useState([])
+    const [loading, setLoading] = useState(false)
+    const toast = useRef(null)
 
     function FecharModal()
     {
@@ -25,36 +30,56 @@ function SenhaDeAcesso() {
         setPasswordConfirmation, 
         setCode,
         solicitarCodigo,
+        solicitarNovoCodigo,
         validarCodigo
     } = usePrimeiroAcessoContext()
 
     const sendData = (evento) => {
+
         evento.preventDefault();
+
+
+        setLoading(true)
         solicitarCodigo()
-        .then(response => {
-            if(response.data.status === 'success')
+        .then((response) => {
+            if(response.success)
             {
-                ArmazenadorToken.definirUsuario(
-                    response.data.name,
-                    response.data.email,
-                    usuario.document
+                ArmazenadorToken.definirToken(
+                    response.data.auth.token,
+                    response.data.auth.expiration_at
                 )
                 setModalOpened(true)
+                
             }
             else
             {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
-                return false
+                if(response.message == "autenticação é necessária. código expirado")
+                {
+                    solicitarNovoCodigo()
+                    .then((response) => {
+                        console.log(response)
+                    })
+                }
+                else
+                {
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.message })
+                    setLoading(false)
+                    return false
+                }
             }
+            
         })
         .catch(erro => {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
+            setLoading(false)
             return false
         })
     }
 
     return (
        <>
+        <Toast ref={toast} />
+        <Loading opened={loading} />
         <Frame>
             <BotaoVoltar />
             <Titulo>

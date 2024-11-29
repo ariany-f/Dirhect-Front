@@ -22,8 +22,9 @@ export const PrimeiroAcessoContext = createContext({
     setPassword: () => null,
     setPasswordConfirmation: () => null,
     solicitarCodigo: () => null,
-    validarCodigo: () => null,
-    validarAcesso: () => null
+    solicitarCodigoLogin: () => null,
+    solicitarNovoCodigo: () => null,
+    validarCodigo: () => null
 })
 
 export const usePrimeiroAcessoContext = () => {
@@ -84,27 +85,42 @@ export const PrimeiroAcessoProvider = ({ children }) => {
             }
         })
     }
+    
+    const solicitarNovoCodigo = () => {
 
-    const validarAcesso = () => {
-        
-        // http.post('api/auth/access/check/email/code', usuario)
-        // .then((response) => {
-        //     console.log(response)
-        // })
-        // .catch(erro => {
-        //     console.error(erro)
-        // })
+        let data = {};
+        data.email = usuario.email
+        data.document = usuario.document.replace(/[^a-zA-Z0-9 ]/g, '')
+        data.cpf = usuario.document
+        data.password = usuario.password
 
-        // http.post('api/auth/access/check/', usuario)
-        //     .then(() => {
-                
-        //     })
-        //     .catch(erro => {
-        //         console.error(erro)
-        //     })
-
+       return  http.post('api/auth/code', data)
+            .then((response) => {
+                return response
+            })
+            .catch((erro) => {
+                console.log(erro)
+                return erro
+            })
     }
 
+    const solicitarCodigoLogin = () => {
+
+        var sendableContent = {
+            password: usuario.password,
+            document: usuario.document.replace(/[^a-zA-Z0-9 ]/g, ''),
+            cpf: usuario.document
+        }
+
+        return http.post('api/auth/code-generate', sendableContent)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro.response.data
+            })
+    }
+    
     const solicitarCodigo = () => {
 
         let data = {};
@@ -114,48 +130,39 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         data.password = usuario.password
         data.password_confirmation = usuario.password_confirmation
 
-        http.post('api/auth/first-access', data)
+       return  http.post('api/auth/first-access', data)
             .then((response) => {
-
-                console.log(response)
-                if(response.success)
-                {
-                    ArmazenadorToken.definirToken(
-                        response.data.auth.token,
-                        response.data.auth.expiration_at
-                    )
-                    navegar('/')
-                }
+                return response
             })
-            .catch(erro => {
-                console.error(erro)
+            .catch((erro) => {
+                console.log(erro)
+                return erro
             })
     }
 
     const validarCodigo = () => {
-
         var sendCode = '';
-
         usuario.code.map(item => {
             if(typeof item.preenchimento !== undefined)
             {
                 sendCode += item.preenchimento
             }
         })
+        var sendableContent = {
+            email: usuario.email,
+            cpf: usuario.document,
+            password: usuario.password,
+            company_public_id: usuario.company_public_id,
+            code: sendCode,
+            remember: usuario.remember
+        }
 
-        usuario.code = sendCode
-
-        http.post('api/auth/first-access', usuario)
+        return http.post('api/auth/code-validate', sendableContent)
             .then((response) => {
-                console.log(response);
-                // ArmazenadorToken.definirToken(
-                //     response.data.token_access,
-                //     response.data.expires_at
-                // )
-                // navegar('/')
+                return response
             })
             .catch(erro => {
-                console.error(erro)
+                return erro.response.data
             })
     }
 
@@ -168,9 +175,10 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         setDocument,
         setPassword,
         setPasswordConfirmation,
+        solicitarNovoCodigo,
         solicitarCodigo,
-        validarCodigo,
-        validarAcesso
+        solicitarCodigoLogin,
+        validarCodigo
     }
 
     return (<PrimeiroAcessoContext.Provider value={contexto}>

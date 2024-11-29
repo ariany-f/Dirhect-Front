@@ -41,8 +41,11 @@ export const SessaoUsuarioContext = createContext({
     submeterCompanySession: () => null,
     dadosUsuario: () => null,
     solicitarCodigo: () => null,
+    solicitarCodigoLogin: () => null,
+    validarCodigo: () => null,
     submeterLogout: () => null,
     submeterLogin: () => null,
+    gerarBearer: () => null,
     solicitarCodigoRecuperacaoSenha: () => null,
     submeterRecuperacaoSenha: () => null,
     redefinirSenha: () => null
@@ -158,6 +161,23 @@ export const SessaoUsuarioProvider = ({ children }) => {
         })
     }
 
+    const solicitarCodigoLogin = () => {
+
+        var sendableContent = {
+            password: usuario.password,
+            document: usuario.document.replace(/[^a-zA-Z0-9 ]/g, ''),
+            cpf: usuario.document
+        }
+
+        return http.post('api/auth/code-generate', sendableContent)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro.response.data
+            })
+    }
+
     const solicitarCodigo = () => {
 
         var sendableContent = {
@@ -231,9 +251,30 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return erro.response.data
             })
     }
+    
+    const gerarBearer = () => {
+        var sendCode = '';
+        usuario.code.map(item => {
+            if(typeof item.preenchimento !== undefined)
+            {
+                sendCode += item.preenchimento
+            }
+        })
+        var sendableContent = {
+            cpf: usuario.document,
+            code: sendCode
+        }
 
-    const submeterLogin = () => {
-
+        return http.post('api/auth/bearer-token', sendableContent)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro.response.data
+            })
+    }
+    
+    const validarCodigo = () => {
         var sendCode = '';
         usuario.code.map(item => {
             if(typeof item.preenchimento !== undefined)
@@ -259,11 +300,34 @@ export const SessaoUsuarioProvider = ({ children }) => {
             })
     }
 
+    const submeterLogin = () => {
+       
+        var sendableContent = {
+            email: usuario.email,
+            cpf: usuario.document,
+            password: usuario.password,
+            company_public_id: usuario.company_public_id,
+            remember: usuario.remember
+        }
+
+        return http.post('api/auth/login', sendableContent)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro.response.data
+            })
+    }
+
     const submeterCompanySession = () => {
         
         if(ArmazenadorToken.UserCompanyPublicId)
         {
-            return http.post(`api/dashboard/session/company/${ArmazenadorToken.UserCompanyPublicId}`)
+            var sendableContent = {
+                public_id: ArmazenadorToken.UserCompanyPublicId
+            }
+            
+            return http.post(`api/company/set-logged-in`, sendableContent)
                 .then((response) => {
                     return response
                 })
@@ -305,6 +369,9 @@ export const SessaoUsuarioProvider = ({ children }) => {
         submeterLogout,
         submeterCompanySession,
         solicitarCodigo,
+        solicitarCodigoLogin,
+        validarCodigo,
+        gerarBearer,
         dadosUsuario,
         solicitarCodigoRecuperacaoSenha,
         submeterRecuperacaoSenha,
