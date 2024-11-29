@@ -47,12 +47,12 @@ function DepartamentoLista() {
         if(!departamentos)
         {
             setLoading(true)
-            http.get('api/dashboard/department')
+            http.get('api/department/index')
                 .then(response => {
                     setLoading(false)
-                    if(response.data.departments)
+                    if(response.data)
                     {
-                        setDepartamentos(response.data.departments)
+                        setDepartamentos(response.data)
                     }
                 })
                 .catch(erro => {

@@ -8,6 +8,7 @@ import { Column } from 'primereact/column';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import BadgeBeneficio from '@components/BadgeBeneficio'
 import Texto from '@components/Texto';
 import './DataTable.css'
 
@@ -52,7 +53,7 @@ function DataTableDepartamentos({ departamentos }) {
                 <div className={styles.departamento}>
                     <div className={styles.left}>
                         <div className={styles.recuo} color="var(--neutro-500)">
-                            Colaboradores:&nbsp;<NumeroColaboradores weight={700}>{rowData?.collaborators_count ?? 0}</NumeroColaboradores>
+                            Colaboradores:&nbsp;<NumeroColaboradores weight={700}>{rowData?.total_collaborators ?? 0}</NumeroColaboradores>
                         </div>
                     </div>
                     <div className={styles.right}>
