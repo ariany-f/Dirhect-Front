@@ -12,12 +12,12 @@ function ColaboradoresCadastrados() {
         if(!colaboradores.length)
         {
             setLoading(true)
-            http.get('api/dashboard/collaborator')
+            http.get('api/collaborator/index')
                 .then(response => {
                     setLoading(false)
-                    if(response.data.collaborators.length)
+                    if(response.data.length)
                     {
-                        setColaboradores(response.data.collaborators)
+                        setColaboradores(response.data)
                     }
                 })
                 .catch(erro => {

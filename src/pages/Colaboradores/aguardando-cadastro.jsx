@@ -7,11 +7,18 @@ function ColaboradoresAguardando() {
     const [colaboradores, setColaboradores] = useState([])
 
     useEffect(() => {
-        http.get('api/dashboard/collaborator')
+        http.get('api/collaborator/waiting-registration')
             .then(response => {
-                setColaboradores(response.data.collaborators)
+                setLoading(false)
+                if(response.data.length)
+                {
+                    setColaboradores(response.data)
+                }
             })
-            .catch(erro => console.log(erro))
+            .catch(erro => {
+                console.log(erro)
+                setLoading(false)
+            })
     }, [])
     
     return (

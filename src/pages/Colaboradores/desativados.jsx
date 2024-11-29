@@ -7,11 +7,18 @@ function ColaboradoresDesativados() {
     const [colaboradores, setColaboradores] = useState([])
 
     useEffect(() => {
-        http.get('api/dashboard/collaborator')
-            .then(response => {
-                setColaboradores(response.data.collaborators)
-            })
-            .catch(erro => console.log(erro))
+        http.get('api/collaborator/trash')
+        .then(response => {
+            setLoading(false)
+            if(response.data.length)
+            {
+                setColaboradores(response.data)
+            }
+        })
+        .catch(erro => {
+            console.log(erro)
+            setLoading(false)
+        })
     }, [])
 
     return (
