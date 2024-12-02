@@ -43,9 +43,9 @@ function MeusDadosDadosGerais() {
         let obj = {
             contact_info: contact_info
         }
-        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        http.put(`api/auth/me/${ArmazenadorToken.UserCompanyPublicId}`, obj)
         .then(response => {
-            if(response.status === 'success')
+           if(response.success)
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                 setModalTelefoneOpened(false)
@@ -60,9 +60,9 @@ function MeusDadosDadosGerais() {
         let obj = {
             contact_info: contact_info
         }
-        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        http.put(`api/auth/me/${ArmazenadorToken.UserCompanyPublicId}`, obj)
         .then(response => {
-            if(response.status === 'success')
+           if(response.success)
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                 setModalEmailOpened(false)

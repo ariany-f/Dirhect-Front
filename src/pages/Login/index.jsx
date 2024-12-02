@@ -82,37 +82,14 @@ function Login() {
                             .then((response) => {
                                 if(response.success)
                                 {
-                                    // ArmazenadorToken.definirToken(
-                                    //     response.data.auth.token,
-                                    //     response.data.auth.expiration_at
-                                    // )
-
                                     ArmazenadorToken.definirUsuario(
                                         response.data.user.name,
                                         response.data.user.email,
-                                        usuario.document
+                                        response.data.user.cpf
                                     )
+                                    
+                                    usuario.document = response.data.user.cpf
                                     navegar('/login/selecionar-empresa')
-
-                                    // dadosUsuario()
-                                    // .then((response) => {
-                                    //     if(response.success)
-                                    //     {
-                                    //         ArmazenadorToken.definirUsuario(
-                                    //             response.data.user.name,
-                                    //             response.data.user.email,
-                                    //             response.data.user.cpf
-                                    //         )
-                                    //         setEmail(response.data.user.email)
-                                    //         setCompanies(response.data.user.companies)
-                                    //         navegar('/login/selecionar-empresa')
-                                    //     }
-                                    // })
-                                    // .catch(erro => {
-                                    //     toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
-                                    //     setLoading(false)
-                                    //     return false
-                                    // })
                                    
                                 }
                                 else
@@ -168,9 +145,10 @@ function Login() {
                     ArmazenadorToken.definirUsuario(
                         response.data.user.name,
                         response.data.user.email,
-                        response.data.user.cpf,
+                        response.data.user.cpf
                     )
 
+                    usuario.document = response.data.user.cpf
                     dadosUsuario()
                     .then((response) => {
                         if(response.success)

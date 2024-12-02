@@ -47,7 +47,7 @@ function ColaboradorDetalhes() {
             accept: () => {
                 http.delete(`api/dashboard/collaborator/${id}`)
                 .then(response => {
-                    if(response.status === 'success')
+                   if(response.success)
                     {
                         toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                         navegar('/colaborador')

@@ -15,7 +15,7 @@ function MeusDadosEndereco() {
          */
         if(!Object.keys(userProfile).length)
         {
-            http.get('api/dashboard/user/profile')
+            http.get('api/auth/me')
             .then(response => {
                 setUserProfile(response.data.profileResource.general_info)
             })

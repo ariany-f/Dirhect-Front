@@ -47,7 +47,7 @@ function DepartamentoDetalhes() {
         if(!departamento) {
             http.get(`api/dashboard/department/${id}`)
             .then(response => {
-                if(response.status === 'success')
+               if(response.success)
                 {
                     setDepartamento(response.department[0])
                 }
@@ -65,7 +65,7 @@ function DepartamentoDetalhes() {
                 setLoading(true)
                 http.delete(`api/dashboard/department/${id}`)
                 .then(response => {
-                    if(response.status === 'success')
+                   if(response.success)
                     {
                         toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                         setLoading(false)

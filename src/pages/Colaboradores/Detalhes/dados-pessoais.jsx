@@ -37,7 +37,7 @@ function ColaboradorDadosPessoais() {
       
         http.put(`api/collaborator/update/${id}`, obj)
         .then(response => {
-            if(response.status === 'success')
+           if(response.success)
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                 setModalTelefoneOpened(false)
@@ -52,7 +52,7 @@ function ColaboradorDadosPessoais() {
       
         http.put(`api/dashboard/collaborator/${id}`, obj)
         .then(response => {
-            if(response.status === 'success')
+           if(response.success)
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                 setModalTelefoneOpened(false)

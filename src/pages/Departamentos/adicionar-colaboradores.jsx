@@ -73,7 +73,7 @@ function DepartamentoAdicionarColaboradores() {
                 setLoading(true)
                 http.get(`api/dashboard/department/${id}`)
                     .then(response => {
-                        if(response.status === 'success')
+                       if(response.success)
                         {
                             setDepartamento(response.department[0])
                             setColaboradores(response.department.collaborators)
@@ -88,7 +88,7 @@ function DepartamentoAdicionarColaboradores() {
 
         if(listaColaboradores.length === 0)
         {
-            http.get('api/dashboard/collaborator')
+            http.get('api/collaborator/index')
                 .then(response => {
                     if(response.data && response.data.collaborators)
                     {
@@ -112,7 +112,7 @@ function DepartamentoAdicionarColaboradores() {
         submeterDepartamento().then(response => {0
             if(response.status)
             {
-                if(response.status === 'success')
+               if(response.success)
                 {
                     toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
                     if(id && typeof id !== undefined && id !== null)

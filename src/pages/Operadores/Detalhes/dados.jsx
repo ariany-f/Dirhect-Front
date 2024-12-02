@@ -18,7 +18,7 @@ function OperadorDados() {
     useEffect(() => {
         if(!operador)
         {
-            http.get(`api/dashboard/operator/${id}`)
+            http.get(`api/operator/show/${id}`)
                 .then(response => {
                     if (response.status === 'success') 
                     {

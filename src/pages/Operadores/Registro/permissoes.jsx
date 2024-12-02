@@ -60,7 +60,7 @@ function OperadorRegistroPermissoes () {
             }
         )
         submeterOperador().then(response => {
-            if(response.status === 'success')
+           if(response.success)
             {
                 navegar('/operador/registro/sucesso')
             }

@@ -22,7 +22,7 @@ function DepartamentoCard({department}) {
     const [clbdr, setClbdr] = useState(null)
 
     useEffect(() => {
-        http.get('api/dashboard/collaborator')
+        http.get('api/collaborator/index')
             .then(response => {
                 if(response.data.collaborators.length)
                 {

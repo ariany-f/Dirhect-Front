@@ -75,12 +75,14 @@ function Dashboard() {
                 /**
                  * Dados necessários para exibição no painel do usuário
                  */
-                http.get('api/dashboard/user')
+                http.get('api/auth/me')
                 .then(response => {
                     setDashboardData(response.data)
+                    setLoadingOpened(false)
                 })
                 .then(() => {
                     setSaldo(dashboardData.userDashResource.total_benefit_balance)
+                    setLoadingOpened(false)
                 })
                 .catch(erro => {
                     console.error(erro)
@@ -93,7 +95,7 @@ function Dashboard() {
              */
             if(!colaboradores)
             {
-                http.get('api/dashboard/collaborator')
+                http.get('api/collaborator/index')
                 .then(response => {
                     if(response.data)
                     {

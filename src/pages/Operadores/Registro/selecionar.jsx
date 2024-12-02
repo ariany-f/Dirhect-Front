@@ -63,7 +63,7 @@ function OperadorRegistroSelecionar() {
     } = useOperadorContext()
 
     useEffect(() => {
-        http.get('api/dashboard/collaborator')
+        http.get('api/collaborator/index')
             .then(response => {
                 setColaboradores(response.data.collaborators)
             })

@@ -34,7 +34,7 @@ function MeusDadosDadosFaturamento() {
          */
          if(!Object.keys(userProfile).length)
          {
-             http.get('api/dashboard/user/profile')
+             http.get('api/auth/me')
              .then(response => {
                 setUserProfile(response.data.profileResource.general_info)
              })
@@ -49,9 +49,9 @@ function MeusDadosDadosFaturamento() {
         let billing_data = {}
         billing_data['billing_data'] = dado
 
-        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, billing_data)
+        http.put(`api/auth/me/${ArmazenadorToken.UserCompanyPublicId}`, billing_data)
         .then(response => {
-            if(response.status === 'success')
+           if(response.success)
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                 setModalOpened(false)
@@ -66,9 +66,9 @@ function MeusDadosDadosFaturamento() {
         let obj = {
             billing_data: billing_data
         }
-        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        http.put(`api/auth/me/${ArmazenadorToken.UserCompanyPublicId}`, obj)
         .then(response => {
-            if(response.status === 'success')
+           if(response.success)
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                 setModalEmailOpened(false)
@@ -83,9 +83,9 @@ function MeusDadosDadosFaturamento() {
         let obj = {
             billing_data: billing_data
         }
-        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        http.put(`api/auth/me/${ArmazenadorToken.UserCompanyPublicId}`, obj)
         .then(response => {
-            if(response.status === 'success')
+           if(response.success)
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                 setModalEmailOpened(false)
@@ -100,9 +100,9 @@ function MeusDadosDadosFaturamento() {
         let obj = {
             billing_data: billing_data
         }
-        http.put(`api/dashboard/user/profile/${ArmazenadorToken.UserCompanyPublicId}`, obj)
+        http.put(`api/auth/me/${ArmazenadorToken.UserCompanyPublicId}`, obj)
         .then(response => {
-            if(response.status === 'success')
+           if(response.success)
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                 setModalEmailOpened(false)

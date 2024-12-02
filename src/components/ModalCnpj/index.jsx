@@ -116,7 +116,8 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     const navegar = useNavigate()
 
     useEffect(() => {
-        if(opened)
+
+        if(opened && usuario.companies.length === 0)
         {
             http.post(`api/company/to-login`, {cpf: usuario.document})
             .then((response) => {

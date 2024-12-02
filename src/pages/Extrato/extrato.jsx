@@ -40,6 +40,7 @@ const metodosPagamento = [
 function Extrato() {
 
     const [transactions, setTransactions] = useState([])
+    const [loadingOpened, setLoadingOpened] = useState(true)
 
     const [dashboardData, setDashboardData] = useState({
             userDashResource: {
@@ -66,12 +67,17 @@ function Extrato() {
         /**
          * Dados necessários para exibição no painel do usuário
          */
-        http.get('api/dashboard/user')
+        http.get('api/auth/me')
         .then(response => {
             setDashboardData(response.data)
+            setLoadingOpened(false)
         })
         .then(() => {
-            setSaldo(dashboardData.userDashResource.total_benefit_balance)
+            if(dashboardData && dashboardData.userDashResource && dashboardData.userDashResource.total_benefit_balance)
+            {
+                setSaldo(dashboardData.userDashResource.total_benefit_balance)
+            }
+            setLoadingOpened(false)
         })
         .catch(erro => {
             console.error(erro)
@@ -87,7 +93,10 @@ function Extrato() {
              */
             http.get('api/dashboard/balance')
             .then((response) => {
-                setTransactions(response.data.transactions)
+                if(response.success)
+                {
+                    setTransactions(response.data.transactions)
+                }
             })
             .catch(erro => {
                 console.error(erro)
@@ -102,7 +111,7 @@ function Extrato() {
             <Container gap="32px">
                 <div className={styles.saldo}>
                     <p>Saldo disponível</p>
-                    {dashboardData?.userDashResource.public_id ?
+                    {dashboardData && dashboardData?.userDashResource && dashboardData?.userDashResource.public_id ?
                         <h2>{Real.format(dashboardData?.userDashResource.total_benefit_balance)}</h2>
                     : <Skeleton variant="rectangular" width={200} height={50} />
                     }
