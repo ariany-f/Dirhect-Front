@@ -38,7 +38,7 @@ function DepartamentosRecentes({ setValor }){
             description: ''
         }
         
-        http.post('api/dashboard/department', data)
+        http.post('api/department/store', data)
             .then((response) => {
                 setNomeDepartamento('')                
             })

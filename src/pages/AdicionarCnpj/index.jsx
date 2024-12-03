@@ -177,10 +177,6 @@ function AdicionarCnpj() {
     }
 
     const navigate = useNavigate()
-
-    console.log(company)
-    
-    console.log(usuario)
     const adicionarCnpj = () => {
         http.post('api/company/store', company)
         .then((response) => {

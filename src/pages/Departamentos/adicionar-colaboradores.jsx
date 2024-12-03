@@ -21,6 +21,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components';
 import { useDepartamentoContext } from '../../contexts/Departamento';
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario";
 import DottedLine from '@components/DottedLine';
 
 const ContainerButton = styled.div`
@@ -46,12 +47,19 @@ function DepartamentoAdicionarColaboradores() {
 
     let { id } = useParams()
     const navegar = useNavigate()
+    const { 
+        usuario,
+        dadosUsuario,
+        retornarCompanySession
+    } = useSessaoUsuarioContext()
+    
     const {
         departamento,
         setDepartamento,
         setColaboradores,
         setNome,
-        submeterDepartamento
+        submeterDepartamento,
+        setCompanyPublicId
     } = useDepartamentoContext()
 
     const [loading, setLoading] = useState(false)
@@ -66,6 +74,16 @@ function DepartamentoAdicionarColaboradores() {
 
     useEffect(() => {
         
+        if(!usuario.cpf)
+        {
+            retornarCompanySession()
+            .then((response) => {
+                if(response.success)
+                {
+                    setCompanyPublicId(response.data.public_id)
+                }
+            })
+        }
         if(id && typeof id !== undefined && id !== null)
         {
             if(departamento.public_id !== id || departamento.status === 10)
@@ -109,30 +127,34 @@ function DepartamentoAdicionarColaboradores() {
     const adicionarColaborador = () => {
         setLoading(true)
         setColaboradores(departamento.collaborators)
-        submeterDepartamento().then(response => {0
-            if(response.status)
+        submeterDepartamento()
+        .then(response => {
+            if(response.success)
             {
-               if(response.success)
+                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
+                if(id && typeof id !== undefined && id !== null)
                 {
-                    toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
-                    if(id && typeof id !== undefined && id !== null)
-                    {
-                        setTimeout(() => {
-                            navegar(`/departamento/detalhes/${id}`)
-                        }, "700");
-                    }
-                    else
-                    {
-                        setTimeout(() => {
-                            navegar(`/departamento/detalhes/${response.public_id}`)
-                        }, "700");
-                    }
+                    setTimeout(() => {
+                        navegar(`/departamento/detalhes/${id}`)
+                    }, "700");
+                }
+                else
+                {
+                    setTimeout(() => {
+                        navegar(`/departamento/detalhes/${response.data.public_id}`)
+                    }, "700");
                 }
             }
-            else
-            {
+            else{
+
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar adicionar colaborador', life: 3000 });
+                setLoading(false)
             }
+        })
+        .catch(erro => {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+            setLoading(false)
+            return false
         })
     }
     

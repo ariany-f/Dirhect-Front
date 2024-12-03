@@ -360,16 +360,13 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const retornarCompanySession = () => {
         
-        if(ArmazenadorToken.UserCompanyPublicId)
-        {            
-            return http.get(`api/company/get-logged-in`)
-                .then((response) => {
-                    return response
-                })
-                .catch(erro => {
-                    return erro.response
-                })
-        }
+        return http.get(`api/company/get-logged-in`)
+            .then((response) => {
+                return response
+            })
+            .catch(erro => {
+                return erro.response
+            })
     }
 
     const submeterLogout = () => {

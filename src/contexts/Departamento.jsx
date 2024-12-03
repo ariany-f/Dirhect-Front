@@ -9,6 +9,8 @@ const departamentoInicial = {
     public_id: '',
     collaborators: [],
     collaborators_count: 0,
+    public_company_id: '',
+    benefits: [],
 }
 
 export const DepartamentoContext = createContext({
@@ -17,6 +19,8 @@ export const DepartamentoContext = createContext({
     setDescription: () => null,
     setDepartamento: () => null,
     setColaboradores: () => null,
+    setCompanyPublicId: () => null,
+    setBenefits: () => null,
     setNumeroColaboradores: () => null,
     setNome: () => null,
     submeterDepartamento: () => null
@@ -76,11 +80,60 @@ export const DepartamentoProvider = ({ children }) => {
             })
         }
     }
+    const setBenefits = (benefits) => {
+        
+        if(benefits && Object.keys(benefits).length > 0)
+        {
+            if(departamento.benefits && Object.keys(departamento.benefits).length > 0)
+            {
+                if(benefits && Object.keys(benefits).length > 0)
+                {
+                    departamento.benefits.map(item => {
+                        benefits.filter(function(itm){
+                            return itm.public_id !== item.public_id
+                        });
+                    })
+                    setDepartamento(estadoAnterior => {
+                        return {
+                            ...estadoAnterior,
+                            benefits
+                        }
+                    })
+                }
+            }
+            else
+            {
+                setDepartamento(estadoAnterior => {
+                    return {
+                        ...estadoAnterior,
+                        benefits
+                    }
+                })
+            }
+        }
+        else
+        {
+            setDepartamento(estadoAnterior => {
+                return {
+                    ...estadoAnterior,
+                    benefits
+                }
+            })
+        }
+    }
     const setNumeroColaboradores = (collaborators_count) => {
         setDepartamento(estadoAnterior => {
             return {
                 ...estadoAnterior,
                 collaborators_count
+            }
+        })
+    }
+    const setCompanyPublicId = (public_company_id) => {
+        setDepartamento(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                public_company_id
             }
         })
     }
@@ -112,7 +165,7 @@ export const DepartamentoProvider = ({ children }) => {
             })
         }
         else{
-            return http.post('api/dashboard/department', departamento)
+            return http.post('api/department/store', departamento)
             .then((response) => {
                 return response
             })
@@ -127,6 +180,8 @@ export const DepartamentoProvider = ({ children }) => {
         setDepartamento,
         setColaboradores,
         setDescription,
+        setCompanyPublicId,
+        setBenefits,
         setNumeroColaboradores,
         setNome,
         submeterDepartamento
