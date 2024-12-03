@@ -43,6 +43,7 @@ export const SessaoUsuarioContext = createContext({
     setRecuperacaoConfirmPassword:() => null,
     setRecuperacaoPublicId:() => null,
     submeterCompanySession: () => null,
+    retornarCompanySession: () => null,
     dadosUsuario: () => null,
     solicitarCodigo: () => null,
     solicitarCodigoLogin: () => null,
@@ -221,7 +222,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return response
             })
             .catch(erro => {
-                return erro.response.data
+                return erro
             })
     }
 
@@ -233,7 +234,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return response
             })
             .catch(erro => {
-                return erro.response.data
+                return erro
             })
     }
     
@@ -255,7 +256,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return response
             })
             .catch(erro => {
-                return erro.response.data
+                return erro
             })
     }
 
@@ -266,7 +267,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return response
             })
             .catch(erro => {
-                return erro.response.data
+                return erro
             })
     }
     
@@ -288,7 +289,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return response
             })
             .catch(erro => {
-                return erro.response.data
+                return erro
             })
     }
     
@@ -314,7 +315,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return response
             })
             .catch(erro => {
-                return erro.response.data
+                return erro
             })
     }
 
@@ -333,7 +334,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return response
             })
             .catch(erro => {
-                return erro.response.data
+                return erro
             })
     }
 
@@ -350,7 +351,23 @@ export const SessaoUsuarioProvider = ({ children }) => {
                     return response
                 })
                 .catch(erro => {
-                    return erro.response.data
+                    return erro.response
+                })
+        }
+    }
+
+    
+
+    const retornarCompanySession = () => {
+        
+        if(ArmazenadorToken.UserCompanyPublicId)
+        {            
+            return http.get(`api/company/get-logged-in`)
+                .then((response) => {
+                    return response
+                })
+                .catch(erro => {
+                    return erro.response
                 })
         }
     }
@@ -361,7 +378,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return response
             })
             .catch(erro => {
-                return erro.response
+                return erro
             })
     }
 
@@ -388,6 +405,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         submeterLogin,
         submeterLogout,
         submeterCompanySession,
+        retornarCompanySession,
         solicitarCodigo,
         solicitarCodigoLogin,
         validarCodigo,

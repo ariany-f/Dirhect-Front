@@ -82,6 +82,7 @@ function Login() {
                             setLoading(true)
                             submeterLogin()
                             .then((response) => {
+                                console.log(response)
                                 if(response.success)
                                 {
                                     ArmazenadorToken.definirUsuario(
@@ -98,14 +99,14 @@ function Login() {
                                 }
                                 else
                                 {
-                                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
+                                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.message })
                                     setLoading(false)
                                     return false
                                 }
                                 
                             })
                             .catch(erro => {
-                                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+                                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
                                 setLoading(false)
                                 return false
                             })

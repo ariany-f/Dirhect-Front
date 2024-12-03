@@ -13,13 +13,21 @@ import { ArmazenadorToken } from './../../utils'
 import { Toast } from 'primereact/toast'
 import ModalAlterarTelefone from '../../components/ModalAlterar/telefone'
 import ModalAlterarEmail from '../../components/ModalAlterar/email'
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 
 function MeusDadosDadosGerais() {
 
     const [userProfile, setUserProfile] = useState([])
+    const [empresaSelecionada, setEmpresaSelecionada] = useState(null)
     const [modalTelefoneOpened, setModalTelefoneOpened] = useState(false)
     const [modalEmailOpened, setModalEmailOpened] = useState(false)
     const toast = useRef(null)
+    
+    const {
+        usuario,
+        retornarCompanySession,
+        setSessionCompany,
+    } = useSessaoUsuarioContext()
 
     useEffect(() => {
         /**
@@ -29,7 +37,17 @@ function MeusDadosDadosGerais() {
         {
             http.get('api/auth/me')
             .then(response => {
-                setUserProfile(response.data.user)
+                if(response.success)
+                {
+                    setUserProfile(response.data.user)
+                    retornarCompanySession()
+                    .then((response) => {
+                        if(response.success)
+                        {
+                            setEmpresaSelecionada(response.data)
+                        }
+                    })
+                }
             })
             .catch(erro => {
                 console.error(erro)
@@ -87,22 +105,21 @@ function MeusDadosDadosGerais() {
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             <Texto>Nome fantasia</Texto>
-            {Object.keys(userProfile)?.length ?
-                (userProfile.companies[0].social_reason ?
-                    <Texto weight="800">{userProfile?.companies[0].social_reason}</Texto>
+            {empresaSelecionada ?
+                (empresaSelecionada.trade_name ?
+                    <Texto weight="800">{empresaSelecionada.trade_name}</Texto>
                     : '--')
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
-            {Object.keys(userProfile)?.length ?
+            {empresaSelecionada ?
                 <>
                     <Texto>CNPJ</Texto>
-                    {userProfile.companies[0].cnpj ?
-                        <Texto weight="800">{formataCNPJ(userProfile?.companies[0].cnpj)}</Texto>
+                    {empresaSelecionada.cnpj ?
+                        <Texto weight="800">{formataCNPJ(empresaSelecionada.cnpj)}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
-                    </>
+                </>
                 : <Skeleton variant="rectangular" width={200} height={25} />
-                
             }
         </div>
         <Titulo><h6>Informações de contato</h6></Titulo>
