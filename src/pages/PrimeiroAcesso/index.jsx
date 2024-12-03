@@ -18,6 +18,7 @@ function PrimeiroAcesso() {
         setEmail,
         setCode,
         setDocument,
+        setCpf,
         setAccessCode,
         validarAcesso
     } = usePrimeiroAcessoContext()
@@ -36,7 +37,6 @@ function PrimeiroAcesso() {
                 </SubTitulo>
             </Titulo>
             <Frame>
-                {/* <CampoTexto camposVazios={classError} patternMask={['999.999.999-99', '99.999.999/9999-99']} name="document" valor={usuario.document} setValor={setDocument} type="text" label="CPF/CNPJ" placeholder="Digite seu CPF/CNPJ" /> */}
                 <CampoTexto camposVazios={classError} name="email" valor={usuario.email} setValor={setEmail} type="text" label="E-mail corporativo" placeholder="E-mail corporativo" />
                 <CampoTexto name="codigo" valor={usuario.code} setValor={setCode} label="Código de acesso" placeholder="Digite o código de acesso" />
                 <Frame estilo="vermilion" padding="16px">

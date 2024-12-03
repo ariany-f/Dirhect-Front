@@ -48,7 +48,7 @@ function RedefinirSenha() {
                     alert(response.data.message)
                 }
                 setRecuperacaoToken(response.data.token)
-                setRecuperacaoPublicId(response.data.user_public_id)
+                setRecuperacaoPublicId(response.data.public_id)
             }
         })
         .catch(erro => {

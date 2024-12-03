@@ -7,7 +7,9 @@ const usuarioInicial = {
     name: '',
     email: '',
     password: '',
+    cpf: '',
     document: '',
+    public_id: '',
     company_public_id: '',
     remember: false,
     companies: [],
@@ -28,6 +30,8 @@ export const SessaoUsuarioContext = createContext({
     setUsuarioEstaLogado: () => null,
     setCompanies: () => null,
     setRemember: () => null,
+    setUserPublicId: () => null,
+    setCpf: () => null,
     setDocument: () => null,
     setSessionCompany: () => null,
     setEmail: () => null,
@@ -77,6 +81,22 @@ export const SessaoUsuarioProvider = ({ children }) => {
             return {
                 ...estadoAnterior,
                 publicId
+            }
+        })
+    }
+    const setCpf = (cpf) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                cpf
+            }
+        })
+    }
+    const setUserPublicId = (public_id) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                public_id
             }
         })
     }
@@ -165,8 +185,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
         var sendableContent = {
             password: usuario.password,
-            document: usuario.document.replace(/[^a-zA-Z0-9 ]/g, ''),
-            cpf: usuario.document
+            cpf: usuario.cpf
         }
 
         return http.post('api/auth/code-generate', sendableContent)
@@ -182,8 +201,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
         var sendableContent = {
             password: usuario.password,
-            document: usuario.document.replace(/[^a-zA-Z0-9 ]/g, ''),
-            cpf: usuario.document
+            cpf: usuario.cpf
         }
 
         return http.post('api/auth/code', sendableContent)
@@ -209,7 +227,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const solicitarCodigoRecuperacaoSenha = () => {
 
-        usuario.document = usuario.document.replace(/[^a-zA-Z0-9 ]/g, '')
+        usuario.cpf = usuario.cpf.replace(/[^a-zA-Z0-9 ]/g, '')
         return http.post('api/user/forgot', usuario)
             .then((response) => {
                 return response
@@ -261,7 +279,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
         var sendableContent = {
-            cpf: usuario.document,
+            cpf: usuario.cpf,
             code: sendCode
         }
 
@@ -284,7 +302,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         })
         var sendableContent = {
             email: usuario.email,
-            cpf: usuario.document,
+            cpf: usuario.cpf,
             password: usuario.password,
             company_public_id: usuario.company_public_id,
             code: sendCode,
@@ -304,7 +322,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
        
         var sendableContent = {
             email: usuario.email,
-            cpf: usuario.document,
+            cpf: usuario.cpf,
             password: usuario.password,
             company_public_id: usuario.company_public_id,
             remember: usuario.remember
@@ -361,6 +379,8 @@ export const SessaoUsuarioProvider = ({ children }) => {
         setCode,
         setName,
         setSessionCompany,
+        setCpf,
+        setUserPublicId,
         setRecuperacaoToken,
         setRecuperacaoPassword,
         setRecuperacaoConfirmPassword,

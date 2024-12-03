@@ -27,6 +27,8 @@ function Login() {
         usuarioEstaLogado,
         setUsuarioEstaLogado,
         setDocument,
+        setCpf,
+        setUserPublicId,
         setEmail,
         setCompanies,
         setPassword,
@@ -45,7 +47,7 @@ function Login() {
     const AlreadyAccessed = () => {
 
         const data = {
-            cpf: usuario.document
+            cpf: usuario.cpf
         }
         
         http.post('api/auth/already-accessed', data)
@@ -85,10 +87,12 @@ function Login() {
                                     ArmazenadorToken.definirUsuario(
                                         response.data.user.name,
                                         response.data.user.email,
-                                        response.data.user.cpf
+                                        response.data.user.cpf,
+                                        response.data.user.public_id
                                     )
                                     
-                                    usuario.document = response.data.user.cpf
+                                    usuario.cpf = response.data.user.cpf
+                                    usuario.public_id = response.data.user.public_id
                                     navegar('/login/selecionar-empresa')
                                    
                                 }
@@ -145,10 +149,12 @@ function Login() {
                     ArmazenadorToken.definirUsuario(
                         response.data.user.name,
                         response.data.user.email,
-                        response.data.user.cpf
+                        response.data.user.cpf,
+                        response.data.user.public_id
                     )
 
-                    usuario.document = response.data.user.cpf
+                    usuario.cpf = response.data.user.cpf
+                    usuario.public_id = response.data.user.public_id
                     dadosUsuario()
                     .then((response) => {
                         if(response.success)
@@ -186,7 +192,7 @@ function Login() {
             </Titulo>
             <form>
                 <Frame>
-                    <CampoTexto camposVazios={classError} patternMask={['999.999.999-99', '99.999.999/9999-99']} name="document" valor={usuario.document} setValor={setDocument} type="text" label="CPF/CNPJ" placeholder="Digite seu CPF/CNPJ" />
+                    <CampoTexto camposVazios={classError} patternMask={['999.999.999-99', '99.999.999/9999-99']} name="cpf" valor={usuario.cpf} setValor={setCpf} type="text" label="CPF/CNPJ" placeholder="Digite seu CPF/CNPJ" />
                     <CampoTexto camposVazios={classError} name="password" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
                     <div className={styles.containerBottom}>
                         <CheckboxContainer name="remember" valor={usuario.remember} setValor={setRemember} label="Lembrar de mim" />

@@ -59,7 +59,7 @@ function SelecionarEmpresa() {
         
         if(usuario.companies.length === 0)
         {
-            http.post(`api/company/to-login`, {cpf: usuario.document})
+            http.post(`api/company/to-login`, {cpf: usuario.cpf})
                 .then((response) => {
                     if(response !== undefined || response.data !== undefined)
                     {

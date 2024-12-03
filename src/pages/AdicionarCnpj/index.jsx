@@ -32,6 +32,8 @@ function AdicionarCnpj() {
 
     const { 
         usuario,
+        dadosUsuario,
+        setCompanies,
     } = useSessaoUsuarioContext()
 
     const [estados, setEstados] = useState([]);
@@ -58,25 +60,46 @@ function AdicionarCnpj() {
     const [classError, setClassError] = useState([])
     const [company, setCompany] = useState({
         status: 6,
-        document: '',
+        public_company_id: usuario.company_public_id,
+        public_user_id: usuario.public_id,
+        cnpj: '',
         social_reason: '',
-        name: '',
+        trade_name: '',
         address_postal_code: '',
         address_street: '',
         address_district: '',
         address_number: '',
+        municipal_registration: '',
+        state_registration: '',
         address_complement: '',
         address_city: '',
         address_state: '',
         email: usuario.email,
-        phone_number: '11984979026'
+        phone_code: '11',
+        phone_number: '984979026'
     })
     
-    const setCnpj = (document) => {
+    const setCnpj = (cnpj) => {
         setCompany(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                document
+                cnpj
+            }
+        })
+    }
+    const setInscricaoMunicipal = (municipal_registration) => {
+        setCompany(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                municipal_registration
+            }
+        })
+    }
+    const setInscricaoEstadual = (state_registration) => {
+        setCompany(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                state_registration
             }
         })
     }
@@ -88,11 +111,11 @@ function AdicionarCnpj() {
             }
         })
     }
-    const setNomeFantasia = (name) => {
+    const setNomeFantasia = (trade_name) => {
         setCompany(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                name
+                trade_name
             }
         })
     }
@@ -155,10 +178,24 @@ function AdicionarCnpj() {
 
     const navigate = useNavigate()
 
+    console.log(company)
+    
+    console.log(usuario)
     const adicionarCnpj = () => {
-        http.post('api/dashboard/company', company)
+        http.post('api/company/store', company)
         .then((response) => {
-            navegar("/")
+            if(response.success)
+            {
+                dadosUsuario()
+                .then((response) => {
+                    if(response.success)
+                    {
+                        setCompanies(response.data.companies)
+                        toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                        navegar('/')
+                    }
+                })
+            }
         })
         .catch(erro => {
             alert(erro)
@@ -220,8 +257,8 @@ function AdicionarCnpj() {
                     <CampoTexto 
                         camposVazios={classError}
                         patternMask={['99.999.999/9999-99']}
-                        name="document" 
-                        valor={company.document} 
+                        name="cnpj" 
+                        valor={company.cnpj} 
                         setValor={setCnpj} 
                         type="text" 
                         label="CNPJ" 
@@ -241,14 +278,37 @@ function AdicionarCnpj() {
                     <CampoTexto 
                         camposVazios={classError} 
                         name="name" 
-                        valor={company.name} 
+                        valor={company.trade_name} 
                         setValor={setNomeFantasia} 
                         type="text" 
                         label="Nome Fantasia" 
                         placeholder="Digite o Nome Fantasia" />
                 </Col6>
             </Col12>
-            
+            <Col12>
+                <Col6>
+                    <CampoTexto 
+                        camposVazios={classError}
+                        patternMask={['99999999-9']}
+                        name="municipal_registration" 
+                        valor={company.municipal_registration} 
+                        setValor={setInscricaoMunicipal} 
+                        type="text" 
+                        label="Inscrição Municipal" 
+                        placeholder="Digite a Inscrição Municipal" />
+                </Col6>
+                <Col6>
+                    <CampoTexto 
+                        camposVazios={classError}
+                        patternMask={['999.999.999.999']}
+                        name="state_registration" 
+                        valor={company.state_registration} 
+                        setValor={setInscricaoEstadual} 
+                        type="text" 
+                        label="Inscrição Estadual" 
+                        placeholder="Digite a Inscrição Estadual" />
+                </Col6>
+            </Col12>
             <Titulo>
                 <h6>Endereço da Empresa</h6>
             </Titulo>

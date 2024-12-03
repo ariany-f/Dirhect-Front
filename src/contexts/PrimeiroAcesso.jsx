@@ -7,6 +7,7 @@ const usuarioInicial = {
     code: '',
     access_code: '',
     document: '',
+    cpf: '',
     email: '',
     password: '',
     password_confirmation: ''
@@ -17,6 +18,7 @@ export const PrimeiroAcessoContext = createContext({
     erros: {},
     setCode: () => null,
     setDocument: () => null,
+    setCpf: () => null,
     setAccessCode: () => null,
     setEmail: () => null,
     setPassword: () => null,
@@ -70,6 +72,14 @@ export const PrimeiroAcessoProvider = ({ children }) => {
             }
         })
     }
+    const setCpf = (cpf) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                cpf
+            }
+        })
+    }
     const setPassword = (password) => {
         setUsuario(estadoAnterior => {
             return {
@@ -91,8 +101,7 @@ export const PrimeiroAcessoProvider = ({ children }) => {
 
         let data = {};
         data.email = usuario.email
-        data.document = usuario.document.replace(/[^a-zA-Z0-9 ]/g, '')
-        data.cpf = usuario.document
+        data.cpf = usuario.cpf
         data.password = usuario.password
 
        return  http.post('api/auth/code', data)
@@ -110,8 +119,7 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         var sendableContent = {
             email: usuario.email,
             password: usuario.password,
-            document: usuario.document.replace(/[^a-zA-Z0-9 ]/g, ''),
-            cpf: usuario.document
+            cpf: usuario.cpf
         }
 
         return http.post('api/auth/collaborator/first-access-code', sendableContent)
@@ -132,7 +140,7 @@ export const PrimeiroAcessoProvider = ({ children }) => {
             }
         })
         var sendableContent = {
-            cpf: usuario.document,
+            cpf: usuario.cpf,
             code: sendCode
         }
 
@@ -149,8 +157,7 @@ export const PrimeiroAcessoProvider = ({ children }) => {
 
         let data = {};
         data.email = usuario.email
-        data.cpf = usuario.document
-        data.document = usuario.document
+        data.cpf = usuario.cpf
         data.code = usuario.code
         data.password = usuario.password
         data.password_confirmation = usuario.password_confirmation
@@ -175,7 +182,7 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         })
         var sendableContent = {
             email: usuario.email,
-            cpf: usuario.document,
+            cpf: usuario.cpf,
             password: usuario.password,
             company_public_id: usuario.company_public_id,
             code: sendCode,
@@ -198,6 +205,7 @@ export const PrimeiroAcessoProvider = ({ children }) => {
         setAccessCode,
         setEmail,
         setDocument,
+        setCpf,
         setPassword,
         setPasswordConfirmation,
         solicitarCodigo,

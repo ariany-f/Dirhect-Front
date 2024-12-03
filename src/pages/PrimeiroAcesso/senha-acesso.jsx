@@ -50,9 +50,10 @@ function SenhaDeAcesso() {
                 ArmazenadorToken.definirUsuario(
                     response.data.user.name,
                     response.data.user.email,
-                    response.data.user.cpf
+                    response.data.user.cpf,
+                    response.data.user.public_id
                 )
-                usuario.document = response.data.user.cpf
+                usuario.cpf = response.data.user.cpf
                 setModalOpened(true)
                 setLoading(false)
             }
