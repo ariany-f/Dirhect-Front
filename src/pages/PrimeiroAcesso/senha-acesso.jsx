@@ -38,81 +38,108 @@ function SenhaDeAcesso() {
         validarCodigo
     } = usePrimeiroAcessoContext()
 
+    useEffect(() =>{
+        if(!usuario.email)
+        {
+            navegar('/primeiro-acesso')
+        }
+    })
+
     const sendData = (evento) => {
 
-        evento.preventDefault();
-
-        setLoading(true)
-        solicitarCodigo()
-        .then((response) => {
-            if(response.success)
+        evento.preventDefault()
+        
+        document.querySelectorAll('input').forEach(function(element) {
+            if(element.value !== '')
             {
-                ArmazenadorToken.definirUsuario(
-                    response.data.user.name,
-                    response.data.user.email,
-                    response.data.user.cpf,
-                    response.data.user.public_id
-                )
-                usuario.cpf = response.data.user.cpf
-                setModalOpened(true)
-                setLoading(false)
+                if(classError.includes(element.name))
+                {
+                    setClassError(classError.filter(item => item !== element.name))
+                }
             }
             else
             {
-                if(response.message == "autenticação é necessária. código expirado")
+                if(!classError.includes(element.name))
                 {
-                    solicitarCodigoLogin()
-                    .then((response) => {
-                        if(response.success)
-                        {
-                            toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código expirado, enviamos um novo código pra você!" })
-                            setLoading(false)
-                            setTimeout(() => {
-                                navegar('/primeiro-acesso')
-                            }, "1500");
-                        }
-                        else
-                        {
-                            toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código expirado, não foi possível gerar um novo código, contate o administrador" })
-                            setLoading(false)
-                            return false
-                        }
-                    })
+                    setClassError(estadoAnterior => [...estadoAnterior, element.name])
                 }
-                else if( response.message == "código de acesso inválido")
+            }
+        })
+
+        if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
+        {
+            setLoading(true)
+            solicitarCodigo()
+            .then((response) => {
+                if(response.success)
                 {
-                    solicitarCodigoLogin()
-                    .then((response) => {
-                        if(response.success)
-                        {
-                            toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código inválido, enviamos um novo código pra você!" })
-                            setLoading(false)
-                            setTimeout(() => {
-                                navegar('/primeiro-acesso')
-                            }, "1500");
-                        }
-                        else
-                        {
-                            toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código inválido, não foi possível gerar um novo código, contate o administrador" })
-                            setLoading(false)
-                            return false
-                        }
-                    })
+                    ArmazenadorToken.definirUsuario(
+                        response.data.user.name,
+                        response.data.user.email,
+                        response.data.user.cpf,
+                        response.data.user.public_id
+                    )
+                    usuario.cpf = response.data.user.cpf
+                    setModalOpened(true)
+                    setLoading(false)
                 }
                 else
                 {
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.message })
-                    setLoading(false)
-                    return false
+                    if(response.message == "autenticação é necessária. código expirado")
+                    {
+                        solicitarCodigoLogin()
+                        .then((response) => {
+                            if(response.success)
+                            {
+                                toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código expirado, enviamos um novo código pra você!" })
+                                setLoading(false)
+                                setTimeout(() => {
+                                    navegar('/primeiro-acesso')
+                                }, "1500");
+                            }
+                            else
+                            {
+                                toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código expirado, não foi possível gerar um novo código, contate o administrador" })
+                                setLoading(false)
+                                return false
+                            }
+                        })
+                    }
+                    else if( response.message == "código de acesso inválido")
+                    {
+                        solicitarCodigoLogin()
+                        .then((response) => {
+                            if(response.success)
+                            {
+                                toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código inválido, enviamos um novo código pra você!" })
+                                setLoading(false)
+                                setTimeout(() => {
+                                    navegar('/primeiro-acesso')
+                                }, "1500");
+                            }
+                            else
+                            {
+                                toast.current.show({ severity: 'error', summary: 'Erro', detail: "Código inválido, não foi possível gerar um novo código, contate o administrador" })
+                                setLoading(false)
+                                return false
+                            }
+                        })
+                    }
+                    else
+                    {
+                        toast.current.show({ severity: 'error', summary: 'Erro', detail: response.message })
+                        setLoading(false)
+                        return false
+                    }
                 }
-            }
-            
-        })
-        .catch(erro => {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
-            setLoading(false)
-            return false
-        })
+                
+            })
+            .catch(erro => {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
+                setLoading(false)
+                return false
+            })
+        }
     }
 
     const sendCode = () => {
@@ -164,8 +191,8 @@ function SenhaDeAcesso() {
             </Titulo>
         </Frame>
         <Frame>
-            <CampoTexto name="senha" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
-            <CampoTexto name="confirmar-senha" valor={usuario.password_confirmation} setValor={setPasswordConfirmation} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
+            <CampoTexto camposVazios={classError} name="senha" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
+            <CampoTexto camposVazios={classError} name="confirmar-senha" valor={usuario.password_confirmation} setValor={setPasswordConfirmation} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
             <RegrasCriacaoSenha />
         </Frame>
         <Botao aoClicar={sendData} estilo="vermilion" size="big" filled>Confirmar</Botao>

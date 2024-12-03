@@ -82,7 +82,6 @@ function Login() {
                             setLoading(true)
                             submeterLogin()
                             .then((response) => {
-                                console.log(response)
                                 if(response.success)
                                 {
                                     ArmazenadorToken.definirUsuario(
