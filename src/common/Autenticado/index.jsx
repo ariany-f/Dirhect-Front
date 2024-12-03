@@ -43,11 +43,11 @@ function Autenticado() {
         {
             if(usuario.companies.length === 0)
             {
-                http.post(`api/company/to-login`, {cpf: usuario.cpf})
+                http.get(`api/auth/me`)
                     .then((response) => {
-                        if(response && Object.keys(response).length > 0)
+                        if(response.success)
                         {
-                            setCompanies(response)
+                            setCompanies(response.data.user.companies)
                         }
                     })
                     .catch(erro => {

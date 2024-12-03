@@ -116,17 +116,24 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     const navegar = useNavigate()
 
     useEffect(() => {
-
         if(opened && usuario.companies.length === 0)
         {
-            http.post(`api/company/to-login`, {cpf: usuario.document})
+            http.get(`api/auth/me`)
             .then((response) => {
-                setEmpresas(response)
-                setCompanies(response)
+                if(response.success)
+                {
+                    setEmpresas(response.data.user.companies)
+                    setCompanies(response.data.user.companies)
+                }
             })
             .catch(erro => {
                 console.log(erro)
             })
+        }
+
+        if(empresas.length === 0 && usuario.companies.length > 0)
+        {
+            setEmpresas(usuario.companies)
         }
     }, [empresas, opened])
     

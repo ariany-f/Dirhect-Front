@@ -59,13 +59,13 @@ function SelecionarEmpresa() {
         
         if(usuario.companies.length === 0)
         {
-            http.post(`api/company/to-login`, {cpf: usuario.cpf})
+            http.get(`api/auth/me`)
                 .then((response) => {
-                    if(response !== undefined || response.data !== undefined)
+                    if(response.success)
                     {
-                        setEmpresas(response)
-                        setCompanies(response)
-                        setSessionCompany(response[0].public_id)
+                        setEmpresas(response.data.user.companies)
+                        setCompanies(response.data.user.companies)
+                        setSessionCompany(response.user.companies[0].public_id)
                     }
                 })
                 .catch(erro => {
