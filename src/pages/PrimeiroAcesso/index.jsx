@@ -6,12 +6,15 @@ import Texto from "@components/Texto"
 import Titulo from "@components/Titulo"
 import { Link, useNavigate } from "react-router-dom"
 import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
-import { useState } from "react"
+import { useState, useRef } from "react"
+import http from '@http';
+import { Toast } from 'primereact/toast'
 
 function PrimeiroAcesso() {
 
     const [classError, setClassError] = useState([])
     const navegar = useNavigate()
+    const toast = useRef(null)
     
     const { 
         usuario,
@@ -23,13 +26,36 @@ function PrimeiroAcesso() {
         validarAcesso
     } = usePrimeiroAcessoContext()
 
-    const sendData = (evento) => {
-        evento.preventDefault();
-        validarAcesso()
+
+    const AlreadyAccessed = () => {
+
+        const data = {
+            email: usuario.email
+        }
+        
+        http.post('api/auth/already-accessed', data)
+            .then((response) => {
+                if(response.data)
+                {
+                    if(response.data.alreadyAccessed)
+                    {
+
+                        navegar('/login')
+                    }
+                    else
+                    {
+                        navegar('/primeiro-acesso/senha-acesso')
+                    }
+                }
+            })
+            .catch(erro => {
+                console.error(erro)
+            })
     }
 
     return (
         <>
+            <Toast ref={toast} />
             <Titulo align="left">
                 <h2>Bem-vindo, RH!</h2>
                 <SubTitulo>
@@ -43,7 +69,7 @@ function PrimeiroAcesso() {
                     <Texto>O código de acesso foi enviado parao e-mail corporativo cadastrado!</Texto>
                 </Frame>
             </Frame>
-            <Botao aoClicar={evento => navegar('/primeiro-acesso/senha-acesso')} estilo="vermilion" size="big" filled>Confirmar</Botao>
+            <Botao aoClicar={evento => AlreadyAccessed()} estilo="vermilion" size="big" filled>Confirmar</Botao>
         </>
     )
 }
