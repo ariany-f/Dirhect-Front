@@ -38,6 +38,7 @@ function SelecionarEmpresa() {
     
     const { 
         usuario,
+        setCpf,
         setCode,
         setCompanies,
         setUsuarioEstaLogado,
@@ -57,15 +58,19 @@ function SelecionarEmpresa() {
 
     useEffect(() => {
         
+        if(!usuario.cpf)
+        {
+            setCpf(ArmazenadorToken.UserCpf);
+        }
         if(usuario.companies.length === 0)
         {
-            http.get(`api/auth/me`)
+            http.post(`api/company/to-login`, {cpf: usuario.cpf})
                 .then((response) => {
                     if(response.success)
                     {
-                        setEmpresas(response.data.user.companies)
-                        setCompanies(response.data.user.companies)
-                        setSessionCompany(response.user.companies[0].public_id)
+                        setEmpresas(response)
+                        setCompanies(response)
+                        setSessionCompany(response[0].public_id)
                     }
                 })
                 .catch(erro => {
