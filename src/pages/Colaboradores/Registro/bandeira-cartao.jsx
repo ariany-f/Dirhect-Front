@@ -81,18 +81,12 @@ function ColaboradorBandeiraCartao() {
         {
             setLoading(true)
             submeterUsuario().then(response => {
-                if(response.status)
-                {
-                    if(response.status == 'success')
-                    {
-                        navegar('/colaborador/registro/sucesso')
-                    }
-                }
-                if(response.data.status == 'success')
+                if(response.success)
                 {
                     navegar('/colaborador/registro/sucesso')
                 }
-            }).catch(erro => {
+            }).catch((erro) => {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
                 setLoading(false)
             })
         }

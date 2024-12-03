@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom'
 const ColaboradorInicial = {
     name: '',
     email: '',
-    document: '',
+    cpf: '',
     date_birth: '',
     phone_number: '',
-    phone_code: '55',
+    phone_code: '11',
     address_postal_code: '',
     address_street: '',
     address_number: '',
@@ -27,7 +27,9 @@ const ColaboradorInicial = {
     another_address_complement: '',
     another_address_district: '',
     another_address_city: '',
-    another_address_state: ''
+    another_address_state: '',
+    gender: '1',
+    public_company_id: ''
 }
 
 export const ColaboradorContext = createContext({
@@ -36,11 +38,13 @@ export const ColaboradorContext = createContext({
     setPlanilha: () => null,
     setName: () => null,
     setEmail: () => null,
-    setDocument: () => null,
+    setCpf: () => null,
     setBrandCardEnum: () => null,
     setDateBirth: () => null,
     setPhoneNumber: () => null,
     setDepartments: () => null,
+    setGender: () => null,
+    setCompanyPublicId: () => null,
     setAddressPostalCode: () => null,
     setAddressStreet: () => null,
     setAddressNumber: () => null,
@@ -87,11 +91,11 @@ export const ColaboradorProvider = ({ children }) => {
             }
         })
     }
-    const setDocument = (document) => {
+    const setCpf = (cpf) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                document
+                cpf
             }
         })
     }
@@ -108,6 +112,14 @@ export const ColaboradorProvider = ({ children }) => {
             return {
                 ...estadoAnterior,
                 phone_number
+            }
+        })
+    }
+    const setCompanyPublicId = (public_company_id) => {
+        setColaborador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                public_company_id
             }
         })
     }
@@ -217,6 +229,14 @@ export const ColaboradorProvider = ({ children }) => {
             }
         })
     }
+    const setGender = (gender) => {
+        setColaborador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                gender
+            }
+        })
+    }
     const setAnotherAddressComplement = (another_address_complement) => {
         setColaborador(estadoAnterior => {
             return {
@@ -268,11 +288,10 @@ export const ColaboradorProvider = ({ children }) => {
 
     const submeterUsuario = () => {
         
-        var sendDocument = colaborador.document.replace(/[^a-zA-Z0-9 ]/g, '')
+        var sendCpf = colaborador.cpf.replace(/[^a-zA-Z0-9 ]/g, '')
+        colaborador.cpf = sendCpf
 
-        colaborador.document = sendDocument
-
-        return http.post('api/dashboard/collaborator', colaborador)
+        return http.post('api/collaborator/store', colaborador)
         .then((response) => {
             return response
         })
@@ -285,10 +304,12 @@ export const ColaboradorProvider = ({ children }) => {
         colaborador,
         setName,
         setEmail,
-        setDocument,
+        setCpf,
         setDateBirth,
         setBrandCardEnum,
         setPhoneNumber,
+        setGender,
+        setCompanyPublicId,
         setDepartments,
         setAddressPostalCode,
         setAddressStreet,

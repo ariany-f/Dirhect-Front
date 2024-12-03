@@ -9,14 +9,16 @@ import DropdownItens from '@components/DropdownItens'
 import CheckboxContainer from "@components/CheckboxContainer"
 import Loading from "@components/Loading"
 import DepartamentosRecentes from "@components/DepartamentosRecentes"
-import { useState, useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 import http from '@http'
 import styles from './Registro.module.css'
 import styled from "styled-components"
 import { RiQuestionLine } from "react-icons/ri"
 import { useNavigate } from "react-router-dom"
+import { Toast } from 'primereact/toast'
 import axios from "axios"
 import { useColaboradorContext } from "../../../contexts/Colaborador"
+import { useSessaoUsuarioContext } from "../../../contexts/SessaoUsuario";
  
 const Col12 = styled.div`
     display: flex;
@@ -48,14 +50,20 @@ function ColaboradorDadosIniciais() {
     const navigate = useNavigate();
 
     const { 
+        usuario,
+        retornarCompanySession
+    } = useSessaoUsuarioContext()
+
+    const { 
         colaborador,
         setName,
         setEmail,
-        setDocument,
+        setCpf,
         setDateBirth,
         setPhoneNumber,
         setAddressPostalCode,
         setAddressStreet,
+        setCompanyPublicId,
         setAdicionarDepartamento,
         setAddressNumber,
         setAddressComplement,
@@ -67,7 +75,20 @@ function ColaboradorDadosIniciais() {
         submeterUsuario
     } = useColaboradorContext()
     
+    const toast = useRef(null)
+    
     useEffect(() => {
+        if(!usuario.cpf)
+        {
+            retornarCompanySession()
+            .then((response) => {
+                if(response.success)
+                {
+                    setCompanyPublicId(response.data.public_id)
+                }
+            })
+        }
+
         http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
         .then(response => {
              response.map((item) => {
@@ -120,18 +141,12 @@ function ColaboradorDadosIniciais() {
         {
             setLoading(true)
             submeterUsuario().then(response => {
-                if(response.status)
-                {
-                    if(response.status == 'success')
-                    {
-                        navegar('/colaborador/registro/sucesso')
-                    }
-                }
-                if(response.data.status == 'success')
+                if(response.success)
                 {
                     navegar('/colaborador/registro/sucesso')
                 }
-            }).catch(erro => {
+            }).catch((erro) => {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
                 setLoading(false)
             })
         }       
@@ -158,6 +173,7 @@ function ColaboradorDadosIniciais() {
 
     return (
         <form>
+            <Toast ref={toast} />
             <Loading opened={loading} />
             <Frame estilo="spaced">
                 <Titulo>
@@ -169,9 +185,9 @@ function ColaboradorDadosIniciais() {
                     <CampoTexto 
                         camposVazios={classError} 
                         patternMask={['999.999.999-99']} 
-                        name="document" 
-                        valor={colaborador.document} 
-                        setValor={setDocument} 
+                        name="cpf" 
+                        valor={colaborador.cpf} 
+                        setValor={setCpf} 
                         type="text" 
                         label="CPF" 
                         placeholder="Digite o CPF do colaborador" />
