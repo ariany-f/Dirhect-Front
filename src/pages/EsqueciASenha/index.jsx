@@ -15,7 +15,7 @@ function EsqueciASenha() {
 
     const {
         usuario,
-        setDocument,
+        setCpf,
         setEmail,
         solicitarCodigoRecuperacaoSenha
     } = useSessaoUsuarioContext()
@@ -44,12 +44,8 @@ function EsqueciASenha() {
         {
             solicitarCodigoRecuperacaoSenha()
                 .then((response) => {
-                    if(response === undefined || response.data === undefined)
-                    { 
-                        alert(response.response.data.data.message)
-                    }
-                    else{
-                        setEmail(response.data.email)
+                    if(response.success)
+                    {
                         navegar('/esqueci-a-senha/seguranca')
                     }
                 })
@@ -72,7 +68,7 @@ function EsqueciASenha() {
             </Frame>
             <form>
                 <Frame>
-                    <CampoTexto camposVazios={classError} patternMask={['999.999.999-99']} name="document" valor={usuario.document} setValor={setDocument} label="CPF do responsável" placeholder="Digite o CPF do responsável" />
+                    <CampoTexto camposVazios={classError} patternMask={['999.999.999-99']} name="cpf" valor={usuario.cpf} setValor={setCpf} label="CPF do responsável" placeholder="Digite o CPF do responsável" />
                 </Frame>
             </form>
             <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>

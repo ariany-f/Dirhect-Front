@@ -24,7 +24,7 @@ function Seguranca() {
         evento.preventDefault()
         submeterRecuperacaoSenha()
             .then((response) => {
-                if(response.data.status === 'success')
+                if(response.success)
                 { 
                     navegar('/esqueci-a-senha/check-inbox')
                 }

@@ -229,7 +229,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
     const solicitarCodigoRecuperacaoSenha = () => {
 
         usuario.cpf = usuario.cpf.replace(/[^a-zA-Z0-9 ]/g, '')
-        return http.post('api/user/forgot', usuario)
+        return http.post('api/auth/forgot-password', usuario)
             .then((response) => {
                 return response
             })
@@ -251,7 +251,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
         usuario.code = sendCode
 
-        return http.post('api/user/forgot/code/validation', usuario)
+        return http.post('api/auth/reset-password', usuario)
             .then((response) => {
                 return response
             })
