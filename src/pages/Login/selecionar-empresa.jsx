@@ -62,11 +62,14 @@ function SelecionarEmpresa() {
         {
             setCpf(ArmazenadorToken.UserCpf);
         }
-        if(usuario.companies.length === 0)
+        
+        if(usuario.companies.length === 0 && usuario.cpf)
         {
+            
+            console.log('aqui nesse')
             http.post(`api/company/to-login`, {cpf: usuario.cpf})
                 .then((response) => {
-                    if(response.success)
+                    if(response.length > 0)
                     {
                         setEmpresas(response)
                         setCompanies(response)
@@ -79,9 +82,19 @@ function SelecionarEmpresa() {
         }
         else
         {
-            if(!ArmazenadorToken.UserCompanyPublicId)
+            if(empresas.length == 0 && usuario.companies.length > 0)
             {
-                ArmazenadorToken.definirCompany(empresas[0].public_id)
+                setEmpresas(usuario.companies)
+            }
+            else
+            {
+                if(empresas.length > 0)
+                {
+                    if(!ArmazenadorToken.UserCompanyPublicId)
+                    {
+                        ArmazenadorToken.definirCompany(empresas[0].public_id)
+                    }
+                }
             }
         }
     }, [usuario, empresas])
