@@ -57,16 +57,9 @@ function SelecionarEmpresa() {
     const navegar = useNavigate()
 
     useEffect(() => {
-        
-        if(!usuario.cpf)
-        {
-            setCpf(ArmazenadorToken.UserCpf);
-        }
-        
+
         if(usuario.companies.length === 0 && usuario.cpf)
         {
-            
-            console.log('aqui nesse')
             http.post(`api/company/to-login`, {cpf: usuario.cpf})
                 .then((response) => {
                     if(response.length > 0)
@@ -76,12 +69,21 @@ function SelecionarEmpresa() {
                         setSessionCompany(response[0].public_id)
                     }
                 })
-                .catch(erro => {
-                    console.log(erro)
+                .catch((erro) => {
+
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
+                    setCode([])
+                    setLoading(false)
+                    return false
                 })
         }
         else
         {
+            if((!usuario.cpf) && ArmazenadorToken.UserCpf)
+            {
+                setCpf(ArmazenadorToken.UserCpf);
+            }
+
             if(empresas.length == 0 && usuario.companies.length > 0)
             {
                 setEmpresas(usuario.companies)
@@ -104,17 +106,14 @@ function SelecionarEmpresa() {
     }
     
     const selectCompany = () => {
-        if(selected)
+        if(selected && !modalOpened)
         {
-            setModalOpened(true)
-            setSessionCompany(selected)
-            ArmazenadorToken.definirCompany(selected)
             solicitarCodigoLogin()
             .then((response) => {
-                ArmazenadorToken.definirToken(
-                    response.data.auth.token,
-                    response.data.auth.expiration_at
-                )
+                if(response.success)
+                {
+                    setModalOpened(true)
+                }
             })
         }
     }
@@ -124,30 +123,20 @@ function SelecionarEmpresa() {
         setLoading(true)
 
         gerarBearer().then((response) => {
-            if(response.data)
+            if(response.success)
             {
-                if(response.success)
-                {
-                    ArmazenadorToken.definirToken(
-                        response.data.auth.token,
-                        response.data.auth.expiration_at
-                    )
-                    setUsuarioEstaLogado(true)
-                    submeterCompanySession().then(response => {
-                        navegar('/')
-                    })
-                }
-                else
-                {
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
-                    setCode([])
-                    setLoading(false)
-                    return false
-                }
+                ArmazenadorToken.definirToken(
+                    response.data.auth.token,
+                    response.data.auth.expiration_at
+                )
+                setUsuarioEstaLogado(true)
+                submeterCompanySession().then(response => {
+                    navegar('/')
+                })
             }
             else
             {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: response.message })
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
                 setCode([])
                 setLoading(false)
                 return false
@@ -198,7 +187,7 @@ function SelecionarEmpresa() {
                         })}
                     </Wrapper>
                     <Botao estilo="vermilion" size="medium" filled aoClicar={selectCompany} >Confirmar</Botao>
-                    <ModalToken usuario={usuario} aoReenviar={solicitarCodigoLogin} aoFechar={() => setModalOpened(false)} aoClicar={sendCode} setCode={setCode} opened={modalOpened} />
+                    <ModalToken usuario={usuario} aoReenviar={evento => solicitarCodigoLogin()} aoFechar={() => setModalOpened(false)} aoClicar={sendCode} setCode={setCode} opened={modalOpened} />
                 </>
             }
         </>
