@@ -19,10 +19,10 @@ function ColaboradorSaldo() {
     useEffect(() => {
         if(colaborador.length === 0)
         {
-            http.get(`api/dashboard/collaborator/${id}`)
+            http.get(`api/collaborator/show/${id}`)
                 .then(response => {
-                    if (response.collaborator) {
-                        setColaborador(response.collaborator)
+                    if (response.success) {
+                        setColaborador(response.data)
                     }
                 })
                 .catch(erro => console.log(erro))
@@ -36,7 +36,7 @@ function ColaboradorSaldo() {
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
-            <DataTableCollaboratorBenefit beneficios={colaborador.user?.benefits}/>
+            <DataTableCollaboratorBenefit beneficios={colaborador?.benefits}/>
         </DivPrincipal>
     )
 }

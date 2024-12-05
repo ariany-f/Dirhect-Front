@@ -19,8 +19,8 @@ function OperadorDados() {
         if(!operador)
         {
             http.get(`api/operator/show/${id}`)
-                .then(response => {
-                    if (response.status === 'success') 
+                .then((response) => {
+                    if (response.success) 
                     {
                         setOperador(response.operator)
                     }
@@ -42,19 +42,19 @@ function OperadorDados() {
             <div className={styles.card_dashboard}>
                 <Texto>Nome completo</Texto>
                 {operador ?
-                    <Texto weight="800">{operador?.collaborator.name}</Texto>
+                    <Texto weight="800">{operador?.collaborator.social_name}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Nome social</Texto>
                 {operador ?
                     (operador.collaborator.social ?
-                        <Texto weight="800">{operador?.collaborator.social}</Texto>
+                        <Texto weight="800">{operador?.collaborator.social_reason}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>CPF</Texto>
                 {operador ?
-                    <Texto weight="800">{formataCPF(operador?.collaborator.document)}</Texto>
+                    <Texto weight="800">{formataCPF(operador?.collaborator.cpf)}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
             </div>

@@ -24,7 +24,7 @@ function ColaboradorDadosPessoais() {
     useEffect(() => {
         http.get(`api/collaborator/show/${id}`)
             .then(response => {
-                if (response.data.collaborator) {
+                if (response.success) {
                     setColaborador(response.data.collaborator)
                 }
             })
@@ -50,7 +50,7 @@ function ColaboradorDadosPessoais() {
         let obj = {}
         obj['phone_number'] = telefone
       
-        http.put(`api/dashboard/collaborator/${id}`, obj)
+        http.put(`api/collaborator/show/${id}`, obj)
         .then(response => {
            if(response.success)
             {
@@ -72,20 +72,20 @@ function ColaboradorDadosPessoais() {
         <Titulo><h6>Informações gerais</h6></Titulo>
         <div className={styles.card_dashboard}>
             <Texto>Nome completo</Texto>
-            {colaborador.name ?
-                <Texto weight="800">{colaborador?.name}</Texto>
+            {colaborador.social_name ?
+                <Texto weight="800">{colaborador?.social_name}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             <Texto>Nome social</Texto>
             {colaborador ?
-                (colaborador.social ?
-                    <Texto weight="800">{colaborador?.social}</Texto>
+                (colaborador.social_reason ?
+                    <Texto weight="800">{colaborador?.social_reason}</Texto>
                     : '--')
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             <Texto>CPF</Texto>
-            {colaborador.document ?
-                <Texto weight="800">{formataCPF(colaborador?.document)}</Texto>
+            {colaborador.cpf ?
+                <Texto weight="800">{formataCPF(colaborador?.cpf)}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
         </div>

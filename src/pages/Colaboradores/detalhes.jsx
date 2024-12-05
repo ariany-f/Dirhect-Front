@@ -29,11 +29,11 @@ function ColaboradorDetalhes() {
     })
 
     useEffect(() => {
-        http.get(`api/dashboard/collaborator/${id}`)
+        http.get(`api/collaborator/show/${id}`)
             .then(response => {
-                if(response.collaborator)
+                if(response.success)
                 {
-                    setColaborador(response.collaborator)
+                    setColaborador(response.data.collaborator)
                 }
             })
             .catch(erro => console.log(erro))
@@ -45,7 +45,7 @@ function ColaboradorDetalhes() {
             header: 'Desativar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`api/dashboard/collaborator/${id}`)
+                http.delete(`api/collaborator/destroy/${id}`)
                 .then(response => {
                    if(response.success)
                     {
@@ -67,10 +67,10 @@ function ColaboradorDetalhes() {
             <ConfirmDialog />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/colaborador" />
-                    {colaborador.name ? 
+                    {colaborador.social_name ? 
                         <BotaoGrupo align="space-between">
                             <Titulo>
-                                <h3>{colaborador.name}</h3>
+                                <h3>{colaborador.social_name}</h3>
                             </Titulo>
                             <BotaoSemBorda $color="var(--primaria)">
                                 <FaTrash /><Link onClick={desativarColaborador}>Desativar colaborador</Link>
