@@ -10,7 +10,7 @@ function DepartamentoListaColaboradores() {
     const [colaboradores, setColaboradores] = useState(null)
 
     useEffect(() => {
-        http.get(`api/dashboard/department/${id}`)
+        http.get(`api/department/show/${id}`)
             .then(response => {
                 setColaboradores(response.department.collaborators)
             })

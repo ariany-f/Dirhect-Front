@@ -58,7 +58,7 @@ function BeneficioSelecionarDepartamentos() {
         if(departments.length === 0)
         {
             setDepartamentos([])
-            http.get('api/dashboard/department')
+            http.get('api/department/index')
                 .then(response => {
                     setDepartments(response.data.departments)
                 })

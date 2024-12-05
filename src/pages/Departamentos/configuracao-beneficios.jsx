@@ -15,7 +15,7 @@ function DepartamentoConfiguracaoBeneficios() {
     useEffect(() => {
         if(!departamento)
         {
-            http.get(`api/dashboard/department/${id}`)
+            http.get(`api/department/show/${id}`)
                 .then(response => {
                     setDepartamento(response.department)
                 })

@@ -45,11 +45,11 @@ function DepartamentoDetalhes() {
 
     useEffect(() => {
         if(!departamento) {
-            http.get(`api/dashboard/department/${id}`)
+            http.get(`api/department/show/${id}`)
             .then(response => {
                if(response.success)
                 {
-                    setDepartamento(response.department[0])
+                    setDepartamento(response.data)
                 }
             })
             .catch(erro => console.log(erro))
@@ -63,7 +63,7 @@ function DepartamentoDetalhes() {
             icon: 'pi pi-info-circle',
             accept: () => {
                 setLoading(true)
-                http.delete(`api/dashboard/department/${id}`)
+                http.delete(`api/department/destroy/${id}`)
                 .then(response => {
                    if(response.success)
                     {

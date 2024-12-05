@@ -48,7 +48,7 @@ function DepartamentosRecentes({ setValor }){
     }
     
     useEffect(() => {
-        http.get('api/dashboard/department')
+        http.get('api/department/index')
             .then(response => {
                 if(response.data.departments)
                 {

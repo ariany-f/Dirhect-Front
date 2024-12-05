@@ -156,7 +156,7 @@ export const DepartamentoProvider = ({ children }) => {
     
     const submeterDepartamento = () => {
         if(departamento.public_id && departamento.public_id !== ''){
-            return http.put(`api/dashboard/department/${departamento.public_id}`, departamento)
+            return http.put(`api/department/update/${departamento.public_id}`, departamento)
             .then((response) => {
                 return response
             })

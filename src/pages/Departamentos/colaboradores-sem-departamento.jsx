@@ -12,7 +12,7 @@ function DepartamentoColaboradores() {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        http.get('api/dashboard/department')
+        http.get('api/department/index')
             .then(response => {
                 console.log(response)
             })

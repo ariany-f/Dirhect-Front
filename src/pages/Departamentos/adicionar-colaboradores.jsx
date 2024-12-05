@@ -78,7 +78,7 @@ function DepartamentoAdicionarColaboradores() {
         {
             retornarCompanySession()
             .then((response) => {
-                if(response.success)
+                if(response && response.success)
                 {
                     setCompanyPublicId(response.data.public_id)
                 }
@@ -89,12 +89,13 @@ function DepartamentoAdicionarColaboradores() {
             if(departamento.public_id !== id || departamento.status === 10)
             {
                 setLoading(true)
-                http.get(`api/dashboard/department/${id}`)
-                    .then(response => {
+                http.get(`api/department/show/${id}`)
+                    .then((response) => {
+                        console.log(response)
                        if(response.success)
                         {
-                            setDepartamento(response.department[0])
-                            setColaboradores(response.department.collaborators)
+                            setDepartamento(response.data)
+                            setColaboradores(response.data.collaborators)
                             
                             setLoading(false)
                         }
@@ -108,9 +109,9 @@ function DepartamentoAdicionarColaboradores() {
         {
             http.get('api/collaborator/index')
                 .then(response => {
-                    if(response.data && response.data.collaborators)
+                    if(response.success && response.data)
                     {
-                        setListaColaboradores(response.data.collaborators)
+                        setListaColaboradores(response.data)
                     }
                 })
                 .catch(erro => console.log(erro))
@@ -205,9 +206,9 @@ function DepartamentoAdicionarColaboradores() {
                             <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                         </span>
                     </div>
-                    <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={( (!id) || departamento.public_id === id) ? departamento.collaborators : []} onSelectionChange={(e) => setColaboradores(e.value)} tableStyle={{ minWidth: '68vw' }}>
+                    <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['user_name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={( (!id) || departamento.public_id === id) ? departamento.collaborators : []} onSelectionChange={(e) => setColaboradores(e.value)} tableStyle={{ minWidth: '68vw' }}>
                         <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                        <Column field="name" header="Nome Completo" style={{ width: '100%' }}></Column>
+                        <Column field="user_name" header="Nome Completo" style={{ width: '100%' }}></Column>
                     </DataTable>
                     <ContainerButton>
                         <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
