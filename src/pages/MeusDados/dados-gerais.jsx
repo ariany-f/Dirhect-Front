@@ -31,7 +31,6 @@ function MeusDadosDadosGerais() {
 
     useEffect(() => {
 
-        console.log(userProfile)
         /**
          * Dados necessários para exibição no painel do usuário
          */
@@ -55,7 +54,7 @@ function MeusDadosDadosGerais() {
                 console.error(erro)
             })
         }
-    }, [userProfile, setUserProfile, modalEmailOpened, modalTelefoneOpened])
+    }, [userProfile])
 
     function editarTelefone(telefone) {
         let contact_info = {}

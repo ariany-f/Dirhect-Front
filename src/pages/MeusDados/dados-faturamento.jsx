@@ -36,7 +36,10 @@ function MeusDadosDadosFaturamento() {
          {
              http.get('api/auth/me')
              .then(response => {
-               // setUserProfile(response.data.profileResource.general_info)
+                if(response.success)
+                {
+                    setUserProfile(response.data)
+                }
              })
              .catch(erro => {
                  console.error(erro)
@@ -125,7 +128,7 @@ function MeusDadosDadosFaturamento() {
                 <SubTitulo>Para comprovantes fiscais</SubTitulo>
             </Titulo>
             <div className={styles.card_dashboard}>
-                {Object.keys(userProfile)?.length ?
+                {(Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length) ?
                     <>
                         <Texto>CNPJ</Texto>
                         {userProfile?.billing_data.CNPJ.document ?
@@ -136,7 +139,7 @@ function MeusDadosDadosFaturamento() {
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <ContainerHorizontal width="50%">
-                    {Object.keys(userProfile)?.length ?
+                    {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                     <>
                         <Frame gap="5px">
                             <Texto>Inscrição municipal</Texto>
@@ -154,7 +157,7 @@ function MeusDadosDadosFaturamento() {
                     }
                 </ContainerHorizontal>
                 <ContainerHorizontal width="50%">
-                    {Object.keys(userProfile)?.length ?
+                    {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                     <>
                         <Frame gap="5px">
                             <Texto>IInscrição estadual</Texto>
@@ -178,7 +181,7 @@ function MeusDadosDadosFaturamento() {
             </Titulo>
             <div className={styles.card_dashboard}>
                 <ContainerHorizontal width="50%">
-                    {Object.keys(userProfile)?.length ?
+                    {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                     <>
                         <Frame gap="5px">
                             <Texto>E-mail</Texto>
@@ -202,7 +205,7 @@ function MeusDadosDadosFaturamento() {
             </Titulo>
             <div className={styles.card_dashboard}>
                 <Texto>CEP</Texto>
-                 {Object.keys(userProfile)?.length ?
+                 {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                  <>
                     {userProfile.billing_data.addresses.address_postal_code ?
                         <Texto weight="800">{userProfile?.billing_data.addresses.address_postal_code}</Texto>
@@ -212,42 +215,42 @@ function MeusDadosDadosFaturamento() {
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
                 <Texto>Logradouro</Texto>
-                 {Object.keys(userProfile)?.length ?
+                 {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                     (userProfile.billing_data.addresses.address_street ?
                         <Texto weight="800">{userProfile?.billing_data.addresses.address_street}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Bairro</Texto>
-                 {Object.keys(userProfile)?.length ?
+                 {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                     (userProfile.billing_data.addresses.address_district ?
                         <Texto weight="800">{userProfile?.billing_data.addresses.address_district}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Número</Texto>
-                 {Object.keys(userProfile)?.length ?
+                 {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                     (userProfile.billing_data.addresses.address_number ?
                         <Texto weight="800">{userProfile?.billing_data.addresses.address_number}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Complemento</Texto>
-                 {Object.keys(userProfile)?.length ?
+                 {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                     (userProfile.billing_data.addresses.address_complement ?
                         <Texto weight="800">{userProfile?.billing_data.addresses.address_complement}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Cidade</Texto>
-                 {Object.keys(userProfile)?.length ?
+                 {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                     (userProfile.billing_data.addresses.address_city ?
                         <Texto weight="800">{userProfile?.billing_data.addresses.address_city}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <ContainerHorizontal width="50%">
-                    {Object.keys(userProfile)?.length ?
+                    {Object.keys(userProfile)?.length && userProfile.length && userProfile.billing_data && userProfile.billing_data.length ?
                         <>
                             <Frame gap="5px">
                                 <Texto>Estado</Texto>

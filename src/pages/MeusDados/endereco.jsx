@@ -10,14 +10,18 @@ function MeusDadosEndereco() {
     const [userProfile, setUserProfile] = useState([])
 
     useEffect(() => {
+
         /**
          * Dados necessários para exibição no painel do usuário
          */
-        if(!userProfile.length || !Object.keys(userProfile).length)
+        if(!userProfile.length)
         {
             http.get('api/auth/me')
             .then(response => {
-                //setUserProfile(response.data.profileResource.general_info)
+                if(response.success)
+                {
+                    setUserProfile(response.data)
+                }
             })
             .catch(erro => {
                 console.error(erro)
@@ -33,8 +37,8 @@ function MeusDadosEndereco() {
                 <Texto>CEP</Texto>
                 {Object.keys(userProfile)?.length ?
                     <>
-                        {userProfile.registered_address.address_postal_code ?
-                            <Texto weight="800">{userProfile?.registered_address.address_postal_code}</Texto>
+                        {userProfile.addresses[0].address_postal_code ?
+                            <Texto weight="800">{userProfile?.addresses[0].address_postal_code}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </>
@@ -42,43 +46,43 @@ function MeusDadosEndereco() {
                 }
                 <Texto>Logradouro</Texto>
                 {Object.keys(userProfile)?.length ?
-                    (userProfile.registered_address.address_street ?
-                        <Texto weight="800">{userProfile?.registered_address.address_street}</Texto>
+                    (userProfile.addresses[0].address_street ?
+                        <Texto weight="800">{userProfile?.addresses[0].address_street}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Bairro</Texto>
                 {Object.keys(userProfile)?.length ?
-                    (userProfile.registered_address.address_district ?
-                        <Texto weight="800">{userProfile?.registered_address.address_district}</Texto>
+                    (userProfile.addresses[0].address_district ?
+                        <Texto weight="800">{userProfile?.addresses[0].address_district}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Número</Texto>
                 {Object.keys(userProfile)?.length ?
-                    (userProfile.registered_address.address_number ?
-                        <Texto weight="800">{userProfile?.registered_address.address_number}</Texto>
+                    (userProfile.addresses[0].address_number ?
+                        <Texto weight="800">{userProfile?.addresses[0].address_number}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Complemento</Texto>
                 {Object.keys(userProfile)?.length ?
-                    (userProfile.registered_address.address_complement ?
-                        <Texto weight="800">{userProfile?.registered_address.address_complement}</Texto>
+                    (userProfile.addresses[0].address_complement ?
+                        <Texto weight="800">{userProfile?.addresses[0].address_complement}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Cidade</Texto>
                 {Object.keys(userProfile)?.length ?
-                    (userProfile.registered_address.address_city ?
-                        <Texto weight="800">{userProfile?.registered_address.address_city}</Texto>
+                    (userProfile.addresses[0].address_city ?
+                        <Texto weight="800">{userProfile?.addresses[0].address_city}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
                 <Texto>Estado</Texto>
                 {Object.keys(userProfile)?.length ?
-                    (userProfile.registered_address.address_state ?
-                        <Texto weight="800">{userProfile?.registered_address.address_state}</Texto>
+                    (userProfile.addresses[0].address_state ?
+                        <Texto weight="800">{userProfile?.addresses[0].address_state}</Texto>
                         : '--')
                     : <Skeleton variant="rectangular" width={200} height={25} />
                 }
