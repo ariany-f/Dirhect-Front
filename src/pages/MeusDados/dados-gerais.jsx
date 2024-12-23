@@ -30,10 +30,12 @@ function MeusDadosDadosGerais() {
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
+
+        console.log(userProfile)
         /**
          * Dados necessários para exibição no painel do usuário
          */
-        if(!Object.keys(userProfile).length)
+        if(!userProfile.length || !Object.keys(userProfile).length)
         {
             http.get('api/auth/me')
             .then(response => {
@@ -53,7 +55,7 @@ function MeusDadosDadosGerais() {
                 console.error(erro)
             })
         }
-    }, [userProfile, modalEmailOpened, modalTelefoneOpened])
+    }, [userProfile, setUserProfile, modalEmailOpened, modalTelefoneOpened])
 
     function editarTelefone(telefone) {
         let contact_info = {}
@@ -125,7 +127,7 @@ function MeusDadosDadosGerais() {
         <Titulo><h6>Informações de contato</h6></Titulo>
         <div className={styles.card_dashboard}>
             <ContainerHorizontal width="50%">
-                {(Object.keys(userProfile)?.length && userProfile.phones.length) ?
+                {(Object.keys(userProfile)?.length && userProfile.phones && userProfile?.phones.length) ?
                     <>
                     <Frame gap="5px">
                         <Texto>Telefone/Celular</Texto>

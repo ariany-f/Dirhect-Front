@@ -25,6 +25,7 @@ function ColaboradorDadosPessoais() {
         http.get(`api/collaborator/show/${id}`)
             .then(response => {
                 if (response.success) {
+                    console.log(response)
                     setColaborador(response.data.collaborator)
                 }
             })

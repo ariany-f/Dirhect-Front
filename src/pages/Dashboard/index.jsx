@@ -97,7 +97,7 @@ function Dashboard() {
             {
                 http.get('api/collaborator/index')
                 .then(response => {
-                    if(response.data)
+                    if(response.success)
                     {
                         setColaboradores(response.data.collaborators)
                     }

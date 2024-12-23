@@ -9,6 +9,7 @@ const ColaboradorInicial = {
     date_birth: '',
     phone_number: '',
     phone_code: '11',
+    cnpj: '',
     address_postal_code: '',
     address_street: '',
     address_number: '',

@@ -58,7 +58,7 @@ function SelecionarEmpresa() {
 
     useEffect(() => {
 
-        if(usuario.companies.length === 0 && usuario.cpf)
+        if((!usuario.companies || usuario.companies.length === 0) && usuario.cpf)
         {
             http.post(`api/company/to-login`, {cpf: usuario.cpf})
                 .then((response) => {
@@ -66,6 +66,7 @@ function SelecionarEmpresa() {
                     {
                         setEmpresas(response)
                         setCompanies(response)
+                        setSelected(response[0].public_id)
                         setSessionCompany(response[0].public_id)
                     }
                 })
@@ -84,7 +85,7 @@ function SelecionarEmpresa() {
                 setCpf(ArmazenadorToken.UserCpf);
             }
 
-            if(empresas.length == 0 && usuario.companies.length > 0)
+            if(usuario.companies && empresas.length == 0 && usuario.companies.length > 0)
             {
                 setEmpresas(usuario.companies)
             }

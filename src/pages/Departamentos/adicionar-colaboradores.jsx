@@ -59,12 +59,13 @@ function DepartamentoAdicionarColaboradores() {
         setColaboradores,
         setNome,
         submeterDepartamento,
-        setCompanyPublicId
+        setDepartamentoCompanyPublicId
     } = useDepartamentoContext()
 
     const [loading, setLoading] = useState(false)
     const [edicaoAberta, setEdicaoAberta] = useState(false)
     const [listaColaboradores, setListaColaboradores] = useState([])
+    const [listaColaboradoresSelecionados, setListaColaboradoresSelecionados] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('')
     const [rowClick, setRowClick] = useState(true)
     const [filters, setFilters] = useState({
@@ -78,9 +79,10 @@ function DepartamentoAdicionarColaboradores() {
         {
             retornarCompanySession()
             .then((response) => {
+                console.log(response)
                 if(response && response.success)
                 {
-                    setCompanyPublicId(response.data.public_id)
+                    setDepartamentoCompanyPublicId(response.data.public_id)
                 }
             })
         }
@@ -91,32 +93,50 @@ function DepartamentoAdicionarColaboradores() {
                 setLoading(true)
                 http.get(`api/department/show/${id}`)
                     .then((response) => {
-                        console.log(response)
                        if(response.success)
                         {
                             setDepartamento(response.data)
                             setColaboradores(response.data.collaborators)
-                            
-                            setLoading(false)
+                            retornarCompanySession()
+                            .then((response) => {
+                                if(response.success)
+                                {
+                                    setDepartamentoCompanyPublicId(response.data.public_id)
+                                    setLoading(false)
+                                }
+                            })
                         }
                     })
                     .catch(erro => console.log(erro))
             }
         }
         
-
-        if(listaColaboradores.length === 0)
+        if(!listaColaboradores.length)
         {
             http.get('api/collaborator/index')
                 .then(response => {
-                    if(response.success && response.data)
+                    if(response.success)
                     {
-                        setListaColaboradores(response.data)
+                        if(response.data)
+                        {
+                            setListaColaboradores(response.data)
+                        }
+                        else {
+                            setListaColaboradores([])
+                        }
+                        retornarCompanySession()
+                        .then((response) => {
+                            if(response.success)
+                            {
+                                setDepartamentoCompanyPublicId(response.data.public_id)
+                                console.log(departamento)
+                            }
+                        })
                     }
                 })
                 .catch(erro => console.log(erro))
         }
-    }, [id, edicaoAberta])
+    }, [id, edicaoAberta, departamento])
 
     const editarDepartamento = (evento) => {
         if (evento.key === 'Enter') {
@@ -126,37 +146,91 @@ function DepartamentoAdicionarColaboradores() {
     }
 
     const adicionarColaborador = () => {
+        
         setLoading(true)
-        setColaboradores(departamento.collaborators)
-        submeterDepartamento()
-        .then(response => {
-            if(response.success)
-            {
-                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
-                if(id && typeof id !== undefined && id !== null)
+        let colaboradoresSimplificados  = {};
+        if(listaColaboradoresSelecionados)
+        {
+            colaboradoresSimplificados = listaColaboradoresSelecionados.map(colaborador => (
+                colaborador.public_id
+            ));
+        }
+       
+        setColaboradores(colaboradoresSimplificados)
+        setDepartamentoCompanyPublicId(departamento.public_company_id)
+        if(departamento.public_company_id)
+        {
+            submeterDepartamento()
+            .then((response) => {
+                if(response.success)
                 {
-                    setTimeout(() => {
-                        navegar(`/departamento/detalhes/${id}`)
-                    }, "700");
+                    toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
+                    if(id && typeof id !== undefined && id !== null)
+                    {
+                        setTimeout(() => {
+                            navegar(`/departamento/detalhes/${id}`)
+                        }, "700");
+                    }
+                    else
+                    {
+                        setTimeout(() => {
+                            navegar(`/departamento/detalhes/${response.data.public_id}`)
+                        }, "700");
+                    }
                 }
-                else
-                {
-                    setTimeout(() => {
-                        navegar(`/departamento/detalhes/${response.data.public_id}`)
-                    }, "700");
-                }
-            }
-            else{
+                else{
 
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar adicionar colaborador', life: 3000 });
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar adicionar colaborador', life: 3000 });
+                    setLoading(false)
+                }
+            })
+            .catch(erro => {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
                 setLoading(false)
-            }
-        })
-        .catch(erro => {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
-            setLoading(false)
-            return false
-        })
+                return false
+            })
+        }
+        else
+        {
+            retornarCompanySession()
+            .then((response) => {
+                if(response.success)
+                {
+                    setDepartamentoCompanyPublicId(response.data.public_id)
+                    setLoading(false)
+                    submeterDepartamento()
+                    .then((response) => {
+                        if(response.success)
+                        {
+                            toast.current.show({ severity: 'info', summary: 'Sucesso', detail: 'Colaborador Adicionado', life: 3000 });
+                            if(id && typeof id !== undefined && id !== null)
+                            {
+                                setTimeout(() => {
+                                    navegar(`/departamento/detalhes/${id}`)
+                                }, "700");
+                            }
+                            else
+                            {
+                                setTimeout(() => {
+                                    navegar(`/departamento/detalhes/${response.data.public_id}`)
+                                }, "700");
+                            }
+                        }
+                        else{
+    
+                            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar adicionar colaborador', life: 3000 });
+                            setLoading(false)
+                        }
+                    })
+                    .catch(erro => {
+                        toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
+                        setLoading(false)
+                        return false
+                    })
+                }
+            })
+               
+        }
     }
     
     const onGlobalFilterChange = (value) => {
@@ -206,7 +280,9 @@ function DepartamentoAdicionarColaboradores() {
                             <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                         </span>
                     </div>
-                    <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['user_name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={( (!id) || departamento.public_id === id) ? departamento.collaborators : []} onSelectionChange={(e) => setColaboradores(e.value)} tableStyle={{ minWidth: '68vw' }}>
+                    <DataTable value={listaColaboradores} filters={filters} globalFilterFields={['user_name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'checkbox'} selection={listaColaboradoresSelecionados} onSelectionChange={(e) => {
+                        setListaColaboradoresSelecionados(e.value);
+                    }} tableStyle={{ minWidth: '68vw' }}>
                         <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                         <Column field="user_name" header="Nome Completo" style={{ width: '100%' }}></Column>
                     </DataTable>

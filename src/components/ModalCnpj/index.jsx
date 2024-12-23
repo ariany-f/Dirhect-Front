@@ -116,7 +116,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     const navegar = useNavigate()
 
     useEffect(() => {
-        if(opened && usuario.companies.length === 0)
+        if(opened && (!usuario.companies || !usuario.companies.length))
         {
             http.get(`api/auth/me`)
             .then((response) => {
@@ -131,11 +131,11 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
             })
         }
 
-        if(empresas.length === 0 && usuario.companies.length > 0)
+        if(usuario.companies && empresas.length === 0 && usuario.companies.length > 0)
         {
             setEmpresas(usuario.companies)
         }
-    }, [empresas, opened])
+    }, [empresas, opened, usuario])
     
     function handleSelectChange(value) {
         setSelected(value)

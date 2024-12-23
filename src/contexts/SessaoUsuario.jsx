@@ -356,7 +356,6 @@ export const SessaoUsuarioProvider = ({ children }) => {
         }
     }
 
-    
 
     const retornarCompanySession = () => {
         

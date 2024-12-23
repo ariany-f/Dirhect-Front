@@ -19,7 +19,7 @@ export const DepartamentoContext = createContext({
     setDescription: () => null,
     setDepartamento: () => null,
     setColaboradores: () => null,
-    setCompanyPublicId: () => null,
+    setDepartamentoCompanyPublicId: () => null,
     setBenefits: () => null,
     setNumeroColaboradores: () => null,
     setNome: () => null,
@@ -129,7 +129,7 @@ export const DepartamentoProvider = ({ children }) => {
             }
         })
     }
-    const setCompanyPublicId = (public_company_id) => {
+    const setDepartamentoCompanyPublicId = (public_company_id) => {
         setDepartamento(estadoAnterior => {
             return {
                 ...estadoAnterior,
@@ -180,7 +180,7 @@ export const DepartamentoProvider = ({ children }) => {
         setDepartamento,
         setColaboradores,
         setDescription,
-        setCompanyPublicId,
+        setDepartamentoCompanyPublicId,
         setBenefits,
         setNumeroColaboradores,
         setNome,

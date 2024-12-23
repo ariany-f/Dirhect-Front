@@ -32,11 +32,11 @@ function MeusDadosDadosFaturamento() {
         /**
          * Dados necessários para exibição no painel do usuário
          */
-         if(!Object.keys(userProfile).length)
+         if(!userProfile.length || !Object.keys(userProfile).length)
          {
              http.get('api/auth/me')
              .then(response => {
-                setUserProfile(response.data.profileResource.general_info)
+               // setUserProfile(response.data.profileResource.general_info)
              })
              .catch(erro => {
                  console.error(erro)
