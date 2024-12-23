@@ -34,7 +34,7 @@ function MeusDadosDadosGerais() {
         /**
          * Dados necessários para exibição no painel do usuário
          */
-        if(!userProfile.length || !Object.keys(userProfile).length)
+        if(!Object.keys(userProfile).length)
         {
             http.get('api/auth/me')
             .then(response => {
