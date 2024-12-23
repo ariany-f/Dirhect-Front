@@ -82,6 +82,7 @@ function ColaboradorDadosIniciais() {
         {
             retornarCompanySession()
             .then((response) => {
+                console.log(response)
                 if(response.success)
                 {
                     setCompanyPublicId(response.data.public_id)
