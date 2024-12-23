@@ -124,14 +124,16 @@ function DepartamentoAdicionarColaboradores() {
                         else {
                             setListaColaboradores([])
                         }
-                        retornarCompanySession()
-                        .then((response) => {
-                            if(response.success)
-                            {
-                                setDepartamentoCompanyPublicId(response.data.public_id)
-                                console.log(departamento)
-                            }
-                        })
+                        if(!departamento.public_id)
+                        {
+                            retornarCompanySession()
+                            .then((response) => {
+                                if(response.success)
+                                {
+                                    setDepartamentoCompanyPublicId(response.data.public_id)
+                                }
+                            })
+                        }
                     }
                 })
                 .catch(erro => console.log(erro))

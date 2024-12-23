@@ -78,7 +78,7 @@ function ColaboradorDadosIniciais() {
     const toast = useRef(null)
     
     useEffect(() => {
-        if(!usuario.cpf)
+        if(!usuario.cpf && !colaborador.public_company_id)
         {
             retornarCompanySession()
             .then((response) => {

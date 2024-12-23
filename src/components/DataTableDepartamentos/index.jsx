@@ -42,8 +42,8 @@ function DataTableDepartamentos({ departamentos }) {
 
     function verDetalhes(value)
     {
-        setSelectedDepartamento(value)
-        navegar(`/departamento/detalhes/${value.public_department_id}`)
+        setSelectedDepartamento(value.department.public_id)
+        navegar(`/departamento/detalhes/${value.department.public_id}`)
     }
 
     const representativeBodyTemplate = (rowData) => {
@@ -53,7 +53,7 @@ function DataTableDepartamentos({ departamentos }) {
                 <div className={styles.departamento}>
                     <div className={styles.left}>
                         <div className={styles.recuo} color="var(--neutro-500)">
-                            Colaboradores:&nbsp;<NumeroColaboradores weight={700}>{rowData?.total_collaborators ?? 0}</NumeroColaboradores>
+                            Colaboradores:&nbsp;<NumeroColaboradores weight={700}>{rowData?.department.collaborators ? rowData.department.collaborators.length : 0}</NumeroColaboradores>
                         </div>
                     </div>
                     <div className={styles.right}>
