@@ -12,7 +12,10 @@ function DepartamentoListaColaboradores() {
     useEffect(() => {
         http.get(`api/department/show/${id}`)
             .then(response => {
-                setColaboradores(response.department.collaborators)
+                if(response.success)
+                {
+                    setColaboradores(response.data.collaborators)
+                }
             })
             .catch(erro => console.log(erro))
     }, [])
