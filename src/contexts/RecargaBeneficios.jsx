@@ -196,7 +196,7 @@ export const RecargaBeneficiosProvider = ({ children }) => {
 
     function sendRequest(obj)
     {
-        return http.post('api/recharge/benefits', obj)
+        return http.post('api/recharge/store', obj)
         .then((response) => {
             return response
         })

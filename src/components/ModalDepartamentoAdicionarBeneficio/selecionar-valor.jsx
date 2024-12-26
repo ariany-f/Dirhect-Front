@@ -95,9 +95,12 @@ function ModalDepartamentoAdicionarBeneficioSelecionarValor({ opened = false, ao
     useEffect(() => {
         if(beneficios && beneficios.length === 0)
         {
-            http.get('api/dashboard/benefit')
+            http.get('api/benefit/index')
                 .then((response) => {
-                    setBeneficios(response.data.benefits)
+                    if(response.success)
+                    {
+                        setBeneficios(response.data)
+                    }
                 })
                 .catch(erro => {
                     console.error(erro)

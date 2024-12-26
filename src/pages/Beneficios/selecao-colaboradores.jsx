@@ -59,9 +59,12 @@ function BeneficioSelecionarColaboradores() {
         if(listaColaboradores.length === 0)
         {
             setColaboradores([])
-            http.get('api/dashboard/collaborator')
+            http.get('api/collaborator/index')
                 .then(response => {
-                    setListaColaboradores(response.data.collaborators)
+                    if(response.success)
+                    {
+                        setListaColaboradores(response.data)
+                    }
                 })
                 .catch(erro => console.log(erro))
         }

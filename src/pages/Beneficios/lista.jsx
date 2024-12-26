@@ -28,7 +28,7 @@ function Beneficios() {
         if(beneficios.length === 0)
         {
             setLoading(true)
-            http.get('api/recharge/benefits')
+            http.get('api/recharge/index')
                 .then(response => {
                     setLoading(false)
                     if(response.data.recharges)
