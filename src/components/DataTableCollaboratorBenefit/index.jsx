@@ -15,7 +15,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
 });
 
 function DataTableCollaboratorBenefit({ beneficios }) {
-    
+   
     const navegar = useNavigate()
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -33,7 +33,7 @@ function DataTableCollaboratorBenefit({ beneficios }) {
     
     function verDetalhes(value)
     {
-        navegar(`/beneficio/pagamento/${value.public_id}`)
+        navegar(`/beneficio/pagamento/${value.public_benefit_id}`)
     }
 
     const representativeAmountTemplate = (rowData) => {

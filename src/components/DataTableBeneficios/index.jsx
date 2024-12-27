@@ -52,20 +52,20 @@ function DataTableBeneficios({ beneficios }) {
         return (
             <>
                 <Texto weight={700} width={'100%'}>
-                    {rowData.name}
+                    {rowData.recharge_name}
                 </Texto>
                 <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
-                    Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.collaborators_json.length}</p>
+                    Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.total_collaborators}</p>
                 </div>
             </>
         )
     };
 
     const representativeCreatedTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.created_at).toLocaleDateString("pt-BR")}</p>
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.schedule_date).toLocaleDateString("pt-BR")}</p>
     }
     const representativeSendedTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.updated_at).toLocaleDateString("pt-BR")}</p>
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.schedule_date).toLocaleDateString("pt-BR")}</p>
     }
     const goToTemplate = (rowData) => {
         return <Link to={`/beneficio/selecao-forma-pagamento/${rowData.public_id}`}><MdOutlineKeyboardArrowRight/></Link>

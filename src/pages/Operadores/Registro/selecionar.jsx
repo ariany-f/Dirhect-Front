@@ -65,14 +65,17 @@ function OperadorRegistroSelecionar() {
     useEffect(() => {
         http.get('api/collaborator/index')
             .then(response => {
-                setColaboradores(response.data.collaborators)
+                if(response.success)
+                {
+                    setColaboradores(response.data)
+                }
             })
             .catch(erro => console.log(erro))
     }, [])
 
     const adicionarColaborador = () => {
         setPublicId(selectedColaborador.public_id)
-        setName(selectedColaborador.name)
+        setName(selectedColaborador.user_name)
         navegar('/operador/registro/permissoes')
     }
     

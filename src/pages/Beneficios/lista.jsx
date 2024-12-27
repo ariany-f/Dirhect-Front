@@ -30,10 +30,10 @@ function Beneficios() {
             setLoading(true)
             http.get('api/recharge/index')
                 .then(response => {
-                    setLoading(false)
-                    if(response.data.recharges)
+                    if(response.success)
                     {
-                        setBeneficios(response.data.recharges)
+                        setBeneficios(response.data)
+                        setLoading(false)
                     }
                 })
                 .catch(erro => {
