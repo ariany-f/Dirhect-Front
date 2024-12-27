@@ -33,7 +33,7 @@ function ColaboradorDetalhes() {
             .then(response => {
                 if(response.success)
                 {
-                    setColaborador(response.data.collaborator)
+                    setColaborador(response.data)
                 }
             })
             .catch(erro => console.log(erro))
@@ -67,10 +67,10 @@ function ColaboradorDetalhes() {
             <ConfirmDialog />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/colaborador" />
-                    {colaborador.social_name ? 
+                    {colaborador?.user && colaborador.user?.name ? 
                         <BotaoGrupo align="space-between">
                             <Titulo>
-                                <h3>{colaborador.social_name}</h3>
+                                <h3>{colaborador?.user?.name}</h3>
                             </Titulo>
                             <BotaoSemBorda $color="var(--primaria)">
                                 <FaTrash /><Link onClick={desativarColaborador}>Desativar colaborador</Link>

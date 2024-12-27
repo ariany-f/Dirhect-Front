@@ -5,6 +5,7 @@ import Frame from '@components/Frame'
 import Titulo from '@components/Titulo'
 import BotaoSemBorda from '@components/BotaoSemBorda'
 import ContainerHorizontal from '@components/ContainerHorizontal'
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { Link, useParams } from "react-router-dom"
 import { Skeleton } from 'primereact/skeleton'
 import styles from './Detalhes.module.css'
@@ -20,6 +21,11 @@ function ColaboradorDadosPessoais() {
     const [modalTelefoneOpened, setModalTelefoneOpened] = useState(false)
     const [modalEmailOpened, setModalEmailOpened] = useState(false)
     const toast = useRef(null)
+    
+    const {
+        usuario,
+        solicitarCodigoLogin
+    } = useSessaoUsuarioContext()
 
     useEffect(() => {
         http.get(`api/collaborator/show/${id}`)
@@ -32,25 +38,36 @@ function ColaboradorDadosPessoais() {
     }, [modalTelefoneOpened, modalEmailOpened])
 
     function editarEmail(email) {
-        let obj = {}
-        obj['email'] = email
       
-        http.put(`api/collaborator/update/${id}`, obj)
-        .then(response => {
-           if(response.success)
+        solicitarCodigoLogin()
+        .then((response) => {
+            if(response.success)
             {
-                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                setModalTelefoneOpened(false)
+                let obj = {}
+                obj['email'] = email
+                obj['code'] = response.data.code
+                http.post(`api/collaborator/update/${id}`, obj)
+                .then(response => {
+                   if(response.success)
+                    {
+                        toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                        setModalTelefoneOpened(false)
+                    }
+                })
+                .catch(erro => console.log(erro))
             }
         })
-        .catch(erro => console.log(erro))
     }
 
     function editarTelefone(telefone) {
+       
         let obj = {}
-        obj['phone_number'] = telefone
+        const phoneCode = telefone.substring(0, 2);
+        const phoneNumber = telefone.substring(2).trim();
+        obj['phone_code'] = phoneCode
+        obj['phone_number'] = phoneNumber
       
-        http.put(`api/collaborator/show/${id}`, obj)
+        http.post(`api/collaborator/update/${id}`, obj)
         .then(response => {
            if(response.success)
             {
@@ -72,20 +89,20 @@ function ColaboradorDadosPessoais() {
         <Titulo><h6>Informações gerais</h6></Titulo>
         <div className={styles.card_dashboard}>
             <Texto>Nome completo</Texto>
-            {colaborador.social_name ?
-                <Texto weight="800">{colaborador?.social_name}</Texto>
+            {colaborador?.user && colaborador?.user?.name ?
+                <Texto weight="800">{colaborador?.user.name}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             <Texto>Nome social</Texto>
             {colaborador ?
-                (colaborador.social_reason ?
-                    <Texto weight="800">{colaborador?.social_reason}</Texto>
+                (colaborador?.collaborator && colaborador?.collaborator?.social_reason ?
+                    <Texto weight="800">{colaborador?.collaborator.social_reason}</Texto>
                     : '--')
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             <Texto>CPF</Texto>
-            {colaborador.cpf ?
-                <Texto weight="800">{formataCPF(colaborador?.cpf)}</Texto>
+            {colaborador?.user && colaborador?.user?.cpf ?
+                <Texto weight="800">{formataCPF(colaborador?.user.cpf)}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
         </div>
@@ -95,8 +112,8 @@ function ColaboradorDadosPessoais() {
             <ContainerHorizontal width="50%">
                 <Frame gap="5px">
                     <Texto>Telefone/Celular</Texto>
-                    {colaborador.phone_number ?
-                        <Texto weight="800">{colaborador?.phone_number}</Texto>
+                    {colaborador?.phones && colaborador?.phones.length ?
+                        <Texto weight="800">{colaborador?.phones[0].phone_code + colaborador?.phones[0].phone_number}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                 </Frame>
@@ -108,8 +125,8 @@ function ColaboradorDadosPessoais() {
             <ContainerHorizontal width="50%">
                 <Frame gap="5px">
                     <Texto>E-mail</Texto>
-                    {colaborador.email ?
-                        <Texto weight="800">{colaborador?.email}</Texto>
+                    {colaborador?.user && colaborador?.user?.email ?
+                        <Texto weight="800">{colaborador?.user.email}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                 </Frame>
@@ -119,8 +136,8 @@ function ColaboradorDadosPessoais() {
                 </BotaoSemBorda>
             </ContainerHorizontal>
         </div>
-        <ModalAlterarTelefone dadoAntigo={colaborador?.phone_number} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
-        <ModalAlterarEmail dadoAntigo={colaborador?.email} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
+        <ModalAlterarTelefone dadoAntigo={((colaborador?.phones && colaborador?.phones.length) ? (colaborador?.phones[0].phone_code + colaborador?.phones[0].phone_number) : '')} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
+        <ModalAlterarEmail dadoAntigo={(colaborador?.user ? colaborador?.user?.email : '')} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
        
         </>
     )

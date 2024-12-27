@@ -20,6 +20,7 @@ export default defineConfig({
       { find: '@', replacement: path.resolve(__dirname, './src') },
       { find: '@assets', replacement: path.resolve(__dirname, './src/assets') },
       { find: '@pages', replacement: path.resolve(__dirname, './src/pages') },
+      { find: '@contexts', replacement: path.resolve(__dirname, './src/contexts') },
       { find: '@components', replacement: path.resolve(__dirname, './src/components') },
       { find: '@common', replacement: path.resolve(__dirname, './src/common') },
       { find: '@json', replacement: path.resolve(__dirname, './src/json') },
