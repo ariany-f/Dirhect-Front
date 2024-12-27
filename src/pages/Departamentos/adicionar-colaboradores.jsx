@@ -110,34 +110,31 @@ function DepartamentoAdicionarColaboradores() {
                     .catch(erro => console.log(erro))
             }
         }
-        
-        if(!listaColaboradores.length)
-        {
-            http.get('api/collaborator/index')
-                .then(response => {
-                    if(response.success)
+  
+        http.get('api/collaborator/index')
+            .then(response => {
+                if(response.success)
+                {
+                    if(response.data)
                     {
-                        if(response.data)
-                        {
-                            setListaColaboradores(response.data)
-                        }
-                        else {
-                            setListaColaboradores([])
-                        }
-                        if(!departamento.public_id)
-                        {
-                            retornarCompanySession()
-                            .then((response) => {
-                                if(response.success)
-                                {
-                                    setDepartamentoCompanyPublicId(response.data.public_id)
-                                }
-                            })
-                        }
+                        setListaColaboradores(response.data)
                     }
-                })
-                .catch(erro => console.log(erro))
-        }
+                    else {
+                        setListaColaboradores([])
+                    }
+                    if(!departamento.public_id)
+                    {
+                        retornarCompanySession()
+                        .then((response) => {
+                            if(response.success)
+                            {
+                                setDepartamentoCompanyPublicId(response.data.public_id)
+                            }
+                        })
+                    }
+                }
+            })
+            .catch(erro => console.log(erro))
     }, [id, edicaoAberta, departamento])
 
     const editarDepartamento = (evento) => {

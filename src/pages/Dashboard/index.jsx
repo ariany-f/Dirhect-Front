@@ -93,20 +93,17 @@ function Dashboard() {
             /**
              * Pegar colaboradores
              */
-            if(!colaboradores)
-            {
-                http.get('api/collaborator/index')
-                .then(response => {
-                    if(response.success)
-                    {
-                        setColaboradores(response.data.collaborators)
-                    }
-                })
-                .catch(erro => {
-                    console.error(erro)
-                    setLoadingOpened(false)
-                })
-            }
+            http.get('api/collaborator/index')
+            .then(response => {
+                if(response.success)
+                {
+                    setColaboradores(response.data.collaborators)
+                }
+            })
+            .catch(erro => {
+                console.error(erro)
+                setLoadingOpened(false)
+            })
         }
     }, [usuarioEstaLogado])
 

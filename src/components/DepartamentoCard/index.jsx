@@ -24,7 +24,7 @@ function DepartamentoCard({department}) {
     useEffect(() => {
         http.get('api/collaborator/index')
             .then(response => {
-                if(response.data.collaborators.length)
+                if(response.success)
                 {
                     const filtered = response.data.collaborators.filter(colaborador => {
                         return (department.name in colaborador.departments)

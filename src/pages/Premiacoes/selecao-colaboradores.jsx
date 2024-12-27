@@ -61,15 +61,16 @@ function PremiacaoSelecionarColaboradores() {
                 navegar(`/saldo-livre/adicionar-detalhes`)
             }, "1500");
         }
-        if(listaColaboradores.length === 0)
-        {
-            setColaboradores([])
-            http.get('api/collaborator/index')
-                .then(response => {
+  
+        setColaboradores([])
+        http.get('api/collaborator/index')
+            .then(response => {
+                if(response.success)
+                {
                     setListaColaboradores(response.data.collaborators)
-                })
-                .catch(erro => console.log(erro))
-        }
+                }
+            })
+            .catch(erro => console.log(erro))
     }, [listaColaboradores])
     
     const onGlobalFilterChange = (value) => {
