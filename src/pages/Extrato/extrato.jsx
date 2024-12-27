@@ -86,22 +86,20 @@ function Extrato() {
     }, [dashboardData.transactions])
 
     useEffect(() => {
-        if(transactions.length === 0)
-        {
-            /**
-             * Dados necessários para exibição no painel do usuário
-             */
-            http.get('api/dashboard/balance')
-            .then((response) => {
-                if(response.success)
-                {
-                    setTransactions(response.data.transactions)
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
-        }
+
+        /**
+         * Dados necessários para exibição no painel do usuário
+         */
+        http.get('api/dashboard/balance')
+        .then((response) => {
+            if(response.success)
+            {
+                setTransactions(response.data.transactions)
+            }
+        })
+        .catch(erro => {
+            console.error(erro)
+        })
 
     }, [transactions])
 
