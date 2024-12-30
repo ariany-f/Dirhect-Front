@@ -29,7 +29,7 @@ function Banner() {
     return (
         <div className={styles.container}>
            
-            <Skeleton variant="rectangular" width={650} height={980} />
+            <Skeleton variant="rectangular" width={755} height={980} />
             {/* <Link to="/login" className={styles.logo} >
                 {logotipo ?
                     <img src={logo} ref={refLogo} alt="Logo"/>
