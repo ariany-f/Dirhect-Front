@@ -23,7 +23,7 @@ const BarraLateralEstilizada = styled.aside`
     align-items: flex-start;
     gap: 32px;
     flex-shrink: 0;
-    background: var(--gradient-gradient-1, linear-gradient(180deg, #FF3C00 0%, #FF7B32 100%));
+    background: var(--gradient-gradient-1, linear-gradient(180deg, #4e4e4e 0%, #0f4489 100%));
     
     @media screen and (max-width: 760px) {
         display: none;
