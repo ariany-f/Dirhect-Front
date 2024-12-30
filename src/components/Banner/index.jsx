@@ -28,10 +28,8 @@ function Banner() {
 
     return (
         <div className={styles.container}>
-            {image ?
-                <img ref={ref} className={styles.banner} src={imagem} alt="Imagem Cartões"/>
-                : <Skeleton variant="rectangular" width={600} height={980} />
-            }
+           
+            <Skeleton variant="rectangular" width={600} height={980} />
             {/* <Link to="/login" className={styles.logo} >
                 {logotipo ?
                     <img src={logo} ref={refLogo} alt="Logo"/>
