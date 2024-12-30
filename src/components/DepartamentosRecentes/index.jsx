@@ -48,21 +48,21 @@ function DepartamentosRecentes({ setValor }){
     }
     
     useEffect(() => {
-        http.get('api/department/index')
-            .then(response => {
-                if(response.data.departments)
-                {
-                    setDepartamentos(response.data.departments)
-                    if(departamentos.length && selectedDepartment === null)
-                    {
-                        const obj = {}
-                        obj[departamentos[0].name] = departamentos[0].public_id
-                        setSelectedDepartment(departamentos[0].public_id)
-                        setValor(obj)
-                    }
-                }
-            })
-            .catch(erro => console.log(erro))
+        // http.get('api/department/index')
+        //     .then(response => {
+        //         if(response.data.departments)
+        //         {
+        //             setDepartamentos(response.data.departments)
+        //             if(departamentos.length && selectedDepartment === null)
+        //             {
+        //                 const obj = {}
+        //                 obj[departamentos[0].name] = departamentos[0].public_id
+        //                 setSelectedDepartment(departamentos[0].public_id)
+        //                 setValor(obj)
+        //             }
+        //         }
+        //     })
+        //     .catch(erro => console.log(erro))
     }, [nomeDepartamento])
 
     function handleChange(nomeDepartamento, idDepartamento)

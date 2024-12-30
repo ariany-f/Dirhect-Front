@@ -37,18 +37,18 @@ function OperadorPermissoes() {
     useEffect(() => {
         if(!operador)
         {
-            http.get(`api/dashboard/operator/${id}`)
-                .then(response => {
-                    if (response.status === 'success') 
-                    {
-                        setOperador(response.operator)
-                        setCheckedBen(response.operator.roles.all || response.operator.roles.financial)
-                        setCheckedPrem(response.operator.roles.all || response.operator.roles.financial)
-                        setCheckedClbrd(response.operator.roles.all || response.operator.roles.human_Resources)
-                        setCheckedDesp(response.operator.roles.all || response.operator.roles.financial)
-                    }
-                })
-                .catch(erro => console.log(erro))
+            // http.get(`api/dashboard/operator/${id}`)
+            //     .then(response => {
+            //         if (response.status === 'success') 
+            //         {
+            //             setOperador(response.operator)
+            //             setCheckedBen(response.operator.roles.all || response.operator.roles.financial)
+            //             setCheckedPrem(response.operator.roles.all || response.operator.roles.financial)
+            //             setCheckedClbrd(response.operator.roles.all || response.operator.roles.human_Resources)
+            //             setCheckedDesp(response.operator.roles.all || response.operator.roles.financial)
+            //         }
+            //     })
+            //     .catch(erro => console.log(erro))
         }
     }, [operador])
 

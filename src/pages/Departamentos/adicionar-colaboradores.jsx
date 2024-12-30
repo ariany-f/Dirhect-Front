@@ -75,66 +75,66 @@ function DepartamentoAdicionarColaboradores() {
 
     useEffect(() => {
         
-        if(!usuario.cpf)
-        {
-            retornarCompanySession()
-            .then((response) => {
-                console.log(response)
-                if(response && response.success)
-                {
-                    setDepartamentoCompanyPublicId(response.data.public_id)
-                }
-            })
-        }
+        // if(!usuario.cpf)
+        // {
+        //     retornarCompanySession()
+        //     .then((response) => {
+        //         console.log(response)
+        //         if(response && response.success)
+        //         {
+        //             setDepartamentoCompanyPublicId(response.data.public_id)
+        //         }
+        //     })
+        // }
         if(id && typeof id !== undefined && id !== null)
         {
             if(departamento.public_id !== id || departamento.status === 10)
             {
-                setLoading(true)
-                http.get(`api/department/show/${id}`)
-                    .then((response) => {
-                       if(response.success)
-                        {
-                            setDepartamento(response.data)
-                            setColaboradores(response.data.collaborators)
-                            retornarCompanySession()
-                            .then((response) => {
-                                if(response.success)
-                                {
-                                    setDepartamentoCompanyPublicId(response.data.public_id)
-                                    setLoading(false)
-                                }
-                            })
-                        }
-                    })
-                    .catch(erro => console.log(erro))
+                // setLoading(true)
+                // http.get(`api/department/show/${id}`)
+                //     .then((response) => {
+                //        if(response.success)
+                //         {
+                //             setDepartamento(response.data)
+                //             setColaboradores(response.data.collaborators)
+                //             retornarCompanySession()
+                //             .then((response) => {
+                //                 if(response.success)
+                //                 {
+                //                     setDepartamentoCompanyPublicId(response.data.public_id)
+                //                     setLoading(false)
+                //                 }
+                //             })
+                //         }
+                //     })
+                //     .catch(erro => console.log(erro))
             }
         }
   
-        http.get('api/collaborator/index')
-            .then(response => {
-                if(response.success)
-                {
-                    if(response.data)
-                    {
-                        setListaColaboradores(response.data)
-                    }
-                    else {
-                        setListaColaboradores([])
-                    }
-                    if(!departamento.public_id)
-                    {
-                        retornarCompanySession()
-                        .then((response) => {
-                            if(response.success)
-                            {
-                                setDepartamentoCompanyPublicId(response.data.public_id)
-                            }
-                        })
-                    }
-                }
-            })
-            .catch(erro => console.log(erro))
+        // http.get('api/collaborator/index')
+        //     .then(response => {
+        //         if(response.success)
+        //         {
+        //             if(response.data)
+        //             {
+        //                 setListaColaboradores(response.data)
+        //             }
+        //             else {
+        //                 setListaColaboradores([])
+        //             }
+        //             if(!departamento.public_id)
+        //             {
+        //                 retornarCompanySession()
+        //                 .then((response) => {
+        //                     if(response.success)
+        //                     {
+        //                         setDepartamentoCompanyPublicId(response.data.public_id)
+        //                     }
+        //                 })
+        //             }
+        //         }
+        //     })
+        //     .catch(erro => console.log(erro))
     }, [id, edicaoAberta, departamento])
 
     const editarDepartamento = (evento) => {

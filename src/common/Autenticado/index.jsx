@@ -44,16 +44,16 @@ function Autenticado() {
         {
             if(!usuario.companies || usuario.companies.length === 0)
             {
-                http.get(`api/auth/me`)
-                    .then((response) => {
-                        if(response.success)
-                        {
-                            setCompanies(response.data.user.companies)
-                        }
-                    })
-                    .catch(erro => {
-                        console.log(erro)
-                    })
+                // http.get(`api/auth/me`)
+                //     .then((response) => {
+                //         if(response.success)
+                //         {
+                //             setCompanies(response.data.user.companies)
+                //         }
+                //     })
+                //     .catch(erro => {
+                //         console.log(erro)
+                //     })
             }
             else
             {

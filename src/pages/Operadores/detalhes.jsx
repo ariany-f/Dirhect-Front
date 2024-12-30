@@ -19,14 +19,14 @@ function OperadorDetalhes() {
     useEffect(() => {
         if(!operador)
         {
-            http.get(`api/dashboard/operator/${id}`)
-                .then(response => {
-                    if (response.status === 'success') 
-                    {
-                        setOperador(response.operator)
-                    }
-                })
-                .catch(erro => console.log(erro))
+            // http.get(`api/dashboard/operator/${id}`)
+            //     .then(response => {
+            //         if (response.status === 'success') 
+            //         {
+            //             setOperador(response.operator)
+            //         }
+            //     })
+            //     .catch(erro => console.log(erro))
         }
     }, [operador])
 

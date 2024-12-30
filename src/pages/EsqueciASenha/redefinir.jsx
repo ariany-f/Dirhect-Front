@@ -39,21 +39,21 @@ function RedefinirSenha() {
         /**
          * Pegar colaboradores
          */
-        http.get(`api/user/password/reset?${searchParams}`)
-        .then(response => {
-            if(response.data)
-            {
-                if(response.data.status === 'error')
-                {
-                    alert(response.data.message)
-                }
-                setRecuperacaoToken(response.data.token)
-                setRecuperacaoPublicId(response.data.public_id)
-            }
-        })
-        .catch(erro => {
-            console.error(erro)
-        })
+        // http.get(`api/user/password/reset?${searchParams}`)
+        // .then(response => {
+        //     if(response.data)
+        //     {
+        //         if(response.data.status === 'error')
+        //         {
+        //             alert(response.data.message)
+        //         }
+        //         setRecuperacaoToken(response.data.token)
+        //         setRecuperacaoPublicId(response.data.public_id)
+        //     }
+        // })
+        // .catch(erro => {
+        //     console.error(erro)
+        // })
     }, [])
 
     const sendData = (evento) => {

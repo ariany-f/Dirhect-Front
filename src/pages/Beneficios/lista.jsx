@@ -27,18 +27,18 @@ function Beneficios() {
     useEffect(() => {
         if(beneficios.length === 0)
         {
-            setLoading(true)
-            http.get('api/recharge/index')
-                .then(response => {
-                    if(response.success)
-                    {
-                        setBeneficios(response.data)
-                        setLoading(false)
-                    }
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
+            // setLoading(true)
+            // http.get('api/recharge/index')
+            //     .then(response => {
+            //         if(response.success)
+            //         {
+            //             setBeneficios(response.data)
+            //             setLoading(false)
+            //         }
+            //     })
+            //     .catch(erro => {
+            //         setLoading(false)
+            //     })
         }
     }, [])
 

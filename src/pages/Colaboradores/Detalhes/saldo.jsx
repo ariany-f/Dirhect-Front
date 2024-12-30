@@ -17,16 +17,16 @@ function ColaboradorSaldo() {
     const [colaborador, setColaborador] = useState({})
 
     useEffect(() => {
-        if(colaborador.length === 0)
-        {
-            http.get(`api/collaborator/show/${id}`)
-                .then(response => {
-                    if (response.success) {
-                        setColaborador(response.data)
-                    }
-                })
-                .catch(erro => console.log(erro))
-        }
+        // if(colaborador.length === 0)
+        // {
+        //     http.get(`api/collaborator/show/${id}`)
+        //         .then(response => {
+        //             if (response.success) {
+        //                 setColaborador(response.data)
+        //             }
+        //         })
+        //         .catch(erro => console.log(erro))
+        // }
     }, [colaborador])
 
     return (

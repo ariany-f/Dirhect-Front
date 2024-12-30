@@ -18,14 +18,14 @@ function OperadorDados() {
     useEffect(() => {
         if(!operador)
         {
-            http.get(`api/operator/show/${id}`)
-                .then((response) => {
-                    if (response.success) 
-                    {
-                        setOperador(response.operator)
-                    }
-                })
-                .catch(erro => console.log(erro))
+            // http.get(`api/operator/show/${id}`)
+            //     .then((response) => {
+            //         if (response.success) 
+            //         {
+            //             setOperador(response.operator)
+            //         }
+            //     })
+            //     .catch(erro => console.log(erro))
         }
     }, [operador])
 

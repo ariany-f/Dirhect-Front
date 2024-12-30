@@ -46,19 +46,19 @@ function DepartamentoLista() {
     useEffect(() => {
         if(!departamentos)
         {
-            setLoading(true)
-            http.get('api/department/index')
-                .then(response => {
-                    setLoading(false)
-                    if(response.data)
-                    {
-                        setDepartamentos(response.data)
-                    }
-                })
-                .catch(erro => {
-                    console.log(erro)
-                    setLoading(false)
-                })
+            // setLoading(true)
+            // http.get('api/department/index')
+            //     .then(response => {
+            //         setLoading(false)
+            //         if(response.data)
+            //         {
+            //             setDepartamentos(response.data)
+            //         }
+            //     })
+            //     .catch(erro => {
+            //         console.log(erro)
+            //         setLoading(false)
+            //     })
         }
     }, [departamentos])
 

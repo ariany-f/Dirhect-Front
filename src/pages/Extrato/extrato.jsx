@@ -67,21 +67,21 @@ function Extrato() {
         /**
          * Dados necessários para exibição no painel do usuário
          */
-        http.get('api/auth/me')
-        .then(response => {
-            setDashboardData(response.data)
-            setLoadingOpened(false)
-        })
-        .then(() => {
-            if(dashboardData && dashboardData.userDashResource && dashboardData.userDashResource.total_benefit_balance)
-            {
-                setSaldo(dashboardData.userDashResource.total_benefit_balance)
-            }
-            setLoadingOpened(false)
-        })
-        .catch(erro => {
-            console.error(erro)
-        })
+        // http.get('api/auth/me')
+        // .then(response => {
+        //     setDashboardData(response.data)
+        //     setLoadingOpened(false)
+        // })
+        // .then(() => {
+        //     if(dashboardData && dashboardData.userDashResource && dashboardData.userDashResource.total_benefit_balance)
+        //     {
+        //         setSaldo(dashboardData.userDashResource.total_benefit_balance)
+        //     }
+        //     setLoadingOpened(false)
+        // })
+        // .catch(erro => {
+        //     console.error(erro)
+        // })
 
     }, [dashboardData.transactions])
 
@@ -90,16 +90,16 @@ function Extrato() {
         /**
          * Dados necessários para exibição no painel do usuário
          */
-        http.get('api/dashboard/balance')
-        .then((response) => {
-            if(response.success)
-            {
-                setTransactions(response.data.transactions)
-            }
-        })
-        .catch(erro => {
-            console.error(erro)
-        })
+        // http.get('api/dashboard/balance')
+        // .then((response) => {
+        //     if(response.success)
+        //     {
+        //         setTransactions(response.data.transactions)
+        //     }
+        // })
+        // .catch(erro => {
+        //     console.error(erro)
+        // })
 
     }, [transactions])
 

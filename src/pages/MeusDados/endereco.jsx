@@ -16,16 +16,16 @@ function MeusDadosEndereco() {
          */
         if(!Object.keys(userProfile).length)
         {
-            http.get('api/auth/me')
-            .then(response => {
-                if(response.success)
-                {
-                    setUserProfile(response.data)
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
+            // http.get('api/auth/me')
+            // .then(response => {
+            //     if(response.success)
+            //     {
+            //         setUserProfile(response.data)
+            //     }
+            // })
+            // .catch(erro => {
+            //     console.error(erro)
+            // })
         }
        
     }, [userProfile])

@@ -28,13 +28,13 @@ function ColaboradorDadosPessoais() {
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
-        http.get(`api/collaborator/show/${id}`)
-            .then(response => {
-                if (response.success) {
-                    setColaborador(response.data)
-                }
-            })
-            .catch(erro => console.log(erro))
+        // http.get(`api/collaborator/show/${id}`)
+        //     .then(response => {
+        //         if (response.success) {
+        //             setColaborador(response.data)
+        //         }
+        //     })
+        //     .catch(erro => console.log(erro))
     }, [modalTelefoneOpened, modalEmailOpened])
 
     function editarEmail(email) {

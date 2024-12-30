@@ -9,19 +9,19 @@ function ColaboradoresCadastrados() {
     const [colaboradores, setColaboradores] = useState([])
 
     useEffect(() => {
-        setLoading(true)
-        http.get('api/collaborator/index')
-            .then(response => {
-                setLoading(false)
-                if(response.success)
-                {
-                    setColaboradores(response.data)
-                }
-            })
-            .catch(erro => {
-                console.log(erro)
-                setLoading(false)
-            })
+        // setLoading(true)
+        // http.get('api/collaborator/index')
+        //     .then(response => {
+        //         setLoading(false)
+        //         if(response.success)
+        //         {
+        //             setColaboradores(response.data)
+        //         }
+        //     })
+        //     .catch(erro => {
+        //         console.log(erro)
+        //         setLoading(false)
+        //     })
     }, [])
 
     return (

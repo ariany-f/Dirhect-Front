@@ -75,35 +75,35 @@ function Dashboard() {
                 /**
                  * Dados necessários para exibição no painel do usuário
                  */
-                http.get('api/auth/me')
-                .then(response => {
-                    setDashboardData(response.data)
-                    setLoadingOpened(false)
-                })
-                .then(() => {
-                    setSaldo(dashboardData.userDashResource.total_benefit_balance)
-                    setLoadingOpened(false)
-                })
-                .catch(erro => {
-                    console.error(erro)
-                    setLoadingOpened(false)
-                })
+                // http.get('api/auth/me')
+                // .then(response => {
+                //     setDashboardData(response.data)
+                //     setLoadingOpened(false)
+                // })
+                // .then(() => {
+                //     setSaldo(dashboardData.userDashResource.total_benefit_balance)
+                //     setLoadingOpened(false)
+                // })
+                // .catch(erro => {
+                //     console.error(erro)
+                //     setLoadingOpened(false)
+                // })
             }
     
             /**
              * Pegar colaboradores
              */
-            http.get('api/collaborator/index')
-            .then(response => {
-                if(response.success)
-                {
-                    setColaboradores(response.data.collaborators)
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-                setLoadingOpened(false)
-            })
+            // http.get('api/collaborator/index')
+            // .then(response => {
+            //     if(response.success)
+            //     {
+            //         setColaboradores(response.data.collaborators)
+            //     }
+            // })
+            // .catch(erro => {
+            //     console.error(erro)
+            //     setLoadingOpened(false)
+            // })
         }
     }, [usuarioEstaLogado])
 

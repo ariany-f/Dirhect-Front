@@ -44,16 +44,16 @@ function DepartamentoDetalhes() {
     })
 
     useEffect(() => {
-        if(!departamento) {
-            http.get(`api/department/show/${id}`)
-            .then(response => {
-               if(response.success)
-                {
-                    setDepartamento(response.data)
-                }
-            })
-            .catch(erro => console.log(erro))
-        }
+        // if(!departamento) {
+        //     http.get(`api/department/show/${id}`)
+        //     .then(response => {
+        //        if(response.success)
+        //         {
+        //             setDepartamento(response.data)
+        //         }
+        //     })
+        //     .catch(erro => console.log(erro))
+        // }
     })
 
     const excluirDepartamento = () => {

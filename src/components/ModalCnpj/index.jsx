@@ -118,17 +118,17 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     useEffect(() => {
         if(opened && (!usuario.companies || !usuario.companies.length))
         {
-            http.get(`api/auth/me`)
-            .then((response) => {
-                if(response.success)
-                {
-                    setEmpresas(response.data.user.companies)
-                    setCompanies(response.data.user.companies)
-                }
-            })
-            .catch(erro => {
-                console.log(erro)
-            })
+            // http.get(`api/auth/me`)
+            // .then((response) => {
+            //     if(response.success)
+            //     {
+            //         setEmpresas(response.data.user.companies)
+            //         setCompanies(response.data.user.companies)
+            //     }
+            // })
+            // .catch(erro => {
+            //     console.log(erro)
+            // })
         }
 
         if(usuario.companies && empresas.length === 0 && usuario.companies.length > 0)

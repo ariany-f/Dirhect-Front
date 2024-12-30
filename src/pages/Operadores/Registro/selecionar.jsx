@@ -63,14 +63,14 @@ function OperadorRegistroSelecionar() {
     } = useOperadorContext()
 
     useEffect(() => {
-        http.get('api/collaborator/index')
-            .then(response => {
-                if(response.success)
-                {
-                    setColaboradores(response.data)
-                }
-            })
-            .catch(erro => console.log(erro))
+        // http.get('api/collaborator/index')
+        //     .then(response => {
+        //         if(response.success)
+        //         {
+        //             setColaboradores(response.data)
+        //         }
+        //     })
+        //     .catch(erro => console.log(erro))
     }, [])
 
     const adicionarColaborador = () => {

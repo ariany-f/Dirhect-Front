@@ -9,19 +9,19 @@ function ColaboradoresAguardando() {
     const [colaboradores, setColaboradores] = useState([])
 
     useEffect(() => {
-        http.get('api/collaborator/waiting-registration')
-            .then(response => {
-                setLoading(false)
-                console.log(response)
-                if(response.data.length)
-                {
-                    setColaboradores(response.data)
-                }
-            })
-            .catch(erro => {
-                console.log(erro)
-                setLoading(false)
-            })
+        // http.get('api/collaborator/waiting-registration')
+        //     .then(response => {
+        //         setLoading(false)
+        //         console.log(response)
+        //         if(response.data.length)
+        //         {
+        //             setColaboradores(response.data)
+        //         }
+        //     })
+        //     .catch(erro => {
+        //         console.log(erro)
+        //         setLoading(false)
+        //     })
     }, [])
     
     return (

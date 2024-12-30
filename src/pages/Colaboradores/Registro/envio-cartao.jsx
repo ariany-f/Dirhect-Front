@@ -74,19 +74,19 @@ function ColaboradorEnvioCartao() {
     } = useColaboradorContext()
     
     useEffect(() => {
-        http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-        .then(response => {
-             response.map((item) => {
-                 let obj = {
-                     name: item.nome,
-                     code: item.sigla
-                 }
-                 if(!estados.includes(obj))
-                 {
-                     setEstados(estadoAnterior => [...estadoAnterior, obj]);
-                 }
-             })
-         })
+        // http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+        // .then(response => {
+        //      response.map((item) => {
+        //          let obj = {
+        //              name: item.nome,
+        //              code: item.sigla
+        //          }
+        //          if(!estados.includes(obj))
+        //          {
+        //              setEstados(estadoAnterior => [...estadoAnterior, obj]);
+        //          }
+        //      })
+        //  })
      }, [])
 
 

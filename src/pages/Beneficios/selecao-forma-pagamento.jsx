@@ -91,16 +91,16 @@ function BeneficioSelecionarFormaPagamento() {
         {
             const url = `api/checkout?source=recharge&public_id=${id}`;
     
-            http.get(url)
-            .then((response) => {
-                if(response.data)
-                {
-                    setCheckout(response.data)
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
+            // http.get(url)
+            // .then((response) => {
+            //     if(response.data)
+            //     {
+            //         setCheckout(response.data)
+            //     }
+            // })
+            // .catch(erro => {
+            //     console.error(erro)
+            // })
         }
     }, [checkout, setCheckout])
     

@@ -13,14 +13,14 @@ function DepartamentoConfiguracaoBeneficios() {
     const [departamento, setDepartamento] = useState(null)
 
     useEffect(() => {
-        if(!departamento)
-        {
-            http.get(`api/department/show/${id}`)
-                .then(response => {
-                    setDepartamento(response.department)
-                })
-                .catch(erro => console.log(erro))
-        }
+        // if(!departamento)
+        // {
+        //     http.get(`api/department/show/${id}`)
+        //         .then(response => {
+        //             setDepartamento(response.department)
+        //         })
+        //         .catch(erro => console.log(erro))
+        // }
     }, [departamento])
    
     return (

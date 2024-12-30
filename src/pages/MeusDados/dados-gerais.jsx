@@ -36,23 +36,23 @@ function MeusDadosDadosGerais() {
          */
         if(!Object.keys(userProfile).length)
         {
-            http.get('api/auth/me')
-            .then(response => {
-                if(response.success)
-                {
-                    setUserProfile(response.data.user)
-                    retornarCompanySession()
-                    .then((response) => {
-                        if(response.success)
-                        {
-                            setEmpresaSelecionada(response.data)
-                        }
-                    })
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
+            // http.get('api/auth/me')
+            // .then(response => {
+            //     if(response.success)
+            //     {
+            //         setUserProfile(response.data.user)
+            //         retornarCompanySession()
+            //         .then((response) => {
+            //             if(response.success)
+            //             {
+            //                 setEmpresaSelecionada(response.data)
+            //             }
+            //         })
+            //     }
+            // })
+            // .catch(erro => {
+            //     console.error(erro)
+            // })
         }
     }, [userProfile])
 

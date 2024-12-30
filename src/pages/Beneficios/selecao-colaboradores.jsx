@@ -57,14 +57,14 @@ function BeneficioSelecionarColaboradores() {
 
     useEffect(() => {
         setColaboradores([])
-        http.get('api/collaborator/index')
-            .then(response => {
-                if(response.success)
-                {
-                    setListaColaboradores(response.data)
-                }
-            })
-            .catch(erro => console.log(erro))
+        // http.get('api/collaborator/index')
+        //     .then(response => {
+        //         if(response.success)
+        //         {
+        //             setListaColaboradores(response.data)
+        //         }
+        //     })
+        //     .catch(erro => console.log(erro))
     }, [listaColaboradores])
     
     const onGlobalFilterChange = (value) => {

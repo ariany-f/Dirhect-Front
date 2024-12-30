@@ -54,23 +54,23 @@ function PremiacaoSelecionarColaboradores() {
     const toast = useRef(null)
 
     useEffect(() => {
-        if(!recarga.name)
-        {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você deve adicionar detalhes da recarga', life: 3000 });
-            setTimeout(() => {
-                navegar(`/saldo-livre/adicionar-detalhes`)
-            }, "1500");
-        }
+        // if(!recarga.name)
+        // {
+        //     toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você deve adicionar detalhes da recarga', life: 3000 });
+        //     setTimeout(() => {
+        //         navegar(`/saldo-livre/adicionar-detalhes`)
+        //     }, "1500");
+        // }
   
-        setColaboradores([])
-        http.get('api/collaborator/index')
-            .then(response => {
-                if(response.success)
-                {
-                    setListaColaboradores(response.data.collaborators)
-                }
-            })
-            .catch(erro => console.log(erro))
+        // setColaboradores([])
+        // http.get('api/collaborator/index')
+        //     .then(response => {
+        //         if(response.success)
+        //         {
+        //             setListaColaboradores(response.data.collaborators)
+        //         }
+        //     })
+        //     .catch(erro => console.log(erro))
     }, [listaColaboradores])
     
     const onGlobalFilterChange = (value) => {

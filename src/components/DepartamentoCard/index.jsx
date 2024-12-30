@@ -22,17 +22,17 @@ function DepartamentoCard({department}) {
     const [clbdr, setClbdr] = useState(null)
 
     useEffect(() => {
-        http.get('api/collaborator/index')
-            .then(response => {
-                if(response.success)
-                {
-                    const filtered = response.data.collaborators.filter(colaborador => {
-                        return (department.name in colaborador.departments)
-                    })
-                    setClbdr(filtered)
-                }
-            })
-            .catch(erro => console.log(erro))
+        // http.get('api/collaborator/index')
+        //     .then(response => {
+        //         if(response.success)
+        //         {
+        //             const filtered = response.data.collaborators.filter(colaborador => {
+        //                 return (department.name in colaborador.departments)
+        //             })
+        //             setClbdr(filtered)
+        //         }
+        //     })
+        //     .catch(erro => console.log(erro))
     }, [])
     
     return (
