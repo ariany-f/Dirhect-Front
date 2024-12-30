@@ -60,7 +60,7 @@ function Autenticado() {
                 usuario.companies.map(item => {
                     if(item.public_id === ArmazenadorToken.UserCompanyPublicId)
                     {
-                        setEmpresa(item.social_reason)
+                        // setEmpresa(item.social_reason)
                     }
                 })
             }
@@ -89,29 +89,24 @@ function Autenticado() {
     
     return (
         <>
-        {usuarioEstaLogado ?
-            <>
-                <EstilosGlobais />
-                <MainSection>
-                    <Loading opened={loading} />
-                    {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/saldo-livre/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/saldo-livre/editar-valor/colaboradores' &&                       
-                        <BarraLateral />
+            <EstilosGlobais />
+            <MainSection>
+                <Loading opened={loading} />
+                {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/saldo-livre/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/saldo-livre/editar-valor/colaboradores' &&                       
+                    <BarraLateral />
+                }
+                <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 0 7.5vh 0">
+                    {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/saldo-livre/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/saldo-livre/editar-valor/colaboradores' &&     
+                        <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
                     }
-                    <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 0 7.5vh 0">
-                        {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/saldo-livre/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/saldo-livre/editar-valor/colaboradores' &&     
-                            <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
-                        }
-                        <MarginContainer>
-                            <Outlet key={empresa} />
-                        </MarginContainer>
-                    </MainContainer>
-                    <Analytics />
-                    <SpeedInsights />
-                </MainSection>
-                <ModalCnpj aoClicar={() => setLoading(true)} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
-            </>
-        : <></> // <Navigate to="/login" replace={true}/>
-        }
+                    <MarginContainer>
+                        <Outlet key={empresa} />
+                    </MarginContainer>
+                </MainContainer>
+                <Analytics />
+                <SpeedInsights />
+            </MainSection>
+            <ModalCnpj aoClicar={() => setLoading(true)} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
         </>
     )
 }
