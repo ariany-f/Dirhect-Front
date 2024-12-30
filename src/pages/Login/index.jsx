@@ -6,12 +6,10 @@ import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import { Link, useNavigate } from "react-router-dom"
 import styles from './Login.module.css'
-import http from '@http';
 import CheckboxContainer from "@components/CheckboxContainer"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import { useEffect, useRef, useState } from "react"
 import { Toast } from 'primereact/toast'
-import { ArmazenadorToken } from "../../utils"
 import Loading from "@components/Loading"
 
 function Login() {
@@ -26,15 +24,8 @@ function Login() {
         setRemember,
         usuarioEstaLogado,
         setUsuarioEstaLogado,
-        setDocument,
         setCpf,
-        setUserPublicId,
-        setEmail,
-        setCompanies,
         setPassword,
-        solicitarCodigoLogin,
-        submeterLogin,
-        dadosUsuario,
     } = useSessaoUsuarioContext()
 
     useEffect(() =>{
@@ -46,138 +37,7 @@ function Login() {
 
     const AlreadyAccessed = () => {
 
-        const data = {
-            cpf: usuario.cpf
-        }
-        
-        http.post('api/auth/already-accessed', data)
-            .then((response) => {
-                if(response.data)
-                {
-                    if(!response.data.alreadyAccessed)
-                    {
-                        navegar('/primeiro-acesso')
-                    }
-                    else
-                    {
-                        document.querySelectorAll('input').forEach(function(element) {
-                            if(element.value !== '')
-                            {
-                                if(classError.includes(element.name))
-                                {
-                                    setClassError(classError.filter(item => item !== element.name))
-                                }
-                            }
-                            else
-                            {
-                                if(!classError.includes(element.name))
-                                {
-                                    setClassError(estadoAnterior => [...estadoAnterior, element.name])
-                                }
-                            }
-                        })
-                
-                        if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
-                        {
-                            setLoading(true)
-                            submeterLogin()
-                            .then((response) => {
-                                if(response.success)
-                                {
-                                    ArmazenadorToken.definirUsuario(
-                                        response.data.user.name,
-                                        response.data.user.email,
-                                        response.data.user.cpf,
-                                        response.data.user.public_id
-                                    )
-                                    
-                                    usuario.cpf = response.data.user.cpf
-                                    usuario.public_id = response.data.user.public_id
-                                    navegar('/login/selecionar-empresa')
-                                   
-                                }
-                                else
-                                {
-                                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.message })
-                                    setLoading(false)
-                                    return false
-                                }
-                                
-                            })
-                            .catch(erro => {
-                                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
-                                setLoading(false)
-                                return false
-                            })
-                        }
-                    }
-                }
-            })
-            .catch(erro => {
-                console.error(erro)
-            })
-    }
-    
-    const sendData = (evento) => {
-        evento.preventDefault()
-        
-        document.querySelectorAll('input').forEach(function(element) {
-            if(element.value !== '')
-            {
-                if(classError.includes(element.name))
-                {
-                    setClassError(classError.filter(item => item !== element.name))
-                }
-            }
-            else
-            {
-                if(!classError.includes(element.name))
-                {
-                    setClassError(estadoAnterior => [...estadoAnterior, element.name])
-                }
-            }
-        })
-
-        if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
-        {
-            setLoading(true)
-            solicitarCodigoLogin()
-            .then((response) => {
-                if(response.success)
-                {
-                    
-                    ArmazenadorToken.definirUsuario(
-                        response.data.user.name,
-                        response.data.user.email,
-                        response.data.user.cpf,
-                        response.data.user.public_id
-                    )
-
-                    usuario.cpf = response.data.user.cpf
-                    usuario.public_id = response.data.user.public_id
-                    dadosUsuario()
-                    .then((response) => {
-                        if(response.success)
-                        {
-                            setCompanies(response.data.companies)
-                            navegar('/login/selecionar-empresa')
-                        }
-                    })
-                }
-                else
-                {
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
-                    setLoading(false)
-                    return false
-                }
-                
-            })
-            .catch(erro => {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
-                setLoading(false)
-                return false
-            })
-        }
+        navegar('/');
     }
 
     return (
