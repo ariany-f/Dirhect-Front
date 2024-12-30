@@ -42,6 +42,7 @@ const NavTitulo = styled.p`
 
 const Logo = styled.img`
     padding: 0px 30px;
+    max-width: 235px;
 `
 
 
