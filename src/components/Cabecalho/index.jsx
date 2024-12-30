@@ -137,6 +137,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     }
 
     return (
+        <>
         <HeaderEstilizado>
             <h6>{titulo}</h6>
             <RightItems>
@@ -154,6 +155,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             </RightItems>
             <Menu opened={menuOpened} aoFechar={toggleMenu} />
         </HeaderEstilizado>
+        </>
     )
 }
 
