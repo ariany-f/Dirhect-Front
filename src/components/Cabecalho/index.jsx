@@ -148,7 +148,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                 <div className={styles.divisor}>
                     <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
                     <ItemUsuario onClick={toggleMenu}>
-                        <div className="user">{ArmazenadorToken.UserName.charAt(0) ?? 'US'}</div>
+                        <div className="user">{'US'}</div>
                         <MdOutlineKeyboardArrowDown />
                     </ItemUsuario>
                 </div>
