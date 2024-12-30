@@ -146,7 +146,7 @@ function BarraLateral() {
     return (
         <BarraLateralEstilizada>
              {image ?
-                <Logo src={logo} ref={ref} alt="Logo Multi Benefícios" />
+                <Logo src={logo} ref={ref} alt="Logo" />
                 : ''
             }
             <nav>
