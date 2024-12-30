@@ -29,14 +29,14 @@ function Banner() {
     return (
         <div className={styles.container}>
            
-            <Skeleton variant="rectangular" width={600} height={980} />
+            <Skeleton variant="rectangular" width={650} height={980} />
             {/* <Link to="/login" className={styles.logo} >
                 {logotipo ?
                     <img src={logo} ref={refLogo} alt="Logo"/>
                     : ''
                 }
             </Link> */}
-            <div className={styles.bottomBanner}>
+            {/* <div className={styles.bottomBanner}>
                 <ul className={styles.ul}>
                     <li><RiShoppingCartFill size={24} /></li>
                     <li><PiForkKnifeFill size={24} /></li>
@@ -48,7 +48,7 @@ function Banner() {
                     <li><RiBusFill size={24} /></li>
                     <li><RiTrophyFill size={24} /></li>
                 </ul>
-            </div>
+            </div> */}
         </div>
     )
 }
