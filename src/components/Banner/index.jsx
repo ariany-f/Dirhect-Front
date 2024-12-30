@@ -32,12 +32,12 @@ function Banner() {
                 <img ref={ref} className={styles.banner} src={imagem} alt="Imagem Cartões"/>
                 : <Skeleton variant="rectangular" width={600} height={980} />
             }
-            <Link to="/login" className={styles.logo} >
+            {/* <Link to="/login" className={styles.logo} >
                 {logotipo ?
                     <img src={logo} ref={refLogo} alt="Logo"/>
                     : ''
                 }
-            </Link>
+            </Link> */}
             <div className={styles.bottomBanner}>
                 <ul className={styles.ul}>
                     <li><RiShoppingCartFill size={24} /></li>
