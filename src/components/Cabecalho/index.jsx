@@ -136,32 +136,25 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         setMenuOpened(!menuOpened)
     }
 
-    if(usuarioEstaLogado && ArmazenadorToken.UserName)
-    {
-        return (
-            <HeaderEstilizado>
-                <h6>{titulo}</h6>
-                <RightItems>
-                    <div className={styles.divisor}>
-                        <PrecisoDeAjuda />
-                        <RiNotificationLine size={18} className={styles.icon} />
-                    </div>
-                    <div className={styles.divisor}>
-                        <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
-                        <ItemUsuario onClick={toggleMenu}>
-                            <div className="user">{ArmazenadorToken.UserName.charAt(0)}</div>
-                            <MdOutlineKeyboardArrowDown />
-                        </ItemUsuario>
-                    </div>
-                </RightItems>
-                <Menu opened={menuOpened} aoFechar={toggleMenu} />
-            </HeaderEstilizado>
-        )
-    }
-    else
-    {
-        //navegar('/login')
-    }
+    return (
+        <HeaderEstilizado>
+            <h6>{titulo}</h6>
+            <RightItems>
+                <div className={styles.divisor}>
+                    <PrecisoDeAjuda />
+                    <RiNotificationLine size={18} className={styles.icon} />
+                </div>
+                <div className={styles.divisor}>
+                    <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
+                    <ItemUsuario onClick={toggleMenu}>
+                        <div className="user">{ArmazenadorToken.UserName.charAt(0) ?? 'US'}</div>
+                        <MdOutlineKeyboardArrowDown />
+                    </ItemUsuario>
+                </div>
+            </RightItems>
+            <Menu opened={menuOpened} aoFechar={toggleMenu} />
+        </HeaderEstilizado>
+    )
 }
 
 export default Cabecalho

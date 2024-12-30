@@ -67,15 +67,17 @@ function Menu({ opened = false, aoFechar }){
         {
             aoFechar()
         }
-        submeterLogout().then(response => {
-            if(response.success)
-            {
-                ArmazenadorToken.removerToken()
-                //navegar('/login')
-            }
-        }).catch(response => {
-            console.log(response)
-        })
+        
+        navegar('/login')
+        // submeterLogout().then(response => {
+        //     if(response.success)
+        //     {
+        //         //ArmazenadorToken.removerToken()
+        //         //navegar('/login')
+        //     }
+        // }).catch(response => {
+        //     console.log(response)
+        // })
     }
 
     const FecharMenu = () => {
