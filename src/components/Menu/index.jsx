@@ -71,7 +71,7 @@ function Menu({ opened = false, aoFechar }){
             if(response.success)
             {
                 ArmazenadorToken.removerToken()
-                navegar('/login')
+                //navegar('/login')
             }
         }).catch(response => {
             console.log(response)

@@ -40,11 +40,11 @@ function PrimeiroAcesso() {
                     if(response.data.alreadyAccessed)
                     {
 
-                        navegar('/login')
+                        //navegar('/login')
                     }
                     else
                     {
-                        navegar('/primeiro-acesso/senha-acesso')
+                       // navegar('/primeiro-acesso/senha-acesso')
                     }
                 }
             })

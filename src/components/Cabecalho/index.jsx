@@ -160,7 +160,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     }
     else
     {
-        navegar('/login')
+        //navegar('/login')
     }
 }
 

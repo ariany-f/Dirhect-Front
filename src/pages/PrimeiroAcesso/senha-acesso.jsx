@@ -151,7 +151,7 @@ function SenhaDeAcesso() {
             {
                 if(response.success)
                 {
-                        navegar('/login')
+                        //navegar('/login')
                 }
                 else
                 {

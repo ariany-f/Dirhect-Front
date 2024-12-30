@@ -36,8 +36,9 @@ function Autenticado() {
 
     useEffect(() => {
         
-        if(!usuarioEstaLogado) {
-            navegar('/login')
+        if(!usuarioEstaLogado) 
+        {
+            //navegar('/login')
         }
         else
         {
