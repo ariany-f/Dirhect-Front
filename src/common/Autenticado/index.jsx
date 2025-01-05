@@ -32,45 +32,71 @@ function Autenticado() {
     } = useSessaoUsuarioContext()
 
     const navegar = useNavigate()
-    const [empresa, setEmpresa] = useState(companies[0].social_reason)
+    
+    const [selected, setSelected] = useState(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
+    
+    let comp = companies;
+
+    if(selected)
+    {
+        comp = companies.filter(company => company.public_id === selected);
+    }
+
+    const [empresa, setEmpresa] = useState(comp[0].social_reason)
     const location = useLocation()
 
     useEffect(() => {
         
-        if(!usuarioEstaLogado) 
-        {
-            //navegar('/login')
-        }
-        else
-        {
-            // if(!usuario.companies || usuario.companies.length === 0)
-            // {
-            //     // http.get(`api/auth/me`)
-            //     //     .then((response) => {
-            //     //         if(response.success)
-            //     //         {
-            //     //             setCompanies(response.data.user.companies)
-            //     //         }
-            //     //     })
-            //     //     .catch(erro => {
-            //     //         console.log(erro)
-            //     //     })
-            // }
-            // else
-            // {
-            //     usuario.companies.map(item => {
-            //         if(item.public_id === ArmazenadorToken.UserCompanyPublicId)
-            //         {
-            //             // setEmpresa(item.social_reason)
-            //         }
-            //     })
-            // }
-        }
+        // if(!usuarioEstaLogado) 
+        // {
+        //     //navegar('/login')
+        // }
+        // else
+        // {
+        //     // if(!usuario.companies || usuario.companies.length === 0)
+        //     // {
+        //     //     // http.get(`api/auth/me`)
+        //     //     //     .then((response) => {
+        //     //     //         if(response.success)
+        //     //     //         {
+        //     //     //             setCompanies(response.data.user.companies)
+        //     //     //         }
+        //     //     //     })
+        //     //     //     .catch(erro => {
+        //     //     //         console.log(erro)
+        //     //     //     })
+        //     // }
+        //     // else
+        //     // {
+        //     //     usuario.companies.map(item => {
+        //     //         if(item.public_id === ArmazenadorToken.UserCompanyPublicId)
+        //     //         {
+        //     //             // setEmpresa(item.social_reason)
+        //     //         }
+        //     //     })
+        //     // }
+        // }
     }, [usuarioEstaLogado, usuario, empresa])
     
     
     const selectCompany = () => {
         setModalOpened(true)
+    }
+
+    const changeCompany = () => {
+
+        setLoading(true)
+
+        setSelected(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
+    
+        let comp = companies;
+    
+        if(selected)
+        {
+            comp = companies.filter(company => company.public_id === selected);
+        }
+    
+        setEmpresa(comp[0].social_reason)
     }
 
     const [modalOpened, setModalOpened] = useState(false)
@@ -107,7 +133,7 @@ function Autenticado() {
                 <Analytics />
                 <SpeedInsights />
             </MainSection>
-            <ModalCnpj aoClicar={() => setLoading(true)} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
+            <ModalCnpj aoClicar={() => changeCompany()} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
         </>
     )
 }

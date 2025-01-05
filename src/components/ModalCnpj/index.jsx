@@ -113,24 +113,24 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     } = useSessaoUsuarioContext()
 
     const [empresas, setEmpresas] = useState(companies)
-    const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? '')
+    const [selected, setSelected] = useState(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
 
     useEffect(() => {
-        if(opened && (!usuario.companies || !usuario.companies.length))
-        {
-            // http.get(`api/auth/me`)
-            // .then((response) => {
-            //     if(response.success)
-            //     {
-            //         setEmpresas(response.data.user.companies)
-            //         setCompanies(response.data.user.companies)
-            //     }
-            // })
-            // .catch(erro => {
-            //     console.log(erro)
-            // })
-        }
+        // if(opened && (!usuario.companies || !usuario.companies.length))
+        // {
+        //     // http.get(`api/auth/me`)
+        //     // .then((response) => {
+        //     //     if(response.success)
+        //     //     {
+        //     //         setEmpresas(response.data.user.companies)
+        //     //         setCompanies(response.data.user.companies)
+        //     //     }
+        //     // })
+        //     // .catch(erro => {
+        //     //     console.log(erro)
+        //     // })
+        // }
 
         // if(usuario.companies && empresas.length === 0 && usuario.companies.length > 0)
         // {
@@ -143,16 +143,16 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     }
     
     const selectCompany = () => {
+        
         aoClicar()
+
         ArmazenadorToken.definirCompany(
             selected
         )
 
-        submeterCompanySession().then(response => {
-            setSessionCompany(selected)
-        }).then(item => {
-            aoFechar()
-        })
+        setSessionCompany(selected)
+
+        aoFechar()
     }
 
     const navegarParaAdicionarCnpj = () => {

@@ -65,7 +65,30 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const navegar = useNavigate()
 
-    const [usuario, setUsuario] = useState(usuarioInicial)
+    const [usuario, setUsuario] = useState(() => {
+
+        let usuarioSalvo = null;
+
+        // Tenta recuperar os dados do sessionStorage ou localStorage
+        const cpfSalvo = sessionStorage.getItem('cpf');
+        const nameSalvo = sessionStorage.getItem('name');
+        const emailSalvo = sessionStorage.getItem('email');
+        const publicIdSalvo = sessionStorage.getItem('public_id');
+        const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
+        if(companyPublicIdSalvo)
+        {
+            usuarioSalvo = {
+                cpf: cpfSalvo ?? '',
+                email: emailSalvo ?? '',
+                name: nameSalvo ?? '',
+                public_id: publicIdSalvo ?? '',
+                company_public_id: companyPublicIdSalvo ?? '',
+                companies: []
+            }
+        }
+
+        return usuarioSalvo ? usuarioSalvo : usuarioInicial;
+    });
     const [recuperacaoSenha, setRecuperacaoSenha] = useState(recuperacaoSenhaInicial)
     const [usuarioEstaLogado, setUsuarioEstaLogado] = useState(!!ArmazenadorToken.AccessToken)
 
