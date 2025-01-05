@@ -13,7 +13,7 @@ const ListaEstilizada = styled.ul`
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 236px;
+    width: 246px;
 `
 const BarraLateralEstilizada = styled.aside`
     display: inline-flex;
@@ -42,7 +42,7 @@ const NavTitulo = styled.p`
 
 const Logo = styled.img`
     padding: 0px 30px;
-    max-width: 235px;
+    max-width: 245px;
 `
 
 

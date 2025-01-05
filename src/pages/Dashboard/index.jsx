@@ -4,6 +4,8 @@ import IncompleteSteps from '@components/DashboardCard/IncompleteSteps'
 import DashboardCard from '@components/DashboardCard'
 import Loading from '@components/Loading'
 import styled from 'styled-components'
+import dashboardData from '@json/dashboard_resources.json'
+import collaborators from '@json/colaboradores.json'
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
 
 const WrapperCards = styled.div`
@@ -109,21 +111,21 @@ function Dashboard() {
 
     return (
         <>
-        {usuarioEstaLogado &&
+        {/* {usuarioEstaLogado && */}
             <>
-            {colaboradores ?
+            {collaborators ?
                 <>
-                    {(!colaboradores.length || !dashboardData.transactions.length) ? 
-                        <IncompleteSteps transactions={dashboardData.transactions} colaboradores={colaboradores} />
+                    {(!collaborators.length || !dashboardData.transactions.length) ? 
+                        <IncompleteSteps transactions={dashboardData.transactions} colaboradores={collaborators} />
                     :
-                        <DashboardCard dashboardData={dashboardData} colaboradores={colaboradores} />
+                        <DashboardCard dashboardData={dashboardData} colaboradores={collaborators} />
                     }
                 </>
             :
                 <Loading opened={loadingOpened} />
             }
             </>
-        }
+        {/* } */}
        </>
     )
 }

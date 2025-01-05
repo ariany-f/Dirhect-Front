@@ -61,8 +61,8 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
     return (
         <Container align="start" gap="32px">
             <Frame gap="8px">
-                <SubTitulo>Ficamos muito felizes em ver você por aqui 🧡</SubTitulo>
-                <Texto weight="700" size="16px">Complete as etapas de contratação e ofereça a seus colaboradores uma experiência completa em benefícios e vantagens que só a AQBank Multibenefícios oferece!</Texto>
+                <SubTitulo>Ficamos muito felizes em ver você por aqui</SubTitulo>
+                {/* <Texto weight="700" size="16px">Complete as etapas de contratação!</Texto> */}
             </Frame>
             <div className={styles.percent}>
                 {percent ?
@@ -83,13 +83,13 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
                     <Texto weight="700">
                         <FaCheckCircle size={20} />&nbsp;Contratação
                     </Texto>
-                    Contratação de serviços da AQBank+ Benefícios
+                    Contratação Dirhect
                 </Card>
                 <Card className={step === 2 ? 'active' : 'inactive'}>
                     <Texto weight="700">
                         <RiTeamFill size={20} />&nbsp;Cadastro de colaborados
                     </Texto>
-                    Cadastre seus colaboradores e peça os cartões para cada um.
+                    Cadastre seus colaboradores.
                     {step === 2 &&
                         <BotaoSemBorda color="var(--primaria)">
                             <Link to="/colaborador/registro" className={styles.link}>
@@ -100,13 +100,13 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
                 </Card>
                 <Card className={step === 3 ? 'active' : ''}>
                     <Texto weight="700">
-                        <RiWallet3Fill size={20} />&nbsp;Depósito de benefícios
+                        <RiWallet3Fill size={20} />&nbsp;Configuração de benefícios
                     </Texto>
-                    Faça o deposito por cartão de crédito, boleto ou Pix.
+                    Configure os benefícios para os seus colaboradores.
                     {step === 3 &&
                         <BotaoSemBorda color="var(--primaria)">
                             <Link to={'/beneficio/selecao-tipo-recarga'} className={styles.link}>
-                                Depositar&nbsp;<MdArrowCircleRight className='icon' size={18} />
+                                Configurar&nbsp;<MdArrowCircleRight className='icon' size={18} />
                             </Link>
                         </BotaoSemBorda>
                     }
