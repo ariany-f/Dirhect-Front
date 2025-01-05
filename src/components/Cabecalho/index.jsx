@@ -76,7 +76,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         {
             "id": 1,
             "url": "",
-            "pageTitulo": "Plataforma RH"
+            "pageTitulo": "Dirhect"
         },
         {
             "id": 2,

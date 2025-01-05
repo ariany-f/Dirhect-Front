@@ -5,12 +5,12 @@
         "name": "Financeiro",
         "description": "Tabapuã",
         "status": 1,
+        "collaborators_total": 4,
         "created_at": "2023-10-03T18:36:30.000000Z",
         "updated_at": "2023-10-03T18:36:30.000000Z",
         "benefits": [
             "Alimentação",
-            "Refeição",
-            "Mobilidade"
+            "Refeição"
         ]
     },
     {
@@ -19,12 +19,12 @@
         "name": "Tecnologia",
         "description": "WCT",
         "status": 1,
+        "collaborators_total": 4,
         "created_at": "2023-10-03T18:36:43.000000Z",
         "updated_at": "2023-10-03T18:36:43.000000Z",
         "benefits": [
             "Alimentação",
             "Refeição",
-            "Mobilidade",
             "Home Office"
         ]
     },
@@ -34,11 +34,11 @@
         "name": "Comercial",
         "description": "WCT",
         "status": 1,
+        "collaborators_total": 4,
         "created_at": "2023-10-03T18:36:54.000000Z",
         "updated_at": "2023-10-03T18:36:54.000000Z",
         "benefits": [
             "Alimentação",
-            "Refeição",
             "Mobilidade"
         ]
     }

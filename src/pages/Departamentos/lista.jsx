@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import http from '@http'
 import DataTableDepartamentos from '@components/DataTableDepartamentos'
+import departments from '@json/departments.json'
 import CardText from '@components/CardText'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
@@ -44,22 +45,22 @@ function DepartamentoLista() {
     }
 
     useEffect(() => {
-        if(!departamentos)
-        {
-            // setLoading(true)
-            // http.get('api/department/index')
-            //     .then(response => {
-            //         setLoading(false)
-            //         if(response.data)
-            //         {
-            //             setDepartamentos(response.data)
-            //         }
-            //     })
-            //     .catch(erro => {
-            //         console.log(erro)
-            //         setLoading(false)
-            //     })
-        }
+        // if(!departamentos)
+        // {
+        //     // setLoading(true)
+        //     // http.get('api/department/index')
+        //     //     .then(response => {
+        //     //         setLoading(false)
+        //     //         if(response.data)
+        //     //         {
+        //     //             setDepartamentos(response.data)
+        //     //         }
+        //     //     })
+        //     //     .catch(erro => {
+        //     //         console.log(erro)
+        //     //         setLoading(false)
+        //     //     })
+        // }
     }, [departamentos])
 
     return (
@@ -81,7 +82,7 @@ function DepartamentoLista() {
                 <CardText>
                     <p className={styles.subtitulo}>Sempre que cadastrar um novo colaborador, você terá a opção de colocá-lo em um departamento, isso facilita na organização e na recarga de benefícios.</p>
                 </CardText>
-                <DataTableDepartamentos departamentos={departamentos} />
+                <DataTableDepartamentos departamentos={departments} />
         </ConteudoFrame>
         <ModalAdicionarDepartamento aoSalvar={adicionarNome} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>

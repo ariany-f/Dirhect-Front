@@ -1,6 +1,7 @@
 import DataTableColaboradores from '@components/DataTableColaboradores'
 import http from '@http'
 import Loading from '@components/Loading'
+import collaborators from '@json/colaboradores.json'
 import { useEffect, useState } from "react";
 
 function ColaboradoresCadastrados() {
@@ -27,7 +28,7 @@ function ColaboradoresCadastrados() {
     return (
         <>
             <Loading opened={loading} />
-            <DataTableColaboradores colaboradores={colaboradores} />
+            <DataTableColaboradores colaboradores={collaborators} />
         </>
     )
 }

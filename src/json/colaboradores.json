@@ -1,9 +1,9 @@
 [
     {
         "public_id": "dc4a93b9-3000-4bd5-b5ab-90243b8bc9e1",
-        "name": "Jader Afonso",
+        "user_name": "Jader Afonso",
         "email": "jader.afonso@gmail.com",
-        "document": "42596632177",
+        "cpf": "42596632177",
         "phone_number": "11990253050",
         "phone_code": "55",
         "requested_card_enum": 0,
@@ -29,9 +29,9 @@
     },
     {
         "public_id": "51ebe476-2c3a-4e58-9576-1a9d83bec5a3",
-        "name": "Paulo Coelho",
+        "user_name": "Paulo Coelho",
         "email": "paulo.coelho@oracle.com",
-        "document": "12347977567",
+        "cpf": "12347977567",
         "phone_number": "11988557666",
         "phone_code": "55",
         "requested_card_enum": 3,

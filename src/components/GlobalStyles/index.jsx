@@ -7,7 +7,7 @@ const EstilosGlobais = createGlobalStyle`
       --vermilion-100: #FFE8D3;
       --vermilion-200: #FFCDA5;
       --vermilion-300: #FFAA6D;
-      --vermilion-400: #FF7B32;
+      --vermilion-400: #192a4e;
       --vermilion-500: #FF570A;
       --vermilion-600: #13264b;
       --vermilion-700: #CC2702;
