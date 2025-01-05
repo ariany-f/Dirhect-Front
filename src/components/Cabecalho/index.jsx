@@ -143,7 +143,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             <RightItems>
                 <div className={styles.divisor}>
                     <PrecisoDeAjuda />
-                    <RiNotificationLine size={18} className={styles.icon} />
+                    {/* <RiNotificationLine size={18} className={styles.icon} /> */}
                 </div>
                 <div className={styles.divisor}>
                     <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
