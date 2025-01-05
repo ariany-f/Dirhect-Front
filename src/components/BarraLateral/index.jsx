@@ -64,40 +64,47 @@ function BarraLateral() {
         {
             "id": 1,
             "url": "/",
+            "pageTitulo": "Home",
+            "icone": <AiFillHome size={20} className="icon" />,
+            "itemTitulo": "Home"
+        },
+        {
+            "id": 2,
+            "url": "/filial",
             "pageTitulo": "Filial",
             "icone": <AiFillHome size={20} className="icon" />,
             "itemTitulo": "Filial"
         },
         {
-            "id": 2,
+            "id": 3,
             "url": "/departamento",
             "pageTitulo": "Departamentos",
             "icone": <RiTeamFill size={20} className="icon" />,
             "itemTitulo": "Departamentos"
         },
         {
-            "id": 3,
+            "id": 4,
             "url": "/extrato",
             "pageTitulo": "Seção",
             "icone": <RiFilePaperFill titulo="Extrato" size={20} className="icon" />,
             "itemTitulo": "Seção"
         },
         {
-            "id": 4,
+            "id": 5,
             "url": "/cartao",
             "pageTitulo": "Cargos e Funções",
             "icone": <RiUser3Fill size={20} className="icon" />,
             "itemTitulo": "Cargos e Funções"
         },
         {
-            "id": 5,
+            "id": 6,
             "url": "/colaborador",
             "pageTitulo": "Funcionários",
             "icone": <BiSolidDashboard size={20} className="icon" />,
             "itemTitulo": "Funcionários"
         },
         {
-            "id": 6,
+            "id": 7,
             "url": "/saldo-livre",
             "pageTitulo": "Dependentes",
             "icone": <RiHandCoinFill size={20} className="icon" />,
@@ -109,21 +116,21 @@ function BarraLateral() {
 
     const itensBeneficio = [
         {
-            "id": 7,
+            "id": 8,
             "url": "/beneficio",
             "pageTitulo": "Tipos",
             "icone": <RiFileListFill size={20} className="icon" />,
             "itemTitulo": "Tipos"
         },
         {
-            "id": 8,
+            "id": 9,
             "url": "/beneficio",
             "pageTitulo": "Contrato Fornecedor",
             "icone": <RiFileListFill size={20} className="icon" />,
             "itemTitulo": "Contrato Fornecedor"
         },
         {
-            "id": 9,
+            "id": 10,
             "url": "/beneficio",
             "pageTitulo": "Linhas de Transporte",
             "icone": <LuSparkles size={20} className="icon" />,
@@ -133,7 +140,7 @@ function BarraLateral() {
 
     const itensEmBreveMenu = [
         {
-            "id": 10,
+            "id": 11,
             "url": "/vantagens",
             "pageTitulo": "Elegibilidade",
             "icone": <LuSparkles size={20} className="icon" />,
