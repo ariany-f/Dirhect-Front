@@ -9,6 +9,7 @@ import ModalCnpj from '@components/ModalCnpj'
 import { useEffect, useState } from "react"
 import Loading from '@components/Loading'
 import http from '@http'
+import companies from '@json/empresas.json'
 import { ArmazenadorToken } from "../../utils"
 import styled from "styled-components"
 import { Analytics } from "@vercel/analytics/react"
@@ -31,7 +32,7 @@ function Autenticado() {
     } = useSessaoUsuarioContext()
 
     const navegar = useNavigate()
-    const [empresa, setEmpresa] = useState('')
+    const [empresa, setEmpresa] = useState(companies[0].social_reason)
     const location = useLocation()
 
     useEffect(() => {
@@ -42,28 +43,28 @@ function Autenticado() {
         }
         else
         {
-            if(!usuario.companies || usuario.companies.length === 0)
-            {
-                // http.get(`api/auth/me`)
-                //     .then((response) => {
-                //         if(response.success)
-                //         {
-                //             setCompanies(response.data.user.companies)
-                //         }
-                //     })
-                //     .catch(erro => {
-                //         console.log(erro)
-                //     })
-            }
-            else
-            {
-                usuario.companies.map(item => {
-                    if(item.public_id === ArmazenadorToken.UserCompanyPublicId)
-                    {
-                        // setEmpresa(item.social_reason)
-                    }
-                })
-            }
+            // if(!usuario.companies || usuario.companies.length === 0)
+            // {
+            //     // http.get(`api/auth/me`)
+            //     //     .then((response) => {
+            //     //         if(response.success)
+            //     //         {
+            //     //             setCompanies(response.data.user.companies)
+            //     //         }
+            //     //     })
+            //     //     .catch(erro => {
+            //     //         console.log(erro)
+            //     //     })
+            // }
+            // else
+            // {
+            //     usuario.companies.map(item => {
+            //         if(item.public_id === ArmazenadorToken.UserCompanyPublicId)
+            //         {
+            //             // setEmpresa(item.social_reason)
+            //         }
+            //     })
+            // }
         }
     }, [usuarioEstaLogado, usuario, empresa])
     

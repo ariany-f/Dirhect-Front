@@ -100,15 +100,6 @@ function Menu({ opened = false, aoFechar }){
                             </Link>
                         </li>
                         <li onClick={() => FecharMenu()}>
-                            <Link className="link">
-                                <div className="group">
-                                    <RiUserFollowFill size={20} className="icon"/>
-                                    Inquilinos
-                                </div>
-                                <MdOutlineChevronRight size={20} />
-                            </Link>
-                        </li>
-                        <li onClick={() => FecharMenu()}>
                             <Link className="link" to="/operador">
                                 <div className="group">
                                     <RiUserFollowFill size={20} className="icon"/>

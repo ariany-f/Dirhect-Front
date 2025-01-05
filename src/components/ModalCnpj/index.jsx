@@ -8,6 +8,7 @@ import { RiCloseFill, RiBuildingLine } from 'react-icons/ri'
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import http from '@http'
+import companies from '@json/empresas.json'
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import styles from './ModalCnpj.module.css'
 import { CiCirclePlus } from "react-icons/ci"
@@ -111,7 +112,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         setCompanies,
     } = useSessaoUsuarioContext()
 
-    const [empresas, setEmpresas] = useState(usuario?.companies ?? [])
+    const [empresas, setEmpresas] = useState(companies)
     const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
 
@@ -131,10 +132,10 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
             // })
         }
 
-        if(usuario.companies && empresas.length === 0 && usuario.companies.length > 0)
-        {
-            setEmpresas(usuario.companies)
-        }
+        // if(usuario.companies && empresas.length === 0 && usuario.companies.length > 0)
+        // {
+        //     setEmpresas(usuario.companies)
+        // }
     }, [empresas, opened, usuario])
     
     function handleSelectChange(value) {
