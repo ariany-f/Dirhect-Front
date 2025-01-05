@@ -99,15 +99,15 @@ function Menu({ opened = false, aoFechar }){
                                 <MdOutlineChevronRight size={20} />
                             </Link>
                         </li>
-                        {/* <li onClick={() => FecharMenu()}>
+                        <li onClick={() => FecharMenu()}>
                             <Link className="link">
                                 <div className="group">
-                                    <IoCardSharp size={20} className="icon"/>
-                                    Forma de pagamento
+                                    <RiUserFollowFill size={20} className="icon"/>
+                                    Inquilinos
                                 </div>
                                 <MdOutlineChevronRight size={20} />
                             </Link>
-                        </li> */}
+                        </li>
                         <li onClick={() => FecharMenu()}>
                             <Link className="link" to="/operador">
                                 <div className="group">

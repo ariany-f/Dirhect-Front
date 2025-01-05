@@ -23,7 +23,7 @@ const BarraLateralEstilizada = styled.aside`
     align-items: flex-start;
     gap: 32px;
     flex-shrink: 0;
-    background: var(--gradient-gradient-1, linear-gradient(180deg, #4e4e4e 0%, #0f4489 100%));
+    background: #244078;
     
     @media screen and (max-width: 760px) {
         display: none;
@@ -64,77 +64,80 @@ function BarraLateral() {
         {
             "id": 1,
             "url": "/",
-            "pageTitulo": "Plataforma RH",
+            "pageTitulo": "Filial",
             "icone": <AiFillHome size={20} className="icon" />,
-            "itemTitulo": "Home"
+            "itemTitulo": "Filial"
         },
         {
             "id": 2,
-            "url": "/extrato",
-            "pageTitulo": "Extrato",
-            "icone": <RiFilePaperFill titulo="Extrato" size={20} className="icon" />,
-            "itemTitulo": "Extrato"
-        },
-        {
-            "id": 3,
-            "url": "/colaborador",
-            "pageTitulo": "Colaboradores",
-            "icone": <RiUser3Fill size={20} className="icon" />,
-            "itemTitulo": "Colaboradores"
-        },
-        {
-            "id": 4,
             "url": "/departamento",
             "pageTitulo": "Departamentos",
             "icone": <RiTeamFill size={20} className="icon" />,
             "itemTitulo": "Departamentos"
         },
         {
-            "id": 5,
+            "id": 3,
+            "url": "/extrato",
+            "pageTitulo": "Seção",
+            "icone": <RiFilePaperFill titulo="Extrato" size={20} className="icon" />,
+            "itemTitulo": "Seção"
+        },
+        {
+            "id": 4,
             "url": "/cartao",
-            "pageTitulo": "Cartões",
-            "icone": <RiBankCardFill size={20} className="icon" />,
-            "itemTitulo": "Cartões"
+            "pageTitulo": "Cargos e Funções",
+            "icone": <RiUser3Fill size={20} className="icon" />,
+            "itemTitulo": "Cargos e Funções"
+        },
+        {
+            "id": 5,
+            "url": "/colaborador",
+            "pageTitulo": "Funcionários",
+            "icone": <BiSolidDashboard size={20} className="icon" />,
+            "itemTitulo": "Funcionários"
         },
         {
             "id": 6,
-            "url": "/beneficio",
-            "pageTitulo": "Benefícios",
-            "icone": <BiSolidDashboard size={20} className="icon" />,
-            "itemTitulo": "Benefícios"
-        },
-        {
-            "id": 7,
             "url": "/saldo-livre",
-            "pageTitulo": "Saldo Livre",
+            "pageTitulo": "Dependentes",
             "icone": <RiHandCoinFill size={20} className="icon" />,
-            "itemTitulo": "Saldo Livre"
-        },
-        // {
-        //     "id": 7,
-        //     "url": "/premiacao",
-        //     "pageTitulo": "Premiações",
-        //     "icone": <RiTrophyFill size={20} className="icon" />,
-        //     "itemTitulo": "Premiações"
-        // }
+            "itemTitulo": "Dependentes"
+        }
     ];
     
     const novidadeBadge = <div className="novidade">Em breve</div>;
 
-    const itensEmBreveMenu = [
+    const itensBeneficio = [
+        {
+            "id": 7,
+            "url": "/beneficio",
+            "pageTitulo": "Tipos",
+            "icone": <RiFileListFill size={20} className="icon" />,
+            "itemTitulo": "Tipos"
+        },
         {
             "id": 8,
-            "url": "/despesa",
-            "pageTitulo": "Despesas",
+            "url": "/beneficio",
+            "pageTitulo": "Contrato Fornecedor",
             "icone": <RiFileListFill size={20} className="icon" />,
-            "itemTitulo": "Despesas"
+            "itemTitulo": "Contrato Fornecedor"
         },
         {
             "id": 9,
-            "url": "/vantagens",
-            "pageTitulo": "Vantagens",
+            "url": "/beneficio",
+            "pageTitulo": "Linhas de Transporte",
             "icone": <LuSparkles size={20} className="icon" />,
-            "itemTitulo": "Vantagens"
+            "itemTitulo": "Linhas de Transporte"
+        }
+    ];
+
+    const itensEmBreveMenu = [
+        {
+            "id": 10,
+            "url": "/vantagens",
+            "pageTitulo": "Elegibilidade",
+            "icone": <LuSparkles size={20} className="icon" />,
+            "itemTitulo": "Elegibilidade"
         }
     ];
 
@@ -151,7 +154,7 @@ function BarraLateral() {
                 : ''
             }
             <nav>
-                <NavTitulo>Menu principal</NavTitulo>
+                <NavTitulo>Cadastros</NavTitulo>
                 <ListaEstilizada>
                     {itensMenu.map((item) => {
                         return (
@@ -164,14 +167,27 @@ function BarraLateral() {
                         )
                     })}
                 </ListaEstilizada>
-                <NavTitulo>Para sua empresa</NavTitulo>
+                <NavTitulo>Benefícios</NavTitulo>
+                <ListaEstilizada>
+                    {itensBeneficio.map((item) => {
+                        return (
+                            <Link key={item.id} className="link" to={item.url}>
+                                <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url) || (home.includes(location.pathname.split('/')[1]) && item.url == '/')}>
+                                    {item.icone}
+                                    {item.itemTitulo}
+                                </ItemNavegacao>
+                            </Link>
+                        )
+                    })}
+                </ListaEstilizada>
+                <NavTitulo>Configurações</NavTitulo>
                 <ListaEstilizada>
                     {itensEmBreveMenu.map((item) => {
                         return (
-                            <Link key={item.id} className="link disabled">
+                            <Link key={item.id} className="link" to={item.url}>
                                 <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url) || (home.includes(location.pathname.split('/')[1]) && item.url == '/')}>
                                     {item.icone}
-                                    {item.itemTitulo}{novidadeBadge}
+                                    {item.itemTitulo}
                                 </ItemNavegacao>
                             </Link>
                         )

@@ -2,14 +2,14 @@ import { createGlobalStyle } from 'styled-components'
 
 const EstilosGlobais = createGlobalStyle`
   :root {
-      --primaria: #FF3C00;
+      --primaria: #244078;
       --vermilion-50: #FFF5EC;
       --vermilion-100: #FFE8D3;
       --vermilion-200: #FFCDA5;
       --vermilion-300: #FFAA6D;
       --vermilion-400: #FF7B32;
       --vermilion-500: #FF570A;
-      --vermilion-600: #FF3C00;
+      --vermilion-600: #13264b;
       --vermilion-700: #CC2702;
       --vermilion-800: #A1200B;
       --vermilion-900: #821D0C;
