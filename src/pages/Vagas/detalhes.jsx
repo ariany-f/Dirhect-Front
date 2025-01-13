@@ -17,6 +17,7 @@ import { useVagasContext } from '@contexts/VagasContext'; // Importando o contex
 import DataTableCandidatos from '../../components/DataTableCandidatos'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
+import ModalEncaminharVaga from '../../components/ModalEncaminharVaga'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -35,6 +36,7 @@ function DetalhesVaga() {
     let { id } = useParams()
     const location = useLocation();
     const [vaga, setVaga] = useState(null)
+    const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
 
     const { 
@@ -56,6 +58,9 @@ function DetalhesVaga() {
         });
     }
 
+    const abrirModal = () => {
+        setModalOpened(true)
+    }
 
     useEffect(() => {
         if(!vaga)
@@ -83,7 +88,7 @@ function DetalhesVaga() {
                                 <h3>{vaga?.titulo}</h3>
                             </Titulo>
                             <BotaoGrupo align="space-between">
-                                <Botao size="small">
+                                <Botao aoClicar={abrirModal} size="small">
                                     <FaArrowAltCircleRight fill="white" />
                                     Encaminhar vaga
                                 </Botao>
@@ -118,6 +123,7 @@ function DetalhesVaga() {
                 </Titulo>
                 <DataTableCandidatos candidatos={vaga?.candidatos} />
             </Container>
+            <ModalEncaminharVaga opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </Frame>
         </>
     )
