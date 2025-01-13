@@ -99,6 +99,8 @@ import CandidatoRegistroEducacao from './pages/Candidato/Registro/educacao'
 import CandidatoRegistroHabilidades from './pages/Candidato/Registro/habilidades'
 import CandidatoRegistroProfissional from './pages/Candidato/Registro/profissional'
 import CandidatoRegistroArquivos from './pages/Candidato/Registro/arquivos'
+import ValidarAdmissoes from './pages/Admissoes/validar'
+import DetalhesAdmissao from './pages/Admissoes/detalhes'
 
 function AppRouter() {
   
@@ -194,6 +196,8 @@ function AppRouter() {
               <Route path="vagas/registro" element={<VagasRegistro />} />
 
               <Route path="/admissao" element={<Admissoes />} />
+              <Route path="/admissao/validar" element={<ValidarAdmissoes />} />
+              <Route path="/admissao/detalhes/:id/:candidato" element={<DetalhesAdmissao />} />
 
               <Route path="/candidato/registro" element={<CandidatoRegistro />} >
                 <Route path=":id" element={<CandidatoRegistroDadosGerais />} />

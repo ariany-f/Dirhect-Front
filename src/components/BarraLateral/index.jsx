@@ -105,10 +105,10 @@ function BarraLateral() {
                 return [
                     {
                         "id": 1,
-                        "url": "/admissoes-em-processo",
-                        "pageTitulo": "Admissões em Processo",
+                        "url": "/admissao/validar",
+                        "pageTitulo": "Admissões",
                         "icone": <RiUser3Fill size={20} className="icon" />,
-                        "itemTitulo": "Admissões em Processo"
+                        "itemTitulo": "Admissões"
                     }
                 ];
             case 'equipeBeneficios':

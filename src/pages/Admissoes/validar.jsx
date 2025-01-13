@@ -9,7 +9,7 @@ import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import React, { createContext, useContext } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTableAdmissao from '../../components/DataTableAdmissao'
+import DataTableValidarAdmissao from '../../components/DataTableValidarAdmissao'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -18,7 +18,7 @@ const ConteudoFrame = styled.div`
     width: 100%;
 `
 
-const Admissoes = () => {
+const ValidarAdmissoes = () => {
 
     const location = useLocation();
 
@@ -63,9 +63,9 @@ const Admissoes = () => {
             <Titulo>
                 <h5>Admissões</h5>
             </Titulo>
-            <DataTableAdmissao vagas={admissoes} />
+            <DataTableValidarAdmissao vagas={admissoes} />
         </ConteudoFrame>
     );
 };
 
-export default Admissoes; 
+export default ValidarAdmissoes; 
