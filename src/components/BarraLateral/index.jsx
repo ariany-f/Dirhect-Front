@@ -92,13 +92,6 @@ function BarraLateral() {
                         "pageTitulo": "Preenchimento",
                         "icone": <RiFilePaperFill size={20} className="icon" />,
                         "itemTitulo": "Preenchimento"
-                    },
-                    {
-                        "id": 2,
-                        "url": "/login",
-                        "pageTitulo": "Sair",
-                        "icone":  <RiLogoutCircleLine size={20} className="icon sair"/>,
-                        "itemTitulo": "Sair"
                     }
                 ];
             case 'equipeFolhaPagamento':
