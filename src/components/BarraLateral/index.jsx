@@ -210,8 +210,8 @@ function BarraLateral() {
     ]
     
     const titulos = {
-        'equipeFolhaPagamento': 'BPO Folha',
-        'equipeBeneficios': 'BPO Benefícios',
+        'equipeFolhaPagamento': 'BPO',
+        'equipeBeneficios': 'Benefícios',
         'candidato': 'Candidato',
         'cliente': 'Cliente'
     }
