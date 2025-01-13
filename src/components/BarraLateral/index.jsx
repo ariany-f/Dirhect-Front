@@ -96,9 +96,9 @@ function BarraLateral() {
                     {
                         "id": 1,
                         "url": "/candidato/registro/1",
-                        "pageTitulo": "Preenchimento",
+                        "pageTitulo": "Meu Cadastro",
                         "icone": <RiFilePaperFill size={20} className="icon" />,
-                        "itemTitulo": "Preenchimento"
+                        "itemTitulo": "Meu Cadastro"
                     }
                 ];
             case 'equipeFolhaPagamento':
