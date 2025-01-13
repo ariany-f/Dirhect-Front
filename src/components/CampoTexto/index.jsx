@@ -100,7 +100,6 @@ function CampoTexto({ label, disabled = false, type='text',  setFocus, placehold
 
     const validationSchema = Yup.object().shape({
         email: Yup.string().email('E-mail inválido'),
-        password: Yup.string().length(6, 'A senha deve conter exatamente 6 caracteres'),
     })
 
     function validateKey(evento) {
