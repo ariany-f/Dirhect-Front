@@ -104,6 +104,7 @@ function ModalEncaminharVaga({ opened = false, aoClicar, aoFechar, aoSucesso, ao
     const [classError, setClassError] = useState([])
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
+    const [mensagem, setMensagem] = useState('')
 
     const navegar = useNavigate()
 
@@ -120,13 +121,12 @@ function ModalEncaminharVaga({ opened = false, aoClicar, aoFechar, aoSucesso, ao
                                         <RiCloseFill size={20} className="fechar" />  
                                     </button>
                                 </form>
-                                <h6>Encaminhar vaga</h6>
+                                <h6>Encaminhar vaga para novo candidato</h6>
                             </Titulo>
                         </Frame>
                         
                         <Frame padding="24px 0px">
                             <CampoTexto 
-                                    numeroCaracteres={50}
                                     camposVazios={classError} 
                                     valor={nome} 
                                     type="text" 
@@ -140,6 +140,14 @@ function ModalEncaminharVaga({ opened = false, aoClicar, aoFechar, aoSucesso, ao
                                 type="text" 
                                 setValor={setEmail} 
                                 label={'E-mail'}
+                            />
+                            <CampoTexto 
+                                camposVazios={classError} 
+                                valor={mensagem} 
+                                type="text" 
+                                numeroCaracteres={255}
+                                setValor={setMensagem} 
+                                label={'Mensagem'}
                             />
                         </Frame>
                         <form method="dialog">
