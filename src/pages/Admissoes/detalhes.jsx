@@ -277,7 +277,7 @@ function DetalhesAdmissao() {
                                 <h3>{candidate?.nome}</h3>
                             </Titulo>
                             <BotaoGrupo align="space-between">
-                                <Botao aoClicar={validar} estilo="vermilion" size="medium" filled>  <FaArrowAltCircleRight fill="white" />Validar</Botao>
+                                <Botao aoClicar={() => validar()} estilo="vermilion" size="medium" filled><FaArrowAltCircleRight fill="white" />Validar</Botao>
                             </BotaoGrupo>
                      </BotaoGrupo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
