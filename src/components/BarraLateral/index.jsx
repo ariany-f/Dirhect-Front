@@ -1,7 +1,7 @@
 import { styled } from "styled-components"
 import ItemNavegacao from "./ItemNavegacao"
 import { AiFillHome } from "react-icons/ai"
-import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill } from "react-icons/ri"
+import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine } from "react-icons/ri"
 import { BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
@@ -92,6 +92,13 @@ function BarraLateral() {
                         "pageTitulo": "Preenchimento",
                         "icone": <RiFilePaperFill size={20} className="icon" />,
                         "itemTitulo": "Preenchimento"
+                    },
+                    {
+                        "id": 2,
+                        "url": "/login",
+                        "pageTitulo": "Sair",
+                        "icone":  <RiLogoutCircleLine size={20} className="icon sair"/>,
+                        "itemTitulo": "Sair"
                     }
                 ];
             case 'equipeFolhaPagamento':
