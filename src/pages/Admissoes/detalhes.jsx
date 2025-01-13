@@ -10,6 +10,7 @@ import { Skeleton } from 'primereact/skeleton'
 import Container from "@components/Container"
 import { FaArrowAltCircleRight, FaTrash } from 'react-icons/fa'
 import BotaoVoltar from "@components/BotaoVoltar"
+import Loading from '@components/Loading'
 import BotaoGrupo from "@components/BotaoGrupo"
 import BotaoSemBorda from "@components/BotaoSemBorda"
 import { Toast } from 'primereact/toast'
@@ -37,6 +38,7 @@ function DetalhesAdmissao() {
     const [vaga, setVaga] = useState(null)
     const [candidate, setCandidato] = useState(null)
     const toast = useRef(null)
+    const [loading, setLoading] = useState(false)
 
     const { 
         vagas,
@@ -57,7 +59,7 @@ function DetalhesAdmissao() {
         });
     }
 
-
+   
     useEffect(() => {
         if(!vaga)
         {
@@ -76,11 +78,196 @@ function DetalhesAdmissao() {
             }
         }
     }, [vaga])
+
+    function validar() {
+      
+        setLoading(true)
+        const url = "https://hook.us1.make.com/78t4032nswo6cj4xhlq63ujwnftifzex";
+
+        const data = [{
+            "CHAPA": " ",
+            "NROFICHAREG": "",
+            "CODCOLIGADA": "859",
+            "CODRECEBIMENTO": "M",
+            "CODSITUACAO": "A",
+            "CODTIPO": "N",
+            "CODSECAO": "01.01.095",
+            "CODFUNCAO": "0186",
+            "CODSINDICATO": "374",
+            "CODHORARIO": "8",
+            "DTBASE": "2023-11-30T00:00:00",
+            "SALARIO": "1.500",
+            "SITUACAOFGTS": "2",
+            "DTOPCAOFGTS": "2023-11-30T00:00:00",
+            "AJUDACUSTO": "",
+            "DATAADMISSAO": "2023-11-30T00:00:00",
+            "TIPOADMISSAO": "R",
+            "MOTIVOADMISSAO": "01",
+            "TEMPRAZOCONTR": "0",
+            "FIMPRAZOCONTR": "",
+            "SITUACAORAIS": "N",
+            "CONTAPAGAMENTO": "07328480",
+            "VINCULORAIS": "5",
+            "PISPARAFGTS": "13258765803",
+            "CODFILIAL": "1",
+            "NOME": candidate.nome,
+            "PISPASEP": "13258765803",
+            "CODBANCOFGTS": "104",
+            "CODBANCOPAGTO": "033",
+            "CODAGENCIAPAGTO": "1244",
+            "CODBANCOPIS": "104",
+            "REGATUAL": "1",
+            "JORNADAMENSAL": 10800,
+            "PREVDISP": "2023-11-30T00:00:00",
+            "CODOCORRENCIA": "0",
+            "CODCATEGORIA": "101",
+            "SITUACAOINSS": "1",
+            "SEXO": "M",
+            "NACIONALIDADE": "10",
+            "GRAUINSTRUCAO": "9",
+            "NATURALIDADE": "JOINVILLE",
+            "APELIDO": "DOISBICHARA TESTE",
+            "EMAIL": candidate.email,
+            "DTNASCIMENTO": "1990-10-31T00:00:00",
+            "CARTIDENTIDADE": "140590985",
+            "ORGEMISSORIDENT": "SSP",
+            "DTEMISSAOIDENT": "2008-01-01T00:00:00",
+            "UFCARTIDENT": "SC",
+            "CARTEIRATRAB": "5147067",
+            "SERIECARTTRAB": "0003",
+            "TITULOELEITOR": "068137300930",
+            "SECAOTITELEITOR": "0222",
+            "ZONATITELEITOR": "022",
+            "CERTIFRESERV": "123456789002",
+            "CATEGMILITAR": "RM",
+            "CARTMOTORISTA": "45471673700",
+            "TIPOCARTHABILIT": "A",
+            "DTVENCHABILIT": "2025-01-01T00:00:00",
+            "CPF": candidate.cpf,
+            "REGPROFISSIONAL": "",
+            "RUA": "JARIVA",
+            "NUMERO": "222",
+            "COMPLEMENTO": "RESIDENCIAL ELIZABETH",
+            "BAIRRO": "GUANABARA",
+            "CIDADE": "JOINVILLE",
+            "ESTADO": "",
+            "PAIS": "BRASIL",
+            "CEP": "89207780",
+            "TELEFONE1": "47997246602",
+            "TELEFONE2": "4730282222",
+            "NOMEBANCOPGTO": "SANTANDER",
+            "NOMEPAI": "PAI DOISBICHARA TESTE",
+            "NOMEMAE": "MAE DOISBICHARA TESTE",
+            "JORNADA_MENSAL": "180:00",
+            "PAISORIGEM": "10",
+            "DEFICIENTEFISICO": 0,
+            "DEFICIENTEINTELECTUAL": 0,
+            "DEFICIENTEAUDITIVO": 0,
+            "DEFICIENTEVISUAL": 0,
+            "DEFICIENTEMENTAL": 0,
+            "NOMEFUNC": "DOISBICHARA TESTE",
+            "CORRACA": "2",
+            "ESTADOCIVIL": "S",
+            "ESTADONATAL": "SC",
+            "NUMEROCARTAOSUS": "123456789107002",
+            "CODTIPOBAIRRO": "1",
+            "CODTIPORUA": 1,
+            "USAVALETRANSP": "0",
+            "TPCONTABANCARIA": "1",
+            "TPREGIMEPREV": "1",
+            "NATUREZAESTAGIO": "N",
+            "CODNIVELESTAGIO": "N",
+            "AREAATUACAOESTAGIO": "",
+            "NUMEROAPOLICEESTAGIO": "",
+            "CODINSTITUICAOENSINOESTAGIO": "",
+            "CPFCOORDENADORESTAGIO": "",
+            "NOMECOORDENADORESTAGIO": "",
+            "INDADMISSAO": "1",
+            "DTINICIOVINCULO": "2023-11-30T00:00:00",
+            "CODMUNICIPIO": "09102",
+            "ORGEMISSORCNH": "DENATRAN",
+            "DTEMISSAOCNH": "2009-01-01T00:00:00",
+            "SITUACAOIRRF": "1",
+            "CODCCUSTO": "200019",
+            "TIPOREGIMEJORNADA": "4",
+            "IDADE": 33,
+            "COTAPCD": "1",
+            "CODCATEGORIAESOCIAL": "101",
+            "TIPOCONTRATOPRAZO": "E",
+            "ESOCIALNATATIVIDADE": "1",
+            "DTEXPCML": "2008-01-01T00:00:00",
+            "DTTITELEITOR": "2008-01-01T00:00:00",
+            "CODOCUPACAO": "CBO",
+            "EXPED": "SSP",
+            "RM": "4",
+            "SITMILITAR": "RESERVA",
+            "ESTELEIT": "SC",
+            "PRIMEIRONOME": "DOISBICHARA TESTE",
+            "SOBRENOMEPAI": "DOISBICHARA TESTE",
+            "SOBRENOMEMAE": "DOISBICHARA TESTE",
+            "CODORGAOCLASSE": "",
+            "CODUFREGISTRO": "",
+            "CODNATURALIDADE": "09102",
+            "NOMESOCIAL": "DOISBICHARA TESTE",
+            "DATAPRIMEIRACNH": "2009-01-01T00:00:00",
+            "UFCNH": "SC",
+            "EMAILPESSOAL": "DOISBICHARA@UORAK.COM",
+            "familiar": [
+            {
+                "CHAPA": " ",
+                "CODCOLIGADA": " ",
+                "NRODEPEND": 1,
+                "NOME": "",
+                "SEXO": "F",
+                "GRAUPARENTESCO": 7,
+                "ESTADOCIVIL": "C"
+            },
+            {
+                "CHAPA": " ",
+                "CODCOLIGADA": " ",
+                "NRODEPEND": 2,
+                "NOME": "",
+                "SEXO": "M",
+                "GRAUPARENTESCO": 7,
+                "ESTADOCIVIL": "C"
+            },
+            {
+                "CHAPA": " ",
+                "CODCOLIGADA": "859",
+                "DTNASCIMENTO": "1952-01-01T03:00:00.000Z",
+                "SEXO": "F",
+                "INCIRRF": "0",
+                "CPF": "51521000026",
+                "GRAUPARENTESCO": "A"
+            }
+            ]
+        }]
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            setLoading(false)
+            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Sucesso ao validar admissão', life: 3000 });
+            console.log('Sucesso:', data);
+        })
+        .catch((error) => { 
+            setLoading(false)
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao validar', life: 3000 });
+            console.error('Erro:', error);
+        });
+    }
     
     return (
         <>
         <Frame>
             <Toast ref={toast} />
+            <Loading opened={loading} />
             <ConfirmDialog />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/admissao/validar" />
@@ -90,10 +277,7 @@ function DetalhesAdmissao() {
                                 <h3>{candidate?.nome}</h3>
                             </Titulo>
                             <BotaoGrupo align="space-between">
-                                <Botao size="small">
-                                    <FaArrowAltCircleRight fill="white" />
-                                    Validar
-                                </Botao>
+                                <Botao aoClicar={validar} estilo="vermilion" size="medium" filled>  <FaArrowAltCircleRight fill="white" />Validar</Botao>
                             </BotaoGrupo>
                      </BotaoGrupo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
