@@ -189,14 +189,18 @@ function BarraLateral() {
         }
     };
     
-    const novidadeBadge = <div className="novidade">Em breve</div>;
-
-
     const home = [
         'adicionar-cnpj',
         'adicionar-email',
         'adicionar-celular'
     ]
+    
+    const titulos = {
+        'equipeFolhaPagamento': 'BPO Folha',
+        'equipeBeneficios': 'BPO Benefícios',
+        'candidato': 'Candidato',
+        'cliente': 'Cliente'
+    }
 
     return (
         <BarraLateralEstilizada>
@@ -205,7 +209,7 @@ function BarraLateral() {
                 : ''
             }
             <nav>
-                <NavTitulo>Cadastros</NavTitulo>
+                <NavTitulo>{titulos[usuario.tipo]}</NavTitulo>
                 <ListaEstilizada>
                     {itensMenu().map((item) => {
                         return (
