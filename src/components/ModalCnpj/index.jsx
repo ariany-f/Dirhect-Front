@@ -107,9 +107,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
     const { 
         usuario,
-        setSessionCompany,
-        submeterCompanySession,
-        setCompanies,
+        setSessionCompany
     } = useSessaoUsuarioContext()
 
     const [empresas, setEmpresas] = useState(companies)
@@ -117,26 +115,9 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     const navegar = useNavigate()
 
     useEffect(() => {
-        // if(opened && (!usuario.companies || !usuario.companies.length))
-        // {
-        //     // http.get(`api/auth/me`)
-        //     // .then((response) => {
-        //     //     if(response.success)
-        //     //     {
-        //     //         setEmpresas(response.data.user.companies)
-        //     //         setCompanies(response.data.user.companies)
-        //     //     }
-        //     // })
-        //     // .catch(erro => {
-        //     //     console.log(erro)
-        //     // })
-        // }
+     
 
-        // if(usuario.companies && empresas.length === 0 && usuario.companies.length > 0)
-        // {
-        //     setEmpresas(usuario.companies)
-        // }
-    }, [empresas, opened, usuario])
+    }, [empresas, opened, setSessionCompany])
     
     function handleSelectChange(value) {
         setSelected(value)

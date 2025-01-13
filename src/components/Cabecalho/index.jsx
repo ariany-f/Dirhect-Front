@@ -8,6 +8,7 @@ import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
 import Menu from "@components/Menu"
 import { ArmazenadorToken } from './../../utils'
 import { useEffect, useState } from "react"
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 
 const HeaderEstilizado = styled.header`
     display: flex;
@@ -66,11 +67,16 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     
     const location = useLocation()
     const navegar = useNavigate()
-    const [usuarioEstaLogado, setUsuarioEstaLogado] = useState(true)
-
-    useEffect(() => {
-        setUsuarioEstaLogado(!!ArmazenadorToken.AccessToken)
-    }, [])
+    
+    const {
+        usuario,
+        setCompanies,
+        usuarioEstaLogado
+    } = useSessaoUsuarioContext()
+ 
+    // useEffect(() => {
+    //     setUsuarioEstaLogado(!!ArmazenadorToken.AccessToken)
+    // }, [])
 
     const titulos = [
         {
@@ -148,7 +154,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                 <div className={styles.divisor}>
                     <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
                     <ItemUsuario onClick={toggleMenu}>
-                        <div className="user">{'US'}</div>
+                        <div className="user">{usuario.name.charAt(0)}</div>
                         <MdOutlineKeyboardArrowDown />
                     </ItemUsuario>
                 </div>

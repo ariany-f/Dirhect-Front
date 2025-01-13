@@ -23,7 +23,7 @@ export class ArmazenadorToken {
     static definirCompany(company_public_id) {
         sessionStorage.setItem(COMPANY_PUBLIC_ID, company_public_id)
     }
-    static definirUsuario(name, email, cpf, public_id, tipo) {
+    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id) {
         if (!email) {
             throw new Error('Email é obrigatório')
         }
@@ -33,6 +33,7 @@ export class ArmazenadorToken {
             sessionStorage.setItem(USER_TYPE, tipo)
             sessionStorage.setItem(USER_CPF, cpf || '')
             sessionStorage.setItem(USER_PUBLIC_ID, public_id || '')
+            sessionStorage.setItem(COMPANY_PUBLIC_ID, company_public_id || '')
         } catch (error) {
             console.error('Erro ao armazenar dados do usuário:', error)
             throw new Error('Falha ao armazenar dados do usuário')
