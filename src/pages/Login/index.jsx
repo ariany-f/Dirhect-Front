@@ -65,9 +65,10 @@ function Login() {
             }
             else
             {
-                navegar(`/candidato/registro/1`)
+                navegar(`/candidato/registro/${perfilEncontrado.id}`)
             }
         } else {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Usuário não encontrado', life: 3000 });
             // Lógica para usuário não encontrado (opcional)
             console.error("Usuário não encontrado");
         }
