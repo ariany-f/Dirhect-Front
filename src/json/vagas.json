@@ -39,12 +39,12 @@
                     {
                         "nome": "RG",
                         "caminho": "",
-                        "status": "Pendente"
+                        "status": "Anexado"
                     },
                     {
                         "nome": "Comprovante de Residência",
                         "caminho": "",
-                        "status": "Pendente"
+                        "status": "Anexado"
                     }
                 ],
                 "dataDevolucao": "2023-03-01"

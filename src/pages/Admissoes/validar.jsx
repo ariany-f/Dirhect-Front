@@ -35,7 +35,25 @@ const ValidarAdmissoes = () => {
             const adicionarCandidatos = (vagasArray, status) => {
                 vagasArray.forEach(vaga => {
                     vaga.candidatos.forEach(candidato => {
-                        if(candidato.statusDeCandidato === "Aprovado")
+                        let pendencias = "";
+                        if(candidato.arquivos)
+                        {
+                            for (let arquivo of candidato.arquivos) {
+                                // Se o status do arquivo não for "Anexado", muda o status
+                                if (arquivo.status !== "Anexado") {
+                                    pendencias += `Pendente anexo de: ${arquivo.nome}<br />`;
+                                }
+                            }
+                
+                            for (let [chave, dado] of Object.entries(candidato)) {
+                                // Verifica se o dado está vazio ("" ou null ou undefined)
+                                if (dado === "" || dado === null || dado === undefined) {
+                                    pendencias += `Pendente preenchimento de: ${chave}<br />`;  // Exibe o nome do campo
+                                }
+                            }
+                        }
+
+                        if(candidato.statusDeCandidato === "Aprovado" && pendencias === "")
                         {
                             // Atualizando o estado com o candidato
                             setAdmissoes(prevAdmissoes => [
