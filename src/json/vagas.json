@@ -1,0 +1,146 @@
+{
+  "vagas": {
+    "abertas": [
+      {
+        "id": 1,
+        "titulo": "Desenvolvedor Frontend",
+        "descricao": "Vaga para desenvolvedor frontend com experiência em React.",
+        "dataAbertura": "2023-01-15",
+        "dataEncerramento": "2023-02-15",
+        "salario": 12000,
+        "candidatos": [
+            {
+                "id": 1,
+                "nome": "João Silva",
+                "email": "",
+                "statusDePreenchimento": "Em Análise",
+                "statusDeCandidato": "Aprovado",
+                "arquivos": [
+                {
+                    "nome": "RG",
+                    "caminho": "",
+                    "status": "Pendente"
+                },
+                {
+                    "nome": "Comprovante de Residência",
+                    "caminho": "/documentos/comprovante_residencia.pdf",
+                    "status": "Anexado"
+                }
+                ],
+                "dataDevolucao": "2023-03-01"
+            },
+            {
+                "id": 2,
+                "nome": "Maria Oliveira",
+                "email": "maria.oliveira@example.com",
+                "statusDePreenchimento": "Preenchido",
+                "statusDeCandidato": "Aprovado",
+                "arquivos": [
+                    {
+                        "nome": "RG",
+                        "caminho": "",
+                        "status": "Pendente"
+                    },
+                    {
+                        "nome": "Comprovante de Residência",
+                        "caminho": "",
+                        "status": "Pendente"
+                    }
+                ],
+                "dataDevolucao": "2023-03-01"
+            },
+            {
+                "id": 3,
+                "nome": "Carlos Pereira",
+                "email": "carlos.pereira@example.com",
+                "statusDePreenchimento": "Rejeitado",
+                "statusDeCandidato": "Rejeitado",
+                "arquivos": [
+                    {
+                        "nome": "RG",
+                        "caminho": "",
+                        "status": ""
+                    },
+                    {
+                        "nome": "Comprovante de Residência",
+                        "caminho": "",
+                        "status": ""
+                    }
+                ],
+                "dataDevolucao": "2023-03-01"
+            }
+        ]
+      },
+      {
+        "id": 2,
+        "titulo": "Analista de Sistemas",
+        "descricao": "Vaga para analista de sistemas com conhecimento em metodologias ágeis.",
+        "dataAbertura": "2023-01-20",
+        "dataEncerramento": "2023-02-20",
+        "salario": 10000,
+        "candidatos": [
+            {
+                "id": 1,
+                "nome": "Ana Costa",
+                "email": "ana.costa@example.com",
+                "statusDePreenchimento": "Em Análise",
+                "statusDeCandidato": "Aprovado",
+                "arquivos": [
+                {
+                    "nome": "RG",
+                    "caminho": "",
+                    "status": "Pendente"
+                },
+                {
+                    "nome": "Comprovante de Residência",
+                    "caminho": "/documentos/comprovante_residencia.pdf",
+                    "status": "Anexado"
+                }
+                ],
+                "dataDevolucao": "2023-03-01"
+            },
+            {
+                "id": 2,
+                "nome": "Pedro Santos",
+                "email": "pedro.santos@example.com",
+                "statusDePreenchimento": "Preenchido",
+                "statusDeCandidato": "Aprovado",
+                "arquivos": [
+                {
+                    "nome": "RG",
+                    "caminho": "",
+                    "status": "Pendente"
+                },
+                {
+                    "nome": "Comprovante de Residência",
+                    "caminho": "/documentos/comprovante_residencia.pdf",
+                    "status": "Anexado"
+                }
+                ],
+                "dataDevolucao": "2023-03-01"
+            }
+        ]
+      }
+    ],
+    "canceladas": [
+      {
+        "id": 3,
+        "titulo": "Desenvolvedor Backend",
+        "descricao": "Vaga cancelada para desenvolvedor backend.",
+        "dataAbertura": "2023-01-10",
+        "dataEncerramento": "2023-01-20",
+        "salario": 11000,
+        "candidatos": []
+      },
+      {
+        "id": 4,
+        "titulo": "Gerente de Projetos",
+        "descricao": "Vaga cancelada para gerente de projetos.",
+        "dataAbertura": "2023-01-05",
+        "dataEncerramento": "2023-01-15",
+        "salario": 15000,
+        "candidatos": []
+      }
+    ]
+  }
+} 

@@ -8,6 +8,7 @@ import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
 import logo from '/imagens/logo.png'
 import { useEffect, useRef, useState } from "react"
+import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -48,11 +49,14 @@ const Logo = styled.img`
 
 function BarraLateral() {
 
-    const location = useLocation(); 
-
+    const location = useLocation()
     const [image, setImage] = useState(false)
-
     const ref = useRef(null)
+    const {
+        usuario,
+        setCompanies,
+        usuarioEstaLogado
+    } = useSessaoUsuarioContext()
 
     useEffect(() => {
         if(logo){
@@ -60,93 +64,133 @@ function BarraLateral() {
         }
     }, [logo])
 
-    const itensMenu = [
-        {
-            "id": 1,
-            "url": "/",
-            "pageTitulo": "Home",
-            "icone": <AiFillHome size={20} className="icon" />,
-            "itemTitulo": "Home"
-        },
-        {
-            "id": 2,
-            "url": "/filial",
-            "pageTitulo": "Filial",
-            "icone": <AiFillHome size={20} className="icon" />,
-            "itemTitulo": "Filial"
-        },
-        {
-            "id": 3,
-            "url": "/departamento",
-            "pageTitulo": "Departamentos",
-            "icone": <RiTeamFill size={20} className="icon" />,
-            "itemTitulo": "Departamentos"
-        },
-        {
-            "id": 4,
-            "url": "/extrato",
-            "pageTitulo": "Seção",
-            "icone": <RiFilePaperFill titulo="Extrato" size={20} className="icon" />,
-            "itemTitulo": "Seção"
-        },
-        {
-            "id": 5,
-            "url": "/cartao",
-            "pageTitulo": "Cargos e Funções",
-            "icone": <RiUser3Fill size={20} className="icon" />,
-            "itemTitulo": "Cargos e Funções"
-        },
-        {
-            "id": 6,
-            "url": "/colaborador",
-            "pageTitulo": "Funcionários",
-            "icone": <BiSolidDashboard size={20} className="icon" />,
-            "itemTitulo": "Funcionários"
-        },
-        {
-            "id": 7,
-            "url": "/saldo-livre",
-            "pageTitulo": "Dependentes",
-            "icone": <RiHandCoinFill size={20} className="icon" />,
-            "itemTitulo": "Dependentes"
+    const itensMenu = () => {
+
+        switch (usuario.tipo) {
+            case 'cliente':
+                return [
+                    {
+                        "id": 1,
+                        "url": "/vagas",
+                        "pageTitulo": "Vagas",
+                        "icone": <RiFilePaperFill size={20} className="icon" />,
+                        "itemTitulo": "Vagas"
+                    },
+                    {
+                        "id": 2,
+                        "url": "/admissao",
+                        "pageTitulo": "Admissão",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Admissão"
+                    }
+                ];
+            case 'candidato':
+                return [
+                    {
+                        "id": 1,
+                        "url": "/candidato/registro/1",
+                        "pageTitulo": "Preenchimento",
+                        "icone": <RiFilePaperFill size={20} className="icon" />,
+                        "itemTitulo": "Preenchimento"
+                    }
+                ];
+            case 'equipeFolhaPagamento':
+                return [
+                    {
+                        "id": 1,
+                        "url": "/admissoes-em-processo",
+                        "pageTitulo": "Admissões em Processo",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Admissões em Processo"
+                    }
+                ];
+            case 'equipeBeneficios':
+                return [
+                    {
+                        "id": 1,
+                        "url": "/",
+                        "pageTitulo": "Home",
+                        "icone": <AiFillHome size={20} className="icon" />,
+                        "itemTitulo": "Home"
+                    },
+                    {
+                        "id": 2,
+                        "url": "/filial",
+                        "pageTitulo": "Filial",
+                        "icone": <AiFillHome size={20} className="icon" />,
+                        "itemTitulo": "Filial"
+                    },
+                    {
+                        "id": 3,
+                        "url": "/departamento",
+                        "pageTitulo": "Departamentos",
+                        "icone": <RiTeamFill size={20} className="icon" />,
+                        "itemTitulo": "Departamentos"
+                    },
+                    {
+                        "id": 4,
+                        "url": "/extrato",
+                        "pageTitulo": "Seção",
+                        "icone": <RiFilePaperFill titulo="Extrato" size={20} className="icon" />,
+                        "itemTitulo": "Seção"
+                    },
+                    {
+                        "id": 5,
+                        "url": "/cartao",
+                        "pageTitulo": "Cargos e Funções",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Cargos e Funções"
+                    },
+                    {
+                        "id": 6,
+                        "url": "/colaborador",
+                        "pageTitulo": "Funcionários",
+                        "icone": <BiSolidDashboard size={20} className="icon" />,
+                        "itemTitulo": "Funcionários"
+                    },
+                    {
+                        "id": 7,
+                        "url": "/saldo-livre",
+                        "pageTitulo": "Dependentes",
+                        "icone": <RiHandCoinFill size={20} className="icon" />,
+                        "itemTitulo": "Dependentes"
+                    },
+                    {
+                        "id": 8,
+                        "url": "/beneficio",
+                        "pageTitulo": "Tipos",
+                        "icone": <RiFileListFill size={20} className="icon" />,
+                        "itemTitulo": "Tipos"
+                    },
+                    {
+                        "id": 9,
+                        "url": "/beneficio",
+                        "pageTitulo": "Contrato Fornecedor",
+                        "icone": <RiFileListFill size={20} className="icon" />,
+                        "itemTitulo": "Contrato Fornecedor"
+                    },
+                    {
+                        "id": 10,
+                        "url": "/beneficio",
+                        "pageTitulo": "Linhas de Transporte",
+                        "icone": <LuSparkles size={20} className="icon" />,
+                        "itemTitulo": "Linhas de Transporte"
+                    },
+                    {
+                        "id": 11,
+                        "url": "/vantagens",
+                        "pageTitulo": "Elegibilidade",
+                        "icone": <LuSparkles size={20} className="icon" />,
+                        "itemTitulo": "Elegibilidade"
+                    }
+                ];
+            default:
+                return [];
         }
-    ];
+    };
     
     const novidadeBadge = <div className="novidade">Em breve</div>;
 
-    const itensBeneficio = [
-        {
-            "id": 8,
-            "url": "/beneficio",
-            "pageTitulo": "Tipos",
-            "icone": <RiFileListFill size={20} className="icon" />,
-            "itemTitulo": "Tipos"
-        },
-        {
-            "id": 9,
-            "url": "/beneficio",
-            "pageTitulo": "Contrato Fornecedor",
-            "icone": <RiFileListFill size={20} className="icon" />,
-            "itemTitulo": "Contrato Fornecedor"
-        },
-        {
-            "id": 10,
-            "url": "/beneficio",
-            "pageTitulo": "Linhas de Transporte",
-            "icone": <LuSparkles size={20} className="icon" />,
-            "itemTitulo": "Linhas de Transporte"
-        }
-    ];
-
-    const itensEmBreveMenu = [
-        {
-            "id": 11,
-            "url": "/vantagens",
-            "pageTitulo": "Elegibilidade",
-            "icone": <LuSparkles size={20} className="icon" />,
-            "itemTitulo": "Elegibilidade"
-        }
-    ];
 
     const home = [
         'adicionar-cnpj',
@@ -163,33 +207,7 @@ function BarraLateral() {
             <nav>
                 <NavTitulo>Cadastros</NavTitulo>
                 <ListaEstilizada>
-                    {itensMenu.map((item) => {
-                        return (
-                            <Link key={item.id} className="link" to={item.url}>
-                                <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url) || (home.includes(location.pathname.split('/')[1]) && item.url == '/')}>
-                                    {item.icone}
-                                    {item.itemTitulo}
-                                </ItemNavegacao>
-                            </Link>
-                        )
-                    })}
-                </ListaEstilizada>
-                <NavTitulo>Benefícios</NavTitulo>
-                <ListaEstilizada>
-                    {itensBeneficio.map((item) => {
-                        return (
-                            <Link key={item.id} className="link" to={item.url}>
-                                <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url) || (home.includes(location.pathname.split('/')[1]) && item.url == '/')}>
-                                    {item.icone}
-                                    {item.itemTitulo}
-                                </ItemNavegacao>
-                            </Link>
-                        )
-                    })}
-                </ListaEstilizada>
-                <NavTitulo>Configurações</NavTitulo>
-                <ListaEstilizada>
-                    {itensEmBreveMenu.map((item) => {
+                    {itensMenu().map((item) => {
                         return (
                             <Link key={item.id} className="link" to={item.url}>
                                 <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url) || (home.includes(location.pathname.split('/')[1]) && item.url == '/')}>

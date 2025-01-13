@@ -87,6 +87,18 @@ import CartoesAtivados from './pages/Cartoes/ativados'
 import CartaoSolicitarSegundaViaAcompanhar from './pages/Cartoes/SolicitarSegundaVia/acompanhar'
 import CartaoSolicitarSegundaViaCommon from './pages/Cartoes/SolicitarSegundaVia/common'
 import ExtratoPagamento from './pages/Extrato/pagamento'
+import Vagas from './pages/Vagas'
+import VagasAbertas from './pages/Vagas/abertas'
+import VagasCanceladas from './pages/Vagas/canceladas'
+import VagasRegistro from './pages/Vagas/Registro'
+import DetalhesVaga from './pages/Vagas/detalhes'
+import Admissoes from './pages/Admissoes'
+import CandidatoRegistro from './pages/Candidato/Registro'
+import CandidatoRegistroDadosGerais from './pages/Candidato/Registro/dados-gerais'
+import CandidatoRegistroEducacao from './pages/Candidato/Registro/educacao'
+import CandidatoRegistroHabilidades from './pages/Candidato/Registro/habilidades'
+import CandidatoRegistroProfissional from './pages/Candidato/Registro/profissional'
+import CandidatoRegistroArquivos from './pages/Candidato/Registro/arquivos'
 
 function AppRouter() {
   
@@ -173,7 +185,24 @@ function AppRouter() {
               <Route path="despesa/editar-valor" element={<DespesaEditarValor />} />
               <Route path="despesa/detalhes-adiantamento" element={<DespesaDetalhesAdiantamento />} />
               <Route path="despesa/detalhes" element={<DespesaDetalhes />} /> */}
-              
+
+              <Route path="vagas" element={<Vagas />} >
+                <Route index element={<VagasAbertas />} />
+                <Route path="canceladas" element={<VagasCanceladas />} />
+              </Route>
+              <Route path="vagas/detalhes/:id" element={<DetalhesVaga />} />
+              <Route path="vagas/registro" element={<VagasRegistro />} />
+
+              <Route path="/admissao" element={<Admissoes />} />
+
+              <Route path="/candidato/registro" element={<CandidatoRegistro />} >
+                <Route path=":id" element={<CandidatoRegistroDadosGerais />} />
+                <Route path=":id/educacao" element={<CandidatoRegistroEducacao />} />
+                <Route path=":id/habilidades" element={<CandidatoRegistroHabilidades />} />
+                <Route path=":id/profissional" element={<CandidatoRegistroProfissional />} />
+                <Route path=":id/arquivos" element={<CandidatoRegistroArquivos />} />
+              </Route>
+             
               <Route path="/cartao" element={<Cartoes />} >
                 <Route index element={<CartoesLista />} />
                 <Route path="ativados" element={<CartoesAtivados />} />

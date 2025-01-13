@@ -11,6 +11,8 @@ import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import { useEffect, useRef, useState } from "react"
 import { Toast } from 'primereact/toast'
 import Loading from "@components/Loading"
+import { ArmazenadorToken } from "../../utils"
+import loginData from '@json/login.json'; // Importando o JSON
 
 function Login() {
 
@@ -25,6 +27,7 @@ function Login() {
         usuarioEstaLogado,
         setUsuarioEstaLogado,
         setCpf,
+        setTipo,
         setPassword,
     } = useSessaoUsuarioContext()
 
@@ -36,8 +39,30 @@ function Login() {
     })
 
     const AlreadyAccessed = () => {
+        const perfilEncontrado = loginData.perfis.find(perfil => 
+            perfil.cpf === usuario.cpf && perfil.senha === usuario.password
+        );
 
-        navegar('/');
+        if (perfilEncontrado) {
+            // Atualizando o contexto com o tipo de usuário
+            setUsuarioEstaLogado(true);
+            setCpf(usuario.cpf);
+            setPassword(usuario.password);
+            setTipo(perfilEncontrado.tipo);
+             // Adicionando o tipo de usuário ao objeto usuario
+            ArmazenadorToken.definirUsuario(
+                perfilEncontrado.name,
+                perfilEncontrado.email,
+                perfilEncontrado.cpf,
+                perfilEncontrado.public_id,
+                perfilEncontrado.tipo
+            )
+
+            navegar('/');
+        } else {
+            // Lógica para usuário não encontrado (opcional)
+            console.error("Usuário não encontrado");
+        }
     }
 
     return (

@@ -5,6 +5,7 @@ const USER_EMAIL = 'email'
 const USER_CPF = 'cpf'
 const COMPANY_PUBLIC_ID = 'company_public_id'
 const USER_PUBLIC_ID = 'public_id'
+const USER_TYPE = 'tipo'
 
 export class ArmazenadorToken {
     static definirToken(accessToken, expiration) {
@@ -22,13 +23,14 @@ export class ArmazenadorToken {
     static definirCompany(company_public_id) {
         sessionStorage.setItem(COMPANY_PUBLIC_ID, company_public_id)
     }
-    static definirUsuario(name, email, cpf, public_id) {
+    static definirUsuario(name, email, cpf, public_id, tipo) {
         if (!email) {
             throw new Error('Email é obrigatório')
         }
         try {
             sessionStorage.setItem(USER_NAME, name || '')
             sessionStorage.setItem(USER_EMAIL, email)
+            sessionStorage.setItem(USER_TYPE, tipo)
             sessionStorage.setItem(USER_CPF, cpf || '')
             sessionStorage.setItem(USER_PUBLIC_ID, public_id || '')
         } catch (error) {

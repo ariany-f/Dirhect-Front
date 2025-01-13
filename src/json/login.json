@@ -1,0 +1,36 @@
+{
+  "perfis": [
+    {
+      "tipo": "cliente",
+      "email": "cliente@example.com",
+      "senha": "senhaCliente123",
+      "cpf": "123.456.789-00",
+      "name": "Cliente Exemplo",
+      "public_id": "cliente-001"
+    },
+    {
+      "tipo": "candidato",
+      "email": "candidato@example.com",
+      "senha": "senhaCandidato123",
+      "cpf": "987.654.321-00",
+      "name": "Candidato Exemplo",
+      "public_id": "candidato-001"
+    },
+    {
+      "tipo": "equipeBeneficios",
+      "email": "beneficios@example.com",
+      "senha": "senhaBeneficios123",
+      "cpf": "111.222.333-44",
+      "name": "Equipe de Benefícios",
+      "public_id": "beneficios-001"
+    },
+    {
+      "tipo": "equipeFolhaPagamento",
+      "email": "folhaPagamento@example.com",
+      "senha": "senhaFolha123",
+      "cpf": "470.016.728-90",
+      "name": "Equipe de Folha de Pagamento",
+      "public_id": "folha-001"
+    }
+  ]
+}

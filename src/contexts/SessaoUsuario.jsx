@@ -13,7 +13,8 @@ const usuarioInicial = {
     company_public_id: '',
     remember: false,
     companies: [],
-    code: []
+    code: [],
+    tipo: ''
 }
 
 const recuperacaoSenhaInicial = {
@@ -53,7 +54,8 @@ export const SessaoUsuarioContext = createContext({
     gerarBearer: () => null,
     solicitarCodigoRecuperacaoSenha: () => null,
     submeterRecuperacaoSenha: () => null,
-    redefinirSenha: () => null
+    redefinirSenha: () => null,
+    setTipo: () => null
 })
 
 export const useSessaoUsuarioContext = () => {
@@ -74,17 +76,17 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const nameSalvo = sessionStorage.getItem('name');
         const emailSalvo = sessionStorage.getItem('email');
         const publicIdSalvo = sessionStorage.getItem('public_id');
+        const tipoSalvo = sessionStorage.getItem('tipo');
         const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
-        if(companyPublicIdSalvo)
-        {
-            usuarioSalvo = {
-                cpf: cpfSalvo ?? '',
-                email: emailSalvo ?? '',
-                name: nameSalvo ?? '',
-                public_id: publicIdSalvo ?? '',
-                company_public_id: companyPublicIdSalvo ?? '',
-                companies: []
-            }
+    
+        usuarioSalvo = {
+            cpf: cpfSalvo ?? '',
+            email: emailSalvo ?? '',
+            tipo: tipoSalvo ?? '',
+            name: nameSalvo ?? '',
+            public_id: publicIdSalvo ?? '',
+            company_public_id: companyPublicIdSalvo ?? '',
+            companies: []
         }
 
         return usuarioSalvo ? usuarioSalvo : usuarioInicial;
@@ -204,7 +206,14 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
-
+    const setTipo = (tipo) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                tipo
+            }
+        })
+    }
     const solicitarCodigoLogin = () => {
 
         var sendableContent = {
@@ -432,7 +441,8 @@ export const SessaoUsuarioProvider = ({ children }) => {
         dadosUsuario,
         solicitarCodigoRecuperacaoSenha,
         submeterRecuperacaoSenha,
-        redefinirSenha
+        redefinirSenha,
+        setTipo
     }
 
     return (<SessaoUsuarioContext.Provider value={contexto}>
