@@ -71,13 +71,20 @@ function BarraLateral() {
                 return [
                     {
                         "id": 1,
+                        "url": "/",
+                        "pageTitulo": "Home",
+                        "icone": <AiFillHome size={20} className="icon" />,
+                        "itemTitulo": "Home"
+                    },
+                    {
+                        "id": 2,
                         "url": "/vagas",
                         "pageTitulo": "Vagas",
                         "icone": <RiFilePaperFill size={20} className="icon" />,
                         "itemTitulo": "Vagas"
                     },
                     {
-                        "id": 2,
+                        "id": 3,
                         "url": "/admissao",
                         "pageTitulo": "Admissão",
                         "icone": <RiUser3Fill size={20} className="icon" />,
@@ -98,6 +105,13 @@ function BarraLateral() {
                 return [
                     {
                         "id": 1,
+                        "url": "/",
+                        "pageTitulo": "Home",
+                        "icone": <AiFillHome size={20} className="icon" />,
+                        "itemTitulo": "Home"
+                    },
+                    {
+                        "id": 2,
                         "url": "/admissao/validar",
                         "pageTitulo": "Admissões",
                         "icone": <RiUser3Fill size={20} className="icon" />,
