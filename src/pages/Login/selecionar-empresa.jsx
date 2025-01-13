@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom"
 import { Toast } from 'primereact/toast'
 import { ArmazenadorToken } from "../../utils"
 import Loading from "@components/Loading"
+import companies from '@json/empresas.json'
 
 const Wrapper = styled.div`
     display: flex;
@@ -38,117 +39,42 @@ function SelecionarEmpresa() {
     
     const { 
         usuario,
-        setCpf,
-        setCode,
-        setCompanies,
-        setUsuarioEstaLogado,
-        setSessionCompany,
-        gerarBearer,
-        solicitarCodigoLogin,
-        submeterCompanySession
+        setSessionCompany
     } = useSessaoUsuarioContext()
-    
-    const [empresas, setEmpresas] = useState(usuario?.companies ?? [])
-    const [selected, setSelected] = useState(empresas[0]?.public_id)
-    const [loading, setLoading] = useState(false)
-    const [modalOpened, setModalOpened] = useState(false)
-    const toast = useRef(null)
 
+    const [empresas, setEmpresas] = useState(companies)
+    const [selected, setSelected] = useState(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
 
     useEffect(() => {
+     
 
-        if((!usuario.companies || usuario.companies.length === 0) && usuario.cpf)
-        {
-            http.post(`api/company/to-login`, {cpf: usuario.cpf})
-                .then((response) => {
-                    if(response.length > 0)
-                    {
-                        setEmpresas(response)
-                        setCompanies(response)
-                        setSelected(response[0].public_id)
-                        setSessionCompany(response[0].public_id)
-                    }
-                })
-                .catch((erro) => {
+    }, [empresas, setSessionCompany])
+    
+    const [loading, setLoading] = useState(false)
+    const toast = useRef(null)
 
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
-                    setCode([])
-                    setLoading(false)
-                    return false
-                })
-        }
-        else
-        {
-            if((!usuario.cpf) && ArmazenadorToken.UserCpf)
-            {
-                setCpf(ArmazenadorToken.UserCpf);
-            }
 
-            if(usuario.companies && empresas.length == 0 && usuario.companies.length > 0)
-            {
-                setEmpresas(usuario.companies)
-            }
-            else
-            {
-                if(empresas.length > 0)
-                {
-                    if(!ArmazenadorToken.UserCompanyPublicId)
-                    {
-                        ArmazenadorToken.definirCompany(empresas[0].public_id)
-                    }
-                }
-            }
-        }
-    }, [usuario, empresas])
+    // useEffect(() => {
+
+    //     if((!usuario.empresas || usuario.empresas.length === 0) && usuario.cpf)
+    //     {
+    //         setEmpresas(response)
+    //         setCompanies(response)
+    //         setSelected(response[0].public_id)
+    //     }
+    // }, [usuario, empresas])
 
     function handleSelectChange(value) {
         setSelected(value);
     }
     
     const selectCompany = () => {
-        if(selected && !modalOpened)
+        if(selected)
         {
-            solicitarCodigoLogin()
-            .then((response) => {
-                if(response.success)
-                {
-                    setModalOpened(true)
-                }
-            })
+            setSessionCompany(selected)
+            navegar('/')
         }
-    }
-    
-    const sendCode = () => {
-       
-        setLoading(true)
-
-        gerarBearer().then((response) => {
-            if(response.success)
-            {
-                ArmazenadorToken.definirToken(
-                    response.data.auth.token,
-                    response.data.auth.expiration_at
-                )
-                setUsuarioEstaLogado(true)
-                submeterCompanySession().then(response => {
-                    navegar('/')
-                })
-            }
-            else
-            {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
-                setCode([])
-                setLoading(false)
-                return false
-            }
-        })
-        .catch(erro => {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
-            setCode([])
-            setLoading(false)
-            return false
-        })
     }
 
     return (
@@ -188,7 +114,6 @@ function SelecionarEmpresa() {
                         })}
                     </Wrapper>
                     <Botao estilo="vermilion" size="medium" filled aoClicar={selectCompany} >Confirmar</Botao>
-                    <ModalToken usuario={usuario} aoReenviar={evento => solicitarCodigoLogin()} aoFechar={() => setModalOpened(false)} aoClicar={sendCode} setCode={setCode} opened={modalOpened} />
                 </>
             }
         </>

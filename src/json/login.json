@@ -6,7 +6,11 @@
       "senha": "senhaCliente123",
       "cpf": "123.456.789-00",
       "name": "Cliente Exemplo",
-      "public_id": "cliente-001"
+      "public_id": "cliente-001",
+      "empresas": [
+        "8fa184ff-503f-4d15-a1c0-610eb7db905b",
+        "0bfb18f7-58d1-45c4-9c59-eeeb77c132ca"
+      ]
     },
     {
       "tipo": "candidato",
@@ -14,7 +18,10 @@
       "senha": "senhaCandidato123",
       "cpf": "987.654.321-00",
       "name": "Candidato Exemplo",
-      "public_id": "candidato-001"
+      "public_id": "candidato-001",
+      "empresas": [
+        "8fa184ff-503f-4d15-a1c0-610eb7db905b"
+      ]
     },
     {
       "tipo": "equipeBeneficios",
@@ -22,7 +29,11 @@
       "senha": "senhaBeneficios123",
       "cpf": "111.222.333-44",
       "name": "Equipe de Benefícios",
-      "public_id": "beneficios-001"
+      "public_id": "beneficios-001",
+      "empresas": [
+        "8fa184ff-503f-4d15-a1c0-610eb7db905b",
+        "0bfb18f7-58d1-45c4-9c59-eeeb77c132ca"
+      ]
     },
     {
       "tipo": "equipeFolhaPagamento",
@@ -30,7 +41,10 @@
       "senha": "senhaFolha123",
       "cpf": "470.016.728-90",
       "name": "Equipe de Folha de Pagamento",
-      "public_id": "folha-001"
+      "public_id": "folha-001",
+      "empresas": [
+        "0bfb18f7-58d1-45c4-9c59-eeeb77c132ca"
+      ]
     }
   ]
 }

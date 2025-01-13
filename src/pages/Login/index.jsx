@@ -59,7 +59,7 @@ function Login() {
                 '8fa184ff-503f-4d15-a1c0-610eb7db905b'
             )
 
-            navegar('/');
+            navegar('/login/selecionar-empresa');
         } else {
             // Lógica para usuário não encontrado (opcional)
             console.error("Usuário não encontrado");
@@ -79,7 +79,7 @@ function Login() {
             <form>
                 <Frame>
                     <CampoTexto camposVazios={classError} patternMask={['999.999.999-99', '99.999.999/9999-99']} name="cpf" valor={usuario.cpf} setValor={setCpf} type="text" label="CPF/CNPJ" placeholder="Digite seu CPF/CNPJ" />
-                    <CampoTexto camposVazios={classError} name="password" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
+                    <CampoTexto camposVazios={classError} onEnter={evento => AlreadyAccessed()} name="password" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
                     <div className={styles.containerBottom}>
                         <CheckboxContainer name="remember" valor={usuario.remember} setValor={setRemember} label="Lembrar de mim" />
                         <Link className={styles.link} to="/esqueci-a-senha">
