@@ -123,7 +123,7 @@ function Autenticado() {
                     <BarraLateral />
                 }
                 <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 0 7.5vh 0">
-                    {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/saldo-livre/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/saldo-livre/editar-valor/colaboradores' &&     
+                    {usuario.tipo != 'candidato' && location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/saldo-livre/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/saldo-livre/editar-valor/colaboradores' &&     
                         <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
                     }
                     <MarginContainer>

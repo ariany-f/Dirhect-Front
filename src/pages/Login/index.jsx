@@ -59,7 +59,14 @@ function Login() {
                 '8fa184ff-503f-4d15-a1c0-610eb7db905b'
             )
 
-            navegar('/login/selecionar-empresa');
+            if(perfilEncontrado.tipo != 'candidato')
+            {
+                navegar('/login/selecionar-empresa');
+            }
+            else
+            {
+                navegar(`/candidato/registro/${perfilEncontrado.id}`)
+            }
         } else {
             // Lógica para usuário não encontrado (opcional)
             console.error("Usuário não encontrado");

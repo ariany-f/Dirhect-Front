@@ -32,7 +32,7 @@ function DataTableAdmissao({ vagas }) {
 
     function verDetalhes(value)
     {
-
+        navegar(`/candidato/registro/${value.candidato.id}`)
     }
 
     const representativeCandidatoTemplate = (rowData) => {

@@ -6,7 +6,7 @@ import Botao from '@components/Botao'; // Importando o componente Container
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 const CandidatoRegistroDadosGerais = () => {
-    
+
     const [classError, setClassError] = useState([])
 
     const [candidato, setCandidato] = useState(null)
@@ -14,19 +14,38 @@ const CandidatoRegistroDadosGerais = () => {
 
     const navegar = useNavigate()
 
-    const [titulo, setTitulo] = useState('');
-    const [nome, setNome] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [dataAbertura, setDataAbertura] = useState('');
-    const [dataEncerramento, setDataEncerramento] = useState('');
-    const [salario, setSalario] = useState('');
-    const [selectedDate, setSelectedDate] = useState(1)
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
         
     };
+
+    const setDataNascimento = (dataNascimento) => {
+        setCandidato(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                dataNascimento
+            }
+        })
+    }
+
+    const setName = (nome) => {
+        setCandidato(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                nome
+            }
+        })
+    }
+
+    const setEmail = (email) => {
+        setCandidato(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                email
+            }
+        })
+    }
 
     useEffect(() => {
         if((context) && (!candidato))
@@ -44,43 +63,27 @@ const CandidatoRegistroDadosGerais = () => {
                 camposVazios={classError}
                 name="nome" 
                 valor={candidato?.nome ?? ''} 
-                setValor={setTitulo} 
+                setValor={setName} 
                 type="text" 
                 label="Nome" 
                 placeholder="Digite o nome" />
 
             <CampoTexto 
                 camposVazios={classError}
-                name="descricao" 
-                valor={descricao} 
-                setValor={setDescricao} 
+                name="email" 
+                valor={candidato?.email ?? ''} 
+                setValor={setEmail} 
                 type="text" 
-                label="Descrição" 
-                placeholder="Digite a descrição" />
+                label="E-mail" 
+                placeholder="Digite o email" />
                 
             <CampoTexto 
                 type="date" 
-                valor={dataAbertura} 
-                setValor={setDataAbertura}
-                label="Data de Encerramento"  />
+                valor={candidato?.dataNascimento} 
+                setValor={setDataNascimento}
+                label="Data de Nascimento"  />
 
-            <CampoTexto 
-                type="date" 
-                valor={dataEncerramento} 
-                setValor={setDataEncerramento}
-                label="Data de Encerramento" 
-                placeholder="Selecione a data" />
-                
-            <CampoTexto 
-                camposVazios={classError}
-                name="salario" 
-                valor={salario} 
-                setValor={setSalario} 
-                type="number" 
-                label="Salário" 
-                placeholder="Digite o salário" />
-
-            <Botao type="submit">Registrar Vaga</Botao>
+            <Botao type="submit">Salvar</Botao>
         </form>
         </Container>
     );
