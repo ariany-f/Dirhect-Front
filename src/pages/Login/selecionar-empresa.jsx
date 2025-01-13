@@ -77,6 +77,11 @@ function SelecionarEmpresa() {
         }
     }
 
+    function formataCNPJ(cnpj) {
+        cnpj = cnpj.replace(/[^\d]/g, "");
+        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+    }
+
     return (
         <>
             <Toast ref={toast} />
@@ -100,7 +105,7 @@ function SelecionarEmpresa() {
                                         }
                                         <div className={styles.DadosEmpresa}>
                                             <h6>{empresa.social_reason}</h6>
-                                            <div>{empresa.cnpj}</div>
+                                            <div>{formataCNPJ(empresa.cnpj)}</div>
                                         </div>
                                     </div>
                                     <RadioButton
