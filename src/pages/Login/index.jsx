@@ -65,7 +65,7 @@ function Login() {
             }
             else
             {
-                navegar(`/candidato/registro/${perfilEncontrado.id}`)
+                navegar(`/candidato/registro/1`)
             }
         } else {
             // Lógica para usuário não encontrado (opcional)
