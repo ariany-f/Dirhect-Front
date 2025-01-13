@@ -117,7 +117,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     useEffect(() => {
      
 
-    }, [empresas, opened, setSelected, setSessionCompany])
+    }, [opened, setSelected, setSessionCompany])
     
     function handleSelectChange(value) {
         setSelected(value)
