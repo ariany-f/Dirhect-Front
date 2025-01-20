@@ -1,102 +1,130 @@
-import React, { useState } from 'react';
-import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import CampoTexto from '@components/CampoTexto'; // Importando o componente CampoTexto
-import BotaoVoltar from '@components/BotaoVoltar'; // Importando o componente CampoTexto
-import Container from '@components/Container'; // Importando o componente Container
-import Botao from '@components/Botao'; // Importando o componente Container
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useVagasContext } from '@contexts/VagasContext';
+import CampoTexto from '@components/CampoTexto';
+import Container from '@components/Container';
+import Botao from '@components/Botao';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 
 const CandidatoRegistroHabilidades = () => {
-    const [classError, setClassError] = useState([])
-      
-    const { 
-        vagas,
-        setVagas
-    } = useVagasContext()
-
+    const [classError, setClassError] = useState([]);
+    const { vagas, setVagas } = useVagasContext();
+    const context = useOutletContext();
+    const [candidato, setCandidato] = useState(null)
     const navegar = useNavigate()
 
-    const [titulo, setTitulo] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [dataAbertura, setDataAbertura] = useState('');
-    const [dataEncerramento, setDataEncerramento] = useState('');
-    const [salario, setSalario] = useState('');
-    const [selectedDate, setSelectedDate] = useState(1)
+    const [habilidades, setHabilidades] = useState([
+        { id: 1, nivel: '', descricao: ''},
+    ]);
+    
+    useEffect(() => {
+        if ((context) && (!candidato)) {
+            setCandidato(context)
+        }
+    }, [context])
+    
+    const setCandidatoHabilidades = () => {
+        setCandidato((estadoAnterior) => ({
+            ...estadoAnterior,
+            habilidades
+        }));
+    };
+
+    // Atualiza os valores de uma habilidade específica
+    const atualizarCampoHabilidades = (id, campo, valor) => {
+        setHabilidades((prev) =>
+            prev.map((habilidades) =>
+                habilidades.id === id ? { ...habilidades, [campo]: valor } : habilidades
+            )
+        );
+    };
+
+    // Remove uma habilidade específica
+    const removerHabilidade = (id) => {
+        setHabilidades((prev) => prev.filter((habilidades) => habilidades.id !== id));
+    };
+
+    // Função para adicionar um novo grupo de campos de educação
+    const adicionarHabilidade = () => {
+        const novaHabilidade = {
+            id: educacao.length + 1,
+            nivel: '',
+            descricao: ''
+        };
+        setHabilidades([...habilidades, novaHabilidade]);
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Verificação de segurança para garantir que vagas e vagas.abertas estão definidos
-        const id = (vagas && vagas.abertas) ? vagas.abertas.length + 1 : 1; // Se não estiver definido, inicia com 1
+        setCandidatoHabilidades()
 
-        const novaVaga = {
-            id, // Usando o ID gerado
-            titulo,
-            descricao,
-            dataAbertura,
-            dataEncerramento,
-            salario: parseFloat(salario), // Convertendo para número
-        };
+        if (!candidato) {
+            alert('Erro: Nenhum candidato selecionado.');
+            return;
+        }
 
-        // Atualizando o estado com a nova vaga
-        setVagas(novaVaga); // Agora chama a função que atualiza e salva no localStorage
+        // Resetar o estado de erros
+        setClassError([]);
 
-        // Limpar o formulário
-        setTitulo('');
-        setDescricao('');
-        setDataAbertura('');
-        setDataEncerramento('');
-        setSalario('');
-
-        navegar('/vagas')
+        console.log(candidato)
     };
 
     return (
-    <Container>
-        <h3>Habilidades</h3>
-        <form onSubmit={handleSubmit}>
-            <CampoTexto 
-                camposVazios={classError}
-                name="titulo" 
-                valor={titulo} 
-                setValor={setTitulo} 
-                type="text" 
-                label="Título" 
-                placeholder="Digite o titulo" />
+        <Container>
+            <h3>Habilidades</h3>
+            <form onSubmit={handleSubmit}>
+                {habilidades.map((habilidade) => (
+                    <div
+                        key={habilidade.id}
+                        style={{
+                            marginBottom: '20px',
+                            padding: '15px',
+                            borderRadius: '5px'
+                        }}
+                    >
 
-            <CampoTexto 
-                camposVazios={classError}
-                name="descricao" 
-                valor={descricao} 
-                setValor={setDescricao} 
-                type="text" 
-                label="Descrição" 
-                placeholder="Digite a descrição" />
-                
-            <CampoTexto 
-                type="date" 
-                valor={dataAbertura} 
-                setValor={setDataAbertura}
-                label="Data de Encerramento"  />
+                        <CampoTexto
+                            camposVazios={classError}
+                            name={`descricao-${habilidade.id}`}
+                            valor={habilidade.descricao}
+                            setValor={(valor) => atualizarCampoHabilidades(habilidade.id, 'descricao', valor)}
+                            type="text"
+                            label="Descrição"
+                            placeholder="Ex: css"
+                        />
 
-            <CampoTexto 
-                type="date" 
-                valor={dataEncerramento} 
-                setValor={setDataEncerramento}
-                label="Data de Encerramento" 
-                placeholder="Selecione a data" />
-                
-            <CampoTexto 
-                camposVazios={classError}
-                name="salario" 
-                valor={salario} 
-                setValor={setSalario} 
-                type="number" 
-                label="Salário" 
-                placeholder="Digite o salário" />
+                        <CampoTexto
+                            camposVazios={classError}
+                            name={`nivel-${habilidade.id}`}
+                            valor={habilidade.nivel}
+                            setValor={(valor) => atualizarCampoHabilidades(habilidade.id, 'nivel', valor)}
+                            type="text"
+                            label="Nível de Habilidade"
+                            placeholder="Ex: avançado"
+                        />
 
-            <Botao type="submit">Registrar Vaga</Botao>
-        </form>
+                        {habilidade.id &&
+                            <Botao
+                                type="button"
+                                aoClicar={() => removerHabilidade(habilidade.id)}
+                                style={{ marginTop: '10px' }}>
+                                <FaMinusCircle size="16" fill="white" />
+                            </Botao>
+                        }
+                    </div>
+                ))}
+
+                <Botao aoClicar={adicionarHabilidade} style={{ marginTop: '20px' }}>
+                   <FaPlusCircle size="16" fill="white"/>
+                </Botao>
+
+                <br/>
+
+                <Botao onClick={setCandidatoHabilidades} type="submit" style={{ marginTop: '20px' }}>
+                    Finalizar Registro
+                </Botao>
+            </form>
         </Container>
     );
 };
