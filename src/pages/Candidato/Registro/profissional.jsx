@@ -19,7 +19,8 @@ const CandidatoRegistroProfissional = () => {
     
     useEffect(() => {
         if ((context) && (!candidato)) {
-            setCandidato(context);
+            setCandidato(context)
+            setExperiencia(context.experiencia)
         }
     }, [context]);
     

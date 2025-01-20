@@ -20,6 +20,7 @@ const CandidatoRegistroHabilidades = () => {
     useEffect(() => {
         if ((context) && (!candidato)) {
             setCandidato(context)
+            setHabilidades(context.habilidades)
         }
     }, [context])
     

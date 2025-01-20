@@ -1,20 +1,33 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useVagasContext } from '@contexts/VagasContext';
 import CampoTexto from '@components/CampoTexto';
+import ContainerHorizontal from "@components/ContainerHorizontal"
+import Texto from "@components/Texto"
 import Container from '@components/Container';
+import { FaTrash } from "react-icons/fa";
 import Loading from '@components/Loading'
 import Botao from '@components/Botao';
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
+import { useOutletContext } from 'react-router-dom';
 
 const CandidatoRegistroArquivos = () => {
     const [classError, setClassError] = useState([]);
     const { vagas, setVagas } = useVagasContext();
 
+    const context = useOutletContext();
     const [loading, setLoading] = useState(false)
     const [planilha, setPlanilha] = useState(null)
+    const [candidato, setCandidato] = useState(null)
     const [arquivos, setArquivos] = useState([
         { id: 1, caminho: null, nome: '', isLocked: false },
     ]);
+
+    useEffect(() => {
+        if ((context) && (!candidato)) {
+            setCandidato(context)
+            setArquivos(context.arquivos)
+        }
+    }, [context])
     
     const ref = useRef(planilha)
 
@@ -93,11 +106,16 @@ const CandidatoRegistroArquivos = () => {
                             opacity: arquivo.isLocked ? 0.5 : 1, // Aplica um estilo para campos bloqueados
                         }}
                     >
+                            {arquivo && arquivo.nome &&
+                                <ContainerHorizontal>
+                                    <Texto>{arquivo?.nome}</Texto>
+                                    <FaTrash style={{cursor: 'pointer'}} onClick={() => setPlanilha(null)} />
+                                </ContainerHorizontal>
+                            }
                             <CampoTexto
                                 label="Arquivo"
                                 type="file"
                                 reference={ref}
-                                valor={arquivo.caminho}
                                 name={`arquivo-${arquivo.id}`}
                                 setValor={(e) => !arquivo.isLocked && atualizarCampoArquivo(arquivo.id, 'caminho', e.target.files[0])}
                                 disabled={arquivo.isLocked}

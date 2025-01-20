@@ -13,7 +13,7 @@
                 "id": 1,
                 "nome": "João Silva",
                 "email": "",
-                "cpf": "",
+                "cpf": "470.016.728-90",
                 "statusDePreenchimento": "Em Análise",
                 "statusDeCandidato": "Aprovado",
                 "endereco": {
@@ -27,7 +27,13 @@
                 },
                 "educacao": [],
                 "experiencia" : [],
-                "habilidades": [],
+                "habilidades": [
+                    {
+                        "id": 1,
+                        "nivel": "Avançado",
+                        "descricao": "CSS"
+                    }
+                ],
                 "arquivos": [
                 {
                     "id": 1,

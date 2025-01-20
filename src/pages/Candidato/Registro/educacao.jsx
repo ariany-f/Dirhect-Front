@@ -20,6 +20,7 @@ const CandidatoRegistroEducacao = () => {
     useEffect(() => {
         if ((context) && (!candidato)) {
             setCandidato(context)
+            setEducacao(context.educacao)
         }
     }, [context])
     
