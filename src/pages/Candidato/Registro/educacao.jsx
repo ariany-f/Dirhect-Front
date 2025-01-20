@@ -1,102 +1,164 @@
-import React, { useState } from 'react';
-import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import CampoTexto from '@components/CampoTexto'; // Importando o componente CampoTexto
-import BotaoVoltar from '@components/BotaoVoltar'; // Importando o componente CampoTexto
-import Container from '@components/Container'; // Importando o componente Container
-import Botao from '@components/Botao'; // Importando o componente Container
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useVagasContext } from '@contexts/VagasContext';
+import CampoTexto from '@components/CampoTexto';
+import Container from '@components/Container';
+import Botao from '@components/Botao';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { FaPlusCircle } from 'react-icons/fa';
 
 const CandidatoRegistroEducacao = () => {
-    const [classError, setClassError] = useState([])
-      
-    const { 
-        vagas,
-        setVagas
-    } = useVagasContext()
-
+    const [classError, setClassError] = useState([]);
+    const { vagas, setVagas } = useVagasContext();
+    const context = useOutletContext();
+    const [candidato, setCandidato] = useState(null)
     const navegar = useNavigate()
 
-    const [titulo, setTitulo] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [dataAbertura, setDataAbertura] = useState('');
-    const [dataEncerramento, setDataEncerramento] = useState('');
-    const [salario, setSalario] = useState('');
-    const [selectedDate, setSelectedDate] = useState(1)
+    const [educacao, setEducacao] = useState([
+        { id: 1, nivel: '', instituicao: '', curso: '', dataInicio: '', dataConclusao: '', isLocked: false },
+    ]);
+    
+    useEffect(() => {
+        if ((context) && (!candidato)) {
+            setCandidato(context)
+        }
+    }, [context])
+    
+    const setCandidatoEducacao = () => {
+        setCandidato((estadoAnterior) => ({
+            ...estadoAnterior,
+            educacao
+        }));
+    };
+
+    // Atualiza os valores de uma educação específica
+    const atualizarCampoEducacao = (id, campo, valor) => {
+        setEducacao((prev) =>
+            prev.map((educacao) =>
+                educacao.id === id ? { ...educacao, [campo]: valor } : educacao
+            )
+        );
+    };
+
+    // Remove uma educação específica
+    const removerEducacao = (id) => {
+        setEducacao((prev) => prev.filter((educacao) => educacao.id !== id));
+    };
+
+    // Função para adicionar um novo grupo de campos de educação
+    const adicionarEducacao = () => {
+        const novaEducacao = {
+            id: educacao.length + 1,
+            nivel: '',
+            instituicao: '',
+            curso: '',
+            dataInicio: '',
+            dataConclusao: '',
+        };
+        setEducacao([...educacao, novaEducacao]);
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Verificação de segurança para garantir que vagas e vagas.abertas estão definidos
-        const id = (vagas && vagas.abertas) ? vagas.abertas.length + 1 : 1; // Se não estiver definido, inicia com 1
+        setCandidatoEducacao()
 
-        const novaVaga = {
-            id, // Usando o ID gerado
-            titulo,
-            descricao,
-            dataAbertura,
-            dataEncerramento,
-            salario: parseFloat(salario), // Convertendo para número
-        };
+        if (!candidato) {
+            alert('Erro: Nenhum candidato selecionado.');
+            return;
+        }
 
-        // Atualizando o estado com a nova vaga
-        setVagas(novaVaga); // Agora chama a função que atualiza e salva no localStorage
+        // Resetar o estado de erros
+        setClassError([]);
 
-        // Limpar o formulário
-        setTitulo('');
-        setDescricao('');
-        setDataAbertura('');
-        setDataEncerramento('');
-        setSalario('');
-
-        navegar('/vagas')
+        console.log(candidato)
     };
 
     return (
-    <Container>
-        <h3>Educação</h3>
-        <form onSubmit={handleSubmit}>
-            <CampoTexto 
-                camposVazios={classError}
-                name="titulo" 
-                valor={titulo} 
-                setValor={setTitulo} 
-                type="text" 
-                label="Título" 
-                placeholder="Digite o titulo" />
+        <Container>
+            <h3>Educação</h3>
+            <form onSubmit={handleSubmit}>
+                {educacao.map((educacao) => (
+                    <div
+                        key={educacao.id}
+                        style={{
+                            marginBottom: '20px',
+                            padding: '15px',
+                            borderRadius: '5px',
+                            opacity: educacao.isLocked ? 0.5 : 1, // Aplica um estilo para campos bloqueados
+                        }}
+                    >
+                        <CampoTexto
+                            camposVazios={classError}
+                            name={`nivel-${educacao.id}`}
+                            valor={educacao.nivel}
+                            setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'nivel', valor)}
+                            type="text"
+                            label="Nível de Educação"
+                            placeholder="Ex: Ensino Médio, Faculdade"
+                            disabled={educacao.isLocked} // Desabilita os campos se estiver bloqueado
+                        />
 
-            <CampoTexto 
-                camposVazios={classError}
-                name="descricao" 
-                valor={descricao} 
-                setValor={setDescricao} 
-                type="text" 
-                label="Descrição" 
-                placeholder="Digite a descrição" />
-                
-            <CampoTexto 
-                type="date" 
-                valor={dataAbertura} 
-                setValor={setDataAbertura}
-                label="Data de Encerramento"  />
+                        <CampoTexto
+                            camposVazios={classError}
+                            name={`instituicao-${educacao.id}`}
+                            valor={educacao.instituicao}
+                            setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'instituicao', valor)}
+                            type="text"
+                            label="Instituição"
+                            placeholder="Ex: Nome da escola ou universidade"
+                            disabled={educacao.isLocked}
+                        />
 
-            <CampoTexto 
-                type="date" 
-                valor={dataEncerramento} 
-                setValor={setDataEncerramento}
-                label="Data de Encerramento" 
-                placeholder="Selecione a data" />
-                
-            <CampoTexto 
-                camposVazios={classError}
-                name="salario" 
-                valor={salario} 
-                setValor={setSalario} 
-                type="number" 
-                label="Salário" 
-                placeholder="Digite o salário" />
+                        <CampoTexto
+                            camposVazios={classError}
+                            name={`curso-${educacao.id}`}
+                            valor={educacao.curso}
+                            setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'curso', valor)}
+                            type="text"
+                            label="Curso"
+                            placeholder="Ex: Engenharia, Administração"
+                            disabled={educacao.isLocked}
+                        />
 
-            <Botao type="submit">Registrar Vaga</Botao>
-        </form>
+                        <CampoTexto
+                            name={`dataInicio-${educacao.id}`}
+                            valor={educacao.dataInicio}
+                            setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'dataInicio', valor)}
+                            type="date"
+                            label="Data de Início"
+                            disabled={educacao.isLocked}
+                        />
+
+                        <CampoTexto
+                            name={`dataConclusao-${educacao.id}`}
+                            valor={educacao.dataConclusao}
+                            setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'dataConclusao', valor)}
+                            type="date"
+                            label="Data de Conclusão"
+                            disabled={educacao.isLocked}
+                        />
+
+                        {educacao.id && !educacao.isLocked &&
+                            <Botao
+                                type="button"
+                                onClick={() => removerEducacao(educacao.id)}
+                                style={{ marginTop: '10px' }}>
+                                Remover Educação
+                            </Botao>
+                        }
+                    </div>
+                ))}
+
+                <Botao aoClicar={adicionarEducacao} style={{ marginTop: '20px' }}>
+                   <FaPlusCircle size="16" fill="white"/>
+                </Botao>
+
+                <br/>
+
+                <Botao onClick={setCandidatoEducacao} type="submit" style={{ marginTop: '20px' }}>
+                    Finalizar Registro
+                </Botao>
+            </form>
         </Container>
     );
 };
