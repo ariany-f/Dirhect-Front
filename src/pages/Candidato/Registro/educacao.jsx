@@ -157,7 +157,7 @@ const CandidatoRegistroEducacao = () => {
                 <br/>
 
                 <Botao onClick={setCandidatoEducacao} type="submit" style={{ marginTop: '20px' }}>
-                    Finalizar Registro
+                    Salvar
                 </Botao>
             </form>
         </Container>

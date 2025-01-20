@@ -123,7 +123,7 @@ const CandidatoRegistroHabilidades = () => {
                 <br/>
 
                 <Botao onClick={setCandidatoHabilidades} type="submit" style={{ marginTop: '20px' }}>
-                    Finalizar Registro
+                    Salvar
                 </Botao>
             </form>
         </Container>
