@@ -4,7 +4,7 @@ import CampoTexto from '@components/CampoTexto';
 import Container from '@components/Container';
 import Botao from '@components/Botao';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { FaPlusCircle } from 'react-icons/fa';
+import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 
 const CandidatoRegistroEducacao = () => {
     const [classError, setClassError] = useState([]);
@@ -141,9 +141,9 @@ const CandidatoRegistroEducacao = () => {
                         {educacao.id && !educacao.isLocked &&
                             <Botao
                                 type="button"
-                                onClick={() => removerEducacao(educacao.id)}
+                                aoClicar={() => removerEducacao(educacao.id)}
                                 style={{ marginTop: '10px' }}>
-                                Remover Educação
+                                <FaMinusCircle size="16" fill="white" />
                             </Botao>
                         }
                     </div>
