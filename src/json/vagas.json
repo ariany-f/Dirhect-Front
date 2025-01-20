@@ -26,14 +26,17 @@
                     "state": ""
                 },
                 "educacao": [],
+                "experiencia" : [],
                 "habilidades": [],
                 "arquivos": [
                 {
+                    "id": 1,
                     "nome": "RG",
                     "caminho": "",
                     "status": "Pendente"
                 },
                 {
+                    "id": 2,
                     "nome": "Comprovante de Residência",
                     "caminho": "/documentos/comprovante_residencia.pdf",
                     "status": "Anexado"
@@ -58,14 +61,17 @@
                     "state": ""
                 },
                 "educacao": [],
+                "experiencia" : [],
                 "habilidades": [],
                 "arquivos": [
                     {
+                        "id": 1,
                         "nome": "RG",
                         "caminho": "",
                         "status": "Anexado"
                     },
                     {
+                        "id": 2,
                         "nome": "Comprovante de Residência",
                         "caminho": "",
                         "status": "Anexado"
@@ -90,14 +96,17 @@
                     "state": ""
                 },
                 "educacao": [],
+                "experiencia" : [],
                 "habilidades": [],
                 "arquivos": [
                     {
+                        "id": 1,
                         "nome": "RG",
                         "caminho": "",
                         "status": ""
                     },
                     {
+                        "id": 2,
                         "nome": "Comprovante de Residência",
                         "caminho": "",
                         "status": ""
@@ -132,14 +141,17 @@
                     "state": ""
                 },
                 "educacao": [],
+                "experiencia" : [],
                 "habilidades": [],
                 "arquivos": [
                 {
+                    "id": 1,
                     "nome": "RG",
                     "caminho": "",
                     "status": "Pendente"
                 },
                 {
+                    "id": 2,
                     "nome": "Comprovante de Residência",
                     "caminho": "/documentos/comprovante_residencia.pdf",
                     "status": "Anexado"
@@ -164,18 +176,21 @@
                     "state": ""
                 },
                 "educacao": [],
+                "experiencia" : [],
                 "habilidades": [],
                 "arquivos": [
-                {
-                    "nome": "RG",
-                    "caminho": "",
-                    "status": "Pendente"
-                },
-                {
-                    "nome": "Comprovante de Residência",
-                    "caminho": "/documentos/comprovante_residencia.pdf",
-                    "status": "Anexado"
-                }
+                    {
+                        "id": 1,
+                        "nome": "RG",
+                        "caminho": "",
+                        "status": "Pendente"
+                    },
+                    {
+                        "id": 2,
+                        "nome": "Comprovante de Residência",
+                        "caminho": "/documentos/comprovante_residencia.pdf",
+                        "status": "Anexado"
+                    }
                 ],
                 "dataDevolucao": "2023-03-01"
             }

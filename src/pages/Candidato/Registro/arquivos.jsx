@@ -1,102 +1,140 @@
-import React, { useState } from 'react';
-import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import CampoTexto from '@components/CampoTexto'; // Importando o componente CampoTexto
-import BotaoVoltar from '@components/BotaoVoltar'; // Importando o componente CampoTexto
-import Container from '@components/Container'; // Importando o componente Container
-import Botao from '@components/Botao'; // Importando o componente Container
-import { useNavigate } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { useVagasContext } from '@contexts/VagasContext';
+import CampoTexto from '@components/CampoTexto';
+import Container from '@components/Container';
+import Loading from '@components/Loading'
+import Botao from '@components/Botao';
+import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 
 const CandidatoRegistroArquivos = () => {
-    const [classError, setClassError] = useState([])
-      
-    const { 
-        vagas,
-        setVagas
-    } = useVagasContext()
+    const [classError, setClassError] = useState([]);
+    const { vagas, setVagas } = useVagasContext();
 
-    const navegar = useNavigate()
+    const [loading, setLoading] = useState(false)
+    const [planilha, setPlanilha] = useState(null)
+    const [arquivos, setArquivos] = useState([
+        { id: 1, caminho: null, nome: '', isLocked: false },
+    ]);
+    
+    const ref = useRef(planilha)
 
-    const [titulo, setTitulo] = useState('');
-    const [descricao, setDescricao] = useState('');
-    const [dataAbertura, setDataAbertura] = useState('');
-    const [dataEncerramento, setDataEncerramento] = useState('');
-    const [salario, setSalario] = useState('');
-    const [selectedDate, setSelectedDate] = useState(1)
+    const submeterPlanilha = () => {
+        
+        if(planilha)
+        {
+            setLoading(true)
+            const body = new FormData();
+            body.append('spreadsheet', planilha);
+        
+            http.post('api/dashboard/collaborator/import', body)
+            .then((response) => {
+                
+                setLoading(false)
+                return response
+            })
+            .catch(erro => {
+                setLoading(false)
+                return erro.response.data
+            })
+        }
+        else
+        {
+            ref.current.value = null
+            ref.current.click()
+        }
+    }
 
+    // Função para atualizar o campo de arquivo
+    const atualizarCampoArquivo = (id, campo, valor) => {
+        setArquivos((prev) =>
+            prev.map((arquivo) =>
+                arquivo.id === id ? { ...arquivo, [campo]: valor } : arquivo
+            )
+        );
+    };
+
+    // Remove um arquivo específico
+    const removerArquivo = (id) => {
+        setArquivos((prev) => prev.filter((arquivo) => arquivo.id !== id));
+    };
+
+    // Função para adicionar um novo campo de anexo
+    const adicionarArquivo = () => {
+        const novoArquivo = {
+            id: arquivos.length + 1,
+            caminho: null,
+            nome: '',
+        };
+        setArquivos([...arquivos, novoArquivo]);
+    };
+
+    // Função para tratar o envio do formulário
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Verificação de segurança para garantir que vagas e vagas.abertas estão definidos
-        const id = (vagas && vagas.abertas) ? vagas.abertas.length + 1 : 1; // Se não estiver definido, inicia com 1
+        // Resetar o estado de erros
+        setClassError([]);
 
-        const novaVaga = {
-            id, // Usando o ID gerado
-            titulo,
-            descricao,
-            dataAbertura,
-            dataEncerramento,
-            salario: parseFloat(salario), // Convertendo para número
-        };
-
-        // Atualizando o estado com a nova vaga
-        setVagas(novaVaga); // Agora chama a função que atualiza e salva no localStorage
-
-        // Limpar o formulário
-        setTitulo('');
-        setDescricao('');
-        setDataAbertura('');
-        setDataEncerramento('');
-        setSalario('');
-
-        navegar('/vagas')
+        console.log('Arquivos enviados:', arquivos);
     };
 
     return (
-    <Container>
-        <h3>Anexos</h3>
-        <form onSubmit={handleSubmit}>
-            <CampoTexto 
-                camposVazios={classError}
-                name="titulo" 
-                valor={titulo} 
-                setValor={setTitulo} 
-                type="text" 
-                label="Título" 
-                placeholder="Digite o titulo" />
+        <Container>
+            <Loading opened={loading} />
+            <h3>Arquivos</h3>
+            <form onSubmit={handleSubmit}>
+                {arquivos.map((arquivo) => (
+                    <div
+                        key={arquivo.id}
+                        style={{
+                            marginBottom: '20px',
+                            padding: '15px',
+                            borderRadius: '5px',
+                            opacity: arquivo.isLocked ? 0.5 : 1, // Aplica um estilo para campos bloqueados
+                        }}
+                    >
+                            <CampoTexto
+                                label="Arquivo"
+                                type="file"
+                                reference={ref}
+                                valor={arquivo.caminho}
+                                name={`arquivo-${arquivo.id}`}
+                                setValor={(e) => !arquivo.isLocked && atualizarCampoArquivo(arquivo.id, 'caminho', e.target.files[0])}
+                                disabled={arquivo.isLocked}
+                            />
+                            <Botao aoClicar={submeterPlanilha} estilo="vermilion" size="medium" filled>{!arquivo.caminho ? 'Selecionar' : 'Enviar'} arquivo</Botao>
+                            <br/>
+                            <CampoTexto
+                                label="Nome do Arquivo"
+                                type="text"
+                                valor={arquivo.nome}
+                                setValor={(e) => !arquivo.isLocked && atualizarCampoArquivo(arquivo.id, 'nome', e.target.value)}
+                                disabled={arquivo.isLocked}
+                                placeholder="Ex: Curriculum, Certificado"
+                            />
 
-            <CampoTexto 
-                camposVazios={classError}
-                name="descricao" 
-                valor={descricao} 
-                setValor={setDescricao} 
-                type="text" 
-                label="Descrição" 
-                placeholder="Digite a descrição" />
-                
-            <CampoTexto 
-                type="date" 
-                valor={dataAbertura} 
-                setValor={setDataAbertura}
-                label="Data de Encerramento"  />
+                        {arquivo.id && !arquivo.isLocked && (
+                            <Botao
+                                type="button"
+                                aoClicar={() => removerArquivo(arquivo.id)}
+                                style={{ marginTop: '10px' }}
+                            >
+                                <FaMinusCircle size="16" fill="white" />
+                            </Botao>
+                        )}
+                    </div>
+                ))}
 
-            <CampoTexto 
-                type="date" 
-                valor={dataEncerramento} 
-                setValor={setDataEncerramento}
-                label="Data de Encerramento" 
-                placeholder="Selecione a data" />
-                
-            <CampoTexto 
-                camposVazios={classError}
-                name="salario" 
-                valor={salario} 
-                setValor={setSalario} 
-                type="number" 
-                label="Salário" 
-                placeholder="Digite o salário" />
+                <Botao aoClicar={adicionarArquivo} style={{ marginTop: '20px' }}>
+                    <FaPlusCircle size="16" fill="white" />
+                </Botao>
 
-            <Botao type="submit">Registrar Vaga</Botao>
-        </form>
+                <br />
+
+                <Botao type="submit" style={{ marginTop: '20px' }}>
+                    Finalizar Registro
+                </Botao>
+            </form>
         </Container>
     );
 };
