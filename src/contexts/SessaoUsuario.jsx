@@ -78,7 +78,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const publicIdSalvo = sessionStorage.getItem('public_id');
         const tipoSalvo = sessionStorage.getItem('tipo');
         const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
-    
+        
         usuarioSalvo = {
             cpf: cpfSalvo ?? '',
             email: emailSalvo ?? '',

@@ -31,6 +31,7 @@ function Login() {
         setCpf,
         setTipo,
         setPassword,
+        setName,
     } = useSessaoUsuarioContext()
 
     useEffect(() =>{
@@ -62,6 +63,7 @@ function Login() {
             setCpf(usuario.cpf);
             setPassword(usuario.password);
             setTipo(perfilEncontrado.tipo);
+            setName(perfilEncontrado.name);
              // Adicionando o tipo de usuário ao objeto usuario
             ArmazenadorToken.definirUsuario(
                 perfilEncontrado.name,
