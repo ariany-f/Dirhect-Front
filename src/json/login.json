@@ -18,7 +18,7 @@
       "email": "candidato@example.com",
       "senha": "123",
       "cpf": "987.654.321-00",
-      "name": "João Silva",
+      "name": "Candidato João Silva",
       "public_id": "candidato-001",
       "empresas": [
         "8fa184ff-503f-4d15-a1c0-610eb7db905b"
@@ -30,7 +30,7 @@
       "email": "candidato@examples.com",
       "senha": "123",
       "cpf": "417.790.328-03",
-      "name": "Maria",
+      "name": "Candidata Maria",
       "public_id": "candidato-001",
       "empresas": [
         "8fa184ff-503f-4d15-a1c0-610eb7db905b"
