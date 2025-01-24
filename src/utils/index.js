@@ -40,7 +40,10 @@ export class ArmazenadorToken {
         }
     }
     static removerToken() {
-        return sessionStorage.clear()
+        
+        sessionStorage.removeItem(ACCESS_TOKEN)
+        sessionStorage.removeItem(EXPIRATION)
+        return true;
     }
     static get AccessToken() {
         try {
