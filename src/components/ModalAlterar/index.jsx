@@ -110,19 +110,19 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, dadoAntigo }) {
         /** Preenche dropdown de estados */
         if(!estados.length)
         {
-            // http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-            // .then(response => {
-            //         response.map((item) => {
-            //             let obj = {
-            //                 name: item.nome,
-            //                 code: item.sigla
-            //             }
-            //             if(!estados.includes(obj))
-            //             {
-            //                 setEstados(estadoAnterior => [...estadoAnterior, obj]);
-            //             }
-            //         })
-            //     })
+            http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+            .then(response => {
+                    response.map((item) => {
+                        let obj = {
+                            name: item.nome,
+                            code: item.sigla
+                        }
+                        if(!estados.includes(obj))
+                        {
+                            setEstados(estadoAnterior => [...estadoAnterior, obj]);
+                        }
+                    })
+                })
         }
     }, [dadoAntigo, alteravel, estados])
     

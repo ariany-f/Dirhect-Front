@@ -1,6 +1,7 @@
 import Texto from "@components/Texto"
 import Botao from "@components/Botao"
 import CampoTexto from "@components/CampoTexto"
+import DropdownItens from "@components/DropdownItens"
 import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
@@ -20,6 +21,7 @@ function Login() {
     const [loading, setLoading] = useState(false)
     const navegar = useNavigate()
     const toast = useRef(null)
+    const [logins, setLogins] = useState([])
 
     const { 
         usuario,
@@ -36,7 +38,18 @@ function Login() {
         {
             setUsuarioEstaLogado(false)
         }
-    })
+
+        if (logins.length < loginData.perfis.length) {
+            setLogins((estadoAnterior) => {
+                const novosLogins = loginData.perfis.map((item) => ({
+                    name: item.name,
+                    code: item.cpf
+                }));
+                return [...estadoAnterior, ...novosLogins];
+            });
+        }
+
+    }, [logins])
 
     const AlreadyAccessed = () => {
         const perfilEncontrado = loginData.perfis.find(perfil => 
@@ -86,7 +99,7 @@ function Login() {
             </Titulo>
             <form>
                 <Frame>
-                    <CampoTexto camposVazios={classError} patternMask={['999.999.999-99', '99.999.999/9999-99']} name="cpf" valor={usuario.cpf} setValor={setCpf} type="text" label="CPF/CNPJ" placeholder="Digite seu CPF/CNPJ" />
+                    <DropdownItens camposVazios={classError} valor={usuario.cpf} setValor={setCpf} options={logins} label="CPF" name="cpf" placeholder="CPF"/>
                     <CampoTexto camposVazios={classError} onEnter={evento => AlreadyAccessed()} name="password" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
                     <div className={styles.containerBottom}>
                         <CheckboxContainer name="remember" valor={usuario.remember} setValor={setRemember} label="Lembrar de mim" />
