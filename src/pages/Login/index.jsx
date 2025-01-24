@@ -99,7 +99,7 @@ function Login() {
             </Titulo>
             <form>
                 <Frame>
-                    <DropdownItens camposVazios={classError} valor={usuario.cpf} setValor={setCpf} options={logins} label="CPF" name="cpf" placeholder="CPF"/>
+                    <DropdownItens camposVazios={classError} valor={usuario.cpf} setValor={setCpf} options={logins} label="Usuário" name="cpf" placeholder="Usuário"/>
                     <CampoTexto camposVazios={classError} onEnter={evento => AlreadyAccessed()} name="password" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
                     <div className={styles.containerBottom}>
                         <CheckboxContainer name="remember" valor={usuario.remember} setValor={setRemember} label="Lembrar de mim" />
