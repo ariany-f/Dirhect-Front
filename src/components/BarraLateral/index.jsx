@@ -130,13 +130,13 @@ function BarraLateral() {
                     {
                         "id": 6,
                         "url": "/colaborador",
-                        "pageTitulo": "Funcionários",
+                        "pageTitulo": "Colaboradores",
                         "icone": <BiSolidDashboard size={20} className="icon" />,
-                        "itemTitulo": "Funcionários"
+                        "itemTitulo": "Colaboradores"
                     },
                     {
                         "id": 7,
-                        "url": "/saldo-livre",
+                        "url": "/dependentes",
                         "pageTitulo": "Dependentes",
                         "icone": <RiHandCoinFill size={20} className="icon" />,
                         "itemTitulo": "Dependentes"

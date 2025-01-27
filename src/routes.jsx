@@ -104,6 +104,9 @@ import DetalhesAdmissao from './pages/Admissoes/detalhes'
 import FiliaisLista from './pages/Departamentos/filiais'
 import CargosLista from './pages/Departamentos/cargos'
 import SecoesLista from './pages/Departamentos/secoes'
+import ColaboradorDependentes from './pages/Colaboradores/Detalhes/dependentes'
+import Dependentes from './pages/Dependentes'
+import DependentesListagem from './pages/Dependentes/lista'
 
 function AppRouter() {
   
@@ -138,6 +141,7 @@ function AppRouter() {
                   <Route index element={<ColaboradorDadosPessoais />} />
                   <Route path="cartoes" element={<ColaboradorCartoes />} />
                   <Route path="saldo" element={<ColaboradorSaldo />} />
+                  <Route path="dependentes" element={<ColaboradorDependentes />} />
                   <Route path="carteiras" element={<ColaboradorCarteiras />} />
               </Route>
               <Route path="colaborador/registro" element={<ColaboradorRegistro />} >
@@ -185,6 +189,16 @@ function AppRouter() {
                 <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
                 <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
               </Route>
+            
+            <Route path="dependentes" element={<Dependentes/>}>
+              <Route index element={<DependentesListagem />} />
+              <Route path="adicionar-detalhes" element={<PremiacaoDetalhes />} />
+              <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
+              <Route path="selecao-tipo-recarga" element={<PremiacaoSelecionarTipoRecarga />} />
+              <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
+              <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
+              <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
+            </Route>
               
               {/* <Route path="despesa" element={<Despesas />} />
               <Route path="despesa/adiantar-saldo" element={<DespesaAdiantarSaldo />} />
