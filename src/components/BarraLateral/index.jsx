@@ -144,9 +144,9 @@ function BarraLateral() {
                     {
                         "id": 8,
                         "url": "/beneficio",
-                        "pageTitulo": "Tipos",
+                        "pageTitulo": "Tipos de Benefícios",
                         "icone": <RiFileListFill size={20} className="icon" />,
-                        "itemTitulo": "Tipos"
+                        "itemTitulo": "Tipos de Benefícios"
                     },
                     {
                         "id": 9,
