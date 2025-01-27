@@ -18,7 +18,7 @@ function PrimeiroAcessoCommon() {
                     <PrimeiroAcessoProvider>
                         <MainContainer>
                             <Outlet/>
-                            <PrecisoDeAjuda/>
+                            {/* <PrecisoDeAjuda/> */}
                         </MainContainer>
                     </PrimeiroAcessoProvider>
                     <RodapePublico />

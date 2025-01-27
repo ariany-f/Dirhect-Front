@@ -20,7 +20,7 @@ function Publico() {
                 <RightContainer>
                     <MainContainer>
                         <Outlet />
-                        <PrecisoDeAjuda/>
+                        {/* <PrecisoDeAjuda/> */}
                     </MainContainer>
                     <RodapePublico />
                 </RightContainer>

@@ -149,7 +149,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             <h6>{titulo}</h6>
             <RightItems>
                 <div className={styles.divisor}>
-                    <PrecisoDeAjuda />
+                    {/* <PrecisoDeAjuda /> */}
                     {/* <RiNotificationLine size={18} className={styles.icon} /> */}
                 </div>
                 <div className={styles.divisor}>
