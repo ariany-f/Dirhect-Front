@@ -13,11 +13,12 @@ import { RiEditBoxFill } from 'react-icons/ri'
 import { Toast } from 'primereact/toast'
 import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
 import ModalAlterarEmail from '@components/ModalAlterar/email'
+import collaborators from '@json/colaboradores.json'
 
 function ColaboradorDadosPessoais() {
 
     let { id } = useParams()
-    const [colaborador, setColaborador] = useState({})
+    const [colaborador, setColaborador] = useState([])
     const [modalTelefoneOpened, setModalTelefoneOpened] = useState(false)
     const [modalEmailOpened, setModalEmailOpened] = useState(false)
     const toast = useRef(null)
@@ -28,14 +29,12 @@ function ColaboradorDadosPessoais() {
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
-        // http.get(`api/collaborator/show/${id}`)
-        //     .then(response => {
-        //         if (response.success) {
-        //             setColaborador(response.data)
-        //         }
-        //     })
-        //     .catch(erro => console.log(erro))
-    }, [modalTelefoneOpened, modalEmailOpened])
+        if(colaborador.length == 0)
+        {
+            const filtered = collaborators.filter(collaborator => collaborator.public_id === id);
+            setColaborador(filtered[0]);
+        }
+    }, [])
 
     function editarEmail(email) {
       

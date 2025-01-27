@@ -14,12 +14,13 @@ import http from '@http'
 import { useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
+import collaborators from '@json/colaboradores.json'
 
 function ColaboradorDetalhes() {
 
     let { id } = useParams()
     const location = useLocation();
-    const [colaborador, setColaborador] = useState({})
+    const [colaborador, setColaborador] = useState([])
     const navegar = useNavigate()
     const toast = useRef(null)
 
@@ -29,6 +30,13 @@ function ColaboradorDetalhes() {
     })
 
     useEffect(() => {
+
+        if(colaborador.length == 0)
+        {
+            const filtered = collaborators.filter(collaborator => collaborator.public_id === id);
+            setColaborador(filtered[0]);
+        }
+
         // http.get(`api/collaborator/show/${id}`)
         //     .then(response => {
         //         if(response.success)
