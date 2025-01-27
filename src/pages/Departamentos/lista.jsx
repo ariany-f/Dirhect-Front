@@ -41,7 +41,7 @@ function DepartamentoLista() {
             setDepartamento()
             setDescription('')
             setNome(nome)
-            navegar('/departamento/adicionar-colaboradores')
+            navegar('/estrutura/adicionar-colaboradores')
     }
 
     useEffect(() => {
@@ -70,12 +70,15 @@ function DepartamentoLista() {
             <Loading opened={loading} />
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
-                    <Link to="/departamento">
+                    <Link to="/estrutura/filiais">
+                        <Botao estilo={''} size="small" tab>Filiais</Botao>
+                    </Link>
+                    <Link to="/estrutura">
                         <Botao estilo={'black'} size="small" tab>Departamentos</Botao>
                     </Link>
-                    {/* <Link to="/departamento/lista/colaboradores-sem-departamento">
-                        <Botao estilo={''} size="small" tab>Colaboradores sem departamento</Botao>
-                    </Link> */}
+                    <Link to="/estrutura/secoes">
+                        <Botao estilo={''} size="small" tab>Seções</Botao>
+                    </Link>
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
             </BotaoGrupo>

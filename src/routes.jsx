@@ -159,7 +159,7 @@ function AppRouter() {
                 <Route path="adicionar-saldo/pagamento/:id" element={<ExtratoPagamento />} />
               </Route>
             
-              <Route path="departamento" element={<Departamentos />} >
+              <Route path="estrutura" element={<Departamentos />} >
                 <Route index element={<DepartamentoLista />} />
                 <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
                 <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />

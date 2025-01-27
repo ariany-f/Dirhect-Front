@@ -43,7 +43,7 @@ function DataTableDepartamentos({ departamentos }) {
     function verDetalhes(value)
     {
         setSelectedDepartamento(value.public_id)
-        navegar(`/departamento/detalhes/${value.public_id}`)
+        navegar(`/estrutura/detalhes/${value.public_id}`)
     }
 
     const representativeBodyTemplate = (rowData) => {

@@ -97,8 +97,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         },
         {
             "id": 4,
-            "url": "departamento",
-            "pageTitulo": "Departamentos"
+            "url": "estrutura",
+            "pageTitulo": "Estrutura Organizacional"
         },
         {
             "id": 5,

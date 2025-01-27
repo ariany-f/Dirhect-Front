@@ -78,7 +78,7 @@ function PremiacaoSelecionarTipoRecarga() {
                             </Frame>
                             <BotaoSemBorda>
                                 <FaPencilAlt />
-                                <Link to={'/departamento'}>Configurar meus departamentos</Link>
+                                <Link to={'/estrutura'}>Configurar meus departamentos</Link>
                             </BotaoSemBorda>
                         </Frame>
                         <Botao aoClicar={() => navegar('/saldo-livre/selecao-departamentos')} size="medium">Recarregar por departamento</Botao>

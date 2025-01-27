@@ -78,7 +78,7 @@ function BeneficioSelecionarTipoRecarga() {
                             </Frame>
                             <BotaoSemBorda>
                                 <FaPencilAlt />
-                                <Link to={'/departamento'}>Configurar meus departamentos</Link>
+                                <Link to={'/estrutura'}>Configurar meus departamentos</Link>
                             </BotaoSemBorda>
                         </Frame>
                         <Botao aoClicar={() => navegar('/beneficio/selecao-departamentos')} size="medium">Recarregar por departamento</Botao>

@@ -69,7 +69,7 @@ function DepartamentoDetalhes() {
                     {
                         toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                         setLoading(false)
-                        navegar('/departamento')
+                        navegar('/estrutura')
                     }
                 })
                 .catch(erro => console.log(erro))
@@ -85,7 +85,7 @@ function DepartamentoDetalhes() {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <ConfirmDialog />
-            <BotaoVoltar linkFixo={`/departamento`} />
+            <BotaoVoltar linkFixo={`/estrutura`} />
             <Texto weight={500} size="12px">Departamento</Texto>
             {departamento ?
                 <BotaoGrupo align="space-between">
@@ -100,20 +100,20 @@ function DepartamentoDetalhes() {
             }
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
-                    <Link to={`/departamento/detalhes/${id}`}>
-                        <Botao estilo={location.pathname == `/departamento/detalhes/${id}`?'black':''} size="small" tab>Colaboradores</Botao>
+                    <Link to={`/estrutura/detalhes/${id}`}>
+                        <Botao estilo={location.pathname == `/estrutura/detalhes/${id}`?'black':''} size="small" tab>Colaboradores</Botao>
                     </Link>
-                    <Link to={`/departamento/detalhes/${id}/configuracao-beneficios`}>
-                        <Botao estilo={location.pathname == `/departamento/detalhes/${id}/configuracao-beneficios`?'black':''} size="small" tab>Configuração de Benefícios</Botao>
+                    <Link to={`/estrutura/detalhes/${id}/configuracao-beneficios`}>
+                        <Botao estilo={location.pathname == `/estrutura/detalhes/${id}/configuracao-beneficios`?'black':''} size="small" tab>Configuração de Benefícios</Botao>
                     </Link>
                 </BotaoGrupo>
                 
-                {location.pathname == `/departamento/detalhes/${id}` &&
+                {location.pathname == `/estrutura/detalhes/${id}` &&
                     <BotaoGrupo>
-                        <Botao aoClicar={() => navegar(`/departamento/${id}/adicionar-colaboradores`)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar colaboradores</Botao>
+                        <Botao aoClicar={() => navegar(`/estrutura/${id}/adicionar-colaboradores`)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar colaboradores</Botao>
                     </BotaoGrupo>
                 }
-                {location.pathname == `/departamento/detalhes/${id}/configuracao-beneficios` &&
+                {location.pathname == `/estrutura/detalhes/${id}/configuracao-beneficios` &&
                     <BotaoGrupo align="center">
                         <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
                             <AiFillQuestionCircle className="question-icon" size={20} />

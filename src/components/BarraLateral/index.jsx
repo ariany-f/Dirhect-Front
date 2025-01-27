@@ -128,27 +128,6 @@ function BarraLateral() {
                         "itemTitulo": "Home"
                     },
                     {
-                        "id": 2,
-                        "url": "/filial",
-                        "pageTitulo": "Filial",
-                        "icone": <AiFillHome size={20} className="icon" />,
-                        "itemTitulo": "Filial"
-                    },
-                    {
-                        "id": 3,
-                        "url": "/departamento",
-                        "pageTitulo": "Departamentos",
-                        "icone": <RiTeamFill size={20} className="icon" />,
-                        "itemTitulo": "Departamentos"
-                    },
-                    {
-                        "id": 4,
-                        "url": "/extrato",
-                        "pageTitulo": "Seção",
-                        "icone": <RiFilePaperFill titulo="Extrato" size={20} className="icon" />,
-                        "itemTitulo": "Seção"
-                    },
-                    {
                         "id": 5,
                         "url": "/cartao",
                         "pageTitulo": "Cargos e Funções",

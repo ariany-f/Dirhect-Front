@@ -167,13 +167,13 @@ function DepartamentoAdicionarColaboradores() {
                     if(id && typeof id !== undefined && id !== null)
                     {
                         setTimeout(() => {
-                            navegar(`/departamento/detalhes/${id}`)
+                            navegar(`/estrutura/detalhes/${id}`)
                         }, "700");
                     }
                     else
                     {
                         setTimeout(() => {
-                            navegar(`/departamento/detalhes/${response.data.public_id}`)
+                            navegar(`/estrutura/detalhes/${response.data.public_id}`)
                         }, "700");
                     }
                 }
@@ -205,13 +205,13 @@ function DepartamentoAdicionarColaboradores() {
                             if(id && typeof id !== undefined && id !== null)
                             {
                                 setTimeout(() => {
-                                    navegar(`/departamento/detalhes/${id}`)
+                                    navegar(`/estrutura/detalhes/${id}`)
                                 }, "700");
                             }
                             else
                             {
                                 setTimeout(() => {
-                                    navegar(`/departamento/detalhes/${response.data.public_id}`)
+                                    navegar(`/estrutura/detalhes/${response.data.public_id}`)
                                 }, "700");
                             }
                         }
