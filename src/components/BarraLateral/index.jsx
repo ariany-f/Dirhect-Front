@@ -157,7 +157,7 @@ function BarraLateral() {
                     },
                     {
                         "id": 10,
-                        "url": "/beneficio",
+                        "url": "/saldo-livre",
                         "pageTitulo": "Linhas de Transporte",
                         "icone": <LuSparkles size={20} className="icon" />,
                         "itemTitulo": "Linhas de Transporte"
