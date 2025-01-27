@@ -7,17 +7,17 @@
 .banner {
     margin: 0;
     padding: 0;
-    max-width: 50vw;
+    max-height: 50vw;
     object-fit: cover;
     object-position: center;
-    min-height: -webkit-fill-available;
+    min-width: -webkit-fill-available;
     @media screen and (max-width:768px) {
         height: initial;
     }
 }
 .logo {
     position: absolute;
-    top: 40px;
+    bottom: 40px;
     width: 192px;
 }
 .bottomBanner {

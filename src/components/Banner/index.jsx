@@ -1,4 +1,4 @@
-import imagem from './homem-com-cartao.png'
+import imagem from './background-dirhect.png'
 import styles from './Banner.module.css'
 import logo from '/imagens/logo.png'
 import { RiShoppingCartFill, RiBusFill, RiTrophyFill, RiOpenArmFill } from 'react-icons/ri'
@@ -29,13 +29,16 @@ function Banner() {
     return (
         <div className={styles.container}>
            
-            <Skeleton variant="rectangular" width={755} height={980} />
-            {/* <Link to="/login" className={styles.logo} >
+           {image ?
+                <img ref={ref} className={styles.banner} src={imagem} alt="Imagem"/>
+                : <Skeleton variant="rectangular" width={600} height={980} />
+            }
+            <Link to="/login" className={styles.logo} >
                 {logotipo ?
-                    <img src={logo} ref={refLogo} alt="Logo"/>
+                    <img width="200" src={logo} ref={refLogo} alt="Logo"/>
                     : ''
                 }
-            </Link> */}
+            </Link>
             {/* <div className={styles.bottomBanner}>
                 <ul className={styles.ul}>
                     <li><RiShoppingCartFill size={24} /></li>
