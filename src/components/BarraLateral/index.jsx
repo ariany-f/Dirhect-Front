@@ -1,14 +1,16 @@
 import { styled } from "styled-components"
 import ItemNavegacao from "./ItemNavegacao"
 import { AiFillHome } from "react-icons/ai"
-import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine } from "react-icons/ri"
-import { BiSolidDashboard } from "react-icons/bi"
+import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine, RiBlenderFill } from "react-icons/ri"
+import { BiBusSchool, BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
 import logo from '/imagens/logo.png'
 import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { FaBusAlt } from "react-icons/fa"
+import { FaUserGroup } from "react-icons/fa6"
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -138,14 +140,14 @@ function BarraLateral() {
                         "id": 7,
                         "url": "/dependentes",
                         "pageTitulo": "Dependentes",
-                        "icone": <RiHandCoinFill size={20} className="icon" />,
+                        "icone": <FaUserGroup size={20} className="icon" />,
                         "itemTitulo": "Dependentes"
                     },
                     {
                         "id": 8,
                         "url": "/beneficio",
                         "pageTitulo": "Tipos de Benefícios",
-                        "icone": <RiFileListFill size={20} className="icon" />,
+                        "icone": <RiHandCoinFill size={20} className="icon" />,
                         "itemTitulo": "Tipos de Benefícios"
                     },
                     {
@@ -159,7 +161,7 @@ function BarraLateral() {
                         "id": 10,
                         "url": "/saldo-livre",
                         "pageTitulo": "Linhas de Transporte",
-                        "icone": <LuSparkles size={20} className="icon" />,
+                        "icone": <FaBusAlt size={20} className="icon" />,
                         "itemTitulo": "Linhas de Transporte"
                     },
                     {
