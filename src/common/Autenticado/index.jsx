@@ -115,7 +115,9 @@ function Autenticado() {
     }
     
     return (
-        <>
+        <> 
+        {usuarioEstaLogado ?
+            <>
             <EstilosGlobais />
             <MainSection>
                 <Loading opened={loading} />
@@ -135,6 +137,8 @@ function Autenticado() {
             </MainSection>
             <ModalCnpj aoClicar={() => changeCompany()} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
         </>
+        : <Navigate to="/login" replace={true}/>
+        } </>
     )
 }
 export default Autenticado
