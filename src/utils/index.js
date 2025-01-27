@@ -56,7 +56,6 @@ export class ArmazenadorToken {
     static get ExpirationToken() {
         return sessionStorage.getItem(EXPIRATION)
     }
-    
     static get UserName() {
         return sessionStorage.getItem(USER_NAME)
     }
