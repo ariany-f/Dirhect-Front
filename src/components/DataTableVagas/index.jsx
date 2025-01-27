@@ -66,7 +66,7 @@ function DataTableVagas({ vagas }) {
                 <Column body={representativeEncerramentoTemplate} header="Data Encerramento" style={{ width: '35%' }}></Column>
                 <Column body={representativeNumeroColaboradoresTemplate} header="Número de Candidatos" style={{ width: '35%' }}></Column>
                 <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '35%' }}></Column>
-                <Column field="" header="" style={{ width: '10%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
+                
             </DataTable>
         </>
     )

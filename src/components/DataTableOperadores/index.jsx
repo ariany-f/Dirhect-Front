@@ -60,7 +60,7 @@ function DataTableOperadores({ operadores }) {
                 <Column field="user" body={representativeNameTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 {/* <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column> */}
                 {/* <Column field="cpf" body={representativeDocumentTemplate} header="CPF" style={{ width: '20%' }}></Column> */}
-                <Column field="" header="" style={{ width: '10%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
+                
             </DataTable>
         </>
     )

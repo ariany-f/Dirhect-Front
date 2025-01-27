@@ -86,7 +86,7 @@ function DataTableDepartamentos({ departamentos }) {
             <DataTable value={departamentos} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados departamentos" selection={selectedDepartamento} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
                 <Column header="" filterField="name" showFilterMenu={false} filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '14rem' }}
                 body={representativeBodyTemplate} />
-                <Column field="" header="" style={{ width: '10%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
+                
             </DataTable>
         </>
     )

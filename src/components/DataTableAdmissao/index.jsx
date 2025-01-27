@@ -78,7 +78,7 @@ function DataTableAdmissao({ vagas }) {
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '35%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '35%' }}></Column>
                 <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '35%' }}></Column>
-                <Column field="" header="" style={{ width: '10%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
+                
             </DataTable>
         </>
     )

@@ -42,7 +42,7 @@ function DataTableColaboradores({ colaboradores }) {
                 <Column field="user_name" header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column field="email" header="E-mail" style={{ width: '35%' }}></Column>
                 <Column field="cpf" header="CPF" style={{ width: '20%' }}></Column>
-                <Column field="" header="" style={{ width: '10%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
+                
             </DataTable>
         </>
     )

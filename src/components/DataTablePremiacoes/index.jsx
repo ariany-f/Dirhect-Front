@@ -42,7 +42,7 @@ function DataTablePremiacoes({ premiacoes }) {
                 <Column field="name" header="Nome" style={{ width: '35%' }}></Column>
                 <Column field="reason" header="Motivo" style={{ width: '35%' }}></Column>
                 <Column field="amount" header="Valor da Premiação" style={{ width: '20%' }}></Column>
-                <Column field="" header="" style={{ width: '10%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
+                
             </DataTable>
         </>
     )
