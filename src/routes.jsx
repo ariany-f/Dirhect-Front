@@ -101,6 +101,9 @@ import CandidatoRegistroProfissional from './pages/Candidato/Registro/profission
 import CandidatoRegistroArquivos from './pages/Candidato/Registro/arquivos'
 import ValidarAdmissoes from './pages/Admissoes/validar'
 import DetalhesAdmissao from './pages/Admissoes/detalhes'
+import FiliaisLista from './pages/Departamentos/filiais'
+import CargosLista from './pages/Departamentos/cargos'
+import SecoesLista from './pages/Departamentos/secoes'
 
 function AppRouter() {
   
@@ -161,6 +164,9 @@ function AppRouter() {
             
               <Route path="estrutura" element={<Departamentos />} >
                 <Route index element={<DepartamentoLista />} />
+                <Route path="filiais" element={<FiliaisLista />} />
+                <Route path="cargos" element={<CargosLista />} />
+                <Route path="secoes" element={<SecoesLista />} />
                 <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
                 <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
                 <Route path="adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
