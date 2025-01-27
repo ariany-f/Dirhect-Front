@@ -128,13 +128,6 @@ function BarraLateral() {
                         "itemTitulo": "Home"
                     },
                     {
-                        "id": 5,
-                        "url": "/cartao",
-                        "pageTitulo": "Cargos e Funções",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
-                        "itemTitulo": "Cargos e Funções"
-                    },
-                    {
                         "id": 6,
                         "url": "/colaborador",
                         "pageTitulo": "Funcionários",
@@ -171,7 +164,7 @@ function BarraLateral() {
                     },
                     {
                         "id": 11,
-                        "url": "/vantagens",
+                        "url": "/cartao",
                         "pageTitulo": "Elegibilidade",
                         "icone": <LuSparkles size={20} className="icon" />,
                         "itemTitulo": "Elegibilidade"

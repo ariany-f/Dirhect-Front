@@ -79,6 +79,9 @@ function DepartamentoLista() {
                     <Link to="/estrutura/secoes">
                         <Botao estilo={''} size="small" tab>Seções</Botao>
                     </Link>
+                    <Link to="/estrutura/cargos">
+                        <Botao estilo={''} size="small" tab>Cargos e Funções</Botao>
+                    </Link>
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
             </BotaoGrupo>
