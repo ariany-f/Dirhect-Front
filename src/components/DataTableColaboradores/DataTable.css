@@ -168,9 +168,24 @@
     --primary-800:#2e3f75;
     --primary-900:#222e55;
   }
-  
+  .p-datatable-tbody > tr:nth-child(even) {
+    background-color: rgb(240, 240, 240); /* Cor de fundo para linhas pares */
+    border: none;
+  }
+
+  .p-datatable-tbody > tr:nth-child(odd) {
+      background-color: #ffffff; /* Cor de fundo para linhas ímpares */
+      border: none;
+  }
+  .p-datatable-tbody > tr:nth-child(even):hover {
+    background-color: #edf0fA; /* Cor de fundo para linhas pares */
+  }
+
+  .p-datatable-tbody > tr:nth-child(odd):hover {
+      background-color: #edf0fA; /* Cor de fundo para linhas ímpares */
+  }
   .p-editor-container .p-editor-toolbar {
-    background: #ffffff;
+    background: rgb(240, 240, 240);
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
   }

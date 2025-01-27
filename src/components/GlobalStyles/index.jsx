@@ -103,7 +103,7 @@ const EstilosGlobais = createGlobalStyle`
       --error-950: #461209;
       --background-label: #FCFCFC;
       --fonte-primaria: Plus Jakarta Sans;
-      --fonte-secundaria: Inter;
+      --fonte-secundaria: Poppins;
   }
 html {
   line-height: 1.15; 

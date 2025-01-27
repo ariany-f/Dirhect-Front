@@ -3,12 +3,13 @@ import styled from "styled-components";
 
 const BotaoEstilizado = styled.button`
     display: flex;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all .1s linear;
     border: none;
     gap: 8px;
     padding: 16px 24px;
+    font-weight: 600;
     font-family: var(--fonte-primaria);
     font-size: ${ props => props.$fontSize ? props.$fontSize : '16px'};
     width: ${ props => props.$size ? props.$size : '100%'};
