@@ -49,6 +49,17 @@ function DataTableOperadores({ operadores }) {
         )
     }
 
+    function formataCPF(cpf) {
+        cpf = cpf.replace(/[^\d]/g, "");
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    }
+    
+    const representativeCPFTemplate = (rowData) => {
+        return (
+            formataCPF(rowData.collaborator.cpf)
+        )
+    }
+
     return (
         <>
             <div className="flex justify-content-end">

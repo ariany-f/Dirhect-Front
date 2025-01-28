@@ -30,6 +30,17 @@ function DataTableColaboradores({ colaboradores }) {
         setSelectedCollaborator(value)
         navegar(`/colaborador/detalhes/${value.public_id}`)
     }
+    
+    function formataCPF(cpf) {
+        cpf = cpf.replace(/[^\d]/g, "");
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    }
+    
+    const representativeCPFTemplate = (rowData) => {
+        return (
+            formataCPF(rowData.cpf)
+        )
+    }
 
     return (
         <>
@@ -41,7 +52,7 @@ function DataTableColaboradores({ colaboradores }) {
             <DataTable value={colaboradores} filters={filters} globalFilterFields={['user_name', 'email', 'cpf']}  emptyMessage="Não foram encontrados colaboradores" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
                 <Column field="user_name" header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column field="email" header="E-mail" style={{ width: '35%' }}></Column>
-                <Column field="cpf" header="CPF" style={{ width: '20%' }}></Column>
+                <Column body={representativeCPFTemplate} header="CPF" style={{ width: '20%' }}></Column>
                 
             </DataTable>
         </>
