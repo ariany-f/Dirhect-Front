@@ -13,6 +13,8 @@ import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 import { useDepartamentoContext } from '../../contexts/Departamento'
+import filiais from '@json/filiais.json'
+import DataTableFiliais from '../../components/DataTableFiliais'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -88,7 +90,7 @@ function FiliaisLista() {
                 <CardText>
                     <p className={styles.subtitulo}>Sempre que cadastrar um novo colaborador, você terá a opção de colocá-lo em um departamento, isso facilita na organização e na recarga de benefícios.</p>
                 </CardText>
-                <DataTableDepartamentos departamentos={departments} />
+                <DataTableFiliais filiais={filiais} />
         </ConteudoFrame>
         <ModalAdicionarDepartamento aoSalvar={adicionarNome} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
