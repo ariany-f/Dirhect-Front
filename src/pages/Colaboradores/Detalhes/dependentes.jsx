@@ -6,6 +6,7 @@ import DataTableCollaboratorBenefit from '../../../components/DataTableCollabora
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import http from '@http'
+import DataTableDependentes from '../../../components/DataTableDependentes'
 
 const DivPrincipal = styled.div`
     width: 65vw;
@@ -36,7 +37,7 @@ function ColaboradorDependentes() {
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
-            <DataTableCollaboratorBenefit beneficios={colaborador?.benefits}/>
+            <DataTableDependentes dependentes={colaborador?.dependentes}/>
         </DivPrincipal>
     )
 }

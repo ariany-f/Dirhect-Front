@@ -11,6 +11,7 @@ import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import Loading from '@components/Loading'
 import { AiFillQuestionCircle } from 'react-icons/ai'
+import DataTableDependentes from '../../components/DataTableDependentes'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -40,10 +41,10 @@ const ContainerSemRegistro = styled.div`
 function DependentesListagem() {
 
     const [loading, setLoading] = useState(false)
-    const [premiacoes, setPremiacoes] = useState([])
+    const [dependentes, setDependentes] = useState([])
     
     useEffect(() => {
-        if(premiacoes.length === 0)
+        if(dependentes.length === 0)
         {
             // setLoading(true)
             // http.get('api/dashboard/recharge/free-balance')
@@ -52,7 +53,7 @@ function DependentesListagem() {
             //     console.log(response)
             //     if(response.data.award)
             //     {
-            //         setPremiacoes(response.data.award)
+            //         setDependentes(response.data.award)
             //     }
             // })
             // .catch(erro => {
@@ -76,8 +77,8 @@ function DependentesListagem() {
                 <Link to={'/saldo-livre/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
             </QuestionCard>
             {
-                premiacoes.length ?
-                <DataTablePremiacoes premiacoes={premiacoes} />
+                dependentes.length ?
+                <DataTableDependentes dependentes={dependentes} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
