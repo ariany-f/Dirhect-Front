@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { MdOutlineChevronRight } from 'react-icons/md'
 import { IoMdSettings } from 'react-icons/io'
-import { RiUserFollowFill, RiLogoutCircleLine } from 'react-icons/ri'
+import { RiUserFollowFill, RiLogoutCircleLine, RiOrganizationChart } from 'react-icons/ri'
 import { GiTreeBranch } from "react-icons/gi"
 import { Link, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
@@ -103,7 +103,7 @@ function Menu({ opened = false, aoFechar }){
                         <li onClick={() => FecharMenu()}>
                             <Link className="link" to="/estrutura">
                                 <div className="group">
-                                    <GiTreeBranch size={20} className="icon"/>
+                                    <RiOrganizationChart size={20} className="icon"/>
                                     Estrutura Organizacional
                                 </div>
                                 <MdOutlineChevronRight size={20} />
