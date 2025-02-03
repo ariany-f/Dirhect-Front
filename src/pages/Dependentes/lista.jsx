@@ -8,7 +8,6 @@ import styled from "styled-components"
 import { Link, useOutletContext } from "react-router-dom"
 import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
-import Loading from '@components/Loading'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import DataTableDependentes from '../../components/DataTableDependentes'
 
@@ -39,7 +38,6 @@ const ContainerSemRegistro = styled.div`
 
 function DependentesListagem() {
 
-    const [loading, setLoading] = useState(false)
     const [dependentes, setDependentes] = useState(null)
     const context = useOutletContext()
     
@@ -53,7 +51,6 @@ function DependentesListagem() {
     
     return (
         <ConteudoFrame>
-        <Loading opened={loading} />
             <BotaoGrupo align="end">
                 <BotaoGrupo>
                     <Link to="/linhas-transporte/adicionar-detalhes">

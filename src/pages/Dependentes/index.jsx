@@ -2,10 +2,11 @@ import { Outlet } from "react-router-dom"
 import { DependentesProvider } from "../../contexts/Dependentes"
 import { useEffect, useState } from "react"
 import http from "../../http"
- 
+import Loading from '@components/Loading'
 
 function Dependentes() {
 
+    const [loading, setLoading] = useState(false)
     const [dependentes, setDependentes] = useState(null)
     const [pessoasfisicas, setPessoasFisicas] = useState(null)
     const [funcionarios, setFuncionarios] = useState(null)
@@ -14,11 +15,14 @@ function Dependentes() {
     useEffect(() => {
         if(!funcionarios)
         {
+            setLoading(true)
             http.get('funcionario/?format=json')
                 .then(response => {
                     setFuncionarios(response)
                 })
-                .catch(erro => console.log(erro))
+                .catch(erro => {
+                    setLoading(false)
+                })
         } else if (pessoasfisicas && funcionarios) {
             const processados = funcionarios.map(item => {
                 const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
@@ -37,7 +41,7 @@ function Dependentes() {
                setDependentes(response)
             })
             .catch(erro => {
-                
+                setLoading(false)
             })
         }
         if(!pessoasfisicas) {
@@ -46,7 +50,9 @@ function Dependentes() {
                 .then(response => {
                     setPessoasFisicas(response)
                 })
-                .catch(erro => console.log(erro))
+                .catch(erro => {
+                    setLoading(false)
+                })
         }
 
         if (pessoasfisicas && dependentes && funcionarios && !dep_pess) {
@@ -65,6 +71,8 @@ function Dependentes() {
                 });
         
                 setDepPess(processados); // Atualiza o estado com os dados processados
+                
+                setLoading(false)
             }
         }
         
@@ -72,6 +80,7 @@ function Dependentes() {
 
     return (
         <DependentesProvider>
+            <Loading opened={loading} />
             <Outlet context={dep_pess} />
         </DependentesProvider>
     )

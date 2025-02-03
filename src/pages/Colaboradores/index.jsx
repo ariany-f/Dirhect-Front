@@ -11,6 +11,7 @@ import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
 import QuestionCard from '@components/QuestionCard'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import http from '@http'
+import Loading from '@components/Loading'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -24,21 +25,27 @@ function Colaboradores() {
     const location = useLocation();
     const [modalOpened, setModalOpened] = useState(false)
     const [funcionarios, setFuncionarios] = useState(null)
-    
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         if(!funcionarios)
         {
+            setLoading(true)
             http.get('funcionario/?format=json')
                 .then(response => {
                     setFuncionarios(response)
+                    setLoading(false)
                 })
-                .catch(erro => console.log(erro))
+                .catch(erro => {
+                    setLoading(false)
+                })
         }
        
     }, [funcionarios])
     
     return (
         <ConteudoFrame>
+            <Loading opened={loading} />
             <BotaoGrupo align="end">
                 {/* <BotaoGrupo>
                     <Link className={styles.link} to="/colaborador">
