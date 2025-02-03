@@ -66,7 +66,7 @@ function DataTableBalance({ balance }) {
                     <p style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona esses benefícios?</p>
                 </QuestionCard>
             </div>
-            <DataTable value={balance} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={5}  onSelectionChange={(e) => verDetalhes(e.value)} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '65vw' }}>
+            <DataTable value={balance} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={5}  onSelectionChange={(e) => verDetalhes(e.value)}  tableStyle={{ minWidth: '65vw' }}>
                 <Column body={representativeCreatedTemplate} header="Data de criação" style={{ width: '20%' }}></Column>
                 <Column body={representativeSendedTemplate} header="Forma de Pagamento" style={{ width: '15%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '15%' }}></Column>

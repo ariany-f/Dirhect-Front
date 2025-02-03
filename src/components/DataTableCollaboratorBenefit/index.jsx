@@ -82,7 +82,7 @@ function DataTableCollaboratorBenefit({ beneficios }) {
                     <p style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona esses benefícios?</p>
                 </QuestionCard>
             </div>
-            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={5}  onSelectionChange={(e) => verDetalhes(e.value)} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '65vw' }}>
+            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={5}  onSelectionChange={(e) => verDetalhes(e.value)}  tableStyle={{ minWidth: '65vw' }}>
                 <Column body={representativeDescriptionTemplate} header="Benefício" style={{ width: '35%' }}></Column>
                 <Column body={representativeFixedValueTemplate} header="Valor Fixo" style={{ width: '15%' }}></Column>
                 <Column body={representativeFlexibleValueTemplate} header="Valor Flexível" style={{ width: '10%' }}></Column>

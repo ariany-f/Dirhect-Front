@@ -67,7 +67,7 @@ function DataTableOperadores({ operadores }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar operador" />
                 </span>
             </div>
-            <DataTable value={operadores} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados operadores" selection={selectedOperator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={operadores} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados operadores" selection={selectedOperator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="user" body={representativeNameTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 {/* <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column> */}
                 {/* <Column field="cpf" body={representativeDocumentTemplate} header="CPF" style={{ width: '20%' }}></Column> */}
