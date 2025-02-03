@@ -55,12 +55,12 @@ function Colaboradores() {
     
     return (
         <ConteudoFrame>
-            <BotaoGrupo align="space-between">
-                <BotaoGrupo>
+            <BotaoGrupo align="end">
+                {/* <BotaoGrupo>
                     <Link className={styles.link} to="/colaborador">
                         <Botao estilo={location.pathname == '/colaborador'?'black':''} size="small" tab>Cadastrados</Botao>
                     </Link>
-                </BotaoGrupo>
+                </BotaoGrupo> */}
                 <BotaoGrupo align="center">
                     <BotaoSemBorda color="var(--primaria)">
                         <FaDownload/><Link onClick={() => setModalOpened(true)} className={styles.link}>Importar planilha</Link>

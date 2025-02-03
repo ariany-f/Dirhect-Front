@@ -3,6 +3,7 @@ import http from '@http'
 import Loading from '@components/Loading'
 // import collaborators from '@json/colaboradores.json'
 import { useEffect, useState } from "react";
+import styles from './Colaboradores.module.css'
 import { useOutletContext } from 'react-router-dom';
 import styled from "styled-components"
 import Management from '@assets/Management.svg'
@@ -50,7 +51,7 @@ function ColaboradoresCadastrados() {
             <Loading opened={loading} />
             
             {
-                colaboradores ?
+                colaboradores.length > 0 ?
                 <DataTableColaboradores colaboradores={colaboradores} />
                 :
                 <ContainerSemRegistro>
