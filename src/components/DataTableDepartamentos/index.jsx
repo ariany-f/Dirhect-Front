@@ -46,36 +46,6 @@ function DataTableDepartamentos({ departamentos }) {
         navegar(`/estrutura/detalhes/${value.public_id}`)
     }
 
-    const representativeBodyTemplate = (rowData) => {
-        return (
-            <div style={{ padding: '20px'}}>
-                <Texto weight={700} className={styles.departmentName}>{rowData.name}</Texto>
-                <div className={styles.departamento}>
-                    <div className={styles.left}>
-                        <div className={styles.recuo} color="var(--neutro-500)">
-                            Colaboradores:&nbsp;<NumeroColaboradores weight={700}>{rowData?.collaborators_total ? rowData.collaborators_total : 0}</NumeroColaboradores>
-                        </div>
-                    </div>
-                    <div className={styles.right}>
-                        <Texto weight={300}>Benefícios configurados</Texto>
-                        <div className={styles.beneficios}>
-                            {(!rowData.benefits) || rowData.benefits.length === 0
-                            ?
-                                <FaBan size={10} />
-                            :
-                                rowData.benefits.map((benefit, index) => {
-                                    return (
-                                        <BadgeBeneficio key={index} nomeBeneficio={benefit}/>
-                                    )
-                                })
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
     return (
         <>
             <div className="flex justify-content-end">
@@ -84,9 +54,7 @@ function DataTableDepartamentos({ departamentos }) {
                 </span>
             </div>
             <DataTable value={departamentos} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados departamentos" selection={selectedDepartamento} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
-                <Column header="" filterField="name" showFilterMenu={false} filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '14rem' }}
-                body={representativeBodyTemplate} />
-                
+                <Column field="id" header="Id do Departamento" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )

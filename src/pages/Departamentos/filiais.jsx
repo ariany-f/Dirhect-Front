@@ -34,7 +34,7 @@ function FiliaisLista() {
          
         if(!filiais) {
             
-            http.get('cliente/?format=json')
+            http.get('filial/?format=json')
                 .then(response => {
                     setFiliais(response)
                 })
