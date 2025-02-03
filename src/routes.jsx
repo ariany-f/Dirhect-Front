@@ -229,7 +229,6 @@ function AppRouter() {
              
               <Route path="/elegibilidade" element={<Cartoes />} >
                 <Route index element={<CartoesLista />} />
-                <Route path="ativados" element={<CartoesAtivados />} />
               </Route>
               <Route path="/elegibilidade/detalhes/:id" element={<CartaoDetalhes />} />
               <Route path="/elegibilidade/solicitar-segunda-via" element={<CartaoSolicitarSegundaViaCommon />} >

@@ -18,15 +18,10 @@ function Cartoes() {
 
     return (
         <ConteudoFrame>
-            <BotaoGrupo align="space-between">
-                <BotaoGrupo>
-                    <Link className={styles.link} to="/elegibilidade">
-                        <Botao estilo={location.pathname === '/elegibilidade'?'black':''} size="small" tab>Ativas</Botao>
-                    </Link>
-                </BotaoGrupo>
+            <BotaoGrupo align="end">
                 <BotaoGrupo align="center">
                     <Link to="/colaborador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar elegibilidade</Botao>
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle fill="white" className={styles.icon}/> Cadastrar elegibilidade</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
