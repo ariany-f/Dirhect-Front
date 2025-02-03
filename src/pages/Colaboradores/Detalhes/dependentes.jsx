@@ -2,11 +2,11 @@ import Titulo from '@components/Titulo'
 import QuestionCard from '@components/QuestionCard'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import styled from 'styled-components'
-import DataTableCollaboratorBenefit from '../../../components/DataTableCollaboratorBenefit'
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import http from '@http'
-import DataTableDependentes from '../../../components/DataTableDependentes'
+import Loading from '@components/Loading'
+import DataTableDependentes from '@components/DataTableDependentes'
 
 const DivPrincipal = styled.div`
     width: 65vw;
@@ -15,27 +15,23 @@ const DivPrincipal = styled.div`
 function ColaboradorDependentes() {
 
     let { id } = useParams()
+    const [loading, setLoading] = useState(false)
     const [dependentes, setDependentes] = useState(null)
     const [pessoasfisicas, setPessoasFisicas] = useState(null)
     const [funcionarios, setFuncionarios] = useState(null)
     const [dep_pess, setDepPess] = useState(null)
 
     useEffect(() => {
-        if(!funcionarios)
-        {
-            http.get('funcionario/?format=json')
-                .then(response => {
-                    setFuncionarios(response)
-                })
-                .catch(erro => console.log(erro))
-        }
         if(!dependentes)
         {
+            setLoading(true)
             http.get(`dependente/?format=json&id_funcionario=${id}`)
                 .then(response => {
                     setDependentes(response)
                 })
-                .catch(erro => console.log(erro))
+                .catch(erro => {
+                    setLoading(false)
+                })
         }
         if(!pessoasfisicas) {
             
@@ -43,10 +39,12 @@ function ColaboradorDependentes() {
                 .then(response => {
                     setPessoasFisicas(response)
                 })
-                .catch(erro => console.log(erro))
+                .catch(erro => {
+                    setLoading(false)
+                })
         }
         
-        if (pessoasfisicas && dependentes && funcionarios && !dep_pess) {
+        if (pessoasfisicas && dependentes && !dep_pess) {
     
             const processados = dependentes.map(item => {
                 const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
@@ -59,12 +57,14 @@ function ColaboradorDependentes() {
             });
     
             setDepPess(processados); // Atualiza o estado com os dados processados
+            setLoading(false)
         }        
         
-    }, [dependentes, pessoasfisicas, dep_pess, funcionarios])
+    }, [dependentes, pessoasfisicas, dep_pess])
 
     return (
         <DivPrincipal>
+            <Loading opened={loading} />
             <Titulo>
                 <QuestionCard alinhamento="start" element={<h6>Dependentes</h6>}>
                     <AiFillQuestionCircle className="question-icon" size={20} />
