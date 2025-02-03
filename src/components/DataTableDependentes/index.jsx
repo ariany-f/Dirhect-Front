@@ -67,8 +67,8 @@ function DataTableDependentes({ dependentes }) {
                 </span>
             </div>
             <DataTable value={dependentes} filters={filters} globalFilterFields={['nome', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '35%' }}></Column>
+                <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column body={representativeCPFTemplate} header="CPF" style={{ width: '20%' }}></Column>
             </DataTable>
         </>
