@@ -41,21 +41,21 @@ function DataTableDependentes({ dependentes }) {
     const representativeCPFTemplate = (rowData) => {
     
         return (
-            formataCPF(rowData?.pessoa_fisica?.cpf)
+            formataCPF(rowData?.dados_pessoa_fisica?.cpf)
         )
     }
     
     const representativeNomeTemplate = (rowData) => {
         
         return (
-            rowData?.pessoa_fisica?.nome
+            rowData?.dados_pessoa_fisica?.nome
         )
     }
     
     const representativeFuncNomeTemplate = (rowData) => {
         
         return (
-            rowData?.funcionario?.pessoa_fisica?.nome
+            rowData?.funcionario?.dados_pessoa_fisica?.nome
         )
     }
 

@@ -91,8 +91,8 @@ function ColaboradorDadosPessoais() {
         <Titulo><h6>Informações gerais</h6></Titulo>
         <div className={styles.card_dashboard}>
             <Texto>Nome completo</Texto>
-            {colaborador?.nome ?
-                <Texto weight="800">{colaborador?.nome}</Texto>
+            {colaborador?.dados_pessoa_fisica?.nome ?
+                <Texto weight="800">{colaborador?.dados_pessoa_fisica?.nome}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             <Texto>Nome social</Texto>
@@ -103,8 +103,8 @@ function ColaboradorDadosPessoais() {
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             <Texto>CPF</Texto>
-            {colaborador?.cpf ?
-                <Texto weight="800">{formataCPF(colaborador?.cpf)}</Texto>
+            {colaborador?.dados_pessoa_fisica?.cpf ?
+                <Texto weight="800">{formataCPF(colaborador?.dados_pessoa_fisica?.cpf)}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
         </div>

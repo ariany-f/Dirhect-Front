@@ -39,14 +39,14 @@ function DataTableColaboradores({ colaboradores }) {
     const representativeCPFTemplate = (rowData) => {
     
         return (
-            formataCPF(rowData?.pessoa_fisica?.cpf)
+            formataCPF(rowData?.dados_pessoa_fisica?.cpf)
         )
     }
     
     const representativeNomeTemplate = (rowData) => {
         
         return (
-            rowData?.pessoa_fisica?.nome
+            rowData?.dados_pessoa_fisica?.nome
         )
     }
 
@@ -57,7 +57,7 @@ function DataTableColaboradores({ colaboradores }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                 </span>
             </div>
-            <DataTable value={colaboradores} filters={filters} globalFilterFields={['pessoa_fisica.nome', 'pessoa_fisica.cpf']}  emptyMessage="Não foram encontrados colaboradores" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={colaboradores} filters={filters} globalFilterFields={['dados_pessoa_fisica.nome', 'dados_pessoa_fisica.cpf']}  emptyMessage="Não foram encontrados colaboradores" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column body={representativeCPFTemplate} header="CPF" style={{ width: '20%' }}></Column>
             </DataTable>

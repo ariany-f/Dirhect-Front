@@ -20,7 +20,6 @@ function ColaboradorDetalhes() {
     let { id } = useParams()
     const location = useLocation();
     const [colaborador, setColaborador] = useState(null)
-    const [pessoafisica, setPessoaFisica] = useState(null)
     const navegar = useNavigate()
     const toast = useRef(null)
 
@@ -32,32 +31,17 @@ function ColaboradorDetalhes() {
     useEffect(() => {
         if(!colaborador)
         {
-            http.get('funcionario/?format=json')
+            http.get(`funcionario/?format=json&id=${id}`)
                 .then(response => {
-                    // Busca o colaborador dentro de response
-                    const colaboradorEncontrado = response.find(item => item.id == id);
-
-                    if (colaboradorEncontrado) {
-                        setColaborador(colaboradorEncontrado);
+                    if(response.length)
+                    {
+                        setColaborador(response[0]);
                     }
                 })
                 .catch(erro => console.log(erro))
         }
         
-        if(colaborador && (!pessoafisica)) {
-            
-            http.get('pessoa_fisica/?format=json')
-                .then(response => {
-                    // Busca o colaborador dentro de response
-                    const pessoaFisicaEncontrada = response.find(item => item.id === colaborador.id_pessoafisica);
-
-                    if (pessoaFisicaEncontrada) {
-                        setPessoaFisica(pessoaFisicaEncontrada);
-                    }
-                })
-                .catch(erro => console.log(erro))
-        }
-    }, [colaborador, pessoafisica])
+    }, [colaborador])
 
     const desativarColaborador = () => {
         confirmDialog({
@@ -87,10 +71,10 @@ function ColaboradorDetalhes() {
             <ConfirmDialog />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/colaborador" />
-                    {pessoafisica && pessoafisica?.nome ? 
+                    {colaborador && colaborador?.dados_pessoa_fisica?.nome ? 
                         <BotaoGrupo align="space-between">
                             <Titulo>
-                                <h3>{pessoafisica?.nome}</h3>
+                                <h3>{colaborador?.dados_pessoa_fisica?.nome}</h3>
                             </Titulo>
                             <BotaoSemBorda $color="var(--primaria)">
                                 <FaTrash /><Link onClick={desativarColaborador}>Desativar colaborador</Link>
@@ -115,7 +99,7 @@ function ColaboradorDetalhes() {
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/carteiras` ? 'black':''} size="small" tab>Carteiras</Botao>
                     </Link> */}
                 </BotaoGrupo>
-                <Outlet context={pessoafisica}/>
+                <Outlet context={colaborador}/>
             </Container>
         </Frame>
     )

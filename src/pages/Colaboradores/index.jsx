@@ -24,9 +24,7 @@ function Colaboradores() {
     const location = useLocation();
     const [modalOpened, setModalOpened] = useState(false)
     const [funcionarios, setFuncionarios] = useState(null)
-    const [pessoasfisicas, setPessoasFisicas] = useState(null)
-    const [func_pss, setFuncPess] = useState(null)
-
+    
     useEffect(() => {
         if(!funcionarios)
         {
@@ -36,24 +34,8 @@ function Colaboradores() {
                 })
                 .catch(erro => console.log(erro))
         }
-        if(!pessoasfisicas) {
-            
-            http.get('pessoa_fisica/?format=json')
-                .then(response => {
-                    setPessoasFisicas(response)
-                })
-                .catch(erro => console.log(erro))
-        }
-
-        if (pessoasfisicas && funcionarios && !func_pss) {
-            const processados = funcionarios.map(item => {
-                const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
-                return { ...item, pessoa_fisica: pessoa || null }; // Adiciona `pessoa_fisica` ao item
-            });
-        
-            setFuncPess(processados); // Atualiza o estado com os dados processados
-        }
-    }, [funcionarios, pessoasfisicas, func_pss])
+       
+    }, [funcionarios])
     
     return (
         <ConteudoFrame>
@@ -75,7 +57,7 @@ function Colaboradores() {
                 <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
                     <Link to={'/linhas-transporte/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
                 </QuestionCard>
-            <Outlet context={func_pss} />
+            <Outlet context={funcionarios} />
             <ModalImportarPlanilha opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
     )

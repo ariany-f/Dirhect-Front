@@ -47,15 +47,7 @@ function ColaboradorDependentes() {
                 })
                 .catch(erro => console.log(erro))
         }
-        if(!pessoasfisicas) {
-            
-            http.get('pessoa_fisica/?format=json')
-                .then(response => {
-                    setPessoasFisicas(response)
-                })
-                .catch(erro => console.log(erro))
-        }
-
+        
         if (pessoasfisicas && dependentes && funcionarios && !dep_pess) {
             // Verifica se todos os funcionários têm `pessoa_fisica`
             const funcionariosValidos = funcionarios.every(func => func.pessoa_fisica);
@@ -63,12 +55,11 @@ function ColaboradorDependentes() {
             if (funcionariosValidos) {
                 const processados = dependentes.map(item => {
                     const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
-                    const funcionario = funcionarios.find(func => func.id === item.id_funcionario);
             
                     return { 
                         ...item, 
-                        pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
-                        funcionario: funcionario || null // Adiciona `funcionario`
+                        dados_pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
+                        funcionario: item.id_funcionario || null // Adiciona `funcionario`
                     };
                 });
         

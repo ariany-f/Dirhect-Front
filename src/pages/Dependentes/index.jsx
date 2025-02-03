@@ -56,12 +56,11 @@ function Dependentes() {
             if (funcionariosValidos) {
                 const processados = dependentes.map(item => {
                     const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
-                    const funcionario = funcionarios.find(func => func.id === item.id_funcionario);
             
                     return { 
                         ...item, 
-                        pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
-                        funcionario: funcionario || null // Adiciona `funcionario`
+                        dados_pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
+                        funcionario: item.id_funcionario || null // Adiciona `funcionario`
                     };
                 });
         
