@@ -9,6 +9,7 @@ import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
+import Management from '@assets/Management.svg'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
@@ -20,6 +21,25 @@ const ConteudoFrame = styled.div`
     gap: 24px;
     width: 100%;
 `
+
+const ContainerSemRegistro = styled.div`
+    display: flex;
+    padding: 96px 12px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+    text-align: center;
+    & p {
+        margin: 0 auto;
+    }
+
+    & h6 {
+        width: 60%;
+    }
+`
+
 
 function FiliaisLista() {
 
@@ -66,10 +86,19 @@ function FiliaisLista() {
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar uma filial</Botao>
             </BotaoGrupo>
-                <CardText>
-                    <p className={styles.subtitulo}>Sempre que cadastrar um novo colaborador, você terá a opção de colocá-lo em um departamento, isso facilita na organização e na recarga de benefícios.</p>
-                </CardText>
+            
+            {
+                filiais ?
                 <DataTableFiliais filiais={filiais} />
+                :
+                <ContainerSemRegistro>
+                    <section className={styles.container}>
+                        <img src={Management} />
+                        <h6>Não há filiais registradas</h6>
+                        <p>Aqui você verá todas as filiais registradas.</p>
+                    </section>
+                </ContainerSemRegistro>
+            }
         </ConteudoFrame>
         <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>

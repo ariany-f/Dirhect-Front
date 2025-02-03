@@ -98,7 +98,7 @@ function DepartamentoLista() {
                     <section className={styles.container}>
                         <img src={Management} />
                         <h6>Não há departamentos registrados</h6>
-                        <p>Aqui você verá todos os departamentos registradas.</p>
+                        <p>Aqui você verá todos os departamentos registrados.</p>
                     </section>
                 </ContainerSemRegistro>
             }
