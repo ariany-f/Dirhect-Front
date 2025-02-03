@@ -23,7 +23,7 @@ const NumeroColaboradores = styled.p`
 `
 
 function DataTableDepartamentos({ departamentos }) {
-    console.log(departamentos)
+   
     const[selectedDepartamento, setSelectedDepartamento] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -53,7 +53,7 @@ function DataTableDepartamentos({ departamentos }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar departamento" />
                 </span>
             </div>
-            <DataTable value={departamentos} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados departamentos" selection={selectedDepartamento} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={departamentos} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados departamentos" selection={selectedDepartamento} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
                 <Column field="id" header="Id do Departamento" style={{ width: '35%' }}></Column>
             </DataTable>
         </>

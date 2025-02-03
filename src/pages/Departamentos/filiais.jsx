@@ -34,9 +34,11 @@ function FiliaisLista() {
          
         if(!filiais) {
             
+            setLoading(true)
             http.get('filial/?format=json')
                 .then(response => {
                     setFiliais(response)
+                    setLoading(false)
                 })
                 .catch(erro => {
                     setLoading(false)
