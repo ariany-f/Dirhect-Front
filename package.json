@@ -2,6 +2,7 @@
   "name": "multi-beneficios",
   "private": true,
   "version": "0.0.0",
+  "proxy": "http://dirhect.win:8000",
   "type": "module",
   "scripts": {
     "dev": "vite",
