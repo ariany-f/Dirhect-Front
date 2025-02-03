@@ -159,7 +159,7 @@ function BarraLateral() {
                     },
                     {
                         "id": 10,
-                        "url": "/saldo-livre",
+                        "url": "/linhas-transporte",
                         "pageTitulo": "Linhas de Transporte",
                         "icone": <FaBusAlt size={20} className="icon" />,
                         "itemTitulo": "Linhas de Transporte"

@@ -28,7 +28,7 @@ function DataTableColaboradores({ colaboradores }) {
     function verDetalhes(value)
     {
         setSelectedCollaborator(value)
-        navegar(`/colaborador/detalhes/${value.public_id}`)
+        navegar(`/colaborador/detalhes/${value.id}`)
     }
     
     function formataCPF(cpf) {
@@ -37,8 +37,16 @@ function DataTableColaboradores({ colaboradores }) {
     }
     
     const representativeCPFTemplate = (rowData) => {
+    
         return (
-            formataCPF(rowData.cpf)
+            formataCPF(rowData?.pessoa_fisica?.cpf)
+        )
+    }
+    
+    const representativeNomeTemplate = (rowData) => {
+        
+        return (
+            rowData?.pessoa_fisica?.nome
         )
     }
 
@@ -49,11 +57,9 @@ function DataTableColaboradores({ colaboradores }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                 </span>
             </div>
-            <DataTable value={colaboradores} filters={filters} globalFilterFields={['user_name', 'email', 'cpf']}  emptyMessage="Não foram encontrados colaboradores" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
-                <Column field="user_name" header="Nome Completo" style={{ width: '35%' }}></Column>
-                <Column field="email" header="E-mail" style={{ width: '35%' }}></Column>
+            <DataTable value={colaboradores} filters={filters} globalFilterFields={['nome', 'cpf']}  emptyMessage="Não foram encontrados colaboradores" selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
+                <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column body={representativeCPFTemplate} header="CPF" style={{ width: '20%' }}></Column>
-                
             </DataTable>
         </>
     )

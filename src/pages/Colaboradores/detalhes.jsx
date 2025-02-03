@@ -14,13 +14,13 @@ import http from '@http'
 import { useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
-import collaborators from '@json/colaboradores.json'
 
 function ColaboradorDetalhes() {
 
     let { id } = useParams()
     const location = useLocation();
-    const [colaborador, setColaborador] = useState([])
+    const [colaborador, setColaborador] = useState(null)
+    const [pessoafisica, setPessoaFisica] = useState(null)
     const navegar = useNavigate()
     const toast = useRef(null)
 
@@ -30,22 +30,34 @@ function ColaboradorDetalhes() {
     })
 
     useEffect(() => {
-
-        if(colaborador.length == 0)
+        if(!colaborador)
         {
-            const filtered = collaborators.filter(collaborator => collaborator.public_id === id);
-            setColaborador(filtered[0]);
-        }
+            http.get('funcionario/?format=json')
+                .then(response => {
+                    // Busca o colaborador dentro de response
+                    const colaboradorEncontrado = response.find(item => item.id == id);
 
-        // http.get(`api/collaborator/show/${id}`)
-        //     .then(response => {
-        //         if(response.success)
-        //         {
-        //             setColaborador(response.data)
-        //         }
-        //     })
-        //     .catch(erro => console.log(erro))
-    }, [])
+                    if (colaboradorEncontrado) {
+                        setColaborador(colaboradorEncontrado);
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
+        
+        if(colaborador && (!pessoafisica)) {
+            
+            http.get('pessoa_fisica/?format=json')
+                .then(response => {
+                    // Busca o colaborador dentro de response
+                    const pessoaFisicaEncontrada = response.find(item => item.id === colaborador.id_pessoafisica);
+
+                    if (pessoaFisicaEncontrada) {
+                        setPessoaFisica(pessoaFisicaEncontrada);
+                    }
+                })
+                .catch(erro => console.log(erro))
+        }
+    }, [colaborador, pessoafisica])
 
     const desativarColaborador = () => {
         confirmDialog({
@@ -75,10 +87,10 @@ function ColaboradorDetalhes() {
             <ConfirmDialog />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/colaborador" />
-                    {colaborador?.user && colaborador.user?.name ? 
+                    {pessoafisica && pessoafisica?.nome ? 
                         <BotaoGrupo align="space-between">
                             <Titulo>
-                                <h3>{colaborador?.user?.name}</h3>
+                                <h3>{pessoafisica?.nome}</h3>
                             </Titulo>
                             <BotaoSemBorda $color="var(--primaria)">
                                 <FaTrash /><Link onClick={desativarColaborador}>Desativar colaborador</Link>
@@ -103,7 +115,7 @@ function ColaboradorDetalhes() {
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/carteiras` ? 'black':''} size="small" tab>Carteiras</Botao>
                     </Link> */}
                 </BotaoGrupo>
-                <Outlet/>
+                <Outlet context={pessoafisica}/>
             </Container>
         </Frame>
     )

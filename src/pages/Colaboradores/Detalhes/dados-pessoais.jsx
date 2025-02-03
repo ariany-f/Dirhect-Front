@@ -6,7 +6,7 @@ import Titulo from '@components/Titulo'
 import BotaoSemBorda from '@components/BotaoSemBorda'
 import ContainerHorizontal from '@components/ContainerHorizontal'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
-import { Link, useParams } from "react-router-dom"
+import { Link, useOutletContext, useParams } from "react-router-dom"
 import { Skeleton } from 'primereact/skeleton'
 import styles from './Detalhes.module.css'
 import { RiEditBoxFill } from 'react-icons/ri'
@@ -18,7 +18,8 @@ import collaborators from '@json/colaboradores.json'
 function ColaboradorDadosPessoais() {
 
     let { id } = useParams()
-    const [colaborador, setColaborador] = useState([])
+    const [colaborador, setColaborador] = useState(null)
+    const context = useOutletContext()
     const [modalTelefoneOpened, setModalTelefoneOpened] = useState(false)
     const [modalEmailOpened, setModalEmailOpened] = useState(false)
     const toast = useRef(null)
@@ -29,12 +30,14 @@ function ColaboradorDadosPessoais() {
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
-        if(colaborador.length == 0)
+        if(context && (!colaborador))
         {
-            const filtered = collaborators.filter(collaborator => collaborator.public_id === id);
-            setColaborador(filtered[0]);
+            setColaborador(context);
         }
-    }, [])
+        else {
+            console.log(colaborador)
+        }
+    }, [colaborador, context])
 
     function editarEmail(email) {
       
@@ -88,8 +91,8 @@ function ColaboradorDadosPessoais() {
         <Titulo><h6>Informações gerais</h6></Titulo>
         <div className={styles.card_dashboard}>
             <Texto>Nome completo</Texto>
-            {colaborador?.user && colaborador?.user?.name ?
-                <Texto weight="800">{colaborador?.user.name}</Texto>
+            {colaborador?.nome ?
+                <Texto weight="800">{colaborador?.nome}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             <Texto>Nome social</Texto>
@@ -100,8 +103,8 @@ function ColaboradorDadosPessoais() {
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
             <Texto>CPF</Texto>
-            {colaborador?.user && colaborador?.user?.cpf ?
-                <Texto weight="800">{formataCPF(colaborador?.user.cpf)}</Texto>
+            {colaborador?.cpf ?
+                <Texto weight="800">{formataCPF(colaborador?.cpf)}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
         </div>

@@ -67,13 +67,13 @@ function Premiacoes() {
         <Loading opened={loading} />
             <BotaoGrupo align="end">
                 <BotaoGrupo>
-                    <Link to="/saldo-livre/adicionar-detalhes">
+                    <Link to="/linhas-transporte/adicionar-detalhes">
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Saldo Livre</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
             <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
-                <Link to={'/saldo-livre/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
+                <Link to={'/linhas-transporte/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
             </QuestionCard>
             {
                 premiacoes.length ?
@@ -82,8 +82,8 @@ function Premiacoes() {
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
-                        <h6>Não há premiações registradas</h6>
-                        <p>Aqui você verá todas as premiações registradas.</p>
+                        <h6>Não há linhas registradas</h6>
+                        <p>Aqui você verá todas as linhas registradas.</p>
                     </section>
                 </ContainerSemRegistro>
             }

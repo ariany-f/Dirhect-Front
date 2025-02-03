@@ -79,7 +79,7 @@ function PremiacaoSelecionarDepartamentos() {
     
     function editarValor(){
         setDepartamentos(selectedDepartamentos)
-        navegar('/saldo-livre/editar-valor/departamentos')
+        navegar('/linhas-transporte/editar-valor/departamentos')
     }
 
     return (

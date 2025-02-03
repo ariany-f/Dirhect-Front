@@ -58,7 +58,7 @@ function PremiacaoSelecionarColaboradores() {
         // {
         //     toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você deve adicionar detalhes da recarga', life: 3000 });
         //     setTimeout(() => {
-        //         navegar(`/saldo-livre/adicionar-detalhes`)
+        //         navegar(`/linhas-transporte/adicionar-detalhes`)
         //     }, "1500");
         // }
   
@@ -84,7 +84,7 @@ function PremiacaoSelecionarColaboradores() {
 
     function editarValor(){
         setColaboradores(selectedColaboradores)
-        navegar('/saldo-livre/editar-valor/colaboradores')
+        navegar('/linhas-transporte/editar-valor/colaboradores')
     }
 
     return (

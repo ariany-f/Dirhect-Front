@@ -39,8 +39,8 @@ function Login() {
         {
             setUsuarioEstaLogado(false)
         }
-
-        if (logins.length < loginData.perfis.length) {
+        
+        if ((logins.length < loginData.perfis.length)) {
             setLogins((estadoAnterior) => {
                 const novosLogins = loginData.perfis.map((item) => ({
                     name: item.name,
@@ -48,6 +48,13 @@ function Login() {
                 }));
                 return [...estadoAnterior, ...novosLogins];
             });
+        }
+        else
+        {
+            if(logins.length > 0)
+            {
+                setCpf(logins[0].code)
+            }
         }
 
     }, [logins])

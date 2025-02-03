@@ -112,8 +112,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         },
         {
             "id": 7,
-            "url": "saldo-livre",
-            "pageTitulo": "Saldo Livre"
+            "url": "linhas-transporte",
+            "pageTitulo": "Linhas de Transporte"
         },
         {
             "id": 8,
@@ -129,6 +129,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             "id": 10,
             "url": "usuario",
             "pageTitulo": "Meus dados"
+        },
+        {
+            "id": 11,
+            "url": "dependentes",
+            "pageTitulo": "Dependentes"
         }
     ];
 

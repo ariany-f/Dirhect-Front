@@ -15,20 +15,68 @@ const DivPrincipal = styled.div`
 function ColaboradorDependentes() {
 
     let { id } = useParams()
-    const [colaborador, setColaborador] = useState({})
+    const [dependentes, setDependentes] = useState(null)
+    const [pessoasfisicas, setPessoasFisicas] = useState(null)
+    const [funcionarios, setFuncionarios] = useState(null)
+    const [dep_pess, setDepPess] = useState(null)
 
     useEffect(() => {
-        // if(colaborador.length === 0)
-        // {
-        //     http.get(`api/collaborator/show/${id}`)
-        //         .then(response => {
-        //             if (response.success) {
-        //                 setColaborador(response.data)
-        //             }
-        //         })
-        //         .catch(erro => console.log(erro))
-        // }
-    }, [colaborador])
+        if(!funcionarios)
+        {
+            http.get('funcionario/?format=json')
+                .then(response => {
+                    setFuncionarios(response)
+                })
+                .catch(erro => console.log(erro))
+        } else if (pessoasfisicas && funcionarios) {
+            const processados = funcionarios.map(item => {
+                const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
+    
+                return { 
+                    ...item, 
+                    pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
+                };
+            });
+            setFuncionarios(processados)
+        }
+        if(!dependentes)
+        {
+            http.get(`dependente/?format=json&id_funcionario=${id}`)
+                .then(response => {
+                    setDependentes(response)
+                })
+                .catch(erro => console.log(erro))
+        }
+        if(!pessoasfisicas) {
+            
+            http.get('pessoa_fisica/?format=json')
+                .then(response => {
+                    setPessoasFisicas(response)
+                })
+                .catch(erro => console.log(erro))
+        }
+
+        if (pessoasfisicas && dependentes && funcionarios && !dep_pess) {
+            // Verifica se todos os funcionários têm `pessoa_fisica`
+            const funcionariosValidos = funcionarios.every(func => func.pessoa_fisica);
+        
+            if (funcionariosValidos) {
+                const processados = dependentes.map(item => {
+                    const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
+                    const funcionario = funcionarios.find(func => func.id === item.id_funcionario);
+            
+                    return { 
+                        ...item, 
+                        pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
+                        funcionario: funcionario || null // Adiciona `funcionario`
+                    };
+                });
+        
+                setDepPess(processados); // Atualiza o estado com os dados processados
+            }
+        }        
+        
+    }, [dependentes, pessoasfisicas, dep_pess, funcionarios])
 
     return (
         <DivPrincipal>
@@ -37,7 +85,7 @@ function ColaboradorDependentes() {
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
-            <DataTableDependentes dependentes={colaborador?.dependentes}/>
+            <DataTableDependentes dependentes={dep_pess}/>
         </DivPrincipal>
     )
 }

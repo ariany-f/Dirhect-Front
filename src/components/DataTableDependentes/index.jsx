@@ -9,6 +9,8 @@ import { useEffect, useState } from 'react';
 
 function DataTableDependentes({ dependentes }) {
 
+    console.log(dependentes)
+
     const[selectedDependente, setSelectedDependente] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -27,7 +29,7 @@ function DataTableDependentes({ dependentes }) {
 
     function verDetalhes(value)
     {
-        setSelectedDependente(value)
+        setSelectedDependente(value.id)
     }
     
     function formataCPF(cpf) {
@@ -35,9 +37,25 @@ function DataTableDependentes({ dependentes }) {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
     
+   
     const representativeCPFTemplate = (rowData) => {
+    
         return (
-            formataCPF(rowData.cpf)
+            formataCPF(rowData?.pessoa_fisica?.cpf)
+        )
+    }
+    
+    const representativeNomeTemplate = (rowData) => {
+        
+        return (
+            rowData?.pessoa_fisica?.nome
+        )
+    }
+    
+    const representativeFuncNomeTemplate = (rowData) => {
+        
+        return (
+            rowData?.funcionario?.pessoa_fisica?.nome
         )
     }
 
@@ -48,10 +66,10 @@ function DataTableDependentes({ dependentes }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
                 </span>
             </div>
-            <DataTable value={dependentes} filters={filters} globalFilterFields={['user_name', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
-                <Column field="user_name" header="Nome Completo" style={{ width: '35%' }}></Column>
+            <DataTable value={dependentes} filters={filters} globalFilterFields={['nome', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
+                <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
+                <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '35%' }}></Column>
                 <Column body={representativeCPFTemplate} header="CPF" style={{ width: '20%' }}></Column>
-                
             </DataTable>
         </>
     )

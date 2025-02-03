@@ -6,8 +6,9 @@ import styles from './Colaboradores.module.css'
 import styled from "styled-components"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { FaDownload } from 'react-icons/fa'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
+import http from '@http'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -20,6 +21,37 @@ function Colaboradores() {
 
     const location = useLocation();
     const [modalOpened, setModalOpened] = useState(false)
+    const [funcionarios, setFuncionarios] = useState(null)
+    const [pessoasfisicas, setPessoasFisicas] = useState(null)
+    const [func_pss, setFuncPess] = useState(null)
+
+    useEffect(() => {
+        if(!funcionarios)
+        {
+            http.get('funcionario/?format=json')
+                .then(response => {
+                    setFuncionarios(response)
+                })
+                .catch(erro => console.log(erro))
+        }
+        if(!pessoasfisicas) {
+            
+            http.get('pessoa_fisica/?format=json')
+                .then(response => {
+                    setPessoasFisicas(response)
+                })
+                .catch(erro => console.log(erro))
+        }
+
+        if (pessoasfisicas && funcionarios && !func_pss) {
+            const processados = funcionarios.map(item => {
+                const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
+                return { ...item, pessoa_fisica: pessoa || null }; // Adiciona `pessoa_fisica` ao item
+            });
+        
+            setFuncPess(processados); // Atualiza o estado com os dados processados
+        }
+    }, [funcionarios, pessoasfisicas, func_pss])
     
     return (
         <ConteudoFrame>
@@ -27,12 +59,6 @@ function Colaboradores() {
                 <BotaoGrupo>
                     <Link className={styles.link} to="/colaborador">
                         <Botao estilo={location.pathname == '/colaborador'?'black':''} size="small" tab>Cadastrados</Botao>
-                    </Link>
-                    <Link className={styles.link} to="/colaborador/aguardando-cadastro">
-                        <Botao estilo={location.pathname == '/colaborador/aguardando-cadastro'?'black':''} size="small" tab>Aguardando cadastro</Botao>
-                    </Link>
-                    <Link className={styles.link} to="/colaborador/desativados">
-                        <Botao estilo={location.pathname == '/colaborador/desativados'?'black':''} size="small" tab>Desativados</Botao>
                     </Link>
                 </BotaoGrupo>
                 <BotaoGrupo align="center">
@@ -44,7 +70,7 @@ function Colaboradores() {
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
-            <Outlet/>
+            <Outlet context={func_pss} />
             <ModalImportarPlanilha opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
     )

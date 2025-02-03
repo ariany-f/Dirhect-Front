@@ -180,7 +180,7 @@ function AppRouter() {
                 </Route>
               </Route>
             
-              <Route path="saldo-livre" element={<RecargaPremiacoes/>}>
+              <Route path="linhas-transporte" element={<RecargaPremiacoes/>}>
                 <Route index element={<Premiacoes />} />
                 <Route path="adicionar-detalhes" element={<PremiacaoDetalhes />} />
                 <Route path="como-funciona" element={<PremiacaoComoFunciona />} />

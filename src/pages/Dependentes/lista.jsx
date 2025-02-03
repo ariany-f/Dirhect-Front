@@ -5,7 +5,7 @@ import BotaoGrupo from '@components/BotaoGrupo'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './SaldoLivre.module.css'
 import styled from "styled-components"
-import { Link } from "react-router-dom"
+import { Link, useOutletContext } from "react-router-dom"
 import DataTablePremiacoes from '@components/DataTablePremiacoes'
 import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
@@ -41,26 +41,15 @@ const ContainerSemRegistro = styled.div`
 function DependentesListagem() {
 
     const [loading, setLoading] = useState(false)
-    const [dependentes, setDependentes] = useState([])
+    const [dependentes, setDependentes] = useState(null)
+    const context = useOutletContext()
     
     useEffect(() => {
-        if(dependentes.length === 0)
+        if(context && (!dependentes))
         {
-            // setLoading(true)
-            // http.get('api/dashboard/recharge/free-balance')
-            // .then(response => {
-            //     setLoading(false)
-            //     console.log(response)
-            //     if(response.data.award)
-            //     {
-            //         setDependentes(response.data.award)
-            //     }
-            // })
-            // .catch(erro => {
-            //     setLoading(false)
-            // })
+            setDependentes(context)
         }
-    }, [])
+    }, [dependentes, context])
 
     
     return (
@@ -68,16 +57,16 @@ function DependentesListagem() {
         <Loading opened={loading} />
             <BotaoGrupo align="end">
                 <BotaoGrupo>
-                    <Link to="/saldo-livre/adicionar-detalhes">
+                    <Link to="/linhas-transporte/adicionar-detalhes">
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Dependente</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
             <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
-                <Link to={'/saldo-livre/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
+                <Link to={'/linhas-transporte/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
             </QuestionCard>
             {
-                dependentes.length ?
+                dependentes ?
                 <DataTableDependentes dependentes={dependentes} />
                 :
                 <ContainerSemRegistro>
