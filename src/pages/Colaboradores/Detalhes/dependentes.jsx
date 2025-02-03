@@ -28,16 +28,6 @@ function ColaboradorDependentes() {
                     setFuncionarios(response)
                 })
                 .catch(erro => console.log(erro))
-        } else if (pessoasfisicas && funcionarios) {
-            const processados = funcionarios.map(item => {
-                const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
-    
-                return { 
-                    ...item, 
-                    pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
-                };
-            });
-            setFuncionarios(processados)
         }
         if(!dependentes)
         {
@@ -47,24 +37,28 @@ function ColaboradorDependentes() {
                 })
                 .catch(erro => console.log(erro))
         }
+        if(!pessoasfisicas) {
+            
+            http.get('pessoa_fisica/?format=json')
+                .then(response => {
+                    setPessoasFisicas(response)
+                })
+                .catch(erro => console.log(erro))
+        }
         
         if (pessoasfisicas && dependentes && funcionarios && !dep_pess) {
-            // Verifica se todos os funcionários têm `pessoa_fisica`
-            const funcionariosValidos = funcionarios.every(func => func.pessoa_fisica);
+    
+            const processados = dependentes.map(item => {
+                const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
         
-            if (funcionariosValidos) {
-                const processados = dependentes.map(item => {
-                    const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
-            
-                    return { 
-                        ...item, 
-                        dados_pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
-                        funcionario: item.id_funcionario || null // Adiciona `funcionario`
-                    };
-                });
-        
-                setDepPess(processados); // Atualiza o estado com os dados processados
-            }
+                return { 
+                    ...item, 
+                    dados_pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
+                    funcionario: item.id_funcionario || null // Adiciona `funcionario`
+                };
+            });
+    
+            setDepPess(processados); // Atualiza o estado com os dados processados
         }        
         
     }, [dependentes, pessoasfisicas, dep_pess, funcionarios])
