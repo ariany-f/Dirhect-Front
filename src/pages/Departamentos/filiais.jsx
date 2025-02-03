@@ -12,8 +12,6 @@ import { GrAddCircle } from 'react-icons/gr'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
-import { useDepartamentoContext } from '../../contexts/Departamento'
-import filiais from '@json/filiais.json'
 import DataTableFiliais from '../../components/DataTableFiliais'
 
 const ConteudoFrame = styled.div`
@@ -53,10 +51,10 @@ function FiliaisLista() {
             <Loading opened={loading} />
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
-                    <Link to="/estrutura/filiais">
+                    <Link to="/estrutura">
                         <Botao estilo={'black'} size="small" tab>Filiais</Botao>
                     </Link>
-                    <Link to="/estrutura">
+                    <Link to="/estrutura/departamentos">
                         <Botao estilo={''} size="small" tab>Departamentos</Botao>
                     </Link>
                     <Link to="/estrutura/secoes">

@@ -75,10 +75,10 @@ function DepartamentoLista() {
             <Loading opened={loading} />
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
-                    <Link to="/estrutura/filiais">
+                    <Link to="/estrutura">
                         <Botao estilo={''} size="small" tab>Filiais</Botao>
                     </Link>
-                    <Link to="/estrutura">
+                    <Link to="/estrutura/departamentos">
                         <Botao estilo={'black'} size="small" tab>Departamentos</Botao>
                     </Link>
                     <Link to="/estrutura/secoes">
