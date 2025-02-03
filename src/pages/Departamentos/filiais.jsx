@@ -26,44 +26,23 @@ const ConteudoFrame = styled.div`
 function FiliaisLista() {
 
     const [loading, setLoading] = useState(false)
-    const [departamentos, setDepartamentos] = useState(null)
+    const [filiais, setFiliais] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
-    const location = useLocation()
     const toast = useRef(null)
-    const navegar = useNavigate()
-    
-    const {
-        setDepartamento,
-        setNome,
-        setDescription
-    } = useDepartamentoContext()
-
-
-    const adicionarNome = (nome) => {
-            setDepartamento()
-            setDescription('')
-            setNome(nome)
-            navegar('/estrutura/adicionar-colaboradores')
-    }
 
     useEffect(() => {
-        // if(!departamentos)
-        // {
-        //     // setLoading(true)
-        //     // http.get('api/department/index')
-        //     //     .then(response => {
-        //     //         setLoading(false)
-        //     //         if(response.data)
-        //     //         {
-        //     //             setDepartamentos(response.data)
-        //     //         }
-        //     //     })
-        //     //     .catch(erro => {
-        //     //         console.log(erro)
-        //     //         setLoading(false)
-        //     //     })
-        // }
-    }, [departamentos])
+         
+        if(!filiais) {
+            
+            http.get('cliente/?format=json')
+                .then(response => {
+                    setFiliais(response)
+                })
+                .catch(erro => {
+                    setLoading(false)
+                })
+        }    
+    }, [filiais])
 
     return (
         <>
@@ -92,7 +71,7 @@ function FiliaisLista() {
                 </CardText>
                 <DataTableFiliais filiais={filiais} />
         </ConteudoFrame>
-        <ModalAdicionarDepartamento aoSalvar={adicionarNome} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }

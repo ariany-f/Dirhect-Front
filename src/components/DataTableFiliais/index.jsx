@@ -36,9 +36,16 @@ function DataTableFiliais({ filiais }) {
     }
     
     const representativeCNPJTemplate = (rowData) => {
-        return (
-            formataCNPJ(rowData.cnpj)
-        )
+        if(rowData?.cnpj)
+        {
+            return (
+                formataCNPJ(rowData.cnpj)
+            )
+        }
+        else
+        {
+            return ""
+        }
     }
 
     return (
@@ -49,7 +56,7 @@ function DataTableFiliais({ filiais }) {
                 </span>
             </div>
             <DataTable value={filiais} filters={filters} globalFilterFields={['name']}  emptyMessage="Não foram encontradas filiais" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '68vw' }}>
-                <Column field="name" header="Nome da Filial" style={{ width: '35%' }}></Column>
+                <Column field="id" header="Id da Filial" style={{ width: '35%' }}></Column>
                 <Column body={representativeCNPJTemplate} header="CNPJ"></Column>
             </DataTable>
         </>

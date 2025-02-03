@@ -23,7 +23,7 @@ const NumeroColaboradores = styled.p`
 `
 
 function DataTableDepartamentos({ departamentos }) {
-
+    console.log(departamentos)
     const[selectedDepartamento, setSelectedDepartamento] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({

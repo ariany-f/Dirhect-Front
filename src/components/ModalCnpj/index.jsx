@@ -105,6 +105,18 @@ const Item = styled.div`
 
 function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
+    useEffect(() => {
+        
+        http.get(`client_tenant/?format=json`)
+            .then(response => {
+               console.log(response)
+            })
+            .catch(erro => {
+                // setLoading(false)
+            })
+        
+    }, [])
+
     const { 
         usuario,
         setSessionCompany

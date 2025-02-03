@@ -10,7 +10,7 @@ import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 import { useDepartamentoContext } from '../../contexts/Departamento'
 
@@ -28,6 +28,7 @@ function DepartamentoLista() {
     const [modalOpened, setModalOpened] = useState(false)
     const location = useLocation()
     const toast = useRef(null)
+    const contexto = useOutletContext();
     const navegar = useNavigate()
     
     const {
@@ -38,29 +39,17 @@ function DepartamentoLista() {
 
 
     const adicionarNome = (nome) => {
-            setDepartamento()
-            setDescription('')
-            setNome(nome)
-            navegar('/estrutura/adicionar-colaboradores')
+        setDepartamento()
+        setDescription('')
+        setNome(nome)
+        navegar('/estrutura/adicionar-colaboradores')
     }
 
     useEffect(() => {
-        // if(!departamentos)
-        // {
-        //     // setLoading(true)
-        //     // http.get('api/department/index')
-        //     //     .then(response => {
-        //     //         setLoading(false)
-        //     //         if(response.data)
-        //     //         {
-        //     //             setDepartamentos(response.data)
-        //     //         }
-        //     //     })
-        //     //     .catch(erro => {
-        //     //         console.log(erro)
-        //     //         setLoading(false)
-        //     //     })
-        // }
+        if((!departamentos) && contexto)
+        {
+            setDepartamentos(contexto)
+        }
     }, [departamentos])
 
     return (
@@ -85,10 +74,7 @@ function DepartamentoLista() {
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
             </BotaoGrupo>
-                <CardText>
-                    <p className={styles.subtitulo}>Sempre que cadastrar um novo colaborador, você terá a opção de colocá-lo em um departamento, isso facilita na organização e na recarga de benefícios.</p>
-                </CardText>
-                <DataTableDepartamentos departamentos={departments} />
+                <DataTableDepartamentos departamentos={departamentos} />
         </ConteudoFrame>
         <ModalAdicionarDepartamento aoSalvar={adicionarNome} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
