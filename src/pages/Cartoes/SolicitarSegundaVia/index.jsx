@@ -26,7 +26,7 @@ function CartaoSolicitarSegundaVia() {
                                 Cartão foi roubado ou perdido
                             </Texto>
                         </div>
-                        <Link to={`/cartao/solicitar-segunda-via/${id}/endereco`}>
+                        <Link to={`/elegibilidade/solicitar-segunda-via/${id}/endereco`}>
                             <MdOutlineKeyboardArrowRight size={24} className={styles.icon}/>
                         </Link>
                     </Frame>
@@ -38,7 +38,7 @@ function CartaoSolicitarSegundaVia() {
                                 Cartão está danificado
                             </Texto>
                         </div>
-                        <Link to={`/cartao/solicitar-segunda-via/${id}/endereco`}>
+                        <Link to={`/elegibilidade/solicitar-segunda-via/${id}/endereco`}>
                             <MdOutlineKeyboardArrowRight size={24} className={styles.icon} />
                         </Link>
                     </Frame>

@@ -166,7 +166,7 @@ function BarraLateral() {
                     },
                     {
                         "id": 11,
-                        "url": "/cartao",
+                        "url": "/elegibilidade",
                         "pageTitulo": "Elegibilidade",
                         "icone": <LuSparkles size={20} className="icon" />,
                         "itemTitulo": "Elegibilidade"

@@ -25,7 +25,7 @@ function CartaoSolicitarSegundaViaSucesso() {
                     <Link onClick={() => navigate(-1)}>
                         <Botao weight='light' estilo="neutro">Voltar</Botao>
                     </Link>
-                    <Link to={`/cartao/solicitar-segunda-via/${id}/entrega/acompanhar`}>
+                    <Link to={`/elegibilidade/solicitar-segunda-via/${id}/entrega/acompanhar`}>
                         <Botao weight='light' filled>Acompanhar</Botao>
                     </Link>
                 </div>

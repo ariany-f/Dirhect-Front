@@ -16,7 +16,7 @@ function CartaoSolicitarSegundaViaAcompanhar() {
       
        <Frame>
             <Container gap="24px">
-                <BotaoVoltar linkFixo="/cartao" />
+                <BotaoVoltar linkFixo="/elegibilidade" />
                 <Titulo>
                     <h3>Maria Eduarda</h3>
                 </Titulo>

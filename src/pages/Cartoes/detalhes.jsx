@@ -55,7 +55,7 @@ function CartaoDetalhes() {
       
        <Frame>
             <Container gap="24px">
-                <BotaoVoltar linkFixo="/cartao" />
+                <BotaoVoltar linkFixo="/elegibilidade" />
                 <BotaoGrupo align="start">
                     <Titulo>
                         <h3>Maria Eduarda</h3>
@@ -81,7 +81,7 @@ function CartaoDetalhes() {
                             <PiCardsFill size={18} />
                             &nbsp;2ª via do cartão
                         </Texto>
-                        <Link to="/cartao/solicitar-segunda-via/123">
+                        <Link to="/elegibilidade/solicitar-segunda-via/123">
                             <MdOutlineChevronRight size={20} />
                         </Link>
                     </CardLine>

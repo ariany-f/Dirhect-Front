@@ -20,16 +20,13 @@ function Cartoes() {
         <ConteudoFrame>
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
-                    <Link className={styles.link} to="/cartao">
-                        <Botao estilo={location.pathname === '/cartao'?'black':''} size="small" tab>Cartões Solicitados</Botao>
-                    </Link>
-                    <Link className={styles.link} to="/cartao/ativados">
-                        <Botao estilo={location.pathname === '/cartao/ativados'?'black':''} size="small" tab>Cartões Ativados</Botao>
+                    <Link className={styles.link} to="/elegibilidade">
+                        <Botao estilo={location.pathname === '/elegibilidade'?'black':''} size="small" tab>Ativas</Botao>
                     </Link>
                 </BotaoGrupo>
                 <BotaoGrupo align="center">
                     <Link to="/colaborador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar colaborador</Botao>
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar elegibilidade</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>

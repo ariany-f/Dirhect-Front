@@ -102,8 +102,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         },
         {
             "id": 5,
-            "url": "cartao",
-            "pageTitulo": "Cartões"
+            "url": "elegibilidade",
+            "pageTitulo": "Elegibilidade"
         },
         {
             "id": 6,

@@ -227,12 +227,12 @@ function AppRouter() {
                 <Route path=":id/arquivos" element={<CandidatoRegistroArquivos />} />
               </Route>
              
-              <Route path="/cartao" element={<Cartoes />} >
+              <Route path="/elegibilidade" element={<Cartoes />} >
                 <Route index element={<CartoesLista />} />
                 <Route path="ativados" element={<CartoesAtivados />} />
               </Route>
-              <Route path="/cartao/detalhes/:id" element={<CartaoDetalhes />} />
-              <Route path="/cartao/solicitar-segunda-via" element={<CartaoSolicitarSegundaViaCommon />} >
+              <Route path="/elegibilidade/detalhes/:id" element={<CartaoDetalhes />} />
+              <Route path="/elegibilidade/solicitar-segunda-via" element={<CartaoSolicitarSegundaViaCommon />} >
                 <Route path=":id" element={<CartaoSolicitarSegundaVia/>} />
                 <Route path=":id/endereco" element={<CartaoSolicitarSegundaViaEndereco />} />
                 <Route path=":id/sucesso" element={<CartaoSolicitarSegundaViaSucesso />} />
