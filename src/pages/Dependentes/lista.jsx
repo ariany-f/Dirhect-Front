@@ -6,7 +6,6 @@ import { GrAddCircle } from 'react-icons/gr'
 import styles from './SaldoLivre.module.css'
 import styled from "styled-components"
 import { Link, useOutletContext } from "react-router-dom"
-import DataTablePremiacoes from '@components/DataTablePremiacoes'
 import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import Loading from '@components/Loading'

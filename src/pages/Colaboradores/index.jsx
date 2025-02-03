@@ -8,6 +8,8 @@ import { Link, Outlet, useLocation } from "react-router-dom"
 import { FaDownload } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
 import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
+import QuestionCard from '@components/QuestionCard'
+import { AiFillQuestionCircle } from 'react-icons/ai'
 import http from '@http'
 
 const ConteudoFrame = styled.div`
@@ -70,6 +72,9 @@ function Colaboradores() {
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
+                <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
+                    <Link to={'/linhas-transporte/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
+                </QuestionCard>
             <Outlet context={func_pss} />
             <ModalImportarPlanilha opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
