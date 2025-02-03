@@ -2,7 +2,7 @@ import axios from "axios"
 import { ArmazenadorToken } from "../utils"
 
 const http = axios.create({
-    baseURL: 'http://dirhect.win:8000/api/',
+    baseURL: 'https://dirhect.win:2053/api/',
     headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
