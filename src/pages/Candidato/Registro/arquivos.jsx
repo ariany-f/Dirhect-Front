@@ -57,6 +57,7 @@ const CandidatoRegistroArquivos = () => {
     const [loading, setLoading] = useState(false)
     const [planilha, setPlanilha] = useState(null)
     const [candidato, setCandidato] = useState(null)
+
     const [arquivos, setArquivos] = useState([
         { id: 1, caminho: null, nome: '', isLocked: false },
     ]);
@@ -119,16 +120,14 @@ const CandidatoRegistroArquivos = () => {
             isLocked: false
         };
         setArquivos((prev) => [...prev, novoArquivo]);
+        console.log(arquivos)
     };
 
     // Função para tratar o envio do formulário
     const handleSubmit = (e) => {
         e.preventDefault();
-
         // Resetar o estado de erros
         setClassError([]);
-
-        console.log('Arquivos enviados:', arquivos);
     };
 
     return (
@@ -161,7 +160,7 @@ const CandidatoRegistroArquivos = () => {
                                 </ArquivoBotao>
                                 <br/>
                                 {arquivo.caminho &&
-                                    <Texto>{arquivo.nome || 'Arquivo carregado'}</Texto>
+                                    <Texto>{arquivo.caminho || 'Arquivo carregado'}</Texto>
                                 }
                             </div>
                             <FaTrash 
@@ -172,7 +171,7 @@ const CandidatoRegistroArquivos = () => {
                     </ArquivoContainer>
                 ))}
                 <Frame alinhamento="center">
-                    <AdicionarBotao onClick={() => adicionarArquivo}><CiCirclePlus size={20} color="var(--vermilion-400)" className={styles.icon} />Adicionar novo arquivo</AdicionarBotao>
+                    <AdicionarBotao onClick={adicionarArquivo}><CiCirclePlus size={20} color="var(--vermilion-400)" className={styles.icon} />Adicionar novo arquivo</AdicionarBotao>
                 </Frame>
                 
                 <Frame alinhamento="end">
