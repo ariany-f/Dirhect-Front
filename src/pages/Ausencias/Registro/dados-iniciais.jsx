@@ -178,7 +178,7 @@ function AusenciaDadosIniciais() {
                 </Col6>
             </Col12>
             <ContainerButton>
-                <Botao aoClicar={() => navigate('/ferias')} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
+                <Botao aoClicar={() => navegar('/ferias')} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                 <Botao aoClicar={(evento) => sendData(evento)} estilo="vermilion" size="medium" filled>Adicionar Férias</Botao>
             </ContainerButton>
         </form>
