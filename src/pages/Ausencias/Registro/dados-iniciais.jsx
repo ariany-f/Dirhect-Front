@@ -134,8 +134,13 @@ function AusenciaDadosIniciais() {
         }
     }
 
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+    };
+
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <Toast ref={toast} />
             <Loading opened={loading} />
             <Frame estilo="spaced">
