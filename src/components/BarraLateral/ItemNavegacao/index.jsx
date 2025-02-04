@@ -17,7 +17,7 @@ const ItemListaEstilizado = styled.li`
     line-height: 20px; /* 142.857% */
     gap: 12px;
     width: 100%;
-    border-right: ${ props => props.$ativo ? '3px solid var(--secundaria)' : 'none' };
+    background-color: ${ props => props.$ativo ? 'var(--vermilion-600)' : 'none' };
 
     & .icon {
         box-sizing: initial;
