@@ -58,15 +58,15 @@ function DependentesListagem() {
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
-            <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
+            {/* <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
                 <Link to={'/linhas-transporte/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
-            </QuestionCard>
+            </QuestionCard> */}
             {
                 dependentes ?
                 <DataTableDependentes dependentes={dependentes} />
                 :
                 <ContainerSemRegistro>
-                    <section className={styles.container}>
+                <section className={styles.container}>
                         <img src={Management} />
                         <h6>Não há dependentes registrados</h6>
                         <p>Aqui você verá todos os dependentes registradas.</p>
