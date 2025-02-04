@@ -10,6 +10,22 @@ import styled from "styled-components"
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import http from '@http'
 import axios from "axios"
+import styles from './Registro.module.css'
+import { CiCirclePlus } from 'react-icons/ci';
+
+const ArquivoBotao = styled(Botao)`
+    margin-top: 10px;
+`;
+
+const AdicionarBotao = styled.div`
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primaria);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+`
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -313,7 +329,12 @@ const CandidatoRegistroDadosGerais = () => {
                 </div>
             </Frame>
 
-            <Botao type="submit">Salvar</Botao>
+
+            <Frame alinhamento="end">
+                <ArquivoBotao  aoClicar={setCandidato} type="submit" style={{ marginTop: '20px' }}>
+                    Salvar dados
+                </ArquivoBotao>
+            </Frame>
         </form>
         </Container>
     );
