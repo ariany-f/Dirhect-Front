@@ -68,7 +68,7 @@ function Premiacoes() {
             <BotaoGrupo align="end">
                 <BotaoGrupo>
                     <Link to="/linhas-transporte/adicionar-detalhes">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Saldo Livre</Botao>
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Linha de Transporte</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
