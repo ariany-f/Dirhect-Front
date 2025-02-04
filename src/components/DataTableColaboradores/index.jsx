@@ -14,6 +14,7 @@ function DataTableColaboradores({ colaboradores }) {
 
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
+    const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -71,6 +72,12 @@ function DataTableColaboradores({ colaboradores }) {
                     label: <b>{'Demissão'}</b>, 
                     command: () => {
                         setModalOpened(true);  // Se status for 'pending', cancela a solicitação
+                    }
+                },
+                { 
+                    label: <b>{'Férias'}</b>, 
+                    command: () => {
+                        setModalFeriasOpened(true);  // Se status for 'pending', cancela a solicitação
                     }
                 }
             ];
