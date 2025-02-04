@@ -197,9 +197,9 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                             </Wrapper>
                         </>
                     }
-                        <CardText>
+                        {/* <CardText>
                             <p className={styles.subtitulo}>Você pode ter mais de um CNPJ cadastrado, porém às configurações são individuas para cada empresa.</p>
-                        </CardText>
+                        </CardText> */}
                         <Frame alinhamento="center">
                             <AdicionarCnpjBotao onClick={() => navegarParaAdicionarCnpj()}><CiCirclePlus size={20} className="icon" />Adicionar uma nova empresa</AdicionarCnpjBotao>
                         </Frame>
