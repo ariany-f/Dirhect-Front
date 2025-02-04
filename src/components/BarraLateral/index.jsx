@@ -133,6 +133,13 @@ function BarraLateral() {
                         "icone": <BiSolidDashboard size={20} className="icon" />,
                         "itemTitulo": "Colaboradores"
                     },
+                    {
+                        "id": 4,
+                        "url": "/dependentes",
+                        "pageTitulo": "Dependentes",
+                        "icone": <FaUserGroup size={20} className="icon" />,
+                        "itemTitulo": "Dependentes"
+                    },
                 ];
             case 'equipeBeneficios':
                 return [
