@@ -97,7 +97,7 @@ function Menu({ opened = false, aoFechar }){
                                     <IoMdSettings size={20} className="icon"/>
                                     Meus dados
                                 </div>
-                                <MdOutlineChevronRight size={20} />
+                                {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
                         </li>
                         <li onClick={() => FecharMenu()}>
@@ -106,7 +106,7 @@ function Menu({ opened = false, aoFechar }){
                                     <RiOrganizationChart size={20} className="icon"/>
                                     Estrutura Organizacional
                                 </div>
-                                <MdOutlineChevronRight size={20} />
+                                {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
                         </li>
                         <li onClick={() => FecharMenu()}>
@@ -115,7 +115,7 @@ function Menu({ opened = false, aoFechar }){
                                     <RiUserFollowFill size={20} className="icon"/>
                                     Operadores
                                 </div>
-                                <MdOutlineChevronRight size={20} />
+                                {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
                         </li>
                         <li onClick={Sair}>
@@ -125,7 +125,7 @@ function Menu({ opened = false, aoFechar }){
                                     Sair
                                 </div>
                                 
-                                <MdOutlineChevronRight size={20} />
+                                {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
                         </li>
                     </ul>
