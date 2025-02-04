@@ -5,6 +5,24 @@ import Container from '@components/Container';
 import Botao from '@components/Botao';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
+import styles from './Registro.module.css'
+import styled from 'styled-components';
+import { CiCirclePlus } from 'react-icons/ci';
+import Frame from "@components/Frame"
+
+const ArquivoBotao = styled(Botao)`
+    margin-top: 10px;
+`;
+
+const AdicionarBotao = styled.div`
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primaria);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+`
 
 const CandidatoRegistroProfissional = () => {
     const [classError, setClassError] = useState([]);
@@ -150,15 +168,15 @@ const CandidatoRegistroProfissional = () => {
                     </div>
                 ))}
 
-                <Botao aoClicar={adicionarExperiencia} style={{ marginTop: '20px' }}>
-                   <FaPlusCircle size="16" fill="white"/>
-                </Botao>
+                <Frame alinhamento="center">
+                    <AdicionarBotao onClick={adicionarExperiencia}><CiCirclePlus size={20} color="var(--vermilion-400)" className={styles.icon} />Adicionar nova experiência</AdicionarBotao>
+                </Frame>
 
-                <br/>
-
-                <Botao onClick={setCandidatoExperiencia} type="submit" style={{ marginTop: '20px' }}>
-                    Salvar
-                </Botao>
+                <Frame alinhamento="end">
+                    <ArquivoBotao  aoClicar={setCandidatoExperiencia} type="submit" style={{ marginTop: '20px' }}>
+                        Salvar experiências
+                    </ArquivoBotao>
+                </Frame>
             </form>
         </Container>
     );

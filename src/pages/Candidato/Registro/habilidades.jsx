@@ -4,7 +4,42 @@ import CampoTexto from '@components/CampoTexto';
 import Container from '@components/Container';
 import Botao from '@components/Botao';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
+import { FaMinusCircle, FaPlusCircle, FaTrash } from 'react-icons/fa';
+import styles from './Registro.module.css'
+import styled from 'styled-components';
+import { CiCirclePlus } from 'react-icons/ci';
+import Frame from "@components/Frame"
+import ContainerHorizontal from "@components/ContainerHorizontal"
+
+
+const ArquivoContainer = styled.div`
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+`;
+
+const ArquivoHeader = styled(ContainerHorizontal)`
+    width: 100%;
+    justify-content: space-between;
+`;
+
+const ArquivoBotao = styled(Botao)`
+    margin-top: 10px;
+`;
+
+const AdicionarBotao = styled.div`
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primaria);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+`
 
 const CandidatoRegistroHabilidades = () => {
     const [classError, setClassError] = useState([]);
@@ -48,7 +83,7 @@ const CandidatoRegistroHabilidades = () => {
     // Função para adicionar um novo grupo de campos de educação
     const adicionarHabilidade = () => {
         const novaHabilidade = {
-            id: educacao.length + 1,
+            id: habilidades.length + 1,
             nivel: '',
             descricao: ''
         };
@@ -76,15 +111,14 @@ const CandidatoRegistroHabilidades = () => {
             <h3>Habilidades</h3>
             <form onSubmit={handleSubmit}>
                 {habilidades.map((habilidade) => (
-                    <div
-                        key={habilidade.id}
-                        style={{
-                            marginBottom: '20px',
-                            padding: '15px',
-                            borderRadius: '5px'
-                        }}
-                    >
-
+                      <ArquivoContainer key={habilidade.id}>
+                        <ArquivoHeader>
+                            <div></div>
+                            <FaTrash 
+                                    style={{ cursor: 'pointer' }} 
+                                    onClick={() => removerHabilidade(habilidade.id)} 
+                                />
+                        </ArquivoHeader>
                         <CampoTexto
                             camposVazios={classError}
                             name={`descricao-${habilidade.id}`}
@@ -104,27 +138,18 @@ const CandidatoRegistroHabilidades = () => {
                             label="Nível de Habilidade"
                             placeholder="Ex: avançado"
                         />
-
-                        {habilidade.id &&
-                            <Botao
-                                type="button"
-                                aoClicar={() => removerHabilidade(habilidade.id)}
-                                style={{ marginTop: '10px' }}>
-                                <FaMinusCircle size="16" fill="white" />
-                            </Botao>
-                        }
-                    </div>
+                    </ArquivoContainer>
                 ))}
 
-                <Botao aoClicar={adicionarHabilidade} style={{ marginTop: '20px' }}>
-                   <FaPlusCircle size="16" fill="white"/>
-                </Botao>
+                <Frame alinhamento="center">
+                    <AdicionarBotao onClick={adicionarHabilidade}><CiCirclePlus size={20} color="var(--vermilion-400)" className={styles.icon} />Adicionar nova habilidade</AdicionarBotao>
+                </Frame>
 
-                <br/>
-
-                <Botao onClick={setCandidatoHabilidades} type="submit" style={{ marginTop: '20px' }}>
-                    Salvar
-                </Botao>
+                <Frame alinhamento="end">
+                    <ArquivoBotao onClick={setCandidatoHabilidades} type="submit" style={{ marginTop: '20px' }}>
+                        Salvar habilidades
+                    </ArquivoBotao>
+                </Frame>
             </form>
         </Container>
     );

@@ -12,9 +12,6 @@ import { useOutletContext } from 'react-router-dom';
 import styled from 'styled-components';
 import { CiCirclePlus } from 'react-icons/ci';
 import styles from './Registro.module.css'
-import { FaPlusCircle } from 'react-icons/fa';
-import { BiUpload } from 'react-icons/bi';
-import { MdUploadFile } from 'react-icons/md';
 
 const ArquivoContainer = styled.div`
     margin-bottom: 20px;
@@ -29,10 +26,6 @@ const ArquivoContainer = styled.div`
 const ArquivoHeader = styled(ContainerHorizontal)`
     width: 100%;
     justify-content: space-between;
-`;
-
-const ArquivoNome = styled(Texto)`
-    font-weight: bold;
 `;
 
 const ArquivoBotao = styled(Botao)`
