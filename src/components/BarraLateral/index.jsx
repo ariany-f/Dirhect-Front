@@ -101,7 +101,7 @@ function BarraLateral() {
                     },
                     {
                         "id": 5,
-                        "url": "/ferias/solicitar",
+                        "url": "/ferias/registro",
                         "pageTitulo": "Ferias",
                         "icone": <BiDrink size={20} className="icon" />,
                         "itemTitulo": "Ferias"

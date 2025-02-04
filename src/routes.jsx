@@ -114,6 +114,8 @@ import FeriasListagem from './pages/Ausencias/ferias'
 import Ausencias from './pages/Ausencias'
 import FeriasAusenciasListagem from './pages/Ausencias/lista'
 import AusenciasListagem from './pages/Ausencias/ausencias'
+import AusenciaDadosIniciais from './pages/Ausencias/Registro/dados-iniciais'
+import AusenciaRegistro from './pages/Ausencias/Registro/registro'
 
 function AppRouter() {
   
@@ -217,6 +219,9 @@ function AppRouter() {
               <Route path="all" element={<FeriasAusenciasListagem />} />
               <Route path="ausencias" element={<AusenciasListagem />} />
               <Route path="solicitar" element={<ValidarAdmissoes />} />
+            </Route>
+            <Route path="ferias/registro" element={<AusenciaRegistro />} >
+                  <Route index element={<AusenciaDadosIniciais />} />
             </Route>
               
               {/* <Route path="despesa" element={<Despesas />} />
