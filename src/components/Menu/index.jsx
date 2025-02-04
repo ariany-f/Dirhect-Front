@@ -113,7 +113,7 @@ function Menu({ opened = false, aoFechar }){
                             <Link className="link" to="/operador">
                                 <div className="group">
                                     <RiUserFollowFill size={20} className="icon"/>
-                                    Operadores
+                                    Usuários do Sistema
                                 </div>
                                 {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
