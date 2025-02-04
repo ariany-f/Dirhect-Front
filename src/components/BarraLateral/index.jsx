@@ -166,7 +166,7 @@ function BarraLateral() {
                     },
                     {
                         "id": 9,
-                        "url": "/beneficio",
+                        "url": "/contratos",
                         "pageTitulo": "Contrato Fornecedor",
                         "icone": <RiFileListFill size={20} className="icon" />,
                         "itemTitulo": "Contrato Fornecedor"

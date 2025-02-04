@@ -104,6 +104,8 @@ import DetalhesAdmissao from './pages/Admissoes/detalhes'
 import FiliaisLista from './pages/Departamentos/filiais'
 import CargosLista from './pages/Departamentos/cargos'
 import SecoesLista from './pages/Departamentos/secoes'
+import Contratos from './pages/Contratos'
+import ContratosListagem from './pages/Contratos/lista'
 import ColaboradorDependentes from './pages/Colaboradores/Detalhes/dependentes'
 import Dependentes from './pages/Dependentes'
 import DependentesListagem from './pages/Dependentes/lista'
@@ -198,6 +200,10 @@ function AppRouter() {
               <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
               <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
               <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
+            </Route>
+            
+            <Route path="contratos" element={<Contratos/>}>
+              <Route index element={<ContratosListagem />} />
             </Route>
               
               {/* <Route path="despesa" element={<Despesas />} />
