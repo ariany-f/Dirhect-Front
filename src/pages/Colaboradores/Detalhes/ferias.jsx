@@ -66,7 +66,7 @@ function ColabroadorFerias() {
         <DivPrincipal>
             <Loading opened={loading} />
             <Titulo>
-                <QuestionCard alinhamento="start" element={<h6>Dependentes</h6>}>
+                <QuestionCard alinhamento="start" element={<h6>Férias</h6>}>
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
