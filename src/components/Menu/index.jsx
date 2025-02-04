@@ -26,7 +26,7 @@ const DialogEstilizado = styled.dialog`
             padding: 24px;
             & .link {
                 width: 100%;
-                justify-content: space-between;
+                justify-content: end;
                 align-items: center;
                 align-self: stretch;
                 font-size: 14px;
@@ -94,8 +94,8 @@ function Menu({ opened = false, aoFechar }){
                         <li onClick={() => FecharMenu()}>
                             <Link className="link" to="/usuario">
                                 <div className="group">
-                                    <IoMdSettings size={20} className="icon"/>
                                     Meus dados
+                                    <IoMdSettings size={20} className="icon"/>
                                 </div>
                                 {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
@@ -103,8 +103,8 @@ function Menu({ opened = false, aoFechar }){
                         <li onClick={() => FecharMenu()}>
                             <Link className="link" to="/estrutura">
                                 <div className="group">
-                                    <RiOrganizationChart size={20} className="icon"/>
                                     Estrutura Organizacional
+                                    <RiOrganizationChart size={20} className="icon"/>
                                 </div>
                                 {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
@@ -112,8 +112,8 @@ function Menu({ opened = false, aoFechar }){
                         <li onClick={() => FecharMenu()}>
                             <Link className="link" to="/operador">
                                 <div className="group">
-                                    <RiUserFollowFill size={20} className="icon"/>
                                     Usuários do Sistema
+                                    <RiUserFollowFill size={20} className="icon"/>
                                 </div>
                                 {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
@@ -121,8 +121,8 @@ function Menu({ opened = false, aoFechar }){
                         <li onClick={Sair}>
                             <Link className="link">
                                 <div className="group">
-                                    <RiLogoutCircleLine size={20} className="icon sair"/>
                                     Sair
+                                    <RiLogoutCircleLine size={20} className="icon sair"/>
                                 </div>
                                 
                                 {/* <MdOutlineChevronRight size={20} /> */}
