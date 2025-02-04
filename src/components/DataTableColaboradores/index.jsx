@@ -60,7 +60,7 @@ function DataTableColaboradores({ colaboradores }) {
     const menuModel = (selectedCollaborator) => {
         if (!selectedCollaborator) return [];
 
-        if(usuario.tipo == 'equipeFolhaPagamento')
+        if(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento')
         {
 
             return [
