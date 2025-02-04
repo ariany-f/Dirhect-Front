@@ -109,6 +109,11 @@ import ContratosListagem from './pages/Contratos/lista'
 import ColaboradorDependentes from './pages/Colaboradores/Detalhes/dependentes'
 import Dependentes from './pages/Dependentes'
 import DependentesListagem from './pages/Dependentes/lista'
+import ColabroadorFerias from './pages/Colaboradores/Detalhes/ferias'
+import FeriasListagem from './pages/Ausencias/ferias'
+import Ausencias from './pages/Ausencias'
+import FeriasAusenciasListagem from './pages/Ausencias/lista'
+import AusenciasListagem from './pages/Ausencias/ausencias'
 
 function AppRouter() {
   
@@ -144,6 +149,7 @@ function AppRouter() {
                   <Route path="cartoes" element={<ColaboradorCartoes />} />
                   <Route path="saldo" element={<ColaboradorSaldo />} />
                   <Route path="dependentes" element={<ColaboradorDependentes />} />
+                  <Route path="ferias" element={<ColabroadorFerias />} />
                   <Route path="carteiras" element={<ColaboradorCarteiras />} />
               </Route>
               <Route path="colaborador/registro" element={<ColaboradorRegistro />} >
@@ -204,6 +210,13 @@ function AppRouter() {
             
             <Route path="contratos" element={<Contratos/>}>
               <Route index element={<ContratosListagem />} />
+            </Route>
+            
+            <Route path="ferias" element={<Ausencias/>}>
+              <Route index element={<FeriasListagem />} />
+              <Route path="all" element={<FeriasAusenciasListagem />} />
+              <Route path="ausencias" element={<AusenciasListagem />} />
+              <Route path="solicitar" element={<ValidarAdmissoes />} />
             </Route>
               
               {/* <Route path="despesa" element={<Despesas />} />

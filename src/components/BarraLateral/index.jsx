@@ -2,7 +2,7 @@ import { styled } from "styled-components"
 import ItemNavegacao from "./ItemNavegacao"
 import { AiFillHome } from "react-icons/ai"
 import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine, RiBlenderFill } from "react-icons/ri"
-import { BiBusSchool, BiSolidDashboard } from "react-icons/bi"
+import { BiBusSchool, BiDrink, BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
@@ -99,6 +99,13 @@ function BarraLateral() {
                         "icone": <BiSolidDashboard size={20} className="icon" />,
                         "itemTitulo": "Colaboradores"
                     },
+                    {
+                        "id": 5,
+                        "url": "/ferias/solicitar",
+                        "pageTitulo": "Ferias",
+                        "icone": <BiDrink size={20} className="icon" />,
+                        "itemTitulo": "Ferias"
+                    },
                 ];
             case 'candidato':
                 return [
@@ -139,6 +146,13 @@ function BarraLateral() {
                         "pageTitulo": "Dependentes",
                         "icone": <FaUserGroup size={20} className="icon" />,
                         "itemTitulo": "Dependentes"
+                    },
+                    {
+                        "id": 5,
+                        "url": "/ferias",
+                        "pageTitulo": "Ferias",
+                        "icone": <BiDrink size={20} className="icon" />,
+                        "itemTitulo": "Ferias"
                     },
                 ];
             case 'equipeBeneficios':
