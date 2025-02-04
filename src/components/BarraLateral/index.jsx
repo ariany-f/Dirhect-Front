@@ -91,7 +91,14 @@ function BarraLateral() {
                         "pageTitulo": "Admissão",
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Admissão"
-                    }
+                    },
+                    {
+                        "id": 4,
+                        "url": "/colaborador",
+                        "pageTitulo": "Colaboradores",
+                        "icone": <BiSolidDashboard size={20} className="icon" />,
+                        "itemTitulo": "Colaboradores"
+                    },
                 ];
             case 'candidato':
                 return [
@@ -118,7 +125,14 @@ function BarraLateral() {
                         "pageTitulo": "Admissões",
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Admissões"
-                    }
+                    },
+                    {
+                        "id": 3,
+                        "url": "/colaborador",
+                        "pageTitulo": "Colaboradores",
+                        "icone": <BiSolidDashboard size={20} className="icon" />,
+                        "itemTitulo": "Colaboradores"
+                    },
                 ];
             case 'equipeBeneficios':
                 return [
