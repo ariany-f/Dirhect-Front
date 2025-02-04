@@ -1,14 +1,53 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useVagasContext } from '@contexts/VagasContext';
 import CampoTexto from '@components/CampoTexto';
+import Frame from "@components/Frame"
 import ContainerHorizontal from "@components/ContainerHorizontal"
 import Texto from "@components/Texto"
 import Container from '@components/Container';
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaUpload } from "react-icons/fa";
 import Loading from '@components/Loading'
 import Botao from '@components/Botao';
-import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 import { useOutletContext } from 'react-router-dom';
+import styled from 'styled-components';
+import { CiCirclePlus } from 'react-icons/ci';
+import styles from './Registro.module.css'
+import { FaPlusCircle } from 'react-icons/fa';
+import { BiUpload } from 'react-icons/bi';
+import { MdUploadFile } from 'react-icons/md';
+
+const ArquivoContainer = styled.div`
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+`;
+
+const ArquivoHeader = styled(ContainerHorizontal)`
+    width: 100%;
+    justify-content: space-between;
+`;
+
+const ArquivoNome = styled(Texto)`
+    font-weight: bold;
+`;
+
+const ArquivoBotao = styled(Botao)`
+    margin-top: 10px;
+`;
+
+const AdicionarBotao = styled.div`
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primaria);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+`
 
 const CandidatoRegistroArquivos = () => {
     const [classError, setClassError] = useState([]);
@@ -77,8 +116,9 @@ const CandidatoRegistroArquivos = () => {
             id: arquivos.length + 1,
             caminho: null,
             nome: '',
+            isLocked: false
         };
-        setArquivos([...arquivos, novoArquivo]);
+        setArquivos((prev) => [...prev, novoArquivo]);
     };
 
     // Função para tratar o envio do formulário
@@ -97,61 +137,49 @@ const CandidatoRegistroArquivos = () => {
             <h3>Arquivos</h3>
             <form onSubmit={handleSubmit}>
                 {arquivos.map((arquivo) => (
-                    <div
-                        key={arquivo.id}
-                        style={{
-                            marginBottom: '20px',
-                            padding: '15px',
-                            borderRadius: '5px',
-                            opacity: arquivo.isLocked ? 0.5 : 1, // Aplica um estilo para campos bloqueados
-                        }}
-                    >
-                            {arquivo && arquivo.nome &&
-                                <ContainerHorizontal>
-                                    <Texto>{arquivo?.nome}</Texto>
-                                    <FaTrash style={{cursor: 'pointer'}} onClick={() => setPlanilha(null)} />
-                                </ContainerHorizontal>
-                            }
-                            <CampoTexto
-                                label="Arquivo"
-                                type="file"
-                                reference={ref}
-                                name={`arquivo-${arquivo.id}`}
-                                setValor={(e) => !arquivo.isLocked && atualizarCampoArquivo(arquivo.id, 'caminho', e.target.files[0])}
-                                disabled={arquivo.isLocked}
+                    <ArquivoContainer key={arquivo.id}>
+                        <CampoTexto
+                            label="Nome do Arquivo"
+                            type="text"
+                            valor={arquivo.nome}
+                            setValor={(e) => !arquivo.isLocked && atualizarCampoArquivo(arquivo.id, 'nome', e.target.value)}
+                            disabled={arquivo.isLocked}
+                            placeholder="Ex: Curriculum, Certificado"
+                        />
+                        <ArquivoHeader>
+                            <div>
+                                
+                                <CampoTexto
+                                    type="file"
+                                    reference={ref}
+                                    name={`arquivo-${arquivo.id}`}
+                                    setValor={(e) => !arquivo.isLocked && atualizarCampoArquivo(arquivo.id, 'caminho', e.target.files[0])}
+                                    disabled={arquivo.isLocked}
+                                />
+                                <ArquivoBotao aoClicar={submeterPlanilha} estilo="vermilion" size="medium" filled>
+                                    <Texto color="white" weight="600"><FaUpload size={14}/>&nbsp;&nbsp;Selecionar arquivo</Texto>
+                                </ArquivoBotao>
+                                <br/>
+                                {arquivo.caminho &&
+                                    <Texto>{arquivo.nome || 'Arquivo carregado'}</Texto>
+                                }
+                            </div>
+                            <FaTrash 
+                                style={{ cursor: 'pointer' }} 
+                                onClick={() => removerArquivo(arquivo.id)} 
                             />
-                            <Botao aoClicar={submeterPlanilha} estilo="vermilion" size="medium" filled>{!arquivo.caminho ? 'Selecionar' : 'Enviar'} arquivo</Botao>
-                            <br/>
-                            <CampoTexto
-                                label="Nome do Arquivo"
-                                type="text"
-                                valor={arquivo.nome}
-                                setValor={(e) => !arquivo.isLocked && atualizarCampoArquivo(arquivo.id, 'nome', e.target.value)}
-                                disabled={arquivo.isLocked}
-                                placeholder="Ex: Curriculum, Certificado"
-                            />
-
-                        {arquivo.id && !arquivo.isLocked && (
-                            <Botao
-                                type="button"
-                                aoClicar={() => removerArquivo(arquivo.id)}
-                                style={{ marginTop: '10px' }}
-                            >
-                                <FaMinusCircle size="16" fill="white" />
-                            </Botao>
-                        )}
-                    </div>
+                        </ArquivoHeader>
+                    </ArquivoContainer>
                 ))}
-
-                <Botao aoClicar={adicionarArquivo} style={{ marginTop: '20px' }}>
-                    <FaPlusCircle size="16" fill="white" />
-                </Botao>
-
-                <br />
-
-                <Botao type="submit" style={{ marginTop: '20px' }}>
-                    Salvar
-                </Botao>
+                <Frame alinhamento="center">
+                    <AdicionarBotao onClick={() => adicionarArquivo}><CiCirclePlus size={20} color="var(--vermilion-400)" className={styles.icon} />Adicionar novo arquivo</AdicionarBotao>
+                </Frame>
+                
+                <Frame alinhamento="end">
+                    <ArquivoBotao type="submit" style={{ marginTop: '20px' }}>
+                        Salvar arquivos
+                    </ArquivoBotao>
+                </Frame>
             </form>
         </Container>
     );
