@@ -4,6 +4,10 @@
     color: var(--neutro-600)
 }
 
+.lb {
+    width: 100%!important;
+}
+
 .inputContainer {
     display: flex;
     flex-direction: column;

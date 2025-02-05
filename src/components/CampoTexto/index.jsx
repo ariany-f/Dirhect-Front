@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
 import { FaEnvelope } from 'react-icons/fa'
 import { BsSearch } from 'react-icons/bs'
+import {FloatLabel} from 'primereact/floatlabel'
 import * as Yup from 'yup'
 import { currency, mask as masker, unMask } from "remask"
 
@@ -196,10 +197,21 @@ function CampoTexto({ label, disabled = false, type='text',  setFocus, placehold
     return (
         <>
             <div className={styles.inputContainer}>
-                {(label) ?
-                <label htmlFor={name} className={styles.label}>{label}</label>
-                : ''}
-                <Campo ref={reference} disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+               
+                {label && type!= 'date' ?
+                <FloatLabel className={styles.lb}>
+                    <Campo ref={reference} disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                    <label htmlFor={name} className={styles.label}>{label}</label>
+                </FloatLabel>
+                : 
+                    label && type == 'date' ?
+                    <>
+                        <label htmlFor={name} className={styles.label}>{label}</label>
+                        <Campo ref={reference} disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                    </>
+                    :
+                    <Campo ref={reference} disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                }
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&
                     <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>
