@@ -44,82 +44,32 @@ function Dashboard() {
             lastTransaction: []
     })
 
-    const setSaldo = (saldo) => {
-        setDashboardData(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                saldo
-            }
-        })
-    }
-    const setTransactions = (transactions) => {
-        setDashboardData(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                transactions
-            }
-        })
-    }
-    const setLastTransaction = (lastTransaction) => {
-        setDashboardData(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                lastTransaction
-            }
-        })
-    }
-
     useEffect(() => {
         if(usuarioEstaLogado)
         {
-            if(!dashboardData.userDashResource.public_id)
-            {
-                /**
-                 * Dados necessários para exibição no painel do usuário
-                 */
-                // http.get('api/auth/me')
-                // .then(response => {
-                //     setDashboardData(response.data)
-                //     setLoadingOpened(false)
-                // })
-                // .then(() => {
-                //     setSaldo(dashboardData.userDashResource.total_benefit_balance)
-                //     setLoadingOpened(false)
-                // })
-                // .catch(erro => {
-                //     console.error(erro)
-                //     setLoadingOpened(false)
-                // })
-            }
-    
             /**
              * Pegar colaboradores
              */
-            // http.get('api/collaborator/index')
-            // .then(response => {
-            //     if(response.success)
-            //     {
-            //         setColaboradores(response.data.collaborators)
-            //     }
-            // })
-            // .catch(erro => {
-            //     console.error(erro)
-            //     setLoadingOpened(false)
-            // })
+            if((!colaboradores))
+            {
+                http.get('funcionario/?format=json')
+                .then(response => {
+                    setColaboradores(response)
+                })
+                .catch(erro => {
+                    setLoadingOpened(false)
+                })
+            }
         }
-    }, [usuarioEstaLogado])
+    }, [usuarioEstaLogado, colaboradores])
 
     return (
         <>
         {/* {usuarioEstaLogado && */}
             <>
-            {collaborators ?
+            {colaboradores ?
                 <>
-                    {(!collaborators.length || !dashboardData.transactions.length) ? 
-                        <IncompleteSteps transactions={dashboardData.transactions} colaboradores={collaborators} />
-                    :
-                        <DashboardCard dashboardData={dashboardData} colaboradores={collaborators} />
-                    }
+                    <DashboardCard colaboradores={colaboradores} />
                 </>
             :
                 <Loading opened={loadingOpened} />
