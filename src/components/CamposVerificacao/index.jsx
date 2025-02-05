@@ -2,8 +2,8 @@ import styles from './CamposVerificacao.module.css'
 import styled from 'styled-components'
 
 const Campo = styled.input`
-    border-radius: 8px;
-    outline: .4px solid var(--neutro-200);
+    border-radius: 4px;
+    outline: .4px solid var(--neutro-400);
     background: var(--background-label);
     padding: 2vh 1vw!important;
     border: none;

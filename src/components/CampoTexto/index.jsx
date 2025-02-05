@@ -9,8 +9,8 @@ import * as Yup from 'yup'
 import { currency, mask as masker, unMask } from "remask"
 
 const Campo = styled.input`
-    border-radius: 8px;
-    outline: .4px solid var(--neutro-200);
+    border-radius: 4px;
+    outline: .4px solid var(--neutro-400);
     background: var(--background-label);
     padding: ${ props => props.$padding ?  props.$padding : '22px 16px' };
     border: none;
