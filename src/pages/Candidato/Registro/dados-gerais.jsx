@@ -126,7 +126,7 @@ const CandidatoRegistroDadosGerais = () => {
     const setCep = (cep) => setCandidatoEndereco("cep", cep);
     const setDistrict = (district) => setCandidatoEndereco("district", district);
     const setComplemento = (complement) => setCandidatoEndereco("complement", complement);
-    const setState = (state) => setCandidatoEndereco("state", state.code);
+    const setState = (state) => setCandidatoEndereco("state", state);
     const setCity = (city) => setCandidatoEndereco("city", city);
     const setNumber = (number) => setCandidatoEndereco("number", number);
 

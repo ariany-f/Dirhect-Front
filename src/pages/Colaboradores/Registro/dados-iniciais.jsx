@@ -78,8 +78,23 @@ function ColaboradorDadosIniciais() {
     const toast = useRef(null)
     
     useEffect(() => {
-       
-     }, [])
+        if(!estados.length)
+            {
+                http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+                .then(response => {
+                        response.map((item) => {
+                            let obj = {
+                                name: item.nome,
+                                code: item.sigla
+                            }
+                            if(!estados.includes(obj))
+                            {
+                                setEstados(estadoAnterior => [...estadoAnterior, obj]);
+                            }
+                        })
+                    })
+            }
+     }, [estados])
 
 
     const sendData = (evento) => {
