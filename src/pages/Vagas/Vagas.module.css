@@ -21,6 +21,10 @@
     padding: 0;
 }
 
+.icon * {
+    box-sizing: initial;
+    stroke: var(--white);
+}
 .item {
     margin-bottom: 15px;
     padding: 10px;
