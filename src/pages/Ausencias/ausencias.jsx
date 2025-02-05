@@ -51,6 +51,11 @@ function AusenciasListagem() {
     
     return (
         <ConteudoFrame>
+             <BotaoGrupo align="end">
+                <BotaoGrupo align="center">
+                    <Botao aoClicar={() => true} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Registrar Ausência</Botao>
+                </BotaoGrupo>
+            </BotaoGrupo>
             {contratos ?
             <DataTableContratos contratos={contratos} />
             :

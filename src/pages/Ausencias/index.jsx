@@ -35,7 +35,7 @@ function Ausencias() {
         <ContratosProvider>
              <ConteudoFrame>
             <Loading opened={loading} />
-            <BotaoGrupo align="space-between">
+            <BotaoGrupo align="start">
                 <BotaoGrupo>
                     <Link className={styles.link} to="/ferias">
                         <Botao estilo={location.pathname == '/ferias'?'black':''} size="small" tab>Férias</Botao>
@@ -45,11 +45,6 @@ function Ausencias() {
                     </Link>
                     <Link className={styles.link} to="/ferias/all">
                         <Botao estilo={location.pathname == '/ferias/all'?'black':''} size="small" tab>Tudo</Botao>
-                    </Link>
-                </BotaoGrupo>
-                <BotaoGrupo align="center">
-                    <Link to="/ferias/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Disponibilizar Férias</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>

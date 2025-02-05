@@ -10,6 +10,8 @@ import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import DataTableContratos from '../../components/DataTableContratos'
+import DataTableFerias from '../../components/DataTableFerias'
+import ModalFerias from '../../components/ModalFerias'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -38,21 +40,27 @@ const ContainerSemRegistro = styled.div`
 
 function FeriasListagem() {
 
-    const [contratos, setContratos] = useState(null)
+    const [ferias, setFerias] = useState(null)
     const context = useOutletContext()
+    const [modalOpened, setModalOpened] = useState(false)
     
     useEffect(() => {
-        if(context && (!contratos))
+        if(context && (!ferias))
         {
-            setContratos(context)
+            setFerias(context)
         }
-    }, [contratos, context])
+    }, [ferias, context])
 
     
     return (
         <ConteudoFrame>
-            {contratos ?
-            <DataTableContratos contratos={contratos} />
+            <BotaoGrupo align="end">
+                <BotaoGrupo align="center">
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Disponibilizar Férias</Botao>
+                </BotaoGrupo>
+            </BotaoGrupo>
+            {ferias ?
+            <DataTableFerias ferias={ferias} />
             :
             <ContainerSemRegistro>
             <section className={styles.container}>
@@ -62,6 +70,7 @@ function FeriasListagem() {
                 </section>
             </ContainerSemRegistro>}
 
+            <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
     )
 }

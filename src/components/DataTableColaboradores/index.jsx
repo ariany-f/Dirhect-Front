@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ContextMenu } from 'primereact/contextmenu';
 import { IoEllipsisVertical } from 'react-icons/io5';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
+import ModalDemissao from '../ModalDemissao';
+import ModalFerias from '../ModalFerias';
 
 function DataTableColaboradores({ colaboradores }) {
 
@@ -62,7 +64,6 @@ function DataTableColaboradores({ colaboradores }) {
 
         if(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento')
         {
-
             return [
                 { 
                     label: <b>Detalhes</b>, 
@@ -105,6 +106,8 @@ function DataTableColaboradores({ colaboradores }) {
                     setSelectedCollaborator(e.originalEvent.target.closest('tr').data); 
                     cm.current.show(e.originalEvent);
                 }}
+                selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)}
+                selectionMode="single"
                 contextMenuSelection={selectedCollaborator} value={colaboradores} filters={filters} globalFilterFields={['dados_pessoa_fisica.nome', 'dados_pessoa_fisica.cpf']}  emptyMessage="Não foram encontrados colaboradores" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column body={representativeCPFTemplate} header="CPF" style={{ width: '20%' }}></Column>
@@ -121,6 +124,8 @@ function DataTableColaboradores({ colaboradores }) {
                     </button>
                 )}></Column>
             </DataTable>
+            <ModalDemissao opened={modalOpened} aoFechar={() => setModalOpened(false)}/>
+            <ModalFerias opened={modalFeriasOpened} aoFechar={() => setModalFeriasOpened(false)}/>
         </>
     )
 }

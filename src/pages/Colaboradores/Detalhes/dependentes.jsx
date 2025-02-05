@@ -8,9 +8,6 @@ import http from '@http'
 import Loading from '@components/Loading'
 import DataTableDependentes from '@components/DataTableDependentes'
 
-const DivPrincipal = styled.div`
-    width: 65vw;
-`
 
 function ColaboradorDependentes() {
 
@@ -63,15 +60,15 @@ function ColaboradorDependentes() {
     }, [dependentes, pessoasfisicas, dep_pess])
 
     return (
-        <DivPrincipal>
+        <>
             <Loading opened={loading} />
             <Titulo>
                 <QuestionCard alinhamento="start" element={<h6>Dependentes</h6>}>
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
-            <DataTableDependentes dependentes={dep_pess}/>
-        </DivPrincipal>
+            <DataTableDependentes search={false} dependentes={dep_pess}/>
+        </>
     )
 }
 

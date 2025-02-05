@@ -7,9 +7,7 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-function DataTableDependentes({ dependentes }) {
-
-    console.log(dependentes)
+function DataTableDependentes({ dependentes, search = true }) {
 
     const[selectedDependente, setSelectedDependente] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -61,11 +59,13 @@ function DataTableDependentes({ dependentes }) {
 
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
-                </span>
-            </div>
+            {search &&
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
+                    </span>
+                </div>
+            }
             <DataTable value={dependentes} filters={filters} globalFilterFields={['dados_pessoa_fisica.nome', 'dados_pessoa_fisica.cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '35%' }}></Column>
                 <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>

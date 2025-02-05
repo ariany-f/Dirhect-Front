@@ -220,6 +220,7 @@ function AppRouter() {
               <Route path="ausencias" element={<AusenciasListagem />} />
               <Route path="solicitar" element={<ValidarAdmissoes />} />
             </Route>
+            
             <Route path="ferias/registro" element={<AusenciaRegistro />} >
                   <Route index element={<AusenciaDadosIniciais />} />
             </Route>

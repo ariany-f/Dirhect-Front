@@ -46,31 +46,7 @@ function AusenciaDadosIniciais() {
     const toast = useRef(null)
     
     useEffect(() => {
-        // if(!colaborador.public_company_id)
-        // {
-        //     retornarCompanySession()
-        //     .then((response) => {
-        //         console.log(response)
-        //         if(response.success)
-        //         {
-        //             setCompanyPublicId(response.data.public_id)
-        //         }
-        //     })
-        // }
-
-        // http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-        // .then(response => {
-        //      response.map((item) => {
-        //          let obj = {
-        //              name: item.nome,
-        //              code: item.sigla
-        //          }
-        //          if(!estados.includes(obj))
-        //          {
-        //              setEstados(estadoAnterior => [...estadoAnterior, obj]);
-        //          }
-        //      })
-        //  })
+       
      }, [])
 
 
@@ -97,43 +73,9 @@ function AusenciaDadosIniciais() {
 
         if(document.querySelectorAll("form .error").length === 0)
         {
-            adicionarColaborador()
+            // Lógica de salvamento dos dados
         }
     }
-
-    const adicionarColaborador = () => {
-      
-        setLoading(true)
-        submeterUsuario().then(response => {
-            if(response.success)
-            {
-                navegar('/colaborador/registro/sucesso')
-            }
-        }).catch((erro) => {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
-            setLoading(false)
-        })      
-    }
-
-    const ChangeCep = (value) => 
-    {
-        setAddressPostalCode(value)
-        
-        if(value.length > 8)
-        {
-            axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
-            .then((response) => {
-                if(response.data)
-                {
-                    setAddressStreet(response.data.logradouro)
-                    setAddressDistrict(response.data.bairro)
-                    setAddressCity(response.data.localidade)
-                    setAddressState(response.data.uf)
-                }
-            })
-        }
-    }
-
     
     const handleSubmit = (e) => {
         e.preventDefault();
