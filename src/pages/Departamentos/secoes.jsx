@@ -10,6 +10,8 @@ import Management from '@assets/Management.svg'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
+import http from '../../http'
+import DataTableSecoes from '../../components/DataTableSecoes'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -48,7 +50,17 @@ function SecoesLista() {
 
     useEffect(() => {
      
-    }, [])
+        if(!secoes) {
+            
+            http.get('secao/?format=json')
+                .then(response => {
+                    setSecoes(response)
+                })
+                .catch(erro => {
+                    setLoading(false)
+                })
+        }    
+    }, [secoes])
 
     return (
         <>
@@ -74,7 +86,7 @@ function SecoesLista() {
             </BotaoGrupo>
             {
                 secoes ?
-                    <DataTableDepartamentos departamentos={secoes} />
+                    <DataTableSecoes secoes={secoes} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>

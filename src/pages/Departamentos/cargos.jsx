@@ -63,7 +63,7 @@ function CargosLista() {
                     <Link to="/estrutura/departamentos">
                         <Botao estilo={''} size="small" tab>Departamentos</Botao>
                     </Link>
-                    <Link to="/estrutura/cargos">
+                    <Link to="/estrutura/secoes">
                         <Botao estilo={''} size="small" tab>Seções</Botao>
                     </Link>
                     <Link to="/estrutura/cargos">
