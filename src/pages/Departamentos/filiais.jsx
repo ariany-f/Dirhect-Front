@@ -88,7 +88,7 @@ function FiliaisLista() {
             </BotaoGrupo>
             
             {
-                filiais ?
+                filiais && filiais.length > 0 ?
                 <DataTableFiliais filiais={filiais} />
                 :
                 <ContainerSemRegistro>

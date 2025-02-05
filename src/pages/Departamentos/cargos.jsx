@@ -73,7 +73,7 @@ function CargosLista() {
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um cargo</Botao>
             </BotaoGrupo>
             {
-                cargos ?
+                cargos && cargos.length > 0 ?
                     <DataTableDepartamentos departamentos={cargos} />
                 :
                 <ContainerSemRegistro>

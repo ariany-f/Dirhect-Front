@@ -98,8 +98,8 @@ function DepartamentoLista() {
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
             </BotaoGrupo>
             {
-                departamentos ?
-                <DataTableDepartamentos departamentos={departamentos} />
+                departamentos && departamentos.length > 0 ?
+                    <DataTableDepartamentos departamentos={departamentos} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>

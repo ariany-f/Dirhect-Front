@@ -42,7 +42,7 @@ const ContainerSemRegistro = styled.div`
 function SecoesLista() {
 
     const [loading, setLoading] = useState(false)
-    const [secoes, setSecoes] = useState([])
+    const [secoes, setSecoes] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
@@ -50,7 +50,7 @@ function SecoesLista() {
 
     useEffect(() => {
      
-        if(secoes.length == 0) {
+        if(!secoes) {
             
             setLoading(true)
             http.get('secao/?format=json')
@@ -87,7 +87,7 @@ function SecoesLista() {
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar uma seção</Botao>
             </BotaoGrupo>
             {
-                secoes.length > 0 ?
+                secoes && secoes.length > 0 ?
                     <DataTableSecoes secoes={secoes} />
                 :
                 <ContainerSemRegistro>
