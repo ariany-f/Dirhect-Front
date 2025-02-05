@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useVagasContext } from '@contexts/VagasContext';
 import CampoTexto from '@components/CampoTexto';
 import Container from '@components/Container';
+import ContainerHorizontal from '@components/ContainerHorizontal';
 import Botao from '@components/Botao';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
+import { FaMinusCircle, FaPlusCircle, FaTrash } from 'react-icons/fa';
 import styles from './Registro.module.css'
 import styled from 'styled-components';
 import { CiCirclePlus } from 'react-icons/ci';
@@ -23,6 +24,34 @@ const AdicionarBotao = styled.div`
     align-items: center;
     cursor: pointer;
 `
+const Col12 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+`
+
+const Col6 = styled.div`
+    padding: 10px;
+    flex: 1 1 50%;
+`
+
+const ArquivoContainer = styled.div`
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+`;
+
+const ArquivoHeader = styled(ContainerHorizontal)`
+    width: 100%;
+    justify-content: space-between;
+`;
+
+
 
 const CandidatoRegistroProfissional = () => {
     const [classError, setClassError] = useState([]);
@@ -97,7 +126,7 @@ const CandidatoRegistroProfissional = () => {
             <h3>Experiência Profissional</h3>
             <form onSubmit={handleSubmit}>
                 {experiencia.map((experiencia) => (
-                    <div
+                    <ArquivoContainer
                         key={experiencia.id}
                         style={{
                             marginBottom: '20px',
@@ -105,29 +134,39 @@ const CandidatoRegistroProfissional = () => {
                             borderRadius: '5px',
                             opacity: experiencia.isLocked ? 0.5 : 1, // Aplica um estilo para campos bloqueados
                         }}
-                    >
-                        <CampoTexto
-                            camposVazios={classError}
-                            name={`cargo-${experiencia.id}`}
-                            valor={experiencia.cargo}
-                            setValor={(valor) => !experiencia.isLocked && atualizarCampoExperiencia(experiencia.id, 'cargo', valor)}
-                            type="text"
-                            label="Cargo"
-                            placeholder="Ex: Desenvolvedor, Analista"
-                            disabled={experiencia.isLocked} // Desabilita os campos se estiver bloqueado
-                        />
-
-                        <CampoTexto
-                            camposVazios={classError}
-                            name={`empresa-${experiencia.id}`}
-                            valor={experiencia.empresa}
-                            setValor={(valor) => !experiencia.isLocked && atualizarCampoExperiencia(experiencia.id, 'empresa', valor)}
-                            type="text"
-                            label="Empresa"
-                            placeholder="Ex: Nome da empresa"
-                            disabled={experiencia.isLocked}
-                        />
-
+                    > 
+                        {experiencia.id &&
+                            <ArquivoHeader>
+                                <div></div>
+                                <FaTrash style={{ cursor: 'pointer' }} onClick={() => removerExperiencia(experiencia.id)} />
+                            </ArquivoHeader>
+                        }
+                        <Col12>
+                            <Col6>
+                                <CampoTexto
+                                    camposVazios={classError}
+                                    name={`cargo-${experiencia.id}`}
+                                    valor={experiencia.cargo}
+                                    setValor={(valor) => !experiencia.isLocked && atualizarCampoExperiencia(experiencia.id, 'cargo', valor)}
+                                    type="text"
+                                    label="Cargo"
+                                    placeholder="Ex: Desenvolvedor, Analista"
+                                    disabled={experiencia.isLocked} // Desabilita os campos se estiver bloqueado
+                                />
+                            </Col6>
+                            <Col6>
+                                <CampoTexto
+                                    camposVazios={classError}
+                                    name={`empresa-${experiencia.id}`}
+                                    valor={experiencia.empresa}
+                                    setValor={(valor) => !experiencia.isLocked && atualizarCampoExperiencia(experiencia.id, 'empresa', valor)}
+                                    type="text"
+                                    label="Empresa"
+                                    placeholder="Ex: Nome da empresa"
+                                    disabled={experiencia.isLocked}
+                                />
+                            </Col6>
+                        </Col12>
                         <CampoTexto
                             camposVazios={classError}
                             name={`descricao-${experiencia.id}`}
@@ -138,34 +177,29 @@ const CandidatoRegistroProfissional = () => {
                             placeholder="Ex: Responsabilidades"
                             disabled={experiencia.isLocked}
                         />
-
-                        <CampoTexto
-                            name={`dataInicio-${experiencia.id}`}
-                            valor={experiencia.dataInicio}
-                            setValor={(valor) => !experiencia.isLocked && atualizarCampoExperiencia(experiencia.id, 'dataInicio', valor)}
-                            type="date"
-                            label="Data de Início"
-                            disabled={experiencia.isLocked}
-                        />
-
-                        <CampoTexto
-                            name={`dataSaida-${experiencia.id}`}
-                            valor={experiencia.dataSaida}
-                            setValor={(valor) => !experiencia.isLocked && atualizarCampoExperiencia(experiencia.id, 'dataSaida', valor)}
-                            type="date"
-                            label="Data de Saída"
-                            disabled={experiencia.isLocked}
-                        />
-
-                        {experiencia.id && !experiencia.isLocked &&
-                            <Botao
-                                type="button"
-                                aoClicar={() => removerExperiencia(experiencia.id)}
-                                style={{ marginTop: '10px' }}>
-                                <FaMinusCircle size="16" fill="white" />
-                            </Botao>
-                        }
-                    </div>
+                        <Col12>
+                            <Col6>
+                                <CampoTexto
+                                    name={`dataInicio-${experiencia.id}`}
+                                    valor={experiencia.dataInicio}
+                                    setValor={(valor) => !experiencia.isLocked && atualizarCampoExperiencia(experiencia.id, 'dataInicio', valor)}
+                                    type="date"
+                                    label="Data de Início"
+                                    disabled={experiencia.isLocked}
+                                />
+                            </Col6>
+                            <Col6>
+                                <CampoTexto
+                                    name={`dataSaida-${experiencia.id}`}
+                                    valor={experiencia.dataSaida}
+                                    setValor={(valor) => !experiencia.isLocked && atualizarCampoExperiencia(experiencia.id, 'dataSaida', valor)}
+                                    type="date"
+                                    label="Data de Saída"
+                                    disabled={experiencia.isLocked}
+                                />
+                            </Col6>
+                        </Col12>
+                    </ArquivoContainer>
                 ))}
 
                 <Frame alinhamento="center">

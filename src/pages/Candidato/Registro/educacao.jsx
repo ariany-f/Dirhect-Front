@@ -4,11 +4,12 @@ import CampoTexto from '@components/CampoTexto';
 import Container from '@components/Container';
 import Botao from '@components/Botao';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
+import { FaMinusCircle, FaPlusCircle, FaTrash } from 'react-icons/fa';
 import styles from './Registro.module.css'
 import styled from 'styled-components';
 import { CiCirclePlus } from 'react-icons/ci';
 import Frame from "@components/Frame"
+import ContainerHorizontal from '@components/ContainerHorizontal';
 
 const ArquivoBotao = styled(Botao)`
     margin-top: 10px;
@@ -23,6 +24,33 @@ const AdicionarBotao = styled.div`
     align-items: center;
     cursor: pointer;
 `
+const Col12 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+`
+
+const Col6 = styled.div`
+    padding: 10px;
+    flex: 1 1 50%;
+`
+
+const ArquivoContainer = styled.div`
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+`;
+
+const ArquivoHeader = styled(ContainerHorizontal)`
+    width: 100%;
+    justify-content: space-between;
+`;
+
 
 const CandidatoRegistroEducacao = () => {
     const [classError, setClassError] = useState([]);
@@ -97,7 +125,7 @@ const CandidatoRegistroEducacao = () => {
             <h3>Educação</h3>
             <form onSubmit={handleSubmit}>
                 {educacao.map((educacao) => (
-                    <div
+                    <ArquivoContainer
                         key={educacao.id}
                         style={{
                             marginBottom: '20px',
@@ -106,28 +134,39 @@ const CandidatoRegistroEducacao = () => {
                             opacity: educacao.isLocked ? 0.5 : 1, // Aplica um estilo para campos bloqueados
                         }}
                     >
-                        <CampoTexto
-                            camposVazios={classError}
-                            name={`nivel-${educacao.id}`}
-                            valor={educacao.nivel}
-                            setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'nivel', valor)}
-                            type="text"
-                            label="Nível de Educação"
-                            placeholder="Ex: Ensino Médio, Faculdade"
-                            disabled={educacao.isLocked} // Desabilita os campos se estiver bloqueado
-                        />
-
-                        <CampoTexto
-                            camposVazios={classError}
-                            name={`instituicao-${educacao.id}`}
-                            valor={educacao.instituicao}
-                            setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'instituicao', valor)}
-                            type="text"
-                            label="Instituição"
-                            placeholder="Ex: Nome da escola ou universidade"
-                            disabled={educacao.isLocked}
-                        />
-
+                        
+                        {educacao.id &&
+                            <ArquivoHeader>
+                                <div></div>
+                                <FaTrash style={{ cursor: 'pointer' }} onClick={() => removerEducacao(educacao.id)} />
+                            </ArquivoHeader>
+                        }
+                        <Col12>
+                            <Col6>
+                                <CampoTexto
+                                    camposVazios={classError}
+                                    name={`nivel-${educacao.id}`}
+                                    valor={educacao.nivel}
+                                    setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'nivel', valor)}
+                                    type="text"
+                                    label="Nível de Educação"
+                                    placeholder="Ex: Ensino Médio, Faculdade"
+                                    disabled={educacao.isLocked} // Desabilita os campos se estiver bloqueado
+                                />
+                            </Col6>
+                            <Col6>
+                                <CampoTexto
+                                    camposVazios={classError}
+                                    name={`instituicao-${educacao.id}`}
+                                    valor={educacao.instituicao}
+                                    setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'instituicao', valor)}
+                                    type="text"
+                                    label="Instituição"
+                                    placeholder="Ex: Nome da escola ou universidade"
+                                    disabled={educacao.isLocked}
+                                />
+                            </Col6>
+                        </Col12>
                         <CampoTexto
                             camposVazios={classError}
                             name={`curso-${educacao.id}`}
@@ -138,34 +177,29 @@ const CandidatoRegistroEducacao = () => {
                             placeholder="Ex: Engenharia, Administração"
                             disabled={educacao.isLocked}
                         />
-
-                        <CampoTexto
-                            name={`dataInicio-${educacao.id}`}
-                            valor={educacao.dataInicio}
-                            setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'dataInicio', valor)}
-                            type="date"
-                            label="Data de Início"
-                            disabled={educacao.isLocked}
-                        />
-
-                        <CampoTexto
-                            name={`dataConclusao-${educacao.id}`}
-                            valor={educacao.dataConclusao}
-                            setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'dataConclusao', valor)}
-                            type="date"
-                            label="Data de Conclusão"
-                            disabled={educacao.isLocked}
-                        />
-
-                        {educacao.id && !educacao.isLocked &&
-                            <Botao
-                                type="button"
-                                aoClicar={() => removerEducacao(educacao.id)}
-                                style={{ marginTop: '10px' }}>
-                                <FaMinusCircle size="16" fill="white" />
-                            </Botao>
-                        }
-                    </div>
+                        <Col12>
+                            <Col6>
+                                <CampoTexto
+                                    name={`dataInicio-${educacao.id}`}
+                                    valor={educacao.dataInicio}
+                                    setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'dataInicio', valor)}
+                                    type="date"
+                                    label="Data de Início"
+                                    disabled={educacao.isLocked}
+                                />
+                            </Col6>
+                            <Col6>
+                                <CampoTexto
+                                    name={`dataConclusao-${educacao.id}`}
+                                    valor={educacao.dataConclusao}
+                                    setValor={(valor) => !educacao.isLocked && atualizarCampoEducacao(educacao.id, 'dataConclusao', valor)}
+                                    type="date"
+                                    label="Data de Conclusão"
+                                    disabled={educacao.isLocked}
+                                />
+                            </Col6>
+                        </Col12>
+                    </ArquivoContainer>
                 ))}
 
 
