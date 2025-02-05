@@ -56,7 +56,7 @@ function FeriasListagem() {
         <ConteudoFrame>
             <BotaoGrupo align="end">
                 <BotaoGrupo align="center">
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Disponibilizar Férias</Botao>
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
                 </BotaoGrupo>
             </BotaoGrupo>
             {ferias ?

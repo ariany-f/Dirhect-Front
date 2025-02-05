@@ -59,7 +59,7 @@ function FeriasAusenciasListagem() {
                     <Botao aoClicar={() => true} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Registrar Ausência</Botao>
                 </BotaoGrupo>
                 <BotaoGrupo align="center">
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Disponibilizar Férias</Botao>
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
                 </BotaoGrupo>
             </BotaoGrupo>
             {ferias ?
