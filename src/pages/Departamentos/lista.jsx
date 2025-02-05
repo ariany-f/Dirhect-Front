@@ -44,7 +44,6 @@ function DepartamentoLista() {
     const [modalOpened, setModalOpened] = useState(false)
     const location = useLocation()
     const toast = useRef(null)
-    const contexto = useOutletContext();
     const navegar = useNavigate()
     
     const {
@@ -62,11 +61,18 @@ function DepartamentoLista() {
     }
 
     useEffect(() => {
-        if((departamentos.length == 0) && contexto)
-        {
-            setDepartamentos(contexto)
+        if(departamentos.length == 0) {
+            setLoading(true)
+            http.get('departamento/?format=json')
+                .then(response => {
+                    setDepartamentos(response)
+                    setLoading(false)
+                })
+                .catch(erro => {
+                    setLoading(false)
+                })
         }
-    }, [departamentos, contexto])
+    }, [departamentos])
 
     return (
         <>

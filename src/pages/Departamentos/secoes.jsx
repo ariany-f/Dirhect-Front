@@ -52,9 +52,11 @@ function SecoesLista() {
      
         if(secoes.length == 0) {
             
+            setLoading(true)
             http.get('secao/?format=json')
                 .then(response => {
                     setSecoes(response)
+                    setLoading(false)
                 })
                 .catch(erro => {
                     setLoading(false)
