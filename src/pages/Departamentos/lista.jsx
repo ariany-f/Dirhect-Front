@@ -41,7 +41,7 @@ const ContainerSemRegistro = styled.div`
 function DepartamentoLista() {
 
     const [loading, setLoading] = useState(false)
-    const [departamentos, setDepartamentos] = useState([])
+    const [departamentos, setDepartamentos] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const location = useLocation()
     const toast = useRef(null)
@@ -62,7 +62,7 @@ function DepartamentoLista() {
     }
 
     useEffect(() => {
-        if(departamentos.length == 0) {
+        if(!departamentos) {
             setLoading(true)
             http.get('departamento/?format=json')
                 .then(response => {
@@ -98,7 +98,7 @@ function DepartamentoLista() {
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
             </BotaoGrupo>
             {
-                departamentos.length > 0 ?
+                departamentos ?
                 <DataTableDepartamentos departamentos={departamentos} />
                 :
                 <ContainerSemRegistro>
