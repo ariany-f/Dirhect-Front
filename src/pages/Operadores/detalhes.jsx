@@ -19,14 +19,11 @@ function OperadorDetalhes() {
     useEffect(() => {
         if(!operador)
         {
-            // http.get(`api/dashboard/operator/${id}`)
-            //     .then(response => {
-            //         if (response.status === 'success') 
-            //         {
-            //             setOperador(response.operator)
-            //         }
-            //     })
-            //     .catch(erro => console.log(erro))
+            http.get(`usuario/?format=json&id=${id}`)
+                .then(response => {
+                    setOperador(response[0])
+                })
+                .catch(erro => console.log(erro))
         }
     }, [operador])
 
@@ -36,7 +33,7 @@ function OperadorDetalhes() {
                 <BotaoVoltar linkFixo="/operador" />
                     {operador ? 
                         <Titulo>
-                            <h3>{operador?.collaborator?.name}</h3>
+                            <h3>{operador?.username}</h3>
                         </Titulo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
                     }
@@ -48,7 +45,7 @@ function OperadorDetalhes() {
                         <Botao estilo={location.pathname == `/operador/detalhes/${id}/permissoes` ? 'black':''} size="small" tab>Permissões</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Outlet/>
+                <Outlet context={operador}/>
             </Container>
         </Frame>
     )

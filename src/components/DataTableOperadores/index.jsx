@@ -28,35 +28,18 @@ function DataTableOperadores({ operadores }) {
     function verDetalhes(value)
     {
         setSelectedOperator(value)
-        navegar(`/operador/detalhes/${value.public_id}`)
+        navegar(`/operador/detalhes/${value.id}`)
     }
     
     const representativeNameTemplate = (rowData) => {
         return (
-           rowData.user
+           rowData.username
         )
     }
     
     const representativeEmailTemplate = (rowData) => {
         return (
-           rowData.collaborator.email
-        )
-    }
-    
-    const representativeDocumentTemplate = (rowData) => {
-        return (
-           rowData.collaborator.document
-        )
-    }
-
-    function formataCPF(cpf) {
-        cpf = cpf.replace(/[^\d]/g, "");
-        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-    }
-    
-    const representativeCPFTemplate = (rowData) => {
-        return (
-            formataCPF(rowData.collaborator.cpf)
+           rowData.email
         )
     }
 
@@ -67,9 +50,9 @@ function DataTableOperadores({ operadores }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar operador" />
                 </span>
             </div>
-            <DataTable value={operadores} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados operadores" selection={selectedOperator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="user" body={representativeNameTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
-                {/* <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column> */}
+            <DataTable value={operadores} filters={filters} globalFilterFields={['username', 'email']}  emptyMessage="Não foram encontrados operadores" selection={selectedOperator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
+                <Column field="username" body={representativeNameTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
+                <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column>
                 {/* <Column field="cpf" body={representativeDocumentTemplate} header="CPF" style={{ width: '20%' }}></Column> */}
                 
             </DataTable>

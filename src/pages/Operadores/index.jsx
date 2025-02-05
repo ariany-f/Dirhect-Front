@@ -22,14 +22,11 @@ function Operador() {
     useEffect(() => {
         if(!operadores.length)
         {
-            // http.get('api/operator/index')
-            //     .then(response => {
-            //         if(response.data && response.data.length)
-            //         {
-            //             setOperadores(response.data)
-            //         }
-            //     })
-            //     .catch(erro => console.log(erro))
+            http.get('usuario/?format=json')
+                .then(response => {
+                    setOperadores(response)
+                })
+                .catch(erro => console.log(erro))
         }
     }, [])
 

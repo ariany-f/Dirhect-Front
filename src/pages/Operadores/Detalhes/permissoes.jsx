@@ -6,7 +6,7 @@ import styles from './Detalhes.module.css'
 import styled from "styled-components"
 import http from '@http'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useOutletContext, useParams } from 'react-router-dom'
 
 const CardLine = styled.div`
     padding: 24px 0px;
@@ -31,26 +31,21 @@ function OperadorPermissoes() {
     const [checkedPrem, setCheckedPrem] = useState(false);
     const [checkedClbrd, setCheckedClbrd] = useState(false);
     const [checkedDesp, setCheckedDesp] = useState(false);
-
     const [operador, setOperador] = useState(null)
+    const [permissoes, setPermissoes] = useState(null)
+    const context = useOutletContext()
 
     useEffect(() => {
-        if(!operador)
+        if((!operador) && context)
         {
-            // http.get(`api/dashboard/operator/${id}`)
-            //     .then(response => {
-            //         if (response.status === 'success') 
-            //         {
-            //             setOperador(response.operator)
-            //             setCheckedBen(response.operator.roles.all || response.operator.roles.financial)
-            //             setCheckedPrem(response.operator.roles.all || response.operator.roles.financial)
-            //             setCheckedClbrd(response.operator.roles.all || response.operator.roles.human_Resources)
-            //             setCheckedDesp(response.operator.roles.all || response.operator.roles.financial)
-            //         }
-            //     })
-            //     .catch(erro => console.log(erro))
+           setOperador(context)
+           http.get(`perfil_usuario/?format=json&user=${id}`)
+           .then(response => {
+                setPermissoes(response[0])
+           })
+           .catch(erro => console.log(erro))
         }
-    }, [operador])
+    }, [operador, context])
 
     function alterarPermissoes(){
         const obj = {}
