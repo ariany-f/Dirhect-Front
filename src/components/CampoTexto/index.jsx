@@ -5,10 +5,11 @@ import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
 import { FaEnvelope } from 'react-icons/fa'
 import { BsSearch } from 'react-icons/bs'
 import {FloatLabel} from 'primereact/floatlabel'
+import { InputText } from "primereact/inputtext";
 import * as Yup from 'yup'
 import { currency, mask as masker, unMask } from "remask"
 
-const Campo = styled.input`
+const Campo = styled(InputText)`
     border-radius: 4px;
     outline: .4px solid var(--neutro-400);
     background: var(--background-label);

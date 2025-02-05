@@ -2,15 +2,17 @@ import { useState } from 'react'
 import styles from './DropdownItens.module.css'
 import styled from 'styled-components'
 import * as Yup from 'yup'
+import {Dropdown} from 'primereact/dropdown'
 
-const Select = styled.select`
+const Select = styled(Dropdown)`
     border-radius: 4px;
     outline: .4px solid var(--neutro-400);
     background: var(--background-label);
-    padding: 22px 16px;
+    padding: 12px 16px;
     border: none;
     display: flex;
     align-items: center;
+    text-align: left;
     align-self: stretch;
     font-weight: 700;
     margin-top: 2px;
@@ -122,11 +124,7 @@ function DropdownItens({ valor, setValor, options=[], placeholder, name, label, 
             {(label) ?
             <label htmlFor={name} className={styles.label}>{label}</label>
             : ''}
-            <Select placeholder={placeholder} name={name} value={valor} onChange={(evento) => changeValor(evento)}>
-                {options.map((item, index) => {
-                    return <option key={index} value={item.code}>{item.name}</option>
-                })}
-            </Select>
+            <Select placeholder={placeholder} options={options} value={valor} optionLabel="name" onChange={(e) => changeValor(e)}></Select>
         </div>
         {classeCampoVazio.includes(name)?
             <p className={styles.erroMessage}>Você deve preencher esse campo</p>

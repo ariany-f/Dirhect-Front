@@ -168,10 +168,11 @@ function AdicionarCnpj() {
         })
     }
     const setUf = (address_state) => {
+        var uf = address_state.code
         setCompany(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                address_state
+                uf
             }
         })
     }

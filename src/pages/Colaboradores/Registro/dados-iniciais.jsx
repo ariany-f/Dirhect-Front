@@ -78,31 +78,7 @@ function ColaboradorDadosIniciais() {
     const toast = useRef(null)
     
     useEffect(() => {
-        // if(!colaborador.public_company_id)
-        // {
-        //     retornarCompanySession()
-        //     .then((response) => {
-        //         console.log(response)
-        //         if(response.success)
-        //         {
-        //             setCompanyPublicId(response.data.public_id)
-        //         }
-        //     })
-        // }
-
-        // http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-        // .then(response => {
-        //      response.map((item) => {
-        //          let obj = {
-        //              name: item.nome,
-        //              code: item.sigla
-        //          }
-        //          if(!estados.includes(obj))
-        //          {
-        //              setEstados(estadoAnterior => [...estadoAnterior, obj]);
-        //          }
-        //      })
-        //  })
+       
      }, [])
 
 

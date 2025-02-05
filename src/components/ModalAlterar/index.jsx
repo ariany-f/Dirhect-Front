@@ -152,7 +152,7 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, dadoAntigo }) {
             address_complement: address_complement,
             address_district: address_district,
             address_city: address_city,
-            address_state: address_state
+            address_state: address_state.code
         }
         aoClicar(send)
     }

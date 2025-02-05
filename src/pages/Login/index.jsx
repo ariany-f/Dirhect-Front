@@ -53,7 +53,7 @@ function Login() {
         {
             if(logins.length > 0)
             {
-                setCpf(logins[0].code)
+                setCpf(logins[0])
             }
         }
 
@@ -61,7 +61,7 @@ function Login() {
 
     const AlreadyAccessed = () => {
         const perfilEncontrado = loginData.perfis.find(perfil => 
-            perfil.cpf === usuario.cpf && perfil.senha === usuario.password
+            perfil.cpf === usuario.cpf.code && perfil.senha === usuario.password
         );
 
         if (perfilEncontrado) {
@@ -107,7 +107,7 @@ function Login() {
                 </SubTitulo>
             </Titulo>
             <form>
-                <Frame>
+                <Frame gap="20px">
                     <DropdownItens camposVazios={classError} valor={usuario.cpf} setValor={setCpf} options={logins} label="Usuário" name="cpf" placeholder="Usuário"/>
                     <CampoTexto camposVazios={classError} onEnter={evento => AlreadyAccessed()} name="password" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
                     <div className={styles.containerBottom}>
