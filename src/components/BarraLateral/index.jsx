@@ -272,7 +272,7 @@ function BarraLateral() {
                 </ListaEstilizada>
             </nav>
         </BarraLateralEstilizada>
-        <div style={{display: 'Flex', backgroundColor: 'transparent', height: '5vh', position: 'absolute', top: '2vh', border: 'none', borderRadius: '4px'}}>
+        <div style={{display: 'Flex', backgroundColor: 'transparent', height: '5vh', position: 'absolute', top: '3vh', border: 'none', borderRadius: '4px'}}>
         <Botao aoClicar={toggleBarraLateral} tab={true} estilo={"neutro"} outStyle={{marginRight: '1vw', marginLeft: barraLateralOpened ? 'calc(246px + 1vw)' : '1vw', backdropFilter: 'blur(30px) saturate(2)', '-webkit-backdrop-filter': 'blur(30px) saturate(2)', transition: '.5s cubic-bezier(.36,-0.01,0,.77)'}} >
             <FaBars></FaBars>
         </Botao>
