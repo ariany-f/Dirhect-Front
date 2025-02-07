@@ -250,6 +250,11 @@ template {
 [hidden] {
   display: none;
 }
+.p-tag-value {
+  color: var(--white);
+  font-weight: 400;
+}
 `
+
 
 export default EstilosGlobais

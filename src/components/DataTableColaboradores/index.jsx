@@ -11,8 +11,11 @@ import { IoEllipsisVertical } from 'react-icons/io5';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
 import ModalDemissao from '../ModalDemissao';
 import ModalFerias from '../ModalFerias';
+import { Tag } from 'primereact/tag';
 
 function DataTableColaboradores({ colaboradores }) {
+
+    console.log(colaboradores)
 
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
@@ -43,6 +46,13 @@ function DataTableColaboradores({ colaboradores }) {
         cpf = cpf.replace(/[^\d]/g, "");
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
+
+    const representativeNumeroDependentesTemplate = (rowData) => {
+    
+        return (
+            <b>{rowData?.dependentes.length}</b>
+        )
+    }
     
     const representativeCPFTemplate = (rowData) => {
     
@@ -57,6 +67,43 @@ function DataTableColaboradores({ colaboradores }) {
             <b>{rowData?.dados_pessoa_fisica?.nome}</b>
         )
     }
+    
+    const representativeChapaTemplate = (rowData) => {
+        
+        return (
+            <b>{rowData?.chapa}</b>
+        )
+    }
+    
+    const representativeDepartamentoTemplate = (rowData) => {
+        
+        return (
+            <b>{rowData?.departamento}</b>
+        )
+    }
+    
+    const representativSituacaoTemplate = (rowData) => {
+        let situacao = rowData?.situacao;
+        switch(rowData?.situacao)
+        {
+            case 'A':
+                situacao = <Tag severity="success" value="Ativo"></Tag>;
+                break;
+            case 'F':
+                situacao = <Tag severity="primary" value="Férias"></Tag>;
+                break;
+            case 'P':
+                situacao = <Tag severity="danger" value="Previdência"></Tag>;
+                break;
+            case 'I':
+                situacao = <Tag severity="warning" value="Invalidez"></Tag>;
+                break;
+        }
+        return (
+            <b>{situacao}</b>
+        )
+    }
+
 
     const cm = useRef(null);
     const menuModel = (selectedCollaborator) => {
@@ -106,11 +153,25 @@ function DataTableColaboradores({ colaboradores }) {
                     setSelectedCollaborator(e.originalEvent.target.closest('tr').data); 
                     cm.current.show(e.originalEvent);
                 }}
-                selection={selectedCollaborator} onSelectionChange={(e) => verDetalhes(e.value)}
+                selection={selectedCollaborator} 
+                onSelectionChange={(e) => verDetalhes(e.value)}
                 selectionMode="single"
-                contextMenuSelection={selectedCollaborator} value={colaboradores} filters={filters} globalFilterFields={['dados_pessoa_fisica.nome', 'dados_pessoa_fisica.cpf']}  emptyMessage="Não foram encontrados colaboradores" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
-                <Column body={representativeCPFTemplate} header="CPF" style={{ width: '20%' }}></Column>
+                contextMenuSelection={selectedCollaborator} 
+                value={colaboradores} 
+                filters={filters} 
+                globalFilterFields={['chapa', 'dados_pessoa_fisica.nome', 'dados_pessoa_fisica.cpf']} 
+                emptyMessage="Não foram encontrados colaboradores" 
+                paginator 
+                removableSort 
+                rows={6} 
+                tableStyle={{ minWidth: '68vw' }}
+                >
+                <Column body={representativeChapaTemplate} field="chapa" header="Chapa" style={{ width: '8%' }}></Column>
+                <Column body={representativeNomeTemplate} field="dados_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
+                <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
+                <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>
+                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dependentes" style={{ width: '15%' }}></Column>
+                <Column body={representativeCPFTemplate} field="dados_pessoa_fisica.cpf" header="CPF" style={{ width: '15%' }}></Column>
                 <Column header="" style={{ width: '10%' }} body={(rowData) => (
                     <button 
                         onClick={(e) => {
