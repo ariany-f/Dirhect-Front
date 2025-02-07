@@ -1,5 +1,6 @@
 import { styled } from "styled-components"
 import ItemNavegacao from "./ItemNavegacao"
+import Botao from "@components/Botao"
 import { AiFillHome } from "react-icons/ai"
 import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine, RiBlenderFill } from "react-icons/ri"
 import { BiBusSchool, BiDrink, BiSolidDashboard } from "react-icons/bi"
@@ -11,6 +12,8 @@ import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import { FaBusAlt } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
+import { FaBars } from "react-icons/fa";
+import { BreadCrumb } from "primereact/breadcrumb"
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -19,15 +22,18 @@ const ListaEstilizada = styled.ul`
     width: 246px;
 `
 const BarraLateralEstilizada = styled.aside`
-    display: inline-flex;
+    display: 'inline-flex';
     padding: 26px 0px;
+    margin-left: ${ props => (!!props.$opened) ? '0' : '-246px' };
     min-height: 100vh;
     flex-direction: column;
     align-items: flex-start;
+    backdrop-filter: blur(30px) saturate(2);
+    -webkit-backdrop-filter: blur(30px) saturate(2);
+    transition: .5s cubic-bezier(.36,-0.01,0,.77);
     gap: 32px;
     flex-shrink: 0;
     background: #244078;
-    
     @media screen and (max-width: 760px) {
         display: none;
     }
@@ -52,7 +58,10 @@ const Logo = styled.img`
 function BarraLateral() {
 
     const location = useLocation()
+    
+    const [barraLateralOpened, setBarraLateralOpened] = useState(true)
     const [image, setImage] = useState(false)
+    const [breadCrumbItems, setBreadCrumbItems] = useState([])
     const ref = useRef(null)
     const {
         usuario,
@@ -65,6 +74,15 @@ function BarraLateral() {
             setImage(true)
         }
     }, [logo])
+
+    useEffect(() => {
+        const pathSegments = location.pathname.split('/').filter(Boolean);
+        const newBreadCrumbItems = pathSegments.map((segment, index) => ({
+            label: segment.charAt(0).toUpperCase() + segment.slice(1),
+            url: '/' + pathSegments.slice(0, index + 1).join('/')
+        }));
+        setBreadCrumbItems(newBreadCrumbItems);
+    }, [location]);
 
     const itensMenu = () => {
 
@@ -225,8 +243,15 @@ function BarraLateral() {
         'cliente': 'Cliente'
     }
 
+    function toggleBarraLateral() {
+        setBarraLateralOpened(!barraLateralOpened);
+    }
+
     return (
-        <BarraLateralEstilizada>
+        <>
+        <BarraLateralEstilizada $opened={barraLateralOpened}>
+            
+
              {image ?
                 <Logo src={logo} ref={ref} alt="Logo" />
                 : ''
@@ -247,6 +272,13 @@ function BarraLateral() {
                 </ListaEstilizada>
             </nav>
         </BarraLateralEstilizada>
+        <div style={{display: 'Flex', backgroundColor: 'transparent', height: '5vh', position: 'absolute', top: '2vh', border: 'none', borderRadius: '4px'}}>
+        <Botao aoClicar={toggleBarraLateral} tab={true} estilo={"neutro"} outStyle={{marginRight: '1vw', marginLeft: barraLateralOpened ? 'calc(246px + 1vw)' : '1vw', backdropFilter: 'blur(30px) saturate(2)', '-webkit-backdrop-filter': 'blur(30px) saturate(2)', transition: '.5s cubic-bezier(.36,-0.01,0,.77)'}} >
+            <FaBars></FaBars>
+        </Botao>
+        {/* <BreadCrumb model={breadCrumbItems} /> */}
+        </div>
+        </>
     )
 }
 

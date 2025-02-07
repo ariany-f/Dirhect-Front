@@ -2,6 +2,7 @@ import MainSection from "@components/MainSection"
 import EstilosGlobais from '@components/GlobalStyles'
 import BarraLateral from "@components/BarraLateral"
 import Cabecalho from "@components/Cabecalho"
+import Botao from "@components/Botao"
 import MainContainer from "@components/MainContainer"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
@@ -14,6 +15,7 @@ import { ArmazenadorToken } from "../../utils"
 import styled from "styled-components"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
+
 
 const MarginContainer = styled.div`
     display: inline-flex;
@@ -126,7 +128,9 @@ function Autenticado() {
                 }
                 <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 0 7.5vh 0">
                     {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/linhas-transporte/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/linhas-transporte/editar-valor/colaboradores' &&     
-                        <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
+                        <>
+                            <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
+                        </>
                     }
                     <MarginContainer>
                         <Outlet key={empresa} />
