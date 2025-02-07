@@ -14,9 +14,6 @@ import ModalFerias from '../ModalFerias';
 import { Tag } from 'primereact/tag';
 
 function DataTableColaboradores({ colaboradores }) {
-
-    console.log(colaboradores)
-
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
@@ -149,8 +146,7 @@ function DataTableColaboradores({ colaboradores }) {
                 </span>
             </div>
             <ContextMenu model={menuModel(selectedCollaborator)} ref={cm} onHide={() => setSelectedCollaborator(null)} />
-            <DataTable onContextMenu={(e) => {// Definindo o cartão selecionado ao clicar com o botão direito
-                    setSelectedCollaborator(e.originalEvent.target.closest('tr').data); 
+            <DataTable onContextMenu={(e) => {
                     cm.current.show(e.originalEvent);
                 }}
                 selection={selectedCollaborator} 
@@ -165,6 +161,10 @@ function DataTableColaboradores({ colaboradores }) {
                 removableSort 
                 rows={6} 
                 tableStyle={{ minWidth: '68vw' }}
+                onContextMenuSelectionChange={(e) => {
+                    setSelectedCollaborator(e.value); 
+                    cm.current.show(e.originalEvent)}
+                }
                 >
                 <Column body={representativeChapaTemplate} field="chapa" header="Chapa" style={{ width: '8%' }}></Column>
                 <Column body={representativeNomeTemplate} field="dados_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
