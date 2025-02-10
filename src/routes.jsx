@@ -116,6 +116,7 @@ import FeriasAusenciasListagem from './pages/Ausencias/lista'
 import AusenciasListagem from './pages/Ausencias/ausencias'
 import AusenciaDadosIniciais from './pages/Ausencias/Registro/dados-iniciais'
 import AusenciaRegistro from './pages/Ausencias/Registro/registro'
+import ColabroadorESocial from './pages/Colaboradores/Detalhes/esocial'
 
 function AppRouter() {
   
@@ -152,6 +153,7 @@ function AppRouter() {
                   <Route path="saldo" element={<ColaboradorSaldo />} />
                   <Route path="dependentes" element={<ColaboradorDependentes />} />
                   <Route path="ferias" element={<ColabroadorFerias />} />
+                  <Route path="esocial" element={<ColabroadorESocial />} />
                   <Route path="carteiras" element={<ColaboradorCarteiras />} />
               </Route>
               <Route path="colaborador/registro" element={<ColaboradorRegistro />} >

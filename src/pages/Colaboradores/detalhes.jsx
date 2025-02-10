@@ -95,6 +95,11 @@ function ColaboradorDetalhes() {
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
                     </Link>
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>ESocial</Botao>
+                    </Link>
+                    
+
                     {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/carteiras`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/carteiras` ? 'black':''} size="small" tab>Carteiras</Botao>
                     </Link> */}
