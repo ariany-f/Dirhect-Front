@@ -5,6 +5,7 @@ import './DataTable.css'
 import colaboradores from '@json/colaboradores.json'
 import Frame from '@components/Frame';
 import { useNavigate } from 'react-router-dom';
+import CampoTexto from '@components/CampoTexto';
 import { useEffect, useState } from 'react';
 import ModalFerias from '../ModalFerias';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
@@ -130,8 +131,13 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
 
     return (
         <>
+          <div className="flex justify-content-end">
+                <span className="p-input-icon-left">
+                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por colaborador" />
+                </span>
+            </div>
             <Frame alinhamento="center" gap="20px">
-                <DataTable value={filteredData} filters={filters} globalFilterFields={[]} emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
+                <DataTable value={filteredData} filters={filters} globalFilterFields={['colaborador_id']} emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
                     {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
                     <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                     <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
