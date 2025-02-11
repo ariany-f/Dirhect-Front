@@ -8,6 +8,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
+import DropdownItens from "@components/DropdownItens"; 
 import { useDepartamentoContext } from "../../contexts/Departamento"
 
 const Overlay = styled.div`
@@ -100,10 +101,18 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
+
+// Opções para o dropdown de tipo de demissão
+const tiposDemissao = [
+    { name: "Pedido de Demissão", code: "pedido" },
+    { name: "Iniciativa do Empregador", code: "empregador" }
+];
+
 function ModalDemissao({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
 
     const [classError, setClassError] = useState([])
     const [dataDemissao, setDataDemissao] = useState('');
+    const [tipoDemissao, setTipoDemissao] = useState('');
 
     const navegar = useNavigate()
 
@@ -126,15 +135,28 @@ function ModalDemissao({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar
                         
                         <Frame padding="24px 0px">
                             <Col12>
-                                <CampoTexto
-                                    camposVazios={classError}
-                                    name="data_inicial_demissao"
-                                    valor={dataDemissao}
-                                    setValor={setDataDemissao}
-                                    type="date"
-                                    label="Data da Demissão"
-                                    placeholder="Selecione a data"
-                                />
+                                <Col6>
+                                    <CampoTexto
+                                        camposVazios={classError}
+                                        name="data_inicial_demissao"
+                                        valor={dataDemissao}
+                                        setValor={setDataDemissao}
+                                        type="date"
+                                        label="Data da Demissão"
+                                        placeholder="Selecione a data"
+                                    />
+                                </Col6>
+                                <Col6>
+                                    <DropdownItens
+                                        camposVazios={classError}
+                                        valor={tipoDemissao}
+                                        setValor={setTipoDemissao}
+                                        options={tiposDemissao}
+                                        label="Tipo de Demissão"
+                                        name="tipo_demissao"
+                                        placeholder="Selecione o tipo"
+                                    />
+                                </Col6> 
                             </Col12>
                         </Frame>
                         <form method="dialog">
