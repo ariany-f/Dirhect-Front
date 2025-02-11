@@ -15,63 +15,68 @@ import ModalFerias from '../ModalFerias';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
 import { GrAddCircle } from 'react-icons/gr';
 
+function formatarDataBr(data) {
+    const [ano, mes, dia] = data.split('-');
+    return `${dia}/${mes}/${ano}`;
+}
+
 const fakeData = [
     {
         id: 1,
-        data_inicio: "2025-02-01",
-        data_fim: "2025-02-10",
-        data_inicio_aquisicao: "2024-02-01",
-        data_fim_aquisicao: "2024-02-10",
+        data_inicio: formatarDataBr("2025-02-01"),
+        data_fim: formatarDataBr("2025-02-10"),
+        data_inicio_aquisicao: formatarDataBr("2024-02-01"),
+        data_fim_aquisicao: formatarDataBr("2024-02-10"),
         dias: 10,
         "13": "Sim",
         abono: "6"
     },
     {
         id: 2,
-        data_inicio: "2025-03-05",
-        data_fim: "2025-03-15",
-        data_inicio_aquisicao: "2024-03-05",
-        data_fim_aquisicao: "2024-03-15",
+        data_inicio: formatarDataBr("2025-03-05"),
+        data_fim: formatarDataBr("2025-03-15"),
+        data_inicio_aquisicao: formatarDataBr("2024-03-05"),
+        data_fim_aquisicao: formatarDataBr("2024-03-15"),
         dias: 11,
         "13": "Não",
         abono: "5"
     },
     {
         id: 3,
-        data_inicio: "2025-04-10",
-        data_fim: "2025-04-20",
-        data_inicio_aquisicao: "2024-04-10",
-        data_fim_aquisicao: "2024-04-20",
+        data_inicio: formatarDataBr("2025-04-10"),
+        data_fim: formatarDataBr("2025-04-20"),
+        data_inicio_aquisicao: formatarDataBr("2024-04-10"),
+        data_fim_aquisicao: formatarDataBr("2024-04-20"),
         dias: 11,
         "13": "Sim",
         abono: "10"
     },
     {
         id: 4,
-        data_inicio: "2025-05-01",
-        data_fim: "2025-05-10",
-        data_inicio_aquisicao: "2024-05-01",
-        data_fim_aquisicao: "2024-05-10",
+        data_inicio: formatarDataBr("2025-05-01"),
+        data_fim: formatarDataBr("2025-05-10"),
+        data_inicio_aquisicao: formatarDataBr("2024-05-01"),
+        data_fim_aquisicao: formatarDataBr("2024-05-10"),
         dias: 10,
         "13": "Sim",
         abono: "5"
     },
     {
         id: 5,
-        data_inicio: "2025-06-15",
-        data_fim: "2025-06-25",
-        data_inicio_aquisicao: "2024-06-15",
-        data_fim_aquisicao: "2024-06-25",
+        data_inicio: formatarDataBr("2025-06-15"),
+        data_fim: formatarDataBr("2025-06-25"),
+        data_inicio_aquisicao: formatarDataBr("2024-06-15"),
+        data_fim_aquisicao: formatarDataBr("2024-06-25"),
         dias: 11,
         "13": "Não",
         abono: "5"
     },
     {
         id: 6,
-        data_inicio: "2025-07-01",
-        data_fim: "2025-07-10",
-        data_inicio_aquisicao: "2024-07-01",
-        data_fim_aquisicao: "2024-07-10",
+        data_inicio: formatarDataBr("2025-07-01"),
+        data_fim: formatarDataBr("2025-07-10"),
+        data_inicio_aquisicao: formatarDataBr("2024-07-01"),
+        data_fim_aquisicao: formatarDataBr("2024-07-10"),
         dias: 10,
         "13": "Sim",
         abono: "10"
