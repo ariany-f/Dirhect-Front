@@ -108,9 +108,9 @@ function BarraLateral() {
                     {
                         "id": 3,
                         "url": "/admissao",
-                        "pageTitulo": "Admissão",
+                        "pageTitulo": "Admissões",
                         "icone": <RiUser3Fill size={20} className="icon" />,
-                        "itemTitulo": "Admissão"
+                        "itemTitulo": "Admissões"
                     },
                     {
                         "id": 4,
