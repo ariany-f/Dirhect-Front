@@ -59,16 +59,8 @@ function FeriasListagem() {
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
                 </BotaoGrupo>
             </BotaoGrupo>
-            {ferias ?
+           
             <DataTableFerias ferias={ferias} />
-            :
-            <ContainerSemRegistro>
-            <section className={styles.container}>
-                    <img src={Management} />
-                    <h6>Não há férias registradas</h6>
-                    <p>Aqui você verá todas as férias registradas.</p>
-                </section>
-            </ContainerSemRegistro>}
 
             <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
