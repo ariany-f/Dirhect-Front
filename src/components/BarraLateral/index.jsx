@@ -121,20 +121,27 @@ function BarraLateral() {
                     },
                     {
                         "id": 5,
+                        "url": "/dependentes",
+                        "pageTitulo": "Dependentes",
+                        "icone": <FaUserGroup size={20} className="icon" />,
+                        "itemTitulo": "Dependentes"
+                    },
+                    {
+                        "id": 6,
                         "url": "/ferias",
                         "pageTitulo": "Férias",
                         "icone": <TbBeach size={20} stroke="white"/>,
                         "itemTitulo": "Férias"
                     },
                     {
-                        "id": 6,
+                        "id": 7,
                         "url": "/ausencias",
                         "pageTitulo": "Ausências",
                         "icone": <BsHourglassSplit size={20} className="icon" />,
                         "itemTitulo": "Ausências"
                     },
                     {
-                        "id": 7,
+                        "id": 8,
                         "url": "/demissoes",
                         "pageTitulo": "Demissões",
                         "icone": <RiUser3Fill size={20} className="icon" />,
