@@ -73,7 +73,7 @@ function DataTableValidarAdmissao({ vagas }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
                 </span>
             </div>
-            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="vaga" header="Titulo" style={{ width: '35%' }}></Column>
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '35%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '35%' }}></Column>

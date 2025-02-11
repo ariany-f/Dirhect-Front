@@ -53,7 +53,7 @@ function DataTableDepartamentos({ departamentos }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar departamento" />
                 </span>
             </div>
-            <DataTable value={departamentos} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados departamentos" selection={selectedDepartamento} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={departamentos} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados departamentos" selection={selectedDepartamento} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="id" header="Id do Departamento" style={{ width: '35%' }}></Column>
             </DataTable>
         </>

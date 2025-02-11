@@ -38,7 +38,7 @@ function DataTablePremiacoes({ premiacoes }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar premiação" />
                 </span>
             </div>
-            <DataTable value={premiacoes} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados registros" selection={selectedPremiacao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={premiacoes} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados registros" selection={selectedPremiacao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="name" header="Nome" style={{ width: '35%' }}></Column>
                 <Column field="reason" header="Motivo" style={{ width: '35%' }}></Column>
                 <Column field="amount" header="Valor da Premiação" style={{ width: '20%' }}></Column>

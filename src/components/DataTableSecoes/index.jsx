@@ -53,7 +53,7 @@ function DataTableSecoes({ secoes }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar seção" />
                 </span>
             </div>
-            <DataTable value={secoes} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selectedSecao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={secoes} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selectedSecao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="id" header="Id da Seção" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
