@@ -41,11 +41,12 @@ function DataTableDemissao({ demissoes, colaborador = null }) {
     
     return (
         <>
+            {!colaborador &&
             <div className="flex justify-content-end">
                 <span className="p-input-icon-left">
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
                 </span>
-            </div>
+            </div>}
             <DataTable value={demissoes} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas demissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
                 {!colaborador &&
                     <Column body={representativeColaboradorTemplate} header="Colaborador" style={{ width: '35%' }}></Column>
