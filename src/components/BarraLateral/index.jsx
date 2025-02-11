@@ -15,6 +15,7 @@ import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa";
 import { BreadCrumb } from "primereact/breadcrumb"
 import { BsHourglassSplit } from "react-icons/bs"
+import { TbBeach } from "react-icons/tb";
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -122,7 +123,7 @@ function BarraLateral() {
                         "id": 5,
                         "url": "/ferias",
                         "pageTitulo": "Férias",
-                        "icone": <BiDrink size={20} className="icon" />,
+                        "icone": <TbBeach size={20} stroke="white"/>,
                         "itemTitulo": "Férias"
                     },
                     {
@@ -177,7 +178,7 @@ function BarraLateral() {
                         "id": 5,
                         "url": "/ferias",
                         "pageTitulo": "Férias",
-                        "icone": <BiDrink size={20} className="icon" />,
+                        "icone": <TbBeach size={20} stroke="white"/>,
                         "itemTitulo": "Férias"
                     },
                     {
