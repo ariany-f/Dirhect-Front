@@ -26,6 +26,10 @@ const Campo = styled(InputText)`
         background-color: #e9ecef;
         color:#bdbdbd;
     }
+    &:readonly {
+        background-color:rgb(233, 236, 239);
+        color:rgb(123, 122, 122);
+    }
 
     &.error {
         outline: 1px solid var(--error);
@@ -87,7 +91,7 @@ const Campo = styled(InputText)`
     }
 `
 
-function CampoTexto({ label, disabled = false, type='text',  setFocus, placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
+function CampoTexto({ label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -201,17 +205,17 @@ function CampoTexto({ label, disabled = false, type='text',  setFocus, placehold
                
                 {label && type!= 'date' ?
                 <FloatLabel className={styles.lb}>
-                    <Campo ref={reference} disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                    <Campo ref={reference} disabled={disabled} readonly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                     <label htmlFor={name} className={styles.label}>{label}</label>
                 </FloatLabel>
                 : 
                     label && type == 'date' ?
                     <>
                         <label htmlFor={name} className={styles.label}>{label}</label>
-                        <Campo ref={reference} disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                        <Campo ref={reference} disabled={disabled} readonly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                     </>
                     :
-                    <Campo ref={reference} disabled={disabled} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                    <Campo ref={reference} disabled={disabled} readonly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                 }
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&

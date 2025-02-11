@@ -1,6 +1,7 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import CampoTexto from "@components/CampoTexto"
+import CheckboxContainer from '@components/CheckboxContainer'
 import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import { RiCloseFill } from 'react-icons/ri'
@@ -30,16 +31,29 @@ const Col6 = styled.div`
     flex: 1 1 50%;
 `
 
+
+const Col4 = styled.div`
+    padding: 20px;
+    flex: 1 1 25%;
+`
+
+const Col4Centered = styled.div`
+    display: flex;
+    flex: 1 1 25%;
+    justify-content: center;
+    align-items: center;
+`
+
 const DialogEstilizado = styled.dialog`
     display: flex;
-    width: 40vw;
+    width: 60vw;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 16px;
     border: none;
     margin: 0 auto;
-    top: 10vh;
+    top: 2.5vh;
     padding: 24px;
     & button.close {
         & .fechar {
@@ -105,8 +119,31 @@ function ModalFerias({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }
     const [classError, setClassError] = useState([])
     const [dataInicialFerias, setDataInicialFerias] = useState('');
     const [dataFinalFerias, setDataFinalFerias] = useState('');
+    const [dataInicialAquisicao, setDataInicialAquisicao] = useState('');
+    const [dataFinalAquisicao, setDataFinalAquisicao] = useState('');
+    const [diasDeFerias, setDiasDeFerias] = useState(0);
+    const [abono, setAbono] = useState('');
+    const [decimoTerceiro, setDecimoTerceiro] = useState(false)
 
     const navegar = useNavigate()
+
+    function handleDiasDeFerias() {
+        if (dataInicialFerias && dataFinalFerias) {
+            const inicio = new Date(dataInicialFerias);
+            const fim = new Date(dataFinalFerias);
+            
+            if (inicio > fim) {
+                setDiasDeFerias(0);
+                return;
+            }
+    
+            const diffTime = fim.getTime() - inicio.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o primeiro dia
+    
+            setDiasDeFerias(diffDays);
+        }
+    }
+    
 
     return(
         <>
@@ -125,30 +162,94 @@ function ModalFerias({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }
                             </Titulo>
                         </Frame>
                         
-                        <Frame padding="24px 0px">
+                        <Frame padding="12px 0px">
                             <Col12>
                                 <Col6>
-                                    <CampoTexto
-                                        camposVazios={classError}
-                                        name="data_inicial_ferias"
-                                        valor={dataInicialFerias}
-                                        setValor={setDataInicialFerias}
-                                        type="date"
-                                        label="Data Inicial de Férias"
-                                        placeholder="Selecione a data inicial"
-                                    />
+                                    <Col12>
+                                        <SubTitulo>Período Aquisitivo</SubTitulo>
+                                    </Col12>
+                                    <Col12>
+                                        <Col6>
+                                            <CampoTexto
+                                                camposVazios={classError}
+                                                name="data_inicial_aquisition"
+                                                valor={dataInicialAquisicao}
+                                                setValor={setDataInicialAquisicao}
+                                                type="date"
+                                                label="Data Inicial"
+                                                placeholder="Selecione a data inicial"
+                                            />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto
+                                                camposVazios={classError}
+                                                name="data_final_aquisition"
+                                                valor={dataFinalAquisicao}
+                                                setValor={setDataFinalAquisicao}
+                                                type="date"
+                                                label="Data Final"
+                                                placeholder="Selecione a data final"
+                                            />
+                                        </Col6>
+                                    </Col12>
                                 </Col6>
                                 <Col6>
+                                    <Col12>
+                                        <SubTitulo>Férias</SubTitulo>
+                                    </Col12>
+                                    <Col12>
+                                        <Col6>
+                                            <CampoTexto
+                                                camposVazios={classError}
+                                                name="data_inicial_ferias"
+                                                valor={dataInicialFerias}
+                                                setValor={setDataInicialFerias}
+                                                type="date"
+                                                label="Data Inicial"
+                                                placeholder="Selecione a data inicial"
+                                            />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto
+                                                camposVazios={classError}
+                                                name="data_final_ferias"
+                                                valor={dataFinalFerias}
+                                                setValor={setDataFinalFerias}
+                                                type="date"
+                                                label="Data Final"
+                                                placeholder="Selecione a data final"
+                                            />
+                                        </Col6>
+                                    </Col12>
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col4Centered>
+                                    <CheckboxContainer fontSize="16px" name="13" valor={decimoTerceiro} setValor={() => setDecimoTerceiro(!decimoTerceiro)} label="13º Salário"/>
+                                </Col4Centered>
+                                <Col4>
                                     <CampoTexto
                                         camposVazios={classError}
-                                        name="data_final_ferias"
-                                        valor={dataFinalFerias}
-                                        setValor={setDataFinalFerias}
-                                        type="date"
-                                        label="Data Final de Férias"
-                                        placeholder="Selecione a data final"
+                                        name="abono"
+                                        valor={abono}
+                                        setValor={setAbono}
+                                        type="text"
+                                        label="Abono Pecuniário"
+                                        placeholder="Abono Pecuniário"
                                     />
-                                </Col6>
+                                </Col4>
+                                <Col4>
+                                    <CampoTexto
+                                        camposVazios={classError}
+                                        name="dias_ferias"
+                                        readonly
+                                        valor={diasDeFerias}
+                                        setValor={setDiasDeFerias}
+                                        type="text"
+                                        label="Dias Calculados"
+                                        placeholder="Dias Calculados"
+                                    />
+                                </Col4>
                             </Col12>
                         </Frame>
                         <form method="dialog">
