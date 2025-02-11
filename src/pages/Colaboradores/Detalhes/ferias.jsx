@@ -47,7 +47,7 @@ function ColabroadorFerias() {
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Criar solicitação de Férias</Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>}
-            <DataTableFerias ferias={ferias}/>
+            <DataTableFerias colaborador={id} ferias={ferias}/>
             <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </DivPrincipal>
     )
