@@ -15,6 +15,7 @@ import { useSessaoUsuarioContext } from '../../../contexts/SessaoUsuario'
 import { GrAddCircle } from 'react-icons/gr'
 import ModalFerias from '../../../components/ModalFerias'
 import DataTableDemissao from '../../../components/DataTableDemissoes'
+import ModalDemissao from '../../../components/ModalDemissao'
 
 const DivPrincipal = styled.div`
     width: 65vw;
@@ -47,7 +48,7 @@ function ColabroadorDemissoes() {
                     </BotaoGrupo>
                 </BotaoGrupo>}
             <DataTableDemissao colaborador={id} demissoes={demissoes}/>
-            <ModalFerias opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
+            <ModalDemissao opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
         </DivPrincipal>
     )
 }
