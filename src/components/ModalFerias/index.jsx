@@ -114,7 +114,7 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-function ModalFerias({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
+function ModalFerias({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, colaborador = null }) {
 
     const [classError, setClassError] = useState([])
     const [dataInicialFerias, setDataInicialFerias] = useState('');

@@ -14,41 +14,42 @@ import DataTableFerias from '../../../components/DataTableFerias'
 import { useSessaoUsuarioContext } from '../../../contexts/SessaoUsuario'
 import { GrAddCircle } from 'react-icons/gr'
 import ModalFerias from '../../../components/ModalFerias'
+import DataTableAusencias from '../../../components/DataTableAusencias'
 
 const DivPrincipal = styled.div`
     width: 65vw;
 `
 
-function ColabroadorFerias() {
+function ColaboradorAusencias() {
 
     let { id } = useParams()
     const [loading, setLoading] = useState(false)
     const [modalOpened, setModalOpened] = useState(false)
-    const [ferias, setFerias] = useState(null)
+    const [ausencias, setAusencias] = useState(null)
     const {usuario} = useSessaoUsuarioContext()
 
     useEffect(() => {
             
-    }, [ferias])
+    }, [ausencias])
 
     return (
         <DivPrincipal>
             <Loading opened={loading} />
             <Titulo>
-                <QuestionCard alinhamento="start" element={<h6>Férias</h6>}>
+                <QuestionCard alinhamento="start" element={<h6>Ausências</h6>}>
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
             {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
                 <BotaoGrupo align="end">
                     <BotaoGrupo align="center">
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Criar solicitação de Férias</Botao>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Registrar Ausência</Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>}
-            <DataTableFerias colaborador={id} ferias={ferias}/>
+            <DataTableAusencias colaborador={id} ausencias={ausencias}/>
             <ModalFerias opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
         </DivPrincipal>
     )
 }
 
-export default ColabroadorFerias
+export default ColaboradorAusencias

@@ -1,20 +1,13 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
-import CampoTexto from '@components/CampoTexto';
-import Container from '@components/Container';
-import BotaoGrupo from '@components/BotaoGrupo';
 import colaboradores from '@json/colaboradores.json'
 import Frame from '@components/Frame';
-import Botao from '@components/Botao';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { FaPlusCircle } from 'react-icons/fa';
 import ModalFerias from '../ModalFerias';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
-import { GrAddCircle } from 'react-icons/gr';
 
 function formatarDataBr(data) {
     const [ano, mes, dia] = data.split('-');
@@ -90,7 +83,7 @@ const fakeData = [
     }
 ];
 
-function DataTableFerias({ ferias, colaborador = null }) {
+function DataTableAusencias({ ausencias, colaborador = null }) {
     const [selectedFerias, setSelectedFerias] = useState(0);
     const [modalOpened, setModalOpened] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -138,19 +131,15 @@ function DataTableFerias({ ferias, colaborador = null }) {
     return (
         <>
             <Frame alinhamento="center" gap="20px">
-                <DataTable value={filteredData} filters={filters} globalFilterFields={[]} emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
+                <DataTable value={filteredData} filters={filters} globalFilterFields={[]} emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
                     {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
-                    <Column field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
-                    <Column field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
                     <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                     <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
-                    <Column field="dias" header="Dias de Férias" style={{ width: '15%' }}></Column>
-                    <Column field="13" header="13º" style={{ width: '15%' }}></Column>
-                    <Column field="abono" header="Dias de Abono" style={{ width: '15%' }}></Column>
+                    <Column field="dias" header="Dias de Ausência" style={{ width: '15%' }}></Column>
                 </DataTable>
             </Frame>
         </>
     )
 }
 
-export default DataTableFerias;
+export default DataTableAusencias;

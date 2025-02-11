@@ -10,6 +10,9 @@ import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import DataTableContratos from '../../components/DataTableContratos'
+import DataTableAusencias from '../../components/DataTableAusencias'
+import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
+import ModalFerias from '../../components/ModalFerias'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -38,35 +41,32 @@ const ContainerSemRegistro = styled.div`
 
 function AusenciasListagem() {
 
-    const [contratos, setContratos] = useState(null)
+    const [ausencias, setAusencias] = useState(null)
     const context = useOutletContext()
+    const [modalOpened, setModalOpened] = useState(false)
+
+    const {usuario} = useSessaoUsuarioContext()
     
     useEffect(() => {
-        if(context && (!contratos))
+        if(context && (!ausencias))
         {
-            setContratos(context)
+            setAusencias(context)
         }
-    }, [contratos, context])
+    }, [ausencias, context])
 
     
     return (
         <ConteudoFrame>
-             <BotaoGrupo align="end">
+            {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
+            <BotaoGrupo align="end">
                 <BotaoGrupo align="center">
-                    <Botao aoClicar={() => true} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Registrar Ausência</Botao>
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Registrar Ausência</Botao>
                 </BotaoGrupo>
-            </BotaoGrupo>
-            {contratos ?
-                <DataTableContratos contratos={contratos} />
-            :
-            <ContainerSemRegistro>
-            <section className={styles.container}>
-                    <img src={Management} />
-                    <h6>Não há ausências registradas</h6>
-                    <p>Aqui você verá todas as ausências registradas.</p>
-                </section>
-            </ContainerSemRegistro>}
-
+            </BotaoGrupo>}
+          
+            <DataTableAusencias ausencias={ausencias} />
+          
+            <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
     )
 }
