@@ -8,7 +8,7 @@ import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
 import { Skeleton } from 'primereact/skeleton'
 import Container from "@components/Container"
-import { FaArrowAltCircleRight, FaTrash } from 'react-icons/fa'
+import { FaArrowAltCircleRight, FaDownload, FaTrash } from 'react-icons/fa'
 import BotaoVoltar from "@components/BotaoVoltar"
 import Loading from '@components/Loading'
 import BotaoGrupo from "@components/BotaoGrupo"
@@ -60,7 +60,7 @@ function DetalhesCiclos() {
                 status = <Tag severity="success" value="Aberto"></Tag>;
                 break;
             case 'Fechada':
-                status = <Tag severity="primary" value="Fechado"></Tag>;
+                status = <Tag severity="danger" value="Fechado"></Tag>;
                 break;
         }
         return status
@@ -76,19 +76,24 @@ function DetalhesCiclos() {
                 <BotaoVoltar linkFixo="/ciclos" />
                 {ciclo && ciclo[0]?.tipo ?
                     <>
-                    <BotaoGrupo align="space-betweeen">
+                    <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
                             <h3>{ciclo[0].tipo} - {ciclo[0].data}</h3>
                             {representativSituacaoTemplate()}
                         </FrameVertical>
+                        <BotaoGrupo align="center">
+                            <BotaoSemBorda color="var(--primaria)">
+                                <FaDownload/><Link onClick={() => setModalOpened(true)} className={styles.link}>Importar planilha</Link>
+                            </BotaoSemBorda>
+                        </BotaoGrupo>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
-                    <Texto>Pagamento</Texto>
-                    {ciclo[0]?.data_referencia ?
-                        <Texto weight="800">{ciclo[0]?.data_referencia}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </div>
+                        <Texto>Pagamento</Texto>
+                        {ciclo[0]?.data_referencia ?
+                            <Texto weight="800">{ciclo[0]?.data_referencia}</Texto>
+                            : <Skeleton variant="rectangular" width={200} height={25} />
+                        }
+                    </div>
                     </>
                     : <></>
                 }
