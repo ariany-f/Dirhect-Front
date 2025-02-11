@@ -220,18 +220,46 @@ function BarraLateral() {
                         "itemTitulo": "Home"
                     },
                     {
-                        "id": 6,
+                        "id": 2,
+                        "url": "/admissao",
+                        "pageTitulo": "Admissões",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Admissões"
+                    },
+                    {
+                        "id": 3,
                         "url": "/colaborador",
                         "pageTitulo": "Colaboradores",
                         "icone": <BiSolidDashboard size={20} className="icon" />,
                         "itemTitulo": "Colaboradores"
                     },
                     {
-                        "id": 7,
+                        "id": 4,
                         "url": "/dependentes",
                         "pageTitulo": "Dependentes",
                         "icone": <FaUserGroup size={20} className="icon" />,
                         "itemTitulo": "Dependentes"
+                    },
+                    {
+                        "id": 5,
+                        "url": "/ferias",
+                        "pageTitulo": "Férias",
+                        "icone": <TbBeach size={20} stroke="white"/>,
+                        "itemTitulo": "Férias"
+                    },
+                    {
+                        "id": 6,
+                        "url": "/ausencias",
+                        "pageTitulo": "Ausências",
+                        "icone": <BsHourglassSplit size={20} className="icon" />,
+                        "itemTitulo": "Ausências"
+                    },
+                    {
+                        "id": 7,
+                        "url": "/demissoes",
+                        "pageTitulo": "Demissões",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Demissões"
                     },
                     {
                         "id": 8,
