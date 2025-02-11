@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import ModalFerias from '../ModalFerias';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
+import { GrAddCircle } from 'react-icons/gr';
 
 function DataTableFerias({ ferias }) {
 
@@ -47,17 +48,14 @@ function DataTableFerias({ ferias }) {
     return (
         <>
             <Frame alinhamento="center" gap="20px">
-                {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
-                    <Container width="100%">
-                        <BotaoGrupo align="space-between">
-                            <div></div>
-                            <Botao size="small" aoClicar={() => setModalOpened(true)}><FaPlusCircle className="icon"/>Criar solicitação de Férias</Botao>
-                        </BotaoGrupo>
-                    </Container>
-                }
                 <DataTable value={ferias} filters={filters} globalFilterFields={[]}  emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
-                    <Column field="data_inicio" header="Data de Início" style={{ width: '35%' }}></Column>
-                    <Column field="data_fim" header="Data de Fim" style={{ width: '35%' }}></Column>
+                    <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
+                    <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
+                    <Column field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
+                    <Column field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
+                    <Column field="dias" header="Dias Calculados" style={{ width: '15%' }}></Column>
+                    <Column field="13" header="13º" style={{ width: '15%' }}></Column>
+                    <Column field="abono" header="Abono Pecuniário" style={{ width: '15%' }}></Column>
                 </DataTable>
                 <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Frame>

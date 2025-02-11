@@ -100,7 +100,7 @@ function FeriasAusenciasListagem() {
                 </BotaoGrupo>
             </BotaoGrupo>
             {ferias ?
-            <DataTableFerias ferias={ferias} />
+                <DataTableFerias ferias={ferias} />
             :
             <ContainerSemRegistro>
             <section className={styles.container}>

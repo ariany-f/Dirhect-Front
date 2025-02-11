@@ -57,7 +57,7 @@ function AusenciasListagem() {
                 </BotaoGrupo>
             </BotaoGrupo>
             {contratos ?
-            <DataTableContratos contratos={contratos} />
+                <DataTableContratos contratos={contratos} />
             :
             <ContainerSemRegistro>
             <section className={styles.container}>

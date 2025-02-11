@@ -2,6 +2,7 @@ import http from '@http'
 import { useEffect, useState } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
+import Container from '@components/Container'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Contratos.module.css'
 import styled from "styled-components"
@@ -12,6 +13,8 @@ import { AiFillQuestionCircle } from 'react-icons/ai'
 import DataTableContratos from '../../components/DataTableContratos'
 import DataTableFerias from '../../components/DataTableFerias'
 import ModalFerias from '../../components/ModalFerias'
+import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
+import { FaPlusCircle } from 'react-icons/fa'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -43,6 +46,8 @@ function FeriasListagem() {
     const [ferias, setFerias] = useState(null)
     const context = useOutletContext()
     const [modalOpened, setModalOpened] = useState(false)
+
+    const {usuario} = useSessaoUsuarioContext()
     
     useEffect(() => {
         if(context && (!ferias))
@@ -54,12 +59,13 @@ function FeriasListagem() {
     
     return (
         <ConteudoFrame>
-            <BotaoGrupo align="end">
-                <BotaoGrupo align="center">
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
-                </BotaoGrupo>
-            </BotaoGrupo>
-           
+            
+            {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
+                <BotaoGrupo align="end">
+                    <BotaoGrupo align="center">
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Criar solicitação de Férias</Botao>
+                    </BotaoGrupo>
+                </BotaoGrupo>}
             <DataTableFerias ferias={ferias} />
 
             <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />

@@ -17,3 +17,6 @@
     flex: 1;
     width: 65vw;
 }
+.icon * {
+    stroke: white;
+}
