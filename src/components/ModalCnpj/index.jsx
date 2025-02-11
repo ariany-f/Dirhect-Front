@@ -109,7 +109,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         
         http.get(`client_tenant/?format=json`)
             .then(response => {
-               console.log(response)
+            //    console.log(response)
             })
             .catch(erro => {
                 // setLoading(false)

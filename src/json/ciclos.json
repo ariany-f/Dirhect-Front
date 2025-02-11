@@ -1,0 +1,170 @@
+[
+    { 
+        "id": 1, 
+        "tipo": "Adiantamento", 
+        "data": "Janeiro 2025", 
+        "data_referencia": "Dezembro 2024", 
+        "status": "Aberta",
+        "detalhes": [
+            { 
+                "funcionario": "João Silva", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 5000 
+            },
+            { 
+                "funcionario": "João Silva", 
+                "rubrica": "Hora Extra", 
+                "referencia": "10h", 
+                "valor": 500
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 5500 
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Bonificação", 
+                "referencia": "-", 
+                "valor": 1000
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 5300
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Hora Extra", 
+                "referencia": "5h", 
+                "valor": 250 
+            }
+        ]
+    },
+    { 
+        "id": 2, 
+        "tipo": "Folha de Pagamento", 
+        "data": "Janeiro 2025", 
+        "data_referencia": "Dezembro 2024", 
+        "status": "Fechada",
+        "detalhes": [
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 5500
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 5700
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "rubrica": "Desconto INSS", 
+                "referencia": "-", 
+                "valor": -500 
+            }
+        ]
+    },
+    { 
+        "id": 3, 
+        "tipo": "Adiantamento", 
+        "data": "Fevereiro 2025", 
+        "data_referencia": "Janeiro 2025", 
+        "status": "Aberta",
+        "detalhes": [
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 4900
+            }
+        ]
+    },
+    {
+         "id": 4, 
+        "tipo": "Folha de Pagamento", 
+        "data": "Fevereiro 2025", 
+        "data_referencia": "Janeiro 2025", 
+        "status": "Aberta",
+        "detalhes": [
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 4900
+            }
+        ]
+    },
+    {
+         "id": 5, 
+        "tipo": "Adiantamento", 
+        "data": "Março 2025", 
+        "data_referencia": "Fevereiro 2025", 
+        "status": "Fechada",
+        "detalhes": [
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 4800
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 5700 
+            }
+        ]
+    },
+    {
+         "id": 6, 
+        "tipo": "Folha de Pagamento", 
+        "data": "Março 2025", 
+        "data_referencia": "Fevereiro 2025", 
+        "status": "Aberta",
+        "detalhes": [
+            { 
+                "funcionario": "Juliana Mendes", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 5700 
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "rubrica": "Desconto INSS", 
+                "referencia": "-", 
+                "valor": -500 
+            },
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 4800 
+            },
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+                "valor": 4900 
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Salário", 
+                "referencia": "160h", 
+            "valor": 5500 
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Bonificação", 
+                "referencia": "-", 
+            "valor": 1000 
+            }
+        ]
+    }
+]

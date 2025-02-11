@@ -120,6 +120,9 @@ import ColabroadorESocial from './pages/Colaboradores/Detalhes/esocial'
 import ColaboradorAusencias from './pages/Colaboradores/Detalhes/ausencias'
 import ColabroadorDemissoes from './pages/Colaboradores/Detalhes/demissoex'
 import Demissoes from './pages/Demissoes'
+import Ciclos from './pages/Ciclos'
+import CiclosLista from './pages/Ciclos/lista'
+import DetalhesCiclos from './pages/Ciclos/detalhes'
 
 function AppRouter() {
   
@@ -251,6 +254,11 @@ function AppRouter() {
               <Route path="vagas/registro" element={<VagasRegistro />} />
 
               <Route path="/demissoes" element={<Demissoes />} />
+
+              <Route path="ciclos" element={<Ciclos />} >
+                <Route index element={<CiclosLista />} />
+                <Route path="detalhes/:id" element={<DetalhesCiclos />} />
+              </Route>
 
               <Route path="/admissao" element={<Admissoes />} />
               <Route path="/admissao/validar" element={<ValidarAdmissoes />} />

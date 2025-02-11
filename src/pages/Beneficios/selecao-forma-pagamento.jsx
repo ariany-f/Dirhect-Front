@@ -138,7 +138,7 @@ function BeneficioSelecionarFormaPagamento() {
 
         http.post('api/checkout', sendData)
         .then((response) => {
-           console.log(response)
+        //    console.log(response)
         })
         .catch(erro => {
             console.error(erro)
