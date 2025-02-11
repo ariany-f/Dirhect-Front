@@ -143,18 +143,16 @@ function DataTableFerias({ ferias, colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por colaborador" />
                 </span>
             </div>}
-            <Frame alinhamento="center" gap="20px">
-                <DataTable value={filteredData} filters={filters} globalFilterFields={['colaborador_id']} emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
-                    {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
-                    <Column field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
-                    <Column field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
-                    <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
-                    <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
-                    <Column field="dias" header="Dias de Férias" style={{ width: '15%' }}></Column>
-                    <Column field="13" header="13º" style={{ width: '15%' }}></Column>
-                    <Column field="abono" header="Dias de Abono" style={{ width: '15%' }}></Column>
-                </DataTable>
-            </Frame>
+            <DataTable value={filteredData} filters={filters} globalFilterFields={['colaborador_id']} emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
+                {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
+                <Column field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
+                <Column field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
+                <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
+                <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
+                <Column field="dias" header="Dias de Férias" style={{ width: '15%' }}></Column>
+                <Column field="13" header="13º" style={{ width: '15%' }}></Column>
+                <Column field="abono" header="Dias de Abono" style={{ width: '15%' }}></Column>
+            </DataTable>
         </>
     )
 }
