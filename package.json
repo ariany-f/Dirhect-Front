@@ -10,12 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/runtime": "^7.26.7",
+    "@devexpress/dx-react-scheduler": "^4.0.10",
+    "@devexpress/dx-react-scheduler-material-ui": "^4.0.10",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.1.0",
     "axios": "^1.6.1",
     "html-react-parser": "^5.0.11",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.47",
     "primereact": "^10.9.1",
     "react": "^18.2.0",
+    "react-big-calendar": "^1.17.1",
     "react-credit-cards-2": "^1.0.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",

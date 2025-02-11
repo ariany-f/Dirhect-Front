@@ -37,15 +37,15 @@ function Ausencias() {
             <Loading opened={loading} />
             <BotaoGrupo align="start">
                 <BotaoGrupo>
-                    <Link className={styles.link} to="/ferias">
+                    {/* <Link className={styles.link} to="/ferias">
                         <Botao estilo={location.pathname == '/ferias'?'black':''} size="small" tab>Férias</Botao>
-                    </Link>
-                    <Link className={styles.link} to="/ferias/ausencias">
+                    </Link> */}
+                    {/* <Link className={styles.link} to="/ferias/ausencias">
                         <Botao estilo={location.pathname == '/ferias/ausencias'?'black':''} size="small" tab>Ausências</Botao>
-                    </Link>
-                    <Link className={styles.link} to="/ferias/all">
+                    </Link> */}
+                    {/* <Link className={styles.link} to="/ferias/all">
                         <Botao estilo={location.pathname == '/ferias/all'?'black':''} size="small" tab>Tudo</Botao>
-                    </Link>
+                    </Link> */}
                 </BotaoGrupo>
             </BotaoGrupo>
             <Outlet context={ausencias} />

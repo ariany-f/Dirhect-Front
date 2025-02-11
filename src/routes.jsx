@@ -215,6 +215,8 @@ function AppRouter() {
             <Route path="contratos" element={<Contratos/>}>
               <Route index element={<ContratosListagem />} />
             </Route>
+
+            <Route path="ausencias" element={<AusenciasListagem/>} />
             
             <Route path="ferias" element={<Ausencias/>}>
               <Route index element={<FeriasListagem />} />

@@ -14,6 +14,7 @@ import { FaBusAlt } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa";
 import { BreadCrumb } from "primereact/breadcrumb"
+import { BsHourglassSplit } from "react-icons/bs"
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -120,9 +121,16 @@ function BarraLateral() {
                     {
                         "id": 5,
                         "url": "/ferias",
-                        "pageTitulo": "Ferias",
+                        "pageTitulo": "Férias",
                         "icone": <BiDrink size={20} className="icon" />,
-                        "itemTitulo": "Ferias"
+                        "itemTitulo": "Férias"
+                    },
+                    {
+                        "id": 6,
+                        "url": "/ausencias",
+                        "pageTitulo": "Ausências",
+                        "icone": <BsHourglassSplit size={20} className="icon" />,
+                        "itemTitulo": "Ausências"
                     },
                 ];
             case 'candidato':
@@ -168,9 +176,16 @@ function BarraLateral() {
                     {
                         "id": 5,
                         "url": "/ferias",
-                        "pageTitulo": "Ferias",
+                        "pageTitulo": "Férias",
                         "icone": <BiDrink size={20} className="icon" />,
-                        "itemTitulo": "Ferias"
+                        "itemTitulo": "Férias"
+                    },
+                    {
+                        "id": 6,
+                        "url": "/ausencias",
+                        "pageTitulo": "Ausências",
+                        "icone": <BsHourglassSplit size={20} className="icon" />,
+                        "itemTitulo": "Ausências"
                     },
                 ];
             case 'equipeBeneficios':
