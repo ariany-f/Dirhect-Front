@@ -147,6 +147,13 @@ function BarraLateral() {
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
+                    {
+                        "id": 9,
+                        "url": "/ciclos",
+                        "pageTitulo": "Ciclos de Folha",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Ciclos de Folha"
+                    },
                 ];
             case 'candidato':
                 return [
