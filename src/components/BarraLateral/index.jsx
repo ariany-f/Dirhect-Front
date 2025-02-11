@@ -151,7 +151,7 @@ function BarraLateral() {
                         "id": 9,
                         "url": "/ciclos",
                         "pageTitulo": "Ciclos de Folha",
-                        "icone": <TbTableShare size={20} className="icon" />,
+                        "icone": <TbTableShare size={20} stroke="white" />,
                         "itemTitulo": "Ciclos de Folha"
                     },
                 ];
@@ -220,7 +220,7 @@ function BarraLateral() {
                         "id": 8,
                         "url": "/ciclos",
                         "pageTitulo": "Ciclos de Folha",
-                        "icone": <TbTableShare size={20} className="icon" />,
+                        "icone": <TbTableShare size={20} stroke="white" />,
                         "itemTitulo": "Ciclos de Folha"
                     },
                 ];

@@ -7,6 +7,7 @@ import events from '@json/ciclos.json'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Tag } from 'primereact/tag';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -36,9 +37,22 @@ function DataTableCiclos({ demissoes, colaborador = null }) {
         navegar(`/ciclos/detalhes/${value.id}`)
     }
 
-    const representativeColaboradorTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.candidato.nome}</p>
+    const representativStatusTemplate = (rowData) => {
+        let status = rowData?.status;
+        switch(rowData?.status)
+        {
+            case 'Aberta':
+                status = <Tag severity="success" value="Aberto"></Tag>;
+                break;
+            case 'Fechada':
+                status = <Tag severity="danger" value="Fechado"></Tag>;
+                break;
+        }
+        return (
+            <b>{status}</b>
+        )
     }
+
     
     return (
         <>
@@ -52,7 +66,7 @@ function DataTableCiclos({ demissoes, colaborador = null }) {
                 <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data" style={{ width: '35%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>
-                <Column field="status" header="Status" style={{ width: '35%' }}></Column>
+                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )
