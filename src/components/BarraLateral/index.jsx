@@ -155,7 +155,7 @@ function BarraLateral() {
                     },
                     {
                         "id": 2,
-                        "url": "/admissao/validar",
+                        "url": "/admissao",
                         "pageTitulo": "Admissões",
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Admissões"

@@ -13,7 +13,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
 });
 
 function DataTableValidarAdmissao({ vagas }) {
-
+    
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
