@@ -244,7 +244,7 @@ function ModalFerias({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, 
                             </Col12>
                             <Col12>
                                 <Col4Centered>
-                                    <CheckboxContainer fontSize="16px" name="13" valor={decimoTerceiro} setValor={() => setDecimoTerceiro(!decimoTerceiro)} label="13º Salário"/>
+                                    <CheckboxContainer fontSize="16px" name="decimo" valor={decimoTerceiro} setValor={() => setDecimoTerceiro(!decimoTerceiro)} label="13º Salário"/>
                                 </Col4Centered>
                                 <Col4>
                                     <CampoTexto

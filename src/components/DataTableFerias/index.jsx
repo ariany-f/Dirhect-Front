@@ -30,7 +30,7 @@ const fakeData = [
         data_inicio_aquisicao: formatarDataBr("2024-02-01"),
         data_fim_aquisicao: formatarDataBr("2024-02-10"),
         dias: 10,
-        "13": "Sim",
+        decimo: "Sim",
         abono: "6"
     },
     {
@@ -41,7 +41,7 @@ const fakeData = [
         data_inicio_aquisicao: formatarDataBr("2024-03-05"),
         data_fim_aquisicao: formatarDataBr("2024-03-15"),
         dias: 11,
-        "13": "Não",
+        decimo: "Não",
         abono: "5"
     },
     {
@@ -52,7 +52,7 @@ const fakeData = [
         data_inicio_aquisicao: formatarDataBr("2024-04-10"),
         data_fim_aquisicao: formatarDataBr("2024-04-20"),
         dias: 11,
-        "13": "Sim",
+        decimo: "Sim",
         abono: "10"
     },
     {
@@ -63,7 +63,7 @@ const fakeData = [
         data_inicio_aquisicao: formatarDataBr("2024-05-01"),
         data_fim_aquisicao: formatarDataBr("2024-05-10"),
         dias: 10,
-        "13": "Sim",
+        decimo: "Sim",
         abono: "5"
     },
     {
@@ -74,7 +74,7 @@ const fakeData = [
         data_inicio_aquisicao: formatarDataBr("2024-06-15"),
         data_fim_aquisicao: formatarDataBr("2024-06-25"),
         dias: 11,
-        "13": "Não",
+        decimo: "Não",
         abono: "5"
     },
     {
@@ -85,7 +85,7 @@ const fakeData = [
         data_inicio_aquisicao: formatarDataBr("2024-07-01"),
         data_fim_aquisicao: formatarDataBr("2024-07-10"),
         dias: 10,
-        "13": "Sim",
+        decimo: "Sim",
         abono: "10"
     }
 ];
@@ -130,6 +130,23 @@ function DataTableFerias({ ferias, colaborador = null }) {
             return ""
         }
     }
+
+    
+    const representativ13Template = (rowData) => {
+        let tag = rowData.decimo;
+        switch(rowData.decimo)
+        {
+            case 'Sim':
+                tag = <Tag severity="success" value="Sim"></Tag>;
+                break;
+            case 'Não':
+                tag = <Tag severity="danger" value="Não"></Tag>;
+                break;
+        }
+        return (
+            <b>{tag}</b>
+        )
+    }
     
 
     // Filtra os dados com base no colaborador, se fornecido
@@ -150,7 +167,7 @@ function DataTableFerias({ ferias, colaborador = null }) {
                 <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
                 <Column field="dias" header="Dias de Férias" style={{ width: '15%' }}></Column>
-                <Column field="13" header="13º" style={{ width: '15%' }}></Column>
+                <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '15%' }}></Column>
                 <Column field="abono" header="Dias de Abono" style={{ width: '15%' }}></Column>
             </DataTable>
         </>
