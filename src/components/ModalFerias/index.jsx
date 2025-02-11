@@ -5,7 +5,7 @@ import CheckboxContainer from '@components/CheckboxContainer'
 import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import { RiCloseFill } from 'react-icons/ri'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
@@ -143,6 +143,25 @@ function ModalFerias({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }
             setDiasDeFerias(diffDays);
         }
     }
+
+    useEffect(() => {
+        if (dataInicialFerias && dataFinalFerias) {
+            const inicio = new Date(dataInicialFerias);
+            const fim = new Date(dataFinalFerias);
+
+            if (inicio > fim) {
+                setDiasDeFerias(0);
+                return;
+            }
+
+            const diffTime = fim.getTime() - inicio.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o primeiro dia
+
+            setDiasDeFerias(diffDays);
+        } else {
+            setDiasDeFerias(0);
+        }
+    }, [dataInicialFerias, dataFinalFerias]);
     
 
     return(
