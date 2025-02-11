@@ -23,7 +23,7 @@ const fakeData = [
         data_inicio_aquisicao: "2024-02-01",
         data_fim_aquisicao: "2024-02-10",
         dias: 10,
-        "13": "R$ 1.000,00",
+        "13": "Sim",
         abono: "6"
     },
     {
@@ -33,7 +33,7 @@ const fakeData = [
         data_inicio_aquisicao: "2024-03-05",
         data_fim_aquisicao: "2024-03-15",
         dias: 11,
-        "13": "R$ 1.100,00",
+        "13": "Não",
         abono: "5"
     },
     {
@@ -43,7 +43,7 @@ const fakeData = [
         data_inicio_aquisicao: "2024-04-10",
         data_fim_aquisicao: "2024-04-20",
         dias: 11,
-        "13": "R$ 1.150,00",
+        "13": "Sim",
         abono: "10"
     },
     {
@@ -53,7 +53,7 @@ const fakeData = [
         data_inicio_aquisicao: "2024-05-01",
         data_fim_aquisicao: "2024-05-10",
         dias: 10,
-        "13": "R$ 1.000,00",
+        "13": "Sim",
         abono: "5"
     },
     {
@@ -63,7 +63,7 @@ const fakeData = [
         data_inicio_aquisicao: "2024-06-15",
         data_fim_aquisicao: "2024-06-25",
         dias: 11,
-        "13": "R$ 1.100,00",
+        "13": "Não",
         abono: "5"
     },
     {
@@ -73,7 +73,7 @@ const fakeData = [
         data_inicio_aquisicao: "2024-07-01",
         data_fim_aquisicao: "2024-07-10",
         dias: 10,
-        "13": "R$ 1.000,00",
+        "13": "Sim",
         abono: "10"
     }
 ];
