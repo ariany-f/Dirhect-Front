@@ -24,7 +24,7 @@ const fakeData = [
         data_fim_aquisicao: "2024-02-10",
         dias: 10,
         "13": "R$ 1.000,00",
-        abono: "R$ 500,00"
+        abono: "6"
     },
     {
         id: 2,
@@ -34,7 +34,7 @@ const fakeData = [
         data_fim_aquisicao: "2024-03-15",
         dias: 11,
         "13": "R$ 1.100,00",
-        abono: "R$ 550,00"
+        abono: "5"
     },
     {
         id: 3,
@@ -44,7 +44,7 @@ const fakeData = [
         data_fim_aquisicao: "2024-04-20",
         dias: 11,
         "13": "R$ 1.150,00",
-        abono: "R$ 575,00"
+        abono: "10"
     },
     {
         id: 4,
@@ -54,7 +54,7 @@ const fakeData = [
         data_fim_aquisicao: "2024-05-10",
         dias: 10,
         "13": "R$ 1.000,00",
-        abono: "R$ 500,00"
+        abono: "5"
     },
     {
         id: 5,
@@ -64,7 +64,7 @@ const fakeData = [
         data_fim_aquisicao: "2024-06-25",
         dias: 11,
         "13": "R$ 1.100,00",
-        abono: "R$ 550,00"
+        abono: "5"
     },
     {
         id: 6,
@@ -74,7 +74,7 @@ const fakeData = [
         data_fim_aquisicao: "2024-07-10",
         dias: 10,
         "13": "R$ 1.000,00",
-        abono: "R$ 500,00"
+        abono: "10"
     }
 ];
 
@@ -113,13 +113,13 @@ function DataTableFerias({ ferias }) {
         <>
             <Frame alinhamento="center" gap="20px">
                 <DataTable value={fakeData} filters={filters} globalFilterFields={[]}  emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
-                    <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
-                    <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
                     <Column field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
                     <Column field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
-                    <Column field="dias" header="Dias Calculados" style={{ width: '15%' }}></Column>
+                    <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
+                    <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
+                    <Column field="dias" header="Dias de Férias" style={{ width: '15%' }}></Column>
                     <Column field="13" header="13º" style={{ width: '15%' }}></Column>
-                    <Column field="abono" header="Abono Pecuniário" style={{ width: '15%' }}></Column>
+                    <Column field="abono" header="Dias de Abono" style={{ width: '15%' }}></Column>
                 </DataTable>
                 <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Frame>
