@@ -30,13 +30,10 @@ function DataTableEventosCiclos({ eventos }) {
         setGlobalFilterValue(value);
     };
 
-    function verDetalhes(value)
-    {
-        navegar(`/ciclos/detalhes/${value.id}`)
-    }
-
-    const representativeColaboradorTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.candidato.nome}</p>
+    const representativeValorTemplate = (rowData) => {
+        return (
+            Real.format(rowData.valor)
+        )
     }
     
     return (
@@ -46,11 +43,11 @@ function DataTableEventosCiclos({ eventos }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={eventos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados ciclos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={eventos} filters={filters} globalFilterFields={['funcionario', 'rubrica']}  emptyMessage="Não foram encontrados ciclos" paginator rows={5}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
                 <Column field="rubrica" header="Rubrica" style={{ width: '35%' }}></Column>
                 <Column field="referencia" header="Referência" style={{ width: '35%' }}></Column>
-                <Column field="valor" header="Valor" style={{ width: '35%' }}></Column>
+                <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )

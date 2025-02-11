@@ -15,7 +15,7 @@ import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa";
 import { BreadCrumb } from "primereact/breadcrumb"
 import { BsHourglassSplit } from "react-icons/bs"
-import { TbBeach } from "react-icons/tb";
+import { TbBeach, TbTable, TbTableShare } from "react-icons/tb";
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -151,7 +151,7 @@ function BarraLateral() {
                         "id": 9,
                         "url": "/ciclos",
                         "pageTitulo": "Ciclos de Folha",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "icone": <TbTableShare size={20} className="icon" />,
                         "itemTitulo": "Ciclos de Folha"
                     },
                 ];
@@ -220,7 +220,7 @@ function BarraLateral() {
                         "id": 8,
                         "url": "/ciclos",
                         "pageTitulo": "Ciclos de Folha",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "icone": <TbTableShare size={20} className="icon" />,
                         "itemTitulo": "Ciclos de Folha"
                     },
                 ];
