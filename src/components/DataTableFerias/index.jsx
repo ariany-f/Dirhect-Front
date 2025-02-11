@@ -15,6 +15,70 @@ import ModalFerias from '../ModalFerias';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
 import { GrAddCircle } from 'react-icons/gr';
 
+const fakeData = [
+    {
+        id: 1,
+        data_inicio: "2025-02-01",
+        data_fim: "2025-02-10",
+        data_inicio_aquisicao: "2024-02-01",
+        data_fim_aquisicao: "2024-02-10",
+        dias: 10,
+        "13": "R$ 1.000,00",
+        abono: "R$ 500,00"
+    },
+    {
+        id: 2,
+        data_inicio: "2025-03-05",
+        data_fim: "2025-03-15",
+        data_inicio_aquisicao: "2024-03-05",
+        data_fim_aquisicao: "2024-03-15",
+        dias: 11,
+        "13": "R$ 1.100,00",
+        abono: "R$ 550,00"
+    },
+    {
+        id: 3,
+        data_inicio: "2025-04-10",
+        data_fim: "2025-04-20",
+        data_inicio_aquisicao: "2024-04-10",
+        data_fim_aquisicao: "2024-04-20",
+        dias: 11,
+        "13": "R$ 1.150,00",
+        abono: "R$ 575,00"
+    },
+    {
+        id: 4,
+        data_inicio: "2025-05-01",
+        data_fim: "2025-05-10",
+        data_inicio_aquisicao: "2024-05-01",
+        data_fim_aquisicao: "2024-05-10",
+        dias: 10,
+        "13": "R$ 1.000,00",
+        abono: "R$ 500,00"
+    },
+    {
+        id: 5,
+        data_inicio: "2025-06-15",
+        data_fim: "2025-06-25",
+        data_inicio_aquisicao: "2024-06-15",
+        data_fim_aquisicao: "2024-06-25",
+        dias: 11,
+        "13": "R$ 1.100,00",
+        abono: "R$ 550,00"
+    },
+    {
+        id: 6,
+        data_inicio: "2025-07-01",
+        data_fim: "2025-07-10",
+        data_inicio_aquisicao: "2024-07-01",
+        data_fim_aquisicao: "2024-07-10",
+        dias: 10,
+        "13": "R$ 1.000,00",
+        abono: "R$ 500,00"
+    }
+];
+
+
 function DataTableFerias({ ferias }) {
 
     const[selectedFerias, setSelectedFerias] = useState(0)
@@ -48,7 +112,7 @@ function DataTableFerias({ ferias }) {
     return (
         <>
             <Frame alinhamento="center" gap="20px">
-                <DataTable value={ferias} filters={filters} globalFilterFields={[]}  emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
+                <DataTable value={fakeData} filters={filters} globalFilterFields={[]}  emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
                     <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                     <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
                     <Column field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
