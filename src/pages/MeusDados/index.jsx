@@ -20,7 +20,7 @@ function MeusDados() {
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
                     <Link className={styles.link} to="/usuario">
-                        <Botao estilo={location.pathname == '/usuario'?'black':''} size="small" tab>Dados Gerais</Botao>
+                        <Botao estilo={location.pathname == '/usuario'?'black':''} size="small" tab>Dados Pessoais</Botao>
                     </Link>
                     <Link className={styles.link} to="/usuario/endereco">
                         <Botao estilo={location.pathname == '/usuario/endereco'?'black':''} size="small" tab>Endereço</Botao>

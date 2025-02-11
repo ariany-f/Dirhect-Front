@@ -61,7 +61,7 @@ const CandidatoRegistro = () => {
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
                     <Link className={styles.link} to={`/candidato/registro/${id}`}>
-                        <Botao estilo={location.pathname == `/candidato/registro/${id}`?'black':''} size="small" tab>Dados Gerais</Botao>
+                        <Botao estilo={location.pathname == `/candidato/registro/${id}`?'black':''} size="small" tab>Dados Pessoais</Botao>
                     </Link>
                     <Link className={styles.link} to={`/candidato/registro/${id}/educacao`}>
                         <Botao estilo={location.pathname == `/candidato/registro/${id}/educacao`?'black':''} size="small" tab>Educação</Botao>

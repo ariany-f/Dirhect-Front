@@ -211,7 +211,7 @@ const CandidatoRegistroDadosGerais = () => {
 
     return (
     <Container>
-        <h3>Dados Gerais</h3>
+        <h3>Dados Pessoais</h3>
         <form onSubmit={handleSubmit}>
             <CampoTexto 
                 camposVazios={classError}
