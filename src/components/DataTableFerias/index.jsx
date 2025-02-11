@@ -685,8 +685,6 @@ function DataTableFerias({ ferias, colaborador = null }) {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
-    
-    
     const representativeColaboradorTemplate = (rowData) => {
         
         const colab = colaboradores.filter(collaborator => collaborator.id == rowData.colaborador_id);
