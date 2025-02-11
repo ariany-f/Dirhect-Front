@@ -78,7 +78,7 @@ function DetalhesCiclos() {
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{ciclo[0].tipo} - {ciclo[0].data}</h3>
+                            <h3>{ciclo[0].tipo} - {ciclo[0].data_referencia}</h3>
                             {representativSituacaoTemplate()}
                         </FrameVertical>
                         <BotaoGrupo align="center">
@@ -88,9 +88,9 @@ function DetalhesCiclos() {
                         </BotaoGrupo>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
-                        <Texto>Pagamento</Texto>
-                        {ciclo[0]?.data_referencia ?
-                            <Texto weight="800">{ciclo[0]?.data_referencia}</Texto>
+                        <Texto>Data de Pagamento</Texto>
+                        {ciclo[0]?.data ?
+                            <Texto weight="800">{ciclo[0]?.data}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </div>
