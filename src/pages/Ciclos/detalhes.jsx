@@ -19,6 +19,8 @@ import DataTableEventosCiclos from '../../components/DataTableEventosCiclos'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import events from '@json/ciclos.json'
+import FrameVertical from '../../components/FrameVertical'
+import { Tag } from 'primereact/tag'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -48,6 +50,21 @@ function DetalhesCiclos() {
         }
     }, [ciclo])
 
+
+    function representativSituacaoTemplate() {
+        let status = ciclo[0]?.status;
+        
+        switch(ciclo[0]?.status)
+        {
+            case 'Aberta':
+                status = <Tag severity="success" value="Aberto"></Tag>;
+                break;
+            case 'Fechada':
+                status = <Tag severity="primary" value="Fechado"></Tag>;
+                break;
+        }
+        return status
+    }
     
     return (
         <>
@@ -58,16 +75,23 @@ function DetalhesCiclos() {
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/ciclos" />
                 {ciclo && ciclo[0]?.tipo ?
+                    <>
                     <BotaoGrupo align="space-betweeen">
-                        <Titulo>
+                        <FrameVertical gap="10px">
                             <h3>{ciclo[0].tipo} - {ciclo[0].data}</h3>
-                        </Titulo>
+                            {representativSituacaoTemplate()}
+                        </FrameVertical>
                     </BotaoGrupo>
+                    <div className={styles.card_dashboard}>
+                    <Texto>Pagamento</Texto>
+                    {ciclo[0]?.data_referencia ?
+                        <Texto weight="800">{ciclo[0]?.data_referencia}</Texto>
+                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                </div>
+                    </>
                     : <></>
                 }
-                <Titulo>
-                    <h5>Detalhes</h5>
-                </Titulo>
                 <DataTableEventosCiclos eventos={ciclo[0]?.detalhes} />
             </Container>
         </Frame>

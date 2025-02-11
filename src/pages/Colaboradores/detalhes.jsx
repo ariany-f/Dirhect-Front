@@ -88,7 +88,6 @@ function ColaboradorDetalhes() {
         return situacao
     }
 
-
     return (
         <Frame>
             <Toast ref={toast} />
