@@ -9,12 +9,13 @@ import Loading from '@components/Loading'
 import DataTableDependentes from '@components/DataTableDependentes'
 import DataTableFerias from '../../../components/DataTableFerias'
 import DataTableESocial from '../../../components/DataTableESocial'
+import DataTableCiclos from '../../../components/DataTableCiclos'
 
 const DivPrincipal = styled.div`
     width: 65vw;
 `
 
-function ColabroadorESocial() {
+function ColabroadorCiclos() {
 
     let { id } = useParams()
     const [loading, setLoading] = useState(false)
@@ -29,13 +30,11 @@ function ColabroadorESocial() {
         <>
             <Loading opened={loading} />
             <Titulo>
-                <QuestionCard alinhamento="start" element={<h6>ESocial</h6>}>
-                    <AiFillQuestionCircle className="question-icon" size={20} />
-                </QuestionCard>
+                <h6>Ciclos de Folha</h6>
             </Titulo>
-            <DataTableESocial historico={historico}/>
+            <DataTableCiclos historico={historico} colaborador={id}/>
         </>
     )
 }
 
-export default ColabroadorESocial
+export default ColabroadorCiclos

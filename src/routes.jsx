@@ -123,6 +123,7 @@ import Demissoes from './pages/Demissoes'
 import Ciclos from './pages/Ciclos'
 import CiclosLista from './pages/Ciclos/lista'
 import DetalhesCiclos from './pages/Ciclos/detalhes'
+import ColabroadorCiclos from './pages/Colaboradores/Detalhes/ciclos'
 
 function AppRouter() {
   
@@ -154,7 +155,6 @@ function AppRouter() {
                   <Route path="desativados" element={<ColaboradoresDesativados />} />
               </Route>
               <Route path="colaborador/detalhes/:id" element={<ColaboradorDetalhes />} >
-
                   <Route index element={<ColaboradorDadosPessoais />} />
                   <Route path="cartoes" element={<ColaboradorCartoes />} />
                   <Route path="saldo" element={<ColaboradorSaldo />} />
@@ -163,6 +163,7 @@ function AppRouter() {
                   <Route path="ausencias" element={<ColaboradorAusencias />} />
                   <Route path="esocial" element={<ColabroadorESocial />} />
                   <Route path="demissoes" element={<ColabroadorDemissoes />} />
+                  <Route path="ciclos" element={<ColabroadorCiclos />} />
                   <Route path="carteiras" element={<ColaboradorCarteiras />} />
               </Route>
               <Route path="colaborador/registro" element={<ColaboradorRegistro />} >

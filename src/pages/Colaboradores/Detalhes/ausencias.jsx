@@ -33,7 +33,7 @@ function ColaboradorAusencias() {
     }, [ausencias])
 
     return (
-        <DivPrincipal>
+        <>
             <Loading opened={loading} />
             <Titulo>
                 <QuestionCard alinhamento="start" element={<h6>Ausências</h6>}>
@@ -48,7 +48,7 @@ function ColaboradorAusencias() {
                 </BotaoGrupo>}
             <DataTableAusencias colaborador={id} ausencias={ausencias}/>
             <ModalFerias opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
-        </DivPrincipal>
+        </>
     )
 }
 

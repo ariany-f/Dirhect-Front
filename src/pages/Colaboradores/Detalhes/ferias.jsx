@@ -32,7 +32,7 @@ function ColabroadorFerias() {
     }, [ferias])
 
     return (
-        <DivPrincipal>
+        <>
             <Loading opened={loading} />
             <Titulo>
                 <QuestionCard alinhamento="start" element={<h6>Férias</h6>}>
@@ -47,7 +47,7 @@ function ColabroadorFerias() {
                 </BotaoGrupo>}
             <DataTableFerias colaborador={id} ferias={ferias}/>
             <ModalFerias opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
-        </DivPrincipal>
+        </>
     )
 }
 

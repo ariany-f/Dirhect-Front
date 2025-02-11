@@ -34,12 +34,10 @@ function ColabroadorDemissoes() {
     }, [demissoes])
 
     return (
-        <DivPrincipal>
+        <>
             <Loading opened={loading} />
             <Titulo>
-                <QuestionCard alinhamento="start" element={<h6>Demissões</h6>}>
-                    <AiFillQuestionCircle className="question-icon" size={20} />
-                </QuestionCard>
+                <h6>Demissões</h6>
             </Titulo>
             {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
                 <BotaoGrupo align="end">
@@ -49,7 +47,7 @@ function ColabroadorDemissoes() {
                 </BotaoGrupo>}
             <DataTableDemissao colaborador={id} demissoes={demissoes}/>
             <ModalDemissao opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
-        </DivPrincipal>
+        </>
     )
 }
 
