@@ -161,8 +161,6 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
                 obj['balance']['departments'] = departamento
             })
         }
-        
-        console.log(obj)
         return sendRequest(obj)
     }
 

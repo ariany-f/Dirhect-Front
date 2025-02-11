@@ -5,6 +5,7 @@ import BotaoSemBorda from "@components/BotaoSemBorda"
 import Botao from "@components/Botao"
 import Titulo from "@components/Titulo"
 import Frame from "@components/Frame"
+import FrameVertical from "@components/FrameVertical"
 import Container from "@components/Container"
 import styles from './Colaboradores.module.css'
 import { Skeleton } from 'primereact/skeleton'
@@ -14,6 +15,7 @@ import http from '@http'
 import { useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
+import { Tag } from 'primereact/tag';
 
 function ColaboradorDetalhes() {
 
@@ -65,6 +67,28 @@ function ColaboradorDetalhes() {
         });
     }
 
+    function representativSituacaoTemplate() {
+        let situacao = colaborador?.situacao;
+        
+        switch(colaborador?.situacao)
+        {
+            case 'A':
+                situacao = <Tag severity="success" value="Ativo"></Tag>;
+                break;
+            case 'F':
+                situacao = <Tag severity="primary" value="Férias"></Tag>;
+                break;
+            case 'P':
+                situacao = <Tag severity="danger" value="Previdência"></Tag>;
+                break;
+            case 'I':
+                situacao = <Tag severity="warning" value="Invalidez"></Tag>;
+                break;
+        }
+        return situacao
+    }
+
+
     return (
         <Frame>
             <Toast ref={toast} />
@@ -73,8 +97,11 @@ function ColaboradorDetalhes() {
                 <BotaoVoltar linkFixo="/colaborador" />
                     {colaborador && colaborador?.dados_pessoa_fisica?.nome ? 
                         <BotaoGrupo align="space-between">
-                            <Titulo>
-                                <h3>{colaborador?.dados_pessoa_fisica?.nome}</h3>
+                            <Titulo align="left">
+                                <FrameVertical gap="10px">
+                                    <h3>{colaborador?.dados_pessoa_fisica?.nome}</h3>
+                                    {representativSituacaoTemplate()}
+                                </FrameVertical>
                             </Titulo>
                             <BotaoSemBorda $color="var(--primaria)">
                                 <FaTrash /><Link onClick={desativarColaborador}>Desativar colaborador</Link>
@@ -97,6 +124,9 @@ function ColaboradorDetalhes() {
                     </Link>
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
+                    </Link>
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/demissoes`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/demissoes` ? 'black':''} size="small" tab>Demissões</Botao>
                     </Link>
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>ESocial</Botao>

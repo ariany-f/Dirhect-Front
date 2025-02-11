@@ -75,7 +75,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     } = useSessaoUsuarioContext()
  
     useEffect(() => {
-        console.log(usuario)
+       
         // setUsuarioEstaLogado(!!ArmazenadorToken.AccessToken)
     }, [])
 

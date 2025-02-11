@@ -142,7 +142,6 @@ function ColaboradorEnvioCartao() {
         {
             axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
             .then((response) => {
-                console.log(response)
                 if(response.data)
                 {
                     setAnotherAddressStreet(response.data.logradouro)

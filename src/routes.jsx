@@ -118,6 +118,8 @@ import AusenciaDadosIniciais from './pages/Ausencias/Registro/dados-iniciais'
 import AusenciaRegistro from './pages/Ausencias/Registro/registro'
 import ColabroadorESocial from './pages/Colaboradores/Detalhes/esocial'
 import ColaboradorAusencias from './pages/Colaboradores/Detalhes/ausencias'
+import ColabroadorDemissoes from './pages/Colaboradores/Detalhes/demissoex'
+import Demissoes from './pages/Demissoes'
 
 function AppRouter() {
   
@@ -149,6 +151,7 @@ function AppRouter() {
                   <Route path="desativados" element={<ColaboradoresDesativados />} />
               </Route>
               <Route path="colaborador/detalhes/:id" element={<ColaboradorDetalhes />} >
+
                   <Route index element={<ColaboradorDadosPessoais />} />
                   <Route path="cartoes" element={<ColaboradorCartoes />} />
                   <Route path="saldo" element={<ColaboradorSaldo />} />
@@ -156,6 +159,7 @@ function AppRouter() {
                   <Route path="ferias" element={<ColabroadorFerias />} />
                   <Route path="ausencias" element={<ColaboradorAusencias />} />
                   <Route path="esocial" element={<ColabroadorESocial />} />
+                  <Route path="demissoes" element={<ColabroadorDemissoes />} />
                   <Route path="carteiras" element={<ColaboradorCarteiras />} />
               </Route>
               <Route path="colaborador/registro" element={<ColaboradorRegistro />} >
@@ -245,6 +249,8 @@ function AppRouter() {
               </Route>
               <Route path="vagas/detalhes/:id" element={<DetalhesVaga />} />
               <Route path="vagas/registro" element={<VagasRegistro />} />
+
+              <Route path="/demissoes" element={<Demissoes />} />
 
               <Route path="/admissao" element={<Admissoes />} />
               <Route path="/admissao/validar" element={<ValidarAdmissoes />} />

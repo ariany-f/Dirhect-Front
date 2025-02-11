@@ -1,0 +1,34 @@
+.vagasAbertas {
+    padding: 20px;
+}
+
+.botaoCriarVaga {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #244078;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.botaoCriarVaga:hover {
+    background-color: #1a2a4d;
+}
+
+.lista {
+    list-style-type: none;
+    padding: 0;
+}
+
+.item {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.linkDetalhes {
+    color: #244078;
+    text-decoration: underline;
+} 

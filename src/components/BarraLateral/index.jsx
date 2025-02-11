@@ -133,6 +133,13 @@ function BarraLateral() {
                         "icone": <BsHourglassSplit size={20} className="icon" />,
                         "itemTitulo": "Ausências"
                     },
+                    {
+                        "id": 7,
+                        "url": "/demissoes",
+                        "pageTitulo": "Demissões",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Demissões"
+                    },
                 ];
             case 'candidato':
                 return [
@@ -187,6 +194,13 @@ function BarraLateral() {
                         "pageTitulo": "Ausências",
                         "icone": <BsHourglassSplit size={20} className="icon" />,
                         "itemTitulo": "Ausências"
+                    },
+                    {
+                        "id": 7,
+                        "url": "/demissoes",
+                        "pageTitulo": "Demissões",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Demissões"
                     },
                 ];
             case 'equipeBeneficios':

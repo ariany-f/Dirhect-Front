@@ -1,0 +1,15 @@
+.frame-vertical{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-self: stretch;
+    &.vermilion {
+        background-color: var(--vermilion-50);
+    }
+    &.spaced {
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 20px;
+    }
+}

@@ -161,8 +161,6 @@ export const DependentesProvider = ({ children }) => {
                 obj['balance']['departments'] = departamento
             })
         }
-        
-        console.log(obj)
         return sendRequest(obj)
     }
 

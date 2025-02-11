@@ -161,8 +161,6 @@ export const ContratosProvider = ({ children }) => {
                 obj['balance']['departments'] = departamento
             })
         }
-        
-        console.log(obj)
         return sendRequest(obj)
     }
 

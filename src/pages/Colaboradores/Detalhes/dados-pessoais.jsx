@@ -34,9 +34,6 @@ function ColaboradorDadosPessoais() {
         {
             setColaborador(context);
         }
-        else {
-            console.log(colaborador)
-        }
     }, [colaborador, context])
 
     function editarEmail(email) {
