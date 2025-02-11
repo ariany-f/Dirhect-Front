@@ -60,9 +60,6 @@ const Admissoes = () => {
 
     return (
         <ConteudoFrame>
-            <Titulo>
-                <h5>Admissões</h5>
-            </Titulo>
             <DataTableAdmissao vagas={admissoes} />
         </ConteudoFrame>
     );

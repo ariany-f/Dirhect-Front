@@ -30,9 +30,6 @@ const Demissoes = () => {
 
     return (
         <ConteudoFrame>
-            <Titulo>
-                <h5>Demissões</h5>
-            </Titulo>
             <DataTableDemissao demissoes={demissoes} />
         </ConteudoFrame>
     );
