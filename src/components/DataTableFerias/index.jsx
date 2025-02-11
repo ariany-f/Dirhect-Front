@@ -168,8 +168,8 @@ function DataTableFerias({ ferias, colaborador = null }) {
                 <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
                 <Column field="dias" header="Dias de Férias" style={{ width: '15%' }}></Column>
-                <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '15%' }}></Column>
                 <Column field="abono" header="Dias de Abono" style={{ width: '15%' }}></Column>
+                <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '15%' }}></Column>
             </DataTable>
         </>
     )
