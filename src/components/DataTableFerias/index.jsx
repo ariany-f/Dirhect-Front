@@ -15,6 +15,7 @@ import { FaPlusCircle } from 'react-icons/fa';
 import ModalFerias from '../ModalFerias';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
 import { GrAddCircle } from 'react-icons/gr';
+import { Tag } from 'primereact/tag';
 
 function formatarDataBr(data) {
     const [ano, mes, dia] = data.split('-');
