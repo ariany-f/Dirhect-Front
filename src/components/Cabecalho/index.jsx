@@ -165,6 +165,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             "url":"ciclos",
             "pageTitulo": "Ciclos de Folha"
         },
+        {
+            "id": 18,
+            "url":"pedidos",
+            "pageTitulo": "Pedidos"
+        },
     ];
 
     const titulo = titulos.map((item) => {
