@@ -25,16 +25,20 @@ const ChBtn = styled.input`
     }
 `;
 
-function CheckboxContainer({ valor, setValor, label, name, fontSize='12px' }) {
-
+function CheckboxContainer({ valor, setValor, label, name, fontSize = '12px' }) {
     return (
         <div className={styles.checkboxContainer}>
-            <ChBtn $fontSize={fontSize} checked={valor} id={name} onChange={evento => setValor(evento.target.checked)} type="checkbox"></ChBtn>
-            {(label) ?
-                <label htmlFor={name} className={styles.label}>{label}</label>
-            : ''}
+            <ChBtn 
+                $fontSize={fontSize} 
+                checked={valor} // Mantém o estado atualizado corretamente
+                id={name} 
+                onChange={(evento) => setValor(evento.target.checked)} // Passa o novo estado
+                type="checkbox" 
+            />
+            {label && <label htmlFor={name} className={styles.label}>{label}</label>}
         </div>
-    )
+    );
 }
+
 
 export default CheckboxContainer

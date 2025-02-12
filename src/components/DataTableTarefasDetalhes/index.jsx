@@ -39,9 +39,8 @@ function DataTableTarefasDetalhes({ tarefas }) {
     }
 
     const representativeCheckTemplate = (rowData, onUpdateStatus) => {
-        
-        const handleChange = (e) => {
-            onUpdateStatus(rowData.id, e.checked); // Atualiza o status da tarefa ao clicar
+        const handleChange = (checked) => {
+            onUpdateStatus(rowData.id, checked); // Atualiza o estado da tarefa
         };
     
         return (
