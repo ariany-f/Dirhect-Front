@@ -1,113 +1,121 @@
 [
     { 
         "id": 1, 
-        "total_tarefas": 10,
+        "total_tarefas": 6,
         "tipo": "Adiantamento", 
         "data": "31/01/2025", 
-        "feito": "1", 
+        "feito": 1, 
         "status": "Em andamento",
-        "detalhes": [
+        "checklist": [
             { 
-                "funcionario": "João Silva", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 5000 
+                "descricao": "Calcular", 
+                "prazo": 17, 
+                "check": true, 
+                "atribuido": 5000 
             },
             { 
-                "funcionario": "João Silva", 
-                "desconto": 600, 
-                "empresa": 200, 
-                "valor": 1100
+                "descricao": "Gerar Folha Analítica", 
+                "prazo": 17, 
+                "check": false, 
+                "atribuido": 1100
             },
             { 
-                "funcionario": "Maria Souza", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 5500 
+                "descricao": "Enviar ao Cliente", 
+                "prazo": 17, 
+                "check": false, 
+                "atribuido": 5500 
             },
             { 
-                "funcionario": "Maria Souza", 
-                "desconto": "Bonificação", 
-                "empresa": "-", 
-                "valor": 1000
+                "descricao": "Validar Cálculo", 
+                "prazo": 17, 
+                "check": false, 
+                "atribuido": 1000
             },
             { 
-                "funcionario": "Ana Lima", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 5300
+                "descricao": "Gerar Liq.", 
+                "prazo": 20, 
+                "check": false, 
+                "atribuido": 5300
             },
             { 
-                "funcionario": "Ana Lima", 
-                "desconto": 600, 
-                "empresa": 50, 
-                "valor": 1250 
+                "descricao": "Gerar CNAB", 
+                "prazo": 20, 
+                "check": false, 
+                "atribuido": 1250 
             }
         ]
     },
     { 
         "id": 2, 
-        "total_tarefas": 7,
+        "total_tarefas": 3,
         "tipo": "Encargos", 
         "data": "31/01/2025", 
-        "feito": "7", 
+        "feito": 2, 
         "status": "Concluída",
-        "detalhes": [
+        "checklist": [
             { 
-                "funcionario": "Maria Souza", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 5500
+                "descricao": "INSS", 
+                "prazo": 7, 
+                "check": true, 
+                "atribuido": 4800
             },
             { 
-                "funcionario": "Juliana Mendes", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 5700
+                "descricao": "IRRF", 
+                "prazo": 7, 
+                "check": true, 
+                "atribuido": 5700 
             },
             { 
-                "funcionario": "Juliana Mendes", 
-                "desconto": 750, 
-                "empresa": 320, 
-                "valor": 2500 
+                "descricao": "FGTS", 
+                "prazo": 7, 
+                "check": false, 
+                "atribuido": 5700 
             }
         ]
     },
     { 
         "id": 3, 
-        "total_tarefas": 25,
-        "tipo": "Vale Refeição", 
+        "total_tarefas": 6,
+        "tipo": "Folha Mensal", 
         "data": "28/02/2025", 
-        "feito": "12", 
+        "feito": 6, 
         "status": "Aguardando",
-        "detalhes": [
+        "checklist": [
             { 
-                "funcionario": "Pedro Santos", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 4900
-            }
-        ]
-    },
-    {
-        "id": 4, 
-        "total_tarefas": 2,
-        "tipo": "Encargos", 
-        "data": "31/03/2025", 
-        "feito": "0", 
-        "status": "Em andamento",
-        "detalhes": [
-            { 
-                "funcionario": "Carlos Oliveira", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 4800
+                "descricao": "Calcular", 
+                "prazo": 30, 
+                "check": true, 
+                "atribuido": 5000 
             },
             { 
-                "funcionario": "Juliana Mendes", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 5700 
+                "descricao": "Gerar Folha Analítica", 
+                "prazo": 30, 
+                "check": true, 
+                "atribuido": 1100
+            },
+            { 
+                "descricao": "Enviar ao Cliente", 
+                "prazo": 30, 
+                "check": true, 
+                "atribuido": 5500 
+            },
+            { 
+                "descricao": "Validar Cálculo", 
+                "prazo": 30, 
+                "check": true, 
+                "atribuido": 1000
+            },
+            { 
+                "descricao": "Gerar Liq.", 
+                "prazo": 30, 
+                "check": true, 
+                "atribuido": 5300
+            },
+            { 
+                "descricao": "Gerar CNAB", 
+                "prazo": 15, 
+                "check": true, 
+                "atribuido": 1250 
             }
         ]
     }

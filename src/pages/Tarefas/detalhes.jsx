@@ -87,23 +87,18 @@ function DetalhesTarefas() {
                             <h3>{tarefa.tipo} - {tarefa.data_referencia}</h3>
                             {representativSituacaoTemplate()}
                         </FrameVertical>
-                        <BotaoGrupo align="center">
-                            <BotaoSemBorda color="var(--primaria)">
-                                <FaDownload/><Link onClick={() => setModalOpened(true)} className={styles.link}>Importar planilha</Link>
-                            </BotaoSemBorda>
-                        </BotaoGrupo>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
-                        <Texto>Data de Pagamento</Texto>
-                        {tarefa?.data ?
-                            <Texto weight="800">{tarefa?.data}</Texto>
+                        <Texto>Checklist</Texto>
+                        {tarefa?.total_tarefas ?
+                            <Texto weight="800">{tarefa?.feito}/{tarefa?.total_tarefas}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </div>
                     </>
                     : <></>
                 }
-                <DataTableTarefasDetalhes tarefas={tarefa?.detalhes} />
+                <DataTableTarefasDetalhes tarefas={tarefa?.checklist} />
             </Container>
         </Frame>
         </>

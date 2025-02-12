@@ -29,7 +29,7 @@ function CheckboxContainer({ valor, setValor, label, name, fontSize='12px' }) {
 
     return (
         <div className={styles.checkboxContainer}>
-            <ChBtn $fontSize={fontSize} value={valor} id={name} onChange={evento => setValor(evento.target.checked)} type="checkbox"></ChBtn>
+            <ChBtn $fontSize={fontSize} checked={valor} id={name} onChange={evento => setValor(evento.target.checked)} type="checkbox"></ChBtn>
             {(label) ?
                 <label htmlFor={name} className={styles.label}>{label}</label>
             : ''}

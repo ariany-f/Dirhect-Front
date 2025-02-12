@@ -6,6 +6,8 @@ import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Checkbox } from 'primereact/checkbox';
+import CheckboxContainer from '@components/CheckboxContainer'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -30,23 +32,22 @@ function DataTableTarefasDetalhes({ tarefas }) {
         setGlobalFilterValue(value);
     };
 
-    const representativeValorTemplate = (rowData) => {
+    const representativePrazoTemplate = (rowData) => {
         return (
-            Real.format(rowData.valor)
+            rowData.prazo
         )
     }
 
-    const representativeDescontoTemplate = (rowData) => {
+    const representativeCheckTemplate = (rowData, onUpdateStatus) => {
+        
+        const handleChange = (e) => {
+            onUpdateStatus(rowData.id, e.checked); // Atualiza o status da tarefa ao clicar
+        };
+    
         return (
-            Real.format(rowData.desconto)
-        )
-    }
-
-    const representativeEmpresaTemplate = (rowData) => {
-        return (
-            Real.format(rowData.empresa)
-        )
-    }
+            <CheckboxContainer name="feito" valor={rowData.check} setValor={handleChange} />
+        );
+    };
     
     return (
         <>
@@ -56,10 +57,9 @@ function DataTableTarefasDetalhes({ tarefas }) {
                 </span>
             </div>
             <DataTable value={tarefas} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados tarefas" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
-                <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
-                <Column body={representativeDescontoTemplate} field="desconto" header="Desconto" style={{ width: '35%' }}></Column>
-                <Column body={representativeEmpresaTemplate} field="empresa" header="Empresa" style={{ width: '35%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
+                <Column body={representativePrazoTemplate} field="prazo" header="Prazo" style={{ width: '35%' }}></Column>
+                <Column body={representativeCheckTemplate} field="check" header="Status" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )
