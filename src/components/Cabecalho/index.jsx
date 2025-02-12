@@ -163,7 +163,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         {
             "id": 17,
             "url":"ciclos",
-            "pageTitulo": "Lançtos de Folha"
+            "pageTitulo": "Lançamentos de Folha"
         },
         {
             "id": 18,
