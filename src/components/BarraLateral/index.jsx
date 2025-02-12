@@ -16,6 +16,7 @@ import { FaBars } from "react-icons/fa";
 import { BreadCrumb } from "primereact/breadcrumb"
 import { BsHourglassSplit } from "react-icons/bs"
 import { TbBeach, TbTable, TbTableShare } from "react-icons/tb";
+import { MdAllInbox, MdShoppingCartCheckout } from "react-icons/md"
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -307,14 +308,14 @@ function BarraLateral() {
                         "id": 12,
                         "url": "/pedidos",
                         "pageTitulo": "Pedidos",
-                        "icone": <TbTableShare size={20} stroke="white" />,
+                        "icone": <MdShoppingCartCheckout size={20} fill="white" />,
                         "itemTitulo": "Pedidos"
                     },
                     {
                         "id": 13,
                         "url": "/movimentos",
                         "pageTitulo": "Movimentos",
-                        "icone": <TbTableShare size={20} stroke="white" />,
+                        "icone": <MdAllInbox size={20} fill="white" />,
                         "itemTitulo": "Movimentos"
                     },
                 ];
