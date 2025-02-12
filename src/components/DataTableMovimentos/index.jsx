@@ -41,11 +41,11 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
         let status = rowData?.status;
         switch(rowData?.status)
         {
-            case 'Aprovado':
-                status = <Tag severity="success" value="Aprovado"></Tag>;
+            case 'Inclusão':
+                status = <Tag severity="success" value="Inclusão"></Tag>;
                 break;
-            case 'Aguardando':
-                status = <Tag severity="warning" value="Aguardando"></Tag>;
+            case 'Remoção':
+                status = <Tag severity="danger" value="Remoção"></Tag>;
                 break;
         }
         return (
@@ -75,8 +75,7 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
             </div>}
             <DataTable value={movimentos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados movimentos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
-                <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>
-                <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>
+                <Column field="data" header="Data do Movimento" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
             </DataTable>
         </>

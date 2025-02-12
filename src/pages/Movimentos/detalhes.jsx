@@ -59,11 +59,11 @@ function DetalhesMovimentos() {
         
         switch(movimento?.status)
         {
-            case 'Aprovado':
-                status = <Tag severity="success" value="Aprovado"></Tag>;
+            case 'Inclusão':
+                status = <Tag severity="success" value="Inclusão"></Tag>;
                 break;
-            case 'Aguardando':
-                status = <Tag severity="warning" value="Aguardando"></Tag>;
+            case 'Remoção':
+                status = <Tag severity="danger" value="Remoção"></Tag>;
                 break;
         }
         return status
@@ -81,7 +81,7 @@ function DetalhesMovimentos() {
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{movimento.tipo} - {movimento.data_referencia}</h3>
+                            <h3>{movimento.tipo}</h3>
                             {representativSituacaoTemplate()}
                         </FrameVertical>
                         <BotaoGrupo align="center">
@@ -91,7 +91,7 @@ function DetalhesMovimentos() {
                         </BotaoGrupo>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
-                        <Texto>Data de Pagamento</Texto>
+                        <Texto>Data do Movimento</Texto>
                         {movimento?.data ?
                             <Texto weight="800">{movimento?.data}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />

@@ -58,9 +58,6 @@ function DataTableMovimentosDetalhes({ movimentos }) {
             </div>
             <DataTable value={movimentos} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados movimentos" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
-                <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
-                <Column body={representativeDescontoTemplate} field="desconto" header="Desconto" style={{ width: '35%' }}></Column>
-                <Column body={representativeEmpresaTemplate} field="empresa" header="Empresa" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )
