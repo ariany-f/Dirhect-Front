@@ -304,11 +304,18 @@ function BarraLateral() {
                         "itemTitulo": "Elegibilidade"
                     },
                     {
-                        "id": 9,
+                        "id": 12,
                         "url": "/pedidos",
                         "pageTitulo": "Pedidos",
                         "icone": <TbTableShare size={20} stroke="white" />,
                         "itemTitulo": "Pedidos"
+                    },
+                    {
+                        "id": 13,
+                        "url": "/movimentos",
+                        "pageTitulo": "Movimentos",
+                        "icone": <TbTableShare size={20} stroke="white" />,
+                        "itemTitulo": "Movimentos"
                     },
                 ];
             default:

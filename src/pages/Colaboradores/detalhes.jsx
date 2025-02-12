@@ -142,9 +142,14 @@ function ColaboradorDetalhes() {
                     }
 
                     {(usuario.tipo == 'equipeBeneficios') && 
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
-                        </Link>
+                        <>
+                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
+                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
+                            </Link>
+                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/movimentos`}>
+                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
+                            </Link>
+                        </>
                     }
                     
 
