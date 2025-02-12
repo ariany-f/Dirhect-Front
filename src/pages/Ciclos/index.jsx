@@ -7,6 +7,7 @@ import styled from "styled-components"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
+import ciclos from "@json/ciclos.json"
 import React, { createContext, useContext } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
 import DataTableCiclo from '../../components/DataTableCiclos'
@@ -22,7 +23,7 @@ const Ciclos = () => {
 
     const location = useLocation();
 
-    const [ciclos, setCiclos] = useState([])
+    // const [ciclos, setCiclos] = useState([])
 
     return (
         <ConteudoFrame>

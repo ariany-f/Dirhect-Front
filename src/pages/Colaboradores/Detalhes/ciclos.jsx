@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import http from '@http'
 import Loading from '@components/Loading'
+import ciclos from '@json/ciclos.json'
 import DataTableDependentes from '@components/DataTableDependentes'
 import DataTableFerias from '../../../components/DataTableFerias'
 import DataTableESocial from '../../../components/DataTableESocial'
@@ -19,12 +20,12 @@ function ColabroadorCiclos() {
 
     let { id } = useParams()
     const [loading, setLoading] = useState(false)
-    const [historico, setHistorico] = useState(null)
+    // const [ciclos, setHistorico] = useState(null)
 
     useEffect(() => {
             
         
-    }, [historico])
+    }, [])
 
     return (
         <>
@@ -32,7 +33,7 @@ function ColabroadorCiclos() {
             <Titulo>
                 <h6>Ciclos de Folha</h6>
             </Titulo>
-            <DataTableCiclos historico={historico} colaborador={id}/>
+            <DataTableCiclos ciclos={ciclos} colaborador={id}/>
         </>
     )
 }
