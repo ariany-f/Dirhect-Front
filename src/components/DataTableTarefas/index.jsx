@@ -85,7 +85,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 {rowData.tipo}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
-                Checklist:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.total_tarefas}</p>
+                Itens:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.total_tarefas}</p>
             </div>
         </div>
     }
