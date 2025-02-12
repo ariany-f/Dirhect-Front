@@ -1,6 +1,6 @@
 import MainSectionPublico from "@components/MainSectionPublico"
 import EstilosGlobais from '@components/GlobalStyles'
-import Banner from "@components/Banner"
+import BannerMini from "@components/BannerMini"
 import MainContainer from "@components/MainContainer"
 import RightContainer from "@components/RightContainer"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
@@ -16,14 +16,14 @@ function Publico() {
         <>
             <EstilosGlobais />
             <MainSectionPublico>
-                <Banner />
-                <RightContainer>
-                    <MainContainer>
+                {/* <RightContainer> */}
+                <MainContainer>
                         <Outlet />
-                        {/* <PrecisoDeAjuda/> */}
-                    </MainContainer>
                     <RodapePublico />
-                </RightContainer>
+                    </MainContainer>
+                {/* </RightContainer> */}
+                <BannerMini />
+                
                 <Analytics />
                 <SpeedInsights />
             </MainSectionPublico>

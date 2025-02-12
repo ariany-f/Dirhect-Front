@@ -1,0 +1,49 @@
+.container {
+    display: flex;
+    flex: 1 1 1 25%;
+    justify-content: center;
+    position: relative;
+}
+.banner {
+    margin: 0;
+    padding: 0;
+    max-height: 50vw;
+    object-fit: cover;
+    object-position: center;
+    min-width: -webkit-fill-available;
+    @media screen and (max-width:768px) {
+        height: initial;
+    }
+}
+.logo {
+    position: absolute;
+    bottom: 40px;
+    width: 192px;
+}
+.bottomBanner {
+    position: absolute;
+    top: 88px;
+    text-align: center;
+    display: flex;
+    gap: 24px;
+    flex-direction: column;
+    align-items: center;
+    & .texto {
+        color: var(--astra-100);font-weight: 800;
+        font-size: 28px;
+        font-family: var(--fonte-secundaria);
+        line-height: 30px; /* 107.143% */
+    }
+}
+
+.ul {
+    display: flex;
+    gap: 24px;
+    padding-left: 0;
+    & li {
+        list-style: none;
+    }
+    & li svg *{
+        color: var(--astra-100);
+    }
+}
