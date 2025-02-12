@@ -128,9 +128,9 @@
         ]
     },
     {
-         "id": 6, 
+        "id": 6, 
         "total_colaboradores": 17,
-         "tipo": "Vale Transporte", 
+        "tipo": "Vale Transporte", 
         "data": "31/03/2025", 
         "data_referencia": "02/2025", 
         "status": "Aguardando",

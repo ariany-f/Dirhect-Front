@@ -7,6 +7,7 @@ import styled from "styled-components"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
+import pedidos from '@json/pedidos.json'
 import React, { createContext, useContext } from 'react';
 
 const ConteudoFrame = styled.div`
@@ -19,7 +20,7 @@ const ConteudoFrame = styled.div`
 const Pedidos = () => {
 
     const location = useLocation();
-    const [pedidos, setPedidos] = useState([])
+    // const [pedidos, setPedidos] = useState([])
 
     return (
         <ConteudoFrame>
