@@ -64,15 +64,20 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         var progresso = (feito / tarefas) * 100; // Calcula a porcentagem concluída
     
         // Define a severidade com base no progresso
-        let severity = "success";
+        let severity = "rgb(139, 174, 44)";
         if (progresso <= 30) {
-            severity = "danger";
-        } else if (progresso <= 60) {
-            severity = "warning";
+            severity = "rgb(212, 84, 114)";
+        } else if (progresso <= 99) {
+            severity = "rgb(255, 146, 42)";
         }
     
-        return <ProgressBar value={progresso} severity={severity}></ProgressBar>;
-    }    
+        return (
+            <ProgressBar 
+                value={progresso} 
+                color={severity} 
+            />
+        );
+    };    
 
     const representativeTipoTemplate = (rowData) => {
         return <div key={rowData.id}>
