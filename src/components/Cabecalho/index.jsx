@@ -198,7 +198,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                     {/* <RiNotificationLine size={18} className={styles.icon} /> */}
                 </div>
                 <div className={styles.divisor}>
-                    {usuario.tipo !== "candidato" &&
+                    {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" &&
                         <ItemEmpresa onClick={aoClicar}>{nomeEmpresa}<BsArrowLeftRight /></ItemEmpresa>
                     }
                     <ItemUsuario onClick={toggleMenu}>

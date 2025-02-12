@@ -13,6 +13,17 @@
       ]
     },
     {
+      "tipo": "funcionario",
+      "email": "funcionario@example.com",
+      "senha": "123",
+      "cpf": "502.026.810-09",
+      "name": "Funcionário Exemplo",
+      "public_id": "funcionario-001",
+      "empresas": [
+        "8fa184ff-503f-4d15-a1c0-610eb7db905b"
+      ]
+    },
+    {
       "id" : 1,
       "tipo": "candidato",
       "email": "candidato@example.com",

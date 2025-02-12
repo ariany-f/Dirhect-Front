@@ -81,7 +81,7 @@ function Login() {
                 '8fa184ff-503f-4d15-a1c0-610eb7db905b'
             )
 
-            if(perfilEncontrado.tipo != 'candidato')
+            if(perfilEncontrado.tipo != 'candidato' && perfilEncontrado.tipo != 'funcionario')
             {
                 navegar('/login/selecionar-empresa');
             }

@@ -166,6 +166,50 @@ function BarraLateral() {
                         "itemTitulo": "Meu Cadastro"
                     }
                 ];
+            case 'funcionario':
+                return [
+                    {
+                        "id": 1,
+                        "url": "/candidato/registro/1",
+                        "pageTitulo": "Meu Cadastro",
+                        "icone": <RiFilePaperFill size={20} className="icon" />,
+                        "itemTitulo": "Meu Cadastro"
+                    },
+                    {
+                        "id": 2,
+                        "url": "/dependentes",
+                        "pageTitulo": "Dependentes",
+                        "icone": <FaUserGroup size={20} className="icon" />,
+                        "itemTitulo": "Dependentes"
+                    },  {
+                        "id": 3,
+                        "url": "/ferias",
+                        "pageTitulo": "Férias",
+                        "icone": <TbBeach size={20} stroke="white"/>,
+                        "itemTitulo": "Férias"
+                    },
+                    {
+                        "id": 4,
+                        "url": "/ausencias",
+                        "pageTitulo": "Ausências",
+                        "icone": <BsHourglassSplit size={20} className="icon" />,
+                        "itemTitulo": "Ausências"
+                    },
+                    {
+                        "id": 5,
+                        "url": "/demissoes",
+                        "pageTitulo": "Demissões",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Demissões"
+                    },
+                    {
+                        "id": 6,
+                        "url": "/ciclos",
+                        "pageTitulo": "Lançtos de Folha",
+                        "icone": <TbTableShare size={20} stroke="white" />,
+                        "itemTitulo": "Lançtos de Folha"
+                    },
+                ];
             case 'equipeFolhaPagamento':
                 return [
                     {
