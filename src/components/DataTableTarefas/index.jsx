@@ -61,9 +61,9 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         var feito = rowData.feito;
         var tarefas = rowData.total_tarefas;
         
-        var progresso = (feito / tarefas) * 100; // Calcula a porcentagem concluída
+        var progresso = Math.round((feito / tarefas) * 100); // Arredonda a porcentagem concluída
     
-        // Define a severidade com base no progresso
+        // Define a cor com base no progresso
         let severity = "rgb(139, 174, 44)";
         if (progresso <= 30) {
             severity = "rgb(212, 84, 114)";
