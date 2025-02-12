@@ -1,7 +1,6 @@
 .p-selectable-row {
     border: 1px solid var(--neutro-200);
     border-radius: 8px;
-    font-weight: 700;
 }
 .p-highlight {
     background-color: var(--white);

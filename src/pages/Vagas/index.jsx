@@ -1,11 +1,9 @@
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
-import BotaoVoltar from '@components/BotaoVoltar'
 import { GrAddCircle } from 'react-icons/gr'
 import styled from "styled-components"
 import styles from './Vagas.module.css'; // Importando o módulo CSS
 import { Link, Outlet, useLocation } from "react-router-dom"
-import { FaDownload } from 'react-icons/fa'
 import { useState } from 'react'
 import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
 import React, { createContext, useContext } from 'react';
