@@ -55,11 +55,11 @@ function DataTablePedidosDetalhes({ pedidos }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={pedidos} filters={filters} globalFilterFields={['funcionario', 'rubrica']}  emptyMessage="Não foram encontrados pedidos" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={pedidos} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados pedidos" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
+                <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
                 <Column body={representativeDescontoTemplate} field="desconto" header="Desconto" style={{ width: '35%' }}></Column>
                 <Column body={representativeEmpresaTemplate} field="empresa" header="Empresa" style={{ width: '35%' }}></Column>
-                <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )
