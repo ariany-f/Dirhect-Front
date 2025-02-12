@@ -84,7 +84,7 @@ function DetalhesTarefas() {
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{tarefa.tipo} - {tarefa.data_referencia}</h3>
+                            <h3>{tarefa.tipo}</h3>
                             {representativSituacaoTemplate()}
                         </FrameVertical>
                     </BotaoGrupo>
