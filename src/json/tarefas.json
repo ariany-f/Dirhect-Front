@@ -4,7 +4,7 @@
         "total_tarefas": 6,
         "tipo": "Adiantamento", 
         "data": "31/01/2025", 
-        "feito": 0, 
+        "feito": 1, 
         "status": "Aguardando",
         "checklist": [
             { 
