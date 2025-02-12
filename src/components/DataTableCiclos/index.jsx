@@ -40,11 +40,11 @@ function DataTableCiclos({ ciclos, colaborador = null }) {
         let status = rowData?.status;
         switch(rowData?.status)
         {
-            case 'Aprovado':
-                status = <Tag severity="success" value="Aprovado"></Tag>;
+            case 'Aberta':
+                status = <Tag severity="success" value="Aberto"></Tag>;
                 break;
-            case 'Aguardando':
-                status = <Tag severity="warning" value="Aguardando"></Tag>;
+            case 'Fechada':
+                status = <Tag severity="danger" value="Fechado"></Tag>;
                 break;
         }
         return (
