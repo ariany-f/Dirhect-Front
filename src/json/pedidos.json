@@ -1,0 +1,176 @@
+[
+    { 
+        "id": 1, 
+        "total_colaboradores": 10,
+        "tipo": "Vale Refeição", 
+        "data": "31/01/2025", 
+        "data_referencia": "12/2024", 
+        "status": "Aguardando",
+        "detalhes": [
+            { 
+                "funcionario": "João Silva", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 5000 
+            },
+            { 
+                "funcionario": "João Silva", 
+                "desconto": 600, 
+                "empresa": 200, 
+                "valor": 1100
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 5500 
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "desconto": "Bonificação", 
+                "empresa": "-", 
+                "valor": 1000
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 5300
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "desconto": 600, 
+                "empresa": 50, 
+                "valor": 1250 
+            }
+        ]
+    },
+    { 
+        "id": 2, 
+        "total_colaboradores": 7,
+        "tipo": "Vale Transporte", 
+        "data": "31/01/2025", 
+        "data_referencia": "12/2024", 
+        "status": "Aprovado",
+        "detalhes": [
+            { 
+                "funcionario": "Maria Souza", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 5500
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 5700
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "desconto": 750, 
+                "empresa": 320, 
+                "valor": 2500 
+            }
+        ]
+    },
+    { 
+        "id": 3, 
+        "total_colaboradores": 25,
+        "tipo": "Vale Refeição", 
+        "data": "28/02/2025", 
+        "data_referencia": "01/2025", 
+        "status": "Aguardando",
+        "detalhes": [
+            { 
+                "funcionario": "Pedro Santos", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 4900
+            }
+        ]
+    },
+    {
+         "id": 4, 
+        "total_colaboradores": 5,
+         "tipo": "Vale Transporte", 
+        "data": "28/02/2025", 
+        "data_referencia": "01/2025", 
+        "status": "Aguardando",
+        "detalhes": [
+            { 
+                "funcionario": "Pedro Santos", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 4900
+            }
+        ]
+    },
+    {
+         "id": 5, 
+        "total_colaboradores": 2,
+         "tipo": "Vale Refeição", 
+        "data": "31/03/2025", 
+        "data_referencia": "02/2025", 
+        "status": "Aprovado",
+        "detalhes": [
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 4800
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 5700 
+            }
+        ]
+    },
+    {
+         "id": 6, 
+        "total_colaboradores": 17,
+         "tipo": "Vale Transporte", 
+        "data": "31/03/2025", 
+        "data_referencia": "02/2025", 
+        "status": "Aguardando",
+        "detalhes": [
+            { 
+                "funcionario": "Juliana Mendes", 
+                "desconto": 800, 
+                "empresa": 550, 
+                "valor": 5700 
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "desconto": 10, 
+                "empresa": 400, 
+                "valor": 500 
+            },
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "desconto": 420, 
+                "empresa": 650, 
+                "valor": 4800 
+            },
+            { 
+                "funcionario": "Pedro Santos", 
+                "desconto": 450, 
+                "empresa": 700, 
+                "valor": 4900 
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "desconto": 500, 
+                "empresa": 900, 
+                "valor": 5500 
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "desconto": 300, 
+                "empresa": 400, 
+                "valor": 1000 
+            }
+        ]
+    }
+]

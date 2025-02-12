@@ -3,8 +3,9 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
-import events from '@json/ciclos.json'
+import events from '@json/pedidos.json'
 import CampoTexto from '@components/CampoTexto';
+import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Tag } from 'primereact/tag';
@@ -14,7 +15,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
     currency: 'BRL',
 });
 
-function DataTableCiclos({ demissoes, colaborador = null }) {
+function DataTablePedidos({ pedidos, colaborador = null }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -34,7 +35,7 @@ function DataTableCiclos({ demissoes, colaborador = null }) {
 
     function verDetalhes(value)
     {
-        navegar(`/ciclos/detalhes/${value.id}`)
+        navegar(`/pedidos/detalhes/${value.id}`)
     }
 
     const representativStatusTemplate = (rowData) => {
@@ -53,6 +54,17 @@ function DataTableCiclos({ demissoes, colaborador = null }) {
         )
     }
 
+    const representativeTipoTemplate = (rowData) => {
+        return <div key={rowData.id}>
+            <Texto weight={700} width={'100%'}>
+                {rowData.tipo}
+            </Texto>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
+                Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.total_colaboradores}</p>
+            </div>
+        </div>
+    }
+
     
     return (
         <>
@@ -62,8 +74,8 @@ function DataTableCiclos({ demissoes, colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>}
-            <DataTable value={events} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados ciclos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
+            <DataTable value={events} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados pedidos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
@@ -72,4 +84,4 @@ function DataTableCiclos({ demissoes, colaborador = null }) {
     )
 }
 
-export default DataTableCiclos
+export default DataTablePedidos

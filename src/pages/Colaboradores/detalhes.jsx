@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import { Tag } from 'primereact/tag';
+import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
 
 function ColaboradorDetalhes() {
 
@@ -24,6 +25,8 @@ function ColaboradorDetalhes() {
     const [colaborador, setColaborador] = useState(null)
     const navegar = useNavigate()
     const toast = useRef(null)
+
+    const {usuario} = useSessaoUsuarioContext()
 
     addLocale('pt', {
         accept: 'Sim',
@@ -127,12 +130,22 @@ function ColaboradorDetalhes() {
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/demissoes`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/demissoes` ? 'black':''} size="small" tab>Demissões</Botao>
                     </Link>
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos de Folha</Botao>
-                    </Link>
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>ESocial</Botao>
-                    </Link>
+                    {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') &&
+                        <>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos de Folha</Botao>
+                        </Link>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>ESocial</Botao>
+                        </Link>
+                        </>
+                    }
+
+                    {(usuario.tipo == 'equipeBeneficios') && 
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
+                        </Link>
+                    }
                     
 
                     {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/carteiras`}>

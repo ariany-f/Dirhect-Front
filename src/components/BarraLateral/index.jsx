@@ -302,7 +302,14 @@ function BarraLateral() {
                         "pageTitulo": "Elegibilidade",
                         "icone": <LuSparkles size={20} className="icon" />,
                         "itemTitulo": "Elegibilidade"
-                    }
+                    },
+                    {
+                        "id": 9,
+                        "url": "/pedidos",
+                        "pageTitulo": "Pedidos",
+                        "icone": <TbTableShare size={20} stroke="white" />,
+                        "itemTitulo": "Pedidos"
+                    },
                 ];
             default:
                 return [];

@@ -1,4 +1,4 @@
-import styles from './Ciclos.module.css'
+import styles from './Pedidos.module.css'
 import styled from "styled-components"
 import { Link, Outlet, useLocation, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
@@ -15,10 +15,10 @@ import BotaoGrupo from "@components/BotaoGrupo"
 import BotaoSemBorda from "@components/BotaoSemBorda"
 import { Toast } from 'primereact/toast'
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTableEventosCiclos from '../../components/DataTableEventosCiclos'
+import DataTablePedidosDetalhes from '@components/DataTablePedidosDetalhes'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
-import events from '@json/ciclos.json'
+import events from '@json/pedidos.json'
 import FrameVertical from '../../components/FrameVertical'
 import { Tag } from 'primereact/tag'
 
@@ -34,36 +34,36 @@ const ConteudoFrame = styled.div`
     width: 100%;
 `
 
-function DetalhesCiclos() {
+function DetalhesPedidos() {
 
     let { id } = useParams()
     const location = useLocation();
-    const [ciclo, setCiclo] = useState([])
+    const [pedido, setPedido] = useState([])
     const toast = useRef(null)
     const [loading, setLoading] = useState(false)
    
     useEffect(() => {
-        if(ciclo.length == 0)
+        if(pedido.length == 0)
         {
             let cc = events.filter(evento => evento.id == id);
             if(cc.length > 0)
             {
-                setCiclo(cc[0])
+                setPedido(cc[0])
             }
         }
-    }, [ciclo])
+    }, [pedido])
 
 
     function representativSituacaoTemplate() {
-        let status = ciclo?.status;
+        let status = pedido?.status;
         
-        switch(ciclo?.status)
+        switch(pedido?.status)
         {
-            case 'Aberta':
-                status = <Tag severity="success" value="Aberto"></Tag>;
+            case 'Aprovado':
+                status = <Tag severity="success" value="Aprovado"></Tag>;
                 break;
-            case 'Fechada':
-                status = <Tag severity="danger" value="Fechado"></Tag>;
+            case 'Aguardando':
+                status = <Tag severity="warning" value="Aguardando"></Tag>;
                 break;
         }
         return status
@@ -76,12 +76,12 @@ function DetalhesCiclos() {
             <Loading opened={loading} />
             <ConfirmDialog />
             <Container gap="32px">
-                <BotaoVoltar linkFixo="/ciclos" />
-                {ciclo && ciclo?.tipo ?
+                <BotaoVoltar linkFixo="/pedidos" />
+                {pedido && pedido?.tipo ?
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{ciclo.tipo} - {ciclo.data_referencia}</h3>
+                            <h3>{pedido.tipo} - {pedido.data_referencia}</h3>
                             {representativSituacaoTemplate()}
                         </FrameVertical>
                         <BotaoGrupo align="center">
@@ -92,15 +92,15 @@ function DetalhesCiclos() {
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
                         <Texto>Data de Pagamento</Texto>
-                        {ciclo?.data ?
-                            <Texto weight="800">{ciclo?.data}</Texto>
+                        {pedido?.data ?
+                            <Texto weight="800">{pedido?.data}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </div>
                     </>
                     : <></>
                 }
-                <DataTableEventosCiclos eventos={ciclo?.detalhes} />
+                <DataTablePedidosDetalhes pedidos={pedido?.detalhes} />
             </Container>
         </Frame>
         {/* <Frame>
@@ -157,4 +157,4 @@ function DetalhesCiclos() {
     )
 }
 
-export default DetalhesCiclos
+export default DetalhesPedidos

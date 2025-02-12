@@ -124,6 +124,10 @@ import Ciclos from './pages/Ciclos'
 import CiclosLista from './pages/Ciclos/lista'
 import DetalhesCiclos from './pages/Ciclos/detalhes'
 import ColabroadorCiclos from './pages/Colaboradores/Detalhes/ciclos'
+import Pedidos from './pages/Pedidos'
+import PedidosLista from './pages/Pedidos/lista'
+import DetalhesPedidos from './pages/Pedidos/detalhes'
+import ColaboradorPedidos from './pages/Colaboradores/Detalhes/pedidos'
 
 function AppRouter() {
   
@@ -164,6 +168,7 @@ function AppRouter() {
                   <Route path="esocial" element={<ColabroadorESocial />} />
                   <Route path="demissoes" element={<ColabroadorDemissoes />} />
                   <Route path="ciclos" element={<ColabroadorCiclos />} />
+                  <Route path="pedidos" element={<ColaboradorPedidos />} />
                   <Route path="carteiras" element={<ColaboradorCarteiras />} />
               </Route>
               <Route path="colaborador/registro" element={<ColaboradorRegistro />} >
@@ -259,6 +264,11 @@ function AppRouter() {
               <Route path="ciclos" element={<Ciclos />} >
                 <Route index element={<CiclosLista />} />
                 <Route path="detalhes/:id" element={<DetalhesCiclos />} />
+              </Route>
+
+              <Route path="pedidos" element={<Pedidos />} >
+                <Route index element={<PedidosLista />} />
+                <Route path="detalhes/:id" element={<DetalhesPedidos />} />
               </Route>
 
               <Route path="/admissao" element={<Admissoes />} />
