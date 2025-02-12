@@ -175,6 +175,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             "url":"movimentos",
             "pageTitulo": "Movimentos"
         },
+        {
+            "id": 11,
+            "url":"tarefas",
+            "pageTitulo": "Tarefas"
+        },
     ];
 
     const titulo = titulos.map((item) => {

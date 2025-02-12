@@ -17,6 +17,7 @@ import { BreadCrumb } from "primereact/breadcrumb"
 import { BsHourglassSplit } from "react-icons/bs"
 import { TbBeach, TbTable, TbTableShare } from "react-icons/tb";
 import { MdAllInbox, MdShoppingCartCheckout } from "react-icons/md"
+import { GoTasklist } from "react-icons/go";
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -155,6 +156,13 @@ function BarraLateral() {
                         "icone": <TbTableShare size={20} stroke="white" />,
                         "itemTitulo": "Lançtos de Folha"
                     },
+                    {
+                        "id": 10,
+                        "url": "/tarefas",
+                        "pageTitulo": "Tarefas",
+                        "icone": <GoTasklist size={20} fill="white" />,
+                        "itemTitulo": "Tarefas"
+                    },
                 ];
             case 'candidato':
                 return [
@@ -267,6 +275,13 @@ function BarraLateral() {
                         "pageTitulo": "Lançtos de Folha",
                         "icone": <TbTableShare size={20} stroke="white" />,
                         "itemTitulo": "Lançtos de Folha"
+                    },
+                    {
+                        "id": 9,
+                        "url": "/tarefas",
+                        "pageTitulo": "Tarefas",
+                        "icone": <GoTasklist size={20} fill="white" />,
+                        "itemTitulo": "Tarefas"
                     },
                 ];
             case 'equipeBeneficios':

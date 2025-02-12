@@ -132,6 +132,9 @@ import ColaboradorMovimentos from './pages/Colaboradores/Detalhes/movimentos'
 import Movimentos from './pages/Movimentos'
 import MovimentosLista from './pages/Movimentos/lista'
 import DetalhesMovimentos from './pages/Movimentos/detalhes'
+import Tarefas from './pages/Tarefas'
+import TarefasLista from './pages/Tarefas/lista'
+import DetalhesTarefas from './pages/Tarefas/detalhes'
 
 function AppRouter() {
   
@@ -274,6 +277,11 @@ function AppRouter() {
               <Route path="pedidos" element={<Pedidos />} >
                 <Route index element={<PedidosLista />} />
                 <Route path="detalhes/:id" element={<DetalhesPedidos />} />
+              </Route>
+
+              <Route path="tarefas" element={<Tarefas />} >
+                <Route index element={<TarefasLista />} />
+                <Route path="detalhes/:id" element={<DetalhesTarefas />} />
               </Route>
 
               <Route path="movimentos" element={<Movimentos />} >
