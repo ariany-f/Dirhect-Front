@@ -4,13 +4,13 @@
         "total_tarefas": 6,
         "tipo": "Adiantamento", 
         "data": "31/01/2025", 
-        "feito": 1, 
+        "feito": 0, 
         "status": "Aguardando",
         "checklist": [
             { 
                 "descricao": "Calcular", 
                 "prazo": 17, 
-                "check": true, 
+                "check": false, 
                 "atribuido": 5000 
             },
             { 
