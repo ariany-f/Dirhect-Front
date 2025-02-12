@@ -60,11 +60,11 @@ function DetalhesMovimentos() {
 
         switch(movimento?.status)
         {
-            case 'Inclusão':
-                status = <Tag severity="success" value={<HiUserAdd fill="white" size={16} />}></Tag>;
+            case 'Aprovado':
+                status = <Tag severity={'success'} value="Aprovado"></Tag>;
                 break;
-            case 'Remoção':
-                status = <Tag severity="danger" value={<HiUserRemove fill="white" size={16} />}></Tag>;
+            case 'Aguardando':
+                status = <Tag severity={'warning'} value="Aguardando"></Tag>;
                 break;
         }
         return <Frame alinhamento="center">{status}</Frame>

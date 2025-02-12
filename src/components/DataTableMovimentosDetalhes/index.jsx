@@ -1,11 +1,12 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
+import Frame from '@components/Frame';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Tag } from 'primereact/tag';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -49,6 +50,23 @@ function DataTableMovimentosDetalhes({ movimentos }) {
         )
     }
     
+    const representativStatusTemplate = (rowData) => {
+        let status = rowData?.movimento;
+        
+        switch(rowData?.movimento)
+        {
+            case 'Inclusão':
+                status = <Tag severity={'success'} value="Inclusão"></Tag>;
+                break;
+            case 'Cancelamento':
+                status = <Tag severity={'danger'} value="Cancelamento"></Tag>;
+                break;
+        }
+        return (
+            <Frame alinhamento="start">{status}</Frame>
+        )
+    }
+    
     return (
         <>
             <div className="flex justify-content-end">
@@ -58,6 +76,7 @@ function DataTableMovimentosDetalhes({ movimentos }) {
             </div>
             <DataTable value={movimentos} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados movimentos" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
+                <Column body={representativStatusTemplate} field="movimento" header="Movimento" style={{width: '35%'}}></Column>
             </DataTable>
         </>
     )
