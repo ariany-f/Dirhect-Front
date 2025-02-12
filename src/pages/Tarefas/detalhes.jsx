@@ -89,7 +89,7 @@ function DetalhesTarefas() {
                         </FrameVertical>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
-                        <Texto>Checklist</Texto>
+                        <Texto>Itens</Texto>
                         {tarefa?.total_tarefas ?
                             <Texto weight="800">{tarefa?.feito}/{tarefa?.total_tarefas}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
