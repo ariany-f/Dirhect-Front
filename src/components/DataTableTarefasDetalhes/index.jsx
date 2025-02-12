@@ -50,11 +50,6 @@ function DataTableTarefasDetalhes({ tarefas }) {
     
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
-                </span>
-            </div>
             <DataTable value={tarefas} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados tarefas" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
                 <Column body={representativePrazoTemplate} field="prazo" header="Prazo" style={{ width: '35%' }}></Column>
