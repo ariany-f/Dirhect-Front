@@ -1,13 +1,15 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
+import { MdOutlineKeyboardArrowRight, MdPlaylistAddCheck, MdPlaylistRemove } from 'react-icons/md'
 import './DataTable.css'
+import Frame from '@components/Frame';
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Tag } from 'primereact/tag';
+import { RiDownload2Line, RiUpload2Line } from 'react-icons/ri';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -42,14 +44,14 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
         switch(rowData?.status)
         {
             case 'Inclusão':
-                status = <Tag severity="success" value="Inclusão"></Tag>;
+                status = <MdPlaylistAddCheck fill="green" size={24} />;
                 break;
             case 'Remoção':
-                status = <Tag severity="danger" value="Remoção"></Tag>;
+                status = <MdPlaylistRemove fill="red" size={24} />;
                 break;
         }
         return (
-            <b>{status}</b>
+            <Frame alinhamento="center">{status}</Frame>
         )
     }
 
@@ -76,7 +78,7 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
             <DataTable value={movimentos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados movimentos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data do Movimento" style={{ width: '35%' }}></Column>
-                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
+                <Column body={representativStatusTemplate} field="status" header="Movimento" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     )

@@ -103,56 +103,6 @@ function DetalhesPedidos() {
                 <DataTablePedidosDetalhes pedidos={pedido?.detalhes} />
             </Container>
         </Frame>
-        {/* <Frame>
-            <Toast ref={toast} />
-            <Loading opened={loading} />
-            <ConfirmDialog />
-            <Container gap="32px">
-                <BotaoVoltar linkFixo="/admissao/validar" />
-                    {candidate?.nome ? 
-                        <BotaoGrupo align="space-between">
-                            <Titulo>
-                                <h3>{candidate?.nome}</h3>
-                            </Titulo>
-                            <BotaoGrupo align="space-between">
-                                <Botao aoClicar={() => validar()} estilo="vermilion" size="medium" filled><FaArrowAltCircleRight fill="white" />Validar</Botao>
-                            </BotaoGrupo>
-                     </BotaoGrupo>
-                    : <Skeleton variant="rectangular" width={300} height={40} />
-                    }
-                <div className={styles.card_dashboard}>
-                    <Texto>Titulo</Texto>
-                    {vaga?.titulo ?
-                        <Texto weight="800">{vaga?.titulo}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Descrição</Texto>
-                    {vaga ?
-                        (vaga?.descricao ?
-                            <Texto weight="800">{vaga?.descricao}</Texto>
-                            : '--')
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Salário</Texto>
-                    {vaga?.salario ?
-                        <Texto weight="800">{Real.format(vaga?.salario)}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </div>
-                <div className={styles.card_dashboard}>
-                    <Texto>Candidato</Texto>
-                    {candidate?.nome ?
-                        <Texto weight="800">{candidate?.nome}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>E-mail</Texto>
-                    {candidate?.email ?
-                        <Texto weight="800">{candidate?.email}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </div>
-            </Container>
-        </Frame> */}
         </>
     )
 }

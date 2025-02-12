@@ -21,6 +21,7 @@ import { addLocale } from 'primereact/api'
 import movimentos from '@json/movimentos.json'
 import FrameVertical from '../../components/FrameVertical'
 import { Tag } from 'primereact/tag'
+import { HiUserRemove, HiUserAdd } from "react-icons/hi";
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -54,19 +55,19 @@ function DetalhesMovimentos() {
     }, [movimento])
 
 
-    function representativSituacaoTemplate() {
+    const representativSituacaoTemplate = (rowData) => {
         let status = movimento?.status;
-        
+
         switch(movimento?.status)
         {
             case 'Inclusão':
-                status = <Tag severity="success" value="Inclusão"></Tag>;
+                status = <Tag severity="success" value={<HiUserAdd fill="white" size={16} />}></Tag>;
                 break;
             case 'Remoção':
-                status = <Tag severity="danger" value="Remoção"></Tag>;
+                status = <Tag severity="danger" value={<HiUserRemove fill="white" size={16} />}></Tag>;
                 break;
         }
-        return status
+        return <Frame alinhamento="center">{status}</Frame>
     }
     
     return (
