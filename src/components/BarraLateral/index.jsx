@@ -151,9 +151,9 @@ function BarraLateral() {
                     {
                         "id": 9,
                         "url": "/ciclos",
-                        "pageTitulo": "Ciclos de Folha",
+                        "pageTitulo": "Lançamentos de Folha",
                         "icone": <TbTableShare size={20} stroke="white" />,
-                        "itemTitulo": "Ciclos de Folha"
+                        "itemTitulo": "Lançamentos de Folha"
                     },
                 ];
             case 'candidato':
@@ -220,9 +220,9 @@ function BarraLateral() {
                     {
                         "id": 8,
                         "url": "/ciclos",
-                        "pageTitulo": "Ciclos de Folha",
+                        "pageTitulo": "Lançamentos de Folha",
                         "icone": <TbTableShare size={20} stroke="white" />,
-                        "itemTitulo": "Ciclos de Folha"
+                        "itemTitulo": "Lançamentos de Folha"
                     },
                 ];
             case 'equipeBeneficios':
