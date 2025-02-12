@@ -151,9 +151,9 @@ function BarraLateral() {
                     {
                         "id": 9,
                         "url": "/ciclos",
-                        "pageTitulo": "Lançamentos de Folha",
+                        "pageTitulo": "Lançtos de Folha",
                         "icone": <TbTableShare size={20} stroke="white" />,
-                        "itemTitulo": "Lançamentos de Folha"
+                        "itemTitulo": "Lançtos de Folha"
                     },
                 ];
             case 'candidato':
@@ -220,9 +220,9 @@ function BarraLateral() {
                     {
                         "id": 8,
                         "url": "/ciclos",
-                        "pageTitulo": "Lançamentos de Folha",
+                        "pageTitulo": "Lançtos de Folha",
                         "icone": <TbTableShare size={20} stroke="white" />,
-                        "itemTitulo": "Lançamentos de Folha"
+                        "itemTitulo": "Lançtos de Folha"
                     },
                 ];
             case 'equipeBeneficios':
