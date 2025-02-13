@@ -3,6 +3,7 @@ const EXPIRATION = 'expires_at'
 const USER_NAME = 'name'
 const USER_EMAIL = 'email'
 const USER_CPF = 'cpf'
+const COMPANY_DOMAIN = 'company_domain'
 const COMPANY_PUBLIC_ID = 'company_public_id'
 const USER_PUBLIC_ID = 'public_id'
 const USER_TYPE = 'tipo'
@@ -20,10 +21,11 @@ export class ArmazenadorToken {
             throw new Error('Falha ao armazenar dados de autenticação')
         }
     }
-    static definirCompany(company_public_id) {
+    static definirCompany(company_public_id, company_domain) {
         sessionStorage.setItem(COMPANY_PUBLIC_ID, company_public_id)
+        sessionStorage.setItem(COMPANY_DOMAIN, company_domain)
     }
-    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id) {
+    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain) {
         if (!email) {
             throw new Error('Email é obrigatório')
         }
@@ -33,6 +35,7 @@ export class ArmazenadorToken {
             sessionStorage.setItem(USER_TYPE, tipo)
             sessionStorage.setItem(USER_CPF, cpf || '')
             sessionStorage.setItem(USER_PUBLIC_ID, public_id || '')
+            sessionStorage.setItem(COMPANY_DOMAIN, company_domain || '')
             sessionStorage.setItem(COMPANY_PUBLIC_ID, company_public_id || '')
         } catch (error) {
             console.error('Erro ao armazenar dados do usuário:', error)
@@ -43,6 +46,8 @@ export class ArmazenadorToken {
         
         sessionStorage.removeItem(ACCESS_TOKEN)
         sessionStorage.removeItem(EXPIRATION)
+        sessionStorage.removeItem(COMPANY_DOMAIN)
+        sessionStorage.removeItem(COMPANY_PUBLIC_ID)
         return true;
     }
     static get AccessToken() {
@@ -70,5 +75,8 @@ export class ArmazenadorToken {
     }
     static get UserCompanyPublicId() {
         return sessionStorage.getItem(COMPANY_PUBLIC_ID)
+    }
+    static get UserCompanyDomain() {
+        return sessionStorage.getItem(COMPANY_DOMAIN)
     }
 }

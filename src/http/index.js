@@ -1,45 +1,43 @@
-import axios from "axios"
-import { ArmazenadorToken } from "../utils"
+import axios from "axios";
+import { ArmazenadorToken } from "../utils";
 
 const http = axios.create({
-    baseURL: 'https://dirhect.win:2053/api/',
     headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
     }
-})
+});
 
-// http.interceptors.request.use(function (config) {
-//     const token = ArmazenadorToken.AccessToken
-//     if (token) {
-//         config.headers.Authorization = `Bearer ${token}`
-//     }
-//     return config;
-// }, function (error) {
-//     return Promise.reject(error);
-// });
+// Interceptor para definir a baseURL dinamicamente antes de cada requisição
+http.interceptors.request.use((config) => {
+    const companyDomain = sessionStorage.getItem("company_domain") || 'geral.dirhect.net';
+    config.baseURL = `https://${companyDomain}/api/`;
 
-const rotasIgnoradasPelosErros = [
+    const token = ArmazenadorToken.AccessToken;
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
 
-]
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
 
+// Interceptor para tratar respostas
 http.interceptors.response.use(
-    (response) => (response.data) ? response.data : response,
+    (response) => response.data ? response.data : response,
     async function (error) {
         const originalRequest = error.config;
 
-        // Verifica se o token expirou e se não é uma requisição de refresh
-        if (error.response?.status === 401 &&  
-            !originalRequest._retry) {
-            
-            originalRequest._retry = true; // Marca a requisição para evitar loop infinito
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
            
             ArmazenadorToken.removerToken();
-            return Promise.reject(refreshError.response?.data || refreshError);
+            return Promise.reject(error.response?.data || error);
         }
         
-        return Promise.reject(error.response.data);
+        return Promise.reject(error.response?.data || error);
     }
 );
 
-export default http
+export default http;

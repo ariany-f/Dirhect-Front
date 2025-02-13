@@ -67,18 +67,10 @@ function Menu({ opened = false, aoFechar }){
         if(opened)
         {
             aoFechar()
+            ArmazenadorToken.removerToken()
         }
         
         navegar('/login')
-        // submeterLogout().then(response => {
-        //     if(response.success)
-        //     {
-        //         //ArmazenadorToken.removerToken()
-        //         //navegar('/login')
-        //     }
-        // }).catch(response => {
-        //     console.log(response)
-        // })
     }
 
     const FecharMenu = () => {

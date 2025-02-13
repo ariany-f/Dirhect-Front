@@ -11,6 +11,7 @@ const usuarioInicial = {
     document: '',
     public_id: '',
     company_public_id: '',
+    company_domain: '',
     remember: false,
     companies: [],
     code: [],
@@ -35,6 +36,7 @@ export const SessaoUsuarioContext = createContext({
     setCpf: () => null,
     setDocument: () => null,
     setSessionCompany: () => null,
+    setCompanyDomain: () => null,
     setEmail: () => null,
     setName: () => null,
     setPassword: () => null,
@@ -77,6 +79,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const emailSalvo = sessionStorage.getItem('email');
         const publicIdSalvo = sessionStorage.getItem('public_id');
         const tipoSalvo = sessionStorage.getItem('tipo');
+        const domainSalvo = sessionStorage.getItem('domain');
         const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
         
         usuarioSalvo = {
@@ -85,6 +88,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
             tipo: tipoSalvo ?? '',
             name: nameSalvo ?? '',
             public_id: publicIdSalvo ?? '',
+            company_domain: domainSalvo ?? '',
             company_public_id: companyPublicIdSalvo ?? '',
             companies: []
         }
@@ -204,6 +208,14 @@ export const SessaoUsuarioProvider = ({ children }) => {
             return {
                 ...estadoAnterior,
                 company_public_id
+            }
+        })
+    }
+    const setCompanyDomain = (company_domain) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                company_domain
             }
         })
     }
@@ -425,6 +437,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         setCode,
         setName,
         setSessionCompany,
+        setCompanyDomain,
         setCpf,
         setUserPublicId,
         setRecuperacaoToken,

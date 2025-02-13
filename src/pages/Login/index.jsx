@@ -73,6 +73,7 @@ function Login() {
             setUserPublicId(perfilEncontrado.public_id);
             setTipo(perfilEncontrado.tipo);
             setName(perfilEncontrado.name);
+
              // Adicionando o tipo de usuário ao objeto usuario
             ArmazenadorToken.definirUsuario(
                 perfilEncontrado.name,
@@ -80,7 +81,8 @@ function Login() {
                 perfilEncontrado.cpf,
                 perfilEncontrado.public_id,
                 perfilEncontrado.tipo,
-                '8fa184ff-503f-4d15-a1c0-610eb7db905b'
+                '8fa184ff-503f-4d15-a1c0-610eb7db905b',
+                'geral.dirhect.net'
             )
 
             if(perfilEncontrado.tipo != 'candidato' && perfilEncontrado.tipo != 'funcionario')

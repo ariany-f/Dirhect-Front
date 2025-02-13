@@ -8,7 +8,6 @@ import { RiCloseFill, RiBuildingLine } from 'react-icons/ri'
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import http from '@http'
-import companies from '@json/empresas.json'
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 import styles from './ModalCnpj.module.css'
 import { CiCirclePlus } from "react-icons/ci"
@@ -105,31 +104,51 @@ const Item = styled.div`
 
 function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
-    useEffect(() => {
-        
-        http.get(`client_tenant/?format=json`)
-            .then(response => {
-            //    console.log(response)
-            })
-            .catch(erro => {
-                // setLoading(false)
-            })
-        
-    }, [])
+    const [tenants, setTenants] = useState(null)
+    const [empresas, setEmpresas] = useState(null)
 
     const { 
         usuario,
-        setSessionCompany
+        setSessionCompany,
+        setCompanyDomain,
     } = useSessaoUsuarioContext()
 
-    const [empresas, setEmpresas] = useState(companies)
     const [selected, setSelected] = useState(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
 
     useEffect(() => {
-     
+        if(opened)
+        {
+            if(!tenants)
+                {
+                    http.get(`client_tenant/?format=json`)
+                    .then(response => {
+                        setTenants(response)
+                    })
+                    .catch(erro => {
 
-    }, [opened, setSelected, setSessionCompany])
+                    })
+            }
+    
+            if((!empresas) && tenants)
+            {
+                http.get(`client_domain/?format=json`)
+                .then(domains => {
+                        // Cruzar os dados: adicionar domains correspondentes a cada tenant
+                        const tenantsWithDomain = tenants.map(tenant => ({
+                        ...tenant,
+                        domain: domains.find(domain => domain.tenant === tenant.id)?.domain || null
+                    }));
+                    setEmpresas(tenantsWithDomain)
+                    setSelected(tenantsWithDomain[0].id)
+                })
+                .catch(erro => {
+
+                })
+            }
+        }
+        
+    }, [opened, empresas, tenants])
     
     function handleSelectChange(value) {
         setSelected(value)
@@ -137,13 +156,21 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     
     const selectCompany = () => {
         
-        aoClicar()
-
-        ArmazenadorToken.definirCompany(
-            selected
-        )
+        aoClicar(selected)
 
         setSessionCompany(selected)
+
+        var comp = empresas.filter(company => company.id == selected)
+
+        if(comp.length > 0 && comp[0].nome)
+        {
+            setCompanyDomain(comp[0].domain)
+
+            ArmazenadorToken.definirCompany(
+                selected,
+                comp[0].domain
+            )
+        }
 
         aoFechar()
     }
@@ -167,29 +194,29 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                         <Titulo>
                             <h6>Selecione uma empresa</h6>
                         </Titulo>
-                        {empresas.length > 0 &&
+                        {empresas && empresas.length > 0 &&
                         <>
                             <Wrapper>
                                 {empresas.map((empresa, idx) => {
                                     return (
                                         <Item 
                                             key={idx} 
-                                            $active={selected === empresa.public_id}
-                                            onClick={public_id => handleSelectChange(empresa.public_id)}>
+                                            $active={selected === empresa.id}
+                                            onClick={id => handleSelectChange(empresa.id)}>
                                             <div className={styles.cardEmpresa}>
-                                                {(selected === empresa.public_id) ?
+                                                {(selected === empresa.id) ?
                                                     <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                                     : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                                 }
                                                 <div className={styles.DadosEmpresa}>
-                                                    <h6>{empresa.social_reason}</h6>
-                                                    <div>{formataCNPJ(empresa.cnpj)}</div>
+                                                    <h6>{empresa.nome.toUpperCase()}</h6>
+                                                    {/* <div>{formataCNPJ(empresa.cnpj)}</div> */}
                                                 </div>
                                             </div>
                                             <RadioButton
-                                                value={empresa.public_id}
-                                                checked={selected === empresa.public_id}
-                                                onSelected={(public_id) => handleSelectChange}
+                                                value={empresa.id}
+                                                checked={selected === empresa.id}
+                                                onSelected={(id) => handleSelectChange}
                                             />
                                         </Item>
                                     )

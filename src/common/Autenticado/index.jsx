@@ -10,7 +10,6 @@ import ModalCnpj from '@components/ModalCnpj'
 import { useEffect, useState } from "react"
 import Loading from '@components/Loading'
 import http from '@http'
-import companies from '@json/empresas.json'
 import { ArmazenadorToken } from "../../utils"
 import styled from "styled-components"
 import { Analytics } from "@vercel/analytics/react"
@@ -30,80 +29,73 @@ function Autenticado() {
     const {
         usuario,
         setCompanies,
+        setSessionCompany,
+        setCompanyDomain,
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
 
     const navegar = useNavigate()
-    
+    const [empresas, setEmpresas] = useState(null)
+    const [tenants, setTenants] = useState(null)
     const [selected, setSelected] = useState(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
+    const [empresa, setEmpresa] = useState('')
     
-    let comp = companies;
+    
+    const [modalOpened, setModalOpened] = useState(false)
+    const [menuOpened, setMenuOpened] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-    if(selected)
-    {
-        comp = companies.filter(company => company.public_id === selected);
-    }
-
-    const [empresa, setEmpresa] = useState(comp[0].social_reason)
     const location = useLocation()
 
     useEffect(() => {
         
-        // if(!usuarioEstaLogado) 
-        // {
-        //     //navegar('/login')
-        // }
-        // else
-        // {
-        //     // if(!usuario.companies || usuario.companies.length === 0)
-        //     // {
-        //     //     // http.get(`api/auth/me`)
-        //     //     //     .then((response) => {
-        //     //     //         if(response.success)
-        //     //     //         {
-        //     //     //             setCompanies(response.data.user.companies)
-        //     //     //         }
-        //     //     //     })
-        //     //     //     .catch(erro => {
-        //     //     //         console.log(erro)
-        //     //     //     })
-        //     // }
-        //     // else
-        //     // {
-        //     //     usuario.companies.map(item => {
-        //     //         if(item.public_id === ArmazenadorToken.UserCompanyPublicId)
-        //     //         {
-        //     //             // setEmpresa(item.social_reason)
-        //     //         }
-        //     //     })
-        //     // }
-        // }
-    }, [usuarioEstaLogado, usuario, empresa])
-    
-    
-    const selectCompany = () => {
-        setModalOpened(true)
-    }
-
-    const changeCompany = () => {
-
-        setLoading(true)
-
-        setSelected(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
-    
-        let comp = companies;
-    
-        if(selected)
+        if(!tenants)
         {
-            comp = companies.filter(company => company.public_id === selected);
-        }
-    
-        setEmpresa(comp[0].social_reason)
-    }
+            http.get(`client_tenant/?format=json`)
+            .then(response => {
+                setTenants(response)
+            })
+            .catch(erro => {
 
-    const [modalOpened, setModalOpened] = useState(false)
-    const [menuOpened, setMenuOpened] = useState(false)
-    const [loading, setLoading] = useState(false)
+            })
+        }
+
+        if((!empresas) && tenants)
+        {
+            http.get(`client_domain/?format=json`)
+            .then(domains => {
+                    // Cruzar os dados: adicionar domains correspondentes a cada tenant
+                    const tenantsWithDomain = tenants.map(tenant => ({
+                    ...tenant,
+                    domain: domains.find(domain => domain.tenant === tenant.id)?.domain || null
+                }));
+
+                setEmpresas(tenantsWithDomain)
+
+                if(selected == '')
+                {
+                    setSelected(tenantsWithDomain[0].id)
+                }
+            })
+            .catch(erro => {
+
+            })
+        }
+
+        var comp = [];
+
+        if(selected && empresas)
+        {
+            comp = empresas.filter(company => company.id == selected);
+            if(comp.length > 0 && comp[0].nome)
+            {
+                setEmpresa(comp[0].nome)
+                setSessionCompany(comp[0].id)
+                setCompanyDomain(comp[0].domain)
+            }
+        }
+
+    }, [empresas, tenants, modalOpened])
 
     function toggleMenu(){
         setMenuOpened(!menuOpened)
@@ -115,6 +107,27 @@ function Autenticado() {
             setMenuOpened(false)
         }
     }
+    
+    const selectCompany = () => {
+        setModalOpened(true)
+    }
+
+    function changeCompany(id) {
+        
+        var comp = [];
+
+        if(id && empresas)
+        {
+            comp = empresas.filter(company => company.id === id);
+            
+            if(comp.length > 0 && comp[0].nome)
+            {
+                setEmpresa(comp[0].nome)
+                setSelected(id)
+            }
+        }
+    }
+
     
     return (
         <> 
@@ -129,7 +142,7 @@ function Autenticado() {
                 <MainContainer aoClicar={fechaMenu} align="flex-start" padding="2.5vh 0 7.5vh 0">
                     {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/linhas-transporte/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/linhas-transporte/editar-valor/colaboradores' &&     
                         <>
-                            <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa} />
+                            <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa.toUpperCase()} />
                         </>
                     }
                     <MarginContainer>
@@ -139,7 +152,7 @@ function Autenticado() {
                 <Analytics />
                 <SpeedInsights />
             </MainSection>
-            <ModalCnpj aoClicar={() => changeCompany()} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
+            <ModalCnpj aoClicar={changeCompany} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
         </>
         : <Navigate to="/login" replace={true}/>
         } </>
