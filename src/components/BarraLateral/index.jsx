@@ -73,6 +73,7 @@ function BarraLateral() {
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
 
+
     useEffect(() => {
         if(logo){
             setImage(true)
@@ -209,6 +210,13 @@ function BarraLateral() {
                         "pageTitulo": "Demissões",
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Demissões"
+                    },
+                    {
+                        "id": 5,
+                        "url": `/ciclos/${usuario.public_id}`,
+                        "pageTitulo": "Ciclos de Pagamento",
+                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "itemTitulo": "Ciclos de Pagamento"
                     },
                 ];
             case 'equipeFolhaPagamento':

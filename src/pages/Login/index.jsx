@@ -31,6 +31,7 @@ function Login() {
         setCpf,
         setTipo,
         setPassword,
+        setUserPublicId,
         setName,
     } = useSessaoUsuarioContext()
 
@@ -69,6 +70,7 @@ function Login() {
             setUsuarioEstaLogado(true);
             setCpf(usuario.cpf);
             setPassword(usuario.password);
+            setUserPublicId(perfilEncontrado.public_id);
             setTipo(perfilEncontrado.tipo);
             setName(perfilEncontrado.name);
              // Adicionando o tipo de usuário ao objeto usuario

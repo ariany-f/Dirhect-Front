@@ -135,6 +135,8 @@ import DetalhesMovimentos from './pages/Movimentos/detalhes'
 import Tarefas from './pages/Tarefas'
 import TarefasLista from './pages/Tarefas/lista'
 import DetalhesTarefas from './pages/Tarefas/detalhes'
+import MeusCiclos from './pages/Ciclos/meusCiclos'
+import DetalhesMeusCiclos from './pages/Ciclos/detalhesMeusCiclos'
 
 function AppRouter() {
   
@@ -272,6 +274,8 @@ function AppRouter() {
               <Route path="ciclos" element={<Ciclos />} >
                 <Route index element={<CiclosLista />} />
                 <Route path="detalhes/:id" element={<DetalhesCiclos />} />
+                <Route path=":id" element={<MeusCiclos />} />
+                <Route path=":colaborador/detalhes/:id" element={<DetalhesMeusCiclos />} />
               </Route>
 
               <Route path="pedidos" element={<Pedidos />} >

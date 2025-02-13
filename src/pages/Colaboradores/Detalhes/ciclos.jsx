@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import http from '@http'
 import Loading from '@components/Loading'
-import ciclos from '@json/ciclos.json'
+import meusCiclos from '@json/meusCiclos.json'
 import DataTableDependentes from '@components/DataTableDependentes'
 import DataTableFerias from '../../../components/DataTableFerias'
 import DataTableESocial from '../../../components/DataTableESocial'
@@ -20,12 +20,19 @@ function ColabroadorCiclos() {
 
     let { id } = useParams()
     const [loading, setLoading] = useState(false)
-    // const [ciclos, setHistorico] = useState(null)
+    const [ciclos, setCiclos] = useState(null)
 
     useEffect(() => {
-            
+        if(!ciclos)
+            {
+                let cc = meusCiclos.filter(evento => evento.colaborador_id == id);
+                if(cc.length > 0)
+                {
+                    setCiclos(cc)
+                }
+            }
         
-    }, [])
+    }, [ciclos])
 
     return (
         <>

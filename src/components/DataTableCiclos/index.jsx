@@ -33,7 +33,14 @@ function DataTableCiclos({ ciclos, colaborador = null }) {
 
     function verDetalhes(value)
     {
-        navegar(`/ciclos/detalhes/${value.id}`)
+        if(!colaborador)
+        {
+            navegar(`/ciclos/detalhes/${value.id}`)
+        }
+        else
+        {
+            navegar(`/ciclos/${colaborador}/detalhes/${value.id}`)
+        }
     }
 
     const representativStatusTemplate = (rowData) => {
@@ -55,12 +62,11 @@ function DataTableCiclos({ ciclos, colaborador = null }) {
     
     return (
         <>
-            {!colaborador &&
             <div className="flex justify-content-end">
                 <span className="p-input-icon-left">
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
-            </div>}
+            </div>
             <DataTable value={ciclos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados ciclos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>

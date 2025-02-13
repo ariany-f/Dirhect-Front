@@ -12,7 +12,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
     currency: 'BRL',
 });
 
-function DataTableEventosCiclos({ eventos }) {
+function DataTableEventosCiclos({ eventos, colaborador = null }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -44,7 +44,9 @@ function DataTableEventosCiclos({ eventos }) {
                 </span>
             </div>
             <DataTable value={eventos} filters={filters} globalFilterFields={['funcionario', 'rubrica']}  emptyMessage="Não foram encontrados ciclos" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
+                {(!colaborador) && 
+                    <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
+                }
                 <Column field="rubrica" header="Rubrica" style={{ width: '35%' }}></Column>
                 <Column field="referencia" header="Referência" style={{ width: '35%' }}></Column>
                 <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>

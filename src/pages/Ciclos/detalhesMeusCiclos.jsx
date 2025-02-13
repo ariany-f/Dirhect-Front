@@ -18,7 +18,7 @@ import { useVagasContext } from '@contexts/VagasContext'; // Importando o contex
 import DataTableEventosCiclos from '../../components/DataTableEventosCiclos'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
-import ciclos from '@json/ciclos.json'
+import ciclos from '@json/meusciclos.json'
 import FrameVertical from '../../components/FrameVertical'
 import { Tag } from 'primereact/tag'
 
@@ -34,9 +34,9 @@ const ConteudoFrame = styled.div`
     width: 100%;
 `
 
-function DetalhesCiclos() {
+function DetalhesMeusCiclos() {
 
-    let { id } = useParams()
+    let { colaborador, id } = useParams()
     const location = useLocation();
     const [ciclo, setCiclo] = useState([])
     const toast = useRef(null)
@@ -76,7 +76,7 @@ function DetalhesCiclos() {
             <Loading opened={loading} />
             <ConfirmDialog />
             <Container gap="32px">
-                <BotaoVoltar linkFixo="/ciclos" />
+                <BotaoVoltar linkFixo={`/ciclos/${colaborador}`} />
                 {ciclo && ciclo?.tipo ?
                     <>
                     <BotaoGrupo align="space-between">
@@ -100,11 +100,11 @@ function DetalhesCiclos() {
                     </>
                     : <></>
                 }
-                <DataTableEventosCiclos eventos={ciclo?.detalhes} />
+                <DataTableEventosCiclos eventos={ciclo?.detalhes} colaborador={colaborador} />
             </Container>
         </Frame>
         </>
     )
 }
 
-export default DetalhesCiclos
+export default DetalhesMeusCiclos
