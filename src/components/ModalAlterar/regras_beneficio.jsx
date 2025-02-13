@@ -82,7 +82,7 @@ const Col6 = styled.div`
 function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoAntigo }) {
     const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
-    
+    const [nomeBeneficio, setNomeBeneficio] = useState(null)
     const [valor, setValor] = useState('')
     const [empresa, setEmpresa] = useState('')
     const [desconto, setDesconto] = useState('')
@@ -94,6 +94,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoA
         {
             setValor(dadoAntigo.valor)
             setEmpresa(dadoAntigo.empresa)
+            setNomeBeneficio(dadoAntigo.nome)
             setDesconto(dadoAntigo.desconto)
         }
 
@@ -129,11 +130,11 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoA
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
                             </form>
-                            <h6>Alterar Dados</h6>
+                            <h6>Alterar Dados - {nomeBeneficio}</h6>
                         </Titulo>
                     </Frame>
                     <Frame padding="24px 0px">
-                        <div style={{height: '35vh', overflowY: 'scroll', flexWrap: 'wrap'}}>
+                        <div>
                            <Col12>
                                 <Col6>
                                     <CampoTexto 

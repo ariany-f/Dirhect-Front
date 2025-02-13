@@ -89,38 +89,22 @@ function DataTableContratosDetalhes({ beneficios }) {
     };
     return (
         <>
-            <ContextMenu model={menuModel(selectedBeneficio)} ref={cm} onHide={() => setSelectedBeneficio(null)} />
+            {/* <ContextMenu model={menuModel(selectedBeneficio)} ref={cm} onHide={() => setSelectedBeneficio(null)} /> */}
             <DataTable 
-                onContextMenu={(e) => {
-                    cm.current.show(e.originalEvent);
-                }} 
                 value={beneficios} 
                 filters={filters} 
                 globalFilterFields={['nome']} 
                 emptyMessage="Não foram encontrados beneficios" 
-                paginator rows={7}  
+                paginator rows={7}
+                selection={selectedBeneficio} 
+                onSelectionChange={(e) => {setSendData(e.value); setModalOpened(true)}} 
+                selectionMode="single"
                 tableStyle={{ minWidth: '68vw' }}
-                onContextMenuSelectionChange={(e) => {
-                    setSelectedBeneficio(e.value); 
-                    cm.current.show(e.originalEvent)}
-                }
             >
                 <Column field="nome" header="Benefício" style={{ width: '35%' }}></Column>
                 <Column field="data_inicio" header="Data Inicio" style={{ width: '35%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
-                <Column header="" style={{ width: '10%' }} body={(rowData) => (
-                    <button 
-                        onClick={(e) => {
-                            e.preventDefault();  // Evita o comportamento padrão do botão
-                            setSelectedBeneficio(rowData);  // Define o cartão selecionado
-                            cm.current.show(e);  // Exibe o menu de contexto
-                        }} 
-                        className="p-button black p-button-text p-button-plain p-button-icon-only"
-                    >
-                        <IoEllipsisVertical />
-                    </button>
-                )}></Column>
             </DataTable>
             <ModalAlterarRegrasBeneficio aoFechar={() => setModalOpened(false)} opened={modalOpened} dadoAntigo={sendData} />
         </>

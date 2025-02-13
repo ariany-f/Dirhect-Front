@@ -32,16 +32,20 @@ function DataTableContratos({ contratos }) {
         setGlobalFilterValue(value);
     };
 
+
     function verDetalhes(value)
     {
         navegar(`/contratos/detalhes/${value.id}`)
     }
 
-    const representativeTipoTemplate = (rowData) => {
+    const representativeFornecedorTemplate = (rowData) => {
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
                 {rowData.nome_fornecedor}
             </Texto>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
+                Benefícios:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.beneficios.length}</p>
+            </div>
         </div>
     }
 
@@ -54,7 +58,7 @@ function DataTableContratos({ contratos }) {
                 </span>
             </div>
             <DataTable value={contratos} filters={filters} globalFilterFields={['nome_fornecedor']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeTipoTemplate} field="nome_fornecedor" header="Fornecedor" style={{ width: '35%' }}></Column>
+                <Column body={representativeFornecedorTemplate} field="nome_fornecedor" header="Fornecedor" style={{ width: '35%' }}></Column>
                 <Column field="descritivo" header="Descritivo" style={{ width: '35%' }}></Column>
             </DataTable>
         </>

@@ -138,7 +138,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         {
             "id": 12,
             "url": "contratos",
-            "pageTitulo": "Contrato Fornecedor"
+            "pageTitulo": "Contratos"
         },
         {
             "id": 13,
