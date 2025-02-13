@@ -336,13 +336,13 @@ function BarraLateral() {
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
-                    {
-                        "id": 8,
-                        "url": "/beneficio",
-                        "pageTitulo": "Tipos de Benefícios",
-                        "icone": <RiHandCoinFill size={20} className="icon" />,
-                        "itemTitulo": "Tipos de Benefícios"
-                    },
+                    // {
+                    //     "id": 8,
+                    //     "url": "/beneficio",
+                    //     "pageTitulo": "Tipos de Benefícios",
+                    //     "icone": <RiHandCoinFill size={20} className="icon" />,
+                    //     "itemTitulo": "Tipos de Benefícios"
+                    // },
                     {
                         "id": 9,
                         "url": "/contratos",
