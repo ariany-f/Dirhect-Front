@@ -210,13 +210,6 @@ function BarraLateral() {
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
-                    {
-                        "id": 6,
-                        "url": "/ciclos",
-                        "pageTitulo": "Lançtos de Folha",
-                        "icone": <TbTableShare size={20} stroke="white" />,
-                        "itemTitulo": "Lançtos de Folha"
-                    },
                 ];
             case 'equipeFolhaPagamento':
                 return [
