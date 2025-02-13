@@ -113,7 +113,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         setCompanyDomain,
     } = useSessaoUsuarioContext()
 
-    const [selected, setSelected] = useState(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
+    const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
 
     useEffect(() => {
@@ -139,8 +139,13 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                         ...tenant,
                         domain: domains.find(domain => domain.tenant === tenant.id)?.domain || null
                     }));
+
                     setEmpresas(tenantsWithDomain)
-                    setSelected(tenantsWithDomain[0].id)
+
+                    if(selected == '')
+                    {
+                        setSelected(tenantsWithDomain[0].id)
+                    }
                 })
                 .catch(erro => {
 
@@ -215,7 +220,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                                             </div>
                                             <RadioButton
                                                 value={empresa.id}
-                                                checked={selected === empresa.id}
+                                                checked={selected == empresa.id}
                                                 onSelected={(id) => handleSelectChange}
                                             />
                                         </Item>
