@@ -1,7 +1,8 @@
 import styles from './Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
-import DataTableDepartamentos from '@components/DataTableDepartamentos'
+import http from '@http'
+import DataTableCargos from '@components/DataTableCargos'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
@@ -47,8 +48,19 @@ function CargosLista() {
     
 
     useEffect(() => {
-     
-    }, [])
+        if(!cargos) {
+            
+            setLoading(true)
+            http.get('cargo/?format=json')
+                .then(response => {
+                    setCargos(response)
+                    setLoading(false)
+                })
+                .catch(erro => {
+                    setLoading(false)
+                })
+        }    
+    }, [cargos])
 
     return (
         <>
@@ -74,7 +86,7 @@ function CargosLista() {
             </BotaoGrupo>
             {
                 cargos && cargos.length > 0 ?
-                    <DataTableDepartamentos departamentos={cargos} />
+                    <DataTableCargos cargos={cargos} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
