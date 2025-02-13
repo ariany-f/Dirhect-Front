@@ -137,6 +137,7 @@ import TarefasLista from './pages/Tarefas/lista'
 import DetalhesTarefas from './pages/Tarefas/detalhes'
 import MeusCiclos from './pages/Ciclos/meusCiclos'
 import DetalhesMeusCiclos from './pages/Ciclos/detalhesMeusCiclos'
+import DetalhesContratos from './pages/Contratos/detalhes'
 
 function AppRouter() {
   
@@ -239,6 +240,7 @@ function AppRouter() {
             
             <Route path="contratos" element={<Contratos/>}>
               <Route index element={<ContratosListagem />} />
+              <Route path="detalhes/:id" element={<DetalhesContratos />} />
             </Route>
 
             <Route path="ausencias" element={<AusenciasListagem/>} />

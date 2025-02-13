@@ -4,14 +4,19 @@ import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
+import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Tag } from 'primereact/tag';
+
+let Real = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+});
 
 function DataTableContratos({ contratos }) {
 
-    console.log(contratos)
-
-    const[selectedDependente, setSelectedDependente] = useState(0)
+    const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -29,24 +34,28 @@ function DataTableContratos({ contratos }) {
 
     function verDetalhes(value)
     {
-        setSelectedDependente(value.id)
-    }
-    
-    function formataCPF(cpf) {
-        cpf = cpf.replace(/[^\d]/g, "");
-        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+        navegar(`/contratos/detalhes/${value.id}`)
     }
 
+    const representativeTipoTemplate = (rowData) => {
+        return <div key={rowData.id}>
+            <Texto weight={700} width={'100%'}>
+                {rowData.nome_fornecedor}
+            </Texto>
+        </div>
+    }
+
+    
     return (
         <>
             <div className="flex justify-content-end">
                 <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar contratos" />
+                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={contratos} filters={filters} globalFilterFields={[]}  emptyMessage="Não foram encontrados contratos" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="id" header="Identificador" style={{ width: '35%' }}></Column>
-                <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
+            <DataTable value={contratos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
+                <Column field="descritivo" header="Descrição" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )
