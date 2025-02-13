@@ -53,8 +53,8 @@ function DataTableContratos({ contratos }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={contratos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
+            <DataTable value={contratos} filters={filters} globalFilterFields={['nome_fornecedor']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                <Column body={representativeTipoTemplate} field="nome_fornecedor" header="Fornecedor" style={{ width: '35%' }}></Column>
                 <Column field="descritivo" header="Descrição" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
