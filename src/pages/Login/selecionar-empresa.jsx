@@ -111,6 +111,11 @@ function SelecionarEmpresa() {
                 setLoading(false)
             })
         }
+        
+        if(empresas && empresas.length > 0 && (!tenants))
+        {
+            setSelected(empresas[0].id_tenant)
+        }
 
     }, [empresas, tenants, setSessionCompany])
 

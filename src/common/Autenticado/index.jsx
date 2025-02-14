@@ -114,7 +114,7 @@ function Autenticado() {
 
         var comp = [];
 
-        if(selected && empresas)
+        if(selected && empresas && empresas.length > 0)
         {
             comp = empresas.filter(company => company.id_tenant == selected);
             if(comp.length > 0 && comp[0].id_tenant)

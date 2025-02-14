@@ -181,6 +181,11 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                 })
             }
         }
+
+        if(empresas && empresas.length > 0 && (!tenants))
+        {
+            setSelected(empresas[0].id_tenant)
+        }
         
     }, [opened, empresas, tenants])
     
