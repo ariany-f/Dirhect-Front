@@ -15,6 +15,7 @@
     display: flex;
     flex-direction: column;
     line-height: 24px; /* 150% */
+    text-align: left;
 }
 .buildingIcon {
     box-sizing: initial;

@@ -43,7 +43,7 @@ function SelecionarEmpresa() {
 
     const [tenants, setTenants] = useState(null)
     const [empresas, setEmpresas] = useState(null)
-    const [selected, setSelected] = useState(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
+    const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? ArmazenadorToken.UserCompanyPublicId ?? '')
     const [loading, setLoading] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
@@ -53,14 +53,43 @@ function SelecionarEmpresa() {
         if(!tenants)
         {
             setLoading(true)
-            http.get(`client_tenant/?format=json`)
-            .then(response => {
-                setTenants(response)
-                setLoading(false)
-            })
-            .catch(erro => {
-                setLoading(false)
-            })
+             // Buscar clientes
+             http.get(`cliente/?format=json`)
+             .then(async (response) => {
+                 let clientes = response; // Supondo que a resposta seja um array de clientes
+
+                 // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
+                 const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
+                     try {
+                         // Buscar o tenant
+                         const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
+                         const tenant = tenantResponse || {};
+
+                         // Buscar a pessoa jurídica
+                         const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
+                         const pessoaJuridica = pessoaJuridicaResponse || {};
+
+
+                         // Retornar o objeto consolidado
+                         return {
+                             ...cliente,
+                             tenant,
+                             pessoaJuridica
+                         };
+                     } catch (erro) {
+                         console.error("Erro ao buscar dados do cliente:", erro);
+                         return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
+                     }
+                 }));
+
+                 // Atualizar o estado com os clientes completos
+                 setTenants(clientesCompletos);
+                 setLoading(false)
+             })
+             .catch(erro => {
+                 console.error("Erro ao buscar clientes:", erro);
+                 setLoading(false)
+             });
         }
 
         if((!empresas) && tenants)
@@ -69,12 +98,13 @@ function SelecionarEmpresa() {
             http.get(`client_domain/?format=json`)
             .then(domains => {
                     // Cruzar os dados: adicionar domains correspondentes a cada tenant
-                    const tenantsWithDomain = tenants.map(tenant => ({
+                const tenantsWithDomain = tenants.map(tenant => ({
                     ...tenant,
-                    domain: domains.find(domain => domain.tenant === tenant.id)?.domain || null
+                    domain: domains.find(domain => domain.tenant === tenant.id_tenant)?.domain || null
                 }));
+                
                 setEmpresas(tenantsWithDomain)
-                setSelected(tenantsWithDomain[0].id)
+                setSelected(tenantsWithDomain[0].id_tenant)
                 setLoading(false)
             })
             .catch(erro => {
@@ -93,13 +123,18 @@ function SelecionarEmpresa() {
         {
             setSessionCompany(selected)
 
-            var comp = empresas.filter(company => company.id == selected);
+            var comp = empresas.filter(company => company.id_tenant == selected);
 
-            if(comp.length > 0 && comp[0].nome)
+            if(comp.length > 0 && comp[0].id_tenant)
             {
                 setCompanyDomain(comp[0].domain)
+                
+                ArmazenadorToken.definirCompany(
+                    selected,
+                    comp[0].domain
+                )
             }
-            
+
             navegar('/')
         }
     }
@@ -123,23 +158,23 @@ function SelecionarEmpresa() {
                             return (
                                 <Item 
                                     key={idx} 
-                                    $active={selected === empresa.id}
-                                    onClick={public_id => handleSelectChange(empresa.id)}>
+                                    $active={selected === empresa.id_tenant}
+                                    onClick={id_tenant => handleSelectChange(empresa.id_tenant)}>
                                     <div className={styles.cardEmpresa}>
-                                        {(selected === empresa.id) ?
+                                        {(selected === empresa.id_tenant) ?
                                             <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                             : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                         }
                                         <div className={styles.DadosEmpresa}>
-                                            <h6>{empresa.nome.toUpperCase()}</h6>
-                                            {/* <div>{formataCNPJ(empresa.cnpj)}</div> */}
+                                            <h6>{empresa.tenant.nome.toUpperCase()}</h6>
+                                            <div>{formataCNPJ(empresa.pessoaJuridica.cnpj)}</div>
                                         </div>
                                     </div>
                                     <RadioButton
                                         name="selected_company"
-                                        value={empresa.id}
-                                        checked={selected === empresa.id}
-                                        onSelected={(id) => handleSelectChange}
+                                        value={empresa.id_tenant}
+                                        checked={selected === empresa.id_tenant}
+                                        onSelected={(id_tenant) => handleSelectChange}
                                     />
                                 </Item>
                             )

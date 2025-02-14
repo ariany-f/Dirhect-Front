@@ -51,13 +51,42 @@ function Autenticado() {
         
         if(!tenants)
         {
-            http.get(`client_tenant/?format=json`)
-            .then(response => {
-                setTenants(response)
+             // Buscar clientes
+             http.get(`cliente/?format=json`)
+             .then(async (response) => {
+                 let clientes = response; // Supondo que a resposta seja um array de clientes
+
+                 // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
+                 const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
+                     try {
+                         // Buscar o tenant
+                         const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
+                         const tenant = tenantResponse || {};
+
+                         // Buscar a pessoa jurídica
+                         const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
+                         const pessoaJuridica = pessoaJuridicaResponse || {};
+
+
+                         // Retornar o objeto consolidado
+                         return {
+                             ...cliente,
+                             tenant,
+                             pessoaJuridica
+                         };
+                     } catch (erro) {
+                         console.error("Erro ao buscar dados do cliente:", erro);
+                         return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
+                     }
+                 }));
+
+                 // Atualizar o estado com os clientes completos
+                 setTenants(clientesCompletos);
+                 
             })
             .catch(erro => {
-
-            })
+                console.error("Erro ao buscar clientes:", erro);
+            });
         }
 
         if((!empresas) && tenants)
@@ -67,14 +96,14 @@ function Autenticado() {
                     // Cruzar os dados: adicionar domains correspondentes a cada tenant
                     const tenantsWithDomain = tenants.map(tenant => ({
                     ...tenant,
-                    domain: domains.find(domain => domain.tenant === tenant.id)?.domain || null
+                    domain: domains.find(domain => domain.tenant === tenant.id_tenant)?.domain || null
                 }));
 
                 setEmpresas(tenantsWithDomain)
 
                 if(selected == '')
                 {
-                    setSelected(tenantsWithDomain[0].id)
+                    setSelected(tenantsWithDomain[0].id_tenant)
                 }
             })
             .catch(erro => {
@@ -86,11 +115,11 @@ function Autenticado() {
 
         if(selected && empresas)
         {
-            comp = empresas.filter(company => company.id == selected);
-            if(comp.length > 0 && comp[0].nome)
+            comp = empresas.filter(company => company.id_tenant == selected);
+            if(comp.length > 0 && comp[0].id_tenant)
             {
-                setEmpresa(comp[0].nome)
-                setSessionCompany(comp[0].id)
+                setEmpresa(comp[0].tenant.nome)
+                setSessionCompany(comp[0].id_tenant)
                 setCompanyDomain(comp[0].domain)
             }
         }
@@ -118,11 +147,11 @@ function Autenticado() {
 
         if(id && empresas)
         {
-            comp = empresas.filter(company => company.id === id);
-            
-            if(comp.length > 0 && comp[0].nome)
+            comp = empresas.filter(company => company.id_tenant === id);
+           
+            if(comp.length > 0 && comp[0].id_tenant)
             {
-                setEmpresa(comp[0].nome)
+                setEmpresa(comp[0].tenant.nome)
                 setSelected(id)
             }
         }

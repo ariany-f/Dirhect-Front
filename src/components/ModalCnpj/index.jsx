@@ -120,14 +120,42 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         if(opened)
         {
             if(!tenants)
-                {
-                    http.get(`client_tenant/?format=json`)
-                    .then(response => {
-                        setTenants(response)
-                    })
-                    .catch(erro => {
+            {
+                // Buscar clientes
+                http.get(`cliente/?format=json`)
+                .then(async (response) => {
+                    let clientes = response; // Supondo que a resposta seja um array de clientes
 
-                    })
+                    // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
+                    const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
+                        try {
+                            // Buscar o tenant
+                            const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
+                            const tenant = tenantResponse || {};
+
+                            // Buscar a pessoa jurídica
+                            const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
+                            const pessoaJuridica = pessoaJuridicaResponse || {};
+
+
+                            // Retornar o objeto consolidado
+                            return {
+                                ...cliente,
+                                tenant,
+                                pessoaJuridica
+                            };
+                        } catch (erro) {
+                            console.error("Erro ao buscar dados do cliente:", erro);
+                            return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
+                        }
+                    }));
+
+                    // Atualizar o estado com os clientes completos
+                    setTenants(clientesCompletos);
+                })
+                .catch(erro => {
+                    console.error("Erro ao buscar clientes:", erro);
+                });
             }
     
             if((!empresas) && tenants)
@@ -135,16 +163,16 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                 http.get(`client_domain/?format=json`)
                 .then(domains => {
                         // Cruzar os dados: adicionar domains correspondentes a cada tenant
-                        const tenantsWithDomain = tenants.map(tenant => ({
+                    const tenantsWithDomain = tenants.map(tenant => ({
                         ...tenant,
-                        domain: domains.find(domain => domain.tenant === tenant.id)?.domain || null
+                        domain: domains.find(domain => domain.tenant === tenant.id_tenant)?.domain || null
                     }));
 
                     setEmpresas(tenantsWithDomain)
 
                     if(selected == '')
                     {
-                        setSelected(tenantsWithDomain[0].id)
+                        setSelected(tenantsWithDomain[0].id_tenant)
                     }
                 })
                 .catch(erro => {
@@ -165,9 +193,9 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
         setSessionCompany(selected)
 
-        var comp = empresas.filter(company => company.id == selected)
-
-        if(comp.length > 0 && comp[0].nome)
+        var comp = empresas.filter(company => company.id_tenant == selected)
+       
+        if(comp.length > 0 && comp[0].id_tenant)
         {
             setCompanyDomain(comp[0].domain)
 
@@ -206,21 +234,21 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                                     return (
                                         <Item 
                                             key={idx} 
-                                            $active={selected === empresa.id}
-                                            onClick={id => handleSelectChange(empresa.id)}>
+                                            $active={selected === empresa.id_tenant}
+                                            onClick={id => handleSelectChange(empresa.id_tenant)}>
                                             <div className={styles.cardEmpresa}>
-                                                {(selected === empresa.id) ?
+                                                {(selected === empresa.id_tenant) ?
                                                     <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                                     : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                                 }
                                                 <div className={styles.DadosEmpresa}>
-                                                    <h6>{empresa.nome.toUpperCase()}</h6>
-                                                    {/* <div>{formataCNPJ(empresa.cnpj)}</div> */}
+                                                    <h6>{empresa.tenant.nome.toUpperCase()}</h6>
+                                                    <div>{formataCNPJ(empresa.pessoaJuridica.cnpj)}</div>
                                                 </div>
                                             </div>
                                             <RadioButton
-                                                value={empresa.id}
-                                                checked={selected == empresa.id}
+                                                value={empresa.id_tenant}
+                                                checked={selected == empresa.id_tenant}
                                                 onSelected={(id) => handleSelectChange}
                                             />
                                         </Item>
