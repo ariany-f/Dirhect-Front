@@ -84,7 +84,6 @@ function SelecionarEmpresa() {
 
                  // Atualizar o estado com os clientes completos
                  setTenants(clientesCompletos);
-                 setLoading(false)
              })
              .catch(erro => {
                  console.error("Erro ao buscar clientes:", erro);
@@ -94,7 +93,6 @@ function SelecionarEmpresa() {
 
         if((!empresas) && tenants)
         {
-            setLoading(true)
             http.get(`client_domain/?format=json`)
             .then(domains => {
                     // Cruzar os dados: adicionar domains correspondentes a cada tenant
