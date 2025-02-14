@@ -83,7 +83,7 @@ function DepartamentoDetalhes() {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <ConfirmDialog />
-            <BotaoVoltar linkFixo={`/estrutura`} />
+            <BotaoVoltar linkFixo={`/estrutura/departamentos`} />
             <Texto weight={500} size="12px">Departamento</Texto>
             {departamento?.nome ?
                 <BotaoGrupo align="space-between">
