@@ -56,7 +56,7 @@ function DataTableFiliais({ filiais }) {
                 </span>
             </div>
             <DataTable value={filiais} filters={filters} globalFilterFields={['descricao','cnpj']}  emptyMessage="Não foram encontradas filiais" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="descricao" header="Filial" style={{ width: '35%' }}></Column>
+                <Column field="nome" header="Filial" style={{ width: '35%' }}></Column>
                 <Column body={representativeCNPJTemplate} header="CNPJ"></Column>
             </DataTable>
         </>

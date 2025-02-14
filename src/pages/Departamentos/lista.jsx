@@ -55,7 +55,7 @@ function DepartamentoLista() {
     } = useDepartamentoContext()
 
 
-    const adicionarNome = (nome) => {
+    const adicionarDepartamento = (nome) => {
 
         setLoading(true)
         setDepartamento()
@@ -132,7 +132,7 @@ function DepartamentoLista() {
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarDepartamento aoSalvar={adicionarNome} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarDepartamento aoSalvar={adicionarDepartamento} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }

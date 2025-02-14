@@ -10,7 +10,7 @@ import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
-import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
+import ModalAdicionarFilial from '@components/ModalAdicionarFilial'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 import DataTableFiliais from '../../components/DataTableFiliais'
@@ -64,6 +64,31 @@ function FiliaisLista() {
         }    
     }, [filiais])
 
+    const removerMascaraCNPJ = (cnpj) => {
+        return cnpj.replace(/[^\d]/g, ''); // Remove tudo que não for número
+    }
+    
+    const adicionarFilial = (nome, cnpj) => {
+
+        setLoading(true)
+       
+        const data = {};
+        data.nome = nome;
+        data.cnpj = removerMascaraCNPJ(cnpj);
+
+        http.post('filial/', data)
+            .then(response => {
+                if(response.id)
+                {
+                    setModalOpened(false)
+                }
+                setLoading(false)
+            })
+            .catch(erro => {
+                setLoading(false)
+            })
+    }
+
     return (
         <>
         <ConteudoFrame>
@@ -106,7 +131,7 @@ function FiliaisLista() {
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarFilial aoSalvar={adicionarFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
