@@ -8,7 +8,7 @@ import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
-import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
+import ModalAdicionarCentroCusto from '@components/ModalAdicionarCentroCusto'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 
@@ -46,21 +46,41 @@ function CentrosCustoLista() {
     const toast = useRef(null)
     const navegar = useNavigate()
     
-
     useEffect(() => {
-        if(!centros_custo) {
-            
-            setLoading(true)
-            http.get('centro_custo/?format=json')
-                .then(response => {
-                    setCentrosCusto(response)
-                    setLoading(false)
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
-        }    
-    }, [centros_custo])
+       
+        setLoading(true)
+        http.get('centro_custo/?format=json')
+            .then(response => {
+                setCentrosCusto(response)
+                setLoading(false)
+            })
+            .catch(erro => {
+                setLoading(false)
+            })
+    }, [modalOpened])
+
+    
+    const adicionarCentroCusto = (nome, cc_pai) => {
+
+        setLoading(true)
+       
+        const data = {};
+        data.nome = nome;
+        data.cc_pai = cc_pai.code;
+
+        http.post('centro_custo/', data)
+            .then(response => {
+                if(response.id)
+                {
+                    setModalOpened(false)
+                }
+                setLoading(false)
+            })
+            .catch(erro => {
+                setLoading(false)
+            })
+    }
+
 
     return (
         <>
@@ -103,7 +123,7 @@ function CentrosCustoLista() {
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarCentroCusto aoSalvar={adicionarCentroCusto} aoSucesso={toast} aoFechar={() => setModalOpened(false)} centros_custo={centros_custo} opened={modalOpened} />
         </>
     )
 }

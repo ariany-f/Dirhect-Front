@@ -56,6 +56,7 @@ function FiliaisLista() {
                 setLoading(false)
             })
             .catch(erro => {
+                
                 setLoading(false)
             })
     }, [modalOpened])
