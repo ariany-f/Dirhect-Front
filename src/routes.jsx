@@ -114,8 +114,6 @@ import FeriasListagem from './pages/Ausencias/ferias'
 import Ausencias from './pages/Ausencias'
 import FeriasAusenciasListagem from './pages/Ausencias/lista'
 import AusenciasListagem from './pages/Ausencias/ausencias'
-import AusenciaDadosIniciais from './pages/Ausencias/Registro/dados-iniciais'
-import AusenciaRegistro from './pages/Ausencias/Registro/registro'
 import ColabroadorESocial from './pages/Colaboradores/Detalhes/esocial'
 import ColaboradorAusencias from './pages/Colaboradores/Detalhes/ausencias'
 import ColabroadorDemissoes from './pages/Colaboradores/Detalhes/demissoex'
@@ -140,6 +138,8 @@ import DetalhesMeusCiclos from './pages/Ciclos/detalhesMeusCiclos'
 import DetalhesContratos from './pages/Contratos/detalhes'
 import CentrosCustoLista from './pages/Departamentos/centros_custo'
 import SindicatosLista from './pages/Departamentos/sindicatos'
+import Marketplace from './pages/Marketplace'
+import MarketplaceLista from './pages/Marketplace/grid'
 
 function AppRouter() {
   
@@ -247,6 +247,11 @@ function AppRouter() {
               <Route path="detalhes/:id" element={<DetalhesContratos />} />
             </Route>
 
+            
+            <Route path="marketplace" element={<Marketplace/>}>
+              <Route index element={<MarketplaceLista />} />
+            </Route>
+
             <Route path="ausencias" element={<AusenciasListagem/>} />
             
             <Route path="ferias" element={<Ausencias/>}>
@@ -255,18 +260,6 @@ function AppRouter() {
               <Route path="ausencias" element={<AusenciasListagem />} />
               <Route path="solicitar" element={<ValidarAdmissoes />} />
             </Route>
-            
-            <Route path="ferias/registro" element={<AusenciaRegistro />} >
-                  <Route index element={<AusenciaDadosIniciais />} />
-            </Route>
-              
-              {/* <Route path="despesa" element={<Despesas />} />
-              <Route path="despesa/adiantar-saldo" element={<DespesaAdiantarSaldo />} />
-              <Route path="despesa/selecao-tipo-adiantamento" element={<DespesaSelecionarTipoAdiantamento />} />
-              <Route path="despesa/selecao-alvo-adiantamento" element={<DespesaSelecionarAlvoAdiantamento />} />
-              <Route path="despesa/editar-valor" element={<DespesaEditarValor />} />
-              <Route path="despesa/detalhes-adiantamento" element={<DespesaDetalhesAdiantamento />} />
-              <Route path="despesa/detalhes" element={<DespesaDetalhes />} /> */}
 
               <Route path="vagas" element={<Vagas />} >
                 <Route index element={<VagasAbertas />} />

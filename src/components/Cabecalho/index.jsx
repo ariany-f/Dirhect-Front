@@ -180,6 +180,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             "url":"tarefas",
             "pageTitulo": "Tarefas"
         },
+        {
+            "id": 12,
+            "url":"marketplace",
+            "pageTitulo": "Marketplace"
+        },
     ];
 
     const titulo = titulos.map((item) => {

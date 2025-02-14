@@ -3,7 +3,7 @@ import ItemNavegacao from "./ItemNavegacao"
 import Botao from "@components/Botao"
 import { AiFillHome } from "react-icons/ai"
 import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine, RiBlenderFill } from "react-icons/ri"
-import { BiBusSchool, BiDrink, BiSolidDashboard } from "react-icons/bi"
+import { BiBusSchool, BiCart, BiDrink, BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
@@ -173,6 +173,13 @@ function BarraLateral() {
                         "pageTitulo": "Meu Cadastro",
                         "icone": <RiFilePaperFill size={20} className="icon" />,
                         "itemTitulo": "Meu Cadastro"
+                    },
+                    {
+                        "id": 2,
+                        "url": "/marketplace",
+                        "pageTitulo": "Marketplace",
+                        "icone": <BiCart size={20} className="icon" />,
+                        "itemTitulo": "Marketplace"
                     }
                 ];
             case 'funcionario':
@@ -218,6 +225,13 @@ function BarraLateral() {
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Ciclos de Pagamento"
                     },
+                    {
+                        "id": 6,
+                        "url": "/marketplace",
+                        "pageTitulo": "Marketplace",
+                        "icone": <BiCart size={20} className="icon" />,
+                        "itemTitulo": "Marketplace"
+                    }
                 ];
             case 'equipeFolhaPagamento':
                 return [
@@ -378,6 +392,13 @@ function BarraLateral() {
                         "icone": <MdAllInbox size={20} fill="white" />,
                         "itemTitulo": "Movimentos"
                     },
+                    {
+                        "id": 14,
+                        "url": "/marketplace",
+                        "pageTitulo": "Marketplace",
+                        "icone": <BiCart size={20} className="icon" />,
+                        "itemTitulo": "Marketplace"
+                    }
                 ];
             default:
                 return [];
