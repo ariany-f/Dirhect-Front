@@ -26,21 +26,21 @@ export default function MarketplaceLista() {
         setProducts(context)
     }, [context]);
 
-    const getSeverity = (product) => {
-        switch (product.status) {
-            case 'Ativo':
-                return 'success';
+    // const getSeverity = (product) => {
+    //     switch (product.status) {
+    //         case 'Ativo':
+    //             return 'success';
 
-            case 'Inativo':
-                return 'warning';
+    //         case 'Inativo':
+    //             return 'warning';
 
-            case 'Removido':
-                return 'danger';
+    //         case 'Removido':
+    //             return 'danger';
 
-            default:
-                return null;
-        }
-    };
+    //         default:
+    //             return null;
+    //     }
+    // };
 
     const itemTemplate = (product, index) => {
         return (
