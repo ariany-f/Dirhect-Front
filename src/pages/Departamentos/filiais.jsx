@@ -49,20 +49,16 @@ function FiliaisLista() {
     const toast = useRef(null)
 
     useEffect(() => {
-         
-        if(!filiais) {
-            
-            setLoading(true)
-            http.get('filial/?format=json')
-                .then(response => {
-                    setFiliais(response)
-                    setLoading(false)
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
-        }    
-    }, [filiais])
+        setLoading(true)
+        http.get('filial/?format=json')
+            .then(response => {
+                setFiliais(response)
+                setLoading(false)
+            })
+            .catch(erro => {
+                setLoading(false)
+            })
+    }, [modalOpened])
 
     const removerMascaraCNPJ = (cnpj) => {
         return cnpj.replace(/[^\d]/g, ''); // Remove tudo que não for número

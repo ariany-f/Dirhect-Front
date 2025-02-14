@@ -78,18 +78,16 @@ function DepartamentoLista() {
     }
 
     useEffect(() => {
-        if(!departamentos) {
-            setLoading(true)
-            http.get('departamento/?format=json')
-                .then(response => {
-                    setDepartamentos(response)
-                    setLoading(false)
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
-        }
-    }, [departamentos, modalOpened])
+        setLoading(true)
+        http.get('departamento/?format=json')
+            .then(response => {
+                setDepartamentos(response)
+                setLoading(false)
+            })
+            .catch(erro => {
+                setLoading(false)
+            })
+    }, [modalOpened])
 
     return (
         <>

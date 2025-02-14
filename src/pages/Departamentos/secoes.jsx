@@ -7,7 +7,7 @@ import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
-import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
+import ModalAdicionarSecao from '@components/ModalAdicionarSecao'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 import http from '../../http'
@@ -49,20 +49,37 @@ function SecoesLista() {
     
 
     useEffect(() => {
-     
-        if(!secoes) {
-            
-            setLoading(true)
-            http.get('secao/?format=json')
-                .then(response => {
-                    setSecoes(response)
-                    setLoading(false)
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
-        }    
-    }, [secoes])
+        setLoading(true)
+        http.get('secao/?format=json')
+            .then(response => {
+                setSecoes(response)
+                setLoading(false)
+            })
+            .catch(erro => {
+                setLoading(false)
+            })
+    }, [modalOpened])
+
+    
+    const adicionarSecao = (nome) => {
+
+        setLoading(true)
+       
+        const data = {};
+        data.nome = nome;
+
+        http.post('secao/', data)
+            .then(response => {
+                if(response.id)
+                {
+                    setModalOpened(false)
+                }
+                setLoading(false)
+            })
+            .catch(erro => {
+                setLoading(false)
+            })
+    }
 
     return (
         <>
@@ -105,7 +122,7 @@ function SecoesLista() {
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarSecao aoSalvar={adicionarSecao} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }

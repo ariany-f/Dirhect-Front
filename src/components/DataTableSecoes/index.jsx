@@ -54,7 +54,9 @@ function DataTableSecoes({ secoes }) {
                 </span>
             </div>
             <DataTable value={secoes} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selectedSecao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="id" header="Id da Seção" style={{ width: '35%' }}></Column>
+                <Column field="id" header="Id" style={{ width: '15%' }}></Column>
+                <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )
