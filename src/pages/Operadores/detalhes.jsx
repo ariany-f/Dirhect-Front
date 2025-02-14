@@ -19,9 +19,9 @@ function OperadorDetalhes() {
     useEffect(() => {
         if(!operador)
         {
-            http.get(`usuario/?format=json&id=${id}`)
+            http.get(`usuario/${id}/?format=json`)
                 .then(response => {
-                    setOperador(response[0])
+                    setOperador(response)
                 })
                 .catch(erro => console.log(erro))
         }
