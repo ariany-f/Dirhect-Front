@@ -5,7 +5,7 @@ import Botao from '@components/Botao'
 import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
-import './Marketplace.css'
+// import './Marketplace.css'
 import { Link, Outlet, useLocation, useOutlet, useOutletContext } from "react-router-dom"
 import { BsArrowRight } from 'react-icons/bs';
 import { TbTag } from 'react-icons/tb';
