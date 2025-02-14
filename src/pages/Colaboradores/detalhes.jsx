@@ -36,12 +36,9 @@ function ColaboradorDetalhes() {
     useEffect(() => {
         if(!colaborador)
         {
-            http.get(`funcionario/?format=json&id=${id}`)
+            http.get(`funcionario/${id}/?format=json`)
                 .then(response => {
-                    if(response.length)
-                    {
-                        setColaborador(response[0]);
-                    }
+                    setColaborador(response);
                 })
                 .catch(erro => console.log(erro))
         }
