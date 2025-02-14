@@ -42,8 +42,8 @@ function DataTableDepartamentos({ departamentos }) {
 
     function verDetalhes(value)
     {
-        setSelectedDepartamento(value.public_id)
-        navegar(`/estrutura/detalhes/${value.public_id}`)
+        setSelectedDepartamento(value.id)
+        navegar(`/estrutura/detalhes/${value.id}`)
     }
 
     return (
@@ -54,7 +54,9 @@ function DataTableDepartamentos({ departamentos }) {
                 </span>
             </div>
             <DataTable value={departamentos} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados departamentos" selection={selectedDepartamento} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="id" header="Id do Departamento" style={{ width: '35%' }}></Column>
+                <Column field="id" header="Id" style={{ width: '15%' }}></Column>
+                <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )

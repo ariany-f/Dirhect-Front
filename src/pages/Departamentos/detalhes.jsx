@@ -44,17 +44,15 @@ function DepartamentoDetalhes() {
     })
 
     useEffect(() => {
-        // if(!departamento) {
-        //     http.get(`api/department/show/${id}`)
-        //     .then(response => {
-        //        if(response.success)
-        //         {
-        //             setDepartamento(response.data)
-        //         }
-        //     })
-        //     .catch(erro => console.log(erro))
-        // }
-    })
+        if(!departamento) {
+            http.get(`departamento/${id}/?format=json`)
+            .then(response => {
+               console.log(response)
+                setDepartamento(response)
+            })
+            .catch(erro => console.log(erro))
+        }
+    }, [departamento])
 
     const excluirDepartamento = () => {
         confirmDialog({
@@ -87,10 +85,10 @@ function DepartamentoDetalhes() {
             <ConfirmDialog />
             <BotaoVoltar linkFixo={`/estrutura`} />
             <Texto weight={500} size="12px">Departamento</Texto>
-            {departamento ?
+            {departamento?.nome ?
                 <BotaoGrupo align="space-between">
                     <Titulo>
-                        <h3>{departamento.name}</h3>
+                        <h3>{departamento.nome}</h3>
                     </Titulo>
                     <BotaoSemBorda $color="var(--error)">
                         <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Departamento</Link>

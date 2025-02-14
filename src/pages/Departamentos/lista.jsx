@@ -48,6 +48,7 @@ function DepartamentoLista() {
     const navegar = useNavigate()
     
     const {
+        departamento,
         setDepartamento,
         setNome,
         setDescription
@@ -55,10 +56,25 @@ function DepartamentoLista() {
 
 
     const adicionarNome = (nome) => {
+
+        setLoading(true)
         setDepartamento()
         setDescription('')
         setNome(nome)
-        navegar('/estrutura/adicionar-colaboradores')
+        const data = {};
+        data.nome = nome;
+
+        http.post('departamento/', data)
+            .then(response => {
+                if(response.id)
+                {
+                    setModalOpened(false)
+                }
+                setLoading(false)
+            })
+            .catch(erro => {
+                setLoading(false)
+            })
     }
 
     useEffect(() => {
@@ -73,7 +89,7 @@ function DepartamentoLista() {
                     setLoading(false)
                 })
         }
-    }, [departamentos])
+    }, [departamentos, modalOpened])
 
     return (
         <>
