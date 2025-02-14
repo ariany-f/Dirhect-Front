@@ -13,7 +13,21 @@ import { RiEditBoxFill } from 'react-icons/ri'
 import { Toast } from 'primereact/toast'
 import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
 import ModalAlterarEmail from '@components/ModalAlterar/email'
-import collaborators from '@json/colaboradores.json'
+import styled from "styled-components"
+
+
+const Col12 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+`
+
+const Col6 = styled.div`
+    padding: 10px;
+    flex: 1 1 50%;
+`
+
 
 function ColaboradorDadosPessoais() {
 
@@ -87,23 +101,42 @@ function ColaboradorDadosPessoais() {
         <Toast ref={toast} />
         <Titulo><h6>Informações gerais</h6></Titulo>
         <div className={styles.card_dashboard}>
-            <Texto>Nome completo</Texto>
-            {colaborador?.dados_pessoa_fisica?.nome ?
-                <Texto weight="800">{colaborador?.dados_pessoa_fisica?.nome}</Texto>
-                : <Skeleton variant="rectangular" width={200} height={25} />
-            }
-            <Texto>Nome social</Texto>
-            {colaborador ?
-                (colaborador?.collaborator && colaborador?.collaborator?.social_reason ?
-                    <Texto weight="800">{colaborador?.collaborator.social_reason}</Texto>
-                    : '--')
-                : <Skeleton variant="rectangular" width={200} height={25} />
-            }
-            <Texto>CPF</Texto>
-            {colaborador?.dados_pessoa_fisica?.cpf ?
-                <Texto weight="800">{formataCPF(colaborador?.dados_pessoa_fisica?.cpf)}</Texto>
-                : <Skeleton variant="rectangular" width={200} height={25} />
-            }
+            <Col12>
+                <Col6>
+                    <Texto>Chapa</Texto>
+                    {colaborador?.chapa ?
+                        <Texto weight="800">{colaborador?.chapa}</Texto>
+                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    <Texto>Nome completo</Texto>
+                    {colaborador?.dados_pessoa_fisica?.nome ?
+                        <Texto weight="800">{colaborador?.dados_pessoa_fisica?.nome}</Texto>
+                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    <Texto>Nome social</Texto>
+                    {colaborador?.dados_pessoa_fisica?.nome_social ?
+                            <Texto weight="800">{colaborador?.dados_pessoa_fisica.nome_social}</Texto>
+                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    <Texto>CPF</Texto>
+                    {colaborador?.dados_pessoa_fisica?.cpf ?
+                        <Texto weight="800">{formataCPF(colaborador?.dados_pessoa_fisica?.cpf)}</Texto>
+                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                </Col6>
+                <Col6>
+                    <Texto>Data de Admissão</Texto>
+                    {colaborador?.dt_admissao ?
+                        <Texto weight="800">{new Date(colaborador?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
+                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    <Texto>Nascimento</Texto>
+                    {colaborador?.dados_pessoa_fisica?.data_nascimento ?
+                        <Texto weight="800">{new Date(colaborador?.dados_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
+                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                </Col6>
+            </Col12>
         </div>
         <Titulo><h6>Informações de contato</h6></Titulo>
 
