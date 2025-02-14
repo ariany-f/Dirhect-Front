@@ -80,11 +80,11 @@ function FiliaisLista() {
                     <Link to="/estrutura/secoes">
                         <Botao estilo={''} size="small" tab>Seções</Botao>
                     </Link>
-                    <Link to="/estrutura/cargos">
-                        <Botao estilo={''} size="small" tab>Cargos e Funções</Botao>
-                    </Link>
                     <Link to="/estrutura/centros-custo">
                         <Botao estilo={''} size="small" tab>Centros de Custo</Botao>
+                    </Link>
+                    <Link to="/estrutura/cargos">
+                        <Botao estilo={''} size="small" tab>Cargos e Funções</Botao>
                     </Link>
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar uma filial</Botao>
