@@ -42,8 +42,7 @@ function DataTableSecoes({ secoes }) {
 
     function verDetalhes(value)
     {
-        setSelectedSecao(value.public_id)
-        navegar(`/estrutura/detalhes/${value.public_id}`)
+        setSelectedSecao(value.id)
     }
 
     return (
