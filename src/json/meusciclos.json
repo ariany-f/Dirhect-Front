@@ -4,7 +4,10 @@
         "tipo": "Adiantamento", 
         "data": "31/01/2025", 
         "colaborador_id": 8,
-        "data_referencia": "12/2024", 
+        "data_referencia": {
+            "year": 2024,
+            "month": 12
+        }, 
         "status": "Aberta",
         "detalhes": [
             { 
@@ -44,7 +47,10 @@
         "tipo": "Folha de Pagamento", 
         "data": "31/01/2025", 
         "colaborador_id": 8,
-        "data_referencia": "12/2024", 
+        "data_referencia": {
+            "year": 2024,
+            "month": 12
+        }, 
         "status": "Fechada",
         "detalhes": [
             { 
@@ -69,7 +75,10 @@
         "tipo": "Adiantamento", 
         "data": "28/02/2025", 
         "colaborador_id": 12,
-        "data_referencia": "01/2025", 
+        "data_referencia": {
+            "year": 2025,
+            "month": 1
+        }, 
         "status": "Aberta",
         "detalhes": [
             { 
@@ -84,7 +93,10 @@
         "tipo": "Folha de Pagamento", 
         "data": "28/02/2025", 
         "colaborador_id": 12,
-        "data_referencia": "01/2025", 
+        "data_referencia": {
+            "year": 2025,
+            "month": 1
+        }, 
         "status": "Aberta",
         "detalhes": [
             { 
@@ -99,7 +111,10 @@
         "tipo": "Adiantamento", 
         "data": "31/03/2025", 
         "colaborador_id": 8,
-        "data_referencia": "02/2025", 
+        "data_referencia": {
+            "year": 2025,
+            "month": 2
+        }, 
         "status": "Fechada",
         "detalhes": [
             { 
@@ -119,7 +134,10 @@
         "tipo": "Folha de Pagamento", 
         "data": "31/03/2025", 
         "colaborador_id": 12,
-        "data_referencia": "02/2025", 
+        "data_referencia": {
+            "year": 2025,
+            "month": 2
+        }, 
         "status": "Aberta",
         "detalhes": [
             { 
