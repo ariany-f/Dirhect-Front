@@ -41,16 +41,16 @@ const ContainerSemRegistro = styled.div`
 `
 
 
-function FiliaisLista() {
+function SindicatosLista() {
 
     const [loading, setLoading] = useState(false)
-    const [filiais, setFiliais] = useState(null)
+    const [sindicatos, setFiliais] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
 
     useEffect(() => {
          
-        if(!filiais) {
+        if(!sindicatos) {
             
             setLoading(true)
             http.get('filial/?format=json')
@@ -62,7 +62,7 @@ function FiliaisLista() {
                     setLoading(false)
                 })
         }    
-    }, [filiais])
+    }, [sindicatos])
 
     return (
         <>
@@ -72,7 +72,7 @@ function FiliaisLista() {
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
                     <Link to="/estrutura">
-                        <Botao estilo={'black'} size="small" tab>Filiais</Botao>
+                        <Botao estilo={''} size="small" tab>Filiais</Botao>
                     </Link>
                     <Link to="/estrutura/departamentos">
                         <Botao estilo={''} size="small" tab>Departamentos</Botao>
@@ -87,21 +87,21 @@ function FiliaisLista() {
                         <Botao estilo={''} size="small" tab>Cargos e Funções</Botao>
                     </Link>
                     <Link to="/estrutura/sindicatos">
-                        <Botao estilo={''} size="small" tab>Sindicatos</Botao>
+                        <Botao estilo={'black'} size="small" tab>Sindicatos</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar uma filial</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um sindicato</Botao>
             </BotaoGrupo>
             
             {
-                filiais && filiais.length > 0 ?
-                <DataTableFiliais filiais={filiais} />
+                sindicatos && sindicatos.length > 0 ?
+                <DataTableFiliais filiais={sindicatos} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
-                        <h6>Não há filiais registradas</h6>
-                        <p>Aqui você verá todas as filiais registradas.</p>
+                        <h6>Não há sindicatos registradas</h6>
+                        <p>Aqui você verá todas as sindicatos registradas.</p>
                     </section>
                 </ContainerSemRegistro>
             }
@@ -111,4 +111,4 @@ function FiliaisLista() {
     )
 }
 
-export default FiliaisLista
+export default SindicatosLista

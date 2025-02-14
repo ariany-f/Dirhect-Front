@@ -139,6 +139,7 @@ import MeusCiclos from './pages/Ciclos/meusCiclos'
 import DetalhesMeusCiclos from './pages/Ciclos/detalhesMeusCiclos'
 import DetalhesContratos from './pages/Contratos/detalhes'
 import CentrosCustoLista from './pages/Departamentos/centros_custo'
+import SindicatosLista from './pages/Departamentos/sindicatos'
 
 function AppRouter() {
   
@@ -210,6 +211,7 @@ function AppRouter() {
                 <Route path="departamentos" element={<DepartamentoLista />} />
                 <Route path="cargos" element={<CargosLista />} />
                 <Route path="secoes" element={<SecoesLista />} />
+                <Route path="sindicatos" element={<SindicatosLista />} />
                 <Route path="centros-custo" element={<CentrosCustoLista />} />
                 <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
                 <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />

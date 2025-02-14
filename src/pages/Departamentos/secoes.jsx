@@ -86,6 +86,9 @@ function SecoesLista() {
                     <Link to="/estrutura/cargos">
                         <Botao estilo={''} size="small" tab>Cargos e Funções</Botao>
                     </Link>
+                    <Link to="/estrutura/sindicatos">
+                        <Botao estilo={''} size="small" tab>Sindicatos</Botao>
+                    </Link>
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar uma seção</Botao>
             </BotaoGrupo>
