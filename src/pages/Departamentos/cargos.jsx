@@ -81,6 +81,9 @@ function CargosLista() {
                     <Link to="/estrutura/cargos">
                         <Botao estilo={'black'} size="small" tab>Cargos e Funções</Botao>
                     </Link>
+                    <Link to="/estrutura/centros-custo">
+                        <Botao estilo={''} size="small" tab>Centros de Custo</Botao>
+                    </Link>
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um cargo</Botao>
             </BotaoGrupo>

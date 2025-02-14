@@ -1,7 +1,8 @@
 import styles from './Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
-import DataTableDepartamentos from '@components/DataTableDepartamentos'
+import http from '@http'
+import DataTableCentrosCusto from '@components/DataTableCentrosCusto'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
@@ -10,8 +11,6 @@ import Management from '@assets/Management.svg'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
-import http from '../../http'
-import DataTableSecoes from '../../components/DataTableSecoes'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -39,30 +38,29 @@ const ContainerSemRegistro = styled.div`
 `
 
 
-function SecoesLista() {
+function CentrosCustoLista() {
 
     const [loading, setLoading] = useState(false)
-    const [secoes, setSecoes] = useState(null)
+    const [centros_custo, setCentrosCusto] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
     
 
     useEffect(() => {
-     
-        if(!secoes) {
+        if(!centros_custo) {
             
             setLoading(true)
-            http.get('secao/?format=json')
+            http.get('centro_custo/?format=json')
                 .then(response => {
-                    setSecoes(response)
+                    setCentrosCusto(response)
                     setLoading(false)
                 })
                 .catch(erro => {
                     setLoading(false)
                 })
         }    
-    }, [secoes])
+    }, [centros_custo])
 
     return (
         <>
@@ -78,26 +76,26 @@ function SecoesLista() {
                         <Botao estilo={''} size="small" tab>Departamentos</Botao>
                     </Link>
                     <Link to="/estrutura/secoes">
-                        <Botao estilo={'black'} size="small" tab>Seções</Botao>
+                        <Botao estilo={''} size="small" tab>Seções</Botao>
                     </Link>
                     <Link to="/estrutura/cargos">
                         <Botao estilo={''} size="small" tab>Cargos e Funções</Botao>
                     </Link>
                     <Link to="/estrutura/centros-custo">
-                        <Botao estilo={''} size="small" tab>Centros de Custo</Botao>
+                        <Botao estilo={'black'} size="small" tab>Centros de Custo</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar uma seção</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um centro de custo</Botao>
             </BotaoGrupo>
             {
-                secoes && secoes.length > 0 ?
-                    <DataTableSecoes secoes={secoes} />
+                centros_custo && centros_custo.length > 0 ?
+                    <DataTableCentrosCusto centros_custo={centros_custo} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
-                        <h6>Não há seções registradas</h6>
-                        <p>Aqui você verá todas as seções registradas.</p>
+                        <h6>Não há centros de custo registrados</h6>
+                        <p>Aqui você verá todos os centros de custo registrados.</p>
                     </section>
                 </ContainerSemRegistro>
             }
@@ -107,4 +105,4 @@ function SecoesLista() {
     )
 }
 
-export default SecoesLista
+export default CentrosCustoLista
