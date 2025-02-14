@@ -79,6 +79,15 @@ function DataTableColaboradores({ colaboradores }) {
         )
     }
     
+    const representativeAdmissaoTemplate = (rowData) => {
+        
+        return ( 
+            rowData?.dt_admissao ?
+            <b>{new Date(rowData?.dt_admissao).toLocaleDateString('pt-BR')}</b>
+            : '---'
+        )
+    }
+    
     const representativSituacaoTemplate = (rowData) => {
         let situacao = rowData?.situacao;
         switch(rowData?.situacao)
@@ -166,12 +175,13 @@ function DataTableColaboradores({ colaboradores }) {
                     cm.current.show(e.originalEvent)}
                 }
                 >
-                <Column body={representativeChapaTemplate} field="chapa" header="Chapa" style={{ width: '8%' }}></Column>
-                <Column body={representativeNomeTemplate} field="dados_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
+                <Column body={representativeChapaTemplate} field="chapa" header="Chapa" sortable style={{ width: '8%' }}></Column>
+                <Column body={representativeNomeTemplate} field="dados_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '22%' }}></Column>
                 <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
+                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dependentes" style={{ width: '15%' }}></Column>
-                <Column body={representativeCPFTemplate} field="dados_pessoa_fisica.cpf" header="CPF" style={{ width: '15%' }}></Column>
+                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dependentes" style={{ width: '12%' }}></Column>
+                <Column body={representativeCPFTemplate} field="dados_pessoa_fisica.cpf" header="CPF" style={{ width: '18%' }}></Column>
                 <Column header="" style={{ width: '10%' }} body={(rowData) => (
                     <button 
                         onClick={(e) => {
