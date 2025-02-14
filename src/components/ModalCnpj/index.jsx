@@ -104,14 +104,15 @@ const Item = styled.div`
 
 function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
-    const [tenants, setTenants] = useState(null)
-    const [empresas, setEmpresas] = useState(null)
-
     const { 
         usuario,
+        setCompanies,
         setSessionCompany,
         setCompanyDomain,
     } = useSessaoUsuarioContext()
+
+    const [tenants, setTenants] = useState(null)
+    const [empresas, setEmpresas] = useState(usuario.companies ?? null)
 
     const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
@@ -119,7 +120,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     useEffect(() => {
         if(opened)
         {
-            if(!tenants)
+            if((!tenants) && ((!empresas) || empresas.length == 0))
             {
                 // Buscar clientes
                 http.get(`cliente/?format=json`)
@@ -158,7 +159,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                 });
             }
     
-            if((!empresas) && tenants)
+            if(((!empresas) || empresas.length == 0) && tenants)
             {
                 http.get(`client_domain/?format=json`)
                 .then(domains => {
@@ -169,7 +170,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                     }));
 
                     setEmpresas(tenantsWithDomain)
-
+                    setCompanies(tenantsWithDomain)
                     if(selected == '')
                     {
                         setSelected(tenantsWithDomain[0].id_tenant)

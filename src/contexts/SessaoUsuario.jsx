@@ -13,7 +13,7 @@ const usuarioInicial = {
     company_public_id: '',
     company_domain: '',
     remember: false,
-    companies: [],
+    companies: null,
     code: [],
     tipo: ''
 }

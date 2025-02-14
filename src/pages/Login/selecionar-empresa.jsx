@@ -39,10 +39,11 @@ function SelecionarEmpresa() {
         usuario,
         setSessionCompany,
         setCompanyDomain,
+        setCompanies,
     } = useSessaoUsuarioContext()
 
     const [tenants, setTenants] = useState(null)
-    const [empresas, setEmpresas] = useState(null)
+    const [empresas, setEmpresas] = useState(usuario.companies ?? null)
     const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? ArmazenadorToken.UserCompanyPublicId ?? '')
     const [loading, setLoading] = useState(false)
     const toast = useRef(null)
@@ -50,7 +51,7 @@ function SelecionarEmpresa() {
 
 
     useEffect(() => {
-        if(!tenants)
+        if((!tenants) && ((!empresas) || empresas.length == 0))
         {
             setLoading(true)
              // Buscar clientes
@@ -91,7 +92,7 @@ function SelecionarEmpresa() {
              });
         }
 
-        if((!empresas) && tenants)
+        if(((!empresas) || empresas.length == 0) && tenants)
         {
             http.get(`client_domain/?format=json`)
             .then(domains => {
@@ -102,6 +103,7 @@ function SelecionarEmpresa() {
                 }));
                 
                 setEmpresas(tenantsWithDomain)
+                setCompanies(tenantsWithDomain)
                 setSelected(tenantsWithDomain[0].id_tenant)
                 setLoading(false)
             })

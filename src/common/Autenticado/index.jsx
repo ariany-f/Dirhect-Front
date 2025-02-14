@@ -35,9 +35,9 @@ function Autenticado() {
     } = useSessaoUsuarioContext()
 
     const navegar = useNavigate()
-    const [empresas, setEmpresas] = useState(null)
+    const [empresas, setEmpresas] = useState(usuario.companies ?? null)
     const [tenants, setTenants] = useState(null)
-    const [selected, setSelected] = useState(usuario.company_public_id ?? ArmazenadorToken.UserCompanyPublicId ?? '')
+    const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? ArmazenadorToken.UserCompanyPublicId ?? '')
     const [empresa, setEmpresa] = useState('')
     
     
@@ -49,7 +49,7 @@ function Autenticado() {
 
     useEffect(() => {
         
-        if(!tenants)
+        if((!tenants) && ((!empresas) || empresas.length == 0))
         {
              // Buscar clientes
              http.get(`cliente/?format=json`)
@@ -89,7 +89,7 @@ function Autenticado() {
             });
         }
 
-        if((!empresas) && tenants)
+        if(((!empresas) || empresas.length == 0) && tenants)
         {
             http.get(`client_domain/?format=json`)
             .then(domains => {
@@ -100,6 +100,7 @@ function Autenticado() {
                 }));
 
                 setEmpresas(tenantsWithDomain)
+                setCompanies(tenantsWithDomain)
 
                 if(selected == '')
                 {
