@@ -18,28 +18,28 @@
     width: 30vw;
 }
 
-.badge_success{
+.badge_1{
     display: flex;
     gap: 4px;
-    background-color: var(--alert-success-50);
-    color: var(--alert-success);
+    background-color: var(--info-50);
+    color: var(--info-700);
     font-weight: 700; 
     padding: 8px;
     justify-content: center;
-    align-items: center;
+    align-items: space-between;
     border-radius: 8px;
     line-height: 18px; /* 150% */ 
     font-size: 12px; 
 }
-.badge_error{
+.badge_2{
     display: flex;
-    background-color: var(--alert-error-50);
-    color: var(--alert-error);
+    background-color: var(--warning-50);
+    color: var(--warning-700);
     gap: 4px;
     font-weight: 700; 
     padding: 8px;
     justify-content: center;
-    align-items: center;
+    align-items: space-between;
     border-radius: 8px;
     line-height: 18px; /* 150% */ 
     font-size: 12px; 
@@ -127,4 +127,9 @@
         gap: 16px;
         color: var(--neutro-600);
     }
+}
+
+.icon * {
+    box-sizing: initial;
+    stroke: var(--white);
 }

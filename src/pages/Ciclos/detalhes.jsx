@@ -68,6 +68,14 @@ function DetalhesCiclos() {
         }
         return status
     }
+
+    
+    function representativeMonthTemplate() {
+        const mes = ciclo.data_referencia.month;
+        const nomeMes = new Date(2000, mes - 1, 1).toLocaleString('pt-BR', { month: 'long' });
+
+        return nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
+    };
     
     return (
         <>
@@ -81,7 +89,7 @@ function DetalhesCiclos() {
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{ciclo.tipo} - {ciclo.data_referencia}</h3>
+                            <h3>{ciclo.tipo} - {representativeMonthTemplate()} {ciclo.data_referencia.year}</h3>
                             {representativSituacaoTemplate()}
                         </FrameVertical>
                         <BotaoGrupo align="center">

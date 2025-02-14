@@ -12,4 +12,10 @@
         align-items: center;
         padding: 10px 20px;
     }
+    &.around {
+        justify-content: space-around;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 20px;
+    }
 }

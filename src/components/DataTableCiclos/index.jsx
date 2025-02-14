@@ -15,7 +15,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
 
 function DataTableCiclos({ ciclos, colaborador = null }) {
 
-    const[selectedVaga, setSelectedVaga] = useState(0)
+    const[selectedCiclo, setSelectedCiclo] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -43,6 +43,10 @@ function DataTableCiclos({ ciclos, colaborador = null }) {
         }
     }
 
+    const headerTemplate = (rowData) => {
+        return <b>{rowData.data_referencia.year}</b>
+    }
+
     const representativStatusTemplate = (rowData) => {
         let status = rowData?.status;
         switch(rowData?.status)
@@ -59,6 +63,12 @@ function DataTableCiclos({ ciclos, colaborador = null }) {
         )
     }
 
+    const representativeMonthTemplate = (rowData) => {
+        const mes = rowData.data_referencia.month;
+        const nomeMes = new Date(2000, mes - 1, 1).toLocaleString('pt-BR', { month: 'long' });
+
+        return nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
+    };
     
     return (
         <>
@@ -67,9 +77,9 @@ function DataTableCiclos({ ciclos, colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={ciclos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados ciclos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={ciclos} groupRowsBy="data_referencia.year" rowGroupHeaderTemplate={headerTemplate} rowGroupMode="subheader" filters={filters} globalFilterFields={['tipo']}  emptyMessage="Não foram encontrados ciclos" selection={selectedCiclo} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
-                <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>
+                <Column body={representativeMonthTemplate} field="data_referencia.month" header="Mês Referência" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
             </DataTable>
