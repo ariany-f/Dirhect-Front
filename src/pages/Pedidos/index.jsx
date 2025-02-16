@@ -5,6 +5,7 @@ import BotaoVoltar from '@components/BotaoVoltar'
 import { GrAddCircle } from 'react-icons/gr'
 import styled from "styled-components"
 import { Link, Outlet, useLocation } from "react-router-dom"
+import { RecargaSaldoLivreProvider } from "@contexts/RecargaSaldoLivre"
 import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import pedidos from '@json/pedidos.json'
@@ -22,9 +23,12 @@ const Pedidos = () => {
     const location = useLocation();
 
     return (
-        <ConteudoFrame>
-            <Outlet context={pedidos} />
-        </ConteudoFrame>
+        
+        <RecargaSaldoLivreProvider>
+            <ConteudoFrame>
+                <Outlet context={pedidos} />
+            </ConteudoFrame>
+        </RecargaSaldoLivreProvider>
     );
 };
 

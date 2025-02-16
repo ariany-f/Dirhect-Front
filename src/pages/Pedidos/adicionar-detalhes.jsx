@@ -96,7 +96,7 @@ function PedidoAdicionarDetalhes() {
                                 <h5>Detalhes da recarga</h5>
                             </Titulo>
                             <br/>
-                            <CampoTexto camposVazios={classError} valor={recarga.name} setValor={setNome} numeroCaracteres={50} placeholder='ex. Pagamento de Janeiro' label='Nome da Recarga' />
+                            <CampoTexto camposVazios={classError} valor={recarga.name} setValor={setNome} numeroCaracteres={50} placeholder='ex. Pagamento de Janeiro' label='Nome do Pedido' />
                             <CardText>
                                 <p>Os pagamentos feitos como prêmios devem aderir aos parâmetros definidos no artigo 457 da CLT e na Solução de Consulta COSIT nº 151/2019, com a devida atenção à retenção do Imposto de Renda.</p>
                             </CardText>
