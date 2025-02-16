@@ -111,10 +111,10 @@ function Login() {
         <>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <Titulo>
+            <Titulo align="center">
                 <h2>Bem-vindo</h2>
                 <SubTitulo>
-                Acesse a área da sua empresa
+                    Escolha o perfil para entrar
                 </SubTitulo>
             </Titulo>
             <form>

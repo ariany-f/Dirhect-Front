@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const BotaoEstilizado = styled.button`
     display: flex;
-    border-radius: 10px;
+    border-radius: 40px;
     cursor: pointer;
     transition: all .1s linear;
     border: none;
