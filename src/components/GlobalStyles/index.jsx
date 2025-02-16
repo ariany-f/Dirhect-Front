@@ -254,6 +254,13 @@ template {
   color: var(--white);
   font-weight: 400;
 }
+.p-highlight .p-stepper-number {
+  background-color: var(--primaria);
+  color: var(--white);
+}
+.p-stepper .p-stepper-header:has(~ .p-highlight) .p-stepper-separator {
+  background-color: var(--primaria);
+}
 `
 
 

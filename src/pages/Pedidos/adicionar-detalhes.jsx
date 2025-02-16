@@ -104,7 +104,7 @@ function PedidoAdicionarDetalhes() {
                                 <Texto weight={700}>Para seus colaboradores</Texto>
                                 <p>Os seus colaboradores podem utilizar esse saldo livre nas compras em qualquer estabelecimento que aceite bandeira Mastercard utilizando a função crédito à vista.</p>
                             </CardText>
-                            <Frame alinhamento="end">
+                            <Frame padding="30px" alinhamento="end">
                                 <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
                             </Frame>
                         </StepperPanel>
@@ -157,9 +157,9 @@ function PedidoAdicionarDetalhes() {
                                     </CardSelecao>
                                 </Col6>
                             </Col12>
-                            <Frame estilo="spaced">
+                            <Frame padding="30px" estilo="spaced">
                                 <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                                <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
+                                {/* <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao> */}
                             </Frame>
                         </StepperPanel>
                     </Stepper>
