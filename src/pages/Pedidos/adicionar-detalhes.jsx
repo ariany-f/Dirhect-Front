@@ -105,7 +105,7 @@ function PedidoAdicionarDetalhes() {
                                 <p>Os seus colaboradores podem utilizar esse saldo livre nas compras em qualquer estabelecimento que aceite bandeira Mastercard utilizando a função crédito à vista.</p>
                             </CardText>
                             <Frame padding="30px" alinhamento="end">
-                                <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
+                                <Botao label="Next" iconPos="right" aoClicar={() => {recarga.name ? stepperRef.current.nextCallback() : toast.current.show({severity: 'info', detail: 'Preencha o nome do Pedido'})}}><HiArrowRight fill="white"/> Continuar</Botao>
                             </Frame>
                         </StepperPanel>
                         <StepperPanel>
