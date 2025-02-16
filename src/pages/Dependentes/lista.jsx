@@ -53,14 +53,11 @@ function DependentesListagem() {
         <ConteudoFrame>
             <BotaoGrupo align="end">
                 <BotaoGrupo>
-                    <Link to="/linhas-transporte/adicionar-detalhes">
+                    <Link to="/colaborador/registro">
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Dependente</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
-            {/* <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
-                <Link to={'/linhas-transporte/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
-            </QuestionCard> */}
             {
                 dependentes ?
                 <DataTableDependentes dependentes={dependentes} />

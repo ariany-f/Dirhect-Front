@@ -61,9 +61,6 @@ function Colaboradores() {
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
-                {/* <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
-                    <Link to={'/linhas-transporte/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
-                </QuestionCard> */}
             <Outlet context={funcionarios} />
             <ModalImportarPlanilha opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>

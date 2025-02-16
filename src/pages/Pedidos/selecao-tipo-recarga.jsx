@@ -56,7 +56,7 @@ function PremiacaoSelecionarTipoRecarga() {
                                 </ul>
                             </Frame>
                         </Frame>
-                        <Botao aoClicar={() => navegar('/linhas-transporte/selecao-colaboradores')} size="medium">Recarregar por colaborador</Botao>
+                        <Botao aoClicar={() => navegar('/pedidos/selecao-colaboradores')} size="medium">Recarregar por colaborador</Botao>
                     </CardSelecao>
                 </Col6>
                 <Col6>
@@ -81,7 +81,7 @@ function PremiacaoSelecionarTipoRecarga() {
                                 <Link to={'/estrutura'}>Configurar meus departamentos</Link>
                             </BotaoSemBorda>
                         </Frame>
-                        <Botao aoClicar={() => navegar('/linhas-transporte/selecao-departamentos')} size="medium">Recarregar por departamento</Botao>
+                        <Botao aoClicar={() => navegar('/pedidos/selecao-departamentos')} size="medium">Recarregar por departamento</Botao>
                     </CardSelecao>
                 </Col6>
             </Col12>

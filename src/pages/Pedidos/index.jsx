@@ -20,7 +20,6 @@ const ConteudoFrame = styled.div`
 const Pedidos = () => {
 
     const location = useLocation();
-    // const [pedidos, setPedidos] = useState([])
 
     return (
         <ConteudoFrame>

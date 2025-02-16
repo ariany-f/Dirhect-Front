@@ -38,6 +38,7 @@ function PremiacaoComoFunciona() {
     return (
         <Frame>
             <BotaoVoltar/>
+            <br/>
             <Titulo>
                 <h6>Vantagens</h6>
                 <SubTitulo>

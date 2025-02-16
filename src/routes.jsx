@@ -30,14 +30,13 @@ import DepartamentoLista from '@pages/Departamentos/lista'
 import DepartamentoDetalhes from '@pages/Departamentos/detalhes'
 import DepartamentoAdicionarColaboradores from '@pages/Departamentos/adicionar-colaboradores'
 import DepartamentoColaboradores from '@pages/Departamentos/colaboradores-sem-departamento'
-import RecargaPremiacoes from '@pages/Premiacoes'
-import Premiacoes from '@pages/Premiacoes/lista'
-import PremiacaoDetalhes from '@pages/Premiacoes/adicionar-detalhes'
-import PremiacaoSelecionarTipoRecarga from '@pages/Premiacoes/selecao-tipo-recarga'
-import PremiacaoEditarValor from '@pages/Premiacoes/editar-valor'
-import PremiacaoComoFunciona from '@pages/Premiacoes/como-funciona'
-import PremiacaoSelecionarColaboradores from '@pages/Premiacoes/selecao-colaboradores'
-import PremiacaoSelecionarDepartamentos from '@pages/Premiacoes/selecao-departamentos'
+import LinhasTransporte from '@pages/LinhasTransporte'
+import ListaLinhasTransporte from '@pages/LinhasTransporte/lista'
+import PremiacaoSelecionarTipoRecarga from '@pages/Pedidos/selecao-tipo-recarga'
+import PremiacaoEditarValor from '@pages/Pedidos/editar-valor'
+import PremiacaoComoFunciona from '@pages/Pedidos/como-funciona'
+import PremiacaoSelecionarColaboradores from '@pages/Pedidos/selecao-colaboradores'
+import PremiacaoSelecionarDepartamentos from '@pages/Pedidos/selecao-departamentos'
 import Despesas from '@pages/Despesas';
 import DespesaAdiantarSaldo from '@pages/Despesas/adiantar-saldo'
 import DespesaSelecionarTipoAdiantamento from '@pages/Despesas/selecao-tipo-adiantamento'
@@ -83,7 +82,6 @@ import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario"
 import BeneficioSelecionarFormaPagamento from './pages/Beneficios/selecao-forma-pagamento'
 import BeneficioPagamento from './pages/Beneficios/pagamento'
 import CartoesLista from './pages/Cartoes/lista'
-import CartoesAtivados from './pages/Cartoes/ativados'
 import CartaoSolicitarSegundaViaAcompanhar from './pages/Cartoes/SolicitarSegundaVia/acompanhar'
 import CartaoSolicitarSegundaViaCommon from './pages/Cartoes/SolicitarSegundaVia/common'
 import ExtratoPagamento from './pages/Extrato/pagamento'
@@ -140,6 +138,7 @@ import CentrosCustoLista from './pages/Departamentos/centros_custo'
 import SindicatosLista from './pages/Departamentos/sindicatos'
 import Marketplace from './pages/Marketplace'
 import MarketplaceLista from './pages/Marketplace/grid'
+import PedidoAdicionarDetalhes from './pages/Pedidos/adicionar-detalhes'
 
 function AppRouter() {
   
@@ -222,24 +221,12 @@ function AppRouter() {
                 </Route>
               </Route>
             
-              <Route path="linhas-transporte" element={<RecargaPremiacoes/>}>
-                <Route index element={<Premiacoes />} />
-                <Route path="adicionar-detalhes" element={<PremiacaoDetalhes />} />
-                <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
-                <Route path="selecao-tipo-recarga" element={<PremiacaoSelecionarTipoRecarga />} />
-                <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
-                <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
-                <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
+              <Route path="linhas-transporte" element={<LinhasTransporte/>}>
+                <Route index element={<ListaLinhasTransporte />} />
               </Route>
             
             <Route path="dependentes" element={<Dependentes/>}>
               <Route index element={<DependentesListagem />} />
-              <Route path="adicionar-detalhes" element={<PremiacaoDetalhes />} />
-              <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
-              <Route path="selecao-tipo-recarga" element={<PremiacaoSelecionarTipoRecarga />} />
-              <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
-              <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
-              <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
             </Route>
             
             <Route path="contratos" element={<Contratos/>}>
@@ -247,7 +234,6 @@ function AppRouter() {
               <Route path="detalhes/:id" element={<DetalhesContratos />} />
             </Route>
 
-            
             <Route path="marketplace" element={<Marketplace/>}>
               <Route index element={<MarketplaceLista />} />
             </Route>
@@ -280,6 +266,12 @@ function AppRouter() {
               <Route path="pedidos" element={<Pedidos />} >
                 <Route index element={<PedidosLista />} />
                 <Route path="detalhes/:id" element={<DetalhesPedidos />} />
+                <Route path="adicionar-detalhes" element={<PedidoAdicionarDetalhes />} />
+                <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
+                <Route path="selecao-tipo-recarga" element={<PremiacaoSelecionarTipoRecarga />} />
+                <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
+                <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
+                <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
               </Route>
 
               <Route path="tarefas" element={<Tarefas />} >
