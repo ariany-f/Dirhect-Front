@@ -9,7 +9,7 @@ import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import React, { createContext, useContext } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTableValidarAdmissao from '../../components/DataTableValidarAdmissao'
+import DataTableValidarAdmissao from '@components/DataTableValidarAdmissao'
 
 const ConteudoFrame = styled.div`
     display: flex;

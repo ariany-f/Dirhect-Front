@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import http from '@http'
 import Loading from '@components/Loading'
 import movimentos from '@json/movimentos.json'
-import DataTableMovimentos from '../../../components/DataTableMovimentos'
+import DataTableMovimentos from '@components/DataTableMovimentos'
 
 const DivPrincipal = styled.div`
     width: 65vw;

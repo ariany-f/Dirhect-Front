@@ -11,8 +11,8 @@ import { Link } from 'react-router-dom'
 import { RiEditBoxFill } from 'react-icons/ri'
 import { ArmazenadorToken } from './../../utils'
 import { Toast } from 'primereact/toast'
-import ModalAlterarTelefone from '../../components/ModalAlterar/telefone'
-import ModalAlterarEmail from '../../components/ModalAlterar/email'
+import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
+import ModalAlterarEmail from '@components/ModalAlterar/email'
 import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
 
 function MeusDadosDadosGerais() {

@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react'
 import ciclos from "@json/ciclos.json"
 import React, { createContext, useContext } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTableCiclo from '../../components/DataTableCiclos'
+import DataTableCiclo from '@components/DataTableCiclos'
 
 const ConteudoFrame = styled.div`
     display: flex;

@@ -11,7 +11,7 @@ import { MdCancel } from "react-icons/md"
 import Loading from "@components/Loading"
 import styles from './SaldoLivre.module.css'
 import { Toast } from 'primereact/toast'
-import DataTablePremiacaoEditarValor from "../../components/DataTablePremiacaoEditarValor";
+import DataTablePremiacaoEditarValor from "@components/DataTablePremiacaoEditarValor";
 import { useRecargaSaldoLivreContext } from "../../contexts/RecargaSaldoLivre";
 
 function PremiacaoEditarValor() {

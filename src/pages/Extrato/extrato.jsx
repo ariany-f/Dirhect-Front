@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom'
 import { MdPix } from 'react-icons/md'
 import { FaBarcode } from 'react-icons/fa'
 import { RiBankCardLine } from 'react-icons/ri'
-import DataTableBalance from '../../components/DataTableBalance'
+import DataTableBalance from '@components/DataTableBalance'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',

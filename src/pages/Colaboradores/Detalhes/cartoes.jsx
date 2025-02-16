@@ -8,7 +8,7 @@ import { PiCardsFill } from 'react-icons/pi'
 import { MdOutlineChevronRight } from 'react-icons/md'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import ModalBloquearCartao from '../../../components/ModalBloquearCartao'
+import ModalBloquearCartao from '@components/ModalBloquearCartao'
 
 const CardLine = styled.div`
     padding: 24px 0px;

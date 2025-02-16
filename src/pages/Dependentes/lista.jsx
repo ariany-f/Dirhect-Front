@@ -9,7 +9,7 @@ import { Link, useOutletContext } from "react-router-dom"
 import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import { AiFillQuestionCircle } from 'react-icons/ai'
-import DataTableDependentes from '../../components/DataTableDependentes'
+import DataTableDependentes from '@components/DataTableDependentes'
 
 const ConteudoFrame = styled.div`
     display: flex;

@@ -8,7 +8,7 @@ import http from '@http'
 import Loading from '@components/Loading'
 import pedidos from '@json/pedidos.json'
 import colaboradores from '@json/colaboradores.json'
-import DataTablePedidos from '../../../components/DataTablePedidos'
+import DataTablePedidos from '@components/DataTablePedidos'
 
 const DivPrincipal = styled.div`
     width: 65vw;

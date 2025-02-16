@@ -10,9 +10,9 @@ import { Link, useOutletContext } from "react-router-dom"
 import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import { AiFillQuestionCircle } from 'react-icons/ai'
-import DataTableContratos from '../../components/DataTableContratos'
-import DataTableFerias from '../../components/DataTableFerias'
-import ModalFerias from '../../components/ModalFerias'
+import DataTableContratos from '@components/DataTableContratos'
+import DataTableFerias from '@components/DataTableFerias'
+import ModalFerias from '@components/ModalFerias'
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
 import { FaPlusCircle } from 'react-icons/fa'
 

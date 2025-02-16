@@ -7,7 +7,7 @@ import styles from './SolicitarSegundaVia.module.css'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { useState } from 'react'
-import ModalSolicitarSegundaViaCartao from '../../../components/ModalSolicitarSegundaViaCartao'
+import ModalSolicitarSegundaViaCartao from '@components/ModalSolicitarSegundaViaCartao'
 
 const ContainerButton = styled.div`
     display: flex;

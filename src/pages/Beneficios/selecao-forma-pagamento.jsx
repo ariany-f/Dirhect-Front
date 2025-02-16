@@ -16,7 +16,7 @@ import styles from './Beneficios.module.css'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import RadioButton from '../../components/RadioButton'
+import RadioButton from '@components/RadioButton'
 import { FaPix, FaBarcode, FaCreditCard } from "react-icons/fa6"
 import http from '@http'
 

@@ -8,9 +8,9 @@ import http from '@http'
 import Loading from '@components/Loading'
 import meusCiclos from '@json/meusciclos.json'
 import DataTableDependentes from '@components/DataTableDependentes'
-import DataTableFerias from '../../../components/DataTableFerias'
-import DataTableESocial from '../../../components/DataTableESocial'
-import DataTableCiclos from '../../../components/DataTableCiclos'
+import DataTableFerias from '@components/DataTableFerias'
+import DataTableESocial from '@components/DataTableESocial'
+import DataTableCiclos from '@components/DataTableCiclos'
 
 const DivPrincipal = styled.div`
     width: 65vw;

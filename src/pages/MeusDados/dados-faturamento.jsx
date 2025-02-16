@@ -13,9 +13,9 @@ import { RiEditBoxFill } from 'react-icons/ri'
 import { Toast } from 'primereact/toast'
 import { ArmazenadorToken } from './../../utils'
 import ModalAlterar from "@components/ModalAlterar"
-import ModalAlterarEmail from '../../components/ModalAlterar/email'
-import ModalAlterarInscricaoEstadual from '../../components/ModalAlterar/inscricao_estadual'
-import ModalAlterarInscricaoMunicipal from '../../components/ModalAlterar/inscricao_municipal'
+import ModalAlterarEmail from '@components/ModalAlterar/email'
+import ModalAlterarInscricaoEstadual from '@components/ModalAlterar/inscricao_estadual'
+import ModalAlterarInscricaoMunicipal from '@components/ModalAlterar/inscricao_municipal'
 
 function MeusDadosDadosFaturamento() {
 

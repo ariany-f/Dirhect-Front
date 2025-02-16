@@ -8,7 +8,7 @@ import { Link, Outlet, useLocation, useOutlet, useOutletContext } from "react-ro
 import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import React, { createContext, useContext } from 'react';
-import DataTableMovimentos from '../../components/DataTableMovimentos'
+import DataTableMovimentos from '@components/DataTableMovimentos'
 
 const ConteudoFrame = styled.div`
     display: flex;

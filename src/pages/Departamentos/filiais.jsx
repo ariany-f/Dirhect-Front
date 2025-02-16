@@ -13,7 +13,7 @@ import Management from '@assets/Management.svg'
 import ModalAdicionarFilial from '@components/ModalAdicionarFilial'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
-import DataTableFiliais from '../../components/DataTableFiliais'
+import DataTableFiliais from '@components/DataTableFiliais'
 
 const ConteudoFrame = styled.div`
     display: flex;

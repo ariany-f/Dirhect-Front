@@ -19,7 +19,7 @@ import DataTablePedidosDetalhes from '@components/DataTablePedidosDetalhes'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import events from '@json/pedidos.json'
-import FrameVertical from '../../components/FrameVertical'
+import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 
 let Real = new Intl.NumberFormat('pt-BR', {

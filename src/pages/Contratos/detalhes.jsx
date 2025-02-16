@@ -19,9 +19,9 @@ import DataTablePedidosDetalhes from '@components/DataTablePedidosDetalhes'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import contratos from '@json/contratos.json'
-import FrameVertical from '../../components/FrameVertical'
+import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
-import DataTableContratosDetalhes from '../../components/DataTableContratosDetalhes'
+import DataTableContratosDetalhes from '@components/DataTableContratosDetalhes'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',

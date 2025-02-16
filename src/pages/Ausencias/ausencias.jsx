@@ -9,10 +9,10 @@ import { Link, useOutletContext } from "react-router-dom"
 import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import { AiFillQuestionCircle } from 'react-icons/ai'
-import DataTableContratos from '../../components/DataTableContratos'
-import DataTableAusencias from '../../components/DataTableAusencias'
+import DataTableContratos from '@components/DataTableContratos'
+import DataTableAusencias from '@components/DataTableAusencias'
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
-import ModalFerias from '../../components/ModalFerias'
+import ModalFerias from '@components/ModalFerias'
 
 const ConteudoFrame = styled.div`
     display: flex;

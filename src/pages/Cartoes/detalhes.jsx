@@ -14,7 +14,7 @@ import styled from "styled-components"
 import { MdOutlineChevronRight } from "react-icons/md"
 import { PiCardsFill } from "react-icons/pi"
 import { useState } from "react"
-import ModalBloquearCartao from "../../components/ModalBloquearCartao"
+import ModalBloquearCartao from "@components/ModalBloquearCartao"
 
 const CardLine = styled.div`
     padding: 24px 0px;

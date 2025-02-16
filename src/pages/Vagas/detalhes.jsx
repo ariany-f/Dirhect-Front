@@ -14,10 +14,10 @@ import BotaoGrupo from "@components/BotaoGrupo"
 import BotaoSemBorda from "@components/BotaoSemBorda"
 import { Toast } from 'primereact/toast'
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTableCandidatos from '../../components/DataTableCandidatos'
+import DataTableCandidatos from '@components/DataTableCandidatos'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
-import ModalEncaminharVaga from '../../components/ModalEncaminharVaga'
+import ModalEncaminharVaga from '@components/ModalEncaminharVaga'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',

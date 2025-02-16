@@ -11,7 +11,7 @@ import ModalAdicionarSecao from '@components/ModalAdicionarSecao'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 import http from '../../http'
-import DataTableSecoes from '../../components/DataTableSecoes'
+import DataTableSecoes from '@components/DataTableSecoes'
 
 const ConteudoFrame = styled.div`
     display: flex;

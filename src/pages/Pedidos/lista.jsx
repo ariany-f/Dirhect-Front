@@ -11,7 +11,7 @@ import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import React, { createContext, useContext } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTablePedidos from '../../components/DataTablePedidos'
+import DataTablePedidos from '@components/DataTablePedidos'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 
 const ConteudoFrame = styled.div`

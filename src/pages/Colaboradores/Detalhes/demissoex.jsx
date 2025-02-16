@@ -10,12 +10,12 @@ import http from '@http'
 import Loading from '@components/Loading'
 import styles from './Detalhes.module.css'
 import DataTableDependentes from '@components/DataTableDependentes'
-import DataTableFerias from '../../../components/DataTableFerias'
+import DataTableFerias from '@components/DataTableFerias'
 import { useSessaoUsuarioContext } from '../../../contexts/SessaoUsuario'
 import { GrAddCircle } from 'react-icons/gr'
-import ModalFerias from '../../../components/ModalFerias'
-import DataTableDemissao from '../../../components/DataTableDemissoes'
-import ModalDemissao from '../../../components/ModalDemissao'
+import ModalFerias from '@components/ModalFerias'
+import DataTableDemissao from '@components/DataTableDemissoes'
+import ModalDemissao from '@components/ModalDemissao'
 
 const DivPrincipal = styled.div`
     width: 65vw;

@@ -10,8 +10,8 @@ import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import React, { createContext, useContext } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTableContratos from '../../components/DataTableContratos'
-import ModalContratos from '../../components/ModalContratos'
+import DataTableContratos from '@components/DataTableContratos'
+import ModalContratos from '@components/ModalContratos'
 
 const ConteudoFrame = styled.div`
     display: flex;

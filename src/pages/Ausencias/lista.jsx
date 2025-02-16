@@ -9,9 +9,9 @@ import { Link, useOutletContext } from "react-router-dom"
 import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import { AiFillQuestionCircle } from 'react-icons/ai'
-import DataTableContratos from '../../components/DataTableContratos'
-import DataTableFerias from '../../components/DataTableFerias'
-import ModalFerias from '../../components/ModalFerias'
+import DataTableContratos from '@components/DataTableContratos'
+import DataTableFerias from '@components/DataTableFerias'
+import ModalFerias from '@components/ModalFerias'
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';

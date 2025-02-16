@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react'
 import http from '@http'
 import Loading from '@components/Loading'
 import DataTableDependentes from '@components/DataTableDependentes'
-import DataTableFerias from '../../../components/DataTableFerias'
-import DataTableESocial from '../../../components/DataTableESocial'
+import DataTableFerias from '@components/DataTableFerias'
+import DataTableESocial from '@components/DataTableESocial'
 
 const DivPrincipal = styled.div`
     width: 65vw;

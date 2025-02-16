@@ -19,7 +19,7 @@ import DataTableMovimentosDetalhes from '@components/DataTableMovimentosDetalhes
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import movimentos from '@json/movimentos.json'
-import FrameVertical from '../../components/FrameVertical'
+import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import { HiUserRemove, HiUserAdd } from "react-icons/hi";
 

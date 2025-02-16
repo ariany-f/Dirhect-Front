@@ -9,7 +9,7 @@ import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import React, { createContext, useContext } from 'react';
 import meusCiclos from '@json/meusciclos.json'
-import DataTableCiclo from '../../components/DataTableCiclos'
+import DataTableCiclo from '@components/DataTableCiclos'
 
 const ConteudoFrame = styled.div`
     display: flex;
