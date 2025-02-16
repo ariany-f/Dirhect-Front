@@ -261,6 +261,12 @@ template {
 .p-stepper .p-stepper-header:has(~ .p-highlight) .p-stepper-separator {
   background-color: var(--primaria);
 }
+.p-toast-message-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
 `
 
 
