@@ -1,21 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'primereact/button';
 import { DataView } from 'primereact/dataview';
+import Texto from '@components/Texto'
 import Botao from '@components/Botao'
+import BadgeGeral from '@components/BadgeGeral'
 import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
+import styles from './Marketplace.module.css'
 // import './Marketplace.css'
 import { Link, Outlet, useLocation, useOutlet, useOutletContext } from "react-router-dom"
 import { BsArrowRight } from 'react-icons/bs';
 import { TbTag } from 'react-icons/tb';
 import styled from 'styled-components';
+import { ScrollPanel } from 'primereact/scrollpanel';
+import { Image } from 'primereact/image';
+import { Ripple } from 'primereact/ripple';
 
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
     width: 100%;
+`
+const Col12 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+`
+
+const Col4 = styled.div`
+    flex: 1 1 40%;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: start;
+`
+
+const Col4Centered = styled.div`
+    flex: 1 1 20%;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
 `
 
 export default function MarketplaceLista() {
@@ -44,27 +72,28 @@ export default function MarketplaceLista() {
 
     const itemTemplate = (product, index) => {
         return (
-            <div className="col-12" key={product.id}>
-                <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-1 block xl:block mx-auto border-round" width={'240px'} src={`${product.banner}`} alt={product.nome} />
-                    <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                        <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                            <div className="text-2xl font-bold text-900">{product.nome}</div>
-                            <div className="flex align-items-center gap-3">
-                                <span className="flex align-items-center gap-2">
-                                    <TbTag />
-                                    <span className="font-semibold">{product.categoria}</span>
-                                </span>
-                                {/* <Tag value={product.status} severity={getSeverity(product)}></Tag> */}
-                            </div>
-                            <div>{product.descricao}</div>
-                        </div>
-                        <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                            <Botao><BsArrowRight fill="white" size={24}/></Botao>
-                        </div>
-                    </div>
+            <>
+                <div className={styles.card_dashboard}>
+                    <Col12>
+                        <Col4>
+                            <Image src={`${product.banner}`} alt={product.nome} width="250" preview />                         
+                        </Col4>
+                        <Col4>
+                            <Texto weight={800}>{product.nome}</Texto>
+                            <BadgeGeral nomeBeneficio={product.categoria} iconeBeneficio={<TbTag />}></BadgeGeral>
+                            <ScrollPanel style={{ width: '100%', height: '200px' }}>
+                                <Texto>{product.descricao}</Texto>
+                            </ScrollPanel>
+                        </Col4>
+                        <Col4Centered>
+                            <Botao extraclasses="p-ripple">
+                                <BsArrowRight fill="white" size={24}/>
+                                <Ripple />
+                            </Botao>
+                        </Col4Centered>
+                    </Col12>
                 </div>
-            </div>
+            </>
         );
     };
 

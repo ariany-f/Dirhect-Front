@@ -19,9 +19,9 @@ const BotaoEstilizado = styled.button`
     ${props => props.$style ? props.$style : ''};
 `
 
-function Botao( {children, estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px', outStyle='' } ) {
+function Botao( {children, extraclasses = '',estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px', outStyle='' } ) {
 
-    const classes = `${estilo} ${model} ${size} ${weight} ${tab ? 'tab' : ''}`;
+    const classes = `${estilo} ${model} ${size} ${weight} ${extraclasses} ${tab ? 'tab' : ''}`;
    
     return (
         aoClicar ?
