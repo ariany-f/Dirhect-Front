@@ -16,12 +16,12 @@ function Publico() {
         <>
             <EstilosGlobais />
             <MainSectionPublico>
-                {/* <RightContainer> */}
+                <RightContainer>
                 <MainContainer>
                         <Outlet />
                     <RodapePublico />
-                    </MainContainer>
-                {/* </RightContainer> */}
+                </MainContainer>
+                </RightContainer>
                 <BannerMini />
                 
                 <Analytics />

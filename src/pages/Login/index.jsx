@@ -61,42 +61,49 @@ function Login() {
     }, [logins])
 
     const AlreadyAccessed = () => {
-        const perfilEncontrado = loginData.perfis.find(perfil => 
-            perfil.cpf === usuario.cpf.code && perfil.senha === usuario.password
-        );
-
-        if (perfilEncontrado) {
-            // Atualizando o contexto com o tipo de usuário
-            setUsuarioEstaLogado(true);
-            setCpf(usuario.cpf);
-            setPassword(usuario.password);
-            setUserPublicId(perfilEncontrado.public_id);
-            setTipo(perfilEncontrado.tipo);
-            setName(perfilEncontrado.name);
-
-             // Adicionando o tipo de usuário ao objeto usuario
-            ArmazenadorToken.definirUsuario(
-                perfilEncontrado.name,
-                perfilEncontrado.email,
-                perfilEncontrado.cpf,
-                perfilEncontrado.public_id,
-                perfilEncontrado.tipo,
-                '1',
-                'geral.dirhect.net'
-            )
-
-            if(perfilEncontrado.tipo != 'candidato' && perfilEncontrado.tipo != 'funcionario')
-            {
-                navegar('/login/selecionar-empresa');
+        if((!usuario.cpf) || (!usuario.password))
+        {
+            toast.current.show({ severity: 'info', detail: 'Preencha usuário e senha!', life: 3000 });
+        }
+        else
+        {
+            const perfilEncontrado = loginData.perfis.find(perfil => 
+                perfil.cpf === usuario.cpf.code && perfil.senha === usuario.password
+            );
+    
+            if (perfilEncontrado) {
+                // Atualizando o contexto com o tipo de usuário
+                setUsuarioEstaLogado(true);
+                setCpf(usuario.cpf);
+                setPassword(usuario.password);
+                setUserPublicId(perfilEncontrado.public_id);
+                setTipo(perfilEncontrado.tipo);
+                setName(perfilEncontrado.name);
+    
+                 // Adicionando o tipo de usuário ao objeto usuario
+                ArmazenadorToken.definirUsuario(
+                    perfilEncontrado.name,
+                    perfilEncontrado.email,
+                    perfilEncontrado.cpf,
+                    perfilEncontrado.public_id,
+                    perfilEncontrado.tipo,
+                    '1',
+                    'geral.dirhect.net'
+                )
+    
+                if(perfilEncontrado.tipo != 'candidato' && perfilEncontrado.tipo != 'funcionario')
+                {
+                    navegar('/login/selecionar-empresa');
+                }
+                else
+                {
+                    navegar(`/candidato/registro/${perfilEncontrado.id}`)
+                }
+            } else {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Usuário ou senha não encontrados', life: 3000 });
+                // Lógica para usuário não encontrado (opcional)
+                console.error("Usuário não encontrado");
             }
-            else
-            {
-                navegar(`/candidato/registro/${perfilEncontrado.id}`)
-            }
-        } else {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Usuário ou senha não encontrados', life: 3000 });
-            // Lógica para usuário não encontrado (opcional)
-            console.error("Usuário não encontrado");
         }
     }
 
