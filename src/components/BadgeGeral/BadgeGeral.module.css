@@ -41,3 +41,25 @@
         color: var(--neutro-600);
     }
 }
+
+.beneficio.success {
+    background-color: var(--alert-success-50); /* Verde claro */
+    & p{
+        color:  var(--alert-success-500); /* Texto branco */
+    }
+}
+
+.beneficio.success svg * {
+    color: var(--alert-success-700); /* Ícone verde escuro */
+}
+
+.beneficio.error {
+    background-color: var(--error-50); /* Vermelho claro */
+    & p{
+        color:  var(--error-400); /* Texto branco */
+    }
+}
+
+.beneficio.error svg *{
+    color: var(--error-700); /* Ícone vermelho escuro */
+}

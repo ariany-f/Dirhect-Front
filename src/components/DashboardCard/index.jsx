@@ -1,6 +1,7 @@
 import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
 import Texto from '@components/Texto'
+import BadgeGeral from '@components/BadgeGeral'
 import Container from '@components/Container'
 import Frame from '@components/Frame'
 import { Link } from 'react-router-dom'
@@ -30,11 +31,11 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         <Frame estilo="spaced">
                             <div className={styles.right}>
                                 <Texto size="14px" weight={500} color={'var(--neutro-500)'}>Admissões</Texto>
-                                <div className={styles.transacao}><FaUserPlus />&nbsp;&nbsp;<Texto weight={800} size="16px">{10}</Texto></div>
+                                <BadgeGeral severity="success" nomeBeneficio={10} iconeBeneficio={<FaUserPlus />}></BadgeGeral>
                             </div>
                             <div className={styles.right}>
                                 <Texto size="14px" weight={500} color={'var(--neutro-500)'}>Demissões</Texto>
-                                <div className={styles.transacao}><FaUserMinus />&nbsp;&nbsp;<Texto weight={800} size="16px">{2}</Texto></div>
+                                <BadgeGeral severity="error" nomeBeneficio={2} iconeBeneficio={<FaUserMinus />}></BadgeGeral>
                             </div>
                         </Frame>
                         <Frame estilo="spaced">
@@ -66,8 +67,8 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         </Frame>
                         <div className={styles.transacao}>
                             <div className={styles.right}>
-                                <Texto weight={500} color={'var(--neutro-500)'}>Total de colaboradores</Texto>
-                                <Texto weight={800}><FaUser />&nbsp;&nbsp;{colaboradores.length}</Texto>
+                                <Texto weight={500} color={'var(--neutro-500)'}>Total</Texto>
+                                <Texto weight={800} size={'24px'}>{colaboradores.length}</Texto>
                             </div>
                         </div>
                         {/* <div className={styles.buttonContainer}>
@@ -80,13 +81,13 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         </Frame>
                         <Frame estilo="spaced">
                             <div className={styles.right}>
-                                <Texto weight={800}><MdWoman2 size={26}/>{colaboradores.length/2}</Texto>
+                                <Texto color={'var(--error-300)'} weight={800}><MdWoman2 size={26}/>{Math.round((colaboradores.length * 2.3)/2)}</Texto>
                             </div>
                             <div className={styles.right}>
-                                <Texto weight={800}><MdMan2 size={26}/>{colaboradores.length/2}</Texto>
+                                <Texto color={'var(--info-300)'} weight={800}><MdMan2 size={26}/>{Math.round((colaboradores.length * 2.3)/2)}</Texto>
                             </div>
                             <div className={styles.right}>
-                                <Texto weight={800}><FaLayerGroup size={24}/>&nbsp;&nbsp;{colaboradores.length}</Texto>
+                                <Texto weight={800}><FaLayerGroup size={24}/>&nbsp;&nbsp;{Math.round(colaboradores.length * 2.3)}</Texto>
                             </div>
                         </Frame>
                     </div>
@@ -99,7 +100,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         </Frame>
                         <div className={styles.transacao}>
                             <div className={styles.right}>
-                                <Texto size={'35px'} weight={800}><MdWork />&nbsp;&nbsp;{10}</Texto>
+                                <Texto size={'35px'} color={"var(--alert-success-500)"} weight={800}><MdWork />&nbsp;&nbsp;{10}</Texto>
                             </div>
                         </div>
                     </div>
@@ -111,7 +112,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                 </Frame>
                                 <div className={styles.transacao}>
                                     <div className={styles.right}>
-                                        <Texto size={'35px'} weight={800}><FaUmbrellaBeach />&nbsp;&nbsp;{12}</Texto>
+                                        <Texto size={'35px'} color={"var(--info-400)"} weight={800}><FaUmbrellaBeach />&nbsp;&nbsp;{12}</Texto>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +124,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                 </Frame>
                                 <div className={styles.transacao}>
                                     <div className={styles.right}>
-                                        <Texto size={'35px'} weight={800}><BsHourglassSplit />&nbsp;&nbsp;{3}</Texto>
+                                        <Texto size={'35px'} color={"var(--warning-400)"} weight={800}><BsHourglassSplit />&nbsp;&nbsp;{3}</Texto>
                                     </div>
                                 </div>
                             </div>
