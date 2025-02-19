@@ -75,6 +75,16 @@
     gap: 24px;
     flex-direction: column;
     flex: 1;
+    & .center {
+        display: flex;
+        padding-top: 24px;
+        padding-left: 24px;
+        padding-right: 24px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
 }
 .empilhado {
     gap: 24px;
@@ -110,7 +120,17 @@
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
-        gap: 16px;
+        gap: 8px;
+    }
+    & .center {
+        display: flex;
+        padding-top: 24px;
+        padding-left: 24px;
+        padding-right: 24px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
     }
     & .recuo {
         display: flex;
