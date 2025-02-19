@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'primereact/button';
 import { DataView } from 'primereact/dataview';
 import Texto from '@components/Texto'
 import Botao from '@components/Botao'
 import BadgeGeral from '@components/BadgeGeral'
-import { Rating } from 'primereact/rating';
-import { Tag } from 'primereact/tag';
-import { classNames } from 'primereact/utils';
 import styles from './Marketplace.module.css'
 // import './Marketplace.css'
 import { Link, Outlet, useLocation, useOutlet, useOutletContext } from "react-router-dom"
