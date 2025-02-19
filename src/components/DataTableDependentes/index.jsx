@@ -70,7 +70,7 @@ function DataTableDependentes({ dependentes, search = true }) {
                 {rowData?.funcionario?.dados_pessoa_fisica?.nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
-                <BadgeGeral nomeBeneficio={`CPF ${cpf}`} size={'12px'}></BadgeGeral>
+                CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
             </div>
         </div>
     }
@@ -85,7 +85,7 @@ function DataTableDependentes({ dependentes, search = true }) {
                 {rowData?.dados_pessoa_fisica?.nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
-                <BadgeGeral nomeBeneficio={`CPF ${cpf}`} size={'12px'}></BadgeGeral>
+                CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
             </div>
         </div>
     }
