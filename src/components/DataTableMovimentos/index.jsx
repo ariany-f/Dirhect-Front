@@ -61,7 +61,7 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
             <Texto weight={700} width={'100%'}>
                 {rowData.tipo}
             </Texto>
-            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.total_colaboradores}</p>
             </div>
         </div>

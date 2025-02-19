@@ -98,7 +98,7 @@ function DataTableColaboradores({ colaboradores }) {
             <Texto weight={700} width={'100%'}>
                 {rowData?.dados_pessoa_fisica?.nome}
             </Texto>
-            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'12px', display: 'flex', color: 'var(--neutro-500)'}}>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
             </div>
         </div>
