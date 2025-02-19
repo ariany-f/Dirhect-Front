@@ -1,9 +1,11 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
+import { MdOutlineKeyboardArrowRight, MdTag } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
+import Texto from '@components/Texto';
+import BadgeGeral from '@components/BadgeGeral';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { ContextMenu } from 'primereact/contextmenu';
@@ -58,12 +60,12 @@ function DataTableColaboradores({ colaboradores }) {
         )
     }
     
-    const representativeNomeTemplate = (rowData) => {
+    // const representativeNomeTemplate = (rowData) => {
         
-        return (
-            <b>{rowData?.dados_pessoa_fisica?.nome}</b>
-        )
-    }
+    //     return (
+    //         <b>{rowData?.dados_pessoa_fisica?.nome}</b>
+    //     )
+    // }
     
     const representativeChapaTemplate = (rowData) => {
         
@@ -88,6 +90,20 @@ function DataTableColaboradores({ colaboradores }) {
         )
     }
     
+    const representativeNomeTemplate = (rowData) => {
+        const cpf = rowData?.dados_pessoa_fisica?.cpf ?
+        formataCPF(rowData?.dados_pessoa_fisica?.cpf)
+        : '---';
+        return <div key={rowData.id}>
+            <Texto weight={700} width={'100%'}>
+                {rowData?.dados_pessoa_fisica?.nome}
+            </Texto>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
+                <BadgeGeral nomeBeneficio={`CPF ${cpf}`} size={'12px'}></BadgeGeral>
+            </div>
+        </div>
+    }
+
     const representativSituacaoTemplate = (rowData) => {
         let situacao = rowData?.situacao;
         switch(rowData?.situacao)
@@ -175,13 +191,12 @@ function DataTableColaboradores({ colaboradores }) {
                     cm.current.show(e.originalEvent)}
                 }
                 >
-                <Column body={representativeChapaTemplate} field="chapa" header="Chapa" sortable style={{ width: '8%' }}></Column>
-                <Column body={representativeNomeTemplate} field="dados_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '22%' }}></Column>
+                <Column body={representativeChapaTemplate} field="chapa" header="Chapa" sortable style={{ width: '10%' }}></Column>
+                <Column body={representativeNomeTemplate} field="dados_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
                 <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dependentes" style={{ width: '12%' }}></Column>
-                <Column body={representativeCPFTemplate} field="dados_pessoa_fisica.cpf" header="CPF" style={{ width: '18%' }}></Column>
+                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Nº Dependentes" style={{ width: '12%' }}></Column>
                 <Column header="" style={{ width: '10%' }} body={(rowData) => (
                     <button 
                         onClick={(e) => {

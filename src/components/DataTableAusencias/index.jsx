@@ -3,7 +3,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import './DataTable.css'
 import colaboradores from '@json/colaboradores.json'
-import Frame from '@components/Frame';
+import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import CampoTexto from '@components/CampoTexto';
 import { useEffect, useState } from 'react';
@@ -111,17 +111,21 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
     }
 
     const representativeColaboradorTemplate = (rowData) => {
-        
         const colab = colaboradores.filter(collaborator => collaborator.id == rowData.colaborador_id);
         if(colab.length > 0)
         {
-            return (
-                <b>{colab[0]?.dados_pessoa_fisica?.nome}</b>
-            )
+            return <div key={rowData.id}>
+                <Texto weight={700} width={'100%'}>
+                    {colab[0].dados_pessoa_fisica?.nome}
+                </Texto>
+                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
+                    Dias de Ausência:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.dias}</p>
+                </div>
+            </div>
         }
         else
         {
-            return ""
+            return "--"
         }
     }
     
@@ -138,10 +142,9 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
                 </span>
             </div>}
             <DataTable value={filteredData} filters={filters} globalFilterFields={['colaborador_id']} emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
-                {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
+                {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '35%' }}></Column>}
                 <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
-                <Column field="dias" header="Dias de Ausência" style={{ width: '15%' }}></Column>
             </DataTable>
         </>
     )

@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
+import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Tag } from 'primereact/tag';
@@ -69,6 +70,18 @@ function DataTableCiclos({ ciclos, colaborador = null }) {
 
         return nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
     };
+
+    
+    const representativeTipoTemplate = (rowData) => {
+        return <div key={rowData.id}>
+            <Texto weight={700} width={'100%'}>
+                {rowData.tipo}
+            </Texto>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
+                Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.total_colaboradores}</p>
+            </div>
+        </div>
+    }
     
     return (
         <>
@@ -78,7 +91,7 @@ function DataTableCiclos({ ciclos, colaborador = null }) {
                 </span>
             </div>
             <DataTable value={ciclos} groupRowsBy="data_referencia.year" rowGroupHeaderTemplate={headerTemplate} rowGroupMode="subheader" filters={filters} globalFilterFields={['tipo']}  emptyMessage="Não foram encontrados ciclos" selection={selectedCiclo} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
+                <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column body={representativeMonthTemplate} field="data_referencia.month" header="Mês Referência" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>

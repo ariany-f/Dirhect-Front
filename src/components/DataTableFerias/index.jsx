@@ -1,20 +1,13 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
+import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
-import Container from '@components/Container';
-import BotaoGrupo from '@components/BotaoGrupo';
 import colaboradores from '@json/colaboradores.json'
-import Frame from '@components/Frame';
-import Botao from '@components/Botao';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { FaPlusCircle } from 'react-icons/fa';
-import ModalFerias from '../ModalFerias';
-import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
-import { GrAddCircle } from 'react-icons/gr';
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
 
 function formatarDataBr(data) {
@@ -117,18 +110,26 @@ function DataTableFerias({ ferias, colaborador = null }) {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
+    
     const representativeColaboradorTemplate = (rowData) => {
-        
         const colab = colaboradores.filter(collaborator => collaborator.id == rowData.colaborador_id);
         if(colab.length > 0)
         {
-            return (
-                <b>{colab[0]?.dados_pessoa_fisica?.nome}</b>
-            )
+            return <div key={rowData.id}>
+                <Texto weight={700} width={'100%'}>
+                    {colab[0].dados_pessoa_fisica?.nome}
+                </Texto>
+                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
+                    Dias de Férias:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.dias}</p>
+                </div>
+                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', display: 'flex', color: 'var(--neutro-500)'}}>
+                    Dias de Abono:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.abono}</p>
+                </div>
+            </div>
         }
         else
         {
-            return ""
+            return "--"
         }
     }
 
@@ -162,14 +163,12 @@ function DataTableFerias({ ferias, colaborador = null }) {
                 </span>
             </div>}
             <DataTable value={filteredData} filters={filters} globalFilterFields={['colaborador_id']} emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
-                {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
+                {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '30%' }}></Column>}
                 <Column field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
                 <Column field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
                 <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
-                <Column field="dias" header="Dias de Férias" style={{ width: '15%' }}></Column>
-                <Column field="abono" header="Dias de Abono" style={{ width: '15%' }}></Column>
-                <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '15%' }}></Column>
+                <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     )

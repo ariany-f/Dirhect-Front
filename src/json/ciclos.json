@@ -8,6 +8,7 @@
             "month": 12
         },
         "status": "Aberta",
+        "total_colaboradores": 4,
         "detalhes": [
             { 
                 "funcionario": "João Silva", 
@@ -56,6 +57,7 @@
             "month": 12
         }, 
         "status": "Fechada",
+        "total_colaboradores": 2,
         "detalhes": [
             { 
                 "funcionario": "Maria Souza", 
@@ -86,6 +88,7 @@
             "month": 1
         }, 
         "status": "Aberta",
+        "total_colaboradores": 1,
         "detalhes": [
             { 
                 "funcionario": "Pedro Santos", 
@@ -104,6 +107,7 @@
             "month": 1
         }, 
         "status": "Aberta",
+        "total_colaboradores": 1,
         "detalhes": [
             { 
                 "funcionario": "Pedro Santos", 
@@ -122,6 +126,7 @@
             "month": 2
         },
         "status": "Fechada",
+        "total_colaboradores": 2,
         "detalhes": [
             { 
                 "funcionario": "Carlos Oliveira", 
@@ -146,6 +151,7 @@
             "month": 2
         },
         "status": "Aberta",
+        "total_colaboradores": 4,
         "detalhes": [
             { 
                 "funcionario": "Juliana Mendes", 
