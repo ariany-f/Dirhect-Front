@@ -267,6 +267,15 @@ template {
   align-items: center;
   gap: 5px;
 }
+  
+.p-scrollpanel {
+    & .p-scrollpanel-bar {
+        background-color: var(--neutro-300);
+        border-radius: 0;
+        opacity: 1;
+        transition: background-color .3s;
+    }
+}
 `
 
 

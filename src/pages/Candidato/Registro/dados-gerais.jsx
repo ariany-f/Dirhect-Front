@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import CampoTexto from '@components/CampoTexto'; // Importando o componente CampoTexto
-import BotaoVoltar from '@components/BotaoVoltar'; // Importando o componente CampoTexto
 import Container from '@components/Container'; // Importando o componente Container
 import Botao from '@components/Botao'; // Importando o componente Container
 import Frame from '@components/Frame'; // Importando o componente Container
@@ -10,8 +9,7 @@ import styled from "styled-components"
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import http from '@http'
 import axios from "axios"
-import styles from './Registro.module.css'
-import { CiCirclePlus } from 'react-icons/ci';
+import { ScrollPanel } from 'primereact/scrollpanel';
 
 const ArquivoBotao = styled(Botao)`
     margin-top: 10px;
@@ -251,7 +249,7 @@ const CandidatoRegistroDadosGerais = () => {
                 <Titulo>
                     <h5>Endereço</h5>
                 </Titulo>
-                <div style={{height: '35vh', overflowY: 'scroll', flexWrap: 'wrap', marginTop: '15px'}}>
+                <ScrollPanel style={{ width: '100%', height: '250px' }}>
                     <Col12 >
                         <Col6>
                             <CampoTexto 
@@ -321,12 +319,11 @@ const CandidatoRegistroDadosGerais = () => {
                                 valor={candidato?.endereco?.state} 
                                 setValor={setState} 
                                 options={estados} 
-                                label="UF" 
                                 name="state" 
                                 placeholder="Digite a UF"/>
                         </Col6>
                     </Col12>
-                </div>
+                </ScrollPanel>
             </Frame>
 
 

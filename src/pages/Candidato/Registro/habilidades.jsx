@@ -4,12 +4,12 @@ import CampoTexto from '@components/CampoTexto';
 import Container from '@components/Container';
 import Botao from '@components/Botao';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { FaMinusCircle, FaPlusCircle, FaTrash } from 'react-icons/fa';
-import styles from './Registro.module.css'
+import { FaTrash } from 'react-icons/fa';
 import styled from 'styled-components';
+import styles from './Registro.module.css';
 import { CiCirclePlus } from 'react-icons/ci';
-import Frame from "@components/Frame"
-import ContainerHorizontal from "@components/ContainerHorizontal"
+import Frame from "@components/Frame";
+import ContainerHorizontal from "@components/ContainerHorizontal";
 
 
 const ArquivoContainer = styled.div`
