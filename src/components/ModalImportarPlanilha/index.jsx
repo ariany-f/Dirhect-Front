@@ -108,13 +108,13 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
         
             http.post('api/dashboard/collaborator/import', body)
             .then((response) => {
-                
-                setLoading(false)
                 return response
             })
             .catch(erro => {
-                setLoading(false)
                 return erro.response.data
+            })
+            .finally(function() {
+                setLoading(false)
             })
         }
         else

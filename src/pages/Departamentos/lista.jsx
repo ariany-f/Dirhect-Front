@@ -70,9 +70,11 @@ function DepartamentoLista() {
                 {
                     setModalOpened(false)
                 }
-                setLoading(false)
             })
             .catch(erro => {
+                
+            })
+            .finally(function() {
                 setLoading(false)
             })
     }
@@ -82,9 +84,11 @@ function DepartamentoLista() {
         http.get('departamento/?format=json')
             .then(response => {
                 setDepartamentos(response)
-                setLoading(false)
             })
             .catch(erro => {
+                
+            })
+            .finally(function() {
                 setLoading(false)
             })
     }, [modalOpened])

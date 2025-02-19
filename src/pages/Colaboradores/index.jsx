@@ -34,9 +34,11 @@ function Colaboradores() {
             http.get('funcionario/?format=json')
                 .then(response => {
                     setFuncionarios(response)
-                    setLoading(false)
                 })
                 .catch(erro => {
+
+                })
+                .finally(function() {
                     setLoading(false)
                 })
         }

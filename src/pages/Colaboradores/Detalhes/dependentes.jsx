@@ -27,6 +27,9 @@ function ColaboradorDependentes() {
                     setDependentes(response)
                 })
                 .catch(erro => {
+                    
+                })
+                .finally(function() {
                     setLoading(false)
                 })
         }
@@ -37,6 +40,9 @@ function ColaboradorDependentes() {
                     setPessoasFisicas(response)
                 })
                 .catch(erro => {
+                    
+                })
+                .finally(function() {
                     setLoading(false)
                 })
         }

@@ -52,9 +52,12 @@ function CentrosCustoLista() {
         http.get('centro_custo/?format=json')
             .then(response => {
                 setCentrosCusto(response)
-                setLoading(false)
+                
             })
             .catch(erro => {
+                
+            })
+            .finally(function() {
                 setLoading(false)
             })
     }, [modalOpened])
@@ -74,9 +77,12 @@ function CentrosCustoLista() {
                 {
                     setModalOpened(false)
                 }
-                setLoading(false)
+                
             })
             .catch(erro => {
+                
+            })
+            .finally(function() {
                 setLoading(false)
             })
     }

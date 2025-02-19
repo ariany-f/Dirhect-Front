@@ -116,16 +116,9 @@ function CampoTexto({ label, disabled = false, readonly = false, type='text',  s
 
     function changeValor(evento, patternMask)
     {
-        let valorCampo = null
-        if(type !== 'file')
-        {
-           valorCampo = evento.target.value
-        }
-        else {
-            valorCampo = evento.target.files[0]
-        }
-        
-        if(patternMask.length > 0)
+        let valorCampo = evento.target.files ? evento.target.files[0] : evento.target.value;
+    
+        if(patternMask.length > 0 && type !== 'file')
         {
             if(patternMask === 'BRL')
             {

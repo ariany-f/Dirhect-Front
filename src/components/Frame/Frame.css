@@ -18,4 +18,18 @@
         align-items: center;
         padding: 10px 20px;
     }
+    &.left {
+        justify-content: flex-start;
+        gap: 5px;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 20px;
+    }
+    &.right {
+        justify-content: flex-end;
+        gap: 5px;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 20px;
+    }
 }

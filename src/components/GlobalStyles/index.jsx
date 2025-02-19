@@ -258,6 +258,9 @@ template {
   background-color: var(--primaria);
   color: var(--white);
 }
+.p-stepper.p-stepper-vertical .p-stepper-panel .p-stepper-content {
+  padding-top: 1rem;
+}
 .p-stepper .p-stepper-header:has(~ .p-highlight) .p-stepper-separator {
   background-color: var(--primaria);
 }
@@ -269,6 +272,12 @@ template {
 }
   
 .p-scrollpanel {
+    & .p-scrollpanel-content {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
     & .p-scrollpanel-bar {
         background-color: var(--neutro-300);
         border-radius: 0;

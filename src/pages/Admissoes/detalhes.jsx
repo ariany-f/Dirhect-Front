@@ -252,14 +252,15 @@ function DetalhesAdmissao() {
         })
         .then(response => response.json())
         .then(data => {
-            setLoading(false)
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Sucesso ao validar admissão', life: 3000 });
             console.log('Sucesso:', data);
         })
         .catch((error) => { 
-            setLoading(false)
             toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao validar', life: 3000 });
             console.error('Erro:', error);
+        })
+        .finally(function() {
+            setLoading(false)
         });
     }
     

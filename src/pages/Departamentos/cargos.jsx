@@ -54,9 +54,12 @@ function CargosLista() {
             http.get('cargo/?format=json')
                 .then(response => {
                     setCargos(response)
-                    setLoading(false)
+                    
                 })
                 .catch(erro => {
+                    
+                })
+                .finally(function() {
                     setLoading(false)
                 })
         }    

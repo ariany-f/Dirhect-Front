@@ -180,13 +180,14 @@ function DepartamentoAdicionarColaboradores() {
                 else{
 
                     toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar adicionar colaborador', life: 3000 });
-                    setLoading(false)
                 }
             })
             .catch(erro => {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
-                setLoading(false)
                 return false
+            })
+            .finally(function() {
+                setLoading(false)
             })
         }
         else
@@ -196,7 +197,6 @@ function DepartamentoAdicionarColaboradores() {
                 if(response.success)
                 {
                     setDepartamentoCompanyPublicId(response.data.public_id)
-                    setLoading(false)
                     submeterDepartamento()
                     .then((response) => {
                         if(response.success)
@@ -218,13 +218,14 @@ function DepartamentoAdicionarColaboradores() {
                         else{
     
                             toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar adicionar colaborador', life: 3000 });
-                            setLoading(false)
                         }
                     })
                     .catch(erro => {
                         toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
-                        setLoading(false)
                         return false
+                    })
+                    .finally(function() {
+                        setLoading(false)
                     })
                 }
             })

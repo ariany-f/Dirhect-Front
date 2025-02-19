@@ -66,11 +66,15 @@ function DepartamentoDetalhes() {
                    if(response.success)
                     {
                         toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                        setLoading(false)
                         navegar('/estrutura')
                     }
                 })
-                .catch(erro => console.log(erro))
+                .catch(erro => {
+                    console.log(erro)
+                })
+                .finally(function() {
+                    setLoading(false)
+                });
             },
             reject: () => {
 

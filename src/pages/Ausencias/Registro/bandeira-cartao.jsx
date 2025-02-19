@@ -85,8 +85,11 @@ function ColaboradorBandeiraCartao() {
                 {
                     navegar('/colaborador/registro/sucesso')
                 }
-            }).catch((erro) => {
+            })
+            .catch((erro) => {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
+            })
+            .finally(function() {
                 setLoading(false)
             })
         }

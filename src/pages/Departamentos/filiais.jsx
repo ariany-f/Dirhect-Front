@@ -53,10 +53,11 @@ function FiliaisLista() {
         http.get('filial/?format=json')
             .then(response => {
                 setFiliais(response)
-                setLoading(false)
             })
             .catch(erro => {
                 
+            })
+            .finally(function() {
                 setLoading(false)
             })
     }, [modalOpened])
@@ -79,9 +80,11 @@ function FiliaisLista() {
                 {
                     setModalOpened(false)
                 }
-                setLoading(false)
             })
             .catch(erro => {
+                
+            })
+            .finally(function() {
                 setLoading(false)
             })
     }

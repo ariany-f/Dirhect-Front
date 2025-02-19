@@ -312,13 +312,7 @@ function AppRouter() {
                 <Route path="/admissao/validar" element={<ValidarAdmissoes />} />
                 <Route path="/admissao/detalhes/:id/:candidato" element={<DetalhesAdmissao />} />
 
-                <Route path="/candidato/registro" element={<CandidatoRegistro />} >
-                  <Route path=":id" element={<CandidatoRegistroDadosGerais />} />
-                  <Route path=":id/educacao" element={<CandidatoRegistroEducacao />} />
-                  <Route path=":id/habilidades" element={<CandidatoRegistroHabilidades />} />
-                  <Route path=":id/profissional" element={<CandidatoRegistroProfissional />} />
-                  <Route path=":id/arquivos" element={<CandidatoRegistroArquivos />} />
-                </Route>
+                <Route path="/candidato/registro/:id" element={<CandidatoRegistro />} />
               
                 <Route path="/elegibilidade" element={<Cartoes />} >
                   <Route index element={<CartoesLista />} />
