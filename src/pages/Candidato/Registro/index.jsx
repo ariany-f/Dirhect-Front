@@ -228,7 +228,7 @@ const CandidatoRegistro = () => {
 
     const handleUpload = async (arquivoId, file) => {
         if (!file) return;
-        
+    
         try {
             // Converte o arquivo para Base64
             const base64 = await convertToBase64(file);
@@ -261,6 +261,10 @@ const CandidatoRegistro = () => {
                     arquivo.id === arquivoId ? { ...arquivo, caminho: response.data.caminho } : arquivo
                 )
             );
+    
+            // Preenche os dados do candidato com as informações do OCR
+            preencherDadosCandidato(response.data);
+    
         } catch (error) {
             console.error('Erro ao enviar arquivo:', error);
         }
@@ -371,6 +375,52 @@ const CandidatoRegistro = () => {
             dataSaida: '',
         };
         setExperiencia([...experiencia, novaExperiencia]);
+    };
+
+
+    const preencherDadosCandidato = (ocrData) => {
+        const extraction = ocrData.data[0].extraction;
+        const enhanced = ocrData.data[0].enhanced;
+        const taxData = ocrData.data[0].taxData;
+    
+        setCandidato((estadoAnterior) => {
+            const novoEstado = { ...estadoAnterior };
+    
+            // Preenche o nome se estiver vazio
+            if (!novoEstado.nome && enhanced.person.name) {
+                novoEstado.nome = enhanced.person.name;
+            }
+    
+            // Preenche o CPF se estiver vazio
+            if (!novoEstado.cpf && taxData.taxId) {
+                novoEstado.cpf = taxData.taxId;
+            }
+    
+            // Preenche a data de nascimento se estiver vazia
+            if (!novoEstado.dataNascimento && taxData.birthdate) {
+                novoEstado.dataNascimento = taxData.birthdate;
+            }
+    
+            // Preenche o nome da mãe se estiver vazio
+            if (!novoEstado.nomeMae && taxData.mothersName) {
+                novoEstado.nomeMae = taxData.mothersName;
+            }
+    
+            // Preenche o nome do pai se estiver vazio
+            if (!novoEstado.nomePai && extraction.person.parentage) {
+                const parentage = extraction.person.parentage.split('\n');
+                if (parentage.length > 1) {
+                    novoEstado.nomePai = parentage[0].trim();
+                }
+            }
+    
+            // Preenche a naturalidade se estiver vazia
+            if (!novoEstado.naturalidade && enhanced.otherFields.naturalnessCity) {
+                novoEstado.naturalidade = `${enhanced.otherFields.naturalnessCity} - ${enhanced.otherFields.naturalnessState}`;
+            }
+    
+            return novoEstado;
+        });
     };
 
     const { 

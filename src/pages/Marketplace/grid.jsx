@@ -56,28 +56,26 @@ export default function MarketplaceLista() {
 
     const itemTemplate = (product, index) => {
         return (
-            <>
-                <div className={styles.card_dashboard}>
-                    <Col12>
-                        <Col4>
-                            <Image src={`${product.banner}`} alt={product.nome} width="250" preview />                         
-                        </Col4>
-                        <Col4>
-                            <Texto weight={800}>{product.nome}</Texto>
-                            <BadgeGeral nomeBeneficio={product.categoria} iconeBeneficio={<TbTag />}></BadgeGeral>
-                            <ScrollPanel style={{ width: '100%', height: '200px' }}>
-                                <Texto>{product.descricao}</Texto>
-                            </ScrollPanel>
-                        </Col4>
-                        <Col4Centered>
-                            <Botao extraclasses="p-ripple">
-                                <BsArrowRight fill="white" size={24}/>
-                                <Ripple />
-                            </Botao>
-                        </Col4Centered>
-                    </Col12>
-                </div>
-            </>
+            <div key={index} className={styles.card_dashboard}>
+                <Col12>
+                    <Col4>
+                        <Image src={`${product.banner}`} alt={product.nome} width="250" preview />                         
+                    </Col4>
+                    <Col4>
+                        <Texto weight={800}>{product.nome}</Texto>
+                        <BadgeGeral nomeBeneficio={product.categoria} iconeBeneficio={<TbTag />}></BadgeGeral>
+                        <ScrollPanel style={{ width: '100%', height: '200px' }}>
+                            <Texto>{product.descricao}</Texto>
+                        </ScrollPanel>
+                    </Col4>
+                    <Col4Centered>
+                        <Botao extraclasses="p-ripple">
+                            <BsArrowRight fill="white" size={24}/>
+                            <Ripple />
+                        </Botao>
+                    </Col4Centered>
+                </Col12>
+            </div>
         );
     };
 
