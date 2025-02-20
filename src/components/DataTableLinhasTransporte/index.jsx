@@ -7,6 +7,11 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
+let Real = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+});
+
 function DataTableLinhasTransporte({ linhas }) {
 
     const[selectedPremiacao, setSelectedPremiacao] = useState(0)
@@ -31,6 +36,12 @@ function DataTableLinhasTransporte({ linhas }) {
       //  navegar(`/colaborador/detalhes/${value.public_id}`)
     }
 
+    const representativeTarifaTemplate = (rowData) => {
+        return (
+            Real.format(rowData.tarifa)
+        )
+    }
+
     return (
         <>
             <div className="flex justify-content-end">
@@ -38,10 +49,11 @@ function DataTableLinhasTransporte({ linhas }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar premiação" />
                 </span>
             </div>
-            <DataTable value={linhas} filters={filters} globalFilterFields={['name', 'email', 'document']}  emptyMessage="Não foram encontrados registros" selection={selectedPremiacao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="name" header="Nome" style={{ width: '35%' }}></Column>
-                <Column field="reason" header="Motivo" style={{ width: '35%' }}></Column>
-                <Column field="amount" header="Valor da Premiação" style={{ width: '20%' }}></Column>
+            <DataTable value={linhas} filters={filters} globalFilterFields={['nome', 'operadora', 'codigo']}  emptyMessage="Não foram encontrados registros" selection={selectedPremiacao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                <Column field="codigo" header="Codigo" style={{ width: '15%' }}></Column>
+                <Column field="operadora" header="Operadora" style={{ width: '35%' }}></Column>
+                <Column field="nome" header="Nome" style={{ width: '20%' }}></Column>
+                <Column body={representativeTarifaTemplate} field="tarifa" header="Tarifa" style={{ width: '20%' }}></Column>
                 
             </DataTable>
         </>

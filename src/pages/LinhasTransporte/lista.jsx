@@ -10,6 +10,7 @@ import DataTableLinhasTransporte from '@components/DataTableLinhasTransporte'
 import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import Loading from '@components/Loading'
+import linhastransporte from  '@json/linhastransporte.json'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 
 const ConteudoFrame = styled.div`
@@ -45,6 +46,7 @@ function ListaLinhasTransporte() {
     useEffect(() => {
         if(linhas.length === 0)
         {
+            setLinhasTransporte(linhastransporte);
             // setLoading(true)
             // http.get('api/dashboard/recharge/free-balance')
             // .then(response => {

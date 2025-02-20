@@ -1,0 +1,72 @@
+[
+    {
+        "id": 1,
+        "nome": "MOGI DAS CRUZES/SAO JOSE DOS CAMPOS - PASSARO MARR",
+        "operadora": "EMPRESA DE ONIBUS PASSARO MARRON S A",
+        "codigo": "3334",
+        "tarifa": 32.75
+    },
+    {
+        "id": 2,
+        "nome": "EMTU",
+        "operadora": "EMPRESA DE ONIBUS PASSARO MARRON S A",
+        "codigo": "3314",
+        "tarifa": 6.05
+    },
+    {
+        "id": 3,
+        "nome": "EMTU",
+        "operadora": "RAPIDO LUXO CAMPINAS LTDA",
+        "codigo": "3550",
+        "tarifa": 14.75
+    },
+    {
+        "id": 4,
+        "nome": "MACEIO/SANTA LUZIA VT",
+        "operadora": "EXPRESSO SANTO ANTONIO LTDA",
+        "codigo": "13",
+        "tarifa": 7.00
+    },
+    {
+        "id": 5,
+        "nome": "BALSA/ARRAIAL D'AJUDA",
+        "operadora": "VIACAO AGUIA AZUL LTDA VIACAO AGUIA AZUL LTDA",
+        "codigo": "38",
+        "tarifa": 5.00
+    },
+    {
+        "id": 6,
+        "nome": "A138 - PRAIA DO FORTE - TERMINAL MUSSURUNGA",
+        "operadora": "CONSORCIO METROPASSE",
+        "codigo": "74",
+        "tarifa": 10.40
+    },
+    {
+        "id": 7,
+        "nome": "RD TUR - GOV MANGABEIRA/SALVADOR C/SEG C/TX EMBQ",
+        "operadora": "RD TURISMO TRANSPORTES RODOVIARIOS LTDA",
+        "codigo": "137",
+        "tarifa": 43.91
+    },
+    {
+        "id": 8,
+        "nome": "INHAMBUPE/CATU",
+        "operadora": "VIAÇÃO JEQUIÉ CIDADE SOL LTDA",
+        "codigo": "162",
+        "tarifa": 28.77
+    },
+    {
+        "id": 9,
+        "nome": "SANTANA DO LIVRAMENTO/SAO GABRIEL VT",
+        "operadora": "PLANALTO TRANSPORTES LTDA",
+        "codigo": "2156",
+        "tarifa": 63.35
+    },
+    {
+        "id": 10,
+        "nome": "SAO JOSE/MONTEIRO  VTE",
+        "operadora": "CIDADE NATUREZA TRANSPORTES E TURISMO LTDA EPP",
+        "codigo": "2745",
+        "tarifa": 6.55
+    }
+]
