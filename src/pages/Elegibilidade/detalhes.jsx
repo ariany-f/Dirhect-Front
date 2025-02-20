@@ -6,6 +6,7 @@ import Texto from '@components/Texto'
 import Frame from '@components/Frame'
 import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
+import BadgeGeral from '@components/BadgeGeral'
 import { Skeleton } from 'primereact/skeleton'
 import Container from "@components/Container"
 import { FaArrowAltCircleRight, FaDownload, FaTrash } from 'react-icons/fa'
@@ -65,7 +66,8 @@ function DetalhesElegibilidade() {
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{elegibilidade.referencia} - {elegibilidade.tipo}</h3>
+                            <h3>{elegibilidade.referencia}</h3>
+                            <BadgeGeral nomeBeneficio={elegibilidade.tipo}></BadgeGeral>
                             {/* {representativSituacaoTemplate()} */}
                         </FrameVertical>
                         <BotaoGrupo align="center">

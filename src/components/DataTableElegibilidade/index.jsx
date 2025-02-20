@@ -53,12 +53,6 @@ function DataTableElegibilidade({ elegibilidade, colaborador = null }) {
         )
     }
 
-    const representativeValorTemplate = (rowData) => {
-        return (
-            Real.format(rowData.valor)
-        )
-    }
-
     const representativeTipoTemplate = (rowData) => {
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
@@ -82,8 +76,7 @@ function DataTableElegibilidade({ elegibilidade, colaborador = null }) {
             <DataTable value={elegibilidade} filters={filters} globalFilterFields={['tipo']}  emptyMessage="Não foram encontrados elegibilidade" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeTipoTemplate} field="referencia" header="Referência" style={{ width: '35%' }}></Column>
                 <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
-                <Column field="benefício" header="Benefício" style={{ width: '35%' }}></Column>
-                <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
+                <Column field="contrato" header="Contrato" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )
