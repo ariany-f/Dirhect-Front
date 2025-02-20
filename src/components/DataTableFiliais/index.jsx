@@ -14,7 +14,9 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    
     const [selectedFiliais, setSelectedFiliais] = useState([]);
+
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && filiais) {
             const filiaisSelecionadas = filiais.filter(filial => selected.includes(filial.nome));

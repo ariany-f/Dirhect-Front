@@ -47,11 +47,17 @@ function DetalhesElegibilidade() {
     const toast = useRef(null)
     const [loading, setLoading] = useState(false)
     const [filiais, setFiliais] = useState(null)
+    const [departamentos, setDepartamentos] = useState(null)
+    const [secoes, setSecoes] = useState(null)
+    const [cargos, setCargos] = useState(null)
+    const [centros_custo, setCentrosCusto] = useState(null)
+    const [sindicatos, setSindicatos] = useState(null)
     const [selectedFiliais, setSelectedFiliais] = useState([])
     const [selectedDepartamentos, setSelectedDepartamentos] = useState([])
     const [selectedCargos, setSelectedCargos] = useState([])
     const [selectedSecoes, setSelectedSecoes] = useState([])
     const [selectedSindicatos, setSelectedSindicatos] = useState([])
+    const [selectedCentrosCusto, setSelectedCentrosCusto] = useState([])
    
     useEffect(() => {
         if(elegibilidade.length == 0)
@@ -60,8 +66,11 @@ function DetalhesElegibilidade() {
             if(cc.length > 0)
             {
                 setElegibilidade(cc[0])
-                console.log(cc[0].configuracoes.filiais.lista)
                 setSelectedFiliais(cc[0].configuracoes.filiais.lista)
+                setSelectedDepartamentos(cc[0].configuracoes.departamentos.lista)
+                setSelectedCargos(cc[0].configuracoes.cargos.lista)
+                setSelectedSecoes(cc[0].configuracoes.secoes.lista)
+                setSelectedSindicatos(cc[0].configuracoes.sindicatos.lista)
             }
         }
     }, [elegibilidade])
@@ -70,6 +79,51 @@ function DetalhesElegibilidade() {
         http.get('filial/?format=json')
             .then(response => {
                 setFiliais(response)
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                // setLoading(false)
+            })
+
+            http.get('departamento/?format=json')
+            .then(response => {
+                setDepartamentos(response)
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                // setLoading(false)
+            })
+
+            http.get('secao/?format=json')
+            .then(response => {
+                setSecoes(response)
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                // setLoading(false)
+            })
+
+            http.get('cargo/?format=json')
+            .then(response => {
+                setCargos(response)
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                // setLoading(false)
+            })
+
+            http.get('centro_custo/?format=json')
+            .then(response => {
+                setCentrosCusto(response)
+                
             })
             .catch(erro => {
                 
@@ -126,27 +180,27 @@ function DetalhesElegibilidade() {
                     : <></>
                 }
                 
+                <DataTableElegibilidadeDetalhes elegibilidade={elegibilidade?.contratos} pagination={false} />
                 <TabView>
                     <TabPanel header="Filiais">
                         <DataTableFiliais filiais={filiais} showSearch={false} selected={selectedFiliais} setSelected={setSelectedFiliais} />
                     </TabPanel>
                     <TabPanel header="Departamentos">
-                        <DataTableDepartamentos showSearch={false} selected={selectedDepartamentos} setSelected={setSelectedDepartamentos} />
+                        <DataTableDepartamentos departamentos={departamentos} showSearch={false} selected={selectedDepartamentos} setSelected={setSelectedDepartamentos} />
                     </TabPanel>
                     <TabPanel header="Seções">
-                        <DataTableSecoes showSearch={false} selected={selectedSecoes} setSelected={setSelectedSecoes} />
+                        <DataTableSecoes secoes={secoes} showSearch={false} selected={selectedSecoes} setSelected={setSelectedSecoes} />
                     </TabPanel>
                     <TabPanel header="Centros de Custo">
-                        <DataTableCentrosCusto showSearch={false} selected={selectedCargos} setSelected={setSelectedCargos} />
+                        <DataTableCentrosCusto centros_custo={centros_custo} showSearch={false} selected={selectedCentrosCusto} setSelected={setSelectedCentrosCusto} />
                     </TabPanel>
                     <TabPanel header="Cargos e Funções">
-                        <DataTableCargos showSearch={false} selected={selectedCargos} setSelected={setSelectedCargos} />
+                        <DataTableCargos cargos={cargos} showSearch={false} selected={selectedCargos} setSelected={setSelectedCargos} />
                     </TabPanel>
                     <TabPanel header="Sindicatos">
-                        <DataTableFiliais showSearch={false} selected={selectedSindicatos} setSelected={setSelectedSindicatos} />
+                        <DataTableFiliais filiais={sindicatos} showSearch={false} selected={selectedSindicatos} setSelected={setSelectedSindicatos} />
                     </TabPanel>
                 </TabView>
-                <DataTableElegibilidadeDetalhes elegibilidade={elegibilidade?.contratos} />
             </Container>
         </Frame>
         </>

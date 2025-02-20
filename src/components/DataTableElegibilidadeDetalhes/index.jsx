@@ -12,7 +12,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
     currency: 'BRL',
 });
 
-function DataTableElegibilidadeDetalhes({ elegibilidade }) {
+function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -54,7 +54,7 @@ function DataTableElegibilidadeDetalhes({ elegibilidade }) {
     
     return (
         <>
-            <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column expander={allowExpansion} style={{ width: '5%' }} />
                 <Column field="nome_fornecedor" header="Contrato" style={{ width: '35%' }}></Column>
                 <Column field="data_inicio" header="Data Início" style={{ width: '35%' }}></Column>

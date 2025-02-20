@@ -22,7 +22,7 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableDepartamentos({ departamentos, showSearch = true }) {
+function DataTableDepartamentos({ departamentos, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
    
     const[selectedDepartamento, setSelectedDepartamento] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -30,6 +30,15 @@ function DataTableDepartamentos({ departamentos, showSearch = true }) {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
+
+    const [selectedDepartamentos, setSelectedDepartamentos] = useState([]);
+
+    useEffect(() => {
+        if (selected && Array.isArray(selected) && selected.length > 0 && departamentos) {
+            const departamentosSelecionados = departamentos.filter(departamento => selected.includes(departamento.nome));
+            setSelectedDepartamentos(departamentosSelecionados);
+        }
+    }, [selected, departamentos]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -45,6 +54,17 @@ function DataTableDepartamentos({ departamentos, showSearch = true }) {
         setSelectedDepartamento(value.id)
         navegar(`/estrutura/detalhes/${value.id}`)
     }
+    
+
+    function handleSelectChange(e) {
+        if(selected)
+        {
+            setSelected(e.value)
+        }else {
+            verDetalhes(e.value)
+        }
+    }
+
 
     return (
         <>
@@ -55,7 +75,10 @@ function DataTableDepartamentos({ departamentos, showSearch = true }) {
                     </span>
                 </div>
             }
-            <DataTable value={departamentos} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados departamentos" selection={selectedDepartamento} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={departamentos} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados departamentos" selection={selected ? selectedDepartamentos : selectedDepartamento} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                {selected &&
+                    <Column selectionMode="multiple" style={{ width: '15%' }}></Column>
+                }
                 <Column field="id" header="Id" style={{ width: '15%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
