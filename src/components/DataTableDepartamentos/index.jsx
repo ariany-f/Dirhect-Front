@@ -1,15 +1,10 @@
-import styles from '@pages/Departamentos/Departamento.module.css'
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import { FaBan } from 'react-icons/fa'
 import { DataTable } from 'primereact/datatable';
 import CampoTexto from '@components/CampoTexto';
 import { Column } from 'primereact/column';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import BadgeBeneficio from '@components/BadgeBeneficio'
-import Texto from '@components/Texto';
 import './DataTable.css'
 
 const NumeroColaboradores = styled.p`
