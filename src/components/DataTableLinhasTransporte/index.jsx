@@ -21,10 +21,10 @@ function DataTableLinhasTransporte({ linhas }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        fornecedor: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        codigo: { value: null, matchMode: FilterMatchMode.EQUALS },
-        nome: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        operadora: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        fornecedor: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        codigo: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+        nome: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        operadora: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
 
