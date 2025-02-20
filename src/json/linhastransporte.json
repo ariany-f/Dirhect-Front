@@ -45,7 +45,7 @@
         "operadora": "CONSORCIO METROPASSE",
         "codigo": "74",
         "tarifa": 10.40,
-        "nome_fornecedor": "Alelo"
+        "nome_fornecedor": "Ticket"
     },
     {
         "id": 7,
@@ -61,7 +61,7 @@
         "operadora": "VIAÇÃO JEQUIÉ CIDADE SOL LTDA",
         "codigo": "162",
         "tarifa": 28.77,
-        "nome_fornecedor": "Alelo"
+        "nome_fornecedor": "Ticket"
     },
     {
         "id": 9,

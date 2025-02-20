@@ -120,10 +120,6 @@
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "beneficios": [
-                    {
-                        "beneficio": "Vale Alimentação",
-                        "valor": 250.00
-                    },
                     { 
                         "beneficio": "Vale Refeição",
                         "valor": 500.00
