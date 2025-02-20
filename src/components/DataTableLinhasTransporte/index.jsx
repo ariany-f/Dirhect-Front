@@ -58,11 +58,11 @@ function DataTableLinhasTransporte({ linhas }) {
     return (
         <>
             <DataTable header={header} value={linhas} filters={filters} filterDisplay="row" globalFilterFields={['nome', 'operadora', 'codigo', 'fornecedor']}  emptyMessage="Não foram encontrados registros" selection={selectedPremiacao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="codigo" header="Codigo" style={{ width: '15%' }} filter filterPlaceholder="Filtrar"></Column>
-                <Column field="fornecedor" header="Fornecedor" style={{ width: '20%' }} filter filterPlaceholder="Filtrar"></Column>
-                <Column field="operadora" header="Operadora" style={{ width: '25%' }} filter filterPlaceholder="Filtrar"></Column>
-                <Column field="nome" header="Nome" style={{ width: '30%' }} filter filterPlaceholder="Filtrar"></Column>
-                <Column body={representativeTarifaTemplate} field="tarifa" header="Tarifa" style={{ width: '20%' }}></Column>
+                <Column field="codigo" header="Codigo" style={{ width: '15%' }} filter filterPlaceholder="Filtrar" sortable></Column>
+                <Column field="fornecedor" header="Fornecedor" style={{ width: '20%' }} filter filterPlaceholder="Filtrar" sortable></Column>
+                <Column field="operadora" header="Operadora" style={{ width: '25%' }} filter filterPlaceholder="Filtrar" sortable></Column>
+                <Column field="nome" header="Nome" style={{ width: '30%' }} filter filterPlaceholder="Filtrar" sortable></Column>
+                <Column body={representativeTarifaTemplate} field="tarifa" header="Tarifa" style={{ width: '20%' }} sortable></Column>
                 
             </DataTable>
         </>
