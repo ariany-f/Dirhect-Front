@@ -7,7 +7,7 @@ import Frame from "@components/Frame"
 import Texto from "@components/Texto"
 import CampoTexto from "@components/CampoTexto"
 import Titulo from "@components/Titulo"
-import './SelecionarColaboradores.css'
+import './SelecionarFiliais.css'
 import { Toast } from 'primereact/toast'
 import styled from 'styled-components'
 import { Stepper } from 'primereact/stepper';
