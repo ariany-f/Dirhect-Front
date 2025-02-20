@@ -86,7 +86,7 @@ function DetalhesElegibilidade() {
                     </>
                     : <></>
                 }
-                <DataTableElegibilidadeDetalhes elegibilidade={elegibilidade?.detalhes} />
+                <DataTableElegibilidadeDetalhes elegibilidade={elegibilidade?.contratos} />
             </Container>
         </Frame>
         </>

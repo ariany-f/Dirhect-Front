@@ -74,9 +74,8 @@ function DataTableElegibilidade({ elegibilidade, colaborador = null }) {
                 </span>
             </div>}
             <DataTable value={elegibilidade} filters={filters} globalFilterFields={['tipo']}  emptyMessage="Não foram encontrados elegibilidade" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeTipoTemplate} field="referencia" header="Referência" style={{ width: '35%' }}></Column>
+                <Column body={representativeTipoTemplate} field="referencia" header="Nome" style={{ width: '35%' }}></Column>
                 <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
-                <Column field="contrato" header="Contrato" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )

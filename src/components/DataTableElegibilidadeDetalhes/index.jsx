@@ -16,6 +16,7 @@ function DataTableElegibilidadeDetalhes({ elegibilidade }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [expandedRows, setExpandedRows] = useState(null);
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
@@ -35,6 +36,21 @@ function DataTableElegibilidadeDetalhes({ elegibilidade }) {
             Real.format(rowData.valor)
         )
     }
+
+    const rowExpansionTemplate = (data) => {
+        return (
+            <div className="card">
+                <DataTable emptyMessage="Não foram encontrados benefícios" tableStyle={{ minWidth: '65vw' }} value={data.beneficios}>
+                    <Column field="beneficio" header="Benefício"></Column>
+                    <Column body={representativeValorTemplate} field="valor" header="Valor"></Column>
+                </DataTable>
+            </div>
+        );
+    };
+    
+    const allowExpansion = (rowData) => {
+        return rowData.beneficios.length > 0;
+    };
     
     return (
         <>
@@ -43,9 +59,9 @@ function DataTableElegibilidadeDetalhes({ elegibilidade }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="beneficio" header="Benefício" style={{ width: '35%' }}></Column>
-                <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
+            <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                <Column expander={allowExpansion} style={{ width: '5rem' }} />
+                <Column field="nome_fornecedor" header="Fornecedor" style={{ width: '35%' }}></Column>
                 <Column field="data_inicio" header="Data Início" style={{ width: '35%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
             </DataTable>
