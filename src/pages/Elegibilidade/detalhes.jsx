@@ -15,10 +15,10 @@ import BotaoGrupo from "@components/BotaoGrupo"
 import BotaoSemBorda from "@components/BotaoSemBorda"
 import { Toast } from 'primereact/toast'
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTablePedidosDetalhes from '@components/DataTablePedidosDetalhes'
+import DataTableElegibilidadeDetalhes from '@components/DataTableElegibilidadeDetalhes'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
-import events from '@json/pedidos.json'
+import elegibilidades from '@json/elegibilidade.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 
@@ -34,40 +34,24 @@ const ConteudoFrame = styled.div`
     width: 100%;
 `
 
-function DetalhesPedidos() {
+function DetalhesElegibilidade() {
 
     let { id } = useParams()
     const location = useLocation();
-    const [pedido, setPedido] = useState([])
+    const [elegibilidade, setElegibilidade] = useState([])
     const toast = useRef(null)
     const [loading, setLoading] = useState(false)
    
     useEffect(() => {
-        if(pedido.length == 0)
+        if(elegibilidade.length == 0)
         {
-            let cc = events.filter(evento => evento.id == id);
+            let cc = elegibilidades.filter(evento => evento.id == id);
             if(cc.length > 0)
             {
-                setPedido(cc[0])
+                setElegibilidade(cc[0])
             }
         }
-    }, [pedido])
-
-
-    function representativSituacaoTemplate() {
-        let status = pedido?.status;
-        
-        switch(pedido?.status)
-        {
-            case 'Aprovado':
-                status = <Tag severity="success" value="Aprovado"></Tag>;
-                break;
-            case 'Aguardando':
-                status = <Tag severity="warning" value="Aguardando"></Tag>;
-                break;
-        }
-        return status
-    }
+    }, [elegibilidade])
     
     return (
         <>
@@ -76,13 +60,13 @@ function DetalhesPedidos() {
             <Loading opened={loading} />
             <ConfirmDialog />
             <Container gap="32px">
-                <BotaoVoltar linkFixo="/pedidos" />
-                {pedido && pedido?.tipo ?
+                <BotaoVoltar linkFixo="/elegibilidade" />
+                {elegibilidade && elegibilidade?.tipo ?
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{pedido.tipo} - {pedido.data_referencia}</h3>
-                            {representativSituacaoTemplate()}
+                            <h3>{elegibilidade.referencia} - {elegibilidade.tipo}</h3>
+                            {/* {representativSituacaoTemplate()} */}
                         </FrameVertical>
                         <BotaoGrupo align="center">
                             <BotaoSemBorda color="var(--primaria)">
@@ -91,20 +75,20 @@ function DetalhesPedidos() {
                         </BotaoGrupo>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
-                        <Texto>Data de Pagamento</Texto>
-                        {pedido?.data ?
-                            <Texto weight="800">{pedido?.data}</Texto>
+                        <Texto>Total de Colaboradores</Texto>
+                        {elegibilidade?.total_colaboradores ?
+                            <Texto weight="800">{elegibilidade?.total_colaboradores}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </div>
                     </>
                     : <></>
                 }
-                <DataTablePedidosDetalhes pedidos={pedido?.detalhes} />
+                <DataTableElegibilidadeDetalhes elegibilidade={elegibilidade?.detalhes} />
             </Container>
         </Frame>
         </>
     )
 }
 
-export default DetalhesPedidos
+export default DetalhesElegibilidade

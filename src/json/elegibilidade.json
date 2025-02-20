@@ -5,7 +5,13 @@
         "benefício": "Vale Alimentação",
         "valor": 150.00,
         "total_colaboradores": 200,
-        "referencia": "Filial 1"
+        "referencia": "Filial 1",
+        "detalhes": [
+            { 
+                "data_inicio": "31/01/2025",
+                "data_fim": "31/01/2026"
+            }
+        ]
     },
     {
         "id": 2,
@@ -13,7 +19,13 @@
         "benefício": "Vale Refeição",
         "valor": 300.00,
         "total_colaboradores": 200,
-        "referencia": "Filial 1"
+        "referencia": "Filial 1",
+        "detalhes": [
+            { 
+                "data_inicio": "31/01/2025",
+                "data_fim": "31/01/2026"
+            }
+        ]
     },
     {
         "id": 3,
@@ -21,7 +33,13 @@
         "benefício": "Vale Alimentação",
         "valor": 400.00,
         "total_colaboradores": 35,
-        "referencia": "Jurídico"
+        "referencia": "Jurídico",
+        "detalhes": [
+            { 
+                "data_inicio": "31/01/2025",
+                "data_fim": "31/01/2026"
+            }
+        ]
     },
     {
         "id": 4,
@@ -29,6 +47,12 @@
         "benefício": "Vale Combustível",
         "valor": 550.00,
         "total_colaboradores": 15,
-        "referencia": "TI"
+        "referencia": "TI",
+        "detalhes": [
+            { 
+                "data_inicio": "31/01/2025",
+                "data_fim": "31/01/2026"
+            }
+        ]
     }
 ]

@@ -145,6 +145,7 @@ import ElegibilidadeConfigurar from './pages/Elegibilidade/configurar'
 import ElegibilidadeSelecionarFiliais from './pages/Elegibilidade/selecao-filiais'
 import ElegibilidadeSelecionarDepartamentos from './pages/Elegibilidade/selecao-departamentos'
 import ElegibilidadeEditarValor from './pages/Elegibilidade/editar-valor'
+import DetalhesElegibilidade from './pages/Elegibilidade/detalhes'
 
 function AppRouter() {
 
@@ -319,7 +320,7 @@ function AppRouter() {
               
                 <Route path="elegibilidade" element={<Elegibilidade />} >
                   <Route index element={<ElegibilidadeLista />} />
-                  <Route path="detalhes/:id" element={<DetalhesPedidos />} />
+                  <Route path="detalhes/:id" element={<DetalhesElegibilidade />} />
                   <Route path="configurar" element={<ElegibilidadeConfigurar />} />
                   <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
                   <Route path="selecao-filiais" element={<ElegibilidadeSelecionarFiliais />} />

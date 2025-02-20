@@ -55,11 +55,9 @@ function DataTableElegibilidadeDetalhes({ elegibilidade }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={elegibilidade} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados elegibilidade" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
-                <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
-                <Column body={representativeDescontoTemplate} field="desconto" header="Desconto" style={{ width: '35%' }}></Column>
-                <Column body={representativeEmpresaTemplate} field="empresa" header="Empresa" style={{ width: '35%' }}></Column>
+            <DataTable value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                <Column field="data_inicio" header="Data Início" style={{ width: '35%' }}></Column>
+                <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )
