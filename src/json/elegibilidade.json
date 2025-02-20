@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "tipo": "Filial",
+        "benefício": "Vale Alimentação",
+        "valor": 150.00,
+        "total_colaboradores": 200,
+        "referencia": "Filial 1"
+    },
+    {
+        "id": 2,
+        "tipo": "Filial",
+        "benefício": "Vale Refeição",
+        "valor": 300.00,
+        "total_colaboradores": 200,
+        "referencia": "Filial 1"
+    },
+    {
+        "id": 3,
+        "tipo": "Departamento",
+        "benefício": "Vale Alimentação",
+        "valor": 400.00,
+        "total_colaboradores": 35,
+        "referencia": "Jurídico"
+    },
+    {
+        "id": 4,
+        "tipo": "Departamento",
+        "benefício": "Vale Combustível",
+        "valor": 550.00,
+        "total_colaboradores": 15,
+        "referencia": "TI"
+    }
+]

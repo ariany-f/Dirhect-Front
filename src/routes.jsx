@@ -32,7 +32,6 @@ import DepartamentoAdicionarColaboradores from '@pages/Departamentos/adicionar-c
 import DepartamentoColaboradores from '@pages/Departamentos/colaboradores-sem-departamento'
 import LinhasTransporte from '@pages/LinhasTransporte'
 import ListaLinhasTransporte from '@pages/LinhasTransporte/lista'
-import PremiacaoSelecionarTipoRecarga from '@pages/Pedidos/selecao-tipo-recarga'
 import PremiacaoEditarValor from '@pages/Pedidos/editar-valor'
 import PremiacaoComoFunciona from '@pages/Pedidos/como-funciona'
 import PremiacaoSelecionarColaboradores from '@pages/Pedidos/selecao-colaboradores'
@@ -52,7 +51,6 @@ import CartaoSolicitarSegundaViaSucesso from '@pages/Cartoes/SolicitarSegundaVia
 import RecargaBeneficios from '@pages/Beneficios'
 import Beneficios from '@pages/Beneficios/lista'
 import BeneficioOndeUsar from '@pages/Beneficios/onde-usar'
-import BeneficioSelecionarTipoRecarga from '@pages/Beneficios/selecao-tipo-recarga'
 import BeneficioSelecionarColaboradores from '@pages/Beneficios/selecao-colaboradores'
 import BeneficioSelecionarDepartamentos from '@pages/Beneficios/selecao-departamentos'
 import BeneficioEditarValor from '@pages/Beneficios/editar-valor'
@@ -141,6 +139,12 @@ import MarketplaceLista from '@pages/Marketplace/grid'
 import PedidoAdicionarDetalhes from '@pages/Pedidos/adicionar-detalhes'
 import MobileBlocker from '@components/MobileBlocker'
 import { useEffect, useState } from 'react'
+import Elegibilidade from './pages/Elegibilidade'
+import ElegibilidadeLista from './pages/Elegibilidade/lista'
+import ElegibilidadeConfigurar from './pages/Elegibilidade/configurar'
+import ElegibilidadeSelecionarFiliais from './pages/Elegibilidade/selecao-filiais'
+import ElegibilidadeSelecionarDepartamentos from './pages/Elegibilidade/selecao-departamentos'
+import ElegibilidadeEditarValor from './pages/Elegibilidade/editar-valor'
 
 function AppRouter() {
 
@@ -292,7 +296,6 @@ function AppRouter() {
                   <Route path="detalhes/:id" element={<DetalhesPedidos />} />
                   <Route path="adicionar-detalhes" element={<PedidoAdicionarDetalhes />} />
                   <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
-                  <Route path="selecao-tipo-recarga" element={<PremiacaoSelecionarTipoRecarga />} />
                   <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
                   <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
                   <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
@@ -314,7 +317,17 @@ function AppRouter() {
 
                 <Route path="/candidato/registro/:id" element={<CandidatoRegistro />} />
               
-                <Route path="/elegibilidade" element={<Cartoes />} >
+                <Route path="elegibilidade" element={<Elegibilidade />} >
+                  <Route index element={<ElegibilidadeLista />} />
+                  <Route path="detalhes/:id" element={<DetalhesPedidos />} />
+                  <Route path="configurar" element={<ElegibilidadeConfigurar />} />
+                  <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
+                  <Route path="selecao-filiais" element={<ElegibilidadeSelecionarFiliais />} />
+                  <Route path="selecao-departamentos" element={<ElegibilidadeSelecionarDepartamentos />} />
+                  <Route path="editar-valor/:tipo" element={<ElegibilidadeEditarValor />} />
+                </Route>
+
+                {/* <Route path="/elegibilidade" element={<Cartoes />} >
                   <Route index element={<CartoesLista />} />
                 </Route>
                 <Route path="/elegibilidade/detalhes/:id" element={<CartaoDetalhes />} />
@@ -323,12 +336,11 @@ function AppRouter() {
                   <Route path=":id/endereco" element={<CartaoSolicitarSegundaViaEndereco />} />
                   <Route path=":id/sucesso" element={<CartaoSolicitarSegundaViaSucesso />} />
                   <Route path=":id/entrega/acompanhar" element={<CartaoSolicitarSegundaViaAcompanhar />} />
-                </Route>
+                </Route> */}
                 
                 <Route path="/beneficio" element={<RecargaBeneficios/>}>
                   <Route index element={<Beneficios />} />
                   <Route path="onde-usar" element={<BeneficioOndeUsar />} />
-                  <Route path="selecao-tipo-recarga" element={<BeneficioSelecionarTipoRecarga />} />
                   <Route path="selecao-colaboradores" element={<BeneficioSelecionarColaboradores />} />
                   <Route path="selecao-departamentos" element={<BeneficioSelecionarDepartamentos />} />
                   <Route path="editar-valor/:tipo" element={<BeneficioEditarValor />} />
