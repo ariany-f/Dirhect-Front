@@ -3,14 +3,31 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
-import CampoTexto from '@components/CampoTexto';
+import BadgeGeral from '@components/BadgeGeral';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
 });
+
+
+const Col12 = styled.div`
+    display: flex;
+    width: 100%;
+    gap: 24px;
+    flex-wrap: wrap;
+`
+
+const Col6 = styled.div`
+    display: inline-flex;
+    align-items: start;
+    justify-content: center;
+    gap: 8px;
+    flex-direction: column;
+`
 
 function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
 
@@ -36,6 +53,25 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
             Real.format(rowData.valor)
         )
     }
+    
+    const representativeBeneficiosTemplate = (rowData) => {
+        console.log(rowData)
+        return (
+            <>
+            {rowData.beneficios && rowData.beneficios.length > 0 &&
+                <Col12>
+                {rowData.beneficios.map((benefit, index) => {
+                    return (
+                        <Col6 key={index}>
+                            <BadgeGeral nomeBeneficio={`${benefit.beneficio} ${representativeValorTemplate(benefit)}`} />
+                        </Col6>
+                    )
+                })}
+                </Col12>
+           }
+           </>
+        )
+    }
 
     const rowExpansionTemplate = (data) => {
         return (
@@ -55,8 +91,9 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
     return (
         <>
             <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column expander={allowExpansion} style={{ width: '5%' }} />
+                {/* <Column expander={allowExpansion} style={{ width: '5%' }} /> */}
                 <Column field="nome_fornecedor" header="Contrato" style={{ width: '35%' }}></Column>
+                <Column body={representativeBeneficiosTemplate} field="beneficios" header="Benefícios" style={{ width: '35%' }}></Column>
                 <Column field="data_inicio" header="Data Início" style={{ width: '35%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
             </DataTable>
