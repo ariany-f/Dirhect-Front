@@ -106,12 +106,12 @@ function ElegibilidadeConfigurar() {
                                             <Frame alinhamento="center">
                                                 <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
                                                     <li>
-                                                        Essa opção você selecionara cada colaborador e pode configurar o valor dos benefícios um a um ou selecionando todos
+                                                        Essa opção você selecionara cada filial e pode configurar o valor dos benefícios um a um ou selecionando todos
                                                     </li>
                                                 </ul>
                                             </Frame>
                                         </Frame>
-                                        <Botao aoClicar={() => navegar('/elegibilidade/selecao-filiais')} size="medium">Recarregar por colaborador</Botao>
+                                        <Botao aoClicar={() => navegar('/elegibilidade/selecao-filiais')} size="medium">Configurar elegibilidade por filial</Botao>
                                     </CardSelecao>
                                 </Col6>
                                 <Col6>
@@ -136,7 +136,7 @@ function ElegibilidadeConfigurar() {
                                                 <Link to={'/estrutura'}>Configurar meus departamentos</Link>
                                             </BotaoSemBorda>
                                         </Frame>
-                                        <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Recarregar por departamento</Botao>
+                                        <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar elegibilidade por departamento</Botao>
                                     </CardSelecao>
                                 </Col6>
                             </Col12>
