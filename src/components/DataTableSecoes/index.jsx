@@ -1,15 +1,11 @@
 import styles from '@pages/Departamentos/Departamento.module.css'
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import { FaBan } from 'react-icons/fa'
 import { DataTable } from 'primereact/datatable';
 import CampoTexto from '@components/CampoTexto';
 import { Column } from 'primereact/column';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import BadgeBeneficio from '@components/BadgeBeneficio'
-import Texto from '@components/Texto';
 import './DataTable.css'
 
 const NumeroColaboradores = styled.p`
@@ -22,7 +18,7 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableSecoes({ secoes }) {
+function DataTableSecoes({ secoes, showSearch = true }) {
    
     const[selectedSecao, setSelectedSecao] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -47,11 +43,13 @@ function DataTableSecoes({ secoes }) {
 
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar seção" />
-                </span>
-            </div>
+            {showSearch &&
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar seção" />
+                    </span>
+                </div>
+            }
             <DataTable value={secoes} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selectedSecao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="id" header="Id" style={{ width: '15%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>

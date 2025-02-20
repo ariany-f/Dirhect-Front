@@ -22,7 +22,7 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableDepartamentos({ departamentos }) {
+function DataTableDepartamentos({ departamentos, showSearch = true }) {
    
     const[selectedDepartamento, setSelectedDepartamento] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -48,11 +48,13 @@ function DataTableDepartamentos({ departamentos }) {
 
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar departamento" />
-                </span>
-            </div>
+            {showSearch &&
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar departamento" />
+                    </span>
+                </div>
+            }
             <DataTable value={departamentos} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados departamentos" selection={selectedDepartamento} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="id" header="Id" style={{ width: '15%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>

@@ -22,7 +22,7 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableCargos({ cargos }) {
+function DataTableCargos({ cargos, showSearch = true }) {
    
     const[selectedCargo, setSelectedCargo] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -47,11 +47,13 @@ function DataTableCargos({ cargos }) {
 
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar departamento" />
-                </span>
-            </div>
+            {showSearch && 
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar departamento" />
+                    </span>
+                </div>
+            }
             <DataTable value={cargos} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados cargos" selection={selectedCargo} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="id" header="Id" style={{ width: '10%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>

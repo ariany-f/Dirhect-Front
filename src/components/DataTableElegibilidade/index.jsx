@@ -41,11 +41,11 @@ function DataTableElegibilidade({ elegibilidade, colaborador = null }) {
         let status = rowData?.status;
         switch(rowData?.status)
         {
-            case 'Aprovado':
-                status = <Tag severity="success" value="Aprovado"></Tag>;
+            case 'Ativo':
+                status = <Tag severity="success" value="Ativo"></Tag>;
                 break;
-            case 'Aguardando':
-                status = <Tag severity="warning" value="Aguardando"></Tag>;
+            case 'Cancelado':
+                status = <Tag severity="warning" value="Cancelado"></Tag>;
                 break;
         }
         return (
@@ -56,7 +56,7 @@ function DataTableElegibilidade({ elegibilidade, colaborador = null }) {
     const representativeTipoTemplate = (rowData) => {
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData.referencia}
+                {rowData.nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.total_colaboradores}</p>
@@ -74,8 +74,8 @@ function DataTableElegibilidade({ elegibilidade, colaborador = null }) {
                 </span>
             </div>}
             <DataTable value={elegibilidade} filters={filters} globalFilterFields={['tipo']}  emptyMessage="Não foram encontrados elegibilidade" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeTipoTemplate} field="referencia" header="Nome" style={{ width: '35%' }}></Column>
-                <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
+                <Column body={representativeTipoTemplate} field="nome" header="Nome" style={{ width: '35%' }}></Column>
+                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )

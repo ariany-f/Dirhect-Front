@@ -54,13 +54,8 @@ function DataTableElegibilidadeDetalhes({ elegibilidade }) {
     
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
-                </span>
-            </div>
             <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column expander={allowExpansion} style={{ width: '5rem' }} />
+                <Column expander={allowExpansion} style={{ width: '5%' }} />
                 <Column field="nome_fornecedor" header="Contrato" style={{ width: '35%' }}></Column>
                 <Column field="data_inicio" header="Data Início" style={{ width: '35%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
