@@ -8,6 +8,7 @@
         "referencia": "Filial 1",
         "detalhes": [
             { 
+                "contrato": "Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026"
             }
@@ -22,6 +23,7 @@
         "referencia": "Filial 1",
         "detalhes": [
             { 
+                "contrato": "Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026"
             }
@@ -36,6 +38,7 @@
         "referencia": "Jurídico",
         "detalhes": [
             { 
+                "contrato": "Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026"
             }
@@ -50,6 +53,7 @@
         "referencia": "TI",
         "detalhes": [
             { 
+                "contrato": "Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026"
             }

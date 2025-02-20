@@ -56,6 +56,7 @@ function DataTableElegibilidadeDetalhes({ elegibilidade }) {
                 </span>
             </div>
             <DataTable value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                <Column field="contrato" header="Contrato" style={{ width: '35%' }}></Column>
                 <Column field="data_inicio" header="Data Início" style={{ width: '35%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
             </DataTable>
