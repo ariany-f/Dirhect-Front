@@ -4,9 +4,6 @@ import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
-import { InputText } from 'primereact/inputtext';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
@@ -60,11 +57,6 @@ function DataTableLinhasTransporte({ linhas }) {
 
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar premiação" />
-                </span>
-            </div>
             <DataTable header={header} value={linhas} filters={filters} filterDisplay="row" globalFilterFields={['nome', 'operadora', 'codigo', 'fornecedor']}  emptyMessage="Não foram encontrados registros" selection={selectedPremiacao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="codigo" header="Codigo" style={{ width: '15%' }} filter filterPlaceholder="Filtrar"></Column>
                 <Column field="fornecedor" header="Fornecedor" style={{ width: '20%' }} filter filterPlaceholder="Filtrar"></Column>
