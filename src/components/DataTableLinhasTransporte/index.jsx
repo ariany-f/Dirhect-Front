@@ -51,8 +51,9 @@ function DataTableLinhasTransporte({ linhas }) {
             </div>
             <DataTable value={linhas} filters={filters} globalFilterFields={['nome', 'operadora', 'codigo']}  emptyMessage="Não foram encontrados registros" selection={selectedPremiacao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="codigo" header="Codigo" style={{ width: '15%' }}></Column>
-                <Column field="operadora" header="Operadora" style={{ width: '35%' }}></Column>
-                <Column field="nome" header="Nome" style={{ width: '20%' }}></Column>
+                <Column field="fornecedor" header="Fornecedor" style={{ width: '20%' }}></Column>
+                <Column field="operadora" header="Operadora" style={{ width: '25%' }}></Column>
+                <Column field="nome" header="Nome" style={{ width: '30%' }}></Column>
                 <Column body={representativeTarifaTemplate} field="tarifa" header="Tarifa" style={{ width: '20%' }}></Column>
                 
             </DataTable>
