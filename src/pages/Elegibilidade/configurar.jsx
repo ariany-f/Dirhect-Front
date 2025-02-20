@@ -131,10 +131,6 @@ function ElegibilidadeConfigurar() {
                                                     </li>
                                                 </ul>
                                             </Frame>
-                                            <BotaoSemBorda>
-                                                <FaPencilAlt />
-                                                <Link to={'/estrutura'}>Configurar meus departamentos</Link>
-                                            </BotaoSemBorda>
                                         </Frame>
                                         <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar elegibilidade por departamento</Botao>
                                     </CardSelecao>
