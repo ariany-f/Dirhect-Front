@@ -18,14 +18,22 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableSecoes({ secoes, showSearch = true }) {
+function DataTableSecoes({ secoes, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
    
     const[selectedSecao, setSelectedSecao] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    const [selectedSecoes, setSelectedSecoes] = useState([]);
     const navegar = useNavigate()
+
+    useEffect(() => {
+        if (selected && Array.isArray(selected) && selected.length > 0 && secoes) {
+            const secoesSelecionadas = secoes.filter(secao => selected.includes(secao.nome));
+            setSelectedSecoes(secoesSelecionadas);
+        }
+    }, [selected, secoes]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -41,6 +49,15 @@ function DataTableSecoes({ secoes, showSearch = true }) {
         setSelectedSecao(value.id)
     }
 
+    function handleSelectChange(e) {
+        if(selected)
+        {
+            setSelected(e.value)
+        }else {
+            verDetalhes(e.value)
+        }
+    }
+
     return (
         <>
             {showSearch &&
@@ -50,7 +67,10 @@ function DataTableSecoes({ secoes, showSearch = true }) {
                     </span>
                 </div>
             }
-            <DataTable value={secoes} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selectedSecao} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={secoes} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selected ? selectedSecoes : selectedSecao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                {selected &&
+                    <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
+                }
                 <Column field="id" header="Id" style={{ width: '15%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
