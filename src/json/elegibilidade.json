@@ -8,7 +8,7 @@
             "filiais": {
                 "todos": false,
                 "lista": [
-                    "Filial 1"
+                    1
                 ]
             },
             "departamentos": {
@@ -80,7 +80,7 @@
             "filiais": {
                 "todos": false,
                 "lista": [
-                    "Filial 2"
+                    2
                 ]
             },
             "departamentos": {
@@ -148,7 +148,7 @@
             "filiais": {
                 "todos": false,
                 "lista": [
-                    "Filial 2"
+                    2
                 ]
             },
             "departamentos": {
@@ -220,14 +220,14 @@
             "filiais": {
                 "todos": false,
                 "lista": [
-                    "Filial 2"
+                    2
                 ]
             },
             "departamentos": {
                 "todos": false,
                 "lista": [
-                    "TI",
-                    "Jurídico"
+                    2,
+                    1
                 ]
             },
             "cargos": {

@@ -30,8 +30,10 @@ function DataTableDepartamentos({ departamentos, showSearch = true, pagination =
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && departamentos) {
-            const departamentosSelecionados = departamentos.filter(departamento => selected.includes(departamento.nome));
-            setSelectedDepartamentos(departamentosSelecionados);
+            const departamentosSelecionados = departamentos.filter(departamento => selected.includes(departamento.id));
+            setSelectedDepartamentos([...departamentosSelecionados]); // Garante que o array é atualizado
+        } else {
+            setSelectedDepartamentos([]); // Evita manter seleções erradas
         }
     }, [selected, departamentos]);
 
@@ -50,16 +52,32 @@ function DataTableDepartamentos({ departamentos, showSearch = true, pagination =
         navegar(`/estrutura/detalhes/${value.id}`)
     }
     
-
     function handleSelectChange(e) {
-        if(selected)
-        {
-            setSelected(e.value)
-        }else {
-            verDetalhes(e.value)
+        if (selected) {
+            let selectedValue = e.value;
+
+            if (Array.isArray(selectedValue)) {
+                setSelectedDepartamentos(selectedValue);
+                setSelected(selectedValue.map(departamento => departamento.id)); // Salva os IDs selecionados
+            } else {
+                let newSelection = [...selectedDepartamentos];
+
+                // Se o item já estiver selecionado, remove
+                if (newSelection.some(departamento => departamento.id === selectedValue.id)) {
+                    newSelection = newSelection.filter(departamento => departamento.id !== selectedValue.id);
+                } else {
+                    // Caso contrário, adiciona à seleção
+                    newSelection.push(selectedValue);
+                }
+
+                setSelectedDepartamentos(newSelection);
+                setSelected(newSelection.map(departamento => departamento.id)); // Mantém IDs no estado global
+            }
+        } else {
+            setSelectedDepartamento(e.value.id);
+            verDetalhes(e.value);
         }
     }
-
 
     return (
         <>

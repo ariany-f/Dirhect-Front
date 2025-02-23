@@ -34,10 +34,12 @@ function DataTableCargos({ cargos, showSearch = true, pagination = true, selecte
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && cargos) {
-            const cargosSelecionados = cargos.filter(cargo => selected.includes(cargo.nome));
+            const cargosSelecionados = cargos.filter(cargo => selected.includes(cargo.id));
             setSelectedCargos(cargosSelecionados);
+        } else {
+            setSelectedCargos([]);
         }
-    }, [cargos, selected]);
+    }, [selected, cargos]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -52,13 +54,27 @@ function DataTableCargos({ cargos, showSearch = true, pagination = true, selecte
     {
         setSelectedCargo(value.public_id)
     }
-
+    
     function handleSelectChange(e) {
-        if(selected)
-        {
-            setSelected(e.value)
-        }else {
-            verDetalhes(e.value)
+        if (selected) {
+            let selectedValue = e.value;
+            let newSelection = [...selectedCargos];
+
+            if (Array.isArray(selectedValue)) {
+                setSelectedCargos(selectedValue);
+                setSelected(selectedValue.map(cargo => cargo.id)); // Mantém os IDs no estado global
+            } else {
+                if (newSelection.some(cargo => cargo.id === selectedValue.id)) {
+                    newSelection = newSelection.filter(cargo => cargo.id !== selectedValue.id);
+                } else {
+                    newSelection.push(selectedValue);
+                }
+                setSelectedCargos(newSelection);
+                setSelected(newSelection.map(cargo => cargo.id));
+            }
+        } else {
+            setSelectedCargo(e.value.id);
+            verDetalhes(e.value);
         }
     }
 

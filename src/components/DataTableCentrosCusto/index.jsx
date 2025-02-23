@@ -29,8 +29,10 @@ function DataTableCentrosCusto({ centros_custo, showSearch = true, pagination = 
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && centros_custo) {
-            const centrosCustoSelecionados = centros_custo.filter(centro_custo => selected.includes(centro_custo.nome));
-            setSelectedCentrosCusto(centrosCustoSelecionados);
+            const centrosCustoSelecionados = centros_custo.filter(centro_custo => selected.includes(centro_custo.id));
+            setSelectedCentrosCusto([...centrosCustoSelecionados]); // Garante que o array é atualizado
+        } else {
+            setSelectedCentrosCusto([]); // Garante que não há itens selecionados ao limpar
         }
     }, [centros_custo, selected]);
 
@@ -49,13 +51,31 @@ function DataTableCentrosCusto({ centros_custo, showSearch = true, pagination = 
     }
 
     function handleSelectChange(e) {
-        if(selected)
-        {
-            setSelected(e.value)
-        }else {
-            verDetalhes(e.value)
+        if (selected) {
+            let selectedValue = e.value; // Lista atual de itens selecionados
+    
+            if (Array.isArray(selectedValue)) {
+                setSelectedCentrosCusto(selectedValue);
+                setSelected(selectedValue.map(centro_custo => centro_custo.id)); // Usa id em vez de nome
+            } else {
+                let newSelection = [...selectedCentrosCusto];
+    
+                // Se o item já estiver na seleção, remova-o
+                if (newSelection.some(centro_custo => centro_custo.id === selectedValue.id)) {
+                    newSelection = newSelection.filter(centro_custo => centro_custo.id !== selectedValue.id);
+                } else {
+                    // Caso contrário, adicione
+                    newSelection.push(selectedValue);
+                }
+    
+                setSelectedCentrosCusto(newSelection);
+                setSelected(newSelection.map(centro_custo => centro_custo.id)); // Usa id para a seleção
+            }
+        } else {
+            setSelectedCentroCusto(e.value.public_id);
+            verDetalhes(e.value);
         }
-    }
+    }    
 
     return (
         <>
@@ -66,7 +86,17 @@ function DataTableCentrosCusto({ centros_custo, showSearch = true, pagination = 
                     </span>
                 </div>
             }
-            <DataTable value={centros_custo} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados centros de custo" selection={selected ? selectedCentrosCusto : selectedCentroCusto} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={centros_custo} 
+                filters={filters} 
+                globalFilterFields={['id']}  
+                emptyMessage="Não foram encontrados centros de custo" 
+                selection={selected ? selectedCentrosCusto : selectedCentroCusto} 
+                onSelectionChange={handleSelectChange} 
+                selectionMode={selected ? "checkbox" : "single"} 
+                paginator={pagination} 
+                rows={7}  
+                tableStyle={{ minWidth: '68vw' }}>
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }

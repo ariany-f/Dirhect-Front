@@ -19,8 +19,10 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && filiais) {
-            const filiaisSelecionadas = filiais.filter(filial => selected.includes(filial.nome));
+            const filiaisSelecionadas = filiais.filter(filial => selected.includes(filial.id));
             setSelectedFiliais(filiaisSelecionadas);
+        } else {
+            setSelectedFiliais([]);
         }
     }, [selected, filiais]);
 
@@ -59,11 +61,25 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
     }
 
     function handleSelectChange(e) {
-        if(selected)
-        {
-            setSelected(e.value)
-        }else {
-            verDetalhes(e.value)
+        if (selected) {
+            let selectedValue = e.value;
+            let newSelection = [...selectedFiliais];
+
+            if (Array.isArray(selectedValue)) {
+                setSelectedFiliais(selectedValue);
+                setSelected(selectedValue.map(filial => filial.id)); // Mantém os IDs no estado global
+            } else {
+                if (newSelection.some(filial => filial.id === selectedValue.id)) {
+                    newSelection = newSelection.filter(filial => filial.id !== selectedValue.id);
+                } else {
+                    newSelection.push(selectedValue);
+                }
+                setSelectedFiliais(newSelection);
+                setSelected(newSelection.map(filial => filial.id));
+            }
+        } else {
+            setSelectedFilial(e.value.id);
+            verDetalhes(e.value);
         }
     }
 

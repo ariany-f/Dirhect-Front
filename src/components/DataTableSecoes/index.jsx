@@ -30,8 +30,10 @@ function DataTableSecoes({ secoes, showSearch = true, pagination = true, selecte
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && secoes) {
-            const secoesSelecionadas = secoes.filter(secao => selected.includes(secao.nome));
+            const secoesSelecionadas = secoes.filter(secao => selected.includes(secao.id));
             setSelectedSecoes(secoesSelecionadas);
+        } else {
+            setSelectedSecoes([]);
         }
     }, [selected, secoes]);
 
@@ -50,11 +52,25 @@ function DataTableSecoes({ secoes, showSearch = true, pagination = true, selecte
     }
 
     function handleSelectChange(e) {
-        if(selected)
-        {
-            setSelected(e.value)
-        }else {
-            verDetalhes(e.value)
+        if (selected) {
+            let selectedValue = e.value;
+            let newSelection = [...selectedSecoes];
+
+            if (Array.isArray(selectedValue)) {
+                setSelectedSecoes(selectedValue);
+                setSelected(selectedValue.map(secao => secao.id)); // Mantém os IDs no estado global
+            } else {
+                if (newSelection.some(secao => secao.id === selectedValue.id)) {
+                    newSelection = newSelection.filter(secao => secao.id !== selectedValue.id);
+                } else {
+                    newSelection.push(selectedValue);
+                }
+                setSelectedSecoes(newSelection);
+                setSelected(newSelection.map(secao => secao.id));
+            }
+        } else {
+            setSelectedSecao(e.value.id);
+            verDetalhes(e.value);
         }
     }
 
