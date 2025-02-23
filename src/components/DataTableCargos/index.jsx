@@ -22,14 +22,22 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableCargos({ cargos, showSearch = true }) {
+function DataTableCargos({ cargos, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
    
     const[selectedCargo, setSelectedCargo] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    const [selectedCargos, setSelectedCargos] = useState([]);
     const navegar = useNavigate()
+
+    useEffect(() => {
+        if (selected && Array.isArray(selected) && selected.length > 0 && cargos) {
+            const cargosSelecionados = cargos.filter(cargo => selected.includes(cargo.nome));
+            setSelectedCargos(cargosSelecionados);
+        }
+    }, [cargos, selected]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -45,6 +53,15 @@ function DataTableCargos({ cargos, showSearch = true }) {
         setSelectedCargo(value.public_id)
     }
 
+    function handleSelectChange(e) {
+        if(selected)
+        {
+            setSelected(e.value)
+        }else {
+            verDetalhes(e.value)
+        }
+    }
+
     return (
         <>
             {showSearch && 
@@ -54,7 +71,10 @@ function DataTableCargos({ cargos, showSearch = true }) {
                     </span>
                 </div>
             }
-            <DataTable value={cargos} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados cargos" selection={selectedCargo} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={cargos} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados cargos" selection={selected ? selectedCargos : selectedCargo} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+                {selected &&
+                    <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
+                }
                 <Column field="id" header="Id" style={{ width: '10%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
