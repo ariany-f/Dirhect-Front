@@ -78,7 +78,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
             }
             <DataTable value={filiais} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage="Não foram encontradas filiais" selection={selected ? selectedFiliais : selectedFilial} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 {selected &&
-                    <Column selectionMode="multiple" style={{ width: '15%' }}></Column>
+                    <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
                 <Column field="nome" header="Filial" style={{ width: '35%' }}></Column>
                 <Column body={representativeCNPJTemplate} header="CNPJ" style={{ width: '25%' }}></Column>

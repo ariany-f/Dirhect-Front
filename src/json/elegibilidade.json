@@ -49,11 +49,11 @@
                 "data_fim": "31/01/2026",
                 "beneficios": [
                     {
-                        "beneficio": "Vale Alimentação",
+                        "beneficio": "Alimentação",
                         "valor": 150.00
                     },
                     { 
-                        "beneficio": "Vale Refeição",
+                        "beneficio": "Refeição",
                         "valor": 300.00
                     }
                 ]
@@ -64,7 +64,7 @@
                 "data_fim": "31/01/2026",
                 "beneficios": [
                     { 
-                        "beneficio": "Vale Combustível",
+                        "beneficio": "Combustível",
                         "valor": 1600.00
                     }
                 ]
@@ -121,7 +121,7 @@
                 "data_fim": "31/01/2026",
                 "beneficios": [
                     { 
-                        "beneficio": "Vale Refeição",
+                        "beneficio": "Refeição",
                         "valor": 500.00
                     }
                 ]
@@ -132,7 +132,7 @@
                 "data_fim": "31/01/2026",
                 "beneficios": [
                     { 
-                        "beneficio": "Vale Combustível",
+                        "beneficio": "Combustível",
                         "valor": 700.00
                     }
                 ]
@@ -189,11 +189,11 @@
                 "data_fim": "31/01/2026",
                 "beneficios": [
                     {
-                        "beneficio": "Vale Alimentação",
+                        "beneficio": "Alimentação",
                         "valor": 250.00
                     },
                     { 
-                        "beneficio": "Vale Refeição",
+                        "beneficio": "Refeição",
                         "valor": 500.00
                     }
                 ]
@@ -204,7 +204,7 @@
                 "data_fim": "31/01/2026",
                 "beneficios": [
                     { 
-                        "beneficio": "Vale Combustível",
+                        "beneficio": "Combustível",
                         "valor": 700.00
                     }
                 ]
@@ -262,11 +262,11 @@
                 "data_fim": "31/01/2026",
                 "beneficios": [
                     {
-                        "beneficio": "Vale Alimentação",
+                        "beneficio": "Alimentação",
                         "valor": 250.00
                     },
                     { 
-                        "beneficio": "Vale Refeição",
+                        "beneficio": "Refeição",
                         "valor": 500.00
                     }
                 ]
@@ -277,7 +277,7 @@
                 "data_fim": "31/01/2026",
                 "beneficios": [
                     { 
-                        "beneficio": "Vale Combustível",
+                        "beneficio": "Combustível",
                         "valor": 700.00
                     }
                 ]

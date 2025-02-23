@@ -285,6 +285,42 @@ template {
         transition: background-color .3s;
     }
 }
+.p-checkbox.p-highlight .p-checkbox-box {
+  background-color: var(--primaria);
+}
+  .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    background-color: var(--neutro-300);
+    color: var(--black);
+    border-radius: 50px;
+    padding: 8px 12px;
+    & .p-tabview-title {
+      color: var(--black);
+      font-family: var(--fonte-primaria);
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+  .p-tabview .p-tabview-nav li:not(.p-highlight):not(.p-disabled):hover .p-tabview-nav-link {
+    cursor: pointer;
+  }
+  .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background-color: var(--black);
+    color: var(--white);
+    border-radius: 50px;
+    padding: 8px 12px;
+    & .p-tabview-title {
+      color: var(--white);
+      font-family: var(--fonte-primaria);
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+  .p-tabview-nav{
+    gap: 16px;
+  }
+  .p-tabview-panels {
+    padding: 40px 0
+  }
 `
 
 
