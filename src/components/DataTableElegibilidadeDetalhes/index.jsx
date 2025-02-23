@@ -55,7 +55,6 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
     }
     
     const representativeBeneficiosTemplate = (rowData) => {
-        console.log(rowData)
         return (
             <>
             {rowData.beneficios && rowData.beneficios.length > 0 &&
@@ -63,7 +62,12 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
                 {rowData.beneficios.map((benefit, index) => {
                     return (
                         <Col6 key={index}>
-                            <BadgeGeral nomeBeneficio={`${benefit.beneficio}`} />
+                            <BadgeGeral  nomeBeneficio={
+                                    <>
+                                        {benefit.beneficio} <br /> 
+                                        {representativeValorTemplate(benefit)}
+                                    </>
+                                }  />
                         </Col6>
                     )
                 })}
