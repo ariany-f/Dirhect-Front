@@ -201,10 +201,10 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
         <>
             <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 {/* <Column expander={allowExpansion} style={{ width: '5%' }} /> */}
-                <Column body={representativeContratoTemplate} field="nome_fornecedor" header="Contrato" style={{ width: '35%' }}></Column>
-                <Column field="data_inicio" header="Data Início" style={{ width: '35%' }}></Column>
-                <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
-                <Column body={representativeBeneficiosTemplate} field="beneficios" header="Benefícios" style={{ width: '35%' }}></Column>
+                <Column body={representativeContratoTemplate} field="nome_fornecedor" header="Contrato" style={{ width: '15%' }}></Column>
+                <Column body={representativeBeneficiosTemplate} field="beneficios" header="Benefícios" style={{ width: '55%' }}></Column>
+                <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
+                <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
             </DataTable>
         </>
     )
