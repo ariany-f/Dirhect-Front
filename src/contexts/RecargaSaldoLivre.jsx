@@ -70,12 +70,12 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
         }
         else
         {
-            const departments = recarga.departamentos
-            departments.push(departamentos)
+            const fil = recarga.departamentos
+            departamentos.push(fil)
             setRecarga(estadoAnterior => {
                 return {
                     ...estadoAnterior,
-                    departments
+                    departamentos
                 }
             })
         }
