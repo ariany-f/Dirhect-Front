@@ -42,7 +42,7 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
         switch(rowData?.status)
         {
             case 'Em preparação':
-                status = <Tag severity="warning" value="Em preparação"></Tag>;
+                status = <Tag severity="neutral" value="Em preparação"></Tag>;
                 break;
             case 'Em validação':
                 status = <Tag severity="warning" value="Em validação"></Tag>;
