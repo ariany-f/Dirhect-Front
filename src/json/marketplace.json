@@ -6,7 +6,7 @@
         "price": 200,
         "nome": "Giuliana Flores",
         "banner": "https://static.giulianaflores.com.br/images/product/26106gg.jpg?ims=500x500",
-        "categoria": "Presentes",
+        "categorias": ["Presentes"],
         "descricao": "Buquês de Flores a Partir de R$49,90. Aproveite as Condições Especiais Com Giuliana Flores. Flores e Presentes Com Até 70% de Desconto. Acesse já o Site e Confira!"
     },
     {
@@ -16,7 +16,7 @@
         "price": 78,
         "nome": "GymPass",
         "banner": "https://sinprofaz.org.br/2024/wp-content/uploads/2020/12/logo-gympass.jpg",
-        "categoria": "Bem-Estar",
+        "categorias": ["Bem-Estar"],
         "descricao": "Uma infinidade de opções de academias, personal training e apps de bem-estar com o Wellhub. Veja Como é Simples Contratar o Plano de Benefícios da Wellhub. Solicite um Orçamento."
     },
     {
@@ -26,7 +26,7 @@
         "price": 78,
         "nome": "Martins & Corrêa Corretora de Seguros",
         "banner": "https://corretoramc.com.br/wa_images/mc%20logo.png?v=1jhis0g",
-        "categoria": "Saúde",
+        "categorias": ["Saúde", "Seguros"],
         "descricao": "Acesse https://corretoramc.com.br/"
     },
     {
@@ -36,7 +36,7 @@
         "price": 78,
         "nome": "Nome da Marca",
         "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categoria": "Categoria",
+        "categorias": ["Categoria"],
         "descricao": "Descrição em texto"
     },
     {
@@ -46,7 +46,7 @@
         "price": 78,
         "nome": "Nome da Marca",
         "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categoria": "Categoria",
+        "categorias": ["Categoria"],
         "descricao": "Descrição em texto"
     },
     {
@@ -56,7 +56,7 @@
         "price": 78,
         "nome": "Nome da Marca",
         "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categoria": "Categoria",
+        "categorias": ["Categoria"],
         "descricao": "Descrição em texto"
     }
 ]

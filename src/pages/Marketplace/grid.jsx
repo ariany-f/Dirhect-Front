@@ -73,7 +73,13 @@ export default function MarketplaceLista() {
                 </ImageContainer>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
                     <Texto weight={800}>{product.nome}</Texto>
-                    <BadgeGeral nomeBeneficio={product.categoria} iconeBeneficio={<TbTag />}></BadgeGeral>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {
+                        product.categorias.map((categoria) => (
+                            <BadgeGeral nomeBeneficio={categoria} iconeBeneficio={<TbTag />}></BadgeGeral>
+                        ))
+                    }
+                    </div>
                     <ScrollPanel style={{ width: '100%', height: '100px' }}>
                         <Texto>{product.descricao}</Texto>
                     </ScrollPanel>
