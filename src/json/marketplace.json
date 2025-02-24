@@ -86,7 +86,7 @@
         "price": 78,
         "nome": "CloseCare",
         "banner": "https://closecare.com.br/hubfs/closecare_logo.webp",
-        "categorias": ["Soluções para RH", "Saúde"],
+        "categorias": ["Soluções de RH", "Saúde"],
         "descricao": "CloseCare é uma plataforma de gestão de saúde e bem-estar, que conecta pessoas, empresas e profissionais de saúde, com o objetivo de melhorar a qualidade de vida e o bem-estar das pessoas."
     },
     {
@@ -94,9 +94,9 @@
         "status": "Ativo",
         "rating": 4,
         "price": 78,
-        "nome": "Nome da Marca",
-        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categorias": ["Categoria"],
-        "descricao": "Descrição em texto"
+        "nome": "Gestão Sat",
+        "banner": "https://gestaosat.com/wp-content/uploads/2022/01/logo-menu.png",
+        "categorias": ["Soluções de RH"],
+        "descricao": "A Gestão Sat é uma empresa de consultoria em gestão de pessoas, com foco em gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas,"
     }
 ]
