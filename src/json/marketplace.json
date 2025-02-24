@@ -98,5 +98,15 @@
         "banner": "https://gestaosat.com/wp-content/uploads/2022/01/logo-menu.png",
         "categorias": ["Soluções de RH"],
         "descricao": "A Gestão Sat é uma empresa de consultoria em gestão de pessoas, com foco em gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas, gestão de pessoas,"
+    },
+    {
+        "id": 11,
+        "status": "Ativo",
+        "rating": 4,
+        "price": 78,
+        "nome": "Nome da Marca",
+        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
+        "categorias": ["Categoria"],
+        "descricao": "Descrição em texto"
     }
 ]
