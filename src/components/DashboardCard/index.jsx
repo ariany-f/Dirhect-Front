@@ -10,8 +10,8 @@ import { FaWallet, FaArrowRight, FaUser, FaFileAlt, FaUserPlus, FaUserMinus, FaC
 import styles from './DashboardCard.module.css'
 import { Skeleton } from 'primereact/skeleton'
 import { GrAddCircle } from 'react-icons/gr'
-import { MdFilter9Plus, MdMan2, MdWoman, MdWoman2, MdWork } from 'react-icons/md'
-import { IoIosTimer } from "react-icons/io";
+import { MdFilter9Plus, MdMan2, MdOutlineTimer, MdWoman, MdWoman2, MdWork } from 'react-icons/md'
+import { IoMdTimer } from "react-icons/io";
 import { AiOutlinePieChart } from 'react-icons/ai'
 import { BsHourglassSplit } from 'react-icons/bs'
 import { Timeline } from 'primereact/timeline'
@@ -37,7 +37,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
 
         return (
             <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', borderColor: getSeverityColor(getSeverity(item)), borderStyle:'solid', borderWidth: '1px', width: '24px', height: '24px', borderRadius: '50%' }}>
-                {isCompleted ? <FaCheckCircle size={22} fill={getSeverityColor(getSeverity(item))} /> : <IoIosTimer size={18} fill="grey" />}
+                {isCompleted ? <FaCheckCircle size={22} fill={getSeverityColor(getSeverity(item))} /> : <MdOutlineTimer size={18} fill="grey" />}
             </span>
         );
     };
