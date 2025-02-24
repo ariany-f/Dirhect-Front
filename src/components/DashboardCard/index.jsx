@@ -23,8 +23,8 @@ let Real = new Intl.NumberFormat('pt-BR', {
 
 function DashboardCard({ dashboardData, colaboradores = [] }){
     const pedidos = [
-        { titulo: 'Vale Alimentação - 03/2025', statusAtual: 'Em validação', total_colaboradores: 5, valor: 15630.00 },
-        { titulo: 'Vale Refeição - 03/2025', statusAtual: 'Em preparação', total_colaboradores: 2, valor: 9870.00 },
+        { titulo: 'Vale Alimentação', dataPedido: '25/02/2025', referencia:"03/2025", statusAtual: 'Em validação', total_colaboradores: 5, valor: 15630.00 },
+        { titulo: 'Vale Refeição', dataPedido: '26/02/2025', referencia:"03/2025", statusAtual: 'Em preparação', total_colaboradores: 2, valor: 9870.00 },
     ];
 
     const statuses = ['Em preparação', 'Em validação', 'Em aprovação', 'Pedido Realizado'];
@@ -228,13 +228,16 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                 <div key={index} style={{ width: '100%', padding: '14px', gap: '5px'}}>
                                     <div style={{display: 'flex', justifyContent: 'space-between', gap: '10px'}}>
                                         <div>
-                                            <Texto weight={800}>{pedido.titulo}</Texto>
-                                            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                                                Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{pedido.total_colaboradores}</p>
+                                            <div style={{display: 'flex', gap: '2px'}}>
+                                            <Texto weight={800}>{pedido.titulo}</Texto> - <Texto weight={400}>{pedido.referencia}</Texto>
+                                            </div>
+                                            <div style={{marginTop: '5px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                                                Colaboradores a receber:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{pedido.total_colaboradores}</p>
                                             </div>
                                         </div>
-                                        <div>
-                                            <b>{Real.format(pedido.valor)}</b>
+                                        <div style={{textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'end'}}>
+                                            <div style={{display: 'flex', gap: '5px'}}><Texto size={"12px"}>Valor Total: </Texto><Texto weight={800}>{Real.format(pedido.valor)}</Texto></div>
+                                            <Texto size={"12px"}>Data do Pedido: {pedido.dataPedido}</Texto>
                                         </div>
                                     </div>
                                     <Timeline 
