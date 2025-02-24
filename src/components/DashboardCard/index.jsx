@@ -6,11 +6,12 @@ import SubTitulo from '@components/SubTitulo'
 import Container from '@components/Container'
 import Frame from '@components/Frame'
 import { Link } from 'react-router-dom'
-import { FaWallet, FaArrowRight, FaUser, FaFileAlt, FaUserPlus, FaUserMinus, FaCalculator, FaLayerGroup, FaUmbrellaBeach, FaCheckCircle, FaCircle } from 'react-icons/fa'
+import { FaWallet, FaArrowRight, FaUser, FaFileAlt, FaUserPlus, FaUserMinus, FaCalculator, FaLayerGroup, FaUmbrellaBeach, FaCheckCircle, FaCircle, FaHourglass } from 'react-icons/fa'
 import styles from './DashboardCard.module.css'
 import { Skeleton } from 'primereact/skeleton'
 import { GrAddCircle } from 'react-icons/gr'
 import { MdFilter9Plus, MdMan2, MdWoman, MdWoman2, MdWork } from 'react-icons/md'
+import { IoIosTimer } from "react-icons/io";
 import { AiOutlinePieChart } from 'react-icons/ai'
 import { BsHourglassSplit } from 'react-icons/bs'
 import { Timeline } from 'primereact/timeline'
@@ -35,8 +36,8 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
         const isCompleted = statusIndex <= atualIndex;
 
         return (
-            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '50%', color: 'white' }}>
-                {isCompleted ? <FaCheckCircle size={18} fill={getSeverityColor(getSeverity(item))} /> : <FaCircle size={8} fill="lightgrey" />}
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', borderColor: getSeverityColor(getSeverity(item)), borderStyle:'solid', borderWidth: '1px', width: '24px', height: '24px', borderRadius: '50%' }}>
+                {isCompleted ? <FaCheckCircle size={22} fill={getSeverityColor(getSeverity(item))} /> : <IoIosTimer size={18} fill="grey" />}
             </span>
         );
     };
@@ -49,7 +50,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                 color = "orange";
                 break;
             case 'info':
-                color = "blue";
+                color = "rgb(61, 142, 220)";
                 break;
             case 'success':
                 color = "green";
