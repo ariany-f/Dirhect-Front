@@ -74,16 +74,16 @@
         color:  var(--error-400); /* Texto branco */
     }
     & svg {
-        fill: var(--error-400); /* Ícone vermelho escuro */
+        fill: var(--error-500); /* Ícone vermelho escuro */
     }
     & svg *{
-        color:  var(--error-400); /* Ícone vermelho escuro */
-        stroke:  var(--error-400); /* Ícone vermelho escuro */
+        color:  var(--error-500); /* Ícone vermelho escuro */
+        stroke:  var(--error-500); /* Ícone vermelho escuro */
     }
 }
 
 .beneficio.error svg *{
-    color: var(--error-400); /* Ícone vermelho escuro */
+    color: var(--error-500); /* Ícone vermelho escuro */
 }
 
 .beneficio.neutro {

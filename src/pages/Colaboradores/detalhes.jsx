@@ -130,7 +130,7 @@ function ColaboradorDetalhes() {
                                 </div>
                             </div>
                         }  />
-                        <BadgeGeral severity="error" nomeBeneficio={
+                        <BadgeGeral severity="neutro" nomeBeneficio={
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <RiGasStationFill size={20} />
                                 <div>
