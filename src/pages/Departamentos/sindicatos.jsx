@@ -2,18 +2,15 @@ import styles from './Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import http from '@http'
-import DataTableDepartamentos from '@components/DataTableDepartamentos'
-import departments from '@json/departments.json'
-import CardText from '@components/CardText'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
-import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
+import ModalAdicionarSindicato from '@components/ModalAdicionarSindicato'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
-import DataTableFiliais from '@components/DataTableFiliais'
+import DataTableSindicatos from '@components/DataTableSindicatos'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -44,7 +41,7 @@ const ContainerSemRegistro = styled.div`
 function SindicatosLista() {
 
     const [loading, setLoading] = useState(false)
-    const [sindicatos, setFiliais] = useState(null)
+    const [sindicatos, setSindicatos] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
 
@@ -53,9 +50,9 @@ function SindicatosLista() {
         if(!sindicatos) {
             
             setLoading(true)
-            http.get('filial/?format=json')
+            http.get('sindicato/?format=json')
                 .then(response => {
-                    setFiliais(response)
+                    setSindicatos(response)
                     setLoading(false)
                 })
                 .catch(erro => {
@@ -95,7 +92,7 @@ function SindicatosLista() {
             
             {
                 sindicatos && sindicatos.length > 0 ?
-                <DataTableFiliais filiais={sindicatos} />
+                <DataTableSindicatos sindicatos={sindicatos} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
@@ -106,7 +103,7 @@ function SindicatosLista() {
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarSindicato aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
