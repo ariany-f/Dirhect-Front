@@ -54,24 +54,18 @@ function ElegibilidadeSelecionarFiliais() {
     const toast = useRef(null)
 
     useEffect(() => {
-        // if(!recarga.name)
-        // {
-        //     toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você deve adicionar detalhes da recarga', life: 3000 });
-        //     setTimeout(() => {
-        //         navegar(`/pedidos/adicionar-detalhes`)
-        //     }, "1500");
-        // }
-  
-        // setFiliais([])
-        // http.get('api/collaborator/index')
-        //     .then(response => {
-        //         if(response.success)
-        //         {
-        //             setListaFiliais(response.data.collaborators)
-        //         }
-        //     })
-        //     .catch(erro => console.log(erro))
-    }, [listaFiliais])
+        
+        http.get('filial/?format=json')
+            .then(response => {
+                setListaFiliais(response)
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                
+            })
+    }, [])
     
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -85,6 +79,24 @@ function ElegibilidadeSelecionarFiliais() {
     function editarValor(){
         setFiliais(selectedFiliais)
         navegar('/elegibilidade/editar-valor/filiais')
+    }
+    
+    function formataCNPJ(cnpj) {
+        cnpj = cnpj.replace(/[^\d]/g, "");
+        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+    }
+    
+    const representativeCNPJTemplate = (rowData) => {
+        if(rowData?.cnpj)
+        {
+            return (
+                formataCNPJ(rowData.cnpj)
+            )
+        }
+        else
+        {
+            return "---"
+        }
     }
 
     return (
@@ -106,9 +118,8 @@ function ElegibilidadeSelecionarFiliais() {
                         </div>
                         <DataTable value={listaFiliais} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontradas filiais" selectionMode={rowClick ? null : 'checkbox'} selection={selectedFiliais} onSelectionChange={(e) => setSelectedFiliais(e.value)} tableStyle={{ minWidth: '68vw' }}>
                             <Column selectionMode="multiple" style={{ width: '13%' }}></Column>
-                            <Column field="name" header="Nome Completo" style={{ width: '29%' }}></Column>
-                            <Column field="document" header="CPF" style={{ width: '23%' }}></Column>
-                            <Column field="email" header="E-mail" style={{ width: '35%' }}></Column>
+                            <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
+                            <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" style={{ width: '35%' }}></Column>
                         </DataTable>
                         <ContainerButton>
                             <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>

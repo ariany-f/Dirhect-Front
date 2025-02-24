@@ -37,6 +37,8 @@ const LadoALado = styled.div`
 `
 
 function DataTablePremiacaoEditarValor({ recarga, tipo, aoEnviar }) {
+
+    console.log(recarga)
     
     const [selectedItems, setSelectedItems] = useState(null)
     const [rowClick, setRowClick] = useState(true)
@@ -57,7 +59,7 @@ function DataTablePremiacaoEditarValor({ recarga, tipo, aoEnviar }) {
 
     const representativeDescriptionTemplate = (rowData) => {
         return (
-           rowData.name
+           rowData.nome
         )
     }
 
@@ -72,11 +74,11 @@ function DataTablePremiacaoEditarValor({ recarga, tipo, aoEnviar }) {
         }
         else
         {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você deve selecionar os colaboradores', life: 3000 });
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Você deve selecionar os filiais', life: 3000 });
         }
     }
 
-    const columnHeader = tipo === 'colaboradores' ? 'Nome Completo' : 'Departamento';
+    const columnHeader = tipo === 'filiais' ? 'Nome' : 'Departamento';
 
     return (
         <>
@@ -86,7 +88,7 @@ function DataTablePremiacaoEditarValor({ recarga, tipo, aoEnviar }) {
                     <FaPencilAlt className={styles.icon} /><Link onClick={editarValores} className={styles.link}>Editar valor dos benefícios</Link>
                 </BotaoSemBorda>
             </BotaoGrupo>
-            <DataTable value={recarga[0]} selectionMode={rowClick ? null : 'checkbox'} selection={selectedItems} onSelectionChange={(e) => setSelectedItems(e.value)} tableStyle={{ minWidth: '90vw' }}>
+            <DataTable value={recarga} selectionMode={rowClick ? null : 'checkbox'} selection={selectedItems} onSelectionChange={(e) => setSelectedItems(e.value)} tableStyle={{ minWidth: '90vw' }}>
                 <Column selectionMode="multiple" style={{ width: '15%' }} headerStyle={{ width: '15%' }}></Column>
                 <Column body={representativeDescriptionTemplate} header={columnHeader} style={{ width: '40%' }}></Column>
                 <Column body={representativeAmountTemplate} header="Valor da premiação" style={{ width: '40%' }}></Column>

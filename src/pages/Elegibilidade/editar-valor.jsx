@@ -21,7 +21,7 @@ function ElegibilidadeEditarValor() {
     const {
         recarga,
         setNome,
-        setColaboradores,
+        setFiliais,
         setDepartamentos,
         submeterSaldoLivre
     } = useRecargaSaldoLivreContext()
@@ -30,12 +30,12 @@ function ElegibilidadeEditarValor() {
     const toast = useRef(null)
 
     useEffect(() => {
-      if(!recarga.name)
-      {
-        setColaboradores([])
-        setDepartamentos([])
-        navegar(-1)
-      }
+    //   if(!recarga.name)
+    //   {
+    //     setFiliais([])
+    //     setDepartamentos([])
+    //     navegar(-1)
+    //   }
     }, [])
 
     const editarRecarga = (evento) => {
@@ -49,7 +49,6 @@ function ElegibilidadeEditarValor() {
         <Frame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <Texto weight={500} size="12px">Nome da recarga</Texto>
             {recarga ?
                 <>
                     <BotaoGrupo align="space-between">
@@ -62,15 +61,13 @@ function ElegibilidadeEditarValor() {
                             :
                             <>
                                 <Titulo>
-                                    <h3>{recarga.name}</h3>
+                                    <h3>Configuração de Elegibilidade</h3>
                                 </Titulo>
-                                <BotaoSemBorda $color="var(--error)">
-                                    <FaPencilAlt /><Link onClick={() => setEdicaoAberta(true)} className={styles.link}>Editar</Link>
-                                </BotaoSemBorda>
                             </>
                         }
                     </BotaoGrupo>
-                    <DataTablePremiacaoEditarValor aoEnviar={submeterSaldoLivre} tipo={tipo} recarga={tipo === 'colaboradores' ? recarga.collaborators : recarga.departamentos} />
+                    <br />
+                    <DataTablePremiacaoEditarValor aoEnviar={submeterSaldoLivre} tipo={tipo} recarga={tipo === 'filiais' ? recarga.filiais : recarga.departamentos} />
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
             }

@@ -53,16 +53,18 @@ function ElegibilidadeSelecionarDepartamentos() {
     } = useRecargaSaldoLivreContext()
 
     useEffect(() => {
-        // if(departments.length === 0)
-        // {
-        //     setDepartamentos([])
-        //     http.get('api/department/index')
-        //         .then(response => {
-        //             setDepartments(response.data.departments)
-        //         })
-        //         .catch(erro => console.log(erro))
-        // }
-    }, [departments])
+        
+        http.get('departamento/?format=json')
+        .then(response => {
+            setDepartments(response)
+        })
+        .catch(erro => {
+            
+        })
+        .finally(function() {
+            // setLoading(false)
+        })
+    }, [])
     
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -100,7 +102,7 @@ function ElegibilidadeSelecionarDepartamentos() {
                     </div>
                     <DataTable value={departments} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados departamentos" selectionMode={rowClick ? null : 'checkbox'} selection={selectedDepartamentos} onSelectionChange={(e) => setSelectedDepartamentos(e.value)} tableStyle={{ minWidth: '68vw' }}>
                         <Column selectionMode="multiple" style={{ width: '15%' }}></Column>
-                        <Column field="name" header="Nome" style={{ width: '70%' }}></Column>
+                        <Column field="nome" header="Nome" style={{ width: '70%' }}></Column>
                         <Column body={representativeCountTemplate} header="Colaboradores" style={{ width: '15%' }}></Column>
                     </DataTable>
                     <ContainerButton>

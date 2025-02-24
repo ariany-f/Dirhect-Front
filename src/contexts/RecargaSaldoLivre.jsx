@@ -10,7 +10,7 @@ const DEPARTMENT = 2;
 const saldoLivreInicial = {
     name: "",
     description: "",
-    collaborators: [],
+    filiais: [],
     departamentos: [],
     balance: []
 }
@@ -18,7 +18,7 @@ const saldoLivreInicial = {
 export const RecargaSaldoLivreContext = createContext({
     recarga: saldoLivreInicial,
     erros: {},
-    setColaboradores: () => null,
+    setFiliais: () => null,
     setDepartamentos: () => null,
     setBalance: () => null,
     setNome: () => null,
@@ -36,24 +36,24 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
 
     const [recarga, setRecarga] = useState(saldoLivreInicial)
 
-    const setColaboradores = (collaborators) => {
-        if(collaborators.length === 0)
+    const setFiliais = (filiais) => {
+        if(filiais.length === 0)
         {
             setRecarga(estadoAnterior => {
                 return {
                     ...estadoAnterior,
-                    collaborators
+                    filiais
                 }
             })
         }
         else
         {
-            const colaboradores = recarga.collaborators
-            colaboradores.push(collaborators)
+            const fil = recarga.filiais
+            filiais.push(fil)
             setRecarga(estadoAnterior => {
                 return {
                     ...estadoAnterior,
-                    colaboradores
+                    filiais
                 }
             })
         }
@@ -133,11 +133,11 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
         obj['name'] = recarga.name
         obj['description'] = recarga.description
         obj['balance'] = {}
-        obj['balance']['collaborators'] = {}
+        obj['balance']['filiais'] = {}
         obj['balance']['departments'] = {}
-        if(recarga.collaborators.length > 0)
+        if(recarga.filiais.length > 0)
         {
-            recarga.collaborators.map(item => {
+            recarga.filiais.map(item => {
                 let colaborador = {}
                 item.map((col, index) => {
                     let collaborator = {}
@@ -145,7 +145,7 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
                     collaborator.amount = col.amount
                     colaborador[index] = collaborator
                 })
-                obj.balance['collaborators'] = colaborador
+                obj.balance['filiais'] = colaborador
             })
         }
         if(recarga.departamentos.length > 0)
@@ -176,7 +176,7 @@ export const RecargaSaldoLivreProvider = ({ children }) => {
     }
     const contexto = {
         recarga,
-        setColaboradores,
+        setFiliais,
         setDepartamentos,
         setBalance,
         setNome,
