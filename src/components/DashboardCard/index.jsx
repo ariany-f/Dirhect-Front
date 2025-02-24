@@ -36,7 +36,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
 
         return (
             <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '50%', color: 'white' }}>
-                {isCompleted ? <FaCheckCircle size={18} fill={getSeverityColor(getSeverity(item))} /> : <FaCircle fill="lightgrey" />}
+                {isCompleted ? <FaCheckCircle size={18} fill={getSeverityColor(getSeverity(item))} /> : <FaCircle size={8} fill="lightgrey" />}
             </span>
         );
     };
