@@ -67,17 +67,17 @@
         "nome": "Unip",
         "banner": "https://www.unip.br/assets/img/logo/logo-unip.svg",
         "categorias": ["Educação"],
-        "descricao": "Descrição em texto"
+        "descricao": "A Universidade Paulista – UNIP tem como missão constituir-se num centro de geração e difusão do saber, articulando as atividades de ensino, de pesquisa e extensão, em consonância com as demandas da sociedade contemporânea e do mundo do trabalho, respeitando a diversidade e cultivando a solidariedade, a inclusão, os valores humanos e a ética, visando à formação de cidadãos qualificados e potencialmente aptos a contribuir para o desenvolvimento socioeconômico da sua região de influência."
     },
     {
         "id": 8,
         "status": "Ativo",
         "rating": 4,
         "price": 78,
-        "nome": "Nome da Marca",
-        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categorias": ["Categoria"],
-        "descricao": "Descrição em texto"
+        "nome": "Mazars",
+        "banner": "https://d335luupugsy2.cloudfront.net/cms/files/315871/1714078764/$abc4aphm2",
+        "categorias": ["BPO"],
+        "descricao": "Temos à sua disposição um time de especialistas em Auditoria, Consultoria, Gestão Operacional e Finanças, que auxiliarão sua empresa a superar obstáculos para o pleno crescimento do negócio, além de trazer confiabilidade e transparência para o dia-a-dia da organização."
     },
     {
         "id": 9,
