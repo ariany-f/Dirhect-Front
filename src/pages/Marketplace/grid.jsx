@@ -21,7 +21,7 @@ const ConteudoFrame = styled.div`
 `
 
 const Col6 = styled.div`
-    flex: 1 1 calc(25% - 16px); /* Para garantir 4 colunas com espaço entre */
+    flex: 1 1 calc(25% - 16px); /* 4 colunas */
     max-width: calc(25% - 16px);
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -31,15 +31,31 @@ const Col6 = styled.div`
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+
+    @media (max-width: 1200px) {
+        flex: 1 1 calc(33.333% - 16px); /* 3 colunas */
+        max-width: calc(33.333% - 16px);
+    }
+
+    @media (max-width: 900px) {
+        flex: 1 1 calc(50% - 16px); /* 2 colunas */
+        max-width: calc(50% - 16px);
+    }
+
+    @media (max-width: 600px) {
+        flex: 1 1 100%; /* 1 coluna */
+        max-width: 100%;
+    }
 `;
+
 
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
     width: 100%;
-    justify-content: flex-start; /* Mantém o alinhamento à esquerda */
-`
+    justify-content: flex-start;
+`;
 
 const ImageContainer = styled.div`
     width: 200px;
