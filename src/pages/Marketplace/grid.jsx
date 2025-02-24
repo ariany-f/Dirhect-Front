@@ -19,28 +19,43 @@ const ConteudoFrame = styled.div`
     gap: 24px;
     width: 100%;
 `
+
+const Col6 = styled.div`
+    flex: 1 1 calc(33.333% - 16px); /* 3 itens por linha considerando gap */
+    max-width: calc(33.333% - 16px);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+`;
+
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
+    gap: 16px;
     width: 100%;
-    justify-content: space-between;
+    align-items: stretch;
+    justify-content: flex-start; /* Melhor alinhamento */
 `
 
-const Col4 = styled.div`
-    flex: 1 1 40%;
+const ImageContainer = styled.div`
+    width: 250px;
+    height: 150px;
     display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    align-items: start;
-`
-
-const Col4Centered = styled.div`
-    flex: 1 1 20%;
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
     align-items: center;
-`
+    justify-content: center;
+    overflow: hidden;
+`;
+
+const StyledImage = styled.img`
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+`;
 
 export default function MarketplaceLista() {
     const [products, setProducts] = useState([]);
@@ -52,26 +67,22 @@ export default function MarketplaceLista() {
 
     const itemTemplate = (product, index) => {
         return (
-            <div key={index} className={styles.card_dashboard}>
-                <Col12>
-                    <Col4>
-                        <Image src={`${product.banner}`} alt={product.nome} width="250" preview />                         
-                    </Col4>
-                    <Col4>
-                        <Texto weight={800}>{product.nome}</Texto>
-                        <BadgeGeral nomeBeneficio={product.categoria} iconeBeneficio={<TbTag />}></BadgeGeral>
-                        <ScrollPanel style={{ width: '100%', height: '200px' }}>
-                            <Texto>{product.descricao}</Texto>
-                        </ScrollPanel>
-                    </Col4>
-                    <Col4Centered>
-                        <Botao extraclasses="p-ripple">
-                            <BsArrowRight fill="white" size={24}/>
-                            <Ripple />
-                        </Botao>
-                    </Col4Centered>
-                </Col12>
-            </div>
+            <Col6 key={index}>
+                <ImageContainer>
+                    <StyledImage src={product.banner} alt={product.nome} />
+                </ImageContainer>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                    <Texto weight={800}>{product.nome}</Texto>
+                    <BadgeGeral nomeBeneficio={product.categoria} iconeBeneficio={<TbTag />}></BadgeGeral>
+                    <ScrollPanel style={{ width: '100%', height: '100px' }}>
+                        <Texto>{product.descricao}</Texto>
+                    </ScrollPanel>
+                </div>
+                <Botao extraclasses="p-ripple">
+                    Solicitar Cotação
+                    <Ripple />
+                </Botao>
+            </Col6>
         );
     };
 
@@ -82,7 +93,7 @@ export default function MarketplaceLista() {
             return itemTemplate(product, index);
         });
 
-        return <div className="grid grid-nogutter">{list}</div>;
+        return <Col12>{list}</Col12>;
     };
 
     return (
