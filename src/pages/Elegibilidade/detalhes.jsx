@@ -9,6 +9,7 @@ import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
 import BadgeGeral from '@components/BadgeGeral'
 import { Skeleton } from 'primereact/skeleton'
+import CheckboxContainer from "@components/CheckboxContainer"
 import Container from "@components/Container"
 import { FaArrowAltCircleRight, FaDownload, FaTrash } from 'react-icons/fa'
 import BotaoVoltar from "@components/BotaoVoltar"
@@ -58,6 +59,12 @@ function DetalhesElegibilidade() {
     const [selectedSecoes, setSelectedSecoes] = useState([])
     const [selectedSindicatos, setSelectedSindicatos] = useState([])
     const [selectedCentrosCusto, setSelectedCentrosCusto] = useState([])
+    const [allFiliais, setAllFiliais] = useState(false)
+    const [allDepartamentos, setAllDepartamentos] = useState(false)
+    const [allCargos, setAllCargos] = useState(false)
+    const [allSecoes, setAllSecoes] = useState(false)
+    const [allSindicatos, setAllSindicatos] = useState(false)
+    const [allCentrosCusto, setAllCentrosCusto] = useState(false)
    
     useEffect(() => {
         if(elegibilidade.length == 0)
@@ -147,6 +154,30 @@ function DetalhesElegibilidade() {
         }
         return status
     }
+
+    const handleChange = (tipo, valor) => {
+        switch(tipo)
+        {
+            case 'filiais':
+                setAllFiliais(!valor)
+                break;
+            case 'departamentos':
+                setAllDepartamentos(!valor)
+                break;
+            case 'cargos':
+                setAllCargos(!valor)
+                break;
+            case 'secoes':
+                setAllSecoes(!valor)
+                break;
+            case 'sindicatos':
+                setAllSindicatos(!valor)
+                break;
+            case 'centros_custo':
+                setAllCentrosCusto(!valor)
+                break;
+        }
+    };
     
     return (
         <>
@@ -176,24 +207,55 @@ function DetalhesElegibilidade() {
                 }
                 
                 <DataTableElegibilidadeDetalhes elegibilidade={elegibilidade?.contratos} pagination={false} />
+
                 <TabView>
                     <TabPanel header="Filiais">
-                        <DataTableFiliais filiais={filiais} showSearch={false} selected={selectedFiliais} setSelected={setSelectedFiliais} />
+                        <Frame padding="16px">
+                            <CheckboxContainer key="filiais" name="filiais[all]" label="Todos os registros, inclusive novos" valor={!!allFiliais} setValor={() => handleChange('filiais', (!!allFiliais))} />
+                        </Frame>
+                        {!allFiliais && 
+                            <DataTableFiliais filiais={filiais} showSearch={false} selected={selectedFiliais} setSelected={setSelectedFiliais} />
+                        }
                     </TabPanel>
                     <TabPanel header="Departamentos">
-                        <DataTableDepartamentos departamentos={departamentos} showSearch={false} selected={selectedDepartamentos} setSelected={setSelectedDepartamentos} />
+                        <Frame padding="16px">
+                            <CheckboxContainer key="departamentos" name="departamentos[all]" label="Todos os registros, inclusive novos" valor={!!allDepartamentos} setValor={() => handleChange('departamentos', (!!allDepartamentos))} />
+                        </Frame>
+                        {!allDepartamentos && 
+                            <DataTableDepartamentos departamentos={departamentos} showSearch={false} selected={selectedDepartamentos} setSelected={setSelectedDepartamentos} />
+                        }
                     </TabPanel>
                     <TabPanel header="Seções">
-                        <DataTableSecoes secoes={secoes} showSearch={false} selected={selectedSecoes} setSelected={setSelectedSecoes} />
+                        <Frame padding="16px">
+                            <CheckboxContainer key="secoes" name="secoes[all]" label="Todos os registros, inclusive novos" valor={!!allSecoes} setValor={() => handleChange('secoes', (!!allSecoes))} />
+                        </Frame>
+                        {!allSecoes &&
+                            <DataTableSecoes secoes={secoes} showSearch={false} selected={selectedSecoes} setSelected={setSelectedSecoes} />
+                        }
                     </TabPanel>
                     <TabPanel header="Centros de Custo">
-                        <DataTableCentrosCusto centros_custo={centros_custo} showSearch={false} selected={selectedCentrosCusto} setSelected={setSelectedCentrosCusto} />
+                        <Frame padding="16px">
+                            <CheckboxContainer key="centros_custo" name="centros_custo[all]" label="Todos os registros, inclusive novos" valor={!!allCentrosCusto} setValor={() => handleChange('centros_custo', (!!allCentrosCusto))} />
+                        </Frame>
+                        {!allCentrosCusto &&
+                            <DataTableCentrosCusto centros_custo={centros_custo} showSearch={false} selected={selectedCentrosCusto} setSelected={setSelectedCentrosCusto} />
+                        }
                     </TabPanel>
                     <TabPanel header="Cargos e Funções">
-                        <DataTableCargos cargos={cargos} showSearch={false} selected={selectedCargos} setSelected={setSelectedCargos} />
+                        <Frame padding="16px">
+                            <CheckboxContainer key="cargos" name="cargos[all]" label="Todos os registros, inclusive novos" valor={!!allCargos} setValor={() => handleChange('cargos', (!!allCargos))} />
+                        </Frame>
+                        {!allCargos &&
+                            <DataTableCargos cargos={cargos} showSearch={false} selected={selectedCargos} setSelected={setSelectedCargos} />
+                        }
                     </TabPanel>
                     <TabPanel header="Sindicatos">
-                        <DataTableFiliais filiais={sindicatos} showSearch={false} selected={selectedSindicatos} setSelected={setSelectedSindicatos} />
+                        <Frame padding="16px">
+                            <CheckboxContainer key="sindicatos" name="sindicatos[all]" label="Todos os registros, inclusive novos" valor={!!allSindicatos} setValor={() => handleChange('sindicatos', (!!allSindicatos))} />
+                        </Frame>
+                        {!allSindicatos &&
+                            <DataTableFiliais filiais={sindicatos} showSearch={false} selected={selectedSindicatos} setSelected={setSelectedSindicatos} />
+                        }
                     </TabPanel>
                 </TabView>
             </Container>
