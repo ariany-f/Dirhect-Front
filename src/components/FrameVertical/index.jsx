@@ -3,6 +3,7 @@ import './FrameVertical.css'
 
 const DivFrame = styled.div`
     align-items: ${ props => props.$alinhamento ? props.$alinhamento : 'flex-start' };
+    justify-content: ${ props => props.$alinhamento ? props.$alinhamento : 'center' };
     padding: ${ props => props.$padding ? props.$padding : '0' };
     gap: ${ props => props.$gap ? props.$gap : '5px' };
 `

@@ -5,6 +5,7 @@ import BotaoSemBorda from "@components/BotaoSemBorda"
 import Botao from "@components/Botao"
 import Titulo from "@components/Titulo"
 import Frame from "@components/Frame"
+import BadgeGeral from "@components/BadgeGeral"
 import FrameVertical from "@components/FrameVertical"
 import Container from "@components/Container"
 import styles from './Colaboradores.module.css'
@@ -17,6 +18,8 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import { Tag } from 'primereact/tag';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
+import { RiShoppingCartFill } from 'react-icons/ri';
+import { MdOutlineFastfood } from 'react-icons/md';
 
 function ColaboradorDetalhes() {
 
@@ -108,6 +111,35 @@ function ColaboradorDetalhes() {
                      </BotaoGrupo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
                     }
+                    <FrameVertical gap="16px" alinhamento="left">
+                        <BadgeGeral severity="success" nomeBeneficio={
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <RiShoppingCartFill size={20} />
+                                <div>
+                                Alimentação <br/>
+                                R$ 150,00
+                                </div>
+                            </div>
+                        }  />
+                        <BadgeGeral severity="success" nomeBeneficio={
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <MdOutlineFastfood size={20} />
+                                <div>
+                                Refeição <br/>
+                                R$ 550,00
+                                </div>
+                            </div>
+                        }  />
+                        <BadgeGeral severity="neutro" nomeBeneficio={
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <MdOutlineFastfood size={20} />
+                                <div>
+                                Refeição <br/>
+                                R$ 350,00
+                                </div>
+                            </div>
+                        }  />
+                    </FrameVertical>
                 <BotaoGrupo>
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Dados Pessoais</Botao>

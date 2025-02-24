@@ -49,9 +49,19 @@
     & p{
         color:  var(--alert-success-500); /* Texto branco */
     }
+    & div{
+        color:  var(--alert-success-700); /* Texto branco */
+    }
+    & svg {
+        fill: var(--alert-success-700); /* Ícone verde escuro */
+    }
+    & svg *{
+        color:  var(--alert-success-700); /* Ícone verde escuro */
+        stroke:  var(--alert-success-700); /* Ícone verde escuro */
+    }
 }
 
-.beneficio.success svg * {
+.beneficio.success svg *{
     color: var(--alert-success-700); /* Ícone verde escuro */
 }
 
@@ -60,8 +70,31 @@
     & p{
         color:  var(--error-400); /* Texto branco */
     }
+    & div{
+        color:  var(--error-400); /* Texto branco */
+    }
+    & svg {
+        fill: var(--error-700); /* Ícone vermelho escuro */
+    }
+    & svg *{
+        color:  var(--error-700); /* Ícone vermelho escuro */
+        stroke:  var(--error-700); /* Ícone vermelho escuro */
+    }
 }
 
 .beneficio.error svg *{
     color: var(--error-700); /* Ícone vermelho escuro */
+}
+
+.beneficio.neutro {
+    & div{
+        color:  var(--neutro-400); /* Texto branco */
+    }
+    & svg {
+        fill: var(--neutro-400); /* Ícone vermelho escuro */
+    }
+    & svg *{
+        color:  var(--neutro-400); /* Ícone vermelho escuro */
+        stroke:  var(--neutro-400); /* Ícone vermelho escuro */
+    }
 }
