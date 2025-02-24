@@ -19,6 +19,7 @@ import BotaoSemBorda from "@components/BotaoSemBorda"
 import { Toast } from 'primereact/toast'
 import DataTableElegibilidadeDetalhes from '@components/DataTableElegibilidadeDetalhes'
 import DataTableFiliais from '@components/DataTableFiliais'
+import DataTableSindicatos from '@components/DataTableSindicatos'
 import DataTableDepartamentos from '@components/DataTableDepartamentos'
 import DataTableSecoes from '@components/DataTableSecoes'
 import DataTableCentrosCusto from '@components/DataTableCentrosCusto'
@@ -130,6 +131,18 @@ function DetalhesElegibilidade() {
             http.get('centro_custo/?format=json')
             .then(response => {
                 setCentrosCusto(response)
+                
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                // setLoading(false)
+            })
+
+            http.get('sindicato/?format=json')
+            .then(response => {
+                setSindicatos(response)
                 
             })
             .catch(erro => {
@@ -254,7 +267,7 @@ function DetalhesElegibilidade() {
                             <CheckboxContainer key="sindicatos" name="sindicatos[all]" label="Todos os registros, inclusive novos" valor={!!allSindicatos} setValor={() => handleChange('sindicatos', (!!allSindicatos))} />
                         </Frame>
                         {/* {!allSindicatos && */}
-                            <DataTableFiliais filiais={sindicatos} showSearch={false} selected={selectedSindicatos} setSelected={setSelectedSindicatos} />
+                            <DataTableSindicatos sindicatos={sindicatos} showSearch={false} selected={selectedSindicatos} setSelected={setSelectedSindicatos} />
                         {/* } */}
                     </TabPanel>
                 </TabView>
