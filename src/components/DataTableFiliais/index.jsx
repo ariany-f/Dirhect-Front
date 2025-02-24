@@ -1,20 +1,24 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
+import http from '@http'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
+import { Toast } from 'primereact/toast'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import ModalEditarFilial from '../ModalEditarFilial';
 
 function DataTableFiliais({ filiais, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
 
-    const[selectedFilial, setSelectedFilial] = useState(0)
+    const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
-    
+    const [modalOpened, setModalOpened] = useState(false)
+    const toast = useRef(null)
     const [selectedFiliais, setSelectedFiliais] = useState([]);
 
     useEffect(() => {
@@ -37,10 +41,18 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
         setGlobalFilterValue(value);
     };
 
-    function verDetalhes(value)
-    {
-        setSelectedFilial(value)
+    const removerMascaraCNPJ = (cnpj) => {
+        return cnpj.replace(/[^\d]/g, ''); // Remove tudo que não for número
     }
+
+    function verDetalhes(value) {
+        setSelectedFilial(value); // Atualiza o estado
+        setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
+    }
+    
+    useEffect(() => {
+        console.log("Filial selecionada mudou:", selectedFilial);
+    }, [selectedFilial]);
 
     function formataCNPJ(cnpj) {
         cnpj = cnpj.replace(/[^\d]/g, "");
@@ -58,6 +70,31 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
         {
             return "---"
         }
+    }
+
+    
+    const editarFilial = (nome, cnpj, id) => {
+
+        // setLoading(true)
+       
+        const data = {};
+        data.nome = nome;
+        data.id = id;
+        data.cnpj = removerMascaraCNPJ(cnpj);
+
+        http.put(`filial/${id}`, data)
+            .then(response => {
+                if(response.id)
+                {
+                    setModalOpened(false)
+                }
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                // setLoading(false)
+            })
     }
 
     function handleSelectChange(e) {
@@ -78,13 +115,17 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
                 setSelected(newSelection.map(filial => filial.id));
             }
         } else {
-            setSelectedFilial(e.value.id);
-            verDetalhes(e.value);
+            if(e.value)
+            {
+                setSelectedFilial(e.value.id);
+                verDetalhes(e.value);
+            }
         }
     }
 
     return (
         <>
+            <Toast ref={toast} />
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
@@ -99,6 +140,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
                 <Column field="nome" header="Filial" style={{ width: '35%' }}></Column>
                 <Column body={representativeCNPJTemplate} header="CNPJ" style={{ width: '25%' }}></Column>
             </DataTable>
+            <ModalEditarFilial aoSalvar={editarFilial} filial={selectedFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
