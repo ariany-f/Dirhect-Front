@@ -290,6 +290,7 @@ template {
 }
 .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
   background-color: var(--black);
+  border: none;
   color: var(--white);
   border-radius: 50px;
   padding: 8px 12px;
