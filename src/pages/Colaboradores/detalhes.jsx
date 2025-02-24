@@ -112,7 +112,7 @@ function ColaboradorDetalhes() {
                     : <Skeleton variant="rectangular" width={300} height={40} />
                     }
                     <FrameVertical gap="16px" alinhamento="left">
-                        <BadgeGeral severity="success" nomeBeneficio={
+                        <BadgeGeral weight={500} severity="success" nomeBeneficio={
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <RiShoppingCartFill size={20} />
                                 <div>
@@ -121,7 +121,7 @@ function ColaboradorDetalhes() {
                                 </div>
                             </div>
                         }  />
-                        <BadgeGeral severity="success" nomeBeneficio={
+                        <BadgeGeral weight={500} severity="success" nomeBeneficio={
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <MdOutlineFastfood size={20} />
                                 <div>
@@ -130,7 +130,7 @@ function ColaboradorDetalhes() {
                                 </div>
                             </div>
                         }  />
-                        <BadgeGeral severity="neutro" nomeBeneficio={
+                        <BadgeGeral weight={500} severity="neutro" nomeBeneficio={
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <RiGasStationFill size={20} />
                                 <div>

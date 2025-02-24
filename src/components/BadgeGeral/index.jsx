@@ -2,7 +2,7 @@ import Texto from '@components/Texto'
 import styles from '@components/BadgeGeral/BadgeGeral.module.css'
 import clsx from 'clsx' // Biblioteca para lidar com múltiplas classes dinamicamente
 
-function BadgeGeral({ severity='', nomeBeneficio, layout = 'inline', iconeBeneficio, size = '14px', weight = 700 }) {
+function BadgeGeral({ severity='', nomeBeneficio, layout = 'inline', iconeBeneficio, size = '14px', weight = 600 }) {
     const severityClass = severity ? styles[severity] : '';
     
     return (
