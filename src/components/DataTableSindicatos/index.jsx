@@ -8,7 +8,7 @@ import { Toast } from 'primereact/toast'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import ModalEditarFilial from '../ModalEditarFilial';
+import ModalEditarSindicato from '../ModalEditarSindicato';
 
 function DataTableSindicatos({ sindicatos, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
 
@@ -73,16 +73,17 @@ function DataTableSindicatos({ sindicatos, showSearch = true, pagination = true,
     }
 
     
-    const editarFilial = (nome, cnpj, id) => {
+    const editarSindicato = ( cnpj, codigo, descricao, id ) => {
 
         // setLoading(true)
        
         const data = {};
-        data.nome = nome;
         data.id = id;
+        data.codigo = codigo;
+        data.descricao = descricao;
         data.cnpj = removerMascaraCNPJ(cnpj);
 
-        http.put(`filial/${id}`, data)
+        http.put(`sindicato/${id}`, data)
             .then(response => {
                 if(response.id)
                 {
@@ -137,10 +138,11 @@ function DataTableSindicatos({ sindicatos, showSearch = true, pagination = true,
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="nome" header="Filial" style={{ width: '35%' }}></Column>
+                <Column field="codigo" header="Código" style={{ width: '15%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '25%' }}></Column>
                 <Column body={representativeCNPJTemplate} header="CNPJ" style={{ width: '25%' }}></Column>
             </DataTable>
-            <ModalEditarFilial aoSalvar={editarFilial} filial={selectedSindicato} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+            <ModalEditarSindicato aoSalvar={editarSindicato} sindicato={selectedSindicato} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }

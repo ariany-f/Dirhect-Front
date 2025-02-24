@@ -4,10 +4,10 @@ import CampoTexto from "@components/CampoTexto"
 import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import { RiCloseFill } from 'react-icons/ri'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
-import styles from './ModalAdicionarSindicato.module.css'
+import styles from './ModalEditarSindicato.module.css'
 import { useDepartamentoContext } from "../../contexts/Departamento"
 
 const Overlay = styled.div`
@@ -99,12 +99,24 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-function ModalAdicionarSindicato({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
-
+function ModalEditarSindicato({ opened = false, sindicato, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
+    
+    
     const [classError, setClassError] = useState([])
-    const [cnpj, setCnpj] = useState('')
-    const [descricao, setDescricao] = useState('')
-    const [codigo, setCodigo] = useState('')
+    const [descricao, setDescricao] = useState(sindicato.descricao ?? '')
+    const [codigo, setCodigo] = useState(sindicato.codigo ?? '')
+    const [cnpj, setCNPJ] = useState(sindicato.cnpj ?? '')
+    const [id, setId] = useState(sindicato.id)
+
+    useEffect(() => {
+        if (sindicato && opened) {
+            setCNPJ(sindicato.cnpj); // Atualiza o estado interno do modal sempre que a sindicato mudar
+            setDescricao(sindicato.descricao);
+            setCodigo(sindicato.codigo);
+            setId(sindicato.id);
+        }
+    }, [sindicato, opened]);
+
 
     const navegar = useNavigate()
 
@@ -121,43 +133,47 @@ function ModalAdicionarSindicato({ opened = false, aoClicar, aoFechar, aoSucesso
                                         <RiCloseFill size={20} className="fechar" />  
                                     </button>
                                 </form>
-                                <h6>Criar sindicato</h6>
+                                <h6>Editar sindicato</h6>
+                                <SubTitulo>
+                                    Digite o descricao da sindicato:
+                                </SubTitulo>
                             </Titulo>
                         </Frame>
                         
                         <Frame padding="24px 0px">
-                            <CampoTexto 
-                                numeroCaracteres={4}
-                                camposVazios={classError} 
-                                valor={codigo} 
-                                type="text" 
-                                setValor={setCodigo} 
-                                placeholder=""
-                                label="Código do Sindicato" 
+                                <CampoTexto 
+                                    numeroCaracteres={4}
+                                    camposVazios={classError} 
+                                    valor={codigo} 
+                                    type="text" 
+                                    setValor={setCodigo} 
+                                    placeholder="ex. 1111"
+                                    label="Código do Sindicato" 
                                 />
-                            <CampoTexto 
-                                numeroCaracteres={18}
-                                camposVazios={classError} 
-                                patternMask={['99.999.999/9999-99']} 
-                                valor={cnpj} 
-                                type="text" 
-                                setValor={setCnpj} 
-                                placeholder=""
-                                label="CNPJ do Sindicato" 
-                            />
-                            <CampoTexto 
-                                camposVazios={classError} 
-                                valor={descricao} 
-                                type="text" 
-                                setValor={setDescricao} 
-                                placeholder=""
-                                label="Descrição do sindicato" 
+                                <CampoTexto 
+                                    numeroCaracteres={18}
+                                    camposVazios={classError} 
+                                    patternMask={['99.999.999/9999-99']} 
+                                    valor={cnpj} 
+                                    type="text" 
+                                    setValor={setCNPJ} 
+                                    placeholder=""
+                                    label="CNPJ do Sindicato" 
+                                />
+                                <CampoTexto 
+                                    numeroCaracteres={50}
+                                    camposVazios={classError} 
+                                    valor={descricao} 
+                                    type="text" 
+                                    setValor={setDescricao} 
+                                    placeholder="ex. Sindicato 1"
+                                    label="Descrição do Sindicato" 
                                 />
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(cnpj, codigo, descricao)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={() => aoSalvar(cnpj, codigo, descricao, id)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>
@@ -168,4 +184,4 @@ function ModalAdicionarSindicato({ opened = false, aoClicar, aoFechar, aoSucesso
     )
 }
 
-export default ModalAdicionarSindicato
+export default ModalEditarSindicato

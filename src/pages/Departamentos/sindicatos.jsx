@@ -61,6 +61,30 @@ function SindicatosLista() {
         }    
     }, [sindicatos])
 
+    const adicionarSindicato = (cnpj, codigo, descricao) => {
+
+        setLoading(true)
+       
+        const data = {};
+        data.cnpj = cnpj;
+        data.codigo = codigo;
+        data.descricao = descricao;
+
+        http.post('sindicato/', data)
+            .then(response => {
+                if(response.id)
+                {
+                    setModalOpened(false)
+                }
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                setLoading(false)
+            })
+    }
+
     return (
         <>
         <ConteudoFrame>
@@ -103,7 +127,7 @@ function SindicatosLista() {
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarSindicato aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarSindicato aoSalvar={adicionarSindicato} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }

@@ -108,12 +108,12 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
     const [id, setId] = useState(filial.id)
 
     useEffect(() => {
-        if (filial) {
+        if (filial && opened) {
             setCNPJ(filial.cnpj); // Atualiza o estado interno do modal sempre que a filial mudar
             setNome(filial.nome);
             setId(filial.id);
         }
-    }, [filial]);
+    }, [filial, opened]);
 
 
     const navegar = useNavigate()
