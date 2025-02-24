@@ -169,7 +169,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                 <div className={styles.card_dashboard}>
                     <Frame estilo="spaced">
                         <Titulo><h6>Últimos Pedidos</h6></Titulo>
-                        <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
+                        <Link to="/pedidos"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
                     </Frame>
                     <div className={styles.transacao}>
                         <div className={styles.empilhado}>
