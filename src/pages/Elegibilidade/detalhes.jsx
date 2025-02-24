@@ -213,49 +213,49 @@ function DetalhesElegibilidade() {
                         <Frame padding="16px">
                             <CheckboxContainer key="filiais" name="filiais[all]" label="Todos os registros, inclusive novos" valor={!!allFiliais} setValor={() => handleChange('filiais', (!!allFiliais))} />
                         </Frame>
-                        {!allFiliais && 
+                        {/* {!allFiliais &&  */}
                             <DataTableFiliais filiais={filiais} showSearch={false} selected={selectedFiliais} setSelected={setSelectedFiliais} />
-                        }
+                        {/* } */}
                     </TabPanel>
                     <TabPanel header="Departamentos">
                         <Frame padding="16px">
                             <CheckboxContainer key="departamentos" name="departamentos[all]" label="Todos os registros, inclusive novos" valor={!!allDepartamentos} setValor={() => handleChange('departamentos', (!!allDepartamentos))} />
                         </Frame>
-                        {!allDepartamentos && 
+                        {/* {!allDepartamentos &&  */}
                             <DataTableDepartamentos departamentos={departamentos} showSearch={false} selected={selectedDepartamentos} setSelected={setSelectedDepartamentos} />
-                        }
+                        {/* } */}
                     </TabPanel>
                     <TabPanel header="Seções">
                         <Frame padding="16px">
                             <CheckboxContainer key="secoes" name="secoes[all]" label="Todos os registros, inclusive novos" valor={!!allSecoes} setValor={() => handleChange('secoes', (!!allSecoes))} />
                         </Frame>
-                        {!allSecoes &&
+                        {/* {!allSecoes && */}
                             <DataTableSecoes secoes={secoes} showSearch={false} selected={selectedSecoes} setSelected={setSelectedSecoes} />
-                        }
+                        {/* } */}
                     </TabPanel>
                     <TabPanel header="Centros de Custo">
                         <Frame padding="16px">
                             <CheckboxContainer key="centros_custo" name="centros_custo[all]" label="Todos os registros, inclusive novos" valor={!!allCentrosCusto} setValor={() => handleChange('centros_custo', (!!allCentrosCusto))} />
                         </Frame>
-                        {!allCentrosCusto &&
+                        {/* {!allCentrosCusto && */}
                             <DataTableCentrosCusto centros_custo={centros_custo} showSearch={false} selected={selectedCentrosCusto} setSelected={setSelectedCentrosCusto} />
-                        }
+                        {/* } */}
                     </TabPanel>
                     <TabPanel header="Cargos e Funções">
                         <Frame padding="16px">
                             <CheckboxContainer key="cargos" name="cargos[all]" label="Todos os registros, inclusive novos" valor={!!allCargos} setValor={() => handleChange('cargos', (!!allCargos))} />
                         </Frame>
-                        {!allCargos &&
+                        {/* {!allCargos && */}
                             <DataTableCargos cargos={cargos} showSearch={false} selected={selectedCargos} setSelected={setSelectedCargos} />
-                        }
+                        {/* } */}
                     </TabPanel>
                     <TabPanel header="Sindicatos">
                         <Frame padding="16px">
                             <CheckboxContainer key="sindicatos" name="sindicatos[all]" label="Todos os registros, inclusive novos" valor={!!allSindicatos} setValor={() => handleChange('sindicatos', (!!allSindicatos))} />
                         </Frame>
-                        {!allSindicatos &&
+                        {/* {!allSindicatos && */}
                             <DataTableFiliais filiais={sindicatos} showSearch={false} selected={selectedSindicatos} setSelected={setSelectedSindicatos} />
-                        }
+                        {/* } */}
                     </TabPanel>
                 </TabView>
             </Container>
