@@ -303,6 +303,7 @@ template {
 }
 .p-tabview-nav{
   gap: 16px;
+  border: none;
 }
 .p-tabview-panels {
   padding: 40px 0
