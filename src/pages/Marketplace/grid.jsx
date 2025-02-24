@@ -32,7 +32,7 @@ const Col6 = styled.div`
     justify-content: space-between;
     gap: 16px;
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1240px) {
         flex: 1 1 calc(33.333% - 16px); /* 3 colunas */
         max-width: calc(33.333% - 16px);
     }
