@@ -164,7 +164,7 @@ function DetalhesElegibilidade() {
                                 {representativSituacaoTemplate()}
                             </FrameVertical>
                             <div className={styles.card_dashboard}>
-                                <Texto>Total de Colaboradores</Texto>
+                                <Texto>Colaboradores</Texto>
                                 {elegibilidade?.total_colaboradores ?
                                     <Texto weight="800">{elegibilidade?.total_colaboradores}</Texto>
                                     : <Skeleton variant="rectangular" width={200} height={25} />
