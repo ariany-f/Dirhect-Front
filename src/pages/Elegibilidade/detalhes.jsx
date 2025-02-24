@@ -163,19 +163,14 @@ function DetalhesElegibilidade() {
                                 <h3>{elegibilidade.nome}</h3>
                                 {representativSituacaoTemplate()}
                             </FrameVertical>
-                            <BotaoGrupo align="center">
-                                <BotaoSemBorda color="var(--primaria)">
-                                    <FaDownload/><Link onClick={() => setModalOpened(true)} className={styles.link}>Importar planilha</Link>
-                                </BotaoSemBorda>
-                            </BotaoGrupo>
+                            <div className={styles.card_dashboard}>
+                                <Texto>Total de Colaboradores</Texto>
+                                {elegibilidade?.total_colaboradores ?
+                                    <Texto weight="800">{elegibilidade?.total_colaboradores}</Texto>
+                                    : <Skeleton variant="rectangular" width={200} height={25} />
+                                }
+                            </div>
                         </BotaoGrupo>
-                        <div className={styles.card_dashboard}>
-                            <Texto>Total de Colaboradores</Texto>
-                            {elegibilidade?.total_colaboradores ?
-                                <Texto weight="800">{elegibilidade?.total_colaboradores}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                        </div>
                     </>
                     : <></>
                 }

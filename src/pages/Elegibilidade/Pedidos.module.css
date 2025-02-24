@@ -1,7 +1,14 @@
 .vagasAbertas {
     padding: 20px;
 }
-
+.card_dashboard {
+    text-align: right;
+    justify-content: center;
+    align-items: end;
+    display: flex
+;
+    flex-direction: column;
+}
 .botaoCriarVaga {
     display: inline-block;
     margin-bottom: 20px;
