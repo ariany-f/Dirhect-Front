@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './CampoTexto.module.css'
 import styled from 'styled-components'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
@@ -190,6 +190,22 @@ function CampoTexto({ label, disabled = false, readonly = false, type='text',  s
         }
         return element;
     };
+
+    useEffect(() => {
+        if (valor && patternMask.length > 0 && type !== 'file') {
+            let valorFormatado;
+            if (patternMask === 'BRL') {
+                valorFormatado = currency.mask({ 
+                    locale: 'pt-BR', 
+                    currency: 'BRL', 
+                    value: currency.unmask({ locale: 'pt-BR', currency: 'BRL', value: valor }) 
+                });
+            } else {
+                valorFormatado = masker(unMask(valor), patternMask);
+            }
+            setValor(valorFormatado); // Atualiza o estado com o valor mascarado
+        }
+    }, [valor, patternMask, type, setValor]); // Executa sempre que `valor` mudar
 
     return (
         <>
