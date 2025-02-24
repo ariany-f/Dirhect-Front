@@ -5,7 +5,7 @@
         "rating": 4,
         "price": 200,
         "nome": "Giuliana Flores",
-        "banner": "https://static.giulianaflores.com.br/images/product/26106gg.jpg?ims=500x500",
+        "banner": "https://static.giulianaflores.com.br/images/site/giuliana-logo.png?v=1",
         "categorias": ["Presentes"],
         "descricao": "Buquês de Flores a Partir de R$49,90. Aproveite as Condições Especiais Com Giuliana Flores. Flores e Presentes Com Até 70% de Desconto. Acesse já o Site e Confira!"
     },
@@ -34,10 +34,10 @@
         "status": "Ativo",
         "rating": 4,
         "price": 78,
-        "nome": "Nome da Marca",
-        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categorias": ["Categoria"],
-        "descricao": "Descrição em texto"
+        "nome": "Promissor Corretora de Seguros",
+        "banner": "https://promissor.com.br/wp-content/uploads/2020/08/logo-promissor-seguros-colorido-01.svg",
+        "categorias": ["Seguros"],
+        "descricao": "A Promissor Seguros nasceu em 1970 com foco em seguros agrícolas. Desde o início, aprendemos a respeitar o trabalho e o empreendedorismo. Somos um dos..."
     },
     {
         "id": 5,
@@ -51,6 +51,46 @@
     },
     {
         "id": 6,
+        "status": "Ativo",
+        "rating": 4,
+        "price": 78,
+        "nome": "Nome da Marca",
+        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
+        "categorias": ["Categoria"],
+        "descricao": "Descrição em texto"
+    },
+    {
+        "id": 7,
+        "status": "Ativo",
+        "rating": 4,
+        "price": 78,
+        "nome": "Nome da Marca",
+        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
+        "categorias": ["Categoria"],
+        "descricao": "Descrição em texto"
+    },
+    {
+        "id": 8,
+        "status": "Ativo",
+        "rating": 4,
+        "price": 78,
+        "nome": "Nome da Marca",
+        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
+        "categorias": ["Categoria"],
+        "descricao": "Descrição em texto"
+    },
+    {
+        "id": 9,
+        "status": "Ativo",
+        "rating": 4,
+        "price": 78,
+        "nome": "Nome da Marca",
+        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
+        "categorias": ["Categoria"],
+        "descricao": "Descrição em texto"
+    },
+    {
+        "id": 10,
         "status": "Ativo",
         "rating": 4,
         "price": 78,
