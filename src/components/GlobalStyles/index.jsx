@@ -307,6 +307,9 @@ template {
 .p-tabview-panels {
   padding: 40px 0
 }
+.p-datatable .p-datatable-tbody>tr>td {
+  border: none!important;
+}
 `
 
 
