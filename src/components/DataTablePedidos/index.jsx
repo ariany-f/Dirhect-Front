@@ -73,6 +73,11 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
         </div>
     }
 
+    const representativeValorTemplate = (rowData) => {
+        return (
+             Real.format(rowData.valor)
+        )   
+    }
     
     return (
         <>
@@ -87,6 +92,7 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
                 <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
+                <Column body={representativeValorTemplate} field="valor" header="Valor Total" style={{ width: '25%' }}></Column>
             </DataTable>
         </>
     )

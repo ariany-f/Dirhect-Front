@@ -23,8 +23,8 @@ let Real = new Intl.NumberFormat('pt-BR', {
 
 function DashboardCard({ dashboardData, colaboradores = [] }){
     const pedidos = [
-        { titulo: 'Vale Alimentação - 03/2025', statusAtual: 'Em validação', total_colaboradores: 5 },
-        { titulo: 'Vale Refeição - 03/2025', statusAtual: 'Em preparação', total_colaboradores: 2 },
+        { titulo: 'Vale Alimentação - 03/2025', statusAtual: 'Em validação', total_colaboradores: 5, valor: 15630.00 },
+        { titulo: 'Vale Refeição - 03/2025', statusAtual: 'Em preparação', total_colaboradores: 2, valor: 9870.00 },
     ];
 
     const statuses = ['Em preparação', 'Em validação', 'Em aprovação', 'Pedido Realizado'];
@@ -226,9 +226,16 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         <div className={styles.empilhado}>
                             {pedidos.map((pedido, index) => (
                                 <div key={index} style={{ width: '100%', padding: '14px', gap: '5px'}}>
-                                    <Texto weight={800}>{pedido.titulo}</Texto>
-                                    <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                                        Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{pedido.total_colaboradores}</p>
+                                    <div style={{display: 'flex', justifyContent: 'space-between', gap: '10px'}}>
+                                        <div>
+                                            <Texto weight={800}>{pedido.titulo}</Texto>
+                                            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                                                Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{pedido.total_colaboradores}</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <b>{Real.format(pedido.valor)}</b>
+                                        </div>
                                     </div>
                                     <Timeline 
                                         value={statuses} 
