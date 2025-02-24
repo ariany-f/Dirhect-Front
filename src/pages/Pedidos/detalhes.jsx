@@ -68,7 +68,7 @@ function DetalhesPedidos() {
             case 'Em aprovação':
                 status = <Tag severity="info" value="Em aprovação"></Tag>;
                 break;
-            case 'Pedido realizado':
+            case 'Pedido Realizado':
                 status = <Tag severity="success" value="Pedido Realizado"></Tag>;
                 break;
             case 'Cancelado':

@@ -2,6 +2,7 @@ import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
 import Texto from '@components/Texto'
 import BadgeGeral from '@components/BadgeGeral'
+import SubTitulo from '@components/SubTitulo'
 import Container from '@components/Container'
 import Frame from '@components/Frame'
 import { Link } from 'react-router-dom'
@@ -13,6 +14,7 @@ import { MdFilter9Plus, MdMan2, MdWoman, MdWoman2, MdWork } from 'react-icons/md
 import { AiOutlinePieChart } from 'react-icons/ai'
 import { BsHourglassSplit } from 'react-icons/bs'
 import { Timeline } from 'primereact/timeline'
+import { Tag } from 'primereact/tag'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -21,11 +23,11 @@ let Real = new Intl.NumberFormat('pt-BR', {
 
 function DashboardCard({ dashboardData, colaboradores = [] }){
     const pedidos = [
-        { titulo: 'Vale Alimentação - 03/2025', statusAtual: 'Em Validação' },
-        { titulo: 'Vale Refeição - 03/2025', statusAtual: 'Em aprovação' }
+        { titulo: 'Vale Alimentação - 03/2025', statusAtual: 'Em validação', total_colaboradores: 5 },
+        { titulo: 'Vale Refeição - 03/2025', statusAtual: 'Em preparação', total_colaboradores: 2 },
     ];
 
-    const statuses = ['Em preparação', 'Em Validação', 'Em aprovação', 'Pedido Realizado'];
+    const statuses = ['Em preparação', 'Em validação', 'Em aprovação', 'Pedido Realizado'];
 
     const customMarker = (item, statusAtual) => {
         const statusIndex = statuses.indexOf(item);
@@ -34,10 +36,59 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
 
         return (
             <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '50%', color: 'white' }}>
-                {isCompleted ? <FaCheckCircle size={18} fill="var(--primaria)" /> : <FaCircle fill="grey" />}
+                {isCompleted ? <FaCheckCircle size={18} fill={getSeverityColor(getSeverity(item))} /> : <FaCircle fill="lightgrey" />}
             </span>
         );
     };
+
+    function getSeverityColor(status) {
+        let color = 'grey';
+        switch(status)
+        {
+            case 'warning':
+                color = "orange";
+                break;
+            case 'info':
+                color = "blue";
+                break;
+            case 'success':
+                color = "green";
+                break;
+            case 'danger':
+                color = "red";
+                break;
+            case 'neutral':
+                color = "rgb(84, 114, 212)";
+                break;
+        }
+        return color
+    }
+
+    function getSeverity(status) {
+        switch(status)
+        {
+            case 'Em preparação':
+                status = "neutral";
+                break;
+            case 'Em validação':
+                status = "warning";
+                break;
+            case 'Em aprovação':
+                status = "info";
+                break;
+            case 'Pedido Realizado':
+                status = "success";
+                break;
+            case 'Cancelado':
+                status = "danger";
+                break;
+        }
+        return status
+    }
+
+    function representativSituacaoTemplate(status) {
+        return <Tag severity={getSeverity(status)} value={status}></Tag>;
+    }
 
     const customContent = (item, statusAtual) => {
         const statusIndex = statuses.indexOf(item);
@@ -46,8 +97,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
 
         return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isCompleted ? 'var(--primaria)' : 'gray' }}>
-                {isCompleted && <b>{item}</b>}
-                {!isCompleted && item}
+                 {representativSituacaoTemplate(item)}
             </span>
         );
     };
@@ -177,6 +227,9 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                             {pedidos.map((pedido, index) => (
                                 <div key={index} style={{ width: '100%', padding: '14px', gap: '5px'}}>
                                     <Texto weight={800}>{pedido.titulo}</Texto>
+                                    <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                                        Colaboradores:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{pedido.total_colaboradores}</p>
+                                    </div>
                                     <Timeline 
                                         value={statuses} 
                                         layout="horizontal" 

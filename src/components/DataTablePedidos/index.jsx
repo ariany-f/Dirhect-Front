@@ -44,8 +44,8 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
             case 'Em preparação':
                 status = <Tag severity="warning" value="Em preparação"></Tag>;
                 break;
-            case 'Em Validação':
-                status = <Tag severity="warning" value="Em Validação"></Tag>;
+            case 'Em validação':
+                status = <Tag severity="warning" value="Em validação"></Tag>;
                 break;
             case 'Em aprovação':
                 status = <Tag severity="info" value="Em aprovação"></Tag>;

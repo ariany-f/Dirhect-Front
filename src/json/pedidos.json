@@ -157,7 +157,7 @@
          "tipo": "Vale Alimentação", 
         "data": "28/02/2025", 
         "data_referencia": "03/2025", 
-        "status": "Em Validação",
+        "status": "Em validação",
         "detalhes": [
             { 
                 "funcionario": "Pedro Santos", 
