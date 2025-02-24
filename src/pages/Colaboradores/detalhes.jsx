@@ -18,7 +18,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import { Tag } from 'primereact/tag';
 import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
-import { RiShoppingCartFill } from 'react-icons/ri';
+import { RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { MdOutlineFastfood } from 'react-icons/md';
 
 function ColaboradorDetalhes() {
@@ -130,11 +130,11 @@ function ColaboradorDetalhes() {
                                 </div>
                             </div>
                         }  />
-                        <BadgeGeral severity="neutro" nomeBeneficio={
+                        <BadgeGeral severity="error" nomeBeneficio={
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <MdOutlineFastfood size={20} />
+                                <RiGasStationFill size={20} />
                                 <div>
-                                Refeição <br/>
+                                Combustível <br/>
                                 R$ 350,00
                                 </div>
                             </div>
