@@ -84,10 +84,10 @@
         "status": "Ativo",
         "rating": 4,
         "price": 78,
-        "nome": "Nome da Marca",
-        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categorias": ["Categoria"],
-        "descricao": "Descrição em texto"
+        "nome": "CloseCare",
+        "banner": "https://closecare.com.br/hubfs/closecare_logo.webp",
+        "categorias": ["Soluções para RH", "Saúde"],
+        "descricao": "CloseCare é uma plataforma de gestão de saúde e bem-estar, que conecta pessoas, empresas e profissionais de saúde, com o objetivo de melhorar a qualidade de vida e o bem-estar das pessoas."
     },
     {
         "id": 10,
