@@ -87,7 +87,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
     }
 
     function representativSituacaoTemplate(status) {
-        return <Tag severity={getSeverity(status)} value={status}></Tag>;
+        return <Tag style={{fontWeight: '700'}} severity={getSeverity(status)} value={status}></Tag>;
     }
 
     const customContent = (item, statusAtual) => {
@@ -97,7 +97,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
 
         return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isCompleted ? 'var(--primaria)' : 'gray' }}>
-                 {representativSituacaoTemplate(item)}
+                 {isCompleted ? representativSituacaoTemplate(item) : <BadgeGeral weight={500} severity={getSeverity(item)} size={'12px'} nomeBeneficio={item} />}
             </span>
         );
     };

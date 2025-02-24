@@ -89,6 +89,18 @@ const EstilosGlobais = createGlobalStyle`
       --info-800: #11427B;
       --info-900: #0B2E50;
       --info-950: #0D2444;
+      --info-2: #1F5FAC;
+      --info-2-50:  #EAF3FD;
+      --info-2-100: #b8daf6;
+      --info-2-200: #9ac9f4;
+      --info-2-300: #36a2cb;
+      --info-2-400: #5ea9eb;
+      --info-2-500: #3d8edc;
+      --info-2-600: #2a74c4;
+      --info-2-700: #1F5FAC;
+      --info-2-800: #184984;
+      --info-2-900: #12355F;
+      --info-2-950: #0D2444;
       --error: #D66161;
       --error-50: #FEF4F2;
       --error-100: #FCECE9;

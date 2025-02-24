@@ -1,6 +1,6 @@
 .beneficio{
     background-color: var(--neutro-100);
-    padding: 8px 8px;
+    padding: 4px 8px;
     border-radius: 8px;
     display: flex;
     justify-content: space-between;
@@ -8,7 +8,6 @@
     width: fit-content;
     & p {
         color: var(--neutro-600);
-        font-weight: 700;
     }
     & svg * {
         color: var(--neutro-600);
@@ -96,5 +95,54 @@
     & svg *{
         color:  var(--neutro-400); /* Ícone vermelho escuro */
         stroke:  var(--neutro-400); /* Ícone vermelho escuro */
+    }
+}
+
+.beneficio.neutral {
+    background-color: var(--info-100); /* Vermelho claro */
+    & div{
+        color:  var(--info-500); /* Texto branco */
+    }
+    & svg {
+        fill: var(--info-500); /* Ícone vermelho escuro */
+    }
+    & svg *{
+        color:  var(--info-500); /* Ícone vermelho escuro */
+        stroke:  var(--info-500); /* Ícone vermelho escuro */
+    }
+}
+
+.beneficio.warning {
+    background-color: var(--warning-50); /* Vermelho claro */
+    & div{
+        color:  var(--warning-500); /* Texto branco */
+    }
+    & p{
+        color:  var(--warning-500); /* Texto branco */
+    }
+    & svg {
+        fill: var(--warning-500); /* Ícone vermelho escuro */
+    }
+    & svg *{
+        color:  var(--warning-500); /* Ícone vermelho escuro */
+        stroke:  var(--warning-500); /* Ícone vermelho escuro */
+    }
+}
+
+
+.beneficio.info {
+    background-color: var(--info-2-50); /* Vermelho claro */
+    & div{
+        color:  var(--info-2-500); /* Texto branco */
+    }
+    & p{
+        color:  var(--info-2-500); /* Texto branco */
+    }
+    & svg {
+        fill: var(--info-2-500); /* Ícone vermelho escuro */
+    }
+    & svg *{
+        color:  var(--info-2-500); /* Ícone vermelho escuro */
+        stroke:  var(--info-2-500); /* Ícone vermelho escuro */
     }
 }
