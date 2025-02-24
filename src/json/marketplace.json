@@ -44,29 +44,29 @@
         "status": "Ativo",
         "rating": 4,
         "price": 78,
-        "nome": "Nome da Marca",
-        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categorias": ["Categoria"],
-        "descricao": "Descrição em texto"
+        "nome": "ForCross",
+        "banner": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJqEb29FHJ2h7hdDUZdr33mgiwAt20EM_xQQ&s",
+        "categorias": ["Confecção"],
+        "descricao": "Forcross Confecções é uma confecção de camisetas, polos, roupas  esportivas e uniformes personalizados com seu logo. Somos especializados na fabricação de roupas esportivas e casual para os box de CrossFit, academias, equipes, torneios esportivos, uniformes para empresas  e também no sistema private label para marcas de moda. Trabalhamos com dry fit poliamida, algodão, poliéster etc."
     },
     {
         "id": 6,
         "status": "Ativo",
         "rating": 4,
         "price": 78,
-        "nome": "Nome da Marca",
-        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categorias": ["Categoria"],
-        "descricao": "Descrição em texto"
+        "nome": "RVC",
+        "banner": "https://rvc.law/wp-content/uploads/2022/04/logo-rvc-atualizado.svg",
+        "categorias": ["Advocacia"],
+        "descricao": "Verificação da tributação sobre folhas de pagamentos, pacotes de remuneração e processos trabalhistas, despontando a qualidade dos recolhimentos de contribuições previdenciárias (INSS), Contribuições de Intervenção do ‘Sistema S’ (Terceiros), Fundo de Garantia do Tempo de Serviço (FGTS) e Imposto de Renda na Fonte (IRRF); Revisão de procedimentos com foco na identificação de oportunidades (pagamentos a mais), indicação de riscos e contingências (pagamentos a menos) e apontamento de melhorias (maximização de procedimentos); Trabalhos de asseguração com foco em Compliance, M&A e projetos especiais; Aplicação de Tratados Internacionais Previdenciários e avaliação de pacotes de remuneração e benefícios a expatriados e impatriados; Avaliação de Programas de Segurança e Medicina do Trabalho e seus impactos nos contextos previdenciário e trabalhista, especialmente dos elementos de concessão da aposentadoria especial e pagamentos de contribuição; Acidentes do Trabalho e seus desdobramentos (emitir a CAT ou não); Acompanhamento de fiscalizações da Receita Federal do Brasil;Contencioso previdenciário envolvendo Fator Acidentário de Prevenção e Nexo Técnico Epidemiológico;Contencioso previdenciário estratégico (maiores informações podem ser obtidas na página da nossa prática de contencioso);Confecção de Legal Opinion e Pareceres envolvendo assuntos do Direito Previdenciário."
     },
     {
         "id": 7,
         "status": "Ativo",
         "rating": 4,
         "price": 78,
-        "nome": "Nome da Marca",
-        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
-        "categorias": ["Categoria"],
+        "nome": "Unip",
+        "banner": "https://www.unip.br/assets/img/logo/logo-unip.svg",
+        "categorias": ["Educação"],
         "descricao": "Descrição em texto"
     },
     {

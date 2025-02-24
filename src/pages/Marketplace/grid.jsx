@@ -21,8 +21,8 @@ const ConteudoFrame = styled.div`
 `
 
 const Col6 = styled.div`
-    flex: 1 1 300px; /* O item tentará ocupar pelo menos 300px */
-    max-width: 33.333%; /* Garante que, quando houver espaço, fiquem 3 por linha */
+    flex: 1 1 calc(25% - 16px); /* Para garantir 4 colunas com espaço entre */
+    max-width: calc(25% - 16px);
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 16px;
@@ -42,7 +42,7 @@ const Col12 = styled.div`
 `
 
 const ImageContainer = styled.div`
-    width: 250px;
+    width: 200px;
     height: 150px;
     display: flex;
     align-items: center;
