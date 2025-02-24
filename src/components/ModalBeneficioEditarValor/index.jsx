@@ -372,9 +372,9 @@ function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecio
                                 </button>
                             </form>
                             <h5>Valor dos benefícios</h5>
-                            <SubTitulo>Informe os valores e os benefícios que deseja disponibilizar para os colaboradores selecionados:</SubTitulo>
+                            <SubTitulo>Informe os valores e os benefícios que deseja disponibilizar para as filiais selecionadas:</SubTitulo>
                         </Titulo>
-                        <Texto weight={700}>Colaboradores selecionados&nbsp;<span style={{fontWeight: '600', color: 'var(--primaria)'}}>{selecionados.length}</span></Texto>
+                        <Texto weight={700}>Filiais selecionadas&nbsp;<span style={{fontWeight: '600', color: 'var(--primaria)'}}>{selecionados.length}</span></Texto>
                         <Titulo>
                             <h6 style={{ fontSize: '16px' }}>Benefício Fixado</h6>
                             <SubTitulo>Digite o valor total que permanecerá fixo dentro dessa categoria.</SubTitulo>
