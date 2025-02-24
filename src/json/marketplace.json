@@ -7,7 +7,7 @@
         "nome": "Giuliana Flores",
         "banner": "https://static.giulianaflores.com.br/images/product/26106gg.jpg?ims=500x500",
         "categoria": "Presentes",
-        "descricao": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        "descricao": "Buquês de Flores a Partir de R$49,90. Aproveite as Condições Especiais Com Giuliana Flores. Flores e Presentes Com Até 70% de Desconto. Acesse já o Site e Confira!"
     },
     {
         "id": 2,
@@ -17,6 +17,46 @@
         "nome": "GymPass",
         "banner": "https://sinprofaz.org.br/2024/wp-content/uploads/2020/12/logo-gympass.jpg",
         "categoria": "Bem-Estar",
-        "descricao": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+        "descricao": "Uma infinidade de opções de academias, personal training e apps de bem-estar com o Wellhub. Veja Como é Simples Contratar o Plano de Benefícios da Wellhub. Solicite um Orçamento."
+    },
+    {
+        "id": 3,
+        "status": "Ativo",
+        "rating": 4,
+        "price": 78,
+        "nome": "Martins & Corrêa Corretora de Seguros",
+        "banner": "https://corretoramc.com.br/wa_images/mc%20logo.png?v=1jhis0g",
+        "categoria": "Saúde",
+        "descricao": "Acesse https://corretoramc.com.br/"
+    },
+    {
+        "id": 4,
+        "status": "Ativo",
+        "rating": 4,
+        "price": 78,
+        "nome": "Nome da Marca",
+        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
+        "categoria": "Categoria",
+        "descricao": "Descrição em texto"
+    },
+    {
+        "id": 5,
+        "status": "Ativo",
+        "rating": 4,
+        "price": 78,
+        "nome": "Nome da Marca",
+        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
+        "categoria": "Categoria",
+        "descricao": "Descrição em texto"
+    },
+    {
+        "id": 6,
+        "status": "Ativo",
+        "rating": 4,
+        "price": 78,
+        "nome": "Nome da Marca",
+        "banner": "https://demoisp.khalsms.com.br/product_images/Seu_logo_aqui_01.png",
+        "categoria": "Categoria",
+        "descricao": "Descrição em texto"
     }
 ]
