@@ -5,13 +5,14 @@ import BadgeGeral from '@components/BadgeGeral'
 import Container from '@components/Container'
 import Frame from '@components/Frame'
 import { Link } from 'react-router-dom'
-import { FaWallet, FaArrowRight, FaUser, FaFileAlt, FaUserPlus, FaUserMinus, FaCalculator, FaLayerGroup, FaUmbrellaBeach } from 'react-icons/fa'
+import { FaWallet, FaArrowRight, FaUser, FaFileAlt, FaUserPlus, FaUserMinus, FaCalculator, FaLayerGroup, FaUmbrellaBeach, FaCheckCircle, FaCircle } from 'react-icons/fa'
 import styles from './DashboardCard.module.css'
 import { Skeleton } from 'primereact/skeleton'
 import { GrAddCircle } from 'react-icons/gr'
 import { MdFilter9Plus, MdMan2, MdWoman, MdWoman2, MdWork } from 'react-icons/md'
 import { AiOutlinePieChart } from 'react-icons/ai'
 import { BsHourglassSplit } from 'react-icons/bs'
+import { Timeline } from 'primereact/timeline'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -19,6 +20,37 @@ let Real = new Intl.NumberFormat('pt-BR', {
 });
 
 function DashboardCard({ dashboardData, colaboradores = [] }){
+    const pedidos = [
+        { titulo: 'Vale Alimentação - 03/2025', statusAtual: 'Em Validação' },
+        { titulo: 'Vale Refeição - 03/2025', statusAtual: 'Em aprovação' }
+    ];
+
+    const statuses = ['Em preparação', 'Em Validação', 'Em aprovação', 'Pedido Realizado'];
+
+    const customMarker = (item, statusAtual) => {
+        const statusIndex = statuses.indexOf(item);
+        const atualIndex = statuses.indexOf(statusAtual);
+        const isCompleted = statusIndex <= atualIndex;
+
+        return (
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '50%', color: 'white' }}>
+                {isCompleted ? <FaCheckCircle size={18} fill="var(--primaria)" /> : <FaCircle fill="grey" />}
+            </span>
+        );
+    };
+
+    const customContent = (item, statusAtual) => {
+        const statusIndex = statuses.indexOf(item);
+        const atualIndex = statuses.indexOf(statusAtual);
+        const isCompleted = statusIndex <= atualIndex;
+
+        return (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isCompleted ? 'var(--primaria)' : 'gray' }}>
+                {item}
+            </span>
+        );
+    };
+
     return (
         <Container gap="32px">
             <div className={styles.wrapper_cards}>
@@ -58,7 +90,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
                 <div className={styles.empilhado}>
                     <div className={styles.card_dashboard}>
                         <Frame estilo="spaced">
@@ -91,6 +123,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         </Frame>
                     </div>
                 </div>
+
                 <div className={styles.empilhado}>
                     <div className={styles.card_dashboard}>
                         <Frame estilo="spaced">
@@ -127,6 +160,31 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+            <div className={styles.wrapper_cards}>
+                <div className={styles.card_dashboard}>
+                    <Frame estilo="spaced">
+                        <Titulo><h6>Últimos Pedidos</h6></Titulo>
+                        <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
+                    </Frame>
+                    <div className={styles.transacao}>
+                        <div className={styles.empilhado}>
+                            {pedidos.map((pedido, index) => (
+                                <div key={index} style={{ width: '100%', padding: '14px', gap: '5px'}}>
+                                    <Texto weight={800}>{pedido.titulo}</Texto>
+                                    <Timeline 
+                                        value={statuses} 
+                                        layout="horizontal" 
+                                        align="top" 
+                                        marker={(item) => customMarker(item, pedido.statusAtual)}
+                                        content={(item) => customContent(item, pedido.statusAtual)} 
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
