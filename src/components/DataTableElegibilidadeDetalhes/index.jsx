@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalServices } from 'react-icons/md'
 import './DataTable.css'
 import BadgeGeral from '@components/BadgeGeral';
+import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -136,6 +137,12 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
         setGlobalFilterValue(value);
     };
 
+    const representativeContratoTemplate = (rowData) => {
+        return (
+            <Texto weight={700}>{rowData.nome_fornecedor}</Texto>
+        )
+    }
+
     const representativeValorTemplate = (rowData) => {
         return (
             Real.format(rowData.valor)
@@ -194,7 +201,7 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
         <>
             <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 {/* <Column expander={allowExpansion} style={{ width: '5%' }} /> */}
-                <Column field="nome_fornecedor" header="Contrato" style={{ width: '35%' }}></Column>
+                <Column body={representativeContratoTemplate} field="nome_fornecedor" header="Contrato" style={{ width: '35%' }}></Column>
                 <Column field="data_inicio" header="Data Início" style={{ width: '35%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} field="beneficios" header="Benefícios" style={{ width: '35%' }}></Column>
