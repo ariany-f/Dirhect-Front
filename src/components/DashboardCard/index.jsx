@@ -46,7 +46,8 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
 
         return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isCompleted ? 'var(--primaria)' : 'gray' }}>
-                {item}
+                {isCompleted && <b>{item}</b>}
+                {!isCompleted && item}
             </span>
         );
     };
