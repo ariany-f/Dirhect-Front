@@ -21,8 +21,8 @@ const ConteudoFrame = styled.div`
 `
 
 const Col6 = styled.div`
-    flex: 1 1 calc(33.333% - 16px); /* 3 itens por linha considerando gap */
-    max-width: calc(33.333% - 16px);
+    flex: 1 1 300px; /* O item tentará ocupar pelo menos 300px */
+    max-width: 33.333%; /* Garante que, quando houver espaço, fiquem 3 por linha */
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 16px;
@@ -38,8 +38,7 @@ const Col12 = styled.div`
     flex-wrap: wrap;
     gap: 16px;
     width: 100%;
-    align-items: stretch;
-    justify-content: flex-start; /* Melhor alinhamento */
+    justify-content: flex-start; /* Mantém o alinhamento à esquerda */
 `
 
 const ImageContainer = styled.div`
