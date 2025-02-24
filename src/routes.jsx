@@ -244,7 +244,7 @@ function AppRouter() {
                   <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
                   <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
                   <Route path="adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
-                  <Route path="detalhes/:id" element={<DepartamentoDetalhes />} >
+                  <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} >
                       <Route index element={<DepartamentoListaColaboradores />} />
                       <Route path="configuracao-beneficios" element={<DepartamentoConfiguracaoBeneficios />} />
                   </Route>

@@ -36,7 +36,7 @@ function DepartamentoCard({department}) {
     }, [])
     
     return (
-        <Link to={`/estrutura/detalhes/${department.public_id}`}>
+        <Link to={`/estrutura/departamento/detalhes/${department.public_id}`}>
         <div className={styles.departamento}>
             <div className={styles.left}>
                 <Texto weight={700} className={styles.departmentName}>{department.name}</Texto>

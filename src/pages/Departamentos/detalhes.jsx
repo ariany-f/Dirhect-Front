@@ -102,20 +102,20 @@ function DepartamentoDetalhes() {
             }
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
-                    <Link to={`/estrutura/detalhes/${id}`}>
-                        <Botao estilo={location.pathname == `/estrutura/detalhes/${id}`?'black':''} size="small" tab>Colaboradores</Botao>
+                    <Link to={`/estrutura/departamento/detalhes/${id}`}>
+                        <Botao estilo={location.pathname == `/estrutura/departamento/detalhes/${id}`?'black':''} size="small" tab>Colaboradores</Botao>
                     </Link>
-                    <Link to={`/estrutura/detalhes/${id}/configuracao-beneficios`}>
-                        <Botao estilo={location.pathname == `/estrutura/detalhes/${id}/configuracao-beneficios`?'black':''} size="small" tab>Configuração de Benefícios</Botao>
+                    <Link to={`/estrutura/departamento/detalhes/${id}/configuracao-beneficios`}>
+                        <Botao estilo={location.pathname == `/estrutura/departamento/detalhes/${id}/configuracao-beneficios`?'black':''} size="small" tab>Configuração de Benefícios</Botao>
                     </Link>
                 </BotaoGrupo>
                 
-                {location.pathname == `/estrutura/detalhes/${id}` &&
+                {location.pathname == `/estrutura/departamento/detalhes/${id}` &&
                     <BotaoGrupo>
                         <Botao aoClicar={() => navegar(`/estrutura/${id}/adicionar-colaboradores`)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar colaboradores</Botao>
                     </BotaoGrupo>
                 }
-                {location.pathname == `/estrutura/detalhes/${id}/configuracao-beneficios` &&
+                {location.pathname == `/estrutura/departamento/detalhes/${id}/configuracao-beneficios` &&
                     <BotaoGrupo align="center">
                         <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
                             <AiFillQuestionCircle className="question-icon" size={20} />

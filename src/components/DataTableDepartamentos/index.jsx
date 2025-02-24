@@ -49,7 +49,7 @@ function DataTableDepartamentos({ departamentos, showSearch = true, pagination =
     function verDetalhes(value)
     {
         setSelectedDepartamento(value.id)
-        navegar(`/estrutura/detalhes/${value.id}`)
+        navegar(`/estrutura/departamento/detalhes/${value.id}`)
     }
     
     function handleSelectChange(e) {
