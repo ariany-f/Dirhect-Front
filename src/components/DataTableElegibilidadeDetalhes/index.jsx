@@ -161,7 +161,7 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
                                 if(item.name == benefit.beneficio)
                                 {
                                     return (
-                                        <BadgeGeral  nomeBeneficio={
+                                        <BadgeGeral weight={500} nomeBeneficio={
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                 <div>{item.icone}</div>
                                                 <div>
