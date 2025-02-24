@@ -41,11 +41,20 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
         let status = rowData?.status;
         switch(rowData?.status)
         {
-            case 'Aprovado':
-                status = <Tag severity="success" value="Aprovado"></Tag>;
+            case 'Em preparação':
+                status = <Tag severity="warning" value="Em preparação"></Tag>;
                 break;
-            case 'Aguardando':
-                status = <Tag severity="warning" value="Aguardando"></Tag>;
+            case 'Em Validação':
+                status = <Tag severity="warning" value="Em Validação"></Tag>;
+                break;
+            case 'Em aprovação':
+                status = <Tag severity="info" value="Em aprovação"></Tag>;
+                break;
+            case 'Pedido Realizado':
+                status = <Tag severity="success" value="Pedido Realizado"></Tag>;
+                break;
+            case 'Cancelado':
+                status = <Tag severity="danger" value="Cancelado"></Tag>;
                 break;
         }
         return (

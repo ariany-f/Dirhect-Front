@@ -5,7 +5,7 @@
         "tipo": "Vale Refeição", 
         "data": "31/01/2025", 
         "data_referencia": "12/2024", 
-        "status": "Aguardando",
+        "status": "Pedido Realizado",
         "detalhes": [
             { 
                 "funcionario": "João Silva", 
@@ -51,7 +51,7 @@
         "tipo": "Vale Alimentação", 
         "data": "31/01/2025", 
         "data_referencia": "12/2024", 
-        "status": "Aprovado",
+        "status": "Pedido Realizado",
         "detalhes": [
             { 
                 "funcionario": "Maria Souza", 
@@ -79,7 +79,7 @@
         "tipo": "Vale Refeição", 
         "data": "28/02/2025", 
         "data_referencia": "01/2025", 
-        "status": "Aguardando",
+        "status": "Cancelado",
         "detalhes": [
             { 
                 "funcionario": "Pedro Santos", 
@@ -93,9 +93,9 @@
          "id": 4, 
         "total_colaboradores": 5,
          "tipo": "Vale Alimentação", 
-        "data": "28/02/2025", 
+        "data": "01/02/2025", 
         "data_referencia": "01/2025", 
-        "status": "Aguardando",
+        "status": "Pedido Realizado",
         "detalhes": [
             { 
                 "funcionario": "Pedro Santos", 
@@ -106,34 +106,12 @@
         ]
     },
     {
-         "id": 5, 
-        "total_colaboradores": 2,
-         "tipo": "Vale Refeição", 
-        "data": "31/03/2025", 
-        "data_referencia": "02/2025", 
-        "status": "Aprovado",
-        "detalhes": [
-            { 
-                "funcionario": "Carlos Oliveira", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 4800
-            },
-            { 
-                "funcionario": "Juliana Mendes", 
-                "desconto": 400, 
-                "empresa": 200, 
-                "valor": 5700 
-            }
-        ]
-    },
-    {
-        "id": 6, 
+        "id": 4, 
         "total_colaboradores": 17,
         "tipo": "Vale Alimentação", 
         "data": "31/03/2025", 
         "data_referencia": "02/2025", 
-        "status": "Aguardando",
+        "status": "Em aprovação",
         "detalhes": [
             { 
                 "funcionario": "Juliana Mendes", 
@@ -170,6 +148,44 @@
                 "desconto": 300, 
                 "empresa": 400, 
                 "valor": 1000 
+            }
+        ]
+    },
+    {
+         "id": 5, 
+        "total_colaboradores": 5,
+         "tipo": "Vale Alimentação", 
+        "data": "28/02/2025", 
+        "data_referencia": "03/2025", 
+        "status": "Em Validação",
+        "detalhes": [
+            { 
+                "funcionario": "Pedro Santos", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 4900
+            }
+        ]
+    },
+    {
+         "id": 6, 
+        "total_colaboradores": 2,
+         "tipo": "Vale Refeição", 
+        "data": "31/03/2025", 
+        "data_referencia": "03/2025", 
+        "status": "Em preparação",
+        "detalhes": [
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 4800
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "desconto": 400, 
+                "empresa": 200, 
+                "valor": 5700 
             }
         ]
     }
