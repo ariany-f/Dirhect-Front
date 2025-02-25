@@ -1,7 +1,7 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import CampoTexto from "@components/CampoTexto"
-import DropdownItens from '@components/DropdownItens'
+import CheckboxContainer from '@components/CheckboxContainer'
 import Titulo from "@components/Titulo"
 import { RiCloseFill } from 'react-icons/ri'
 import http from '@http'
@@ -84,6 +84,8 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoA
     const [classError, setClassError] = useState([])
     const [nomeBeneficio, setNomeBeneficio] = useState(null)
     const [valor, setValor] = useState('')
+    const [tempo_minimo, setTempoMinimo] = useState('')
+    const [extensivo_dependentes, setExxtensivelDependente] = useState(false)
     const [empresa, setEmpresa] = useState('')
     const [desconto, setDesconto] = useState('')
     
@@ -96,6 +98,8 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoA
             setEmpresa(dadoAntigo.empresa)
             setNomeBeneficio(dadoAntigo.nome)
             setDesconto(dadoAntigo.desconto)
+            setTempoMinimo(dadoAntigo.tempo_minimo)
+            setExxtensivelDependente(dadoAntigo.extensivo_dependentes)
         }
 
     }, [dadoAntigo, alteravel])
@@ -106,6 +110,8 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoA
             valor: valor,
             empresa: empresa,
             desconto: desconto,
+            tempo_minimo: tempo_minimo,
+            extensivo_dependentes: extensivo_dependentes
         }
         aoClicar(send)
     }
@@ -115,8 +121,14 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoA
         setValor('')
         setEmpresa('')
         setDesconto('')
+        setTempoMinimo('')
+        setExxtensivelDependente(false)
         aoFechar()
     }
+
+    const handleChange = (checked) => {
+        setExxtensivelDependente(checked) // Atualiza o estado da tarefa
+    };
 
     return(
         <>
@@ -165,6 +177,19 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoA
                                         type="text" 
                                         label="Valor empresa" 
                                         placeholder="Digite o valor da empresa" />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="tempo_minimo" 
+                                        valor={tempo_minimo} 
+                                        setValor={setTempoMinimo} 
+                                        type="text" 
+                                        label="Tempo Mínimo de Empresa em dias" 
+                                        placeholder="Digite Tempo Mínimo de Empresa em dias" />
+                                </Col6>
+                                <Col6>
+                                    <CheckboxContainer label="Extensível Dependente?" name="extensivo_dependentes" valor={extensivo_dependentes} setValor={handleChange} />
                                 </Col6>
                             </Col12>
                         </div>

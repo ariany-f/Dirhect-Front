@@ -42,9 +42,9 @@ function DataTableContratosDetalhes({ beneficios }) {
         )
     }
 
-    const representativeDescontoTemplate = (rowData) => {
+    const representativeExtensivelTemplate = (rowData) => {
         return (
-            Real.format(rowData.desconto)
+           rowData.extensivo_dependentes ? 'Sim' : 'Não'
         )
     }
 
@@ -104,6 +104,8 @@ function DataTableContratosDetalhes({ beneficios }) {
                 <Column field="nome" header="Benefício" style={{ width: '35%' }}></Column>
                 <Column field="data_inicio" header="Data Inicio" style={{ width: '35%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
+                <Column field="tempo_minimo" header="Tempo Mínimo" style={{ width: '35%' }}></Column>
+                <Column body={representativeExtensivelTemplate} field="extensivo_dependentes" header="Extensível Dependente" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
             </DataTable>
             <ModalAlterarRegrasBeneficio aoFechar={() => setModalOpened(false)} opened={modalOpened} dadoAntigo={sendData} />
