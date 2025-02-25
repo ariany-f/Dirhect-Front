@@ -77,6 +77,18 @@
                 "valor": 1000,
                 "desconto": 200,
                 "empresa": 800
+            },
+            {
+                "id": 1,
+                "nome": "Saúde",
+                "data_inicio": "01/01/2024",
+                "data_fim": "31/12/2024",
+                "status": "Ativo",
+                "extensivo_dependentes": false,
+                "tempo_minimo": 50,
+                "valor": 2000,
+                "desconto": 200,
+                "empresa": 1800
             }
         ]
     },
@@ -88,6 +100,25 @@
             {
                 "id": 1,
                 "nome": "Previdência Privada",
+                "data_inicio": "01/01/2024",
+                "data_fim": "31/12/2024",
+                "status": "Ativo",
+                "extensivo_dependentes": true,
+                "tempo_minimo": 90,
+                "valor": 1000,
+                "desconto": 200,
+                "empresa": 800
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "nome_fornecedor": "Banco do Brasil",
+        "descritivo": "",
+        "beneficios": [ 
+            {
+                "id": 1,
+                "nome": "Empréstimo Consignado",
                 "data_inicio": "01/01/2024",
                 "data_fim": "31/12/2024",
                 "status": "Ativo",

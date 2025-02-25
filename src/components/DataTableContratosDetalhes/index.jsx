@@ -44,7 +44,7 @@ function DataTableContratosDetalhes({ beneficios }) {
 
     const representativeExtensivelTemplate = (rowData) => {
         return (
-           rowData.extensivo_dependentes ? 'Sim' : 'Não'
+           rowData.extensivo_dependentes ? <Tag severity="success" value="Sim"/> : <Tag severity="error" value="Não"/>
         )
     }
 
