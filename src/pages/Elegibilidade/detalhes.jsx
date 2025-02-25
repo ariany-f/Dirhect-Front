@@ -159,7 +159,7 @@ function DetalhesElegibilidade() {
         switch(elegibilidade?.status)
         {
             case 'Ativo':
-                status = <Tag severity="error" value="Ativo"></Tag>;
+                status = <Tag severity="success" value="Ativo"></Tag>;
                 break;
             case 'Cancelada':
                 status = <Tag severity="danger" value="Cancelada"></Tag>;
