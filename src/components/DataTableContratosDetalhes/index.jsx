@@ -44,7 +44,7 @@ function DataTableContratosDetalhes({ beneficios }) {
 
     const representativeExtensivelTemplate = (rowData) => {
         return (
-           rowData.extensivo_dependentes ? <Tag severity="success" value="Sim"/> : <Tag severity="error" value="Não"/>
+           rowData.extensivo_dependentes ? <Tag severity="success" value="Sim"/> : <Tag severity="danger" value="Não"/>
         )
     }
 
@@ -59,7 +59,7 @@ function DataTableContratosDetalhes({ beneficios }) {
         switch(rowData?.status)
         {
             case 'Ativo':
-                status = <Tag severity="success" value="Ativo"></Tag>;
+                status = <Tag severity="error" value="Ativo"></Tag>;
                 break;
             case 'Vencido':
                 status = <Tag severity="warning" value="Vencido"></Tag>;

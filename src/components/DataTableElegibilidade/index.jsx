@@ -42,7 +42,7 @@ function DataTableElegibilidade({ elegibilidade, colaborador = null }) {
         switch(rowData?.status)
         {
             case 'Ativo':
-                status = <Tag severity="success" value="Ativo"></Tag>;
+                status = <Tag severity="error" value="Ativo"></Tag>;
                 break;
             case 'Cancelado':
                 status = <Tag severity="warning" value="Cancelado"></Tag>;
