@@ -3,6 +3,8 @@
         "id": 1, 
         "total_tarefas": 6,
         "tipo": "Adiantamento", 
+        "recorrencia": false,
+        "tipo_recorrencia": "mes",
         "data": "31/01/2025", 
         "feito": 0, 
         "status": "Aguardando",
