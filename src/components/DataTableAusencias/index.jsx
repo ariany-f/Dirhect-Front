@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import CampoTexto from '@components/CampoTexto';
 import { useEffect, useState } from 'react';
 import ModalFerias from '../ModalFerias';
-import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 
 function formatarDataBr(data) {
     const [ano, mes, dia] = data.split('-');

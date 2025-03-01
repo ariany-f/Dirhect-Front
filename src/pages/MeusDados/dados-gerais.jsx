@@ -13,7 +13,7 @@ import { ArmazenadorToken } from './../../utils'
 import { Toast } from 'primereact/toast'
 import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
 import ModalAlterarEmail from '@components/ModalAlterar/email'
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 
 function MeusDadosDadosGerais() {
 

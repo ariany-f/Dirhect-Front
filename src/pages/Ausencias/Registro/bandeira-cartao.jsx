@@ -9,7 +9,7 @@ import Loading from "@components/Loading"
 import styled from "styled-components"
 import { MdOutlineChevronRight } from 'react-icons/md'
 import { Link, useNavigate } from "react-router-dom"
-import { useColaboradorContext } from "../../../contexts/Colaborador"
+import { useColaboradorContext } from "@contexts/Colaborador"
 import Mastercard from '@assets/Mastercard.svg'
 import Elo from '@assets/Elo.svg'
  

@@ -6,7 +6,7 @@ import DropdownItens from '@components/DropdownItens'
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import http from '@http'
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import axios from "axios";
         
 const Col12 = styled.div`

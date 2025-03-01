@@ -5,7 +5,7 @@ import Titulo from "@components/Titulo"
 import BotaoVoltar from "@components/BotaoVoltar"
 import CamposVerificacao from "@components/CamposVerificacao"
 import { Link, useNavigate } from "react-router-dom"
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { Toast } from 'primereact/toast'
 import { useRef } from "react"
 

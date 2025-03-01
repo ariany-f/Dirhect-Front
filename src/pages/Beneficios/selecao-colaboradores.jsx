@@ -14,7 +14,7 @@ import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components'
-import { useRecargaBeneficiosContext } from "../../contexts/RecargaBeneficios"
+import { useRecargaBeneficiosContext } from "@contexts/RecargaBeneficios"
 import ModalRecarga from '@components/ModalRecarga'
 
 const ContainerButton = styled.div`

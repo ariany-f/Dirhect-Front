@@ -18,7 +18,7 @@ import { CiBurger, CiForkAndKnife } from "react-icons/ci"
 import { PiFirstAidKitLight, PiOfficeChair } from "react-icons/pi"
 import { IoBookOutline } from "react-icons/io5"
 import { currency, mask as masker, unMask } from "remask"
-import { useRecargaBeneficiosContext } from "../../contexts/RecargaBeneficios"
+import { useRecargaBeneficiosContext } from "@contexts/RecargaBeneficios"
 import DottedLine from "@components/DottedLine"
 
 const Overlay = styled.div`

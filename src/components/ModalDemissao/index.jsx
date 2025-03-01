@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
 import DropdownItens from "@components/DropdownItens"; 
-import { useDepartamentoContext } from "../../contexts/Departamento"
+import { useDepartamentoContext } from "@contexts/Departamento"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);

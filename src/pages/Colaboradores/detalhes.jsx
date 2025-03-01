@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import { Tag } from 'primereact/tag';
-import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { MdOutlineFastfood } from 'react-icons/md';
 

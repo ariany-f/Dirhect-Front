@@ -1,6 +1,6 @@
-import Frame from "../Frame"
-import Item from "../Item"
-import Texto from "../Texto"
+import Frame from "@components/Frame"
+import Item from "@components/Item"
+import Texto from "@components/Texto"
 
 function RegrasCriacaoSenha() {
     return (

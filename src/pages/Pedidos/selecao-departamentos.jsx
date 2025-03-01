@@ -14,7 +14,7 @@ import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components';
-import { useRecargaSaldoLivreContext } from '../../contexts/RecargaSaldoLivre';
+import { useRecargaSaldoLivreContext } from '@contexts/RecargaSaldoLivre';
 
 const ContainerButton = styled.div`
     display: flex;

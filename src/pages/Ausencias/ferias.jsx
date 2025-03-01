@@ -13,7 +13,7 @@ import { AiFillQuestionCircle } from 'react-icons/ai'
 import DataTableContratos from '@components/DataTableContratos'
 import DataTableFerias from '@components/DataTableFerias'
 import ModalFerias from '@components/ModalFerias'
-import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
 import { FaPlusCircle } from 'react-icons/fa'
 
 const ConteudoFrame = styled.div`

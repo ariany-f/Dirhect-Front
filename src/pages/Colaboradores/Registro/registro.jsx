@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { ColaboradorProvider } from "../../../contexts/Colaborador"
+import { ColaboradorProvider } from "@contexts/Colaborador"
  
 
 function ColaboradorRegistro() {

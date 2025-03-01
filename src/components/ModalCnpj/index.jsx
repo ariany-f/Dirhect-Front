@@ -8,10 +8,10 @@ import { RiCloseFill, RiBuildingLine } from 'react-icons/ri'
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import http from '@http'
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import styles from './ModalCnpj.module.css'
 import { CiCirclePlus } from "react-icons/ci"
-import { ArmazenadorToken } from "../../utils"
+import { ArmazenadorToken } from "@utils"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);

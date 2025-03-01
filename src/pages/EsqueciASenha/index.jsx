@@ -6,7 +6,7 @@ import Titulo from "@components/Titulo"
 import BotaoVoltar from "@components/BotaoVoltar"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 
 function EsqueciASenha() {
     

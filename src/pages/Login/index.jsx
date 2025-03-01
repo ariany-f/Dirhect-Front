@@ -8,11 +8,11 @@ import Titulo from "@components/Titulo"
 import { Link, useNavigate } from "react-router-dom"
 import styles from './Login.module.css'
 import CheckboxContainer from "@components/CheckboxContainer"
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { useEffect, useRef, useState } from "react"
 import { Toast } from 'primereact/toast'
 import Loading from "@components/Loading"
-import { ArmazenadorToken } from "../../utils"
+import { ArmazenadorToken } from "@utils"
 import loginData from '@json/login.json'; // Importando o JSON
 
 function Login() {

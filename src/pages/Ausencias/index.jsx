@@ -1,6 +1,6 @@
-import { ContratosProvider } from "../../contexts/Contratos"
+import { ContratosProvider } from "@contexts/Contratos"
 import { useEffect, useState } from "react"
-import http from "../../http"
+import http from "@http"
 import Loading from '@components/Loading'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'

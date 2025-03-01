@@ -9,7 +9,7 @@ import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
 import logo from '/imagens/logo.png'
 import { useEffect, useRef, useState } from "react"
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { FaBusAlt } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa";

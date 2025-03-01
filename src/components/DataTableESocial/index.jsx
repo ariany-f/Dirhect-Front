@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import ModalFerias from '../ModalFerias';
-import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 
 function DataTableESocial({ historico }) {
 

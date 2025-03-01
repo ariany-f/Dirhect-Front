@@ -20,8 +20,8 @@ import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components';
-import { useDepartamentoContext } from '../../contexts/Departamento';
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario";
+import { useDepartamentoContext } from '@contexts/Departamento';
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 import DottedLine from '@components/DottedLine';
 
 const ContainerButton = styled.div`

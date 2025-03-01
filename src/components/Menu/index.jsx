@@ -4,8 +4,8 @@ import { IoMdSettings } from 'react-icons/io'
 import { RiUserFollowFill, RiLogoutCircleLine, RiOrganizationChart } from 'react-icons/ri'
 import { GiTreeBranch } from "react-icons/gi"
 import { Link, useNavigate } from "react-router-dom"
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
-import { ArmazenadorToken } from "../../utils"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
+import { ArmazenadorToken } from "@utils"
 
 const DialogEstilizado = styled.dialog`
     display: inline-flex;

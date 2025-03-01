@@ -8,8 +8,8 @@ import { RiCloseFill } from 'react-icons/ri'
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
-import styles from './ModalAdicionarDepartamento.module.css'
-import { useDepartamentoContext } from "../../contexts/Departamento"
+import styles from './ModalFerias.module.css'
+import { useDepartamentoContext } from "@contexts/Departamento"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);

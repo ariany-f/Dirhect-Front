@@ -7,7 +7,7 @@ import { Link, Outlet, useLocation, useOutlet, useOutletContext } from "react-ro
 import React, { createContext, useContext, useState } from 'react';
 import DataTableTarefas from '@components/DataTableTarefas'
 import ModalTarefas from '@components/ModalTarefas'
-import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
 
 const ConteudoFrame = styled.div`
     display: flex;

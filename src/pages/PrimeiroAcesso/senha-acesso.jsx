@@ -6,12 +6,12 @@ import Titulo from "@components/Titulo"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 import { Link, useNavigate } from "react-router-dom"
 import BotaoVoltar from "@components/BotaoVoltar"
-import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
+import { usePrimeiroAcessoContext } from "@contexts/PrimeiroAcesso"
 import ModalToken from "@components/ModalToken"
 import { useEffect, useRef, useState } from "react"
 import { Toast } from 'primereact/toast'
 import Loading from "@components/Loading"
-import { ArmazenadorToken } from "../../utils"
+import { ArmazenadorToken } from "@utils"
 
 function SenhaDeAcesso() {
 

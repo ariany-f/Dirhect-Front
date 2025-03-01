@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { RecargaSaldoLivreProvider } from "../../contexts/RecargaSaldoLivre"
+import { RecargaSaldoLivreProvider } from "@contexts/RecargaSaldoLivre"
  
 
 function LinhasTransporte() {

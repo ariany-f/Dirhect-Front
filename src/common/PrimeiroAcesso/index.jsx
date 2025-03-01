@@ -6,7 +6,7 @@ import RightContainer from "@components/RightContainer"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
 import { Outlet } from "react-router-dom"
 import RodapePublico from "@components/RodapePublico"
-import { PrimeiroAcessoProvider } from "../../contexts/PrimeiroAcesso"
+import { PrimeiroAcessoProvider } from "@contexts/PrimeiroAcesso"
 
 function PrimeiroAcessoCommon() {
     return (

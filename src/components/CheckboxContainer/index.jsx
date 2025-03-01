@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Texto from "../Texto";
+import Texto from "@components/Texto";
 import styles from './CheckboxContainer.module.css'
 
 const ChBtn = styled.input`

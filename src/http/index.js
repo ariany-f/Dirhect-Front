@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ArmazenadorToken } from "../utils";
+import { ArmazenadorToken } from "@utils";
 
 const http = axios.create({
     headers: {

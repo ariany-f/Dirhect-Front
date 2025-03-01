@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
-import Frame from "../Frame"
-import Texto from "../Texto"
+import Frame from "@components/Frame"
+import Texto from "@components/Texto"
 import styles from './PrecisoDeAjuda.module.css'
 import { AiOutlineQuestionCircle } from "react-icons/ai"
 

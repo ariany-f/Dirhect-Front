@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom"
-import { DependentesProvider } from "../../contexts/Dependentes"
+import { DependentesProvider } from "@contexts/Dependentes"
 import { useEffect, useState } from "react"
-import http from "../../http"
+import http from "@http"
 import Loading from '@components/Loading'
 
 function Dependentes() {

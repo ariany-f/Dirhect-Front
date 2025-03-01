@@ -5,12 +5,12 @@ import Cabecalho from "@components/Cabecalho"
 import Botao from "@components/Botao"
 import MainContainer from "@components/MainContainer"
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import ModalCnpj from '@components/ModalCnpj'
 import { useEffect, useState } from "react"
 import Loading from '@components/Loading'
 import http from '@http'
-import { ArmazenadorToken } from "../../utils"
+import { ArmazenadorToken } from "@utils"
 import styled from "styled-components"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"

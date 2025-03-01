@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { OperadorProvider } from "../../../contexts/Operador"
+import { OperadorProvider } from "@contexts/Operador"
  
 
 function OperadorRegistro() {

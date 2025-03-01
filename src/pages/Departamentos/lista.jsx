@@ -10,7 +10,7 @@ import Management from '@assets/Management.svg'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
-import { useDepartamentoContext } from '../../contexts/Departamento'
+import { useDepartamentoContext } from '@contexts/Departamento'
 import http from '../../http'
 
 const ConteudoFrame = styled.div`

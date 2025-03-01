@@ -17,8 +17,8 @@ import { RiQuestionLine } from "react-icons/ri"
 import { useNavigate } from "react-router-dom"
 import { Toast } from 'primereact/toast'
 import axios from "axios"
-import { useColaboradorContext } from "../../../contexts/Colaborador"
-import { useSessaoUsuarioContext } from "../../../contexts/SessaoUsuario";
+import { useColaboradorContext } from "@contexts/Colaborador"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
  
 const Col12 = styled.div`
     display: flex;

@@ -11,7 +11,7 @@ import { MdCancel } from "react-icons/md"
 import Loading from "@components/Loading"
 import styles from './Beneficios.module.css'
 import { Toast } from 'primereact/toast'
-import { useRecargaBeneficiosContext } from '../../contexts/RecargaBeneficios';
+import { useRecargaBeneficiosContext } from '@contexts/RecargaBeneficios';
 import DataTableBeneficiosEditarValor from "@components/DataTableBeneficiosEditarValor";
 
 function BeneficioEditarValor() {

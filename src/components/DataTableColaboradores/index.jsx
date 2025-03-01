@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { ContextMenu } from 'primereact/contextmenu';
 import { IoEllipsisVertical } from 'react-icons/io5';
-import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario';
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import ModalDemissao from '../ModalDemissao';
 import ModalFerias from '../ModalFerias';
 import { Tag } from 'primereact/tag';

@@ -6,10 +6,10 @@ import { useEffect, useRef, useState } from "react"
 import { RiBuildingLine } from "react-icons/ri"
 import styles from './Login.module.css'
 import http from '@http';
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { useNavigate } from "react-router-dom"
 import { Toast } from 'primereact/toast'
-import { ArmazenadorToken } from "../../utils"
+import { ArmazenadorToken } from "@utils"
 import Loading from "@components/Loading"
 
 const Wrapper = styled.div`

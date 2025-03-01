@@ -12,7 +12,7 @@ import styles from '@pages/Beneficios/Beneficios.module.css'
 import { useEffect } from "react"
 import { MdLocalAtm } from "react-icons/md"
 import { currency, mask as masker, unMask } from "remask"
-import { useRecargaSaldoLivreContext } from "../../contexts/RecargaSaldoLivre"
+import { useRecargaSaldoLivreContext } from "@contexts/RecargaSaldoLivre"
 import DottedLine from "@components/DottedLine"
 
 const Overlay = styled.div`

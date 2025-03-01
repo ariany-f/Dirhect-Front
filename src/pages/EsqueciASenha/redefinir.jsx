@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom"
 import * as Yup from 'yup'
 import { useEffect } from "react"
 import http from '@http'
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 
 function RedefinirSenha() {
     

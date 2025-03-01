@@ -6,9 +6,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { BsArrowLeftRight } from 'react-icons/bs'
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
 import Menu from "@components/Menu"
-import { ArmazenadorToken } from './../../utils'
+import { ArmazenadorToken } from '@utils'
 import { useEffect, useState } from "react"
-import { useSessaoUsuarioContext } from "../../contexts/SessaoUsuario"
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 
 const HeaderEstilizado = styled.header`
     display: flex;

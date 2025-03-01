@@ -13,7 +13,7 @@ import Loading from '@components/Loading'
 import http from '@http'
 import styles from './ModalImportarPlanilha.module.css'
 import { FaDownload } from "react-icons/fa"
-import { useColaboradorContext } from "../../contexts/Colaborador"
+import { useColaboradorContext } from "@contexts/Colaborador"
 import { useRef, useState } from "react"
 import DottedLine from "@components/DottedLine"
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'

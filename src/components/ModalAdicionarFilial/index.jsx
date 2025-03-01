@@ -8,7 +8,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import styles from './ModalAdicionarFilial.module.css'
-import { useDepartamentoContext } from "../../contexts/Departamento"
+import { useDepartamentoContext } from "@contexts/Departamento"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);

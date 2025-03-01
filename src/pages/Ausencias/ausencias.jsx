@@ -7,7 +7,7 @@ import styles from './Contratos.module.css'
 import styled from "styled-components"
 import { Link, useOutletContext } from "react-router-dom"
 import DataTableAusencias from '@components/DataTableAusencias'
-import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
 import ModalFerias from '@components/ModalFerias'
 
 const ConteudoFrame = styled.div`

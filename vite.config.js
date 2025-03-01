@@ -25,6 +25,7 @@ export default defineConfig({
       { find: '@common', replacement: path.resolve(__dirname, './src/common') },
       { find: '@json', replacement: path.resolve(__dirname, './src/json') },
       { find: '@http', replacement: path.resolve(__dirname, './src/http') },
+      { find: '@utils', replacement: path.resolve(__dirname, './src/utils') },
     ]
   }
 })

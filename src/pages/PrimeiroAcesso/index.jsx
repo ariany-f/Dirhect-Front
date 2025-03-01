@@ -5,7 +5,7 @@ import SubTitulo from "@components/SubTitulo"
 import Texto from "@components/Texto"
 import Titulo from "@components/Titulo"
 import { Link, useNavigate } from "react-router-dom"
-import { usePrimeiroAcessoContext } from "../../contexts/PrimeiroAcesso"
+import { usePrimeiroAcessoContext } from "@contexts/PrimeiroAcesso"
 import { useState, useRef } from "react"
 import http from '@http';
 import { Toast } from 'primereact/toast'

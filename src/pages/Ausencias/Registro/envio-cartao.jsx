@@ -14,7 +14,7 @@ import styled from "styled-components"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 import { MdLocalShipping } from "react-icons/md"
-import { useColaboradorContext } from "../../../contexts/Colaborador"
+import { useColaboradorContext } from "@contexts/Colaborador"
  
 const Col12 = styled.div`
     display: flex;

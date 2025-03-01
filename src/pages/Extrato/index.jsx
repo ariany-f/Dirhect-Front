@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { BalanceProvider } from '../../contexts/Balance'
+import { BalanceProvider } from '@contexts/Balance'
 
 function ExtratoCommon() {
 

@@ -6,7 +6,7 @@ import Loading from '@components/Loading'
 import styled from 'styled-components'
 import dashboardData from '@json/dashboard_resources.json'
 import collaborators from '@json/colaboradores.json'
-import { useSessaoUsuarioContext } from '../../contexts/SessaoUsuario'
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
 
 const WrapperCards = styled.div`
     display: inline-flex;

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { RecargaBeneficiosProvider } from "../../contexts/RecargaBeneficios"
+import { RecargaBeneficiosProvider } from "@contexts/RecargaBeneficios"
  
 
 function RecargaBeneficios() {
