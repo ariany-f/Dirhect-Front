@@ -90,7 +90,7 @@ const Campo = styled(InputText)`
     }
 `
 
-function CampoTexto({ label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor, setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
+function CampoTexto({ label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
