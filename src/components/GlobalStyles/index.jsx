@@ -323,6 +323,9 @@ template {
 .p-datatable .p-datatable-tbody>tr>td {
   border: none!important;
 }
+.p-inputswitch.p-highlight .p-inputswitch-slider {
+  background-color: var(--primaria);
+}
 `
 
 
