@@ -359,17 +359,17 @@ function BarraLateral() {
                     // },
                     {
                         "id": 9,
-                        "url": "/contratos",
-                        "pageTitulo": "Contratos",
-                        "icone": <RiFileListFill size={20} className="icon" />,
-                        "itemTitulo": "Contratos"
-                    },
-                    {
-                        "id": 10,
                         "url": "/linhas-transporte",
                         "pageTitulo": "Linhas de Transporte",
                         "icone": <FaBusAlt size={20} className="icon" />,
                         "itemTitulo": "Linhas de Transporte"
+                    },
+                    {
+                        "id": 10,
+                        "url": "/contratos",
+                        "pageTitulo": "Contratos",
+                        "icone": <RiFileListFill size={20} className="icon" />,
+                        "itemTitulo": "Contratos"
                     },
                     {
                         "id": 11,
