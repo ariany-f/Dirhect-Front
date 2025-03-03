@@ -1,11 +1,11 @@
 import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill } from 'react-icons/ri'
-import { FaTheaterMasks } from 'react-icons/fa'
+import { FaCoins, FaTheaterMasks } from 'react-icons/fa'
 import { BiBookReader } from 'react-icons/bi'
 import { PiForkKnifeFill } from 'react-icons/pi'
-import { MdOutlineMedicalServices, MdOutlineFastfood } from 'react-icons/md'
+import { MdOutlineMedicalServices, MdOutlineFastfood, MdSecurity } from 'react-icons/md'
 import styles from '@components/BadgeBeneficio/BadgeBeneficio.module.css'
 import { IoFastFoodSharp } from 'react-icons/io5'
-import { FaHeartPulse } from 'react-icons/fa6'
+import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
 
 const icones = [
     {
