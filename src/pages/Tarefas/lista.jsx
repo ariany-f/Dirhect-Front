@@ -29,7 +29,7 @@ const TarefasLista = () => {
              {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
             <BotaoGrupo align="end">
                 <BotaoGrupo align="center">
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Registrar Tarefa</Botao>
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" stroke="white" color="white"/> Registrar Tarefa</Botao>
                 </BotaoGrupo>
             </BotaoGrupo>}
             <DataTableTarefas tarefas={context} />

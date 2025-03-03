@@ -2,6 +2,7 @@ import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import CampoTexto from "@components/CampoTexto"
 import CheckboxContainer from '@components/CheckboxContainer'
+import DropdownItens from "@components/DropdownItens"
 import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import { RiCloseFill } from 'react-icons/ri'
@@ -22,25 +23,40 @@ const Overlay = styled.div`
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+    padding: 16px 0;
+`
+
+const Col8 = styled.div`
+    flex: 0 0 65.66%; /* Corrigido para ocupar exatamente 8/12 do espaço */
+    max-width: 65.66%;
 `
 
 const Col6 = styled.div`
-    padding: 20px;
-    flex: 1 1 50%;
+    flex: 0 0 49%;
+    max-width: 49%;
 `
 
+const Col6Centered = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 49%;
+    max-width: 49%;
+`
 
 const Col4 = styled.div`
-    padding: 20px;
-    flex: 1 1 25%;
+    flex: 0 0 32.33%; /* Corrigido para ocupar exatamente 4/12 do espaço */
+    max-width: 32.33%;
 `
 
 const Col4Centered = styled.div`
     display: flex;
-    flex: 1 1 25%;
     justify-content: center;
     align-items: center;
+    flex: 0 0 32.33%;
+    max-width: 32.33%;
 `
 
 const DialogEstilizado = styled.dialog`
@@ -113,57 +129,48 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
+const tiposRecorrencia = [
+    {
+        nome: 'Diário',
+        valor: 'diario'
+    },
+    {
+        nome: 'Semanal',
+        valor: 'semanal'
+    },
+    {
+        nome: 'Mensal',
+        valor: 'mensal'
+    },
+    {
+        nome: 'Anual',
+        valor: 'anual'
+    }
+]    
+
 function ModalTarefas({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, colaborador = null }) {
 
     const [classError, setClassError] = useState([])
-    const [dataInicialFerias, setDataInicialFerias] = useState('');
-    const [dataFinalFerias, setDataFinalFerias] = useState('');
-    const [dataInicialAquisicao, setDataInicialAquisicao] = useState('');
-    const [dataFinalAquisicao, setDataFinalAquisicao] = useState('');
-    const [diasDeFerias, setDiasDeFerias] = useState(0);
-    const [abono, setAbono] = useState('');
-    const [decimoTerceiro, setDecimoTerceiro] = useState(false)
 
     const [nome, setNome] = useState('');
+    const [recorrente, setRecorrente] = useState(false);
+    const [tipoRecorrencia, setTipoRecorrencia] = useState('');
+    const [tiposDisponiveis, setDisponiveis] = useState([]);
 
     const navegar = useNavigate()
-
-    function handleDiasDeFerias() {
-        if (dataInicialFerias && dataFinalFerias) {
-            const inicio = new Date(dataInicialFerias);
-            const fim = new Date(dataFinalFerias);
-            
-            if (inicio > fim) {
-                setDiasDeFerias(0);
-                return;
-            }
     
-            const diffTime = fim.getTime() - inicio.getTime();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o primeiro dia
-    
-            setDiasDeFerias(diffDays);
-        }
-    }
+    useEffect(() =>{
+        
+        setDisponiveis((estadoAnterior) => {
+            const novosTipos = tiposRecorrencia.map((item) => ({
+                name: item.nome,
+                code: item.valor
+            }));
+            return [...estadoAnterior, ...novosTipos];
+        });
+       
 
-    useEffect(() => {
-        if (dataInicialFerias && dataFinalFerias) {
-            const inicio = new Date(dataInicialFerias);
-            const fim = new Date(dataFinalFerias);
-
-            if (inicio > fim) {
-                setDiasDeFerias(0);
-                return;
-            }
-
-            const diffTime = fim.getTime() - inicio.getTime();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o primeiro dia
-
-            setDiasDeFerias(diffDays);
-        } else {
-            setDiasDeFerias(0);
-        }
-    }, [dataInicialFerias, dataFinalFerias]);
-    
+    }, [tiposRecorrencia])
 
     return(
         <>
@@ -184,7 +191,7 @@ function ModalTarefas({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar,
                         
                         <Frame padding="12px 0px">
                             <Col12>
-                                <Col4>
+                                <Col8>
                                     <CampoTexto
                                         camposVazios={classError}
                                         name="nome"
@@ -194,95 +201,17 @@ function ModalTarefas({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar,
                                         label="Nome da Tarefa"
                                         placeholder="Nome da Tarefa"
                                     />
-                                </Col4>
+                                </Col8>
                                 <Col4Centered>
-                                    <CheckboxContainer fontSize="16px" name="recorrente" valor={decimoTerceiro} setValor={() => setDecimoTerceiro(!decimoTerceiro)} label="Recorrente"/>
+                                    <CheckboxContainer fontSize="16px" name="recorrente" valor={recorrente} setValor={() => setRecorrente(!recorrente)} label="Recorrente"/>
                                 </Col4Centered>
                             </Col12>
                             <Col12>
+                                {recorrente &&
                                 <Col6>
-                                    <Col12>
-                                        <SubTitulo>Tipo de Recorrência</SubTitulo>
-                                    </Col12>
-                                    <Col12>
-                                        <Col6>
-                                            <CampoTexto
-                                                camposVazios={classError}
-                                                name="data_inicial_aquisition"
-                                                valor={dataInicialAquisicao}
-                                                setValor={setDataInicialAquisicao}
-                                                type="date"
-                                                label="Data Inicial"
-                                                placeholder="Selecione a data inicial"
-                                            />
-                                        </Col6>
-                                        <Col6>
-                                            <CampoTexto
-                                                camposVazios={classError}
-                                                name="data_final_aquisition"
-                                                valor={dataFinalAquisicao}
-                                                setValor={setDataFinalAquisicao}
-                                                type="date"
-                                                label="Data Final"
-                                                placeholder="Selecione a data final"
-                                            />
-                                        </Col6>
-                                    </Col12>
+                                    <DropdownItens camposVazios={classError} valor={tipoRecorrencia} setValor={setTipoRecorrencia} options={tiposDisponiveis} label="Tipo de Recorrência" name="recorrente_tipo" placeholder="Tipo de Recorrência" />
                                 </Col6>
-                                <Col6>
-                                    <Col12>
-                                        <SubTitulo>Férias</SubTitulo>
-                                    </Col12>
-                                    <Col12>
-                                        <Col6>
-                                            <CampoTexto
-                                                camposVazios={classError}
-                                                name="data_inicial_ferias"
-                                                valor={dataInicialFerias}
-                                                setValor={setDataInicialFerias}
-                                                type="date"
-                                                label="Data Inicial"
-                                                placeholder="Selecione a data inicial"
-                                            />
-                                        </Col6>
-                                        <Col6>
-                                            <CampoTexto
-                                                camposVazios={classError}
-                                                name="data_final_ferias"
-                                                valor={dataFinalFerias}
-                                                setValor={setDataFinalFerias}
-                                                type="date"
-                                                label="Data Final"
-                                                placeholder="Selecione a data final"
-                                            />
-                                        </Col6>
-                                    </Col12>
-                                </Col6>
-                            </Col12>
-                            <Col12>
-                                <Col4>
-                                    <CampoTexto
-                                        camposVazios={classError}
-                                        name="abono"
-                                        valor={abono}
-                                        setValor={setAbono}
-                                        type="text"
-                                        label="Abono Pecuniário"
-                                        placeholder="Abono Pecuniário"
-                                    />
-                                </Col4>
-                                <Col4>
-                                    <CampoTexto
-                                        camposVazios={classError}
-                                        name="dias_ferias"
-                                        readonly
-                                        valor={diasDeFerias}
-                                        setValor={setDiasDeFerias}
-                                        type="text"
-                                        label="Dias Calculados"
-                                        placeholder="Dias Calculados"
-                                    />
-                                </Col4>
+                                }
                             </Col12>
                         </Frame>
                         <form method="dialog">
