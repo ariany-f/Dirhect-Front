@@ -171,10 +171,9 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
                     setEmpresas(tenantsWithDomain)
                     setCompanies(tenantsWithDomain)
-                    if(selected == '')
-                    {
-                        setSelected(tenantsWithDomain[0].id_tenant)
-                    }
+
+                    setSelected(ArmazenadorToken.UserCompanyPublicId ?? tenantsWithDomain[0].id_tenant)
+                    
                 })
                 .catch(erro => {
 
@@ -184,7 +183,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
         if(empresas && empresas.length > 0 && (!tenants))
         {
-            setSelected(empresas[0].id_tenant)
+            setSelected(ArmazenadorToken.UserCompanyPublicId ?? empresas[0].id_tenant)
         }
         
     }, [opened, empresas, tenants])
