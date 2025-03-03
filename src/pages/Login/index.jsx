@@ -16,7 +16,6 @@ import { ArmazenadorToken } from "@utils"
 import loginData from '@json/login.json'; // Importando o JSON
 
 function Login() {
-
     const [classError, setClassError] = useState([])
     const [loading, setLoading] = useState(false)
     const navegar = useNavigate()
@@ -87,8 +86,8 @@ function Login() {
                     perfilEncontrado.cpf,
                     perfilEncontrado.public_id,
                     perfilEncontrado.tipo,
-                    '1',
-                    'geral'
+                    ArmazenadorToken.UserCompanyPublicId ?? '1',
+                    ArmazenadorToken.UserCompanyDomain ?? 'geral'
                 )
     
                 if(perfilEncontrado.tipo != 'candidato' && perfilEncontrado.tipo != 'funcionario')

@@ -8,9 +8,25 @@ import { Outlet } from "react-router-dom"
 import RodapePublico from "@components/RodapePublico"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import { useLocation } from "react-router-dom";
+import { ArmazenadorToken } from "@utils"
+import { useEffect } from "react"
 
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
 function Publico() {
+    const query = useQuery();
+
+    useEffect(() => {
+        console.log(query)
+        console.log(query.get("tenant"))
+        if(query.get("tenant"))
+        {
+            ArmazenadorToken.definirCompany('', query.get("tenant"))
+        }
+    }, []);
 
     return (
         <>

@@ -36,18 +36,6 @@ import PremiacaoEditarValor from '@pages/Pedidos/editar-valor'
 import PremiacaoComoFunciona from '@pages/Pedidos/como-funciona'
 import PremiacaoSelecionarColaboradores from '@pages/Pedidos/selecao-colaboradores'
 import PremiacaoSelecionarDepartamentos from '@pages/Pedidos/selecao-departamentos'
-import Despesas from '@pages/Despesas';
-import DespesaAdiantarSaldo from '@pages/Despesas/adiantar-saldo'
-import DespesaSelecionarTipoAdiantamento from '@pages/Despesas/selecao-tipo-adiantamento'
-import DespesaSelecionarAlvoAdiantamento from '@pages/Despesas/selecao-alvo-adiantamento'
-import DespesaEditarValor from '@pages/Despesas/editar-valor'
-import DespesaDetalhesAdiantamento from '@pages/Despesas/detalhes-adiantamento'
-import DespesaDetalhes from '@pages/Despesas/detalhes'
-import Cartoes from '@pages/Cartoes'
-import CartaoDetalhes from '@pages/Cartoes/detalhes'
-import CartaoSolicitarSegundaVia from '@pages/Cartoes/SolicitarSegundaVia'
-import CartaoSolicitarSegundaViaEndereco from '@pages/Cartoes/SolicitarSegundaVia/endereco'
-import CartaoSolicitarSegundaViaSucesso from '@pages/Cartoes/SolicitarSegundaVia/sucesso'
 import RecargaBeneficios from '@pages/Beneficios'
 import Beneficios from '@pages/Beneficios/lista'
 import BeneficioOndeUsar from '@pages/Beneficios/onde-usar'
@@ -79,9 +67,6 @@ import OperadorPermissoes from '@pages/Operadores/Detalhes/permissoes'
 import { SessaoUsuarioProvider } from "./contexts/SessaoUsuario"
 import BeneficioSelecionarFormaPagamento from '@pages/Beneficios/selecao-forma-pagamento'
 import BeneficioPagamento from '@pages/Beneficios/pagamento'
-import CartoesLista from '@pages/Cartoes/lista'
-import CartaoSolicitarSegundaViaAcompanhar from '@pages/Cartoes/SolicitarSegundaVia/acompanhar'
-import CartaoSolicitarSegundaViaCommon from '@pages/Cartoes/SolicitarSegundaVia/common'
 import ExtratoPagamento from '@pages/Extrato/pagamento'
 import Vagas from '@pages/Vagas'
 import VagasAbertas from '@pages/Vagas/abertas'
@@ -90,11 +75,6 @@ import VagasRegistro from '@pages/Vagas/Registro'
 import DetalhesVaga from '@pages/Vagas/detalhes'
 import Admissoes from '@pages/Admissoes'
 import CandidatoRegistro from '@pages/Candidato/Registro'
-import CandidatoRegistroDadosGerais from '@pages/Candidato/Registro/dados-gerais'
-import CandidatoRegistroEducacao from '@pages/Candidato/Registro/educacao'
-import CandidatoRegistroHabilidades from '@pages/Candidato/Registro/habilidades'
-import CandidatoRegistroProfissional from '@pages/Candidato/Registro/profissional'
-import CandidatoRegistroArquivos from '@pages/Candidato/Registro/arquivos'
 import ValidarAdmissoes from '@pages/Admissoes/validar'
 import DetalhesAdmissao from '@pages/Admissoes/detalhes'
 import FiliaisLista from '@pages/Departamentos/filiais'
@@ -148,11 +128,10 @@ import ElegibilidadeEditarValor from './pages/Elegibilidade/editar-valor'
 import DetalhesElegibilidade from './pages/Elegibilidade/detalhes'
 
 function AppRouter() {
-
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
 
   useEffect(() => {
-
+    
     const handleResize = () => {
       setIsDesktop(window.innerWidth > 1024);
     };

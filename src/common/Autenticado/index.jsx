@@ -15,6 +15,9 @@ import styled from "styled-components"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
 
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
 const MarginContainer = styled.div`
     display: inline-flex;
@@ -24,7 +27,18 @@ const MarginContainer = styled.div`
     margin: 0 6vw;
 `
 
-function Autenticado() {
+function Autenticado() {   
+    
+    const query = useQuery();
+
+    useEffect(() => {
+        console.log(query)
+        console.log(query.get("tenant"))
+        if(query.get("tenant"))
+        {
+            ArmazenadorToken.definirCompany('', query.get("tenant"))
+        }
+    }, []);
 
     const {
         usuario,
