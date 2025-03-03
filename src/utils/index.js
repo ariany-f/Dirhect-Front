@@ -35,6 +35,8 @@ export class ArmazenadorToken {
             sessionStorage.setItem(USER_TYPE, tipo)
             sessionStorage.setItem(USER_CPF, cpf || '')
             sessionStorage.setItem(USER_PUBLIC_ID, public_id || '')
+            sessionStorage.setItem(COMPANY_DOMAIN, company_domain || '')
+            sessionStorage.setItem(COMPANY_PUBLIC_ID, company_public_id || '')
         } catch (error) {
             console.error('Erro ao armazenar dados do usuário:', error)
             throw new Error('Falha ao armazenar dados do usuário')
@@ -44,8 +46,6 @@ export class ArmazenadorToken {
         
         sessionStorage.removeItem(ACCESS_TOKEN)
         sessionStorage.removeItem(EXPIRATION)
-        sessionStorage.removeItem(COMPANY_DOMAIN)
-        sessionStorage.removeItem(COMPANY_PUBLIC_ID)
         sessionStorage.removeItem(USER_NAME)
         sessionStorage.removeItem(USER_EMAIL)
         sessionStorage.removeItem(USER_CPF)
