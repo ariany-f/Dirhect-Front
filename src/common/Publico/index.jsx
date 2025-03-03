@@ -20,8 +20,6 @@ function Publico() {
     const query = useQuery();
 
     useEffect(() => {
-        console.log(query)
-        console.log(query.get("tenant"))
         if(query.get("tenant"))
         {
             ArmazenadorToken.definirCompany('', query.get("tenant"))
