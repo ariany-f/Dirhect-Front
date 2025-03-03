@@ -15,7 +15,7 @@ import { PiForkKnifeFill } from 'react-icons/pi';
 import { BiBookReader, BiShield } from 'react-icons/bi';
 import { FaTheaterMasks } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
-import InputSwitch from '@components/SwitchInput';
+import SwitchInput from '@components/SwitchInput';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -203,6 +203,15 @@ function DataTableElegibilidadeDetalhes({ elegibilidade = [], pagination = true 
             return acc;
         }, {})
     );
+
+    useEffect(() => {
+        setMandatoryState(
+            elegibilidade.reduce((acc, item) => {
+                acc[item.id] = item.mandatory;
+                return acc;
+            }, {})
+        );
+    }, [elegibilidade])
     
     const toggleMandatory = (id) => {
         setMandatoryState((prevState) => ({
@@ -213,7 +222,7 @@ function DataTableElegibilidadeDetalhes({ elegibilidade = [], pagination = true 
     
     const representativeMandatoryTemplate = (rowData) => {
         return (
-            <InputSwitch 
+            <SwitchInput 
                 checked={mandatoryState[rowData.id]} 
                 onChange={() => toggleMandatory(rowData.id)} // Alterar o estado específico para o item
             />

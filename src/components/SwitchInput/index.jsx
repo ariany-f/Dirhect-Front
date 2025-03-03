@@ -17,7 +17,6 @@ const SwitchContainer = styled.div`
     }
 `
 function SwitchInput({checked = false, onChange = null}){
-
     return (
         <SwitchContainer>
             <InputSwitch checked={checked} onChange={(e) => onChange(e.value)} />
