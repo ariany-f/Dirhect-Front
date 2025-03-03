@@ -48,6 +48,11 @@ export class ArmazenadorToken {
         sessionStorage.removeItem(EXPIRATION)
         sessionStorage.removeItem(COMPANY_DOMAIN)
         sessionStorage.removeItem(COMPANY_PUBLIC_ID)
+        sessionStorage.removeItem(USER_NAME)
+        sessionStorage.removeItem(USER_EMAIL)
+        sessionStorage.removeItem(USER_CPF)
+        sessionStorage.removeItem(USER_PUBLIC_ID)
+        sessionStorage.removeItem(USER_TYPE)
         return true;
     }
     static get AccessToken() {
