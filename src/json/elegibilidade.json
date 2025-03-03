@@ -46,6 +46,7 @@
             {
                 "id": 1,
                 "nome_fornecedor":"Ticket",
+                "description": "Contrato Diretoria Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "mandatory": false,
@@ -63,6 +64,7 @@
             {
                 "id": 2,
                 "nome_fornecedor":"Alelo",
+                "description": "Contrato Diretoria Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "mandatory": false,
@@ -76,6 +78,7 @@
             {
                 "id": 3,
                 "nome_fornecedor":"Bradesco Seguros",
+                "description": "Contrato Diretoria Brad",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "mandatory": true,
@@ -135,6 +138,7 @@
             {
                 "id": 1,
                 "nome_fornecedor":"Ticket",
+                "description": "Contrato Diretoria Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "mandatory": false,
@@ -148,6 +152,7 @@
             {
                 "id": 2,
                 "nome_fornecedor":"Alelo",
+                "description": "Contrato Diretoria Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "mandatory": false,
@@ -207,6 +212,7 @@
             {
                 "id": 1,
                 "nome_fornecedor":"Ticket",
+                "description": "Contrato TI Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "mandatory": false,
@@ -224,6 +230,7 @@
             {
                 "id": 2,
                 "nome_fornecedor":"Alelo",
+                "description": "Contrato TI Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "mandatory": false,
@@ -284,6 +291,7 @@
             {
                 "id": 1,
                 "nome_fornecedor":"Ticket",
+                "description": "Contrato Juridico Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "mandatory": false,
@@ -301,6 +309,7 @@
             {
                 "id": 2,
                 "nome_fornecedor":"Alelo",
+                "description": "Contrato Juridico Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
                 "mandatory": false,

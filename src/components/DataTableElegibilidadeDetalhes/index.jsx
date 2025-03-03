@@ -5,6 +5,8 @@ import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalService
 import './DataTable.css'
 import BadgeGeral from '@components/BadgeGeral';
 import Texto from '@components/Texto';
+import Titulo from '@components/Titulo';
+import SubTitulo from '@components/SubTitulo';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -149,7 +151,10 @@ function DataTableElegibilidadeDetalhes({ elegibilidade = [], pagination = true 
 
     const representativeContratoTemplate = (rowData) => {
         return (
-            <Texto weight={700}>{rowData.nome_fornecedor}</Texto>
+            <Titulo>
+                <h6>{rowData.nome_fornecedor}</h6>
+                <SubTitulo fontSize={'12px'}>{rowData.description}</SubTitulo>
+            </Titulo>
         )
     }
 
@@ -235,8 +240,8 @@ function DataTableElegibilidadeDetalhes({ elegibilidade = [], pagination = true 
         <>
             <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 {/* <Column expander={allowExpansion} style={{ width: '5%' }} /> */}
-                <Column body={representativeContratoTemplate} field="nome_fornecedor" header="Contrato" style={{ width: '15%' }}></Column>
-                <Column body={representativeBeneficiosTemplate} field="beneficios" header="Benefícios" style={{ width: '55%' }}></Column>
+                <Column body={representativeContratoTemplate} field="nome_fornecedor" header="Contrato" style={{ width: '20%' }}></Column>
+                <Column body={representativeBeneficiosTemplate} field="beneficios" header="Benefícios" style={{ width: '50%' }}></Column>
                 <Column body={representativeMandatoryTemplate} field="mandatory" header="Obrigatório"></Column>
                 <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
