@@ -44,6 +44,7 @@
         },
         "contratos": [
             {
+                "id": 1,
                 "nome_fornecedor":"Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
@@ -60,6 +61,7 @@
                 ]
             },
             {
+                "id": 2,
                 "nome_fornecedor":"Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
@@ -72,6 +74,7 @@
                 ]
             },
             {
+                "id": 3,
                 "nome_fornecedor":"Bradesco Seguros",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
@@ -130,6 +133,7 @@
         },
         "contratos": [
             {
+                "id": 1,
                 "nome_fornecedor":"Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
@@ -142,6 +146,7 @@
                 ]
             },
             {
+                "id": 2,
                 "nome_fornecedor":"Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
@@ -200,6 +205,7 @@
         },
         "contratos": [
             {
+                "id": 1,
                 "nome_fornecedor":"Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
@@ -216,6 +222,7 @@
                 ]
             },
             {
+                "id": 2,
                 "nome_fornecedor":"Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
@@ -275,6 +282,7 @@
         },
         "contratos": [
             {
+                "id": 1,
                 "nome_fornecedor":"Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
@@ -291,6 +299,7 @@
                 ]
             },
             {
+                "id": 2,
                 "nome_fornecedor":"Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
