@@ -8,10 +8,11 @@ import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { RiBusFill, RiComputerLine, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
+import { RiBusFill, RiCheckboxCircleFill, RiCloseCircleFill, RiComputerLine, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
-import { BiBookReader } from 'react-icons/bi';
+import { BiBookReader, BiShield } from 'react-icons/bi';
 import { FaTheaterMasks } from 'react-icons/fa';
+import { Tag } from 'primereact/tag';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -114,6 +115,14 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <RiGasStationFill size={20} />
+    },
+    {
+        "id": 11,
+        "name": "Seguro de Vida",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <BiShield size={20} />
     }
 ]
 
@@ -182,11 +191,18 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
         )
     }
 
+    const representativeMandatoryTemplate = (rowData) => {
+        return (
+           <Tag severity={rowData.mandatory ? 'success' : 'danger'} value={rowData.mandatory ? 'Sim' : 'Não'} />
+        )
+    }
+
     const rowExpansionTemplate = (data) => {
         return (
             <div className="card">
                 <DataTable emptyMessage="Não foram encontrados benefícios" tableStyle={{ minWidth: '65vw' }} value={data.beneficios}>
                     <Column field="beneficio" header="Benefício"></Column>
+                    <Column body={representativeMandatoryTemplate} field="mandatory" header="Obrigatório"></Column>
                     <Column body={representativeValorTemplate} field="valor" header="Valor"></Column>
                 </DataTable>
             </div>
@@ -203,6 +219,7 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
                 {/* <Column expander={allowExpansion} style={{ width: '5%' }} /> */}
                 <Column body={representativeContratoTemplate} field="nome_fornecedor" header="Contrato" style={{ width: '15%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} field="beneficios" header="Benefícios" style={{ width: '55%' }}></Column>
+                <Column body={representativeMandatoryTemplate} field="mandatory" header="Obrigatório"></Column>
                 <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
             </DataTable>

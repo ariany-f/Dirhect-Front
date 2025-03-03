@@ -47,6 +47,7 @@
                 "nome_fornecedor":"Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
+                "mandatory": false,
                 "beneficios": [
                     {
                         "beneficio": "Alimentação",
@@ -62,10 +63,23 @@
                 "nome_fornecedor":"Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
+                "mandatory": false,
                 "beneficios": [
                     { 
                         "beneficio": "Combustível",
                         "valor": 1600.00
+                    }
+                ]
+            },
+            {
+                "nome_fornecedor":"Bradesco Seguros",
+                "data_inicio": "31/01/2025",
+                "data_fim": "31/01/2026",
+                "mandatory": true,
+                "beneficios": [
+                    { 
+                        "beneficio": "Seguro de Vida",
+                        "valor": 0.00
                     }
                 ]
             }
@@ -119,6 +133,7 @@
                 "nome_fornecedor":"Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
+                "mandatory": false,
                 "beneficios": [
                     { 
                         "beneficio": "Refeição",
@@ -130,6 +145,7 @@
                 "nome_fornecedor":"Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
+                "mandatory": false,
                 "beneficios": [
                     { 
                         "beneficio": "Combustível",
@@ -187,6 +203,7 @@
                 "nome_fornecedor":"Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
+                "mandatory": false,
                 "beneficios": [
                     {
                         "beneficio": "Alimentação",
@@ -202,6 +219,7 @@
                 "nome_fornecedor":"Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
+                "mandatory": false,
                 "beneficios": [
                     { 
                         "beneficio": "Combustível",
@@ -260,6 +278,7 @@
                 "nome_fornecedor":"Ticket",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
+                "mandatory": false,
                 "beneficios": [
                     {
                         "beneficio": "Alimentação",
@@ -275,6 +294,7 @@
                 "nome_fornecedor":"Alelo",
                 "data_inicio": "31/01/2025",
                 "data_fim": "31/01/2026",
+                "mandatory": false,
                 "beneficios": [
                     { 
                         "beneficio": "Combustível",
