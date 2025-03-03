@@ -1,5 +1,5 @@
 import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill } from 'react-icons/ri'
-import { FaCoins, FaTheaterMasks } from 'react-icons/fa'
+import { FaCoins, FaTheaterMasks, FaTooth } from 'react-icons/fa'
 import { BiBookReader } from 'react-icons/bi'
 import { PiForkKnifeFill } from 'react-icons/pi'
 import { MdOutlineMedicalServices, MdOutlineFastfood, MdSecurity } from 'react-icons/md'
@@ -111,6 +111,14 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <FaCoins size={20} />
+    },
+    {
+        "id": 14,
+        "name": "Saúde Odonto",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaTooth size={20} />
     }
 ]
 

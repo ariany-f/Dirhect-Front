@@ -13,7 +13,7 @@ import { IoEllipsisVertical, IoFastFoodSharp } from 'react-icons/io5';
 import { BiBookReader, BiShield } from 'react-icons/bi';
 import { RiBusFill, RiComputerLine, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
-import { FaCoins, FaTheaterMasks } from 'react-icons/fa';
+import { FaCoins, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
 import { CiMoneyBill } from 'react-icons/ci';
 
@@ -127,6 +127,14 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <FaCoins size={20} />
+    },
+    {
+        "id": 14,
+        "name": "Saúde Odonto",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaTooth size={20} />
     }
 ]
 
