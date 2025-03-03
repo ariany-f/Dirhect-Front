@@ -53,11 +53,13 @@
                 "beneficios": [
                     {
                         "beneficio": "Alimentação",
-                        "valor": 150.00
+                        "valor": 150.00,
+                        "status": "Ativo"
                     },
                     { 
                         "beneficio": "Refeição",
-                        "valor": 300.00
+                        "valor": 300.00,
+                        "status": "Ativo"
                     }
                 ]
             },
@@ -71,7 +73,8 @@
                 "beneficios": [
                     { 
                         "beneficio": "Combustível",
-                        "valor": 1600.00
+                        "valor": 1600.00,
+                        "status": "Ativo"
                     }
                 ]
             },
@@ -85,7 +88,8 @@
                 "beneficios": [
                     { 
                         "beneficio": "Seguro de Vida",
-                        "valor": 0.00
+                        "valor": 0.00,
+                        "status": "Ativo"
                     }
                 ]
             }
@@ -145,7 +149,8 @@
                 "beneficios": [
                     { 
                         "beneficio": "Refeição",
-                        "valor": 500.00
+                        "valor": 500.00,
+                        "status": "Ativo"
                     }
                 ]
             },
@@ -159,7 +164,8 @@
                 "beneficios": [
                     { 
                         "beneficio": "Combustível",
-                        "valor": 700.00
+                        "valor": 700.00,
+                        "status": "Ativo"
                     }
                 ]
             }
@@ -219,11 +225,13 @@
                 "beneficios": [
                     {
                         "beneficio": "Alimentação",
-                        "valor": 250.00
+                        "valor": 250.00,
+                        "status": "Ativo"
                     },
                     { 
                         "beneficio": "Refeição",
-                        "valor": 500.00
+                        "valor": 500.00,
+                        "status": "Ativo"
                     }
                 ]
             },
@@ -237,7 +245,8 @@
                 "beneficios": [
                     { 
                         "beneficio": "Combustível",
-                        "valor": 700.00
+                        "valor": 700.00,
+                        "status": "Ativo"
                     }
                 ]
             }
@@ -298,11 +307,13 @@
                 "beneficios": [
                     {
                         "beneficio": "Alimentação",
-                        "valor": 250.00
+                        "valor": 250.00,
+                        "status": "Ativo"
                     },
                     { 
                         "beneficio": "Refeição",
-                        "valor": 500.00
+                        "valor": 500.00,
+                        "status": "Ativo"
                     }
                 ]
             },
@@ -316,7 +327,8 @@
                 "beneficios": [
                     { 
                         "beneficio": "Combustível",
-                        "valor": 700.00
+                        "valor": 700.00,
+                        "status": "Ativo"
                     }
                 ]
             }
