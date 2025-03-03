@@ -13,10 +13,11 @@ import styled from 'styled-components';
 import { RiBusFill, RiCheckboxCircleFill, RiCloseCircleFill, RiComputerLine, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
 import { BiBookReader, BiShield } from 'react-icons/bi';
-import { FaTheaterMasks } from 'react-icons/fa';
+import { FaCoins, FaTheaterMasks } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import SwitchInput from '@components/SwitchInput';
 import { IoFastFoodSharp } from 'react-icons/io5';
+import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -102,7 +103,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <MdOutlineMedicalServices size={20} />
+        "icone": <FaHeartPulse size={20} />
     },
     {
         "id": 9,
@@ -127,6 +128,22 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <MdSecurity size={20} />
+    },
+    {
+        "id": 12,
+        "name": "Empréstimo Consignado",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaMoneyBillTransfer size={30} />
+    },
+    {
+        "id": 13,
+        "name": "Previdência Privada",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaCoins size={20} />
     }
 ]
 

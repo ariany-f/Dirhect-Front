@@ -1,8 +1,8 @@
 import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill } from 'react-icons/ri'
-import { FaTheaterMasks } from 'react-icons/fa'
+import { FaCoins, FaTheaterMasks } from 'react-icons/fa'
 import { BiBookReader } from 'react-icons/bi'
 import { PiForkKnifeFill } from 'react-icons/pi'
-import { MdOutlineMedicalServices, MdOutlineFastfood } from 'react-icons/md'
+import { MdOutlineMedicalServices, MdOutlineFastfood, MdSecurity } from 'react-icons/md'
 import BotaoVoltar from "@components/BotaoVoltar"
 import Container from "@components/Container"
 import Titulo from "@components/Titulo"
@@ -11,6 +11,7 @@ import Frame from "@components/Frame"
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { IoFastFoodSharp } from 'react-icons/io5'
+import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
 
 const icones = [
     {
@@ -75,7 +76,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <MdOutlineMedicalServices />
+        "icone": <FaHeartPulse />
     },
     {
         "id": 9,
@@ -84,6 +85,39 @@ const icones = [
         "description": "Alimentação e Refeição, tudo em uma só categoria.",
         "food_meal_one_category": true,
         "icone": <PiForkKnifeFill />
+    },
+    
+    {
+        "id": 10,
+        "name": "Vale Combustivel",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <RiGasStationFill size={20} />
+    },
+    {
+        "id": 11,
+        "name": "Seguro de Vida",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <MdSecurity size={20} />
+    },
+    {
+        "id": 12,
+        "name": "Empréstimo Consignado",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaMoneyBillTransfer size={30} />
+    },
+    {
+        "id": 13,
+        "name": "Previdência Privada",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaCoins size={20} />
     }
 ]
 

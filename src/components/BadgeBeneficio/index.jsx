@@ -5,6 +5,7 @@ import { PiForkKnifeFill } from 'react-icons/pi'
 import { MdOutlineMedicalServices, MdOutlineFastfood } from 'react-icons/md'
 import styles from '@components/BadgeBeneficio/BadgeBeneficio.module.css'
 import { IoFastFoodSharp } from 'react-icons/io5'
+import { FaHeartPulse } from 'react-icons/fa6'
 
 const icones = [
     {
@@ -69,7 +70,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <MdOutlineMedicalServices size={20} />
+        "icone": <FaHeartPulse size={20} />
     },
     {
         "id": 9,
@@ -86,6 +87,30 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <RiGasStationFill size={20} />
+    },
+    {
+        "id": 11,
+        "name": "Seguro de Vida",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <MdSecurity size={20} />
+    },
+    {
+        "id": 12,
+        "name": "Empréstimo Consignado",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaMoneyBillTransfer size={30} />
+    },
+    {
+        "id": 13,
+        "name": "Previdência Privada",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaCoins size={20} />
     }
 ]
 
