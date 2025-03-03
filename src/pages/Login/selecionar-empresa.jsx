@@ -49,7 +49,6 @@ function SelecionarEmpresa() {
     const toast = useRef(null)
     const navegar = useNavigate()
 
-
     useEffect(() => {
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {

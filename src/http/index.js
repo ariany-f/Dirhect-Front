@@ -2,7 +2,7 @@ import axios from "axios";
 import { ArmazenadorToken } from "@utils";
 
 const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net"; // Para Vite
-const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
+const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
 
 const http = axios.create({
     headers: {
