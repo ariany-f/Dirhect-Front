@@ -193,7 +193,7 @@ function DataTableElegibilidadeDetalhes({ elegibilidade, pagination = true }) {
 
     const representativeMandatoryTemplate = (rowData) => {
         return (
-           <Tag severity={rowData.mandatory ? 'success' : 'danger'} value={rowData.mandatory ? 'Sim' : 'Não'} />
+           <Tag severity={rowData.mandatory ? 'success' : 'info'} value={rowData.mandatory ? 'Sim' : 'Opcional'} />
         )
     }
 
