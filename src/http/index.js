@@ -1,6 +1,8 @@
 import axios from "axios";
 import { ArmazenadorToken } from "@utils";
 
+const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net"; // Para Vite
+
 const http = axios.create({
     headers: {
         "Content-Type": "application/json",
@@ -10,8 +12,8 @@ const http = axios.create({
 
 // Interceptor para definir a baseURL dinamicamente antes de cada requisição
 http.interceptors.request.use((config) => {
-    const companyDomain = sessionStorage.getItem("company_domain") || 'geral.dirhect.net';
-    config.baseURL = `https://${companyDomain}/api/`;
+    const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
+    config.baseURL = `https://${companyDomain}.${API_BASE_DOMAIN}/api/`;
 
     const token = ArmazenadorToken.AccessToken;
     if (token) {

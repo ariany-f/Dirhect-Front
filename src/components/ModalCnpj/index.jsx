@@ -207,7 +207,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
             ArmazenadorToken.definirCompany(
                 selected,
-                comp[0].domain
+                comp[0].domain.split('.')[0]
             )
         }
 

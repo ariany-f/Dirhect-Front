@@ -136,7 +136,7 @@ function SelecionarEmpresa() {
                 
                 ArmazenadorToken.definirCompany(
                     selected,
-                    comp[0].domain
+                    comp[0].domain.split('.')[0]
                 )
             }
 

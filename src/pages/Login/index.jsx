@@ -88,7 +88,7 @@ function Login() {
                     perfilEncontrado.public_id,
                     perfilEncontrado.tipo,
                     '1',
-                    'geral.dirhect.net'
+                    'geral'
                 )
     
                 if(perfilEncontrado.tipo != 'candidato' && perfilEncontrado.tipo != 'funcionario')
