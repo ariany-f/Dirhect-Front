@@ -4,6 +4,7 @@ import { BiBookReader } from 'react-icons/bi'
 import { PiForkKnifeFill } from 'react-icons/pi'
 import { MdOutlineMedicalServices, MdOutlineFastfood } from 'react-icons/md'
 import styles from '@components/BadgeBeneficio/BadgeBeneficio.module.css'
+import { IoFastFoodSharp } from 'react-icons/io5'
 
 const icones = [
     {
@@ -20,7 +21,7 @@ const icones = [
         "flexible_value": false,
         "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
-        "icone": <MdOutlineFastfood size={20} />
+        "icone": <IoFastFoodSharp size={20} />
     },
     {
         "id": 3,

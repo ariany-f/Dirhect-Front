@@ -1,7 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalServices } from 'react-icons/md'
+import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalServices, MdSecurity } from 'react-icons/md'
 import './DataTable.css'
 import BadgeGeral from '@components/BadgeGeral';
 import Texto from '@components/Texto';
@@ -16,6 +16,7 @@ import { BiBookReader, BiShield } from 'react-icons/bi';
 import { FaTheaterMasks } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import SwitchInput from '@components/SwitchInput';
+import { IoFastFoodSharp } from 'react-icons/io5';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -53,7 +54,7 @@ const icones = [
         "flexible_value": false,
         "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
-        "icone": <MdOutlineFastfood size={20} />
+        "icone": <IoFastFoodSharp size={20} />
     },
     {
         "id": 3,
@@ -125,7 +126,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <BiShield size={20} />
+        "icone": <MdSecurity size={20} />
     }
 ]
 

@@ -10,6 +10,7 @@ import SubTitulo from "@components/SubTitulo"
 import Frame from "@components/Frame"
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { IoFastFoodSharp } from 'react-icons/io5'
 
 const icones = [
     {
@@ -26,7 +27,7 @@ const icones = [
         "flexible_value": false,
         "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
-        "icone": <MdOutlineFastfood />
+        "icone": <IoFastFoodSharp />
     },
     {
         "id": 3,
