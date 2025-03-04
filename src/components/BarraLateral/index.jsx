@@ -15,9 +15,11 @@ import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa";
 import { BreadCrumb } from "primereact/breadcrumb"
 import { BsHourglassSplit } from "react-icons/bs"
-import { TbBeach, TbTable, TbTableShare } from "react-icons/tb";
-import { MdAllInbox, MdShoppingCartCheckout } from "react-icons/md"
+import { TbBeach, TbBusinessplan, TbTable, TbTableShare } from "react-icons/tb";
+import { MdAllInbox, MdBusiness, MdHandshake, MdShoppingCartCheckout } from "react-icons/md"
 import { GoTasklist } from "react-icons/go";
+import { IoBusiness } from "react-icons/io5"
+import { PiHandshake } from "react-icons/pi"
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -350,13 +352,13 @@ function BarraLateral() {
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
-                    // {
-                    //     "id": 8,
-                    //     "url": "/beneficio",
-                    //     "pageTitulo": "Tipos de Benefícios",
-                    //     "icone": <RiHandCoinFill size={20} className="icon" />,
-                    //     "itemTitulo": "Tipos de Benefícios"
-                    // },
+                    {
+                        "id": 8,
+                        "url": "/beneficio",
+                        "pageTitulo": "Tipos de Benefícios",
+                        "icone": <RiHandCoinFill size={20} className="icon" />,
+                        "itemTitulo": "Tipos de Benefícios"
+                    },
                     {
                         "id": 9,
                         "url": "/linhas-transporte",
@@ -398,6 +400,13 @@ function BarraLateral() {
                         "pageTitulo": "Marketplace",
                         "icone": <BiCart size={20} className="icon" />,
                         "itemTitulo": "Marketplace"
+                    },
+                    {
+                        "id": 15,
+                        "url": "/operadoras",
+                        "pageTitulo": "Operadoras",
+                        "icone": <PiHandshake size={20} className="icon" />,
+                        "itemTitulo": "Operadoras"
                     }
                 ];
             default:

@@ -28,8 +28,18 @@ function Ausencias() {
     const location = useLocation();
 
     useEffect(() => {
-        
-    }, [ausencias])
+       
+        http.get('ausencia/?format=json')
+        .then(response => {
+            
+        })
+        .catch(erro => {
+
+        })
+        .finally(function() {
+        })
+       
+    }, [])
 
     return (
         <ContratosProvider>

@@ -27,18 +27,16 @@ function Beneficios() {
     useEffect(() => {
         if(beneficios.length === 0)
         {
-            // setLoading(true)
-            // http.get('api/recharge/index')
-            //     .then(response => {
-            //         if(response.success)
-            //         {
-            //             setBeneficios(response.data)
-            //             setLoading(false)
-            //         }
-            //     })
-            //     .catch(erro => {
-            //         setLoading(false)
-            //     })
+            setLoading(true)
+            http.get('beneficio/?format=json')
+                .then(response => {
+                   setBeneficios(response)
+                })
+                .catch(erro => {
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
         }
     }, [])
 
@@ -50,9 +48,6 @@ function Beneficios() {
                     <BotaoSemBorda color="var(--primaria)">
                         <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
                     </BotaoSemBorda>
-                    <Link to="/beneficio/selecao-tipo-recarga">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Disponibilizar benefícios</Botao>
-                    </Link>
                 </BotaoGrupo>
                 <Container>
                     <DataTableBeneficios beneficios={beneficios} />

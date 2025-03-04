@@ -1,14 +1,9 @@
-import Botao from '@components/Botao'
-import BotaoGrupo from '@components/BotaoGrupo'
-import Titulo from '@components/Titulo'
-import BotaoVoltar from '@components/BotaoVoltar'
-import { GrAddCircle } from 'react-icons/gr'
 import styled from "styled-components"
 import { Link, Outlet, useLocation } from "react-router-dom"
-import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import contratos from '@json/contratos.json'
 import React, { createContext, useContext } from 'react';
+import http from '@http'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -20,6 +15,23 @@ const ConteudoFrame = styled.div`
 const Contratos = () => {
 
     const location = useLocation();
+    // const [contratos, setContratos] = useState(null)
+
+    useEffect(() => {
+        // if(!contratos)
+        // {
+            http.get('contrato/?format=json')
+            .then(response => {
+                // setContratos(response)
+            })
+            .catch(erro => {
+
+            })
+            .finally(function() {
+            })
+        // }
+       
+    }, [])
 
     return (
         <ConteudoFrame>

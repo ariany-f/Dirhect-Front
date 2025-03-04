@@ -126,6 +126,9 @@ import ElegibilidadeSelecionarFiliais from './pages/Elegibilidade/selecao-filiai
 import ElegibilidadeSelecionarDepartamentos from './pages/Elegibilidade/selecao-departamentos'
 import ElegibilidadeEditarValor from './pages/Elegibilidade/editar-valor'
 import DetalhesElegibilidade from './pages/Elegibilidade/detalhes'
+import Operadoras from './pages/Operadoras'
+import OperadorasListagem from './pages/Operadoras/lista'
+import DetalhesOperadoras from './pages/Operadoras/detalhes'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -235,6 +238,11 @@ function AppRouter() {
               
               <Route path="dependentes" element={<Dependentes/>}>
                 <Route index element={<DependentesListagem />} />
+              </Route>
+              
+              <Route path="operadoras" element={<Operadoras/>}>
+                <Route index element={<OperadorasListagem />} />
+                <Route path="detalhes/:id" element={<DetalhesOperadoras />} />
               </Route>
               
               <Route path="contratos" element={<Contratos/>}>
