@@ -119,7 +119,7 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <FaTooth size={20} />
-    }
+    },
     {
         "id": 15,
         "name": "Vale Alimentação",
