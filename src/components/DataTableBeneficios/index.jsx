@@ -13,7 +13,7 @@ import BadgeStatusBeneficio from '../BadgeStatusBeneficio'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import { Tag } from 'primereact/tag'
 import { IoFastFoodSharp } from 'react-icons/io5'
-import { RiBusFill, RiComputerLine, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri'
+import { RiBusFill, RiComputerLine, RiGasStationFill, RiQuestionMark, RiShoppingCartFill } from 'react-icons/ri'
 import { FaCoins, FaTheaterMasks, FaTooth } from 'react-icons/fa'
 import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
 import { PiForkKnifeFill } from 'react-icons/pi'
@@ -161,6 +161,14 @@ const icones = [
         "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
         "icone": <IoFastFoodSharp size={20} />
+    },
+    {
+        "id": 15,
+        "name": "Odonto",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaTooth size={20} />
     },
 ]
 

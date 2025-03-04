@@ -120,6 +120,30 @@ const icones = [
         "food_meal_one_category": false,
         "icone": <FaTooth size={20} />
     }
+    {
+        "id": 15,
+        "name": "Vale Alimentação",
+        "flexible_value": false,
+        "description": "Mercados, supermercados e aplicativo de delivery.",
+        "food_meal_one_category": false,
+        "icone": <RiShoppingCartFill size={20} />
+    },
+    {
+        "id": 16,
+        "name": "Vale Refeição",
+        "flexible_value": false,
+        "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
+        "food_meal_one_category": false,
+        "icone": <IoFastFoodSharp size={20} />
+    },
+    {
+        "id": 15,
+        "name": "Odonto",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaTooth size={20} />
+    },
 ]
 
 function BadgeBeneficio({ nomeBeneficio, layout = 'inline' }) {

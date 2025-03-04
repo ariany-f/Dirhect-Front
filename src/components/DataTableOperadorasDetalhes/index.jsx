@@ -158,6 +158,14 @@ const icones = [
         "food_meal_one_category": false,
         "icone": <IoFastFoodSharp size={20} />
     },
+    {
+        "id": 15,
+        "name": "Odonto",
+        "flexible_value": true,
+        "description": "",
+        "food_meal_one_category": false,
+        "icone": <FaTooth size={20} />
+    },
 ]
 
 function DataTableOperadorasDetalhes({ beneficios }) {
