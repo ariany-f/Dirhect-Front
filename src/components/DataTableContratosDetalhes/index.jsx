@@ -14,7 +14,7 @@ import { IoEllipsisVertical, IoFastFoodSharp } from 'react-icons/io5';
 import { BiBookReader, BiShield } from 'react-icons/bi';
 import { RiBusFill, RiComputerLine, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
-import { FaCoins, FaTheaterMasks, FaTooth } from 'react-icons/fa';
+import { FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
 import { CiMoneyBill } from 'react-icons/ci';
 
@@ -214,22 +214,17 @@ function DataTableContratosDetalhes({ beneficios }) {
 
     const representativeBeneficiosTemplate = (rowData) => {
         const k = rowData?.dados_beneficio?.id ?? rowData?.id
+        
+        const icone = icones.filter(item => item.name == rowData?.dados_beneficio?.descricao);
         return <div key={k}>
-                {icones.map(item => {
-                    if(item.name == rowData?.dados_beneficio?.descricao)
-                    {
-                        return (
-                            <BadgeGeral weight={500} nomeBeneficio={
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    {item.icone}
-                                    <div>
-                                        {rowData?.dados_beneficio?.descricao}
-                                    </div>
-                                </div>
-                            }  />
-                        )
-                    }
-                })}     
+                <BadgeGeral weight={500} nomeBeneficio={
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        {icone.length > 0 ? icone[0].icone : <FaQuestion size={20} />}
+                        <div>
+                            {rowData?.dados_beneficio?.descricao}
+                        </div>
+                    </div>
+                }  />
             </div>
     }
 

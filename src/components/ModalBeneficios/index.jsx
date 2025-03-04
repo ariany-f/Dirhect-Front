@@ -173,32 +173,19 @@ function ModalBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalv
                         <Frame padding="12px 0px">
                             <Col12>
                                 <Col12>
-                                    <Col6Centered>
-                                       <CampoTexto
-                                       camposVazios={classError}
-                                       name="nome"
-                                       valor={nome}
-                                       setValor={setNome}
-                                       type="text"
-                                       label="Nome"
-                                       placeholder="Digite o nome"
-                                       />
-                                    </Col6Centered>
                                     <Col6>
                                         <DropdownItens camposVazios={classError} valor={tipo} setValor={setTipo} options={dropdownTipos} label="Tipo" name="tipo" placeholder="Tipo"/> 
                                     </Col6>
-                                </Col12>
-                                <Col12>
-                                    <Col6>
+                                    <Col6Centered>
                                         <CampoTexto camposVazios={classError} name="descricao" valor={descricao} setValor={setDescricao} type="text" label="Descrição" placeholder="Digite a descrição" />
-                                    </Col6>
+                                    </Col6Centered>
                                 </Col12>
                             </Col12>
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(nome, tipo.code, descricao)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={() => aoSalvar(tipo.code, descricao)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>

@@ -1,5 +1,5 @@
 import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill } from 'react-icons/ri'
-import { FaCoins, FaTheaterMasks, FaTooth } from 'react-icons/fa'
+import { FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa'
 import { BiBookReader } from 'react-icons/bi'
 import { PiForkKnifeFill } from 'react-icons/pi'
 import { MdOutlineMedicalServices, MdOutlineFastfood, MdSecurity } from 'react-icons/md'
@@ -147,33 +147,29 @@ const icones = [
 ]
 
 function BadgeBeneficio({ nomeBeneficio, layout = 'inline' }) {
-    return (
-        icones.map(item => {
-            if(item.name == nomeBeneficio)
-            {
-                if(layout == 'inline')
-                {
-                    return (
-                        <div key={item.id} className={styles.beneficio}>
-                            {item.icone}
-                            <p>{item.name}</p>
-                        </div>
-                    )
-                }
-                else if(layout == 'grid')
-                {
-                    return (
-                        <div key={item.id} className={styles.beneficio_grid}>
-                            <div className={styles.inside_grid}>
-                                {item.icone}
-                                <p>{item.name}</p>
-                            </div>
-                        </div>
-                    )
-                }
-            }
-        })
-    )
+
+    const icone = icones.filter(item => item.name == nomeBeneficio);
+
+    if(layout == 'inline')
+    {
+        return (
+            <div key={item.id} className={styles.beneficio}>
+                {icone.length > 0 ? icone[0].icone : <FaQuestion size={20} />}
+                <p>{item.name}</p>
+            </div>
+        )
+    }
+    else if(layout == 'grid')
+    {
+        return (
+            <div key={item.id} className={styles.beneficio_grid}>
+                <div className={styles.inside_grid}>
+                    {icone[0].icone}
+                    <p>{item.name}</p>
+                </div>
+            </div>
+        )
+    }
 }
 
 export default BadgeBeneficio

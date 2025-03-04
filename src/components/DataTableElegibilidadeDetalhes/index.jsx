@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import { RiBusFill, RiCheckboxCircleFill, RiCloseCircleFill, RiComputerLine, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
 import { BiBookReader, BiShield } from 'react-icons/bi';
-import { FaCoins, FaTheaterMasks, FaTooth } from 'react-icons/fa';
+import { FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import SwitchInput from '@components/SwitchInput';
 import { IoFastFoodSharp } from 'react-icons/io5';
@@ -215,29 +215,24 @@ function DataTableElegibilidadeDetalhes({ elegibilidade = [], pagination = true 
     }
 
     const representativeBeneficiosTemplate = (rowData) => {
+        let icone = '';
         return (
             <>
             {rowData.beneficios && rowData.beneficios.length > 0 &&
                 <Col12>
                 {rowData.beneficios.map((benefit, index) => {
+                    icone = icones.filter(item => item.name == benefit.beneficio);
                     return (
                         <Col6 key={index}>
-                            {icones.map(item => {
-                                if(item.name == benefit.beneficio)
-                                {
-                                    return (
-                                        <BadgeGeral weight={500} severity={benefit.status == 'Ativo' ? 'success' : ''} nomeBeneficio={
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                {item.icone}
-                                                <div>
-                                                    {benefit.beneficio} <br /> 
-                                                    {representativeValorTemplate(benefit)}
-                                                </div>
-                                            </div>
-                                        }  />
-                                    )
-                                }
-                            })}    
+                            <BadgeGeral weight={500} severity={benefit.status == 'Ativo' ? 'success' : ''} nomeBeneficio={
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    {icone.length > 0 ? icone[0].icone : <FaQuestion size={20} />}
+                                    <div>
+                                        {benefit.beneficio} <br /> 
+                                        {representativeValorTemplate(benefit)}
+                                    </div>
+                                </div>
+                            }  />
                         </Col6>
                     )
                 })}

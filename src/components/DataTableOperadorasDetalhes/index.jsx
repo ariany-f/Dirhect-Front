@@ -11,7 +11,7 @@ import { IoEllipsisVertical, IoFastFoodSharp } from 'react-icons/io5';
 import { BiBookReader, BiShield } from 'react-icons/bi';
 import { RiBusFill, RiComputerLine, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
-import { FaCoins, FaTheaterMasks, FaTooth } from 'react-icons/fa';
+import { FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
 
 let Real = new Intl.NumberFormat('pt-BR', {
@@ -193,23 +193,17 @@ function DataTableOperadorasDetalhes({ beneficios }) {
     }
 
     const representativeBeneficiosTemplate = (rowData) => {
+        const icone = icones.filter(item => item.name == rowData?.beneficio.descricao);
         return (
             <>
-            {icones.map(item => {
-                if(item.name == rowData?.beneficio.descricao)
-                {
-                    return (
-                        <BadgeGeral weight={500} nomeBeneficio={
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                {item.icone}
-                                <div>
-                                    {rowData.beneficio.descricao}
-                                </div>
-                            </div>
-                        }  />
-                    )
-                }
-            })}     
+            <BadgeGeral weight={500} nomeBeneficio={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    {icone.length > 0 ? icone[0].icone : <FaQuestion size={20} />}
+                    <div>
+                        {rowData.beneficio.descricao}
+                    </div>
+                </div>
+            }  />
            </>
         )
     }
