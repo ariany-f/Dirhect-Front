@@ -260,12 +260,13 @@ function DataTableContratosDetalhes({ beneficios }) {
         }
         else
         {
+            console.log(selectedBeneficio)
             let data = {
                 descricao: descricao,
                 tipo_calculo: "M",
                 tipo_desconto: "D",
-                contrato_beneficio: parseInt(selectedBeneficio),
-                extensivel_depentende: extensivo_dependentes,
+                contrato_beneficio: parseInt(selectedBeneficio.id),
+                extensivel_depentende: extensivo_dependentes ?  true : false,
                 parametro_aplicacao: "I",
                 numero_decimal: true,
                 valor: valor,
