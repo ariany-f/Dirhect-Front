@@ -3,6 +3,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalServices, MdSecurity } from 'react-icons/md'
 import './DataTable.css'
+import Titulo from '@components/Titulo';
 import BadgeGeral from '@components/BadgeGeral';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
@@ -295,6 +296,9 @@ function DataTableContratosDetalhes({ beneficios }) {
 
                 {selectedBeneficio && selectedItems && selectedItems.length > 0 ? 
                     <Col7 expanded={selectedBeneficio}>
+                        <Titulo>
+                            <h5>{selectedBeneficio.dados_beneficio.descricao}</h5>
+                        </Titulo>
                         <DataTable  
                             selection={selectedItemBeneficio}
                             selectionMode="single"
