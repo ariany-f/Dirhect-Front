@@ -56,7 +56,7 @@ const Col4Centered = styled.div`
 
 const DialogEstilizado = styled.dialog`
     display: flex;
-    width: 60vw;
+    width: 40vw;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -166,7 +166,7 @@ function ModalBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalv
                                         <RiCloseFill size={20} className="fechar" />  
                                     </button>
                                 </form>
-                                <h6>Novo Tipo de Benefício</h6>
+                                <h6>Novo Benefício</h6>
                             </Titulo>
                         </Frame>
                         
