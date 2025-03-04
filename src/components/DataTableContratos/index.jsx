@@ -57,6 +57,17 @@ function DataTableContratos({ contratos }) {
         </div>
     }
 
+    function representativSituacaoTemplate(rowData) {
+        
+        let status = rowData?.status;
+        switch(rowData?.status)
+        {
+            case 'A':
+                status = <Tag severity="success" value="Ativo"></Tag>;
+                break;
+        }
+        return status
+    }
     
     return (
         <>
@@ -69,7 +80,8 @@ function DataTableContratos({ contratos }) {
                 <Column body={representativeFornecedorTemplate} field="operadora" header="Operadora" style={{ width: '35%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
-                <Column field="observacao" header="Observação" style={{ width: '35%' }}></Column>
+                <Column field="observacao" header="Observação" style={{ width: '25%' }}></Column>
+                <Column field="status" header="Status" body={representativSituacaoTemplate} style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     )

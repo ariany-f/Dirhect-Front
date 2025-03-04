@@ -80,6 +80,7 @@ const Col6 = styled.div`
 `
 
 function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo }) {
+
     const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
     const [nomeBeneficio, setNomeBeneficio] = useState(null)
@@ -92,23 +93,23 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     const [tipo_calculo, setTipoCalculo] = useState('')
     const [tipo_desconto, setTipoDesconto] = useState('')
     
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     /** Preenche os inputs com os dados atuais */
-    //     if(dadoAntigo)
-    //     {
-    //         setValor(dadoAntigo.valor)
-    //         setEmpresa(dadoAntigo.empresa)
-    //         setNomeBeneficio(dadoAntigo.nome)
-    //         setDesconto(dadoAntigo.desconto)
-    //         setTempoMinimo(dadoAntigo.tempo_minimo)
-    //         setExxtensivelDependente(dadoAntigo.extensivo_dependentes)
-    //         setDescricao(dadoAntigo.descricao)
-    //         setTipoCalculo(dadoAntigo.tipo_calculo)
-    //         setTipoDesconto(dadoAntigo.tipo_desconto)
-    //     }
+        /** Preenche os inputs com os dados atuais */
+        if(dadoAntigo)
+        {
+            setValor(dadoAntigo.valor)
+            setEmpresa(dadoAntigo.valor_empresa)
+            setNomeBeneficio(dadoAntigo.nome)
+            setDesconto(dadoAntigo.valor_desconto)
+            setTempoMinimo(dadoAntigo.tempo_minimo)
+            setExxtensivelDependente(dadoAntigo.extensivel_depentende)
+            setDescricao(dadoAntigo.descricao)
+            setTipoCalculo(dadoAntigo.tipo_calculo)
+            setTipoDesconto(dadoAntigo.tipo_desconto)
+        }
 
-    // }, [dadoAntigo, alteravel])
+    }, [dadoAntigo, alteravel])
 
     const fecharModal = () => {
         setAlteravel('')

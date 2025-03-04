@@ -79,21 +79,6 @@ function DetalhesContratos() {
             setModalOpened(false)
         })
     }
-
-    function representativSituacaoTemplate() {
-        let status = contrato?.status;
-        
-        switch(contrato?.status)
-        {
-            case 'Aprovado':
-                status = <Tag severity="success" value="Aprovado"></Tag>;
-                break;
-            case 'Aguardando':
-                status = <Tag severity="warning" value="Aguardando"></Tag>;
-                break;
-        }
-        return status
-    }
     
     return (
         <>

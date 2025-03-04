@@ -17,11 +17,31 @@ import { PiForkKnifeFill } from 'react-icons/pi';
 import { FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
 import { CiMoneyBill } from 'react-icons/ci';
+import styled from 'styled-components';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
 });
+
+const Col12 = styled.div`
+    display: flex;
+    gap: 6px;
+    justify-content: space-between;
+`;
+
+const Col5 = styled.div`
+    width: ${(props) => (props.expanded ? "calc(44% - 6px)" : "100%")};
+    transition: all 0.3s ease;
+    padding: 0px;
+`;
+
+const Col7 = styled.div`
+    width: ${(props) => (props.expanded ? "calc(56% - 6px)" : "100%")};
+    transition: all 0.3s ease;
+    padding: 0px;
+`;
+
 
 
 const icones = [
@@ -158,9 +178,12 @@ const icones = [
 function DataTableContratosDetalhes({ beneficios }) {
     
     const[selectedBeneficio, setSelectedBeneficio] = useState(0)
+    const[selectedItemBeneficio, setSelectedItemBeneficio] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [sendData, setSendData] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [expandedRows, setExpandedRows] = useState(null);
+    const [selectedItems, setSelectedItems] = useState([]);
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
@@ -189,26 +212,13 @@ function DataTableContratosDetalhes({ beneficios }) {
 
     const representativeEmpresaTemplate = (rowData) => {
         return (
-            Real.format(rowData.empresa)
+            Real.format(rowData.valor_empresa)
         )
     }
-    
-    const representativStatusTemplate = (rowData) => {
-        let status = rowData?.status;
-        switch(rowData?.status)
-        {
-            case 'Ativo':
-                status = <Tag severity="success" value="Ativo"></Tag>;
-                break;
-            case 'Vencido':
-                status = <Tag severity="warning" value="Vencido"></Tag>;
-                break;
-            case 'Cancelado':
-                status = <Tag severity="danger" value="Cancelado"></Tag>;
-                break;
-        }
+
+    const representativeDescontoTemplate = (rowData) => {
         return (
-            <b>{status}</b>
+            Real.format(rowData.valor_desconto)
         )
     }
 
@@ -234,8 +244,6 @@ function DataTableContratosDetalhes({ beneficios }) {
             tipo_calculo: "M",
             tipo_desconto: "D",
             contrato_beneficio: parseInt(selectedBeneficio),
-            // tipo_calculo: tipo_calculo,
-            // tipo_desconto: tipo_desconto,
             extensivel_depentende: extensivo_dependentes,
             parametro_aplicacao: "I",
             numero_decimal: true,
@@ -259,24 +267,50 @@ function DataTableContratosDetalhes({ beneficios }) {
         })
     }
 
+    const onRowSelect = (e) => {
+        setSelectedBeneficio(e.value);
+        setSelectedItems(e.value.itens || []); // Pega os itens do benefício selecionado
+    };
+
     return (
         <>
-            {/* <ContextMenu model={menuModel(selectedBeneficio)} ref={cm} onHide={() => setSelectedBeneficio(null)} /> */}
-            <DataTable 
-                value={beneficios} 
-                filters={filters} 
-                globalFilterFields={['nome']} 
-                emptyMessage="Não foram encontrados beneficios" 
-                paginator rows={7}
-                selection={selectedBeneficio} 
-                onSelectionChange={(e) => {setSelectedBeneficio(e.value.id); setSendData(e.value.itens[0]); setModalOpened(true)}} 
-                selectionMode="single"
-                tableStyle={{ minWidth: '68vw' }}
-            >
-                <Column body={representativeBeneficiosTemplate} field="dados_beneficio.descricao" header="Benefício" style={{ width: '65%' }}></Column>
-                <Column field="observacao" header="Observação" style={{ width: '35%' }}></Column>
-            </DataTable>
-            <ModalAlterarRegrasBeneficio contrato={selectedBeneficio} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} dadoAntigo={sendData} />
+            <Col12>
+                {/* <ContextMenu model={menuModel(selectedBeneficio)} ref={cm} onHide={() => setSelectedBeneficio(null)} /> */}
+                <Col5 expanded={selectedBeneficio}>
+                    <DataTable 
+                        value={beneficios} 
+                        filters={filters} 
+                        globalFilterFields={['nome']} 
+                        emptyMessage="Não foram encontrados beneficios" 
+                        paginator 
+                        rows={7}
+                        selection={selectedBeneficio} 
+                        onSelectionChange={onRowSelect}
+                        selectionMode="single"
+                    >
+                        <Column body={representativeBeneficiosTemplate} field="dados_beneficio.descricao" header="Benefício" style={{ width: '45%' }}></Column>
+                        <Column field="observacao" header="Observação" style={{ width: '35%' }}></Column>
+                    </DataTable>
+                </Col5>
+
+                {selectedBeneficio && selectedItems && selectedItems.length > 0 ? 
+                    <Col7 expanded={selectedBeneficio}>
+                        <DataTable  
+                            selection={selectedItemBeneficio}
+                            selectionMode="single"
+                            onSelectionChange={(e) => {setSelectedItemBeneficio(e.value.id); setSendData(e.value); setModalOpened(true)}} 
+                            value={selectedItems} 
+                        >
+                            <Column body={representativeExtensivelTemplate} field="extensivel_depentende" header="Extensível Dependente" style={{ width: '10%' }} />
+                            <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '12%' }} />
+                            <Column body={representativeEmpresaTemplate} field="valor_empresa" header="Empresa" style={{ width: '15%' }} />
+                            <Column body={representativeDescontoTemplate} field="valor_desconto" header="Desconto" style={{ width: '15%' }} />
+                        </DataTable>
+                    </Col7>
+                : null
+                }
+            </Col12>
+            <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} dadoAntigo={sendData} />
         </>
     )
 }
