@@ -2,7 +2,7 @@
     {
         "id": 1,
         "total_colaboradores": 200,
-        "nome": "Configuração para Filial 1",
+        "nome": "Regra 1",
         "status": "Ativo",
         "configuracoes": {
             "filiais": {
@@ -98,7 +98,7 @@
     {
         "id": 2,
         "total_colaboradores": 350,
-        "nome": "Configuração para Filial 2",
+        "nome": "Regra 2",
         "status": "Ativo",
         "configuracoes": {
             "filiais": {
@@ -174,7 +174,7 @@
     {
         "id": 3,
         "total_colaboradores": 175,
-        "nome": "Configuração para Filial 2 - TI",
+        "nome": "Regra 3",
         "status": "Cancelado",
         "configuracoes": {
             "filiais": {
@@ -255,7 +255,7 @@
     {
         "id": 4,
         "total_colaboradores": 175,
-        "nome": "Configuração para Filial 2 - Jurídico",
+        "nome": "Regra 4",
         "status": "Cancelado",
         "configuracoes": {
             "filiais": {
