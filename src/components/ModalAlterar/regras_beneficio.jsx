@@ -83,6 +83,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
 
     const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
+    const [id, setId] = useState('')
     const [valor, setValor] = useState('')
     const [tempo_minimo, setTempoMinimo] = useState('')
     const [extensivo_dependentes, setExxtensivelDependente] = useState(false)
@@ -97,6 +98,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
         /** Preenche os inputs com os dados atuais */
         if(dadoAntigo)
         {
+            setId(dadoAntigo.id)
             setValor(dadoAntigo.valor)
             setEmpresa(dadoAntigo.valor_empresa)
             setDesconto(dadoAntigo.valor_desconto)
@@ -114,6 +116,10 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
         setValor('')
         setEmpresa('')
         setDesconto('')
+        setDescricao('')
+        setTipoCalculo('')
+        setTipoDesconto('')
+        setId('')
         setTempoMinimo('')
         setExxtensivelDependente(false)
         aoFechar()
@@ -135,12 +141,22 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
                             </form>
-                            <h6>Alterar Dados - {`${nomeBeneficio}`}</h6>{descricao ? <small>{descricao}</small> : ''}
+                            <h6>Alterar Dados - {`${nomeBeneficio}`}</h6>
                         </Titulo>
                     </Frame>
                     <Frame padding="24px 0px">
                         <div>
                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="descricao" 
+                                        valor={descricao} 
+                                        setValor={setDescricao} 
+                                        type="text" 
+                                        label="Descrição" 
+                                        placeholder="Digite Descrição" />
+                                </Col6>
                                 <Col6>
                                     <CampoTexto 
                                         camposVazios={classError} 
@@ -172,16 +188,6 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                         placeholder="Digite o valor da empresa" />
                                 </Col6>
                                 <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        name="tempo_minimo" 
-                                        valor={tempo_minimo} 
-                                        setValor={setTempoMinimo} 
-                                        type="text" 
-                                        label="Tempo Mínimo de Empresa em dias" 
-                                        placeholder="Digite Tempo Mínimo de Empresa em dias" />
-                                </Col6>
-                                <Col6>
                                     <CheckboxContainer label="Extensível Dependente?" name="extensivo_dependentes" valor={extensivo_dependentes} setValor={handleChange} />
                                 </Col6>
                             </Col12>
@@ -190,7 +196,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                     <form method="dialog">
                         <div className={styles.containerBottom}>
                             <Botao aoClicar={fecharModal} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                            <Botao aoClicar={() => aoSalvar(descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto)} estilo="vermilion" size="medium" filled>Salvar</Botao>
+                            <Botao aoClicar={() => aoSalvar(id, descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto)} estilo="vermilion" size="medium" filled>Salvar</Botao>
                         </div>
                     </form>
                 </DialogEstilizado>

@@ -19,6 +19,7 @@ import { FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
 import { CiMoneyBill } from 'react-icons/ci';
 import styled from 'styled-components';
+import { Toast } from 'primereact/toast';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -185,6 +186,7 @@ function DataTableContratosDetalhes({ beneficios }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [expandedRows, setExpandedRows] = useState(null);
     const [selectedItems, setSelectedItems] = useState([]);
+    const toast = useRef(null);
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
@@ -217,6 +219,12 @@ function DataTableContratosDetalhes({ beneficios }) {
         )
     }
 
+    const representativeTemplate  = (rowData) => {
+        return (
+            rowData.descricao
+        )
+    }
+
     const representativeDescontoTemplate = (rowData) => {
         return (
             Real.format(rowData.valor_desconto)
@@ -239,33 +247,59 @@ function DataTableContratosDetalhes({ beneficios }) {
             </div>
     }
 
-    const alterarRegras = (descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto) => {
-        let data = {
-            descricao: 'Adicionar',
-            tipo_calculo: "M",
-            tipo_desconto: "D",
-            contrato_beneficio: parseInt(selectedBeneficio),
-            extensivel_depentende: extensivo_dependentes,
-            parametro_aplicacao: "I",
-            numero_decimal: true,
-            valor: valor,
-            valor_empresa: empresa,
-            valor_desconto: desconto
+    const alterarRegras = (id, descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto) => {
+        
+        if(descricao == '' || tipo_calculo == '' || tipo_desconto == '' || extensivo_dependentes == '' || valor == '' || empresa == '' || desconto == '')
+        {
+            toast.current.show({severity:'error', summary: 'Erro', detail: 'Preencha todos os campos!', life: 3000});
         }
-
-        http.post('contrato_beneficio_item/', data)
-        .then(response => {
-            if(response.id)
-            {
-                toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Sucesso!', life: 3000});
+        else
+        {
+            let data = {
+                descricao: descricao,
+                tipo_calculo: "M",
+                tipo_desconto: "D",
+                contrato_beneficio: parseInt(selectedBeneficio),
+                extensivel_depentende: extensivo_dependentes,
+                parametro_aplicacao: "I",
+                numero_decimal: true,
+                valor: valor,
+                valor_empresa: empresa,
+                valor_desconto: desconto
             }
-        })
-        .catch(erro => {
-            toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro!', life: 3000});
-        })
-        .finally(function() {
-            setModalOpened(false)
-        })
+            if(id) {
+
+                http.put(`contrato_beneficio_item/${id}`, data)
+                .then(response => {
+                    if(response.id)
+                    {
+                        toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Sucesso!', life: 3000});
+                    }
+                })
+                .catch(erro => {
+                    toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro!', life: 3000});
+                })
+                .finally(function() {
+                    setModalOpened(false)
+                })
+            }
+            else{
+                http.post(`contrato_beneficio_item`, data)
+                .then(response => {
+                    if(response.id)
+                    {
+                        toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Sucesso!', life: 3000});
+                    }
+                })
+                .catch(erro => {
+                    toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro!', life: 3000});
+                })
+                .finally(function() {
+                    setModalOpened(false)
+                })
+            }
+    
+        }
     }
 
     const onRowSelect = (e) => {
@@ -275,6 +309,7 @@ function DataTableContratosDetalhes({ beneficios }) {
 
     return (
         <>
+            <Toast ref={toast} />
             <Col12>
                 {/* <ContextMenu model={menuModel(selectedBeneficio)} ref={cm} onHide={() => setSelectedBeneficio(null)} /> */}
                 <Col5 expanded={selectedBeneficio}>
@@ -305,6 +340,7 @@ function DataTableContratosDetalhes({ beneficios }) {
                             onSelectionChange={(e) => {setSelectedItemBeneficio(e.value.id); setSendData(e.value); setModalOpened(true)}} 
                             value={selectedItems} 
                         >
+                            <Column body={representativeTemplate} field="descricao" header="Descrição" style={{ width: '25%' }} />
                             <Column body={representativeExtensivelTemplate} field="extensivel_depentende" header="Extensível Dependente" style={{ width: '10%' }} />
                             <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '12%' }} />
                             <Column body={representativeEmpresaTemplate} field="valor_empresa" header="Empresa" style={{ width: '15%' }} />
