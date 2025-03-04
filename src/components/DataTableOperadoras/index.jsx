@@ -47,13 +47,13 @@ function DataTableOperadoras({ operadoras, search = true }) {
     return (
         <>
             {search &&
-                <div className="flex justify-content-end">
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     <span className="p-input-icon-left">
                         <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar operadora" />
                     </span>
                 </div>
             }
-            <DataTable value={operadoras} filters={filters} globalFilterFields={['nome']}  emptyMessage="Não foram encontrados operadoras" selection={selectedOperadora} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={operadoras} filters={filters} globalFilterFields={['nome']} emptyMessage="Não foram encontradas operadoras" selection={selectedOperadora} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={8}  tableStyle={{ minWidth: '65vw' }}>
                 <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '100%' }}></Column>
             </DataTable>
         </>

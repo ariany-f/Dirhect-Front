@@ -7,6 +7,7 @@ import { GrAddCircle } from 'react-icons/gr'
 import Botao from '@components/Botao'
 import http from "@http"
 import BotaoGrupo from '@components/BotaoGrupo'
+import Container from '@components/Container'
 import DataTableOperadoras from '@components/DataTableOperadoras'
 import ModalOperadoras from "../../components/ModalOperadoras"
 
@@ -73,7 +74,6 @@ function OperadorasListagem() {
     
     return (
         <ConteudoFrame>
-            
             <BotaoGrupo align="end">
                 <BotaoGrupo>
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Operadora</Botao>
@@ -81,7 +81,9 @@ function OperadorasListagem() {
             </BotaoGrupo>
             {
                 operadoras ?
-                <DataTableOperadoras operadoras={operadoras} />
+                <Container>
+                    <DataTableOperadoras search={false} operadoras={operadoras} />
+                </Container>
                 :
                 <ContainerSemRegistro>
                 <section className={styles.container}>

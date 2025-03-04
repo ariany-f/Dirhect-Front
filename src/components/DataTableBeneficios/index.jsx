@@ -33,8 +33,6 @@ const tipos = {
     'S': 'Saúde e Bem Estar'
 }
 
-
-
 const icones = [
     {
         "id": 1,

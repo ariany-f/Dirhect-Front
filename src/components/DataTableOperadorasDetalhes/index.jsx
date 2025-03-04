@@ -20,6 +20,15 @@ let Real = new Intl.NumberFormat('pt-BR', {
 });
 
 
+const tipos = {
+    'C': 'Cultura',
+    'E': 'Educação',
+    'H': 'Home & Office',
+    'M': 'Mobilidade',
+    'P': 'P(rograma) de A(limentação) do T(rabalhador)',
+    'S': 'Saúde e Bem Estar'
+}
+
 const icones = [
     {
         "id": 1,
@@ -171,8 +180,8 @@ function DataTableOperadorasDetalhes({ beneficios }) {
     };
 
     const representativStatusTemplate = (rowData) => {
-        let status = rowData?.beneficio.tipo;
-        return <Tag severity="info" value={status}></Tag>;
+        let status = tipos[rowData?.beneficio.tipo];
+        return status;
     }
 
     const representativeBeneficiosTemplate = (rowData) => {
@@ -210,8 +219,8 @@ function DataTableOperadorasDetalhes({ beneficios }) {
                 selectionMode="single"
                 tableStyle={{ minWidth: '68vw' }}
             >
-                <Column body={representativeBeneficiosTemplate} field="nome" header="Benefício" style={{ width: '35%' }}></Column>
-                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
+                <Column body={representativeBeneficiosTemplate} field="nome" header="Benefício" style={{ width: '25%' }}></Column>
+                <Column body={representativStatusTemplate} field="tipo" header="Tipo" style={{ width: '65%' }}></Column>
             </DataTable>
         </>
     )
