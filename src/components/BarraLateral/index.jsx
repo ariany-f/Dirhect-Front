@@ -354,59 +354,59 @@ function BarraLateral() {
                     },
                     {
                         "id": 8,
-                        "url": "/beneficio",
-                        "pageTitulo": "Tipos de Benefícios",
-                        "icone": <RiHandCoinFill size={20} className="icon" />,
-                        "itemTitulo": "Tipos de Benefícios"
-                    },
-                    {
-                        "id": 9,
                         "url": "/linhas-transporte",
                         "pageTitulo": "Linhas de Transporte",
                         "icone": <FaBusAlt size={20} className="icon" />,
                         "itemTitulo": "Linhas de Transporte"
                     },
                     {
+                        "id": 9,
+                        "url": "/beneficio",
+                        "pageTitulo": "Tipos de Benefícios",
+                        "icone": <RiHandCoinFill size={20} className="icon" />,
+                        "itemTitulo": "Tipos de Benefícios"
+                    },
+                    {
                         "id": 10,
+                        "url": "/operadoras",
+                        "pageTitulo": "Operadoras",
+                        "icone": <PiHandshake size={20} className="icon" />,
+                        "itemTitulo": "Operadoras"
+                    },
+                    {
+                        "id": 11,
                         "url": "/contratos",
                         "pageTitulo": "Contratos",
                         "icone": <RiFileListFill size={20} className="icon" />,
                         "itemTitulo": "Contratos"
                     },
                     {
-                        "id": 11,
+                        "id": 12,
                         "url": "/elegibilidade",
                         "pageTitulo": "Elegibilidade",
                         "icone": <LuSparkles size={20} className="icon" />,
                         "itemTitulo": "Elegibilidade"
                     },
                     {
-                        "id": 12,
+                        "id": 13,
                         "url": "/pedidos",
                         "pageTitulo": "Pedidos",
                         "icone": <MdShoppingCartCheckout size={20} fill="white" />,
                         "itemTitulo": "Pedidos"
                     },
                     {
-                        "id": 13,
+                        "id": 14,
                         "url": "/movimentos",
                         "pageTitulo": "Movimentos",
                         "icone": <MdAllInbox size={20} fill="white" />,
                         "itemTitulo": "Movimentos"
                     },
                     {
-                        "id": 14,
+                        "id": 15,
                         "url": "/marketplace",
                         "pageTitulo": "Marketplace",
                         "icone": <BiCart size={20} className="icon" />,
                         "itemTitulo": "Marketplace"
-                    },
-                    {
-                        "id": 15,
-                        "url": "/operadoras",
-                        "pageTitulo": "Operadoras",
-                        "icone": <PiHandshake size={20} className="icon" />,
-                        "itemTitulo": "Operadoras"
                     }
                 ];
             default:
