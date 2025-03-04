@@ -260,7 +260,6 @@ function DataTableContratosDetalhes({ beneficios }) {
         }
         else
         {
-            console.log(selectedBeneficio)
             let data = {
                 descricao: descricao,
                 tipo_calculo: "M",
