@@ -343,6 +343,7 @@ function DataTableContratosDetalhes({ beneficios }) {
                         <DataTable  
                             selection={selectedItemBeneficio}
                             selectionMode="single"
+                            emptyMessage="Não há configurações cadastradas" 
                             onSelectionChange={(e) => {setSelectedItemBeneficio(e.value.id); setSendData(e.value); setModalOpened(true)}} 
                             value={selectedItems} 
                         >
