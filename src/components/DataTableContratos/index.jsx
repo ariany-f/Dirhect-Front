@@ -37,6 +37,15 @@ function DataTableContratos({ contratos }) {
         navegar(`/contratos/detalhes/${value.id}`)
     }
 
+    const representativeInicioTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_inicio).toLocaleDateString("pt-BR")}</p>
+    }
+    
+
+    const representativeFimTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_fim).toLocaleDateString("pt-BR")}</p>
+    }
+
     const representativeFornecedorTemplate = (rowData) => {
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
@@ -58,6 +67,8 @@ function DataTableContratos({ contratos }) {
             </div>
             <DataTable value={contratos} filters={filters} globalFilterFields={['nome_fornecedor']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeFornecedorTemplate} field="operadora" header="Operadora" style={{ width: '35%' }}></Column>
+                <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
+                <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column field="observacao" header="Observação" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
