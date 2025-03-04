@@ -4,7 +4,7 @@ import { Link, Outlet, useLocation, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import Texto from '@components/Texto'
 import Frame from '@components/Frame'
-import Titulo from '@components/Titulo'
+import { GrAddCircle } from 'react-icons/gr'
 import Botao from '@components/Botao'
 import { Skeleton } from 'primereact/skeleton'
 import Container from "@components/Container"
@@ -12,16 +12,14 @@ import { FaArrowAltCircleRight, FaDownload, FaTrash } from 'react-icons/fa'
 import BotaoVoltar from "@components/BotaoVoltar"
 import Loading from '@components/Loading'
 import BotaoGrupo from "@components/BotaoGrupo"
-import BotaoSemBorda from "@components/BotaoSemBorda"
 import { Toast } from 'primereact/toast'
-import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTablePedidosDetalhes from '@components/DataTablePedidosDetalhes'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
-import { addLocale } from 'primereact/api'
-import contratos from '@json/contratos.json'
+import http from "@http"
+// import contratos from '@json/contratos.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import DataTableContratosDetalhes from '@components/DataTableContratosDetalhes'
+import ModalContratoBeneficios from '../../components/ModalContratoBeneficio'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -42,18 +40,45 @@ function DetalhesContratos() {
     const [contrato, setContrato] = useState([])
     const toast = useRef(null)
     const [loading, setLoading] = useState(false)
+    const [modalOpened, setModalOpened] = useState(false)
    
     useEffect(() => {
         if(contrato.length == 0)
         {
-            let cc = contratos.filter(evento => evento.id == id);
-            if(cc.length > 0)
-            {
-                setContrato(cc[0])
-            }
+            http.get(`contrato/${id}/?format=json`)
+            .then(response => {
+                    setContrato(response)
+                })
+            .catch(erro => {
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar dados do contrato', life: 3000 });
+            })
+            .finally(function() {
+                setLoading(false)
+            })
         }
+
     }, [contrato])
 
+    const vincularBeneficio = (id_beneficio) => {
+       
+        const data = {};
+        data.contrato = parseInt(id);
+        data.beneficio = parseInt(id_beneficio);
+
+        http.post('contrato_beneficio/', data)
+        .then(response => {
+            if(response.id)
+            {
+                toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Benefício vinculado com sucesso!', life: 3000});
+            }
+        })
+        .catch(erro => {
+            toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro ao vincular benefício!', life: 3000});
+        })
+        .finally(function() {
+            setModalOpened(false)
+        })
+    }
 
     function representativSituacaoTemplate() {
         let status = contrato?.status;
@@ -78,17 +103,18 @@ function DetalhesContratos() {
             <ConfirmDialog />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/contratos" />
-                {contrato && contrato?.nome_fornecedor ?
+                {contrato && contrato?.dados_operadora?.nome ?
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{contrato.nome_fornecedor}</h3>
+                            <h3>{contrato.dados_operadora?.nome}</h3>
                         </FrameVertical>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício</Botao>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
-                        <Texto>Descritivo</Texto>
-                        {contrato?.descritivo ?
-                            <Texto weight="800">{contrato?.descritivo}</Texto>
+                        <Texto>Observação</Texto>
+                        {contrato?.observacao ?
+                            <Texto weight="800">{contrato?.observacao}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                         }
                     </div>
@@ -96,6 +122,7 @@ function DetalhesContratos() {
                     : <></>
                 }
                 <DataTableContratosDetalhes beneficios={contrato?.beneficios} />
+                <ModalContratoBeneficios aoSalvar={vincularBeneficio} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Container>
         </Frame>
         </>

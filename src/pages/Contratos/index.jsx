@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { useState, useEffect } from 'react'
-import contratos from '@json/contratos.json'
+// import contratos from '@json/contratos.json'
 import React, { createContext, useContext } from 'react';
 import http from '@http'
 
@@ -15,21 +15,19 @@ const ConteudoFrame = styled.div`
 const Contratos = () => {
 
     const location = useLocation();
-    // const [contratos, setContratos] = useState(null)
+    const [contratos, setContratos] = useState(null)
 
     useEffect(() => {
-        // if(!contratos)
-        // {
-            http.get('contrato/?format=json')
-            .then(response => {
-                // setContratos(response)
-            })
-            .catch(erro => {
+      
+        http.get('contrato/?format=json')
+        .then(response => {
+            setContratos(response)
+        })
+        .catch(erro => {
 
-            })
-            .finally(function() {
-            })
-        // }
+        })
+        .finally(function() {
+        })
        
     }, [])
 

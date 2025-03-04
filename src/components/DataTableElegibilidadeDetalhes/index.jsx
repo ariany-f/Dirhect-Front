@@ -115,7 +115,7 @@ const icones = [
     },
     {
         "id": 10,
-        "name": "Vale Combustivel",
+        "name": "Vale Combustível",
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,

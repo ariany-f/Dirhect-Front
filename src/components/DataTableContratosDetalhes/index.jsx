@@ -6,6 +6,7 @@ import './DataTable.css'
 import BadgeGeral from '@components/BadgeGeral';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import http from '@http';
 import { Tag } from 'primereact/tag';
 import ModalAlterarRegrasBeneficio from '../ModalAlterar/regras_beneficio';
 import { ContextMenu } from 'primereact/contextmenu';
@@ -98,7 +99,7 @@ const icones = [
     },
     {
         "id": 10,
-        "name": "Vale Combustivel",
+        "name": "Vale Combustível",
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
@@ -135,11 +136,27 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <FaTooth size={20} />
-    }
+    },
+    {
+        "id": 15,
+        "name": "Vale Alimentação",
+        "flexible_value": false,
+        "description": "Mercados, supermercados e aplicativo de delivery.",
+        "food_meal_one_category": false,
+        "icone": <RiShoppingCartFill size={20} />
+    },
+    {
+        "id": 16,
+        "name": "Vale Refeição",
+        "flexible_value": false,
+        "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
+        "food_meal_one_category": false,
+        "icone": <IoFastFoodSharp size={20} />
+    },
 ]
 
 function DataTableContratosDetalhes({ beneficios }) {
-
+    
     const[selectedBeneficio, setSelectedBeneficio] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [sendData, setSendData] = useState({})
@@ -196,41 +213,56 @@ function DataTableContratosDetalhes({ beneficios }) {
     }
 
     const representativeBeneficiosTemplate = (rowData) => {
-        return (
-            <>
-            {icones.map(item => {
-                if(item.name == rowData.nome)
-                {
-                    return (
-                        <BadgeGeral weight={500} nomeBeneficio={
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                {item.icone}
-                                <div>
-                                    {rowData.nome}
+        const k = rowData?.dados_beneficio?.id ?? rowData?.id
+        return <div key={k}>
+                {icones.map(item => {
+                    if(item.name == rowData?.dados_beneficio?.descricao)
+                    {
+                        return (
+                            <BadgeGeral weight={500} nomeBeneficio={
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    {item.icone}
+                                    <div>
+                                        {rowData?.dados_beneficio?.descricao}
+                                    </div>
                                 </div>
-                            </div>
-                        }  />
-                    )
-                }
-            })}     
-           </>
-        )
+                            }  />
+                        )
+                    }
+                })}     
+            </div>
     }
 
-    const cm = useRef(null);
-    const menuModel = (selectedBeneficio) => {
-        if (!selectedBeneficio) return [];
-        return [
-            { 
-                label: <b>Editar</b>, 
-                command: () => { 
-                    setSendData(selectedBeneficio) 
-                    setModalOpened(true)
-                }
+    const alterarRegras = (descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto) => {
+        let data = {
+            descricao: 'Adicionar',
+            tipo_calculo: "M",
+            tipo_desconto: "D",
+            contrato_beneficio: parseInt(selectedBeneficio),
+            // tipo_calculo: tipo_calculo,
+            // tipo_desconto: tipo_desconto,
+            extensivel_depentende: extensivo_dependentes,
+            parametro_aplicacao: "I",
+            numero_decimal: true,
+            valor: valor,
+            valor_empresa: empresa,
+            valor_desconto: desconto
+        }
+
+        http.post('contrato_beneficio_item/', data)
+        .then(response => {
+            if(response.id)
+            {
+                toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Sucesso!', life: 3000});
             }
-        ];
-    
-    };
+        })
+        .catch(erro => {
+            toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro!', life: 3000});
+        })
+        .finally(function() {
+            setModalOpened(false)
+        })
+    }
 
     return (
         <>
@@ -242,18 +274,14 @@ function DataTableContratosDetalhes({ beneficios }) {
                 emptyMessage="Não foram encontrados beneficios" 
                 paginator rows={7}
                 selection={selectedBeneficio} 
-                onSelectionChange={(e) => {setSendData(e.value); setModalOpened(true)}} 
+                onSelectionChange={(e) => {setSelectedBeneficio(e.value.id); setSendData(e.value.itens[0]); setModalOpened(true)}} 
                 selectionMode="single"
                 tableStyle={{ minWidth: '68vw' }}
             >
-                <Column body={representativeBeneficiosTemplate} field="nome" header="Benefício" style={{ width: '35%' }}></Column>
-                <Column field="data_inicio" header="Data Inicio" style={{ width: '35%' }}></Column>
-                <Column field="data_fim" header="Data Fim" style={{ width: '35%' }}></Column>
-                <Column field="tempo_minimo" header="Tempo Mínimo" style={{ width: '35%' }}></Column>
-                <Column body={representativeExtensivelTemplate} field="extensivo_dependentes" header="Extensível Dependente" style={{ width: '35%' }}></Column>
-                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
+                <Column body={representativeBeneficiosTemplate} field="dados_beneficio.descricao" header="Benefício" style={{ width: '65%' }}></Column>
+                <Column field="observacao" header="Observação" style={{ width: '35%' }}></Column>
             </DataTable>
-            <ModalAlterarRegrasBeneficio aoFechar={() => setModalOpened(false)} opened={modalOpened} dadoAntigo={sendData} />
+            <ModalAlterarRegrasBeneficio contrato={selectedBeneficio} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} dadoAntigo={sendData} />
         </>
     )
 }

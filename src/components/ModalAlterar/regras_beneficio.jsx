@@ -79,7 +79,7 @@ const Col6 = styled.div`
     flex: 1 1 50%;
 `
 
-function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoAntigo }) {
+function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo }) {
     const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
     const [nomeBeneficio, setNomeBeneficio] = useState(null)
@@ -88,33 +88,27 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoA
     const [extensivo_dependentes, setExxtensivelDependente] = useState(false)
     const [empresa, setEmpresa] = useState('')
     const [desconto, setDesconto] = useState('')
+    const [descricao, setDescricao] = useState('')
+    const [tipo_calculo, setTipoCalculo] = useState('')
+    const [tipo_desconto, setTipoDesconto] = useState('')
     
-    useEffect(() => {
+    // useEffect(() => {
 
-        /** Preenche os inputs com os dados atuais */
-        if(dadoAntigo)
-        {
-            setValor(dadoAntigo.valor)
-            setEmpresa(dadoAntigo.empresa)
-            setNomeBeneficio(dadoAntigo.nome)
-            setDesconto(dadoAntigo.desconto)
-            setTempoMinimo(dadoAntigo.tempo_minimo)
-            setExxtensivelDependente(dadoAntigo.extensivo_dependentes)
-        }
+    //     /** Preenche os inputs com os dados atuais */
+    //     if(dadoAntigo)
+    //     {
+    //         setValor(dadoAntigo.valor)
+    //         setEmpresa(dadoAntigo.empresa)
+    //         setNomeBeneficio(dadoAntigo.nome)
+    //         setDesconto(dadoAntigo.desconto)
+    //         setTempoMinimo(dadoAntigo.tempo_minimo)
+    //         setExxtensivelDependente(dadoAntigo.extensivo_dependentes)
+    //         setDescricao(dadoAntigo.descricao)
+    //         setTipoCalculo(dadoAntigo.tipo_calculo)
+    //         setTipoDesconto(dadoAntigo.tipo_desconto)
+    //     }
 
-    }, [dadoAntigo, alteravel])
-
-
-    const salvarDados = () => {
-        let send = {
-            valor: valor,
-            empresa: empresa,
-            desconto: desconto,
-            tempo_minimo: tempo_minimo,
-            extensivo_dependentes: extensivo_dependentes
-        }
-        aoClicar(send)
-    }
+    // }, [dadoAntigo, alteravel])
 
     const fecharModal = () => {
         setAlteravel('')
@@ -197,7 +191,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, dadoA
                     <form method="dialog">
                         <div className={styles.containerBottom}>
                             <Botao aoClicar={fecharModal} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                            <Botao aoClicar={salvarDados} estilo="vermilion" size="medium" filled>Salvar</Botao>
+                            <Botao aoClicar={() => aoSalvar(descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto)} estilo="vermilion" size="medium" filled>Salvar</Botao>
                         </div>
                     </form>
                 </DialogEstilizado>

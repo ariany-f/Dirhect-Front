@@ -4,15 +4,18 @@ import { Link, Outlet, useLocation, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import Frame from '@components/Frame'
 import http from "@http"
+import Botao from "@components/Botao"
 import Container from "@components/Container"
 import BotaoVoltar from "@components/BotaoVoltar"
 import Loading from '@components/Loading'
 import BotaoGrupo from "@components/BotaoGrupo"
+import { GrAddCircle } from 'react-icons/gr'
 import { Toast } from 'primereact/toast'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import DataTableOperadorasDetalhes from '@components/DataTableOperadorasDetalhes'
+import ModalOperadoraBeneficios from '../../components/ModalOperadoraBeneficio'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -33,6 +36,7 @@ function DetalhesOperadoras() {
     const [operadora, setOperadora] = useState(false)
     const toast = useRef(null)
     const [loading, setLoading] = useState(false)
+    const [modalOpened, setModalOpened] = useState(false)
    
     useEffect(() => {
         if(!operadora) {
@@ -42,22 +46,27 @@ function DetalhesOperadoras() {
             })
             .catch(erro => console.log(erro))
         }
-    }, [operadora])
+    }, [operadora, modalOpened])
 
+    const vincularBeneficio = (id_beneficio) => {
+       
+        const data = {};
+        data.operadora = parseInt(id);
+        data.beneficio = parseInt(id_beneficio);
 
-    function representativSituacaoTemplate() {
-        let status = operadora?.status;
-        
-        switch(operadora?.status)
-        {
-            case 'Aprovado':
-                status = <Tag severity="success" value="Aprovado"></Tag>;
-                break;
-            case 'Aguardando':
-                status = <Tag severity="warning" value="Aguardando"></Tag>;
-                break;
-        }
-        return status
+        http.post('beneficio_operadora/', data)
+        .then(response => {
+            if(response.id)
+            {
+                toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Benefício vinculado com sucesso!', life: 3000});
+            }
+        })
+        .catch(erro => {
+            toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro ao vincular benefício!', life: 3000});
+        })
+        .finally(function() {
+            setModalOpened(false)
+        })
     }
     
     return (
@@ -74,11 +83,13 @@ function DetalhesOperadoras() {
                         <FrameVertical gap="10px">
                             <h3>{operadora.nome}</h3>
                         </FrameVertical>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício</Botao>
                     </BotaoGrupo>
                     </>
                     : <></>
                 }
                 <DataTableOperadorasDetalhes beneficios={operadora?.beneficios_vinculados} />
+                <ModalOperadoraBeneficios aoSalvar={vincularBeneficio} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Container>
         </Frame>
         </>

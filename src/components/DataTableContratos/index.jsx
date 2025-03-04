@@ -1,7 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
@@ -41,11 +40,11 @@ function DataTableContratos({ contratos }) {
     const representativeFornecedorTemplate = (rowData) => {
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData.nome_fornecedor}
+                {rowData?.dados_operadora?.nome}
             </Texto>
-            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+            {/* <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 Benefícios:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.beneficios.length}</p>
-            </div>
+            </div> */}
         </div>
     }
 
@@ -58,8 +57,8 @@ function DataTableContratos({ contratos }) {
                 </span>
             </div>
             <DataTable value={contratos} filters={filters} globalFilterFields={['nome_fornecedor']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeFornecedorTemplate} field="nome_fornecedor" header="Fornecedor" style={{ width: '35%' }}></Column>
-                <Column field="description" header="Descritivo" style={{ width: '35%' }}></Column>
+                <Column body={representativeFornecedorTemplate} field="operadora" header="Operadora" style={{ width: '35%' }}></Column>
+                <Column field="observacao" header="Observação" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )

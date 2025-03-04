@@ -124,47 +124,34 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
+function ModalBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
 
     const [classError, setClassError] = useState([])
-    const [observacao, setObservacao] = useState('');
-    const [operadoras, setOperadoras] = useState([]);
-    const [dropdownOperadoras, setDropdownOperadoras] = useState([]);
-    const [operadora, setOperadora] = useState('');
-    const [data_inicio, setDataInicio] = useState('');
-    const [data_fim, setDataFim] = useState('');
+    const [nome, setNome] = useState('');
+    const [tipos, setTipos] = useState([
+       {code: 'C', nome: 'Cultura'},
+       {code: 'E', nome: 'Educação'},
+       {code: 'H', nome: 'Home & Office'},
+       {code: 'M', nome: 'Mobilidade'},
+       {code: 'P', nome: 'P(rograma) de A(limentação) do T(rabalhador)'},
+       {code: 'S', nome: 'Saúde e Bem Estar'}
+    ]);
+    const [dropdownTipos, setDropdownTipos] = useState([]);
+    const [tipo, setTipo] = useState('');
+    const [descricao, setDescricao] = useState('');
 
     const navegar = useNavigate()
 
     useEffect(() => {
-       
-        if(opened){
+        setDropdownTipos((estadoAnterior) => {
+            const novosTipos = tipos.map((item) => ({
+                name: item.nome,
+                code: item.code
+            }));
+            return [...estadoAnterior, ...novosTipos];
+        });
 
-            if(operadoras.length == 0)
-            {
-                http.get('/operadora/?format=json')
-                .then(response => {
-                    setOperadoras(response)
-                })
-            }
-            else
-            {
-                if(dropdownOperadoras.length == 0)
-                {
-                    setDropdownOperadoras((estadoAnterior) => {
-                        const novasOperadoras = operadoras.map((item) => ({
-                            name: item.nome,
-                            code: item.id
-                        }));
-                        return [...estadoAnterior, ...novasOperadoras];
-                    });
-                }
-            }
-        }
-
-
-    }, [opened, operadoras])
-    
+    }, [])
 
     return(
         <>
@@ -179,50 +166,31 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                         <RiCloseFill size={20} className="fechar" />  
                                     </button>
                                 </form>
-                                <h6>Novo Contrato</h6>
+                                <h6>Novo Tipo de Benefício</h6>
                             </Titulo>
                         </Frame>
                         
                         <Frame padding="12px 0px">
                             <Col12>
                                 <Col12>
-                                    <Col6>
-                                        <DropdownItens camposVazios={classError} valor={operadora} setValor={setOperadora} options={dropdownOperadoras} label="Operadora" name="operadora" placeholder="Operadora"/> 
-                                    </Col6>
                                     <Col6Centered>
-                                        <CampoTexto
-                                            camposVazios={classError}
-                                            name="observacao"
-                                            valor={observacao}
-                                            setValor={setObservacao}
-                                            type="text"
-                                            label="Observação"
-                                            placeholder="Digite o observacao"
-                                        />
+                                       <CampoTexto
+                                       camposVazios={classError}
+                                       name="nome"
+                                       valor={nome}
+                                       setValor={setNome}
+                                       type="text"
+                                       label="Nome"
+                                       placeholder="Digite o nome"
+                                       />
                                     </Col6Centered>
+                                    <Col6>
+                                        <DropdownItens camposVazios={classError} valor={tipo} setValor={setTipo} options={dropdownTipos} label="Tipo" name="tipo" placeholder="Tipo"/> 
+                                    </Col6>
                                 </Col12>
                                 <Col12>
                                     <Col6>
-                                        <CampoTexto
-                                        camposVazios={classError}
-                                        name="data_inicio"
-                                        valor={data_inicio}
-                                        setValor={setDataInicio}
-                                        type="date"
-                                        label="Data Inicio"
-                                        placeholder="Digite a Data Inicio"
-                                        />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto
-                                        camposVazios={classError}
-                                        name="data_fim"
-                                        valor={data_fim}
-                                        setValor={setDataFim}
-                                        type="date"
-                                        label="Data Fim"
-                                        placeholder="Digite a Data Fim"
-                                        />
+                                        <CampoTexto camposVazios={classError} name="descricao" valor={descricao} setValor={setDescricao} type="text" label="Descrição" placeholder="Digite a descrição" />
                                     </Col6>
                                 </Col12>
                             </Col12>
@@ -230,7 +198,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(operadora.code, observacao, data_inicio, data_fim)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={() => aoSalvar(nome, tipo.code, descricao)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>
@@ -241,4 +209,4 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
     )
 }
 
-export default ModalContratos
+export default ModalBeneficios

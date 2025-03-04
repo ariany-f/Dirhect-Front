@@ -56,7 +56,7 @@ const Col4Centered = styled.div`
 
 const DialogEstilizado = styled.dialog`
     display: flex;
-    width: 60vw;
+    width: 40vw;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -124,13 +124,13 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
+function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
 
     const [classError, setClassError] = useState([])
     const [observacao, setObservacao] = useState('');
-    const [operadoras, setOperadoras] = useState([]);
-    const [dropdownOperadoras, setDropdownOperadoras] = useState([]);
-    const [operadora, setOperadora] = useState('');
+    const [beneficios, setBeneficios] = useState([]);
+    const [dropdownBeneficios, setDropdownBeneficios] = useState([]);
+    const [beneficio, setBeneficio] = useState('');
     const [data_inicio, setDataInicio] = useState('');
     const [data_fim, setDataFim] = useState('');
 
@@ -140,30 +140,30 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
        
         if(opened){
 
-            if(operadoras.length == 0)
+            if(beneficios.length == 0)
             {
-                http.get('/operadora/?format=json')
+                http.get('/beneficio/?format=json')
                 .then(response => {
-                    setOperadoras(response)
+                    setBeneficios(response)
                 })
             }
             else
             {
-                if(dropdownOperadoras.length == 0)
+                if(dropdownBeneficios.length == 0 && beneficios.length > 0)
                 {
-                    setDropdownOperadoras((estadoAnterior) => {
-                        const novasOperadoras = operadoras.map((item) => ({
-                            name: item.nome,
+                    setDropdownBeneficios((estadoAnterior) => {
+                        const novosBeneficios = beneficios.map((item) => ({
+                            name: item.descricao,
                             code: item.id
                         }));
-                        return [...estadoAnterior, ...novasOperadoras];
+                        return [...estadoAnterior, ...novosBeneficios];
                     });
                 }
             }
         }
 
 
-    }, [opened, operadoras])
+    }, [opened, beneficios])
     
 
     return(
@@ -179,58 +179,17 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                         <RiCloseFill size={20} className="fechar" />  
                                     </button>
                                 </form>
-                                <h6>Novo Contrato</h6>
+                                <h6>Adicionar Benefício à Operadora</h6>
                             </Titulo>
                         </Frame>
                         
-                        <Frame padding="12px 0px">
-                            <Col12>
-                                <Col12>
-                                    <Col6>
-                                        <DropdownItens camposVazios={classError} valor={operadora} setValor={setOperadora} options={dropdownOperadoras} label="Operadora" name="operadora" placeholder="Operadora"/> 
-                                    </Col6>
-                                    <Col6Centered>
-                                        <CampoTexto
-                                            camposVazios={classError}
-                                            name="observacao"
-                                            valor={observacao}
-                                            setValor={setObservacao}
-                                            type="text"
-                                            label="Observação"
-                                            placeholder="Digite o observacao"
-                                        />
-                                    </Col6Centered>
-                                </Col12>
-                                <Col12>
-                                    <Col6>
-                                        <CampoTexto
-                                        camposVazios={classError}
-                                        name="data_inicio"
-                                        valor={data_inicio}
-                                        setValor={setDataInicio}
-                                        type="date"
-                                        label="Data Inicio"
-                                        placeholder="Digite a Data Inicio"
-                                        />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto
-                                        camposVazios={classError}
-                                        name="data_fim"
-                                        valor={data_fim}
-                                        setValor={setDataFim}
-                                        type="date"
-                                        label="Data Fim"
-                                        placeholder="Digite a Data Fim"
-                                        />
-                                    </Col6>
-                                </Col12>
-                            </Col12>
+                        <Frame padding="24px 0px">
+                            <DropdownItens camposVazios={classError} valor={beneficio} setValor={setBeneficio} options={dropdownBeneficios} label="Benefício" name="beneficio" placeholder="Benefício"/> 
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(operadora.code, observacao, data_inicio, data_fim)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={() => aoSalvar(beneficio.code)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>
@@ -241,4 +200,4 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
     )
 }
 
-export default ModalContratos
+export default ModalOperadoraBeneficios
