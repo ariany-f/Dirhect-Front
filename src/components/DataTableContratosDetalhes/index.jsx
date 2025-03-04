@@ -249,7 +249,7 @@ function DataTableContratosDetalhes({ beneficios }) {
 
     const alterarRegras = (id, descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto) => {
         
-        if(descricao == '' || tipo_calculo == '' || tipo_desconto == '' || extensivo_dependentes == '' || valor == '' || empresa == '' || desconto == '')
+        if(descricao == '' || valor == '' || empresa == '' || desconto == '')
         {
             toast.current.show({severity:'error', summary: 'Erro', detail: 'Preencha todos os campos!', life: 3000});
         }
@@ -273,11 +273,11 @@ function DataTableContratosDetalhes({ beneficios }) {
                 .then(response => {
                     if(response.id)
                     {
-                        toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Sucesso!', life: 3000});
+                        toast.current.show({severity:'success', summary: 'Atualizado!', detail: 'Sucesso!', life: 3000});
                     }
                 })
                 .catch(erro => {
-                    toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro!', life: 3000});
+                    toast.current.show({severity:'error', summary: 'Não foi possível atualizar', detail: 'Erro!', life: 3000});
                 })
                 .finally(function() {
                     setModalOpened(false)
@@ -288,11 +288,11 @@ function DataTableContratosDetalhes({ beneficios }) {
                 .then(response => {
                     if(response.id)
                     {
-                        toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Sucesso!', life: 3000});
+                        toast.current.show({severity:'success', summary: 'Adicionado com Sucesso', detail: 'Sucesso!', life: 3000});
                     }
                 })
                 .catch(erro => {
-                    toast.current.show({severity:'error', summary: 'Erro', detail: 'Erro!', life: 3000});
+                    toast.current.show({severity:'error', summary: 'Não foi possível adicionar', detail: 'Erro!', life: 3000});
                 })
                 .finally(function() {
                     setModalOpened(false)
