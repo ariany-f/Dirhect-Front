@@ -362,9 +362,9 @@ function BarraLateral() {
                     {
                         "id": 9,
                         "url": "/beneficio",
-                        "pageTitulo": "Tipos de Benefícios",
+                        "pageTitulo": "Benefícios",
                         "icone": <RiHandCoinFill size={20} className="icon" />,
-                        "itemTitulo": "Tipos de Benefícios"
+                        "itemTitulo": "Benefícios"
                     },
                     {
                         "id": 10,
