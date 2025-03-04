@@ -124,7 +124,7 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
+function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, operadora = [] }) {
 
     const [classError, setClassError] = useState([])
     const [observacao, setObservacao] = useState('');
@@ -137,33 +137,41 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
     const navegar = useNavigate()
 
     useEffect(() => {
-       
-        if(opened){
-
-            if(beneficios.length == 0)
-            {
-                http.get('/beneficio/?format=json')
-                .then(response => {
-                    setBeneficios(response)
-                })
-            }
-            else
-            {
-                if(dropdownBeneficios.length == 0 && beneficios.length > 0)
-                {
-                    setDropdownBeneficios((estadoAnterior) => {
-                        const novosBeneficios = beneficios.map((item) => ({
-                            name: item.descricao,
-                            code: item.id
-                        }));
-                        return [...estadoAnterior, ...novosBeneficios];
-                    });
-                }
+        if (opened) {
+            setBeneficios([]); 
+            setDropdownBeneficios([]);
+    
+            if (operadora?.beneficios_vinculados?.length > 0) {
+                const novosBeneficios = operadora.beneficios_vinculados.map((item) => ({
+                    id: item.id,
+                    descricao: item.beneficio.descricao,
+                    tipo: item.tipo
+                }));
+    
+                setBeneficios(novosBeneficios);
+    
+                const dropdownItens = novosBeneficios.map((item) => ({
+                    name: item.descricao,
+                    code: item.id
+                }));
+    
+                setDropdownBeneficios(dropdownItens);
             }
         }
-
-
-    }, [opened, beneficios])
+    }, [opened, operadora]);
+    
+    
+    useEffect(() => {
+        if (beneficios.length > 0 && dropdownBeneficios.length === 0) {
+            const novosDropdownItens = beneficios.map(item => ({
+                name: item.descricao,
+                code: item.id
+            }));
+    
+            setDropdownBeneficios(novosDropdownItens);
+        }
+    }, [beneficios]);
+    
     
 
     return(

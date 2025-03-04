@@ -122,7 +122,7 @@ function DetalhesContratos() {
                     : <></>
                 }
                 <DataTableContratosDetalhes beneficios={contrato?.beneficios} />
-                <ModalContratoBeneficios aoSalvar={vincularBeneficio} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+                <ModalContratoBeneficios operadora={contrato?.dados_operadora} aoSalvar={vincularBeneficio} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Container>
         </Frame>
         </>
