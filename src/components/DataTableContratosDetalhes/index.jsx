@@ -310,7 +310,7 @@ function DataTableContratosDetalhes({ beneficios }) {
                 : null
                 }
             </Col12>
-            <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} dadoAntigo={sendData} />
+            <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} nomeBeneficio={selectedBeneficio?.dados_beneficio?.descricao} dadoAntigo={sendData} />
         </>
     )
 }

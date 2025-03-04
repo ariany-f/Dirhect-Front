@@ -79,11 +79,10 @@ const Col6 = styled.div`
     flex: 1 1 50%;
 `
 
-function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo }) {
+function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo, nomeBeneficio = '' }) {
 
     const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
-    const [nomeBeneficio, setNomeBeneficio] = useState(null)
     const [valor, setValor] = useState('')
     const [tempo_minimo, setTempoMinimo] = useState('')
     const [extensivo_dependentes, setExxtensivelDependente] = useState(false)
@@ -100,7 +99,6 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
         {
             setValor(dadoAntigo.valor)
             setEmpresa(dadoAntigo.valor_empresa)
-            setNomeBeneficio(dadoAntigo.nome)
             setDesconto(dadoAntigo.valor_desconto)
             setTempoMinimo(dadoAntigo.tempo_minimo)
             setExxtensivelDependente(dadoAntigo.extensivel_depentende)
@@ -137,7 +135,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
                             </form>
-                            <h6>Alterar Dados - {nomeBeneficio}</h6>
+                            <h6>Alterar Dados - {`${nomeBeneficio}`}</h6>{descricao ? <small>{descricao}</small> : ''}
                         </Titulo>
                     </Frame>
                     <Frame padding="24px 0px">
