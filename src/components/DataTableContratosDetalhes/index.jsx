@@ -239,8 +239,9 @@ function DataTableContratosDetalhes({ beneficios }) {
         const k = rowData?.dados_beneficio?.id ?? rowData?.id
         
         const icone = icones.filter(item => item.name == rowData?.dados_beneficio?.descricao);
+        const isActive = selectedBeneficio == rowData;
         return <div key={k}>
-                <BadgeGeral weight={500} nomeBeneficio={
+                <BadgeGeral severity={isActive ? 'info' : ''} weight={500} nomeBeneficio={
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         {icone.length > 0 ? icone[0].icone : <FaQuestion size={20} />}
                         <div>
