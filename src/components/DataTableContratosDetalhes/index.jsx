@@ -5,6 +5,9 @@ import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalService
 import './DataTable.css'
 import Titulo from '@components/Titulo';
 import BadgeGeral from '@components/BadgeGeral';
+import BotaoGrupo from '@components/BotaoGrupo';
+import styles from '@pages/Contratos/Contratos.module.css'
+import Botao from '@components/Botao';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import http from '@http';
@@ -20,6 +23,7 @@ import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
 import { CiMoneyBill } from 'react-icons/ci';
 import styled from 'styled-components';
 import { Toast } from 'primereact/toast';
+import { GrAddCircle } from 'react-icons/gr';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -329,11 +333,12 @@ function DataTableContratosDetalhes({ beneficios }) {
                     </DataTable>
                 </Col5>
 
-                {selectedBeneficio && selectedItems && selectedItems.length > 0 ? 
+                {selectedBeneficio && selectedItems ? 
                     <Col7 expanded={selectedBeneficio}>
-                        <Titulo>
+                        <BotaoGrupo align="space-between">
                             <h5>{selectedBeneficio.dados_beneficio.descricao}</h5>
-                        </Titulo>
+                            <Botao aoClicar={() => {setSendData({});setSelectedItemBeneficio(null);setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Valores</Botao>
+                        </BotaoGrupo>
                         <DataTable  
                             selection={selectedItemBeneficio}
                             selectionMode="single"

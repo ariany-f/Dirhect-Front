@@ -141,7 +141,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
                             </form>
-                            <h6>Alterar Dados - {`${nomeBeneficio}`}</h6>
+                            <h6>{id ? 'Alterar' : 'Adicionar'} Configuração - {`${nomeBeneficio}`}</h6>
                         </Titulo>
                     </Frame>
                     <Frame padding="24px 0px">
