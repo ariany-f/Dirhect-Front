@@ -83,7 +83,7 @@ function DataTableSindicatos({ sindicatos, showSearch = true, pagination = true,
         data.descricao = descricao;
         data.cnpj = removerMascaraCNPJ(cnpj);
 
-        http.put(`sindicato/${id}`, data)
+        http.put(`sindicato/${id}/`, data)
             .then(response => {
                 if(response.id)
                 {

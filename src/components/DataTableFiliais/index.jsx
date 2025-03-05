@@ -82,7 +82,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
         data.id = id;
         data.cnpj = removerMascaraCNPJ(cnpj);
 
-        http.put(`filial/${id}`, data)
+        http.put(`filial/${id}/`, data)
             .then(response => {
                 if(response.id)
                 {
