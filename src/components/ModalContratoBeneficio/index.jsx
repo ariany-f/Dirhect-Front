@@ -143,7 +143,7 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
     
             if (operadora?.beneficios_vinculados?.length > 0) {
                 const novosBeneficios = operadora.beneficios_vinculados.map((item) => ({
-                    id: item.id,
+                    id: item.beneficio.id,
                     descricao: item.beneficio.descricao,
                     tipo: item.tipo
                 }));
