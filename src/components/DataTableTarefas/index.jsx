@@ -1,7 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
@@ -77,7 +76,21 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 color={severity} 
             />
         );
-    };    
+    };
+
+    const representativeRecorrenciaTemplate = (rowData) => {
+        if(rowData.recorrencia)
+        {
+            return rowData.tipo_recorrencia;
+        }
+        else {
+            return 'Automático';
+        }
+    }
+
+    const representativeDataTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.data).toLocaleDateString("pt-BR")}</p>
+    }
 
     const representativeTipoTemplate = (rowData) => {
         return <div key={rowData.id}>
@@ -99,12 +112,14 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
             {!colaborador &&
             <div className="flex justify-content-end">
                 <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+                    <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>}
             <DataTable value={tarefas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados tarefas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '30%' }}></Column>
-                <Column body={representativeConcluidoTemplate} field="feito" header="Concluído" style={{ width: '10%' }}></Column>
+                <Column body={representativeRecorrenciaTemplate} field="tipo_recorrencia" header="Recorrência" style={{width: '15%'}}></Column>
+                <Column body={representativeDataTemplate} field="data" header="Data de Entrega" style={{width: '15%'}}></Column>
+                <Column body={representativeConcluidoTemplate} field="feito" header="Concluídos" style={{ width: '10%' }}></Column>
                 <Column body={representativeProgressTemplate} field="feito" header="Progresso" style={{ width: '45%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '25%' }}></Column>
             </DataTable>

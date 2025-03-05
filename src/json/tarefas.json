@@ -3,9 +3,9 @@
         "id": 1, 
         "total_tarefas": 6,
         "tipo": "Adiantamento", 
-        "recorrencia": false,
-        "tipo_recorrencia": "mes",
-        "data": "31/01/2025", 
+        "recorrencia": true,
+        "tipo_recorrencia": "Mensal",
+        "data": "2025-01-31", 
         "feito": 0, 
         "status": "Aguardando",
         "checklist": [
@@ -51,7 +51,9 @@
         "id": 2, 
         "total_tarefas": 3,
         "tipo": "Encargos", 
-        "data": "31/01/2025", 
+        "recorrencia": false,
+        "tipo_recorrencia": null,
+        "data": "2025-01-31", 
         "feito": 2, 
         "status": "Em andamento",
         "checklist": [
@@ -79,7 +81,9 @@
         "id": 3, 
         "total_tarefas": 6,
         "tipo": "Folha Mensal", 
-        "data": "28/02/2025", 
+        "recorrencia": true,
+        "tipo_recorrencia": "Mensal",
+        "data": "2025-02-28", 
         "feito": 6, 
         "status": "Concluída",
         "checklist": [
@@ -118,6 +122,114 @@
                 "prazo": 15, 
                 "check": true, 
                 "atribuido": 1250 
+            }
+        ]
+    },
+    { 
+        "id": 4, 
+        "total_tarefas": 3,
+        "tipo": "Enviar AFD da Filial 1", 
+        "recorrencia": true,
+        "tipo_recorrencia": "Semanal",
+        "data": "2025-01-31", 
+        "feito": 2, 
+        "status": "Em andamento",
+        "checklist": [
+            { 
+                "descricao": "INSS", 
+                "prazo": 5, 
+                "check": true, 
+                "atribuido": 4800
+            },
+            { 
+                "descricao": "IRRF", 
+                "prazo": 7, 
+                "check": true, 
+                "atribuido": 5700 
+            },
+            { 
+                "descricao": "FGTS", 
+                "prazo": 3, 
+                "check": false, 
+                "atribuido": 5700 
+            }
+        ]
+    },
+    { 
+        "id": 5, 
+        "total_tarefas": 4,
+        "tipo": "Calcular Férias - João da Silva", 
+        "recorrencia": false,
+        "tipo_recorrencia": null,
+        "data": "2025-01-31", 
+        "feito": 2, 
+        "status": "Em andamento",
+        "checklist": [
+            { 
+                "descricao": "INSS", 
+                "prazo": 7, 
+                "check": true, 
+                "atribuido": 4800
+            },
+            { 
+                "descricao": "FGTS", 
+                "prazo": 7, 
+                "check": false, 
+                "atribuido": 5700 
+            },
+            { 
+                "descricao": "IRRF", 
+                "prazo": 3, 
+                "check": true, 
+                "atribuido": 5700 
+            },
+            { 
+                "descricao": "FGTS", 
+                "prazo": 5, 
+                "check": false, 
+                "atribuido": 5700 
+            }
+        ]
+    },
+    { 
+        "id": 6, 
+        "total_tarefas": 5,
+        "tipo": "Calcular Demissão - José Antunes", 
+        "recorrencia": false,
+        "tipo_recorrencia": null,
+        "data": "2025-01-31", 
+        "feito": 0, 
+        "status": "Aguardando",
+        "checklist": [
+            { 
+                "descricao": "INSS", 
+                "prazo": 7, 
+                "check": false, 
+                "atribuido": 4800
+            },
+            { 
+                "descricao": "IRRF", 
+                "prazo": 7, 
+                "check": false, 
+                "atribuido": 5700 
+            },
+            { 
+                "descricao": "FGTS", 
+                "prazo": 3, 
+                "check": false, 
+                "atribuido": 5700 
+            },
+            { 
+                "descricao": "Governo", 
+                "prazo": 6, 
+                "check": false, 
+                "atribuido": 5700 
+            },
+            { 
+                "descricao": "E-mail", 
+                "prazo": 1, 
+                "check": false, 
+                "atribuido": 5700 
             }
         ]
     }
