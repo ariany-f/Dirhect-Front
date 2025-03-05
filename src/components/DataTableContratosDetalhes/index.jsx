@@ -312,6 +312,12 @@ function DataTableContratosDetalhes({ beneficios }) {
         setSelectedItems(e.value.itens || []); // Pega os itens do benefício selecionado
     };
 
+    useEffect(() => {
+        if (beneficios && beneficios.length > 0) {
+            setSelectedBeneficio(beneficios[0]);
+        }
+    }, [beneficios]);
+
     return (
         <>
             <Toast ref={toast} />

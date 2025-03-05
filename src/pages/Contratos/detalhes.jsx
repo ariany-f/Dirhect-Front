@@ -47,8 +47,8 @@ function DetalhesContratos() {
         {
             http.get(`contrato/${id}/?format=json`)
             .then(response => {
-                    setContrato(response)
-                })
+                setContrato(response)
+            })
             .catch(erro => {
                     toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar dados do contrato', life: 3000 });
             })
