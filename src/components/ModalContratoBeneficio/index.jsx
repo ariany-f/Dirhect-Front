@@ -172,7 +172,16 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
         }
     }, [beneficios]);
     
-    
+    const validarESalvar = () => {
+        let errors = [];
+        if (!beneficio || !beneficio.code) errors.push('beneficio');
+        
+        if (errors.length > 0) {
+            setClassError(errors);
+        } else {
+            aoSalvar(beneficio.code);
+        }
+    }
 
     return(
         <>
@@ -197,7 +206,7 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(beneficio.code)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>

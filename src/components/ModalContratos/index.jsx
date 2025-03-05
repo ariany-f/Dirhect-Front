@@ -165,6 +165,16 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
 
     }, [opened, operadoras])
     
+    const validarESalvar = () => {
+        let errors = [];
+        if (!operadora || !operadora.code) errors.push('operadora');
+        
+        if (errors.length > 0) {
+            setClassError(errors);
+        } else {
+            aoSalvar(operadora.code, observacao, data_inicio, data_fim);
+        }
+    }
 
     return(
         <>
@@ -230,7 +240,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(operadora.code, observacao, data_inicio, data_fim)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>

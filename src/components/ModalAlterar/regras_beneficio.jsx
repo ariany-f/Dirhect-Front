@@ -161,6 +161,18 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
         });
     }, [])
 
+    const validarESalvar = () => {
+        let errors = [];
+        if (!tipo_calculo || !tipo_calculo.code) errors.push('tipo_calculo');
+        if (!tipo_desconto || !tipo_desconto.code) errors.push('tipo_desconto');
+        
+        if (errors.length > 0) {
+            setClassError(errors);
+        } else {
+            aoSalvar(id, descricao, tipo_calculo.code, tipo_desconto.code, extensivo_dependentes, valor, empresa, desconto);
+        }
+    }
+
     return(
         <>
             {opened &&
@@ -236,7 +248,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                     <form method="dialog">
                         <div className={styles.containerBottom}>
                             <Botao aoClicar={fecharModal} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                            <Botao aoClicar={() => aoSalvar(id, descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto)} estilo="vermilion" size="medium" filled>Salvar</Botao>
+                            <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Salvar</Botao>
                         </div>
                     </form>
                 </DialogEstilizado>

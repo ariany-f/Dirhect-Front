@@ -152,6 +152,17 @@ function ModalBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalv
         });
 
     }, [])
+    
+    const validarESalvar = () => {
+        let errors = [];
+        if (!tipo || !tipo.code) errors.push('tipo');
+        
+        if (errors.length > 0) {
+            setClassError(errors);
+        } else {
+            aoSalvar(tipo.code, descricao);
+        }
+    }
 
     return(
         <>
@@ -185,7 +196,7 @@ function ModalBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalv
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(tipo.code, descricao)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>
