@@ -9,6 +9,8 @@ import Container from "@components/Container"
 import BotaoVoltar from "@components/BotaoVoltar"
 import Loading from '@components/Loading'
 import BotaoGrupo from "@components/BotaoGrupo"
+import CustomImage from "@components/CustomImage"
+import ContainerHorizontal from "@components/ContainerHorizontal"
 import { GrAddCircle } from 'react-icons/gr'
 import { Toast } from 'primereact/toast'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
@@ -81,7 +83,10 @@ function DetalhesOperadoras() {
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{operadora.nome}</h3>
+                            <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={operadora.id}>
+                                <CustomImage src={operadora?.imagem} alt={operadora?.nome} width={45} height={45} title={operadora?.nome} />
+                                <b>{operadora?.nome}</b>
+                            </ContainerHorizontal>
                         </FrameVertical>
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício</Botao>
                     </BotaoGrupo>

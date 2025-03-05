@@ -3,6 +3,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import './DataTable.css'
 import ContainerHorizontal from '@components/ContainerHorizontal';
+import CustomImage from '@components/CustomImage';
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -35,11 +36,7 @@ function DataTableOperadoras({ operadoras, search = true }) {
 
     const representativeNomeTemplate = (rowData) => {
         return <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={rowData.id}>
-            {rowData?.imagem ? 
-                <Image src={rowData?.imagem} alt={rowData?.nome} width="45" height="45" />
-                :
-                <Skeleton variant="rectangular" width={45} height={45} />
-            }
+                <CustomImage src={rowData?.imagem} alt={rowData?.nome} width={45} height={45} title={rowData?.nome} />
             <b>{rowData?.nome}</b>
         </ContainerHorizontal>
     }
