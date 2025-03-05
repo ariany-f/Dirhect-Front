@@ -2,6 +2,7 @@ import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import CampoTexto from "@components/CampoTexto"
 import CheckboxContainer from '@components/CheckboxContainer'
+import DropdownItens from '@components/DropdownItens'
 import Titulo from "@components/Titulo"
 import { RiCloseFill } from 'react-icons/ri'
 import http from '@http'
@@ -28,7 +29,7 @@ const DialogEstilizado = styled.dialog`
     border-radius: 16px;
     border: none;
     margin: 0 auto;
-    top: 22vh;
+    top: 10vh;
     padding: 24px;
     & button.close {
         & .fechar {
@@ -87,11 +88,25 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     const [valor, setValor] = useState('')
     const [tempo_minimo, setTempoMinimo] = useState('')
     const [extensivo_dependentes, setExxtensivelDependente] = useState(false)
+    const [dropdownTiposCalculo, setDropdownTiposCalculo] = useState([])
+    const [dropdownTiposDesconto, setDropdownTiposDesconto] = useState([])
     const [empresa, setEmpresa] = useState('')
     const [desconto, setDesconto] = useState('')
     const [descricao, setDescricao] = useState('')
     const [tipo_calculo, setTipoCalculo] = useState('')
     const [tipo_desconto, setTipoDesconto] = useState('')
+
+    const [tiposCalculo, setTiposCalculo] = useState([
+        {code: 'M', nome: 'Valor Mensal'},
+        {code: 'D', nome: 'Valor Diário'},
+        {code: 'F', nome: 'Valor Fixo'}
+     ]);
+
+     const [tiposDesconto, setTiposDesconto] = useState([
+        {code: 'D', nome: 'Valor Diário'},
+        {code: 'P', nome: '% sobre o valor da compra'},
+        {code: 'T', nome: 'Tabela Interna'}
+     ]);
     
     useEffect(() => {
 
@@ -129,6 +144,23 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
         setExxtensivelDependente(checked) // Atualiza o estado da tarefa
     };
 
+    useEffect(() => {
+        setDropdownTiposCalculo((estadoAnterior) => {
+            const novosTiposCalculo = tiposCalculo.map((item) => ({
+                name: item.nome,
+                code: item.code
+            }));
+            return [...estadoAnterior, ...novosTiposCalculo];
+        });
+        setDropdownTiposDesconto((estadoAnterior) => {
+            const novosTiposDesconto = tiposDesconto.map((item) => ({
+                name: item.nome,
+                code: item.code
+            }));
+            return [...estadoAnterior, ...novosTiposDesconto];
+        });
+    }, [])
+
     return(
         <>
             {opened &&
@@ -146,6 +178,14 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                     </Frame>
                     <Frame padding="24px 0px">
                         <div>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens camposVazios={classError} valor={tipo_desconto} setValor={setTipoDesconto} options={dropdownTiposDesconto} label="Tipo de Desconto" name="tipo_desconto" placeholder="Tipo de Desconto"/> 
+                            </Col6>
+                            <Col6>
+                                <DropdownItens camposVazios={classError} valor={tipo_calculo} setValor={setTipoCalculo} options={dropdownTiposCalculo} label="Tipo de Cálculo" name="tipo_calculo" placeholder="Tipo de Cálculo"/> 
+                            </Col6>
+                        </Col12>
                            <Col12>
                                 <Col6>
                                     <CampoTexto 

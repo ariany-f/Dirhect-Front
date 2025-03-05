@@ -201,7 +201,6 @@ function DataTableBeneficios({ beneficios }) {
 
     const representativeDescriptionTemplate = (rowData) => {
         const icone = (icones.filter((item) => {
-            console.log(item.name)
             return item.name == rowData.descricao;
         }))
         if(icone.length > 0)
