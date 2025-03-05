@@ -253,7 +253,7 @@ function DataTableContratosDetalhes({ beneficios }) {
     }
 
     const alterarRegras = (id, descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto) => {
-        
+      
         if(descricao == '' || valor == '' || empresa == '' || desconto == '')
         {
             toast.current.show({severity:'error', summary: 'Erro', detail: 'Preencha todos os campos!', life: 3000});
@@ -274,7 +274,7 @@ function DataTableContratosDetalhes({ beneficios }) {
             }
             if(id) {
 
-                http.put(`contrato_beneficio_item/${id}`, data)
+                http.put(`contrato_beneficio_item/${id}/`, data)
                 .then(response => {
                     if(response.id)
                     {
@@ -289,7 +289,7 @@ function DataTableContratosDetalhes({ beneficios }) {
                 })
             }
             else{
-                http.post(`contrato_beneficio_item`, data)
+                http.post(`contrato_beneficio_item/`, data)
                 .then(response => {
                     if(response.id)
                     {
