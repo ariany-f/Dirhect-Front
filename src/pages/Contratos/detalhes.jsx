@@ -10,6 +10,8 @@ import { Skeleton } from 'primereact/skeleton'
 import Container from "@components/Container"
 import { FaArrowAltCircleRight, FaDownload, FaTrash } from 'react-icons/fa'
 import BotaoVoltar from "@components/BotaoVoltar"
+import ContainerHorizontal from "@components/ContainerHorizontal"
+import CustomImage from "@components/CustomImage"
 import Loading from '@components/Loading'
 import BotaoGrupo from "@components/BotaoGrupo"
 import { Toast } from 'primereact/toast'
@@ -92,7 +94,10 @@ function DetalhesContratos() {
                     <>
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
-                            <h3>{contrato.dados_operadora?.nome}</h3>
+                            <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={contrato?.dados_operadora?.id}>
+                                <CustomImage src={contrato?.dados_operadora?.imagem} alt={contrato?.dados_operadora?.nome} width={90} height={45} title={contrato?.dados_operadora?.nome} />
+                                <b>{contrato?.dados_operadora?.nome}</b>
+                            </ContainerHorizontal>
                         </FrameVertical>
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício</Botao>
                     </BotaoGrupo>
