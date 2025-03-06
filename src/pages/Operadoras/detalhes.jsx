@@ -84,7 +84,7 @@ function DetalhesOperadoras() {
                     <BotaoGrupo align="space-between">
                         <FrameVertical gap="10px">
                             <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={operadora.id}>
-                                <CustomImage src={operadora?.imagem} alt={operadora?.nome} width={45} height={45} title={operadora?.nome} />
+                                <CustomImage src={operadora?.imagem} alt={operadora?.nome} width={90} height={45} title={operadora?.nome} />
                                 <b>{operadora?.nome}</b>
                             </ContainerHorizontal>
                         </FrameVertical>
