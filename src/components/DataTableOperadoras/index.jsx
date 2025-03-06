@@ -36,10 +36,11 @@ function DataTableOperadoras({ operadoras, search = true }) {
     }
 
     const representativeNomeTemplate = (rowData) => {
-        return <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={rowData.id}>
-                <CustomImage src={rowData?.imagem} alt={rowData?.nome} width={'90px'} height={45} size={90} title={rowData?.nome} />
-            <Texto weight={600}>{rowData?.nome}</Texto>
-        </ContainerHorizontal>
+        return  <CustomImage src={rowData?.imagem} alt={rowData?.nome} width={'90px'} height={45} size={90} title={rowData?.nome} />
+    }
+
+    const representativeTemplate = (rowData) => {
+        return <Texto size={18} weight={600} title={rowData?.nome} >{rowData?.nome}</Texto>
     }
 
     return (
@@ -52,7 +53,8 @@ function DataTableOperadoras({ operadoras, search = true }) {
                 </div>
             }
             <DataTable value={operadoras} filters={filters} globalFilterFields={['nome']} emptyMessage="Não foram encontradas operadoras" selection={selectedOperadora} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={8}  tableStyle={{ minWidth: '65vw' }}>
-                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '100%' }}></Column>
+                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '15%' }}></Column>
+                <Column body={representativeTemplate} field="nome" style={{ width: '85%' }}></Column>
             </DataTable>
         </>
     )
