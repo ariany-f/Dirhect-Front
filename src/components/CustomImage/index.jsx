@@ -1,7 +1,7 @@
 import React from "react";
 import { Image } from "primereact/image";
 
-const CustomImage = ({ src, title, size = 50, borderRadius = '10px' }) => {
+const CustomImage = ({ src, title, width = 90, height=45, size = 50, borderRadius = '10px' }) => {
   // Função para pegar as iniciais do título
   const getInitials = (text) => {
     return text
@@ -13,7 +13,7 @@ const CustomImage = ({ src, title, size = 50, borderRadius = '10px' }) => {
   };
 
   return src ? (
-    <Image src={src} alt={title} width={size} height={size} />
+    <Image src={src} alt={title} width={width} height={height} />
   ) : (
     <div
       style={{
