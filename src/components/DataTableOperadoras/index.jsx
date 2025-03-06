@@ -37,7 +37,7 @@ function DataTableOperadoras({ operadoras, search = true }) {
 
     const representativeNomeTemplate = (rowData) => {
         return <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={rowData.id}>
-                <CustomImage src={rowData?.imagem} alt={rowData?.nome} width={'90px'} height={45} title={rowData?.nome} />
+                <CustomImage src={rowData?.imagem} alt={rowData?.nome} width={'90px'} height={45} size={90} title={rowData?.nome} />
             <Texto weight={600}>{rowData?.nome}</Texto>
         </ContainerHorizontal>
     }

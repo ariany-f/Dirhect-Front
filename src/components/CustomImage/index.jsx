@@ -17,8 +17,8 @@ const CustomImage = ({ src, title, width = 90, height=45, size = 50, borderRadiu
   ) : (
     <div
       style={{
-        width: size,
-        height: size,
+        width: width,
+        height: height,
         borderRadius: borderRadius,
         backgroundColor: "var(--neutro-200)",
         display: "flex",
