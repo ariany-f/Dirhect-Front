@@ -13,7 +13,7 @@ const CustomImage = ({ src, title, width = 90, height=45, size = 50, borderRadiu
   };
 
   return src ? (
-    <Image src={src} alt={title} style={{objectFit: 'fill', minWidth: '90px', maxWidth: '90px'}} height={height} />
+    <Image src={src} alt={title} style={{objectFit: 'scale-down'}} width={width} />
   ) : (
     <div
       style={{
