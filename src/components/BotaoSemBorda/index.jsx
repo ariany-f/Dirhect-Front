@@ -5,7 +5,7 @@ const Container = styled.div`
     color: ${ props => props.$color ? props.$color : 'var(--primaria)' };
     font-family: var(--secundaria);
     align-items: center;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
     gap: 8px;
     & svg {

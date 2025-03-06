@@ -73,6 +73,10 @@ function DataTableContratos({ contratos }) {
             if (dataFim.getTime() < hoje.getTime()) {
                 return <Tag severity="danger" value="Vencido"></Tag>;
             }
+            // Verificar se o vencimento é neste mês
+            if (dataFim.getFullYear() === hoje.getFullYear() && dataFim.getMonth() === hoje.getMonth()) {
+                return <Tag severity="warning" value="Vencimento Próximo"></Tag>;
+            }
         }
     
         switch (status) {
@@ -96,11 +100,11 @@ function DataTableContratos({ contratos }) {
             </div>
             <DataTable value={contratos} filters={filters} globalFilterFields={['nome_fornecedor']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '6%' }}></Column>
-                <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '24%' }}></Column>
-                <Column field="observacao" header="Observação" style={{ width: '30%' }}></Column>
+                <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '20%' }}></Column>
+                <Column field="observacao" header="Observação" style={{ width: '24%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
-                <Column body={representativSituacaoTemplate} field="status" header="Status" style={{ width: '10%' }}></Column>
+                <Column body={representativSituacaoTemplate} field="status" header="Status" style={{ width: '20%' }}></Column>
             </DataTable>
         </>
     )

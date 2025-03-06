@@ -1,6 +1,7 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import CampoTexto from "@components/CampoTexto"
+import BotaoSemBorda from "@components/BotaoSemBorda"
 import CheckboxContainer from '@components/CheckboxContainer'
 import DropdownItens from '@components/DropdownItens'
 import Titulo from "@components/Titulo"
@@ -10,6 +11,9 @@ import { useEffect, useState } from "react"
 import styled from "styled-components"
 import styles from './ModalAlterar.module.css'
 import axios from "axios"
+import { Link } from "react-router-dom"
+import { FaDownload } from "react-icons/fa"
+import { IoSettingsSharp } from "react-icons/io5"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -78,6 +82,9 @@ const Col12 = styled.div`
 const Col6 = styled.div`
     padding: 10px;
     flex: 1 1 50%;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
 `
 
 function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo, nomeBeneficio = '' }) {
@@ -200,6 +207,11 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                             </Col6>
                             <Col6>
                                 <DropdownItens camposVazios={classError} valor={tipo_calculo} setValor={setTipoCalculo} options={dropdownTiposCalculo} label="Tipo de Cálculo" name="tipo_calculo" placeholder="Tipo de Cálculo"/> 
+                                {tipo_calculo.code === 'T' &&
+                                    <BotaoSemBorda color="var(--primaria)">
+                                        <IoSettingsSharp/><Link to={'/contratos/configuracao'} className={styles.link}>Configurar Tabela Interna</Link>
+                                    </BotaoSemBorda>
+                                }
                             </Col6>
                         </Col12>
                            <Col12>
