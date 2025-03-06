@@ -59,17 +59,30 @@ function DataTableContratos({ contratos }) {
     }
 
     function representativSituacaoTemplate(rowData) {
-        
         let status = rowData?.status;
-        switch(rowData?.status)
-        {
-            case 'A':
-                status = <Tag severity="success" value="Ativo"></Tag>;
-                break;
+    
+        if (rowData?.dt_fim) {
+            // Criar a data de fim considerando apenas a parte da data (ignorar hora)
+            let partesData = rowData.dt_fim.split('-'); // Divide "YYYY-MM-DD"
+            let dataFim = new Date(partesData[0], partesData[1] - 1, partesData[2]); // Ano, Mês (0-indexado), Dia
+            
+            // Criar a data de hoje sem hora, minutos, segundos ou milissegundos
+            let hoje = new Date();
+            hoje.setHours(0, 0, 0, 0); // Zera as horas, minutos, segundos e milissegundos
+    
+            if (dataFim.getTime() < hoje.getTime()) {
+                return <Tag severity="danger" value="Vencido"></Tag>;
+            }
         }
-        return status
-    }
-
+    
+        switch (status) {
+            case 'A':
+                return <Tag severity="success" value="Ativo"></Tag>;
+            default:
+                return status; // Retorna o valor original se não houver correspondência
+        }
+    }    
+    
     const representativeNomeTemplate = (rowData) => {
         return  <CustomImage src={rowData?.dados_operadora?.imagem} alt={rowData?.dados_operadora?.nome} width={'70px'} height={35} size={90} title={rowData?.dados_operadora?.nome} />
     }
@@ -87,7 +100,7 @@ function DataTableContratos({ contratos }) {
                 <Column field="observacao" header="Observação" style={{ width: '30%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
-                <Column field="status" header="Status" body={representativSituacaoTemplate} style={{ width: '10%' }}></Column>
+                <Column body={representativSituacaoTemplate} field="status" header="Status" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     )
