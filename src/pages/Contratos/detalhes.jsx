@@ -99,7 +99,7 @@ function DetalhesContratos() {
                                 <b>{contrato?.dados_operadora?.nome}</b>
                             </ContainerHorizontal>
                         </FrameVertical>
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício</Botao>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício ao Contrato</Botao>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
                         <Texto>Observação</Texto>
