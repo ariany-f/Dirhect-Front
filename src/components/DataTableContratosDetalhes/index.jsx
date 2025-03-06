@@ -315,6 +315,7 @@ function DataTableContratosDetalhes({ beneficios }) {
     useEffect(() => {
         if (beneficios && beneficios.length > 0) {
             setSelectedBeneficio(beneficios[0]);
+            setSelectedItems(beneficios[0].itens || []); // Define os itens do primeiro benefício como selecionados
         }
     }, [beneficios]);
 
