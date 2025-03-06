@@ -49,35 +49,35 @@ function DataTableColaboradores({ colaboradores }) {
     const representativeNumeroDependentesTemplate = (rowData) => {
     
         return (
-            <b>{rowData?.dependentes.length}</b>
+            <Texto weight={600}>{rowData?.dependentes.length}</Texto>
         )
     }
     
     const representativeCPFTemplate = (rowData) => {
     
         return (
-            <b>{formataCPF(rowData?.dados_pessoa_fisica?.cpf)}</b>
+            <Texto weight={600}>{formataCPF(rowData?.dados_pessoa_fisica?.cpf)}</Texto>
         )
     }
     
     // const representativeNomeTemplate = (rowData) => {
         
     //     return (
-    //         <b>{rowData?.dados_pessoa_fisica?.nome}</b>
+    //         <Texto weight={600}>{rowData?.dados_pessoa_fisica?.nome}</Texto>
     //     )
     // }
     
     const representativeChapaTemplate = (rowData) => {
         
         return (
-            <b>{rowData?.chapa}</b>
+            <Texto weight={600}>{rowData?.chapa}</Texto>
         )
     }
     
     const representativeDepartamentoTemplate = (rowData) => {
         
         return (
-            <b>{rowData?.departamento}</b>
+            <Texto weight={600}>{rowData?.departamento}</Texto>
         )
     }
     
@@ -85,7 +85,7 @@ function DataTableColaboradores({ colaboradores }) {
         
         return ( 
             rowData?.dt_admissao ?
-            <b>{new Date(rowData?.dt_admissao).toLocaleDateString('pt-BR')}</b>
+            <Texto weight={600}>{new Date(rowData?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
             : '---'
         )
     }
@@ -122,7 +122,7 @@ function DataTableColaboradores({ colaboradores }) {
                 break;
         }
         return (
-            <b>{situacao}</b>
+            <Texto weight={600}>{situacao}</Texto>
         )
     }
 
@@ -135,17 +135,17 @@ function DataTableColaboradores({ colaboradores }) {
         {
             return [
                 { 
-                    label: <b>Detalhes</b>, 
+                    label: <Texto weight={600}>Detalhes</Texto>, 
                     command: () => verDetalhes(selectedCollaborator) 
                 },
                 { 
-                    label: <b>{'Demissão'}</b>, 
+                    label: <Texto weight={600}>{'Demissão'}</Texto>, 
                     command: () => {
                         setModalOpened(true);  // Se status for 'pending', cancela a solicitação
                     }
                 },
                 { 
-                    label: <b>{'Férias'}</b>, 
+                    label: <Texto weight={600}>{'Férias'}</Texto>, 
                     command: () => {
                         setModalFeriasOpened(true);  // Se status for 'pending', cancela a solicitação
                     }
@@ -156,7 +156,7 @@ function DataTableColaboradores({ colaboradores }) {
         {
             return [
                 { 
-                    label: <b>Detalhes</b>, 
+                    label: <Texto weight={600}>Detalhes</Texto>, 
                     command: () => verDetalhes(selectedCollaborator) 
                 }
             ];

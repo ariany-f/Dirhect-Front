@@ -5,6 +5,7 @@ import './DataTable.css'
 import ContainerHorizontal from '@components/ContainerHorizontal';
 import CustomImage from '@components/CustomImage';
 import CampoTexto from '@components/CampoTexto';
+import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Image } from 'primereact/image';
@@ -37,7 +38,7 @@ function DataTableOperadoras({ operadoras, search = true }) {
     const representativeNomeTemplate = (rowData) => {
         return <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={rowData.id}>
                 <CustomImage src={rowData?.imagem} alt={rowData?.nome} width={45} height={45} title={rowData?.nome} />
-            <b>{rowData?.nome}</b>
+            <Texto weight={600}>{rowData?.nome}</Texto>
         </ContainerHorizontal>
     }
 

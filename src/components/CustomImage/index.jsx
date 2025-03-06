@@ -24,7 +24,7 @@ const CustomImage = ({ src, title, size = 50, borderRadius = '10px' }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        color: "#000",
+        color: "rgb(87, 87, 87)",
         fontWeight: 600,
         fontSize: size / 3.5,
         textTransform: "uppercase",
