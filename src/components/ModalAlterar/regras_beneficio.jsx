@@ -97,17 +97,17 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     const [tipo_desconto, setTipoDesconto] = useState('')
 
     const [tiposCalculo, setTiposCalculo] = useState([
-        {code: 'M', nome: 'Valor Mensal'},
-        {code: 'D', nome: 'Valor Diário'},
-        {code: 'F', nome: 'Valor Fixo'},
-        {code: 'T', nome: 'Tabela Interna'}
+        {code: 'M', name: 'Valor Mensal'},
+        {code: 'D', name: 'Valor Diário'},
+        {code: 'F', name: 'Valor Fixo'},
+        {code: 'T', name: 'Tabela Interna'}
      ]);
 
      const [tiposDesconto, setTiposDesconto] = useState([
-        {code: 'D', nome: 'Valor Diário'},
-        {code: 'C', nome: '% sobre o valor da compra'},
-        {code: 'S', nome: 'Percentual do Valor do Salário'},
-        {code: 'F', nome: 'Valor Fixo'}
+        {code: 'D', name: 'Valor Diário'},
+        {code: 'C', name: '% sobre o valor da compra'},
+        {code: 'S', name: 'Percentual do Valor do Salário'},
+        {code: 'F', name: 'Valor Fixo'}
      ]);
     
     useEffect(() => {
@@ -122,8 +122,10 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
             setTempoMinimo(dadoAntigo.tempo_minimo)
             setExxtensivelDependente(dadoAntigo.extensivel_depentende)
             setDescricao(dadoAntigo.descricao)
-            setTipoCalculo(dadoAntigo.tipo_calculo)
-            setTipoDesconto(dadoAntigo.tipo_desconto)
+
+             // Encontrar o objeto correspondente para o dropdown
+             setTipoCalculo(prev => tiposCalculo.find(item => item.code === dadoAntigo.tipo_calculo) || prev);
+             setTipoDesconto(prev => tiposDesconto.find(item => item.code === dadoAntigo.tipo_desconto) || prev);
         }
 
     }, [dadoAntigo, alteravel])
@@ -149,14 +151,14 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     useEffect(() => {
         setDropdownTiposCalculo((estadoAnterior) => {
             const novosTiposCalculo = tiposCalculo.map((item) => ({
-                name: item.nome,
+                name: item.name,
                 code: item.code
             }));
             return [...estadoAnterior, ...novosTiposCalculo];
         });
         setDropdownTiposDesconto((estadoAnterior) => {
             const novosTiposDesconto = tiposDesconto.map((item) => ({
-                name: item.nome,
+                name: item.name,
                 code: item.code
             }));
             return [...estadoAnterior, ...novosTiposDesconto];
