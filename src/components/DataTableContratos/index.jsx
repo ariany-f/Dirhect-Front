@@ -3,6 +3,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
+import CustomImage from '@components/CustomImage';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -68,6 +69,10 @@ function DataTableContratos({ contratos }) {
         }
         return status
     }
+
+    const representativeNomeTemplate = (rowData) => {
+        return  <CustomImage src={rowData?.dados_operadora?.imagem} alt={rowData?.dados_operadora?.nome} width={'70px'} height={35} size={90} title={rowData?.dados_operadora?.nome} />
+    }
     
     return (
         <>
@@ -77,7 +82,8 @@ function DataTableContratos({ contratos }) {
                 </span>
             </div>
             <DataTable value={contratos} filters={filters} globalFilterFields={['nome_fornecedor']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeFornecedorTemplate} field="operadora" header="Operadora" style={{ width: '30%' }}></Column>
+                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '6%' }}></Column>
+                <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '24%' }}></Column>
                 <Column field="observacao" header="Observação" style={{ width: '30%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
