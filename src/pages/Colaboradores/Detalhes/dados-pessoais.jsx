@@ -144,8 +144,8 @@ function ColaboradorDadosPessoais() {
             <ContainerHorizontal width="50%">
                 <Frame gap="5px">
                     <Texto>Telefone/Celular</Texto>
-                    {colaborador?.phones && colaborador?.phones.length ?
-                        <Texto weight="800">{colaborador?.phones[0].phone_code + colaborador?.phones[0].phone_number}</Texto>
+                    {colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.telefone1 ?
+                        <Texto weight="800">{colaborador?.dados_pessoa_fisica?.telefone1}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                 </Frame>
@@ -157,8 +157,8 @@ function ColaboradorDadosPessoais() {
             <ContainerHorizontal width="50%">
                 <Frame gap="5px">
                     <Texto>E-mail</Texto>
-                    {colaborador?.user && colaborador?.user?.email ?
-                        <Texto weight="800">{colaborador?.user.email}</Texto>
+                    {colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.email ?
+                        <Texto weight="800">{colaborador?.dados_pessoa_fisica.email}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                 </Frame>
@@ -168,8 +168,8 @@ function ColaboradorDadosPessoais() {
                 </BotaoSemBorda>
             </ContainerHorizontal>
         </div>
-        <ModalAlterarTelefone dadoAntigo={((colaborador?.phones && colaborador?.phones.length) ? (colaborador?.phones[0].phone_code + colaborador?.phones[0].phone_number) : '')} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
-        <ModalAlterarEmail dadoAntigo={(colaborador?.user ? colaborador?.user?.email : '')} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
+        <ModalAlterarTelefone dadoAntigo={((colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.telefone1) ? (colaborador?.dados_pessoa_fisica?.telefone1) : '')} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
+        <ModalAlterarEmail dadoAntigo={(colaborador?.dados_pessoa_fisica ? colaborador?.dados_pessoa_fisica?.email : '')} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
        
         </>
     )
