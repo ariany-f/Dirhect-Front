@@ -77,7 +77,7 @@ function DataTableColaboradores({ colaboradores }) {
     const representativeDepartamentoTemplate = (rowData) => {
         
         return (
-            <Texto weight={600}>{rowData?.departamento}</Texto>
+            <Texto weight={500}>{rowData?.departamento}</Texto>
         )
     }
     
@@ -85,7 +85,16 @@ function DataTableColaboradores({ colaboradores }) {
         
         return ( 
             rowData?.dt_admissao ?
-            <Texto weight={600}>{new Date(rowData?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
+            <Texto weight={500}>{new Date(rowData?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
+            : '---'
+        )
+    }
+
+    const representativeDataNascimentoTemplate = (rowData) => {
+
+        return (
+            rowData?.dados_pessoa_fisica?.data_nascimento ?
+            <Texto weight={500}>{new Date(rowData?.dados_pessoa_fisica?.data_nascimento ).toLocaleDateString('pt-BR')}</Texto>
             : '---'
         )
     }
@@ -122,7 +131,10 @@ function DataTableColaboradores({ colaboradores }) {
                 break;
         }
         return (
-            <Texto weight={600}>{situacao}</Texto>
+            <>
+                <Texto weight={600}>{situacao}</Texto>
+                <small>{rowData?.dependentes.length} dependente(s)</small>
+            </>
         )
     }
 
@@ -195,8 +207,9 @@ function DataTableColaboradores({ colaboradores }) {
                 <Column body={representativeNomeTemplate} field="dados_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
                 <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>
+                <Column body={representativeDataNascimentoTemplate} field="dados_pessoa_fisica.data_nascimento " header="Data de Nascimento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Nº Dependentes" style={{ width: '12%' }}></Column>
+                {/* <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Nº Dependentes" style={{ width: '12%' }}></Column> */}
                 <Column header="" style={{ width: '10%' }} body={(rowData) => (
                     <button 
                         onClick={(e) => {
