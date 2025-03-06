@@ -181,7 +181,7 @@ function BarraLateral() {
                         "id": 2,
                         "url": "/marketplace",
                         "pageTitulo": "Marketplace",
-                        "icone": <MdShoppingCart size={20} stroke="white"/>,
+                        "icone": <MdShoppingCart size={20} fill="white"/>,
                         "itemTitulo": "Marketplace"
                     }
                 ];
@@ -232,7 +232,7 @@ function BarraLateral() {
                         "id": 6,
                         "url": "/marketplace",
                         "pageTitulo": "Marketplace",
-                        "icone": <MdShoppingCart size={20} stroke="white"/>,
+                        "icone": <MdShoppingCart size={20} fill="white"/>,
                         "itemTitulo": "Marketplace"
                     }
                 ];
