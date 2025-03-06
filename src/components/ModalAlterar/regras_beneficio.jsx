@@ -99,13 +99,15 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     const [tiposCalculo, setTiposCalculo] = useState([
         {code: 'M', nome: 'Valor Mensal'},
         {code: 'D', nome: 'Valor Diário'},
-        {code: 'F', nome: 'Valor Fixo'}
+        {code: 'F', nome: 'Valor Fixo'},
+        {code: 'T', nome: 'Tabela Interna'}
      ]);
 
      const [tiposDesconto, setTiposDesconto] = useState([
         {code: 'D', nome: 'Valor Diário'},
-        {code: 'P', nome: '% sobre o valor da compra'},
-        {code: 'T', nome: 'Tabela Interna'}
+        {code: 'C', nome: '% sobre o valor da compra'},
+        {code: 'S', nome: 'Percentual do Valor do Salário'},
+        {code: 'F', nome: 'Valor Fixo'}
      ]);
     
     useEffect(() => {
