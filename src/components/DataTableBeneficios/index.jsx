@@ -13,11 +13,12 @@ import BadgeStatusBeneficio from '../BadgeStatusBeneficio'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import { Tag } from 'primereact/tag'
 import { IoFastFoodSharp } from 'react-icons/io5'
-import { RiBusFill, RiComputerLine, RiGasStationFill, RiQuestionMark, RiShoppingCartFill } from 'react-icons/ri'
-import { FaCoins, FaTheaterMasks, FaTooth } from 'react-icons/fa'
+import { RiBusFill, RiComputerLine, RiEBike2Fill, RiGasStationFill, RiQuestionMark, RiShoppingCartFill } from 'react-icons/ri'
+import { FaCar, FaCoins, FaTheaterMasks, FaTooth } from 'react-icons/fa'
 import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
 import { PiForkKnifeFill } from 'react-icons/pi'
 import { BiBookReader } from 'react-icons/bi'
+import { MdDirectionsBike } from "react-icons/md";
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -169,6 +170,30 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <FaTooth size={20} />
+    },
+    {
+        "id": 16,
+        "name": "Seguro Bike",
+        "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
+        "food_meal_one_category": false,
+        "icone": <MdDirectionsBike size={20} />
+    },
+    {
+        "id": 17,
+        "name": "Seguro Moto",
+        "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
+        "food_meal_one_category": false,
+        "icone": <RiEBike2Fill size={20} />
+    },
+    {
+        "id": 18,
+        "name": "Seguro Automotivo",
+        "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
+        "food_meal_one_category": false,
+        "icone": <FaCar size={20} />
     },
 ]
 

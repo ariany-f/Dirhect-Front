@@ -2,6 +2,7 @@ import { styled } from "styled-components"
 import ItemNavegacao from "./ItemNavegacao"
 import Botao from "@components/Botao"
 import { AiFillHome } from "react-icons/ai"
+import { HiMiniShoppingBag  } from "react-icons/hi2";
 import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine, RiBlenderFill } from "react-icons/ri"
 import { BiBusSchool, BiCart, BiDrink, BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
@@ -10,13 +11,13 @@ import { Link, useLocation } from "react-router-dom"
 import logo from '/imagens/logo.png'
 import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
-import { FaBusAlt } from "react-icons/fa"
+import { FaBuilding, FaBusAlt, FaUmbrellaBeach } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa";
 import { BreadCrumb } from "primereact/breadcrumb"
 import { BsHourglassSplit } from "react-icons/bs"
 import { TbBeach, TbBusinessplan, TbTable, TbTableShare } from "react-icons/tb";
-import { MdAllInbox, MdBusiness, MdHandshake, MdShoppingCartCheckout } from "react-icons/md"
+import { MdAllInbox, MdBusiness, MdHandshake, MdShoppingCart, MdShoppingCartCheckout } from "react-icons/md"
 import { GoTasklist } from "react-icons/go";
 import { IoBusiness } from "react-icons/io5"
 import { PiHandshake } from "react-icons/pi"
@@ -135,7 +136,7 @@ function BarraLateral() {
                         "id": 6,
                         "url": "/ferias",
                         "pageTitulo": "Férias",
-                        "icone": <TbBeach size={20} stroke="white"/>,
+                        "icone": <FaUmbrellaBeach size={20} fill="white"/>,
                         "itemTitulo": "Férias"
                     },
                     {
@@ -156,7 +157,7 @@ function BarraLateral() {
                         "id": 9,
                         "url": "/ciclos",
                         "pageTitulo": "Lançtos de Folha",
-                        "icone": <TbTableShare size={20} stroke="white" />,
+                        "icone": <TbTableShare size={20} fill="white" />,
                         "itemTitulo": "Lançtos de Folha"
                     },
                     {
@@ -180,7 +181,7 @@ function BarraLateral() {
                         "id": 2,
                         "url": "/marketplace",
                         "pageTitulo": "Marketplace",
-                        "icone": <BiCart size={20} className="icon" />,
+                        "icone": <MdShoppingCart size={20} stroke="white"/>,
                         "itemTitulo": "Marketplace"
                     }
                 ];
@@ -203,7 +204,7 @@ function BarraLateral() {
                         "id": 3,
                         "url": "/ferias",
                         "pageTitulo": "Férias",
-                        "icone": <TbBeach size={20} stroke="white"/>,
+                        "icone": <FaUmbrellaBeach size={20} fill="white"/>,
                         "itemTitulo": "Férias"
                     },
                     {
@@ -231,7 +232,7 @@ function BarraLateral() {
                         "id": 6,
                         "url": "/marketplace",
                         "pageTitulo": "Marketplace",
-                        "icone": <BiCart size={20} className="icon" />,
+                        "icone": <MdShoppingCart size={20} stroke="white"/>,
                         "itemTitulo": "Marketplace"
                     }
                 ];
@@ -269,7 +270,7 @@ function BarraLateral() {
                         "id": 5,
                         "url": "/ferias",
                         "pageTitulo": "Férias",
-                        "icone": <TbBeach size={20} stroke="white"/>,
+                        "icone": <FaUmbrellaBeach size={20} fill="white"/>,
                         "itemTitulo": "Férias"
                     },
                     {
@@ -290,7 +291,7 @@ function BarraLateral() {
                         "id": 8,
                         "url": "/ciclos",
                         "pageTitulo": "Lançtos de Folha",
-                        "icone": <TbTableShare size={20} stroke="white" />,
+                        "icone": <TbTableShare size={20} fill="white" />,
                         "itemTitulo": "Lançtos de Folha"
                     },
                     {
@@ -335,7 +336,7 @@ function BarraLateral() {
                         "id": 5,
                         "url": "/ferias",
                         "pageTitulo": "Férias",
-                        "icone": <TbBeach size={20} stroke="white"/>,
+                        "icone": <FaUmbrellaBeach size={20} fill="white"/>,
                         "itemTitulo": "Férias"
                     },
                     {
@@ -370,7 +371,7 @@ function BarraLateral() {
                         "id": 10,
                         "url": "/operadoras",
                         "pageTitulo": "Operadoras",
-                        "icone": <PiHandshake size={20} className="icon" />,
+                        "icone": <FaBuilding size={20} className="icon" />,
                         "itemTitulo": "Operadoras"
                     },
                     {
@@ -391,7 +392,7 @@ function BarraLateral() {
                         "id": 13,
                         "url": "/pedidos",
                         "pageTitulo": "Pedidos",
-                        "icone": <MdShoppingCartCheckout size={20} fill="white" />,
+                        "icone": <HiMiniShoppingBag size={20} fill="white" />,
                         "itemTitulo": "Pedidos"
                     },
                     {
@@ -405,7 +406,7 @@ function BarraLateral() {
                         "id": 15,
                         "url": "/marketplace",
                         "pageTitulo": "Marketplace",
-                        "icone": <BiCart size={20} className="icon" />,
+                        "icone": <MdShoppingCart size={20} fill="white" />,
                         "itemTitulo": "Marketplace"
                     }
                 ];

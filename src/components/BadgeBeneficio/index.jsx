@@ -1,11 +1,12 @@
-import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill } from 'react-icons/ri'
-import { FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa'
+import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill, RiEBike2Fill } from 'react-icons/ri'
+import { FaCar, FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa'
 import { BiBookReader } from 'react-icons/bi'
 import { PiForkKnifeFill } from 'react-icons/pi'
 import { MdOutlineMedicalServices, MdOutlineFastfood, MdSecurity } from 'react-icons/md'
 import styles from '@components/BadgeBeneficio/BadgeBeneficio.module.css'
 import { IoFastFoodSharp } from 'react-icons/io5'
 import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
+import { MdDirectionsBike } from "react-icons/md";
 
 const icones = [
     {
@@ -143,6 +144,30 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <FaTooth size={20} />
+    },
+    {
+        "id": 16,
+        "name": "Seguro Bike",
+        "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
+        "food_meal_one_category": false,
+        "icone": <MdDirectionsBike size={20} />
+    },
+    {
+        "id": 17,
+        "name": "Seguro Moto",
+        "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
+        "food_meal_one_category": false,
+        "icone": <RiEBike2Fill size={20} />
+    },
+    {
+        "id": 18,
+        "name": "Seguro Automotivo",
+        "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
+        "food_meal_one_category": false,
+        "icone": <FaCar size={20} />
     },
 ]
 

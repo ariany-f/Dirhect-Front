@@ -10,14 +10,15 @@ import SubTitulo from '@components/SubTitulo';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { RiBusFill, RiCheckboxCircleFill, RiCloseCircleFill, RiComputerLine, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
+import { RiBusFill, RiCheckboxCircleFill, RiCloseCircleFill, RiComputerLine, RiEBike2Fill, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
 import { BiBookReader, BiShield } from 'react-icons/bi';
-import { FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
+import { FaCar, FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import SwitchInput from '@components/SwitchInput';
 import { IoFastFoodSharp } from 'react-icons/io5';
 import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6';
+import { MdDirectionsBike } from "react-icons/md";
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -176,7 +177,31 @@ const icones = [
         "description": "",
         "food_meal_one_category": false,
         "icone": <FaTooth size={20} />
-    }
+    },
+    {
+        "id": 16,
+        "name": "Seguro Bike",
+        "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
+        "food_meal_one_category": false,
+        "icone": <MdDirectionsBike size={20} />
+    },
+    {
+        "id": 17,
+        "name": "Seguro Moto",
+        "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
+        "food_meal_one_category": false,
+        "icone": <RiEBike2Fill size={20} />
+    },
+    {
+        "id": 18,
+        "name": "Seguro Automotivo",
+        "flexible_value": true,
+        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
+        "food_meal_one_category": false,
+        "icone": <FaCar size={20} />
+    },
 ]
 
 
