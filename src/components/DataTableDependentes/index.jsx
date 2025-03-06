@@ -56,7 +56,7 @@ function DataTableDependentes({ dependentes, search = true }) {
         
         return ( 
             rowData?.data_nascimento ?
-            <b>{new Date(rowData?.data_nascimento).toLocaleDateString('pt-BR')}</b>
+            <Texto weight={500}>{new Date(rowData?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
             : '---'
         )
     }
