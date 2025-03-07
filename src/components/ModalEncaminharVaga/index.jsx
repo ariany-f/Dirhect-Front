@@ -1,16 +1,14 @@
+import React, { useState, useRef } from "react";
+import styled from "styled-components";
+import { Editor } from "primereact/editor";
 import Botao from "@components/Botao";
 import Frame from "@components/Frame";
 import CampoTexto from "@components/CampoTexto";
+import BotaoGrupo from "@components/BotaoGrupo";
 import Titulo from "@components/Titulo";
 import { RiCloseFill } from "react-icons/ri";
-import { useState, useRef, useEffect } from "react";
-import styled from "styled-components";
-import styles from "./ModalAdicionarDepartamento.module.css";
-import EditorJS from "@editorjs/editorjs";
-import List from "@editorjs/list";
-import Header from "@editorjs/header";
-import Paragraph from "@editorjs/paragraph";
-
+import styles from "./ModalEncaminharVaga.module.css";
+import templates from "@json/templates-encaminhar-vaga.json";
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -23,18 +21,17 @@ const Overlay = styled.div`
     overflow-y: auto;
     bottom: 0;
     left: 0;
-    align-items: flex-start; /* Garante espaço acima */
+    align-items: flex-start;
     justify-content: center;
-    overflow-y: auto; /* Permite rolagem na página */
-    padding: 5vh 0; /* Espaço acima e abaixo */
+    padding: 5vh 0;
 `;
 
 const DialogEstilizado = styled.dialog`
-    position: relative; /* Importante: mantém o modal no fluxo da página */
+    position: relative;
     width: 80vw;
     background: white;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 2vh auto; /* Espaço acima e abaixo */
+    margin: 2vh auto;
     margin-top: 0;
     flex-direction: column;
     justify-content: center;
@@ -55,28 +52,6 @@ const DialogEstilizado = styled.dialog`
         cursor: pointer;
         border: none;
         background-color: initial;
-    }
-    & .icon {
-        margin-right: 5px;
-        box-sizing: initial;
-        fill: var(--primaria);
-        stroke: var(--primaria);
-        color: var(--primaria);
-    }
-    & .frame:nth-of-type(1) {
-        gap: 24px;
-        & .frame {
-            margin-bottom: 24px;
-            & p{
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            & b {
-                font-weight: 800;
-                font-size: 14px;
-            }
-        }
     }
 `;
 
@@ -99,7 +74,7 @@ const VariaveisContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  background-color: #f9f9f9; /* Cor de fundo para destacá-las */
+  background-color: #f9f9f9;
 `;
 
 const VariavelItem = styled.div`
@@ -121,8 +96,9 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
   const [mensagem, setMensagem] = useState("");
   const [cpf, setCpf] = useState("");
   const [nascimento, setNascimento] = useState("");
-  const editorRef = useRef(null);
-  const [editorContent, setEditorContent] = useState(null);
+  const [editorContent, setEditorContent] = useState("");
+  const [showEditorContent, setShowEditorContent] = useState(false); // Controle para mostrar o conteúdo do editor
+  const [selectedTemplate, setSelectedTemplate] = useState(null); 
 
   const variaveis = [
     { value: "{{nome}}", label: "Nome Completo" },
@@ -132,122 +108,117 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
     { value: "{{cpf}}", label: "CPF" },
   ];
 
-  useEffect(() => {
-    // Recria o EditorJS toda vez que o modal for aberto
-    if (opened) {
-      if (editorRef.current) {
-        // Verifique se o editorRef.current possui o método destroy antes de chamá-lo
-        if (editorRef.current.destroy) {
-          editorRef.current.destroy(); // Destrói o editor anterior
-        }
-      }
+  // Função para substituir as variáveis no conteúdo do editor
+  const substituirVariaveis = (conteudo) => {
+    let novoConteudo = conteudo;
 
-      editorRef.current = new EditorJS({
-        holder: "editorjs",
-        tools: {
-          header: {
-            class: Header,
-            inlineToolbar: true,
-          },
-          paragraph: {
-            class: Paragraph,
-            inlineToolbar: true,
-          },
-          list: {
-            class: List,
-            inlineToolbar: true,
-          },
-        },
-        onChange: async () => {
-          const content = await editorRef.current.save();
-          setEditorContent(content);
-        },
-      });
-    }
+    // Substituir cada variável pela correspondente no estado
+    novoConteudo = novoConteudo.replace("{{nome}}", nome);
+    novoConteudo = novoConteudo.replace("{{email}}", email);
+    novoConteudo = novoConteudo.replace("{{mensagem}}", mensagem);
+    novoConteudo = novoConteudo.replace("{{nascimento}}", nascimento);
+    novoConteudo = novoConteudo.replace("{{cpf}}", cpf);
 
-    // Cleanup: destrói o EditorJS quando o modal for fechado
-    return () => {
-      if (editorRef.current && editorRef.current.destroy) {
-        editorRef.current.destroy();
-      }
-    };
-  }, [opened]);
+    return novoConteudo;
+  };
 
-  // Função para adicionar variável no editor no local do cursor
-  const addVariableToEditor = (variable) => {
-    editorRef.current.blocks.insert("paragraph", {
-      text: variable,
-    });
+  const handleAddVariable = (variable) => {
+    // Apenas adicionar a variável ao conteúdo atual do editor
+    const updatedContent = editorContent + variable; // Concatenar a variável ao conteúdo
+    setEditorContent(updatedContent); // Atualizar conteúdo no estado
   };
 
   const handleSave = () => {
-    // Substitui as variáveis pelos valores inseridos pelo usuário
-    let content = editorContent;
-    if (content) {
-      content = JSON.stringify(content);
-      content = content.replace(/{{nome}}/g, nome);
-      content = content.replace(/{{email}}/g, email);
-      content = content.replace(/{{mensagem}}/g, mensagem);
-      content = content.replace(/{{nascimento}}/g, nascimento);
-      content = content.replace(/{{cpf}}/g, cpf);
-      content = JSON.parse(content);
-    }
+    const content = editorContent;
     aoSalvar(nome, email, mensagem, content);
   };
 
+  const toggleEditorContent = () => {
+    setShowEditorContent(!showEditorContent);
+  };
+
+  const handleTemplateChange = (e) => {
+    const selectedTemplate = templates.find((template) => template.id === e.target.value);
+    setSelectedTemplate(selectedTemplate);
+    setEditorContent(selectedTemplate.content); // Preencher o editor com o conteúdo do template
+  };
+
   return (
-    <>
-      {opened && (
-        <Overlay>
-          <DialogEstilizado open={opened}>
-            <Frame>
-              <Titulo>
+    opened &&
+    <Overlay>
+      <DialogEstilizado open={opened}>
+        <Frame>
+            <Titulo>
                 <form method="dialog">
-                  <button className="close" onClick={aoFechar} formMethod="dialog">
-                    <RiCloseFill size={20} className="fechar" />
-                  </button>
+                    <button className="close" onClick={aoFechar} formMethod="dialog">
+                        <RiCloseFill size={20} className="fechar" />  
+                    </button>
                 </form>
                 <h6>Encaminhar vaga para novo candidato</h6>
-              </Titulo>
-            </Frame>
+            </Titulo>
+        </Frame>
+        <Frame padding="24px 0px">
+          <Col12>
+            <Col6>
+              {!showEditorContent ? (
+                <>
+                  <CampoTexto valor={nome} type="text" setValor={setNome} label="Nome" />
+                  <CampoTexto valor={email} type="text" setValor={setEmail} label="E-mail" />
+                  <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem" />
+                  <CampoTexto patternMask={['999.999.999-99']} valor={cpf} type="text" setValor={setCpf} label="CPF" />
+                </>
+              ) : (
+                <div dangerouslySetInnerHTML={{ __html: substituirVariaveis(editorContent) }}></div> // Exibe o conteúdo renderizado como HTML com as variáveis substituídas
+              )}
+            </Col6>
 
-            <Frame padding="24px 0px">
-              <Col12>
-                <Col6>
-                    <CampoTexto valor={nome} type="text" setValor={setNome} label="Nome" />
-                    <CampoTexto valor={email} type="text" setValor={setEmail} label="E-mail" />
-                    <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem" />
-                    <CampoTexto patternMask={['999.999.999-99']} valor={cpf} type="text" setValor={setCpf} label="CPF" />
-                </Col6>
-                <Col6>
-                    <div id="editorjs" style={{ border: "1px solid #ccc", padding: "10px" }}></div>
-                    {/* Variáveis exibidas abaixo do EditorJS */}
-                    <VariaveisContainer>
-                    <h6>Variáveis disponíveis</h6>
-                    {variaveis.map((variavel) => (
-                        <VariavelItem key={variavel.value} onClick={() => addVariableToEditor(variavel.value)}>
-                        {variavel.label}
-                        </VariavelItem>
-                    ))}
-                    </VariaveisContainer>
-                </Col6>
-              </Col12>
-            </Frame>
+            <Col6>
+              {/* Dropdown para seleção do template */}
+              <div>
+                <label htmlFor="template-select">Selecione um Template:</label>
+                <select id="template-select" onChange={handleTemplateChange} value={selectedTemplate ? selectedTemplate.id : ''}>
+                  <option value="">Selecione...</option>
+                  {templates.map((template) => (
+                    <option key={template.id} value={template.id}>{template.name}</option>
+                  ))}
+                </select>
+              </div>
 
-            <form method="dialog">
-              <div className={styles.containerBottom}>
-                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>
-                  Voltar
+              {/* Exibe o Quill Editor */}
+              <Editor
+                value={editorContent}
+                onTextChange={(e) => setEditorContent(e.htmlValue)} // Atualiza o conteúdo com o valor do editor
+                style={{ height: "300px" }}
+              />
+
+              {/* Variáveis */}
+              <VariaveisContainer>
+                <h6>Variáveis disponíveis</h6>
+                {variaveis.map((variavel) => (
+                  <VariavelItem key={variavel.value} onClick={() => handleAddVariable(variavel.value)}>
+                    {variavel.label}
+                  </VariavelItem>
+                ))}
+              </VariaveisContainer>
+            </Col6>
+          </Col12>
+
+        <div className={styles.containerBottom}>
+            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>
+                Voltar
+            </Botao>
+            <BotaoGrupo>
+                <Botao aoClicar={toggleEditorContent} estilo="vermilion" size="medium" filled>
+                    {showEditorContent ? "Editar Conteúdo" : "Visualizar Conteúdo"}
                 </Botao>
                 <Botao aoClicar={handleSave} estilo="vermilion" size="medium" filled>
-                  Confirmar
+                    Confirmar
                 </Botao>
-              </div>
-            </form>
-          </DialogEstilizado>
-        </Overlay>
-      )}
-    </>
+            </BotaoGrupo>
+        </div>
+        </Frame>
+      </DialogEstilizado>
+    </Overlay>
   );
 }
 

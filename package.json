@@ -23,6 +23,7 @@
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.47",
     "primereact": "^10.9.1",
+    "quill": "^2.0.3",
     "react": "^18.2.0",
     "react-big-calendar": "^1.17.1",
     "react-credit-cards-2": "^1.0.1",
