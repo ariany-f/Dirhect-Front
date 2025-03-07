@@ -237,6 +237,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
                     <CampoTexto valor={nascimento} type="date" setValor={setNascimento} label="Data de Nascimento" />
                     <CampoTexto valor={dataInicio} type="date" setValor={setDataInicio} label="Data de Início" />
                     <CampoTexto patternMask={'BRL'} valor={salario} type="text" setValor={setSalario} label="Salário" />
+                    <CampoTexto valor={dataExameMedico} type="date" setValor={setDataExameMedico} label="Data do Exame Médico" />
                   </Col6>
                 </Col12>
               ) : (
