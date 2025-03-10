@@ -80,6 +80,7 @@ import DetalhesAdmissao from '@pages/Admissoes/detalhes'
 import FiliaisLista from '@pages/Departamentos/filiais'
 import CargosLista from '@pages/Departamentos/cargos'
 import SecoesLista from '@pages/Departamentos/secoes'
+import HorariosLista from './pages/Departamentos/horarios'
 import Contratos from '@pages/Contratos'
 import ContratosListagem from '@pages/Contratos/lista'
 import ColaboradorDependentes from '@pages/Colaboradores/Detalhes/dependentes'
@@ -223,6 +224,7 @@ function AppRouter() {
                   <Route path="secoes" element={<SecoesLista />} />
                   <Route path="sindicatos" element={<SindicatosLista />} />
                   <Route path="centros-custo" element={<CentrosCustoLista />} />
+                  <Route path="horarios" element={<HorariosLista />} />
                   <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
                   <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
                   <Route path="adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />

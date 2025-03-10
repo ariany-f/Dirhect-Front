@@ -29,6 +29,7 @@ import elegibilidades from '@json/elegibilidade.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import { TabPanel, TabView } from 'primereact/tabview'
+import DataTableHorarios from '../../components/DataTableHorarios'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -54,18 +55,21 @@ function DetalhesElegibilidade() {
     const [cargos, setCargos] = useState(null)
     const [centros_custo, setCentrosCusto] = useState(null)
     const [sindicatos, setSindicatos] = useState(null)
+    const [horarios, setHorarios] = useState(null)
     const [selectedFiliais, setSelectedFiliais] = useState([])
     const [selectedDepartamentos, setSelectedDepartamentos] = useState([])
     const [selectedCargos, setSelectedCargos] = useState([])
     const [selectedSecoes, setSelectedSecoes] = useState([])
     const [selectedSindicatos, setSelectedSindicatos] = useState([])
     const [selectedCentrosCusto, setSelectedCentrosCusto] = useState([])
+    const [selectedHorarios, setSelectedHorarios] = useState([])
     const [allFiliais, setAllFiliais] = useState(false)
     const [allDepartamentos, setAllDepartamentos] = useState(false)
     const [allCargos, setAllCargos] = useState(false)
     const [allSecoes, setAllSecoes] = useState(false)
     const [allSindicatos, setAllSindicatos] = useState(false)
     const [allCentrosCusto, setAllCentrosCusto] = useState(false)
+    const [allHorarios, setAllHorarios] = useState(false)
    
     useEffect(() => {
         if(elegibilidade.length == 0)
@@ -79,6 +83,8 @@ function DetalhesElegibilidade() {
                 setSelectedCargos(cc[0].configuracoes.cargos.lista)
                 setSelectedSecoes(cc[0].configuracoes.secoes.lista)
                 setSelectedSindicatos(cc[0].configuracoes.sindicatos.lista)
+                setSelectedCentrosCusto(cc[0].configuracoes.centros_custo.lista)
+                setSelectedHorarios(cc[0].configuracoes.horarios.lista)
             }
         }
     }, [elegibilidade])
@@ -143,6 +149,18 @@ function DetalhesElegibilidade() {
             http.get('sindicato/?format=json')
             .then(response => {
                 setSindicatos(response)
+                
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                // setLoading(false)
+            })
+            
+            http.get('horario/?format=json')
+            .then(response => {
+                setHorarios(response)
                 
             })
             .catch(erro => {
@@ -268,6 +286,14 @@ function DetalhesElegibilidade() {
                         </Frame>
                         {/* {!allSindicatos && */}
                             <DataTableSindicatos sindicatos={sindicatos} showSearch={false} selected={selectedSindicatos} setSelected={setSelectedSindicatos} />
+                        {/* } */}
+                    </TabPanel>
+                    <TabPanel header="Horários">
+                        <Frame padding="16px">
+                            <CheckboxContainer key="horarios" name="horarios[all]" label="Todos os registros, inclusive novos" valor={!!allHorarios} setValor={() => handleChange('horarios', (!!allHorarios))} />
+                        </Frame>
+                        {/* {!allHorarios && */}
+                        <DataTableHorarios horarios={horarios} showSearch={false} selected={selectedHorarios} setSelected={setSelectedHorarios} />
                         {/* } */}
                     </TabPanel>
                 </TabView>

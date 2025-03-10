@@ -2,7 +2,7 @@ import styles from './Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import http from '@http'
-import DataTableCargos from '@components/DataTableCargos'
+import DataTableHorarios from '@components/DataTableHorarios'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
@@ -38,22 +38,22 @@ const ContainerSemRegistro = styled.div`
 `
 
 
-function CargosLista() {
+function HorariosLista() {
 
     const [loading, setLoading] = useState(false)
-    const [cargos, setCargos] = useState(null)
+    const [horarios, setHorarios] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
     
 
     useEffect(() => {
-        if(!cargos) {
+        if(!horarios) {
             
             setLoading(true)
-            http.get('cargo/?format=json')
+            http.get('horario/?format=json')
                 .then(response => {
-                    setCargos(response)
+                    setHorarios(response)
                     
                 })
                 .catch(erro => {
@@ -63,7 +63,7 @@ function CargosLista() {
                     setLoading(false)
                 })
         }    
-    }, [cargos])
+    }, [horarios])
 
     return (
         <>
@@ -85,26 +85,26 @@ function CargosLista() {
                         <Botao estilo={''} size="small" tab>Centros de Custo</Botao>
                     </Link>
                     <Link to="/estrutura/cargos">
-                        <Botao estilo={'black'} size="small" tab>Cargos e Funções</Botao>
+                        <Botao estilo={''} size="small" tab>Cargos e Funções</Botao>
                     </Link>
                     <Link to="/estrutura/sindicatos">
                         <Botao estilo={''} size="small" tab>Sindicatos</Botao>
                     </Link>
                     <Link to="/estrutura/horarios">
-                        <Botao estilo={''} size="small" tab>Horários</Botao>
+                        <Botao estilo={'black'} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um cargo</Botao>
             </BotaoGrupo>
             {
-                cargos && cargos.length > 0 ?
-                    <DataTableCargos cargos={cargos} />
+                horarios && horarios.length > 0 ?
+                    <DataTableHorarios horarios={horarios} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
-                        <h6>Não há cargos registrados</h6>
-                        <p>Aqui você verá todos os cargos registrados.</p>
+                        <h6>Não há horarios registrados</h6>
+                        <p>Aqui você verá todos os horarios registrados.</p>
                     </section>
                 </ContainerSemRegistro>
             }
@@ -114,4 +114,4 @@ function CargosLista() {
     )
 }
 
-export default CargosLista
+export default HorariosLista

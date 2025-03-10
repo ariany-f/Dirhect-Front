@@ -110,6 +110,9 @@ function SindicatosLista() {
                     <Link to="/estrutura/sindicatos">
                         <Botao estilo={'black'} size="small" tab>Sindicatos</Botao>
                     </Link>
+                    <Link to="/estrutura/horarios">
+                        <Botao estilo={''} size="small" tab>Horários</Botao>
+                    </Link>
                 </BotaoGrupo>
                 <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um sindicato</Botao>
             </BotaoGrupo>
