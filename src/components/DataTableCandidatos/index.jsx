@@ -30,6 +30,18 @@ function DataTableCandidatos({ candidatos }) {
         setGlobalFilterValue(value);
     };
 
+    const representativeDataNascimentoTemplate = (rowData) => {
+        return new Date(rowData.dataNascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+    }
+
+    const representativeDataInicioTemplate = (rowData) => {
+        return new Date(rowData.dataInicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+    }
+
+    const representativeDataExameMedicoTemplate = (rowData) => {
+        return new Date(rowData.dataExameMedico).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+    }
+
     return (
         <>
             <div className="flex justify-content-end">
@@ -38,10 +50,15 @@ function DataTableCandidatos({ candidatos }) {
                 </span>
             </div>
             <DataTable value={candidatos} filters={filters} globalFilterFields={['nome', 'email']}  emptyMessage="Não foram encontrados candidatos" selection={selectedCandidato} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
-                <Column field="email" header="E-mail" style={{ width: '35%' }}></Column>
-                <Column field="statusDePreenchimento" header="Status Preenchimento" style={{ width: '35%' }}></Column>
-                <Column field="statusDeCandidato" header="Status Candidato" style={{ width: '35%' }}></Column>
+                <Column field="nome" header="Nome" style={{ width: '15%' }}></Column>
+                <Column field="email" header="E-mail" style={{ width: '25%' }}></Column>
+                <Column field="telefone" header="Telefone" style={{ width: '15%' }}></Column>
+                {/* <Column field="cpf" header="CPF" style={{ width: '15%' }}></Column> */}
+                <Column body={representativeDataNascimentoTemplate} field="dataNascimento" header="Nascimento" style={{ width: '15%' }}></Column>
+                <Column body={representativeDataExameMedicoTemplate} field="dataExameMedico" header="Data Exame Médico" style={{ width: '10%' }}></Column>
+                <Column body={representativeDataInicioTemplate} field="dataInicio" header="Data Início" style={{ width: '10%' }}></Column>
+                <Column field="statusDePreenchimento" header="Status" style={{ width: '10%' }}></Column>
+                {/* <Column field="statusDeCandidato" header="Status Candidato" style={{ width: '10%' }}></Column> */}
             </DataTable>
         </>
     )
