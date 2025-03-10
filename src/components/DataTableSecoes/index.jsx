@@ -74,6 +74,28 @@ function DataTableSecoes({ secoes, showSearch = true, pagination = true, selecte
         }
     }
 
+    const representativeFilialTemplate = (rowData) => {
+        if(rowData?.filial)
+        {
+            return rowData.filial
+        }
+        else
+        {
+            return 'Não informado'
+        }
+    };
+
+    const representativeDepartamentoTemplate = (rowData) => {
+        if(rowData?.departamento)
+        {
+            return rowData.departamento
+        }
+        else
+        {
+            return 'Não informado'
+        }
+    };
+
     return (
         <>
             {showSearch &&
@@ -88,8 +110,10 @@ function DataTableSecoes({ secoes, showSearch = true, pagination = true, selecte
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
                 <Column field="id" header="Id" style={{ width: '15%' }}></Column>
-                <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
+                <Column field="nome" header="Nome" style={{ width: '25%' }}></Column>
+                <Column body={representativeFilialTemplate} field="filial" header="Filial" style={{ width: '20%' }}></Column>
+                <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" style={{ width: '20%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '20%' }}></Column>
             </DataTable>
         </>
     )

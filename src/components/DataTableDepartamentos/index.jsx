@@ -51,6 +51,17 @@ function DataTableDepartamentos({ departamentos, showSearch = true, pagination =
         setSelectedDepartamento(value.id)
         navegar(`/estrutura/departamento/detalhes/${value.id}`)
     }
+
+    const representativeFilialTemplate = (rowData) => {
+        if(rowData?.filial)
+        {
+            return rowData.filial
+        }
+        else
+        {
+            return 'Não informado'
+        }
+    };
     
     function handleSelectChange(e) {
         if (selected) {
@@ -93,7 +104,8 @@ function DataTableDepartamentos({ departamentos, showSearch = true, pagination =
                     <Column selectionMode="multiple" style={{ width: '15%' }}></Column>
                 }
                 <Column field="id" header="Id" style={{ width: '15%' }}></Column>
-                <Column field="nome" header="Nome" style={{ width: '35%' }}></Column>
+                <Column field="nome" header="Nome" style={{ width: '30%' }}></Column>
+                <Column body={representativeFilialTemplate} field="filial" header="Filial" style={{ width: '20%' }}></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
