@@ -94,7 +94,7 @@ function HorariosLista() {
                         <Botao estilo={'black'} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um cargo</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um horário</Botao>
             </BotaoGrupo>
             {
                 horarios && horarios.length > 0 ?

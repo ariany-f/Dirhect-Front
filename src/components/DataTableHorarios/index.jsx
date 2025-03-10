@@ -79,11 +79,25 @@ function DataTableHorarios({ horarios, showSearch = true, pagination = true, sel
     }
 
     const representativeHoraInicio = (rowData) => {
-        return new Date(rowData.hora_inicio).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        if(rowData.hora_inicio)
+        {
+            return new Date(rowData.hora_inicio).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+        else
+        {
+            return 'Não definido'
+        }
     };
 
     const representativeHoraFim = (rowData) => {
-        return new Date(rowData.hora_fim).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        if(rowData.hora_fim)
+        {
+            return new Date(rowData.hora_fim).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+        else
+        {
+            return 'Não definido'
+        }
     };
 
     return (
