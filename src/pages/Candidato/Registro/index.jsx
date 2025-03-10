@@ -474,7 +474,7 @@ const CandidatoRegistro = () => {
         <ConteudoFrame>
             <form onSubmit={handleSubmit}>
             <Stepper headerPosition="top" ref={stepperRef} style={{ flexBasis: '50rem' }}>
-                <StepperPanel header="Arquivos">
+                <StepperPanel header="Documentos Pessoais">
                     <ScrollPanel style={{ width: '100%', height: '400px'}}>
                         <Col12>
                         {arquivos.map((arquivo) => (
