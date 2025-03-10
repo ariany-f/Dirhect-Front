@@ -176,13 +176,6 @@ function BarraLateral() {
                         "pageTitulo": "Meu Cadastro",
                         "icone": <RiFilePaperFill size={20} className="icon" />,
                         "itemTitulo": "Meu Cadastro"
-                    },
-                    {
-                        "id": 2,
-                        "url": "/marketplace",
-                        "pageTitulo": "Marketplace",
-                        "icone": <MdShoppingCart size={20} fill="white"/>,
-                        "itemTitulo": "Marketplace"
                     }
                 ];
             case 'funcionario':
