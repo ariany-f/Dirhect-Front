@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { FaUpload } from 'react-icons/fa';
-import Botao from '@components/Botao';
 import Texto from '@components/Texto';
 
 const CampoArquivoContainer = styled.div`
@@ -14,8 +13,19 @@ const CampoArquivoInput = styled.input`
     display: none;
 `;
 
-const CampoArquivoBotao = styled(Botao)`
+const CampoArquivoCard = styled.div`
     margin-top: 10px;
+    border-style: dashed;
+    border-color: #aaa;
+    border-width: 1px;
+    padding: 10px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    cursor: pointer;
 `;
 
 const CampoArquivo = ({ label, onFileChange, disabled = false, accept = "*", id, name }) => {
@@ -23,6 +33,7 @@ const CampoArquivo = ({ label, onFileChange, disabled = false, accept = "*", id,
     const inputRef = useRef(null);
 
     const handleClick = () => {
+        console.log(inputRef.current)
         if (inputRef.current) {
             inputRef.current.click();
         }
@@ -49,18 +60,13 @@ const CampoArquivo = ({ label, onFileChange, disabled = false, accept = "*", id,
                 disabled={disabled}
                 onChange={handleFileChange}
             />
-            <CampoArquivoBotao
-                type="button"
-                aoClicar={handleClick}
-                disabled={disabled}
-                estilo="vermilion"
-                size="medium"
-                filled
+            <CampoArquivoCard
+                onClick={handleClick}
             >
-                <Texto color="white" weight="600">
+                <Texto color="black" weight="600">
                     <FaUpload size={14} /> &nbsp;&nbsp;Selecionar arquivo
                 </Texto>
-            </CampoArquivoBotao>
+            </CampoArquivoCard>
         </CampoArquivoContainer>
     );
 };

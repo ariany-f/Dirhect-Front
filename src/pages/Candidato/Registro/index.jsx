@@ -117,7 +117,9 @@ const CandidatoRegistro = () => {
     const stepperRef = useRef(null);
     const [arquivos, setArquivos] = useState([
         { id: 1, nome: 'RG', caminho: null },
-        { id: 2, nome: 'Comprovante de Residência', caminho: null }
+        { id: 2, nome: 'Comprovante de Residência', caminho: null },
+        { id: 3, nome: 'Comprovante de Escolaridade', caminho: null },
+        { id: 4, nome: 'Carteira de Vacinação', caminho: null },
     ]);
     const [educacao, setEducacao] = useState([
         { id: 1, nivel: '', instituicao: '', curso: '', dataInicio: '', dataConclusao: '', isLocked: false },
@@ -471,6 +473,29 @@ const CandidatoRegistro = () => {
         <ConteudoFrame>
             <form onSubmit={handleSubmit}>
             <Stepper headerPosition="top" ref={stepperRef} style={{ flexBasis: '50rem' }}>
+                <StepperPanel header="Arquivos">
+                    <ScrollPanel style={{ width: '100%', height: '400px'}}>
+                        <Col12>
+                        {arquivos.map((arquivo) => (
+                            <Col6>
+                                <div key={arquivo.id}>
+                                    <p>{arquivo.nome}</p>
+                                    <CampoArquivo
+                                        onFileChange={(file) => handleUpload(arquivo.id, file)}
+                                        accept=".pdf, .jpg, .png"
+                                        id={`arquivo-${arquivo.id}`}
+                                        name={`arquivo-${arquivo.id}`}
+                                    />
+                                    {arquivo.caminho && <p>Arquivo selecionado: {arquivo.caminho}</p>}
+                                </div>
+                            </Col6>
+                        ))}</Col12>
+                    </ScrollPanel>
+                    <Frame padding="30px" estilo="spaced">
+                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        {/* <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao> */}
+                    </Frame>
+                </StepperPanel>
                 <StepperPanel header="Dados Pessoais">
                         <Container padding={'30px 0 0 0'}>
                             <CampoTexto 
@@ -808,26 +833,6 @@ const CandidatoRegistro = () => {
                     <Frame padding="30px" estilo="spaced">
                         <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
                         <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
-                    </Frame>
-                </StepperPanel>
-                <StepperPanel header="Arquivos">
-                    <ScrollPanel style={{ width: '100%', height: '400px'}}>
-                        {arquivos.map((arquivo) => (
-                            <div key={arquivo.id}>
-                                <p>{arquivo.nome}</p>
-                                <CampoArquivo
-                                    onFileChange={(file) => handleUpload(arquivo.id, file)}
-                                    accept=".pdf, .jpg, .png"
-                                    id={`arquivo-${arquivo.id}`}
-                                    name={`arquivo-${arquivo.id}`}
-                                />
-                                {arquivo.caminho && <p>Arquivo selecionado: {arquivo.caminho}</p>}
-                            </div>
-                        ))}
-                    </ScrollPanel>
-                    <Frame padding="30px" estilo="spaced">
-                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                        {/* <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao> */}
                     </Frame>
                 </StepperPanel>
             </Stepper>
