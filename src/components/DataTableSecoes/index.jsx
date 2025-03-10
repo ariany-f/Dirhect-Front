@@ -75,9 +75,9 @@ function DataTableSecoes({ secoes, showSearch = true, pagination = true, selecte
     }
 
     const representativeFilialTemplate = (rowData) => {
-        if(rowData?.filial)
+        if(rowData?.filial && rowData?.filial?.nome)
         {
-            return rowData.filial
+            return rowData?.filial?.nome
         }
         else
         {
@@ -86,9 +86,9 @@ function DataTableSecoes({ secoes, showSearch = true, pagination = true, selecte
     };
 
     const representativeDepartamentoTemplate = (rowData) => {
-        if(rowData?.departamento)
+        if(rowData?.departamento && rowData?.departamento?.nome)
         {
-            return rowData.departamento
+            return rowData?.departamento?.nome
         }
         else
         {
