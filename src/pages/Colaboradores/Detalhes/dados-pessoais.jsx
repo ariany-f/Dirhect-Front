@@ -148,7 +148,7 @@ function ColaboradorDadosPessoais() {
                     <Texto weight="800">{new Date(colaborador?.dados_pessoa_fisica?.data_emissao_cnh).toLocaleDateString('pt-BR')}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                     }
-                    <Texto>Validade CNH</Texto>
+                    <Texto>Data de Validade CNH</Texto>
                     {colaborador?.dados_pessoa_fisica?.data_venc_habilit ?
                     <Texto weight="800">{new Date(colaborador?.dados_pessoa_fisica?.data_venc_habilitacao).toLocaleDateString('pt-BR')}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
