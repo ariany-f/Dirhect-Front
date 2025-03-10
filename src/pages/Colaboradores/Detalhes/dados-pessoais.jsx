@@ -184,7 +184,12 @@ function ColaboradorDadosPessoais() {
                     }
                     <Texto>Carteira de Motorista</Texto>
                     {colaborador?.dados_pessoa_fisica?.carteira_motorista ?
-                    <Texto weight="800">{colaborador?.dados_pessoa_fisica?.carteira_motorista}</Texto>
+                        <>
+                        <Texto weight="800">{colaborador?.dados_pessoa_fisica?.carteira_motorista}</Texto>
+                        { colaborador?.dados_pessoa_fisica?.tipo_carteira_habilit ?
+                            <Texto weight="800">({colaborador?.dados_pessoa_fisica?.tipo_carteira_habilit})</Texto>
+                        : null }
+                        </>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                     <Texto>Titulo de Eleitor</Texto>
