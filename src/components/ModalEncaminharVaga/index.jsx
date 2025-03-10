@@ -153,26 +153,36 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
     { value: "{{dataExameMedico}}", label: "Data do Exame Médico" },
   ];
 
-  // Função para substituir as variáveis no conteúdo do editor
   const substituirVariaveis = (conteudo) => {
+    if (!conteudo) return "";
+    
     let novoConteudo = conteudo;
-
-    // Substituir cada variável pela correspondente no estado
-    novoConteudo = novoConteudo.replace("{{nome}}", nome);
-    novoConteudo = novoConteudo.replace("{{email}}", email);
-    novoConteudo = novoConteudo.replace("{{mensagem}}", mensagem);
-    novoConteudo = novoConteudo.replace("{{nascimento}}", formatDate(nascimento)); // Formata a data de nascimento
-    novoConteudo = novoConteudo.replace("{{cpf}}", cpf);
-    novoConteudo = novoConteudo.replace("{{telefone}}", telefone);
-    novoConteudo = novoConteudo.replace("{{filial}}", filial);
-    novoConteudo = novoConteudo.replace("{{dataInicio}}", formatDate(dataInicio)); // Formata a data de início
-    novoConteudo = novoConteudo.replace("{{centroCusto}}", centroCusto);
-    novoConteudo = novoConteudo.replace("{{salario}}", salario);
-    novoConteudo = novoConteudo.replace("{{periculosidade}}", periculosidade.name ?? '');
-    novoConteudo = novoConteudo.replace("{{dataExameMedico}}", formatDate(dataExameMedico)); // Formata a data do exame médico
-
+  
+    // Mapeia as variáveis e suas respectivas substituições
+    const variaveisMap = {
+      "{{nome}}": nome,
+      "{{email}}": email,
+      "{{mensagem}}": mensagem,
+      "{{nascimento}}": formatDate(nascimento), 
+      "{{cpf}}": cpf,
+      "{{telefone}}": telefone,
+      "{{filial}}": filial,
+      "{{dataInicio}}": formatDate(dataInicio),
+      "{{centroCusto}}": centroCusto,
+      "{{salario}}": salario,
+      "{{periculosidade}}": periculosidade.name ?? '',
+      "{{dataExameMedico}}": formatDate(dataExameMedico),
+    };
+  
+    // Substituir todas as ocorrências das variáveis
+    Object.keys(variaveisMap).forEach((variavel) => {
+      const valor = variaveisMap[variavel] || "";
+      const regex = new RegExp(variavel, "g"); // Expressão regular para capturar todas as ocorrências
+      novoConteudo = novoConteudo.replace(regex, valor);
+    });
+  
     return novoConteudo;
-  };
+  };  
 
   const handleAddVariable = (variable) => {
     // Apenas adicionar a variável ao conteúdo atual do editor
