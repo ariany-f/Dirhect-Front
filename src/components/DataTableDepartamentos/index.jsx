@@ -53,9 +53,9 @@ function DataTableDepartamentos({ departamentos, showSearch = true, pagination =
     }
 
     const representativeFilialTemplate = (rowData) => {
-        if(rowData?.filial)
+        if(rowData?.filial && rowData?.filial?.nome)
         {
-            return rowData.filial
+            return rowData?.filial?.nome
         }
         else
         {
@@ -99,13 +99,13 @@ function DataTableDepartamentos({ departamentos, showSearch = true, pagination =
                     </span>
                 </div>
             }
-            <DataTable value={departamentos} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados departamentos" selection={selected ? selectedDepartamentos : selectedDepartamento} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={departamentos} filters={filters} globalFilterFields={['id', 'filial.nome']} emptyMessage="Não foram encontrados departamentos" selection={selected ? selectedDepartamentos : selectedDepartamento} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '15%' }}></Column>
                 }
                 <Column field="id" header="Id" style={{ width: '15%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '30%' }}></Column>
-                <Column body={representativeFilialTemplate} field="filial" header="Filial" style={{ width: '20%' }}></Column>
+                <Column body={representativeFilialTemplate} field="filial.nome" header="Filial" style={{ width: '20%' }}></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
