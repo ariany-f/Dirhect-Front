@@ -148,6 +148,16 @@ const CandidatoRegistro = () => {
         }));
     };
 
+    const setCandidatoBanco = (field, value) => {
+        setCandidato((estadoAnterior) => ({
+            ...estadoAnterior,
+            banco: {
+                ...estadoAnterior.banco,
+                [field]: value,
+            },
+        }));
+    };
+
     const setStreet = (street) => setCandidatoEndereco("street", street);
     const setCep = (cep) => setCandidatoEndereco("cep", cep);
     const setDistrict = (district) => setCandidatoEndereco("district", district);
@@ -155,6 +165,11 @@ const CandidatoRegistro = () => {
     const setState = (state) => setCandidatoEndereco("state", state);
     const setCity = (city) => setCandidatoEndereco("city", city);
     const setNumber = (number) => setCandidatoEndereco("number", number);
+    const setBankNumber = (bankNumber) => setCandidatoBanco("bankNumber", bankNumber);
+    const setBankAgency = (bankAgency) => setCandidatoBanco("agency", bankAgency);
+    const setBankAccount = (bankAccount) => setCandidatoBanco("account", bankAccount);
+    const setBankAccountDigit = (bankAccountDigit) => setCandidatoBanco("bankAccountDigit", bankAccountDigit);
+    const setBankAgencyDigit = (bankAgencyDigit) => setCandidatoBanco("bankAgencyDigit", bankAgencyDigit);
 
     const setDataNascimento = (dataNascimento) => {
         setCandidato(estadoAnterior => {
@@ -502,40 +517,107 @@ const CandidatoRegistro = () => {
                 </StepperPanel>
                 <StepperPanel header="Dados Pessoais">
                         <Container padding={'30px 0 0 0'}>
-                            <CampoTexto 
-                                camposVazios={classError}
-                                name="nome" 
-                                valor={candidato?.nome ?? ''} 
-                                setValor={setName} 
-                                type="text" 
-                                label="Nome" 
-                                placeholder="Digite o nome" />
-
-                            <CampoTexto 
-                                camposVazios={classError}
-                                name="email" 
-                                valor={candidato?.email ?? ''} 
-                                setValor={setEmail} 
-                                type="text" 
-                                label="E-mail" 
-                                placeholder="Digite o email" />
-                                
-                            <CampoTexto 
-                                type="date" 
-                                valor={candidato?.dataNascimento} 
-                                setValor={setDataNascimento}
-                                label="Data de Nascimento"  />
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="nome" 
+                                        valor={candidato?.nome ?? ''} 
+                                        setValor={setName} 
+                                        type="text" 
+                                        label="Nome" 
+                                        placeholder="Digite o nome" />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="email" 
+                                        valor={candidato?.email ?? ''} 
+                                        setValor={setEmail} 
+                                        type="text" 
+                                        label="E-mail" 
+                                        placeholder="Digite o email" />
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        type="date" 
+                                        valor={candidato?.dataNascimento} 
+                                        setValor={setDataNascimento}
+                                        label="Data de Nascimento"  />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        patternMask={['999.999.999-99', '99.999.999/9999-99']} 
+                                        name="cpf" 
+                                        valor={candidato?.cpf} 
+                                        setValor={setCpf} 
+                                        type="text" 
+                                        label="CPF" 
+                                        placeholder="Digite p CPF" />
+                                </Col6>
+                            </Col12>
+                            <Frame padding="24px 0px">
+                                <Titulo>
+                                    <h5>Dados Bancários</h5>
+                                </Titulo>
                             
-                            <CampoTexto 
-                                camposVazios={classError} 
-                                patternMask={['999.999.999-99', '99.999.999/9999-99']} 
-                                name="cpf" 
-                                valor={candidato?.cpf} 
-                                setValor={setCpf} 
-                                type="text" 
-                                label="CPF" 
-                                placeholder="Digite p CPF" />
-
+                                <Col12>
+                                    <Col6>
+                                    <CampoTexto 
+                                            camposVazios={classError} 
+                                            name="bank.number" 
+                                            valor={candidato?.bank?.number} 
+                                            setValor={setBankNumber} 
+                                            type="text" 
+                                            label="Banco" 
+                                            placeholder="Banco" />
+                                    </Col6>
+                                    <Col6>
+                                        <CampoTexto 
+                                            camposVazios={classError} 
+                                            name="bank.account" 
+                                            valor={candidato?.bank?.account} 
+                                            setValor={setBankAccount} 
+                                            type="text" 
+                                            label="Conta Corrente" 
+                                            placeholder="Conta Corrente" />
+                                    </Col6>
+                                    <Col6>
+                                        <CampoTexto 
+                                            camposVazios={classError} 
+                                            name="bank.account.digit" 
+                                            width={'100%'}
+                                            valor={candidato?.bank?.account.digit} 
+                                            setValor={setBankAccountDigit} 
+                                            type="text" 
+                                            label="Digito CC" 
+                                            placeholder="Digito CC" />
+                                    </Col6>
+                                    <Col6>
+                                        <CampoTexto 
+                                            camposVazios={classError} 
+                                            name="bank.agency" 
+                                            valor={candidato?.bank?.agency} 
+                                            setValor={setBankAgency} 
+                                            type="text" 
+                                            label="Agência" 
+                                            placeholder="Digite a agência" />
+                                    </Col6>
+                                    <Col6>
+                                        <CampoTexto 
+                                            camposVazios={classError}
+                                            name="bank.agency.digit" 
+                                            valor={candidato?.bank?.agency.digit} 
+                                            setValor={setBankAgencyDigit} 
+                                            type="text" 
+                                            label="Digito Agência" 
+                                            placeholder="Digite o digito da agência" />
+                                    </Col6>
+                                </Col12>
+                            </Frame>
                             <Frame padding="24px 0px">
                                 <Titulo>
                                     <h5>Endereço</h5>
