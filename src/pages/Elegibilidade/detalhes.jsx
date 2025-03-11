@@ -24,12 +24,13 @@ import DataTableDepartamentos from '@components/DataTableDepartamentos'
 import DataTableSecoes from '@components/DataTableSecoes'
 import DataTableCentrosCusto from '@components/DataTableCentrosCusto'
 import DataTableCargos from '@components/DataTableCargos'
+import DataTableFuncoes from '@components/DataTableFuncoes'
+import DataTableHorarios from '@components/DataTableHorarios'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import elegibilidades from '@json/elegibilidade.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import { TabPanel, TabView } from 'primereact/tabview'
-import DataTableHorarios from '../../components/DataTableHorarios'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',

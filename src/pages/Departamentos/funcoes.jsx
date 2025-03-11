@@ -2,7 +2,7 @@ import styles from './Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import http from '@http'
-import DatatableFuncoes from '@components/DatatableFuncoes'
+import DataTableFuncoes from '@components/DataTableFuncoes'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
@@ -101,7 +101,7 @@ function FuncoesLista() {
             </BotaoGrupo>
             {
                 funcoes && funcoes.length > 0 ?
-                    <DatatableFuncoes funcoes={funcoes} />
+                    <DataTableFuncoes funcoes={funcoes} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>

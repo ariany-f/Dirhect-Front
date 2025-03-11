@@ -78,6 +78,17 @@ function DataTableFuncoes({ funcoes, showSearch = true, pagination = true, selec
         }
     }
 
+    const representativeCargoTemplate = (rowData) => {
+        if(rowData?.cargo && rowData?.cargo.nome) {
+            return (
+                <p>{rowData?.cargo.nome}</p>
+            )
+        }
+        else {
+            return <p>Não informado</p>
+        }
+    }
+
     const representativeDetalhesTemplate = (rowData) => {
         if(rowData?.descricao) {
             // Garante que o texto não passe de 100 caracteres
@@ -115,6 +126,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, pagination = true, selec
                 }
                 <Column field="id" header="Id" style={{ width: '10%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '20%' }}></Column>
+                <Column field="cargo" header="Cargo" style={{ width: '15%' }} body={representativeCargoTemplate}></Column>
                 <Column body={representativeDetalhesTemplate} field="descricao" header="Descrição" style={{ width: '60%' }}></Column>
             </DataTable>
         </>
