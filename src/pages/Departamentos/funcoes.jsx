@@ -84,7 +84,7 @@ function FuncoesLista() {
                     <Link to="/estrutura/centros-custo">
                         <Botao estilo={''} size="small" tab>Centros de Custo</Botao>
                     </Link>
-                    <Link to="/estrutura/funcoes">
+                    <Link to="/estrutura/cargos">
                         <Botao estilo={''} size="small" tab>Cargos</Botao>
                     </Link>
                     <Link to="/estrutura/funcoes">
