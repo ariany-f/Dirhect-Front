@@ -244,83 +244,86 @@ function ColaboradorDadosPessoais() {
                 </Col3>
             </Col12>
         </div>
-        <Titulo><h6>Informações trabalhistas</h6></Titulo>
-        <div className={styles.card_dashboard}>
-            <Col12>
-                <Col3>
-                    <Texto>Data de Admissão</Texto>
-                    {colaborador?.dt_admissao ?
-                        <Texto weight="800">{new Date(colaborador?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Deficiente Físico</Texto>
-                    {colaborador?.dados_pessoa_fisica?.deficiente_fisico ?
-                        <Texto weight="800">{colaborador?.dados_pessoa_fisica?.deficiente_fisico}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </Col3>
-                <Col3>
-                    <Texto>Carteira de Trabalho</Texto>
-                    {colaborador?.dados_pessoa_fisica?.carteira_trabalho ?
-                        <>
-                            <Texto weight="800">{colaborador?.dados_pessoa_fisica?.carteira_trabalho}</Texto>
-                            {colaborador?.dados_pessoa_fisica?.serie_carteira_trab ?
-                            <Texto weight="800">{colaborador?.dados_pessoa_fisica?.serie_carteira_trab}</Texto>
+        <Col12>
+            <Col6>
+                <Titulo><h6>Informações de contato</h6></Titulo>
+                <div className={styles.card_dashboard}>
+                    <ContainerHorizontal width="50%">
+                        <Frame gap="5px">
+                            <Texto>Telefone/Celular</Texto>
+                            {colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.telefone1 ?
+                                <Texto weight="800">{colaborador?.dados_pessoa_fisica?.telefone1}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                        </Frame>
+                        <BotaoSemBorda>
+                            <RiEditBoxFill size={18} />
+                            <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Alterar</Link>
+                        </BotaoSemBorda>
+                    </ContainerHorizontal>
+                    <ContainerHorizontal width="50%">
+                        <Frame gap="5px">
+                            <Texto>E-mail</Texto>
+                            {colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.email ?
+                                <Texto weight="800">{colaborador?.dados_pessoa_fisica.email}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                        </Frame>
+                        <BotaoSemBorda>
+                            <RiEditBoxFill size={18} />
+                            <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
+                        </BotaoSemBorda>
+                    </ContainerHorizontal>
+                </div>
+            </Col6>
+            <Col6>
+                <Titulo><h6>Informações trabalhistas</h6></Titulo>
+                <div className={styles.card_dashboard}>
+                    <Col12>
+                        <Col3>
+                            <Texto>Data de Admissão</Texto>
+                            {colaborador?.dt_admissao ?
+                                <Texto weight="800">{new Date(colaborador?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                            <Texto>Salário</Texto>
+                            {colaborador?.salario ?
+                                <Texto weight="800">{Real.format(colaborador?.salario)}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                            <Texto>Deficiente Físico</Texto>
+                            {colaborador?.dados_pessoa_fisica?.deficiente_fisico ?
+                                <Texto weight="800">{colaborador?.dados_pessoa_fisica?.deficiente_fisico}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                        </Col3>
+                        <Col3>
+                            <Texto>Carteira de Trabalho</Texto>
+                            {colaborador?.dados_pessoa_fisica?.carteira_trabalho ?
+                                <>
+                                    <Texto weight="800">{colaborador?.dados_pessoa_fisica?.carteira_trabalho}</Texto>
+                                    {colaborador?.dados_pessoa_fisica?.serie_carteira_trab ?
+                                    <Texto weight="800">{colaborador?.dados_pessoa_fisica?.serie_carteira_trab}</Texto>
+                                    : <Skeleton variant="rectangular" width={200} height={25} />
+                                    }
+                                </>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
-                        </>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Data de Emissão CTPS</Texto>
-                    {colaborador?.dados_pessoa_fisica?.data_emissao_ctps ?
-                    <Texto weight="800">{new Date(colaborador?.dados_pessoa_fisica?.data_emissao_ctps).toLocaleDateString('pt-BR')}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Data de Validade CTPS</Texto>
-                    {colaborador?.dados_pessoa_fisica?.data_venc_ctps ?
-                    <Texto weight="800">{new Date(colaborador?.dados_pessoa_fisica?.data_venc_ctps).toLocaleDateString('pt-BR')}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </Col3>
-                <Col3>
-                    <Texto>Salário</Texto>
-                    {colaborador?.salario ?
-                        <Texto weight="800">{Real.format(colaborador?.salario)}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </Col3>
-            </Col12>
-        </div>
-        <Titulo><h6>Informações de contato</h6></Titulo>
-
-        <div className={styles.card_dashboard}>
-            <ContainerHorizontal width="50%">
-                <Frame gap="5px">
-                    <Texto>Telefone/Celular</Texto>
-                    {colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.telefone1 ?
-                        <Texto weight="800">{colaborador?.dados_pessoa_fisica?.telefone1}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </Frame>
-                <BotaoSemBorda>
-                    <RiEditBoxFill size={18} />
-                    <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Alterar</Link>
-                </BotaoSemBorda>
-            </ContainerHorizontal>
-            <ContainerHorizontal width="50%">
-                <Frame gap="5px">
-                    <Texto>E-mail</Texto>
-                    {colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.email ?
-                        <Texto weight="800">{colaborador?.dados_pessoa_fisica.email}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </Frame>
-                <BotaoSemBorda>
-                    <RiEditBoxFill size={18} />
-                    <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
-                </BotaoSemBorda>
-            </ContainerHorizontal>
-        </div>
+                            <Texto>Data de Emissão CTPS</Texto>
+                            {colaborador?.dados_pessoa_fisica?.data_emissao_ctps ?
+                            <Texto weight="800">{new Date(colaborador?.dados_pessoa_fisica?.data_emissao_ctps).toLocaleDateString('pt-BR')}</Texto>
+                            : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                            <Texto>Data de Validade CTPS</Texto>
+                            {colaborador?.dados_pessoa_fisica?.data_venc_ctps ?
+                            <Texto weight="800">{new Date(colaborador?.dados_pessoa_fisica?.data_venc_ctps).toLocaleDateString('pt-BR')}</Texto>
+                            : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                        </Col3>
+                    </Col12>
+                </div>  
+            </Col6>
+        </Col12>
         <ModalAlterarTelefone dadoAntigo={((colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.telefone1) ? (colaborador?.dados_pessoa_fisica?.telefone1) : '')} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
         <ModalAlterarEmail dadoAntigo={(colaborador?.dados_pessoa_fisica ? colaborador?.dados_pessoa_fisica?.email : '')} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
        
