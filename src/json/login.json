@@ -16,9 +16,9 @@
       "tipo": "funcionario",
       "email": "funcionario@example.com",
       "senha": "123",
-      "cpf": "502.026.810-09",
-      "name": "Colaborador Exemplo",
-      "public_id": 12,
+      "cpf": "171.072.474-92",
+      "name": "Colaborador",
+      "public_id": 109,
       "empresas": [
         "8fa184ff-503f-4d15-a1c0-610eb7db905b"
       ]

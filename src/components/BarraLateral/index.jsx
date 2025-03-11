@@ -172,20 +172,27 @@ function BarraLateral() {
                 return [
                     {
                         "id": 1,
-                        "url": "/candidato/registro/1",
-                        "pageTitulo": "Meu Cadastro",
-                        "icone": <RiFilePaperFill size={20} className="icon" />,
-                        "itemTitulo": "Meu Cadastro"
+                        "url": "/admissao/registro/1",
+                        "pageTitulo": "Minha Admissão",
+                        "icone": <RiFileListFill size={20} className="icon" />,
+                        "itemTitulo": "Minha Admissão"
                     }
                 ];
             case 'funcionario':
                 return [
                     {
                         "id": 1,
-                        "url": "/candidato/registro/1",
+                        "url": "/colaborador/detalhes/109",
                         "pageTitulo": "Meu Cadastro",
                         "icone": <RiFilePaperFill size={20} className="icon" />,
                         "itemTitulo": "Meu Cadastro"
+                    },
+                    {
+                        "id": 1,
+                        "url": "/admissao/registro/109",
+                        "pageTitulo": "Minha Admissão",
+                        "icone": <RiFileListFill size={20} className="icon" />,
+                        "itemTitulo": "Minha Admissão"
                     },
                     {
                         "id": 2,
@@ -441,7 +448,7 @@ function BarraLateral() {
                     {itensMenu().map((item) => {
                         return (
                             <Link key={item.id} className="link" to={item.url}>
-                                <ItemNavegacao ativo={(('/'+location.pathname.split('/')[1]) === item.url) || (home.includes(location.pathname.split('/')[1]) && item.url == '/')}>
+                                <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
                                     {item.icone}
                                     {item.itemTitulo}
                                 </ItemNavegacao>

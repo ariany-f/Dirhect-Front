@@ -96,7 +96,9 @@ function ColaboradorDetalhes() {
             <Toast ref={toast} />
             <ConfirmDialog />
             <Container gap="32px">
-                <BotaoVoltar linkFixo="/colaborador" />
+                    {colaborador && usuario.public_id != colaborador?.id && 
+                        <BotaoVoltar linkFixo="/colaborador" />
+                    }
                     {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                         <BotaoGrupo align="space-between">
                             <Titulo align="left">

@@ -74,7 +74,7 @@ import VagasCanceladas from '@pages/Vagas/canceladas'
 import VagasRegistro from '@pages/Vagas/Registro'
 import DetalhesVaga from '@pages/Vagas/detalhes'
 import Admissoes from '@pages/Admissoes'
-import CandidatoRegistro from '@pages/Candidato/Registro'
+import CandidatoRegistro from '@pages/Admissoes/Registro'
 import ValidarAdmissoes from '@pages/Admissoes/validar'
 import DetalhesAdmissao from '@pages/Admissoes/detalhes'
 import FiliaisLista from '@pages/Departamentos/filiais'
@@ -305,11 +305,10 @@ function AppRouter() {
                   <Route path="detalhes/:id" element={<DetalhesMovimentos />} />
                 </Route>
 
-                <Route path="/admissao" element={<Admissoes />} />
-                <Route path="/admissao/validar" element={<ValidarAdmissoes />} />
-                <Route path="/admissao/detalhes/:id/:candidato" element={<DetalhesAdmissao />} />
-
-                <Route path="/candidato/registro/:id" element={<CandidatoRegistro />} />
+                <Route path="admissao" element={<Admissoes />} />
+                <Route path="admissao/validar" element={<ValidarAdmissoes />} />
+                <Route path="admissao/detalhes/:id/:candidato" element={<DetalhesAdmissao />} />
+                <Route path="admissao/registro/:id" element={<CandidatoRegistro />} />
               
                 <Route path="elegibilidade" element={<Elegibilidade />} >
                   <Route index element={<ElegibilidadeLista />} />

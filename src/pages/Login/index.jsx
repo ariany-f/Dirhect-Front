@@ -90,13 +90,20 @@ function Login() {
                     ArmazenadorToken.UserCompanyDomain ?? 'geral'
                 )
     
-                if(perfilEncontrado.tipo != 'candidato' && perfilEncontrado.tipo != 'funcionario')
+                if(perfilEncontrado.tipo != 'funcionario')
                 {
-                    navegar('/login/selecionar-empresa');
+                    if(perfilEncontrado.tipo != 'candidato')
+                    {
+                        navegar('/login/selecionar-empresa');
+                    }
+                    else
+                    {
+                        navegar(`/admissao/registro/${perfilEncontrado.id}`)
+                    }
                 }
                 else
                 {
-                    navegar(`/candidato/registro/${perfilEncontrado.id}`)
+                    navegar(`/colaborador/detalhes/${perfilEncontrado.public_id}`)
                 }
             } else {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Usuário ou senha não encontrados', life: 3000 });
