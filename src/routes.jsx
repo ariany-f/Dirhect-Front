@@ -188,7 +188,7 @@ function AppRouter() {
                     <Route path="cartoes" element={<ColaboradorCartoes />} />
                     <Route path="saldo" element={<ColaboradorSaldo />} />
                     <Route path="dependentes" element={<ColaboradorDependentes />} />
-                    <Route path="dependentes/:id" element={<ColaboradorDependentesDetalhes />} />
+                    <Route path="dependentes/:codigo" element={<ColaboradorDependentesDetalhes />} />
                     <Route path="ferias" element={<ColabroadorFerias />} />
                     <Route path="ausencias" element={<ColaboradorAusencias />} />
                     <Route path="esocial" element={<ColabroadorESocial />} />

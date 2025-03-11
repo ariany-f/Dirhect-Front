@@ -11,7 +11,7 @@ import DataTableDependentes from '@components/DataTableDependentes'
 
 function ColaboradorDependentes() {
 
-    let { id } = useParams()
+    let { id, codigo } = useParams()
     const [loading, setLoading] = useState(false)
     const [dependentes, setDependentes] = useState(null)
     const [pessoasfisicas, setPessoasFisicas] = useState(null)
@@ -22,7 +22,7 @@ function ColaboradorDependentes() {
         if(!dependentes)
         {
             setLoading(true)
-            http.get(`dependente/?format=json&id_funcionario=${id}`)
+            http.get(`dependente/${codigo}/?format=json`)
                 .then(response => {
                     setDependentes(response)
                 })
