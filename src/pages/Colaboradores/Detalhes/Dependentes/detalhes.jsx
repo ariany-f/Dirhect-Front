@@ -10,7 +10,7 @@ import FrameVertical from "@components/FrameVertical"
 import Container from "@components/Container"
 import styles from './../Detalhes.module.css'
 import { Skeleton } from 'primereact/skeleton'
-import { FaTrash } from 'react-icons/fa'
+import { FaArrowLeft, FaTrash } from 'react-icons/fa'
 import { Toast } from 'primereact/toast'
 import http from '@http'
 import { useEffect, useRef, useState } from 'react'
@@ -92,6 +92,18 @@ function ColaboradorDependenteDetalhes() {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
+    const representativeParentescoTemplate = (dependente) => {
+        let grau_parentesco = dependente?.grau_parentesco;
+        switch(dependente?.grau_parentesco)
+        {
+            case 'Filho':
+                return <Tag severity="success" value="Filho"></Tag>;
+            default:
+                return <Tag severity="primary" value={dependente?.grau_parentesco}></Tag>;
+        }
+    }
+
+
     return (
         <Frame>
             <Toast ref={toast} />
@@ -101,8 +113,10 @@ function ColaboradorDependenteDetalhes() {
                     <BotaoGrupo align="space-between">
                         <Titulo align="left">
                             <Frame gap="5px">
-                                <h5>{pessoafisica?.nome}</h5>
-                                <small>{dependente?.grau_parentesco}</small>
+                                <FrameVertical gap="5px" alinhamento="center">
+                                    <FaArrowLeft onClick={() => navegar(-1)} /> <h5>{pessoafisica?.nome}</h5>
+                                </FrameVertical>
+                                <small>{representativeParentescoTemplate(dependente)}</small>
                             </Frame>
                         </Titulo>
                     </BotaoGrupo>
