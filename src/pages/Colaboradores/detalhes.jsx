@@ -97,11 +97,11 @@ function ColaboradorDetalhes() {
             <ConfirmDialog />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/colaborador" />
-                    {colaborador && colaborador?.dados_pessoa_fisica?.nome ? 
+                    {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                         <BotaoGrupo align="space-between">
                             <Titulo align="left">
                                 <FrameVertical gap="10px">
-                                    <h3>{colaborador?.dados_pessoa_fisica?.nome}</h3>
+                                    <h3>{colaborador?.funcionario_pessoa_fisica?.nome}</h3>
                                     {representativSituacaoTemplate()}
                                 </FrameVertical>
                             </Titulo>
@@ -148,8 +148,14 @@ function ColaboradorDetalhes() {
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/saldo` ? 'black':''} size="small" tab>Saldo em benefícios</Botao>
                     </Link> */}
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/dependentes`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dependentes` ? 'black':''} size="small" tab>Dependentes</Botao>
-                    </Link>
+                    <Botao 
+                        estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
+                        size="small" 
+                        tab
+                    >
+                        Dependentes
+                    </Botao>
+                </Link>
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
                     </Link>

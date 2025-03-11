@@ -56,14 +56,14 @@ function DataTableColaboradores({ colaboradores }) {
     const representativeCPFTemplate = (rowData) => {
     
         return (
-            <Texto weight={600}>{formataCPF(rowData?.dados_pessoa_fisica?.cpf)}</Texto>
+            <Texto weight={600}>{formataCPF(rowData?.funcionario_pessoa_fisica?.cpf)}</Texto>
         )
     }
     
     // const representativeNomeTemplate = (rowData) => {
         
     //     return (
-    //         <Texto weight={600}>{rowData?.dados_pessoa_fisica?.nome}</Texto>
+    //         <Texto weight={600}>{rowData?.funcionario_pessoa_fisica?.nome}</Texto>
     //     )
     // }
     
@@ -93,19 +93,19 @@ function DataTableColaboradores({ colaboradores }) {
     const representativeDataNascimentoTemplate = (rowData) => {
 
         return (
-            rowData?.dados_pessoa_fisica?.data_nascimento ?
-            <Texto weight={500}>{new Date(rowData?.dados_pessoa_fisica?.data_nascimento ).toLocaleDateString('pt-BR')}</Texto>
+            rowData?.funcionario_pessoa_fisica?.data_nascimento ?
+            <Texto weight={500}>{new Date(rowData?.funcionario_pessoa_fisica?.data_nascimento ).toLocaleDateString('pt-BR')}</Texto>
             : '---'
         )
     }
     
     const representativeNomeTemplate = (rowData) => {
-        const cpf = rowData?.dados_pessoa_fisica?.cpf ?
-        formataCPF(rowData?.dados_pessoa_fisica?.cpf)
+        const cpf = rowData?.funcionario_pessoa_fisica?.cpf ?
+        formataCPF(rowData?.funcionario_pessoa_fisica?.cpf)
         : '---';
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.dados_pessoa_fisica?.nome}
+                {rowData?.funcionario_pessoa_fisica?.nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
@@ -192,7 +192,7 @@ function DataTableColaboradores({ colaboradores }) {
                 contextMenuSelection={selectedCollaborator} 
                 value={colaboradores} 
                 filters={filters} 
-                globalFilterFields={['chapa', 'dados_pessoa_fisica.nome', 'dados_pessoa_fisica.cpf']} 
+                globalFilterFields={['chapa', 'funcionario_pessoa_fisica.nome', 'funcionario_pessoa_fisica.cpf']} 
                 emptyMessage="Não foram encontrados colaboradores" 
                 paginator 
                 removableSort 
@@ -204,10 +204,10 @@ function DataTableColaboradores({ colaboradores }) {
                 }
                 >
                 <Column body={representativeChapaTemplate} field="chapa" header="Chapa" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeNomeTemplate} field="dados_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
+                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
                 <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeDataNascimentoTemplate} field="dados_pessoa_fisica.data_nascimento " header="Data de Nascimento" sortable style={{ width: '15%' }}></Column>
+                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento " header="Data de Nascimento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>
                 {/* <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Nº Dependentes" style={{ width: '12%' }}></Column> */}
                 <Column header="" style={{ width: '10%' }} body={(rowData) => (

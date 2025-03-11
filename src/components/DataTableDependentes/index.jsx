@@ -29,7 +29,9 @@ function DataTableDependentes({ dependentes, search = true }) {
 
     function verDetalhes(value)
     {
+        console.log(value)
         setSelectedDependente(value.id)
+        navegar(`/colaborador/detalhes/${value.funcionario.id}/dependentes/${value.id}`)
     }
     
     function formataCPF(cpf) {
@@ -41,14 +43,14 @@ function DataTableDependentes({ dependentes, search = true }) {
     const representativeCPFTemplate = (rowData) => {
     
         return (
-            formataCPF(rowData?.dados_pessoa_fisica?.cpf)
+            formataCPF(rowData?.dependente_pessoa_fisica?.cpf)
         )
     }
     
     // const representativeNomeTemplate = (rowData) => {
         
     //     return (
-    //         rowData?.dados_pessoa_fisica?.nome
+    //         rowData?.dependente_pessoa_fisica?.nome
     //     )
     // }
     
@@ -62,12 +64,12 @@ function DataTableDependentes({ dependentes, search = true }) {
     }
     
     const representativeFuncNomeTemplate = (rowData) => {
-        const cpf = rowData?.funcionario?.dados_pessoa_fisica?.cpf ?
-        formataCPF(rowData?.funcionario?.dados_pessoa_fisica?.cpf)
+        const cpf = rowData?.id_funcionario?.funcionario_pessoa_fisica?.cpf ?
+        formataCPF(rowData?.id_funcionario?.funcionario_pessoa_fisica?.cpf)
         : '---';
         return <div key={rowData?.funcionario?.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.funcionario?.dados_pessoa_fisica?.nome}
+                {rowData?.id_funcionario?.funcionario_pessoa_fisica?.nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
@@ -77,12 +79,12 @@ function DataTableDependentes({ dependentes, search = true }) {
     
     
     const representativeNomeTemplate = (rowData) => {
-        const cpf = rowData?.dados_pessoa_fisica?.cpf ?
-        formataCPF(rowData?.dados_pessoa_fisica?.cpf)
+        const cpf = rowData?.dependente_pessoa_fisica?.cpf ?
+        formataCPF(rowData?.dependente_pessoa_fisica?.cpf)
         : '---';
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.dados_pessoa_fisica?.nome}
+                {rowData?.dependente_pessoa_fisica?.nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
@@ -115,7 +117,7 @@ function DataTableDependentes({ dependentes, search = true }) {
                     </span>
                 </div>
             }
-            <DataTable value={dependentes} filters={filters} globalFilterFields={['dados_pessoa_fisica.nome', 'dados_pessoa_fisica.cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={dependentes} filters={filters} globalFilterFields={['dependente_pessoa_fisica.nome', 'dependente_pessoa_fisica.cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '35%' }}></Column>
                 <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column body={representativeParentescoTemplate} header="Grau de Parentesco" style={{ width: '20%' }}></Column>
