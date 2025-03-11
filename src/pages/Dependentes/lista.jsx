@@ -60,7 +60,7 @@ function DependentesListagem() {
             </BotaoGrupo>
             {
                 dependentes ?
-                <DataTableDependentes dependentes={dependentes} />
+                    <DataTableDependentes dependentes={dependentes} />
                 :
                 <ContainerSemRegistro>
                 <section className={styles.container}>
