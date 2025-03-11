@@ -2,7 +2,7 @@ import { styled } from "styled-components"
 import ItemNavegacao from "./ItemNavegacao"
 import Botao from "@components/Botao"
 import { AiFillHome } from "react-icons/ai"
-import { HiMiniShoppingBag  } from "react-icons/hi2";
+import { HiMiniNewspaper, HiMiniShoppingBag  } from "react-icons/hi2";
 import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine, RiBlenderFill } from "react-icons/ri"
 import { BiBusSchool, BiCart, BiDrink, BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
@@ -157,7 +157,7 @@ function BarraLateral() {
                         "id": 9,
                         "url": "/ciclos",
                         "pageTitulo": "Lançtos de Folha",
-                        "icone": <TbTableShare size={20} fill="white" />,
+                        "icone": <HiMiniNewspaper size={20} fill="white"/>,
                         "itemTitulo": "Lançtos de Folha"
                     },
                     {
@@ -284,7 +284,7 @@ function BarraLateral() {
                         "id": 8,
                         "url": "/ciclos",
                         "pageTitulo": "Lançtos de Folha",
-                        "icone": <TbTableShare size={20} fill="white" />,
+                        "icone": <HiMiniNewspaper size={20} fill="white" />,
                         "itemTitulo": "Lançtos de Folha"
                     },
                     {
