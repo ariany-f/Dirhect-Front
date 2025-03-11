@@ -85,7 +85,10 @@ function CargosLista() {
                         <Botao estilo={''} size="small" tab>Centros de Custo</Botao>
                     </Link>
                     <Link to="/estrutura/cargos">
-                        <Botao estilo={'black'} size="small" tab>Cargos e Funções</Botao>
+                        <Botao estilo={'black'} size="small" tab>Cargos</Botao>
+                    </Link>
+                    <Link to="/estrutura/funcoes">
+                        <Botao estilo={''} size="small" tab>Funções</Botao>
                     </Link>
                     <Link to="/estrutura/sindicatos">
                         <Botao estilo={''} size="small" tab>Sindicatos</Botao>

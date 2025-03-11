@@ -53,6 +53,7 @@ function DetalhesElegibilidade() {
     const [departamentos, setDepartamentos] = useState(null)
     const [secoes, setSecoes] = useState(null)
     const [cargos, setCargos] = useState(null)
+    const [funcoes, setFuncoes] = useState(null)
     const [centros_custo, setCentrosCusto] = useState(null)
     const [sindicatos, setSindicatos] = useState(null)
     const [horarios, setHorarios] = useState(null)
@@ -63,6 +64,7 @@ function DetalhesElegibilidade() {
     const [selectedSindicatos, setSelectedSindicatos] = useState([])
     const [selectedCentrosCusto, setSelectedCentrosCusto] = useState([])
     const [selectedHorarios, setSelectedHorarios] = useState([])
+    const [selectedFuncoes, setSelectedFuncoes] = useState([])
     const [allFiliais, setAllFiliais] = useState(false)
     const [allDepartamentos, setAllDepartamentos] = useState(false)
     const [allCargos, setAllCargos] = useState(false)
@@ -70,6 +72,7 @@ function DetalhesElegibilidade() {
     const [allSindicatos, setAllSindicatos] = useState(false)
     const [allCentrosCusto, setAllCentrosCusto] = useState(false)
     const [allHorarios, setAllHorarios] = useState(false)
+    const [allFuncoes, setAllFuncoes] = useState(false)
    
     useEffect(() => {
         if(elegibilidade.length == 0)
@@ -81,6 +84,7 @@ function DetalhesElegibilidade() {
                 setSelectedFiliais(cc[0].configuracoes.filiais.lista)
                 setSelectedDepartamentos(cc[0].configuracoes.departamentos.lista)
                 setSelectedCargos(cc[0].configuracoes.cargos.lista)
+                setSelectedFuncoes(cc[0].configuracoes.funcoes.lista)
                 setSelectedSecoes(cc[0].configuracoes.secoes.lista)
                 setSelectedSindicatos(cc[0].configuracoes.sindicatos.lista)
                 setSelectedCentrosCusto(cc[0].configuracoes.centros_custo.lista)
@@ -161,6 +165,18 @@ function DetalhesElegibilidade() {
             http.get('horario/?format=json')
             .then(response => {
                 setHorarios(response)
+                
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                // setLoading(false)
+            })
+
+            http.get('funcao/?format=json')
+            .then(response => {
+                setFuncoes(response)
                 
             })
             .catch(erro => {
@@ -272,13 +288,21 @@ function DetalhesElegibilidade() {
                             <DataTableCentrosCusto centros_custo={centros_custo} showSearch={false} selected={selectedCentrosCusto} setSelected={setSelectedCentrosCusto} />
                         {/* } */}
                     </TabPanel>
-                    <TabPanel header="Cargos e Funções">
+                    <TabPanel header="Cargos">
                         <Frame padding="16px">
                             <CheckboxContainer key="cargos" name="cargos[all]" label="Todos os registros, inclusive novos" valor={!!allCargos} setValor={() => handleChange('cargos', (!!allCargos))} />
                         </Frame>
                         {/* {!allCargos && */}
                             <DataTableCargos cargos={cargos} showSearch={false} selected={selectedCargos} setSelected={setSelectedCargos} />
                         {/* } */}
+                    </TabPanel>
+                    <TabPanel header="Funções">
+                        <Frame padding="16px">
+                            <CheckboxContainer key="funcoes" name="funcoes[all]" label="Todos os registros, inclusive novos" valor={!!allFuncoes} setValor={() => handleChange('funcoes', (!!allFuncoes))} />
+                                </Frame>
+                                {/* {!allFuncoes && */}
+                                <DataTableFuncoes funcoes={funcoes} showSearch={false} selected={selectedFuncoes} setSelected={setSelectedFuncoes} />
+                                {/* } */}
                     </TabPanel>
                     <TabPanel header="Sindicatos">
                         <Frame padding="16px">

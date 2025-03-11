@@ -46,6 +46,12 @@
                 "lista": [
                     
                 ]
+            },
+            "funcoes": {
+                "todos": true,
+                "lista": [
+                    
+                ]
             }
         },
         "contratos": [
@@ -148,6 +154,12 @@
                 "lista": [
                     
                 ]
+            },
+            "funcoes": {
+                "todos": true,
+                "lista": [
+                    
+                ]
             }
         },
         "contratos": [
@@ -229,6 +241,12 @@
                 "todos": true,
                 "lista": [
 
+                ]
+            },
+            "funcoes": {
+                "todos": true,
+                "lista": [
+                    
                 ]
             }
         },
@@ -314,6 +332,12 @@
                 ]
             },
             "horarios": {
+                "todos": true,
+                "lista": [
+                    
+                ]
+            },
+            "funcoes": {
                 "todos": true,
                 "lista": [
                     

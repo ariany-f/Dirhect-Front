@@ -130,6 +130,7 @@ import DetalhesElegibilidade from './pages/Elegibilidade/detalhes'
 import Operadoras from './pages/Operadoras'
 import OperadorasListagem from './pages/Operadoras/lista'
 import DetalhesOperadoras from './pages/Operadoras/detalhes'
+import FuncoesLista from './pages/Departamentos/funcoes'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -221,6 +222,7 @@ function AppRouter() {
                   <Route index element={<FiliaisLista />} />
                   <Route path="departamentos" element={<DepartamentoLista />} />
                   <Route path="cargos" element={<CargosLista />} />
+                  <Route path="funcoes" element={<FuncoesLista />} />
                   <Route path="secoes" element={<SecoesLista />} />
                   <Route path="sindicatos" element={<SindicatosLista />} />
                   <Route path="centros-custo" element={<CentrosCustoLista />} />
