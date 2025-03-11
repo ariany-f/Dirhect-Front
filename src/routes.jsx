@@ -120,17 +120,18 @@ import MarketplaceLista from '@pages/Marketplace/grid'
 import PedidoAdicionarDetalhes from '@pages/Pedidos/adicionar-detalhes'
 import MobileBlocker from '@components/MobileBlocker'
 import { useEffect, useState } from 'react'
-import Elegibilidade from './pages/Elegibilidade'
-import ElegibilidadeLista from './pages/Elegibilidade/lista'
-import ElegibilidadeConfigurar from './pages/Elegibilidade/configurar'
-import ElegibilidadeSelecionarFiliais from './pages/Elegibilidade/selecao-filiais'
-import ElegibilidadeSelecionarDepartamentos from './pages/Elegibilidade/selecao-departamentos'
-import ElegibilidadeEditarValor from './pages/Elegibilidade/editar-valor'
-import DetalhesElegibilidade from './pages/Elegibilidade/detalhes'
-import Operadoras from './pages/Operadoras'
-import OperadorasListagem from './pages/Operadoras/lista'
-import DetalhesOperadoras from './pages/Operadoras/detalhes'
-import FuncoesLista from './pages/Departamentos/funcoes'
+import Elegibilidade from '@pages/Elegibilidade'
+import ElegibilidadeLista from '@pages/Elegibilidade/lista'
+import ElegibilidadeConfigurar from '@pages/Elegibilidade/configurar'
+import ElegibilidadeSelecionarFiliais from '@pages/Elegibilidade/selecao-filiais'
+import ElegibilidadeSelecionarDepartamentos from '@pages/Elegibilidade/selecao-departamentos'
+import ElegibilidadeEditarValor from '@pages/Elegibilidade/editar-valor'
+import DetalhesElegibilidade from '@pages/Elegibilidade/detalhes'
+import Operadoras from '@pages/Operadoras'
+import OperadorasListagem from '@pages/Operadoras/lista'
+import DetalhesOperadoras from '@pages/Operadoras/detalhes'
+import FuncoesLista from '@pages/Departamentos/funcoes'
+import ColaboradorDependentesDetalhes from '@pages/Colaboradores/Detalhes/Dependentes/detalhes'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -187,6 +188,7 @@ function AppRouter() {
                     <Route path="cartoes" element={<ColaboradorCartoes />} />
                     <Route path="saldo" element={<ColaboradorSaldo />} />
                     <Route path="dependentes" element={<ColaboradorDependentes />} />
+                    <Route path="dependentes/:id" element={<ColaboradorDependentesDetalhes />} />
                     <Route path="ferias" element={<ColabroadorFerias />} />
                     <Route path="ausencias" element={<ColaboradorAusencias />} />
                     <Route path="esocial" element={<ColabroadorESocial />} />
