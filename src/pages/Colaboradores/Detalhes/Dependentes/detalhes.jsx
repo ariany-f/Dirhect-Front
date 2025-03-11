@@ -112,12 +112,10 @@ function ColaboradorDependenteDetalhes() {
                 {pessoafisica && pessoafisica?.nome ? 
                     <BotaoGrupo align="space-between">
                         <Titulo align="left">
-                            <Frame gap="5px">
-                                <FrameVertical gap="5px" alinhamento="center">
-                                    <FaArrowLeft onClick={() => navegar(-1)} /> <h5>{pessoafisica?.nome}</h5>
-                                </FrameVertical>
+                            <FrameVertical gap="5px" alinhamento="center">
+                                <FaArrowLeft style={{cursor: 'pointer'}} onClick={() => navegar(-1)} /> <h5>{pessoafisica?.nome}</h5>
                                 <small>{representativeParentescoTemplate(dependente)}</small>
-                            </Frame>
+                            </FrameVertical>
                         </Titulo>
                     </BotaoGrupo>
                 : <Skeleton variant="rectangular" width={300} height={40} />
