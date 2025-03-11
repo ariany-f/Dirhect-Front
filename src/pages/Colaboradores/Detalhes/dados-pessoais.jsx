@@ -238,7 +238,7 @@ function ColaboradorDadosPessoais() {
                     }
                     <Texto>Situação Militar</Texto>
                     {colaborador?.funcionario_pessoa_fisica?.situacao_militar ?
-                    <Texto weight="800">{colaborador?.dados_pessoa_fisica?.situacao_militar}</Texto>
+                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.situacao_militar}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                 </Col3>
@@ -251,8 +251,8 @@ function ColaboradorDadosPessoais() {
                     <ContainerHorizontal width="50%">
                         <Frame gap="5px">
                             <Texto>Telefone/Celular</Texto>
-                            {colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.telefone1 ?
-                                <Texto weight="800">{colaborador?.dados_pessoa_fisica?.telefone1}</Texto>
+                            {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica?.telefone1 ?
+                                <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.telefone1}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Frame>
@@ -264,8 +264,8 @@ function ColaboradorDadosPessoais() {
                     <ContainerHorizontal width="50%">
                         <Frame gap="5px">
                             <Texto>E-mail</Texto>
-                            {colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.email ?
-                                <Texto weight="800">{colaborador?.dados_pessoa_fisica.email}</Texto>
+                            {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica?.email ?
+                                <Texto weight="800">{colaborador?.funcionario_pessoa_fisica.email}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Frame>
@@ -292,31 +292,31 @@ function ColaboradorDadosPessoais() {
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Deficiente Físico</Texto>
-                            {colaborador?.dados_pessoa_fisica?.deficiente_fisico ?
-                                <Texto weight="800">{colaborador?.dados_pessoa_fisica?.deficiente_fisico}</Texto>
+                            {colaborador?.funcionario_pessoa_fisica?.deficiente_fisico ?
+                                <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.deficiente_fisico}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
                         <Col3>
                             <Texto>Carteira de Trabalho</Texto>
-                            {colaborador?.dados_pessoa_fisica?.carteira_trabalho ?
+                            {colaborador?.funcionario_pessoa_fisica?.carteira_trabalho ?
                                 <>
-                                    <Texto weight="800">{colaborador?.dados_pessoa_fisica?.carteira_trabalho}</Texto>
-                                    {colaborador?.dados_pessoa_fisica?.serie_carteira_trab ?
-                                    <Texto weight="800">{colaborador?.dados_pessoa_fisica?.serie_carteira_trab}</Texto>
+                                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.carteira_trabalho}</Texto>
+                                    {colaborador?.funcionario_pessoa_fisica?.serie_carteira_trab ?
+                                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.serie_carteira_trab}</Texto>
                                     : <Skeleton variant="rectangular" width={200} height={25} />
                                     }
                                 </>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Data de Emissão CTPS</Texto>
-                            {colaborador?.dados_pessoa_fisica?.data_emissao_ctps ?
-                            <Texto weight="800">{new Date(colaborador?.dados_pessoa_fisica?.data_emissao_ctps).toLocaleDateString('pt-BR')}</Texto>
+                            {colaborador?.funcionario_pessoa_fisica?.data_emissao_ctps ?
+                            <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_emissao_ctps).toLocaleDateString('pt-BR')}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Data de Validade CTPS</Texto>
-                            {colaborador?.dados_pessoa_fisica?.data_venc_ctps ?
-                            <Texto weight="800">{new Date(colaborador?.dados_pessoa_fisica?.data_venc_ctps).toLocaleDateString('pt-BR')}</Texto>
+                            {colaborador?.funcionario_pessoa_fisica?.data_venc_ctps ?
+                            <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_venc_ctps).toLocaleDateString('pt-BR')}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
@@ -324,8 +324,8 @@ function ColaboradorDadosPessoais() {
                 </div>  
             </Col6>
         </Col12>
-        <ModalAlterarTelefone dadoAntigo={((colaborador?.dados_pessoa_fisica && colaborador?.dados_pessoa_fisica?.telefone1) ? (colaborador?.dados_pessoa_fisica?.telefone1) : '')} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
-        <ModalAlterarEmail dadoAntigo={(colaborador?.dados_pessoa_fisica ? colaborador?.dados_pessoa_fisica?.email : '')} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
+        <ModalAlterarTelefone dadoAntigo={((colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica?.telefone1) ? (colaborador?.funcionario_pessoa_fisica?.telefone1) : '')} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
+        <ModalAlterarEmail dadoAntigo={(colaborador?.funcionario_pessoa_fisica ? colaborador?.funcionario_pessoa_fisica?.email : '')} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
        
         </>
     )
