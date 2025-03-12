@@ -215,7 +215,13 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                 <div className={styles.divisor}>
                     {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" &&
                         <Frame alinhamento="center">
-                            <Link className={styles.link} to="/estrutura">
+                            <Link  style={{
+                                border: '1px solid var(--neutro-200)',
+                                cursor: 'pointer',
+                                borderRadius: '8px',
+                                padding: '8px',
+                                boxSizing: 'initial'
+                            }} className={styles.link} to="/estrutura">
                                 <Texto weight="600" size={'14px'} color="black">
                                     <RiOrganizationChart size={18} />
                                     &nbsp;Estrutura Organizacional
