@@ -90,8 +90,8 @@ export default function MarketplaceLista() {
                     <Texto weight={800}>{product.nome}</Texto>
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                     {
-                        product.categorias.map((categoria) => (
-                            <BadgeGeral nomeBeneficio={categoria} iconeBeneficio={<TbTag />}></BadgeGeral>
+                        product.categorias.map((categoria, index) => (
+                            <BadgeGeral key={index} nomeBeneficio={categoria} iconeBeneficio={<TbTag />}></BadgeGeral>
                         ))
                     }
                     </div>

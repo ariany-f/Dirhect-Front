@@ -326,6 +326,9 @@ template {
 .p-inputswitch.p-highlight .p-inputswitch-slider {
   background-color: var(--primaria);
 }
+.p-tooltip-text	{
+  color: var(--white);
+}
 `
 
 

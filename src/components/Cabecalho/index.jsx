@@ -10,6 +10,7 @@ import { MdOutlineKeyboardArrowDown, MdShoppingCart } from 'react-icons/md'
 import Menu from "@components/Menu"
 import { ArmazenadorToken } from '@utils'
 import { useEffect, useState } from "react"
+import { Tooltip } from 'primereact/tooltip';
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { AiOutlineQuestionCircle } from "react-icons/ai"
 
@@ -224,7 +225,19 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                     }
                     {usuario.tipo !== "candidato" &&
                         <Link className={styles.link} to="/marketplace">
-                            <MdShoppingCart size={18} className={styles.icon} tooltip="Marketplace"  />
+                            <Tooltip target=".custom-tooltip-btn" />
+                            <MdShoppingCart size={18} className="custom-tooltip-btn"
+                            style={{
+                                border: '1px solid var(--neutro-200)',
+                                cursor: 'pointer',
+                                borderRadius: '8px',
+                                padding: '8px',
+                                boxSizing: 'initial'
+                            }}
+                            data-pr-tooltip="Marketplace"
+                            data-pr-position="right"
+                            data-pr-at="right+5 top"
+                            data-pr-my="left center-2" />
                         </Link>
                     }
                 </div>
