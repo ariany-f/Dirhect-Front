@@ -1,14 +1,17 @@
 import { styled } from "styled-components"
 import PrecisoDeAjuda from "@components/PrecisoDeAjuda"
-import { RiNotificationLine } from "react-icons/ri"
+import { RiNotificationLine, RiOrganizationChart } from "react-icons/ri"
 import styles from './Cabecalho.module.css'
+import Frame from "@components/Frame"
+import Texto from "@components/Texto"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { BsArrowLeftRight } from 'react-icons/bs'
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
+import { MdOutlineKeyboardArrowDown, MdShoppingCart } from 'react-icons/md'
 import Menu from "@components/Menu"
 import { ArmazenadorToken } from '@utils'
 import { useEffect, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
+import { AiOutlineQuestionCircle } from "react-icons/ai"
 
 const HeaderEstilizado = styled.header`
     display: flex;
@@ -209,8 +212,21 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
             <h6>{titulo}</h6>
             <RightItems>
                 <div className={styles.divisor}>
-                    {/* <PrecisoDeAjuda /> */}
-                    {/* <RiNotificationLine size={18} className={styles.icon} /> */}
+                    {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" &&
+                        <Frame alinhamento="center">
+                            <Link className={styles.link} to="/estrutura">
+                                <Texto weight="600" size={'14px'} color="black">
+                                    <RiOrganizationChart size={18} />
+                                    &nbsp;Estrutura Organizacional
+                                </Texto>
+                            </Link>
+                        </Frame>
+                    }
+                    {usuario.tipo !== "candidato" && usuario.tipo !== "cliente" &&
+                        <Link className={styles.link} to="/marketplace">
+                            <MdShoppingCart size={18} className={styles.icon} />
+                        </Link>
+                    }
                 </div>
                 <div className={styles.divisor}>
                     {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" &&

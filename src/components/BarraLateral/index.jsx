@@ -227,13 +227,6 @@ function BarraLateral() {
                         "pageTitulo": "Ciclos de Pagamento",
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Ciclos de Pagamento"
-                    },
-                    {
-                        "id": 6,
-                        "url": "/marketplace",
-                        "pageTitulo": "Marketplace",
-                        "icone": <MdShoppingCart size={20} fill="white"/>,
-                        "itemTitulo": "Marketplace"
                     }
                 ];
             case 'equipeFolhaPagamento':
@@ -401,13 +394,6 @@ function BarraLateral() {
                         "pageTitulo": "Movimentos",
                         "icone": <MdAllInbox size={20} fill="white" />,
                         "itemTitulo": "Movimentos"
-                    },
-                    {
-                        "id": 15,
-                        "url": "/marketplace",
-                        "pageTitulo": "Marketplace",
-                        "icone": <MdShoppingCart size={20} fill="white" />,
-                        "itemTitulo": "Marketplace"
                     }
                 ];
             default:
