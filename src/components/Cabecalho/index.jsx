@@ -242,7 +242,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                             }}
                             data-pr-tooltip="Marketplace"
                             data-pr-position="right"
-                            data-pr-at="right+5 top"
+                            data-pr-at="right+5 center"
                             data-pr-my="left center-2" />
                         </Link>
                     }
