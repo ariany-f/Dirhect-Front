@@ -215,7 +215,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                 <div className={styles.divisor}>
                     {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" &&
                         <Frame alinhamento="center">
-                            <Link  style={{
+                            <Link style={{
                                 border: '1px solid var(--neutro-200)',
                                 cursor: 'pointer',
                                 borderRadius: '8px',
@@ -230,21 +230,35 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                         </Frame>
                     }
                     {usuario.tipo !== "candidato" &&
-                        <Link className={styles.link} to="/marketplace">
-                            <Tooltip target=".custom-tooltip-btn" />
-                            <MdShoppingCart size={18} className="custom-tooltip-btn"
-                            style={{
+                        <Frame alinhamento="center">
+                            <Link style={{
                                 border: '1px solid var(--neutro-200)',
                                 cursor: 'pointer',
                                 borderRadius: '8px',
                                 padding: '8px',
                                 boxSizing: 'initial'
-                            }}
-                            data-pr-tooltip="Marketplace"
-                            data-pr-position="right"
-                            data-pr-at="right+5 center"
-                            data-pr-my="left center-2" />
-                        </Link>
+                            }} className={styles.link} to="/marketplace">
+                                <Texto weight="600" size={'14px'} color="black">
+                                    <MdShoppingCart size={18} />
+                                    &nbsp;Marketplace
+                                </Texto>
+                            </Link>
+                        </Frame>
+                        // <Link className={styles.link} to="/marketplace">
+                        //     <Tooltip target=".custom-tooltip-btn" />
+                        //     <MdShoppingCart size={18} className="custom-tooltip-btn"
+                        //     style={{
+                        //         border: '1px solid var(--neutro-200)',
+                        //         cursor: 'pointer',
+                        //         borderRadius: '8px',
+                        //         padding: '8px',
+                        //         boxSizing: 'initial'
+                        //     }}
+                        //     data-pr-tooltip="Marketplace"
+                        //     data-pr-position="right"
+                        //     data-pr-at="right+5 center"
+                        //     data-pr-my="left center-2" />
+                        // </Link>
                     }
                 </div>
                 <div className={styles.divisor}>
