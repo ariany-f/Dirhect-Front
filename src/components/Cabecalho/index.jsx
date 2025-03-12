@@ -222,9 +222,9 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                             </Link>
                         </Frame>
                     }
-                    {usuario.tipo !== "candidato" && usuario.tipo !== "cliente" &&
+                    {usuario.tipo !== "candidato" &&
                         <Link className={styles.link} to="/marketplace">
-                            <MdShoppingCart size={18} className={styles.icon} />
+                            <MdShoppingCart size={18} className={styles.icon} tooltip="Marketplace"  />
                         </Link>
                     }
                 </div>
