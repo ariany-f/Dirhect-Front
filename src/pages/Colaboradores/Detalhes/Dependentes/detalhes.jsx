@@ -21,6 +21,7 @@ import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { RiEditBoxFill, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { MdOutlineFastfood } from 'react-icons/md';
 import styled from 'styled-components';
+import { BiChevronLeft } from 'react-icons/bi';
 
 
 const Col12 = styled.div`
@@ -112,8 +113,8 @@ function ColaboradorDependenteDetalhes() {
                 {pessoafisica && pessoafisica?.nome ? 
                     <BotaoGrupo align="space-between">
                         <Titulo align="left">
-                            <FrameVertical gap="5px" alinhamento="center">
-                                <FaArrowLeft style={{cursor: 'pointer'}} onClick={() => navegar(-1)} /> <h5>{pessoafisica?.nome}</h5>
+                            <FrameVertical gap="10px" alinhamento="center">
+                                <BiChevronLeft size={'18px'} style={{cursor: 'pointer'}} onClick={() => navegar(-1)} /> <h5>{pessoafisica?.nome}</h5>
                                 <small>{representativeParentescoTemplate(dependente)}</small>
                             </FrameVertical>
                         </Titulo>
