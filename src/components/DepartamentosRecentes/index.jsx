@@ -33,12 +33,11 @@ function DepartamentosRecentes({ setValor }){
     
     const adicionarDepartamento = () => {
         const data = {
-            status: 10,
-            name: nomeDepartamento,
+            nome: nomeDepartamento,
             description: ''
         }
         
-        http.post('api/department/store', data)
+        http.post('departamento/?format=json', data)
             .then((response) => {
                 setNomeDepartamento('')                
             })
@@ -48,29 +47,25 @@ function DepartamentosRecentes({ setValor }){
     }
     
     useEffect(() => {
-        // http.get('api/department/index')
-        //     .then(response => {
-        //         if(response.data.departments)
-        //         {
-        //             setDepartamentos(response.data.departments)
-        //             if(departamentos.length && selectedDepartment === null)
-        //             {
-        //                 const obj = {}
-        //                 obj[departamentos[0].name] = departamentos[0].public_id
-        //                 setSelectedDepartment(departamentos[0].public_id)
-        //                 setValor(obj)
-        //             }
-        //         }
-        //     })
-        //     .catch(erro => console.log(erro))
+        http.get('departamento/?format=json')
+            .then(response => {
+                if(response)
+                {
+                    setDepartamentos(response)
+                    if(departamentos.length && selectedDepartment === null)
+                    {
+                        setSelectedDepartment(departamentos[0].id)
+                        setValor(departamentos[0])
+                    }
+                }
+            })
+            .catch(erro => console.log(erro))
     }, [nomeDepartamento])
 
-    function handleChange(nomeDepartamento, idDepartamento)
+    function handleChange(departamento)
     {
-        const obj = {}
-        obj[nomeDepartamento] = idDepartamento
-        setSelectedDepartment(idDepartamento)
-        setValor(obj)
+        setSelectedDepartment(departamento.id)
+        setValor(departamento)
     }
 
     return (
@@ -82,32 +77,20 @@ function DepartamentosRecentes({ setValor }){
                 {departamentos ?
                     departamentos.length ?
                         departamentos.map((department, index) => {
-                            
                             return (
                                 <Col3 key={index}>
                                     <ContainerHorizontal align="start" gap="8px">
-                                        <RadioButton top="0" value={department.public_id} checked={selectedDepartment ? (department.public_id == selectedDepartment) : (index === 0)} onSelected={setSelectedDepartment}/>
+                                        <RadioButton top="0" value={department.id} checked={selectedDepartment ? (department.id == selectedDepartment) : (index === 0)} onSelected={setSelectedDepartment}/>
                                         <Link>
-                                            <Texto aoClicar={() => handleChange(department.name, department.public_id)} size="14px" weight={700}>{department.name}</Texto>
+                                            <Texto aoClicar={() => handleChange(department)} size="14px" weight={700}>{department.nome}</Texto>
                                         </Link>
                                     </ContainerHorizontal>
                                 </Col3>
                             )
                         })
-                    : <Texto>Adicione um departamento</Texto>
+                    :  <Skeleton variant="rectangular" width={200} height={40} />
                 : <Skeleton variant="rectangular" width={200} height={40} />
                 }
-            </Col12>
-            <Col12>
-                <CampoTexto
-                    onEnter={adicionarDepartamento}
-                    width="65vw"
-                    name="new_department" 
-                    valor={nomeDepartamento} 
-                    setValor={setNomeDepartamento} 
-                    type="text" 
-                    label="Novo departamento" 
-                    placeholder="ex: Administrativo" />
             </Col12>
         </ContainerRecentes>
     )

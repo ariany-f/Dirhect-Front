@@ -31,6 +31,12 @@ const Col6 = styled.div`
     flex: 1 1 50%;
 `
 
+const Col4 = styled.div`
+    padding: 20px;
+    flex: 1 1 1 33%;
+`
+
+
 const ContainerButton = styled.div`
     display: flex;
     width: 100%;
@@ -43,127 +49,87 @@ const ContainerButton = styled.div`
 
 function ColaboradorDadosIniciais() {
 
-    const navegar = useNavigate()
-    const [estados, setEstados] = useState([]);
-    const [loading, setLoading] = useState(false)
-    const [classError, setClassError] = useState([])
     const navigate = useNavigate();
+    const [classError, setClassError] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [adicionar_departamento, setAdicionarDepartamento] = useState(false);
+    const [estados, setEstados] = useState(null);
+    const toast = useRef(null);
+    const lastCep = useRef("");
 
-    const { 
-        usuario,
-        retornarCompanySession
-    } = useSessaoUsuarioContext()
+    const { colaborador, setCpf, setChapa, setNome, setSituacao, setDepartamento, setEmail, setTelefone, setCep, setRua, setNumero, setComplemento, setBairro, setCidade, setEstado, submeterUsuario } =
+        useColaboradorContext();
 
-    const { 
-        colaborador,
-        setName,
-        setEmail,
-        setCpf,
-        setDateBirth,
-        setPhoneNumber,
-        setAddressPostalCode,
-        setAddressStreet,
-        setCompanyPublicId,
-        setAdicionarDepartamento,
-        setAddressNumber,
-        setAddressComplement,
-        setAddressDistrict,
-        setAddressCity,
-        setAddressState,
-        setSolicitarCartao,
-        setDepartments,
-        submeterUsuario
-    } = useColaboradorContext()
-    
-    const toast = useRef(null)
-    
     useEffect(() => {
-        if(!estados.length)
-            {
-                http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-                .then(response => {
-                        response.map((item) => {
-                            let obj = {
-                                name: item.nome,
-                                code: item.sigla
-                            }
-                            if(!estados.includes(obj))
-                            {
-                                setEstados(estadoAnterior => [...estadoAnterior, obj]);
-                            }
-                        })
-                    })
-            }
-     }, [estados])
+        if (!estados) {
+        axios
+            .get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+            .then((response) => {
+            const estadosFormatados = response.data.map((item) => ({
+                name: item.nome,
+                code: item.sigla,
+            }));
+            setEstados(estadosFormatados);
+            })
+            .catch((error) => console.error("Erro ao buscar estados:", error));
+        }
+    }, [estados]);
 
+    useEffect(() => {
+        if (colaborador.cep.length === 9 && colaborador.cep !== lastCep.current) {
+            lastCep.current = colaborador.cep;
+            axios.get(`https://viacep.com.br/ws/${colaborador.cep}/json`)
+                .then((response) => {
+                    if (response.data) {
+                        setRua(response.data.logradouro);
+                        setBairro(response.data.bairro);
+                        setCidade(response.data.localidade);
+                        setEstado(response.data.uf);
+                    }
+                })
+                .catch((error) => console.error("Erro ao buscar CEP:", error));
+        }
+    }, [colaborador.cep]);
+    
+
+    const requestCep = (cep) => {
+        if (cep.length === 9 && cep !== lastCep.current) {
+        lastCep.current = cep;
+        axios
+            .get(`https://viacep.com.br/ws/${cep}/json`)
+            .then((response) => {
+                console.log(response.data);
+            if (response.data) {
+                setRua(response.data.logradouro);
+                setBairro(response.data.bairro);
+                setCidade(response.data.localidade);
+                setEstado(response.data.uf);
+            }
+            })
+            .catch((error) => console.error("Erro ao buscar CEP:", error));
+        }
+    };
+
+    const ChangeCep = (value) => {
+        setCep(value);
+        requestCep(value);
+    };
 
     const sendData = (evento) => {
-        evento.preventDefault()
-
-        document.querySelectorAll('input').forEach(function(element, index) {
-            
-            if(element.value !== '' && (!element.classList.contains('not_required')))
-            {
-                if(classError.includes(element.name))
-                {
-                    setClassError(classError.filter(item => item !== element.name))
-                }
-            }
-            else
-            {
-                if(!classError.includes(element.name))
-                {
-                    setClassError(estadoAnterior => [...estadoAnterior, element.name])
-                }
+        evento.preventDefault();
+        setLoading(true);
+        setSituacao('A');
+        submeterUsuario()
+        .then((response) => {
+            if (response.success) {
+            navigate("/colaborador/registro/sucesso");
             }
         })
-
-        if(document.querySelectorAll("form .error").length === 0)
-        {
-            adicionarColaborador()
-        }
-    }
-
-    const adicionarColaborador = () => {
-        if(colaborador.solicitar_cartao)
-        {
-            navegar('/colaborador/registro/envio-cartao')
-        }
-        else
-        {
-            setLoading(true)
-            submeterUsuario().then(response => {
-                if(response.success)
-                {
-                    navegar('/colaborador/registro/sucesso')
-                }
-            }).catch((erro) => {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.message })
-            })
-            .finally(function() {
-                setLoading(false)
-            })
-        }       
-    }
-
-    const ChangeCep = (value) => 
-    {
-        setAddressPostalCode(value)
-        
-        if(value.length > 8)
-        {
-            axios.get(`https://viacep.com.br/ws/${value.replace('-', '')}/json`)
-            .then((response) => {
-                if(response.data)
-                {
-                    setAddressStreet(response.data.logradouro)
-                    setAddressDistrict(response.data.bairro)
-                    setAddressCity(response.data.localidade)
-                    setAddressState(response.data.uf)
-                }
-            })
-        }
-    }
+        .catch((erro) => {
+            toast.current.show({ severity: "error", summary: "Erro", detail: erro.message });
+        })
+        .finally(() => setLoading(false));
+    };
 
     return (
         <form>
@@ -189,14 +155,14 @@ function ColaboradorDadosIniciais() {
                 <Col6>
                     <CampoTexto 
                         camposVazios={classError} 
-                        name="name" 
-                        valor={colaborador.name} 
-                        setValor={setName} 
+                        name="nome" 
+                        valor={colaborador.nome} 
+                        setValor={setNome} 
                         type="text" 
                         label="Nome do colaborador" 
                         placeholder="Digite o name completo do colaborador" />
                 </Col6>
-                <Col6>
+                <Col4>
                     <CampoTexto 
                         camposVazios={classError} 
                         name="email" 
@@ -205,32 +171,42 @@ function ColaboradorDadosIniciais() {
                         type="email" 
                         label="Email do colaborador" 
                         placeholder="Digite o email do colaborador" />
-                </Col6>
-                <Col6>
+                </Col4>
+                <Col4>
                     <CampoTexto 
                         camposVazios={classError} 
                         patternMask={['99 9999-9999', '99 99999-9999']} 
                         name="phone_number" 
-                        valor={colaborador.phone_number} 
-                        setValor={setPhoneNumber} 
+                        valor={colaborador.telefone1} 
+                        setValor={setTelefone} 
                         type="text" 
                         label="Celular do colaborador" 
                         placeholder="Digite o telefone do colaborador" />
-                </Col6>
+                </Col4>
+                <Col4>
+                    <CampoTexto 
+                        camposVazios={classError} 
+                        name="chapa" 
+                        valor={colaborador.chapa} 
+                        setValor={setChapa} 
+                        type="text" 
+                        label="Chapa" 
+                        placeholder="Digite a chapa do colaborador" />
+                </Col4>
             </Col12>
             <Col12>
                 <Col6>
-                    <CheckboxContainer name="remember" valor={colaborador.adicionar_departamento} setValor={setAdicionarDepartamento} label="Adicionar esse colaborador em um departamento" />
+                    <CheckboxContainer name="remember" valor={adicionar_departamento} setValor={setAdicionarDepartamento} label="Adicionar esse colaborador em um departamento" />
                 </Col6>
             </Col12>
-            {colaborador.adicionar_departamento &&
+            {adicionar_departamento &&
                 <>
                     <Frame estilo="spaced">
                         <Titulo>
                             <h6>Departamento</h6>
                         </Titulo>
                     </Frame>
-                    <DepartamentosRecentes setValor={setDepartments} />
+                    <DepartamentosRecentes setValor={setDepartamento} />
                 </>
             }
             <Frame estilo="spaced">
@@ -246,9 +222,9 @@ function ColaboradorDadosIniciais() {
                     <CampoTexto 
                         camposVazios={classError} 
                         patternMask={['99999-999']} 
-                        name="address_postal_code" 
-                        valor={colaborador.address_postal_code} 
-                        setValor={ChangeCep} 
+                        name="cep" 
+                        valor={colaborador.cep} 
+                        setValor={setCep} 
                         type="text" 
                         label="CEP" 
                         placeholder="Digite o CEP do colaborador" />
@@ -258,19 +234,19 @@ function ColaboradorDadosIniciais() {
                 <Col6>
                     <CampoTexto 
                         camposVazios={classError} 
-                        name="address_street" 
-                        valor={colaborador.address_street} 
-                        setValor={setAddressStreet} 
+                        name="rua" 
+                        valor={colaborador.rua} 
+                        setValor={setRua} 
                         type="text" 
                         label="Logradouro" 
-                        placeholder="Digite o address_street do colaborador" />
+                        placeholder="Digite a rua do colaborador" />
                 </Col6>
                 <Col6>
                     <CampoTexto 
                         camposVazios={classError} 
-                        name="address_district" 
-                        valor={colaborador.address_district} 
-                        setValor={setAddressDistrict} 
+                        name="bairro" 
+                        valor={colaborador.bairro} 
+                        setValor={setBairro} 
                         type="text" 
                         label="Bairro" 
                         placeholder="Digite o Bairro do colaborador" />
@@ -278,40 +254,34 @@ function ColaboradorDadosIniciais() {
                 <Col6>
                     <CampoTexto 
                         camposVazios={classError} 
-                        name="address_number" 
-                        valor={colaborador.address_number} 
-                        setValor={setAddressNumber} 
+                        name="numero" 
+                        valor={colaborador.numero} 
+                        setValor={setNumero} 
                         type="text" 
                         label="Número" 
-                        placeholder="Digite o número do colaborador" />
+                        placeholder="Digite o número" />
                 </Col6>
                 <Col6>
                     <CampoTexto 
-                        name="address_complement" 
-                        valor={colaborador.address_complement} 
-                        setValor={setAddressComplement} 
+                        name="complemento" 
+                        valor={colaborador.complemento} 
+                        setValor={setComplemento} 
                         type="text" 
                         label="Complemento (opcional)" 
-                        placeholder="Digite o address_complement do colaborador" />
+                        placeholder="Digite o complemento" />
                 </Col6>
                 <Col6>
                     <CampoTexto 
                         camposVazios={classError} 
-                        name="address_city" 
-                        valor={colaborador.address_city} 
-                        setValor={setAddressCity} 
+                        name="cidade" 
+                        valor={colaborador.cidade} 
+                        setValor={setCidade} 
                         type="text" 
                         label="Cidade" 
-                        placeholder="Digite a address_city do colaborador" />
+                        placeholder="Digite a cidade do colaborador" />
                 </Col6>
                 <Col6>
-                    <DropdownItens camposVazios={classError} valor={colaborador.address_state} setValor={setAddressState} options={estados} label="UF" name="address_state" placeholder="Digite a UF do colaborador"/>
-                </Col6>
-                <Col6>
-                    <div className={styles.ladoALado}>
-                        <Texto weight={700}>Solicitar cartão para o colaborador</Texto>
-                        <SwitchInput checked={colaborador.solicitar_cartao} onChange={setSolicitarCartao} />
-                    </div>
+                    <DropdownItens camposVazios={classError} valor={colaborador.address_state} setValor={setEstado} options={estados} label="UF" name="address_state" placeholder="Digite a UF do colaborador"/>
                 </Col6>
             </Col12>
             <ContainerButton>

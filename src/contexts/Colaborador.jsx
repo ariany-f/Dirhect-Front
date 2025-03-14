@@ -3,33 +3,24 @@ import { createContext, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const ColaboradorInicial = {
-    name: '',
+    nome: '',
     email: '',
     cpf: '',
-    date_birth: '',
-    phone_number: '',
-    phone_code: '11',
+    data_nascimento: '',
+    situacao: 'A',
+    dependentes: [],
+    departamento: '',
+    telefone1: '',
     cnpj: '',
-    address_postal_code: '',
-    address_street: '',
-    address_number: '',
-    address_complement: '',
-    address_district: '',
-    address_city: '',
-    address_state: '',
-    brand_card_enum: 1,
-    departments: [],
-    requested_card_enum: null,
-    solicitar_cartao: false,
-    adicionar_departamento: false,
-    another_address_postal_code: '',
-    another_address_street: '',
-    another_address_number: '',
-    another_address_complement: '',
-    another_address_district: '',
-    another_address_city: '',
-    another_address_state: '',
-    gender: '1',
+    chapa: '',
+    cep: '',
+    rua: '',
+    numero: '',
+    complemento: '',
+    bairro: '',
+    cidade: '',
+    estado: '',
+    sexo: 'F',
     public_company_id: ''
 }
 
@@ -37,32 +28,23 @@ export const ColaboradorContext = createContext({
     colaborador: ColaboradorInicial,
     erros: {},
     setPlanilha: () => null,
-    setName: () => null,
+    setNome: () => null,
     setEmail: () => null,
     setCpf: () => null,
-    setBrandCardEnum: () => null,
-    setDateBirth: () => null,
-    setPhoneNumber: () => null,
-    setDepartments: () => null,
-    setGender: () => null,
+    setSituacao: () => null,
+    setChapa: () => null,
+    setDataNascimento: () => null,
+    setTelefone: () => null,
+    setDepartamento: () => null,
+    setSexo: () => null,
     setCompanyPublicId: () => null,
-    setAddressPostalCode: () => null,
-    setAddressStreet: () => null,
-    setAddressNumber: () => null,
-    setAddressComplement: () => null,
-    setAddressDistrict: () => null,
-    setAddressCity: () => null,
-    setAddressState: () => null,
-    setRequestedCardEnum: () => null,
-    setAnotherAddressPostalCode: () => null,
-    setAnotherAddressStreet: () => null,
-    setAnotherAddressNumber: () => null,
-    setAnotherAddressComplement: () => null,
-    setAnotherAddressDistrict: () => null,
-    setAnotherAddressCity: () => null,
-    setAnotherAddressState: () => null,
-    setSolicitarCartao: () => null,
-    setAdicionarDepartamento: () => null,
+    setCep: () => null,
+    setRua: () => null,
+    setNumero: () => null,
+    setComplemento: () => null,
+    setBairro: () => null,
+    setCidade: () => null,
+    setEstado: () => null,
     submeterUsuario: () => null
 })
 
@@ -76,11 +58,19 @@ export const ColaboradorProvider = ({ children }) => {
 
     const [colaborador, setColaborador] = useState(ColaboradorInicial)
 
-    const setName = (name) => {
+    const setNome = (nome) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                name
+                nome
+            }
+        })
+    }
+    const setSituacao = (situacao) => {
+        setColaborador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                situacao
             }
         })
     }
@@ -92,6 +82,14 @@ export const ColaboradorProvider = ({ children }) => {
             }
         })
     }
+    const setChapa = (chapa) => {
+        setColaborador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                chapa
+            }
+        })
+    }
     const setCpf = (cpf) => {
         setColaborador(estadoAnterior => {
             return {
@@ -100,19 +98,19 @@ export const ColaboradorProvider = ({ children }) => {
             }
         })
     }
-    const setDateBirth = (date_birth) => {
+    const setDataNascimento = (data_nascimento) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                date_birth
+                data_nascimento
             }
         })
     }
-    const setPhoneNumber = (phone_number) => {
+    const setTelefone = (telefone1) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                phone_number
+                telefone1
             }
         })
     }
@@ -124,165 +122,75 @@ export const ColaboradorProvider = ({ children }) => {
             }
         })
     }
-    const setDepartments = (departments) => {
-        const departamentos = colaborador.departments
-        departamentos.push(departments)
+    const setDepartamento = (departamento) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                departamentos
+                departamento
             }
         })
     }
-    const setAddressPostalCode = (address_postal_code) => {
+    const setCep = (cep) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                address_postal_code
+                cep
             }
         })
     }
-    const setAddressStreet = (address_street) => {
+    const setRua = (rua) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                address_street
+                rua
             }
         })
     }
-    const setAddressNumber = (address_number) => {
+    const setNumero = (numero) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                address_number
+                numero
             }
         })
     }
-    const setAddressComplement = (address_complement) => {
+    const setComplemento = (complemento) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                address_complement
+                complemento
             }
         })
     }
-    const setAddressDistrict = (address_district) => {
+    const setBairro = (bairro) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                address_district
+                bairro
             }
         })
     }
-    const setBrandCardEnum = (brand_card_enum) => {
+    const setCidade = (cidade) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                brand_card_enum
+                cidade
             }
         })
     }
-    const setAddressCity = (address_city) => {
+    const setEstado = (estado) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                address_city
+                estado
             }
         })
     }
-    const setAddressState = (address_state) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                address_state
-            }
-        })
-    }
-    const setRequestedCardEnum = (requested_card_enum) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                requested_card_enum
-            }
-        })
-    }
-    const setAnotherAddressPostalCode = (another_address_postal_code) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                another_address_postal_code
-            }
-        })
-    }
-    const setAnotherAddressStreet = (another_address_street) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                another_address_street
-            }
-        })
-    }
-    const setAnotherAddressNumber = (another_address_number) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                another_address_number
-            }
-        })
-    }
-    const setGender = (gender) => {
+    const setSexo = (gender) => {
         setColaborador(estadoAnterior => {
             return {
                 ...estadoAnterior,
                 gender
-            }
-        })
-    }
-    const setAnotherAddressComplement = (another_address_complement) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                another_address_complement
-            }
-        })
-    }
-    const setAnotherAddressDistrict = (another_address_district) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                another_address_district
-            }
-        })
-    }
-    const setAnotherAddressCity = (another_address_city) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                another_address_city
-            }
-        })
-    }
-    const setAnotherAddressState = (another_address_state) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                another_address_state
-            }
-        })
-    }
-    const setSolicitarCartao = (solicitar_cartao) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                solicitar_cartao
-            }
-        })
-    }
-    const setAdicionarDepartamento = (adicionar_departamento) => {
-        setColaborador(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                adicionar_departamento
             }
         })
     }
@@ -292,7 +200,7 @@ export const ColaboradorProvider = ({ children }) => {
         var sendCpf = colaborador.cpf.replace(/[^a-zA-Z0-9 ]/g, '')
         colaborador.cpf = sendCpf
 
-        return http.post('api/collaborator/store', colaborador)
+        return http.post('funcionario/?format=json', colaborador)
         .then((response) => {
             return response
         })
@@ -303,32 +211,23 @@ export const ColaboradorProvider = ({ children }) => {
 
     const contexto = {
         colaborador,
-        setName,
+        setNome,
         setEmail,
+        setSituacao,
         setCpf,
-        setDateBirth,
-        setBrandCardEnum,
-        setPhoneNumber,
-        setGender,
+        setDataNascimento,
+        setChapa,
+        setTelefone,
+        setSexo,
         setCompanyPublicId,
-        setDepartments,
-        setAddressPostalCode,
-        setAddressStreet,
-        setAddressNumber,
-        setAddressComplement,
-        setAddressDistrict,
-        setAddressCity,
-        setAddressState,
-        setRequestedCardEnum,
-        setAnotherAddressPostalCode,
-        setAnotherAddressStreet,
-        setAnotherAddressNumber,
-        setAnotherAddressComplement,
-        setAnotherAddressDistrict,
-        setAnotherAddressCity,
-        setAnotherAddressState,
-        setSolicitarCartao,
-        setAdicionarDepartamento,
+        setDepartamento,
+        setCep,
+        setRua,
+        setNumero,
+        setComplemento,
+        setBairro,
+        setCidade,
+        setEstado,
         submeterUsuario
     }
 
