@@ -28,19 +28,14 @@ function Dependentes() {
                 .catch(erro => {
                     setLoading(false)
                 })
-        } else if (pessoasfisicas && funcionarios) {
-            const processados = funcionarios.map(item => {
-                const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
-        
-                return { 
-                    ...item, 
-                    pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
-                };
-            });
-            setFuncionarios(processados)
+                .finally(function() {
+                    setLoading(false)
+                })
         }
+
         if(!dependentes)
         {
+            setLoading(true)
             if(usuario.tipo == 'funcionario')
             {
                 http.get(`dependente/?format=json&id_funcionario=${usuario.public_id}`)
@@ -50,56 +45,31 @@ function Dependentes() {
                 .catch(erro => {
                     setLoading(false)
                 })
+                .finally(function() {
+                    setLoading(false)
+                })
             }
             else
             {
                 http.get('dependente/?format=json')
                 .then(response => {
-                setDependentes(response)
+                    setDependentes(response)
                 })
                 .catch(erro => {
                     setLoading(false)
                 })
-            }
-        }
-        if(!pessoasfisicas) {
-            
-            http.get('pessoa_fisica/?format=json')
-                .then(response => {
-                    setPessoasFisicas(response)
-                })
-                .catch(erro => {
+                .finally(function() {
                     setLoading(false)
                 })
-        }
-
-        if (pessoasfisicas && dependentes && funcionarios && !dep_pess) {
-            // Verifica se todos os funcionários têm `pessoa_fisica`
-            const funcionariosValidos = funcionarios.every(func => func.pessoa_fisica);
-        
-            if (funcionariosValidos) {
-                const processados = dependentes.map(item => {
-                    const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
-            
-                    return { 
-                        ...item, 
-                        dados_pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
-                        funcionario: item.id_funcionario || null // Adiciona `funcionario`
-                    };
-                });
-        
-                setDepPess(processados); // Atualiza o estado com os dados processados
-                
-                setLoading(false)
             }
         }
         
-    }, [dependentes, pessoasfisicas, dep_pess, funcionarios])
+    }, [dependentes, funcionarios])
 
     return (
         <DependentesProvider>
             <Loading opened={loading} />
-            <Outlet context={dep_pess} />
+            <Outlet context={dependentes} />
         </DependentesProvider>
     )
 }

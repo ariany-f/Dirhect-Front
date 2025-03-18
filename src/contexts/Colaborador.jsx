@@ -45,7 +45,8 @@ export const ColaboradorContext = createContext({
     setBairro: () => null,
     setCidade: () => null,
     setEstado: () => null,
-    submeterUsuario: () => null
+    submeterUsuario: () => null,
+    submeterDependente: () => null
 })
 
 export const useColaboradorContext = () => {
@@ -209,6 +210,20 @@ export const ColaboradorProvider = ({ children }) => {
         })
     }
 
+    const submeterDependente = () => {
+        
+        var sendCpf = colaborador.cpf.replace(/[^a-zA-Z0-9 ]/g, '')
+        colaborador.cpf = sendCpf
+
+        return http.post('dependente/?format=json', colaborador)
+        .then((response) => {
+            return response
+        })
+        .catch(erro => {
+            return erro.response.data
+        })
+    }
+
     const contexto = {
         colaborador,
         setNome,
@@ -228,7 +243,8 @@ export const ColaboradorProvider = ({ children }) => {
         setBairro,
         setCidade,
         setEstado,
-        submeterUsuario
+        submeterUsuario,
+        submeterDependente
     }
 
     return (<ColaboradorContext.Provider value={contexto}>

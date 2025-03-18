@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import { GrAddCircle } from 'react-icons/gr'
-import styles from './SaldoLivre.module.css'
+import styles from './Dependentes.module.css'
 import styled from "styled-components"
 import { Link, useOutletContext } from "react-router-dom"
 import QuestionCard from '@components/QuestionCard'

@@ -52,7 +52,6 @@ function ColaboradorDependenteDetalhes() {
     let { id, codigo } = useParams()
     const location = useLocation();
     const [dependente, setDependente] = useState(null)
-    const [pessoafisica, setPessoaFisica] = useState(null)
     const navegar = useNavigate()
     const toast = useRef(null)
 
@@ -71,22 +70,12 @@ function ColaboradorDependenteDetalhes() {
                     setDependente(response);
                 })
                 .catch(erro => console.log(erro))
-        }
-        if(dependente && (!pessoafisica)) {
-            
-            http.get(`pessoa_fisica/${dependente.id_pessoafisica}/?format=json`)
-                .then(response => {
-                    setPessoaFisica(response)
-                })
-                .catch(erro => {
-                    
-                })
                 .finally(function() {
                     setLoading(false)
                 })
         }
         
-    }, [dependente, pessoafisica])
+    }, [dependente])
 
     function formataCPF(cpf) {
         cpf = cpf.replace(/[^\d]/g, "");
@@ -110,11 +99,11 @@ function ColaboradorDependenteDetalhes() {
             <Toast ref={toast} />
             <ConfirmDialog />
             <Container gap="32px">
-                {pessoafisica && pessoafisica?.nome ? 
+                {dependente && dependente?.dependente_pessoa_fisica ?
                     <BotaoGrupo align="space-between">
                         <Titulo align="left">
                             <FrameVertical gap="10px" alinhamento="center">
-                                <BiChevronLeft size={'18px'} style={{cursor: 'pointer'}} onClick={() => navegar(-1)} /> <h5>{pessoafisica?.nome}</h5>
+                                <BiChevronLeft size={'18px'} style={{cursor: 'pointer'}} onClick={() => navegar(-1)} /> <h5>{dependente?.dependente_pessoa_fisica?.nome}</h5>
                                 <small>{representativeParentescoTemplate(dependente)}</small>
                             </FrameVertical>
                         </Titulo>
@@ -126,42 +115,42 @@ function ColaboradorDependenteDetalhes() {
                     <Col12>
                         <Col3>
                             <Texto>Nome completo</Texto>
-                            {pessoafisica?.nome ?
-                                <Texto weight="800">{pessoafisica?.nome}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.nome ?
+                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.nome}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Nome social</Texto>
-                            {pessoafisica?.nome_social ?
-                                    <Texto weight="800">{pessoafisica.nome_social}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.nome_social ?
+                                    <Texto weight="800">{dependente?.dependente_pessoa_fisica.nome_social}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
                         <Col3>
                             <Texto>Nascimento</Texto>
-                            {pessoafisica?.data_nascimento ?
-                                <Texto weight="800">{new Date(pessoafisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.data_nascimento ?
+                                <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Sexo</Texto>
-                            {pessoafisica?.sexo ?
-                                <Texto weight="800">{pessoafisica?.sexo}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.sexo ?
+                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.sexo}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
                         <Col3>
                             <Texto>CPF</Texto>
-                            {pessoafisica?.cpf ?
-                                <Texto weight="800">{formataCPF(pessoafisica?.cpf)}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.cpf ?
+                                <Texto weight="800">{formataCPF(dependente?.dependente_pessoa_fisica?.cpf)}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Identidade</Texto>
-                            {pessoafisica?.identidade ?
-                                <Texto weight="800">{(pessoafisica.identidade)}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.identidade ?
+                                <Texto weight="800">{(dependente?.dependente_pessoa_fisica.identidade)}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Data Emissão Identidade</Texto>
-                            {pessoafisica?.data_emissao_ident ?
-                                <Texto weight="800">{new Date(pessoafisica?.data_emissao_ident).toLocaleDateString('pt-BR')}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.data_emissao_ident ?
+                                <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_emissao_ident).toLocaleDateString('pt-BR')}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
@@ -172,80 +161,80 @@ function ColaboradorDependenteDetalhes() {
                     <Col12>
                         <Col3>
                             <Texto>Naturalidade</Texto>
-                            {pessoafisica?.naturalidade ?
-                                <Texto weight="800">{pessoafisica?.naturalidade}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.naturalidade ?
+                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.naturalidade}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Estado Civil</Texto>
-                            {pessoafisica?.estado_civil ?
-                                <Texto weight="800">{pessoafisica?.estado_civil}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.estado_civil ?
+                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.estado_civil}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Cor/Raça</Texto>
-                            {pessoafisica?.cor_raca ?
-                            <Texto weight="800">{pessoafisica?.cor_raca}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.cor_raca ?
+                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.cor_raca}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
                         <Col3>
                         
                         <Texto>Carteira de Motorista</Texto>
-                            {pessoafisica?.carteira_motorista ?
+                            {dependente?.dependente_pessoa_fisica?.carteira_motorista ?
                                 <>
-                                <Texto weight="800">{pessoafisica?.carteira_motorista}</Texto>
-                                { pessoafisica?.tipo_carteira_habilit ?
-                                    <Texto weight="800">({pessoafisica?.tipo_carteira_habilit})</Texto>
+                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.carteira_motorista}</Texto>
+                                { dependente?.dependente_pessoa_fisica?.tipo_carteira_habilit ?
+                                    <Texto weight="800">({dependente?.dependente_pessoa_fisica?.tipo_carteira_habilit})</Texto>
                                 : null }
                                 </>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Data Emissão CNH</Texto>
-                            {pessoafisica?.data_emissao_cnh ?
-                            <Texto weight="800">{new Date(pessoafisica?.data_emissao_cnh).toLocaleDateString('pt-BR')}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.data_emissao_cnh ?
+                            <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_emissao_cnh).toLocaleDateString('pt-BR')}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Data de Validade CNH</Texto>
-                            {pessoafisica?.data_venc_habilit ?
-                            <Texto weight="800">{new Date(pessoafisica?.data_venc_habilitacao).toLocaleDateString('pt-BR')}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.data_venc_habilit ?
+                            <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_venc_habilitacao).toLocaleDateString('pt-BR')}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
                         <Col3>
                             <Texto>Titulo de Eleitor</Texto>
-                            {pessoafisica?.titulo_eleitor ?
-                            <Texto weight="800">{pessoafisica?.titulo_eleitor}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.titulo_eleitor ?
+                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.titulo_eleitor}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Zona Eleitoral</Texto>
-                            {pessoafisica?.zona_titulo_eleitor ?
-                            <Texto weight="800">{pessoafisica?.zona_titulo_eleitor}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.zona_titulo_eleitor ?
+                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.zona_titulo_eleitor}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Secao Eleitoral</Texto>
-                            {pessoafisica?.secao_titulo_eleitor ?
-                            <Texto weight="800">{pessoafisica?.secao_titulo_eleitor}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.secao_titulo_eleitor ?
+                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.secao_titulo_eleitor}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Data Emissão Titulo Eleitor</Texto>
-                            {pessoafisica?.data_titulo_eleitor ?
-                            <Texto weight="800">{new Date(pessoafisica?.data_titulo_eleitor).toLocaleDateString('pt-BR')}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.data_titulo_eleitor ?
+                            <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_titulo_eleitor).toLocaleDateString('pt-BR')}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
                         <Col3>
                             <Texto>Circunscrição Militar</Texto>
-                            {pessoafisica?.circunscricao_militar ?
-                            <Texto weight="800">{pessoafisica?.circunscricao_militar}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.circunscricao_militar ?
+                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.circunscricao_militar}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Certificado de Reservista</Texto>
-                            {pessoafisica?.certificado_reservista ?
-                            <Texto weight="800">{pessoafisica?.certificado_reservista}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.certificado_reservista ?
+                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.certificado_reservista}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Situação Militar</Texto>
-                            {pessoafisica?.situacao_militar ?
-                            <Texto weight="800">{pessoafisica?.situacao_militar}</Texto>
+                            {dependente?.dependente_pessoa_fisica?.situacao_militar ?
+                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.situacao_militar}</Texto>
                             : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>

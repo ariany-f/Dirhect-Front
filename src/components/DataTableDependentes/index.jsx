@@ -3,15 +3,21 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import './DataTable.css'
 import Texto from '@components/Texto';
-import BadgeGeral from '@components/BadgeGeral';
+import Botao from '@components/Botao';
+import BotaoGrupo from '@components/BotaoGrupo';
 import CampoTexto from '@components/CampoTexto';
+import styles from '@pages/Dependentes/Dependentes.module.css'
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Tag } from 'primereact/tag';
+import { GrAddCircle } from 'react-icons/gr';
+import ModalAdicionarDependente from '@components/ModalAdicionarDependente';
+import { DependenteProvider } from '@contexts/Dependente';
 
 function DataTableDependentes({ dependentes, search = true }) {
 
     const[selectedDependente, setSelectedDependente] = useState(0)
+    const [modalOpened, setModalOpened] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -31,7 +37,7 @@ function DataTableDependentes({ dependentes, search = true }) {
     {
         console.log(value)
         setSelectedDependente(value.id)
-        navegar(`/colaborador/detalhes/${value.funcionario.id}/dependentes/${value.id}`)
+        navegar(`/colaborador/detalhes/${value.id_funcionario.id}/dependentes/${value.id}`)
     }
     
     function formataCPF(cpf) {
@@ -46,13 +52,6 @@ function DataTableDependentes({ dependentes, search = true }) {
             formataCPF(rowData?.dependente_pessoa_fisica?.cpf)
         )
     }
-    
-    // const representativeNomeTemplate = (rowData) => {
-        
-    //     return (
-    //         rowData?.dependente_pessoa_fisica?.nome
-    //     )
-    // }
     
     const representativeNascimentoTemplate = (rowData) => {
         
@@ -110,12 +109,18 @@ function DataTableDependentes({ dependentes, search = true }) {
 
     return (
         <>
-            {search &&
+            {search ?
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
                         <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
                     </span>
                 </div>
+            :
+                <BotaoGrupo align="end">
+                    <BotaoGrupo align="center">
+                        <Botao estilo="vermilion" size="small" aoClicar={() => setModalOpened(true)} tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
+                    </BotaoGrupo>
+                </BotaoGrupo>
             }
             <DataTable value={dependentes} filters={filters} globalFilterFields={['dependente_pessoa_fisica.nome', 'dependente_pessoa_fisica.cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '35%' }}></Column>
@@ -123,6 +128,9 @@ function DataTableDependentes({ dependentes, search = true }) {
                 <Column body={representativeParentescoTemplate} header="Grau de Parentesco" style={{ width: '20%' }}></Column>
                 <Column body={representativeNascimentoTemplate} header="Nascimento" style={{ width: '20%' }}></Column>
             </DataTable>
+            <DependenteProvider>
+                <ModalAdicionarDependente opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+            </DependenteProvider>
         </>
     )
 }
