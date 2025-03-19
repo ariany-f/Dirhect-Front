@@ -137,7 +137,8 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="nome" header="Filial" style={{ width: '35%' }}></Column>
+                <Column field="nome" header="Filial" style={{ width: '25%' }}></Column>
+                <Column field="cidade" header="Cidade" style={{ width: '15%' }}></Column>
                 <Column body={representativeCNPJTemplate} header="CNPJ" style={{ width: '25%' }}></Column>
             </DataTable>
             <ModalEditarFilial aoSalvar={editarFilial} filial={selectedFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
