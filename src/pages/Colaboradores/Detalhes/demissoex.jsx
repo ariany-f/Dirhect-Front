@@ -32,7 +32,7 @@ function ColabroadorDemissoes() {
     useEffect(() => {
         if(!demissoes)
         {
-            http.get(`funcionario/${id}/?format=json&situacao=D`)
+            http.get(`funcionario/?format=json&situacao=D&id=${id}`)
             .then(response => {
                 setDemissoes(response);
             })
