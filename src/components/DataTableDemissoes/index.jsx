@@ -32,7 +32,7 @@ function DataTableDemissao({ demissoes, colaborador = null }) {
 
     function verDetalhes(value)
     {
-        navegar(`/admissao/registro/${value.candidato.id}`)
+        console.log(value)
     }
 
     const representativeColaboradorTemplate = (rowData) => {
