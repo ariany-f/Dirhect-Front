@@ -18,6 +18,7 @@ function DataTableFerias({ ferias, colaborador = null }) {
     const [colaboradores, setColaboradores] = useState(null)
     const [selectedFerias, setSelectedFerias] = useState(0);
     const [modalOpened, setModalOpened] = useState(false);
+    const [filteredData, setFilteredData] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -92,9 +93,20 @@ function DataTableFerias({ ferias, colaborador = null }) {
         )
     }
     
-
-    // Filtra os dados com base no colaborador, se fornecido
-    const filteredData = colaborador ? ferias.filter(feria => feria.funcionario == colaborador) : ferias;
+    useEffect(() => {
+        if(ferias)
+        {
+            if(colaborador)
+            {
+                setFilteredData(ferias.filter(feria => feria.funcionario == colaborador))
+            }
+            else
+            {
+                setFilteredData(ferias)
+            }
+        }
+        
+     }, [colaborador])
 
     return (
         <>
