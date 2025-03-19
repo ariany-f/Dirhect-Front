@@ -124,6 +124,7 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
     const [estado, setEstado] = useState(filial.estado ?? '')
     const [logradouro, setLogradouro] = useState(filial.logradouro ?? '')
     const [complemento, setComplemento] = useState(filial.complemento ?? '')
+    const [bairro, setBairro] = useState(filial.bairro ?? '')
     const [numero, setNumero] = useState(filial.numero ?? '')
     const [id, setId] = useState(filial.id)
 
@@ -136,6 +137,7 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
             setLogradouro(filial.logradoro)
             setNumero(filial.numero);
             setComplemento(filial.complemento);
+            setBairro(filial.bairro);
             setId(filial.id);
         }
     }, [filial, opened]);
@@ -190,7 +192,7 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
                                 </Col6>
                             </Col12>
                             <Col12>
-                                <Col6>
+                                <Col4>
                                     <CampoTexto 
                                         camposVazios={classError} 
                                         valor={logradouro} 
@@ -199,8 +201,8 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
                                         placeholder=""
                                         label="Logradouro da Filial" 
                                     />
-                                </Col6>
-                                <Col6>
+                                </Col4>
+                                <Col4>
                                     <CampoTexto 
                                         camposVazios={classError} 
                                         valor={numero} 
@@ -209,7 +211,17 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
                                         placeholder=""
                                         label="Número do endereço da Filial" 
                                     />
-                                </Col6>
+                                </Col4>
+                                <Col4>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        valor={bairro} 
+                                        type="text" 
+                                        setValor={setBairro} 
+                                        placeholder=""
+                                        label="Bairro da Filial" 
+                                    />
+                                </Col4>
                             </Col12>
                             <Col12>
                                 <Col4>
