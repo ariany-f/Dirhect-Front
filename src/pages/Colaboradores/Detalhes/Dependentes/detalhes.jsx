@@ -102,10 +102,13 @@ function ColaboradorDependenteDetalhes() {
                 {dependente && dependente?.dependente_pessoa_fisica ?
                     <BotaoGrupo align="space-between">
                         <Titulo align="left">
-                            <FrameVertical gap="10px" alinhamento="center">
-                                <BiChevronLeft size={'18px'} style={{cursor: 'pointer'}} onClick={() => navegar(-1)} /> <h5>{dependente?.dependente_pessoa_fisica?.nome}</h5>
-                                <small>{representativeParentescoTemplate(dependente)}</small>
-                            </FrameVertical>
+                            <Container gap="32px">
+                                <BotaoVoltar/>
+                                <BotaoGrupo align="space-between">
+                                    <h5>{dependente?.dependente_pessoa_fisica?.nome}</h5>
+                                    <small>{representativeParentescoTemplate(dependente)}</small>
+                                </BotaoGrupo>
+                            </Container>
                         </Titulo>
                     </BotaoGrupo>
                 : <Skeleton variant="rectangular" width={300} height={40} />
@@ -156,7 +159,7 @@ function ColaboradorDependenteDetalhes() {
                         </Col3>
                     </Col12>
                 </div>
-                <Titulo><h6>Informações gerais</h6></Titulo>
+                {/* <Titulo><h6>Informações gerais</h6></Titulo>
                 <div className={styles.card_dashboard}>
                     <Col12>
                         <Col3>
@@ -239,7 +242,7 @@ function ColaboradorDependenteDetalhes() {
                             }
                         </Col3>
                     </Col12>
-                </div>
+                </div> */}
             </Container>
         </Frame>
     )
