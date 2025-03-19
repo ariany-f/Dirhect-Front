@@ -36,7 +36,15 @@ function DataTableDemissao({ demissoes, colaborador = null }) {
     }
 
     const representativeColaboradorTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.candidato.nome}</p>
+        return <p style={{fontWeight: '400'}}>{rowData.funcionario_pessoa_fisica.nome}</p>
+    }
+
+    const representativeDataDemissaoTemplate = (rowData) => {
+        return new Date(rowData.dt_demissao).toLocaleDateString("pt-BR")
+    }
+
+    const representativeTipoDemissaoTemplate = (rowData) => {
+        return rowData.tipo_demissao
     }
     
     return (
@@ -51,8 +59,8 @@ function DataTableDemissao({ demissoes, colaborador = null }) {
                 {!colaborador &&
                     <Column body={representativeColaboradorTemplate} header="Colaborador" style={{ width: '35%' }}></Column>
                 }
-                <Column field="data" header="Data Demissão" style={{ width: '35%' }}></Column>
-                <Column field="tipo" header="Tipo Demissão" style={{ width: '35%' }}></Column>
+                <Column body={representativeDataDemissaoTemplate} field="data" header="Data Demissão" style={{ width: '35%' }}></Column>
+                <Column body={representativeTipoDemissaoTemplate} field="tipo" header="Tipo Demissão" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )

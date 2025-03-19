@@ -30,7 +30,14 @@ function ColabroadorDemissoes() {
     const {usuario} = useSessaoUsuarioContext()
 
     useEffect(() => {
-            
+        if(!demissoes)
+        {
+            http.get(`funcionario/${id}/?format=json&situacao=D`)
+            .then(response => {
+                setDemissoes(response);
+            })
+            .catch(erro => console.log(erro))
+        }
     }, [demissoes])
 
     return (

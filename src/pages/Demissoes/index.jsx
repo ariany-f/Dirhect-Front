@@ -4,6 +4,7 @@ import Titulo from '@components/Titulo'
 import BotaoVoltar from '@components/BotaoVoltar'
 import { GrAddCircle } from 'react-icons/gr'
 import styled from "styled-components"
+import http from '@http'
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
@@ -21,12 +22,22 @@ const ConteudoFrame = styled.div`
 const Demissoes = () => {
 
     const location = useLocation();
-
-    const [demissoes, setDemissoes] = useState([])
+    const [demissoes, setDemissoes] = useState(null)
    
     const { 
         vagas
     } = useVagasContext()
+
+    useEffect(() => {
+        if(!demissoes)
+        {
+            http.get(`funcionario/?format=json&situacao=D`)
+            .then(response => {
+                setDemissoes(response);
+            })
+            .catch(erro => console.log(erro))
+        }
+    }, [demissoes])
 
     return (
         <ConteudoFrame>
