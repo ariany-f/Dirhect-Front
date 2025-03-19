@@ -31,14 +31,14 @@ const AdicionarCnpjBotao = styled.div`
 
 const DialogEstilizado = styled.dialog`
     display: flex;
-    width: 40vw;
+    width: 60vw;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 16px;
     border: none;
     margin: 0 auto;
-    top: 22vh;
+    top: 5vh;
     padding: 24px;
     & button.close {
         & .fechar {
@@ -99,18 +99,43 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
+const Col12 = styled.div`
+    display: flex;
+    width: 100%;
+    gap: 24px;
+    flex-wrap: wrap;
+`
+
+const Col6 = styled.div`
+    flex: 1 1 calc(50% - 12px);
+`
+
+const Col4 = styled.div`
+    flex: 1 1 1 calc(25% - 8px);
+`
+
 function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
     
     
     const [classError, setClassError] = useState([])
     const [nome, setNome] = useState(filial.nome ?? '')
     const [cnpj, setCNPJ] = useState(filial.cnpj ?? '')
+    const [cidade, setCidade] = useState(filial.cidade ?? '')
+    const [estado, setEstado] = useState(filial.estado ?? '')
+    const [logradouro, setLogradouro] = useState(filial.logradouro ?? '')
+    const [complemento, setComplemento] = useState(filial.complemento ?? '')
+    const [numero, setNumero] = useState(filial.numero ?? '')
     const [id, setId] = useState(filial.id)
 
     useEffect(() => {
         if (filial && opened) {
             setCNPJ(filial.cnpj); // Atualiza o estado interno do modal sempre que a filial mudar
             setNome(filial.nome);
+            setCidade(filial.cidade);
+            setEstado(filial.estado);
+            setLogradouro(filial.logradoro)
+            setNumero(filial.numero);
+            setComplemento(filial.complemento);
             setId(filial.id);
         }
     }, [filial, opened]);
@@ -139,25 +164,85 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
                         </Frame>
                         
                         <Frame padding="24px 0px">
-                            <CampoTexto 
-                                    numeroCaracteres={50}
-                                    camposVazios={classError} 
-                                    valor={nome} 
-                                    type="text" 
-                                    setValor={setNome} 
-                                    placeholder="ex. Filial 1"
-                                    label="Nome da Filial" 
-                                />
-                                <CampoTexto 
-                                    numeroCaracteres={18}
-                                    camposVazios={classError} 
-                                    patternMask={['99.999.999/9999-99']} 
-                                    valor={cnpj} 
-                                    type="text" 
-                                    setValor={setCNPJ} 
-                                    placeholder=""
-                                    label="CNPJ da Filial" 
-                                />
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        numeroCaracteres={50}
+                                        camposVazios={classError} 
+                                        valor={nome} 
+                                        type="text" 
+                                        setValor={setNome} 
+                                        placeholder="ex. Filial 1"
+                                        label="Nome da Filial" 
+                                    />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        numeroCaracteres={18}
+                                        camposVazios={classError} 
+                                        patternMask={['99.999.999/9999-99']} 
+                                        valor={cnpj} 
+                                        type="text" 
+                                        setValor={setCNPJ} 
+                                        placeholder=""
+                                        label="CNPJ da Filial" 
+                                    />
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        valor={logradouro} 
+                                        type="text" 
+                                        setValor={setLogradouro} 
+                                        placeholder=""
+                                        label="Logradouro da Filial" 
+                                    />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        valor={numero} 
+                                        type="text" 
+                                        setValor={setNumero} 
+                                        placeholder=""
+                                        label="Número do endereço da Filial" 
+                                    />
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col4>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        valor={cidade} 
+                                        type="text" 
+                                        setValor={setCidade} 
+                                        placeholder=""
+                                        label="Cidade da Filial" 
+                                    />
+                                </Col4>
+                                <Col4>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        valor={estado} 
+                                        type="text" 
+                                        setValor={setEstado} 
+                                        placeholder=""
+                                        label="Estado da Filial" 
+                                    />
+                                </Col4>
+                                <Col4>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        valor={complemento} 
+                                        type="text" 
+                                        setValor={setComplemento} 
+                                        placeholder=""
+                                        label="Complemento da Filial" 
+                                    />
+                                </Col4>
+                            </Col12>
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>
