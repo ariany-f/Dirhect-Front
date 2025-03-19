@@ -218,10 +218,10 @@ function CampoTexto({ label, disabled = false, readonly = false, type='text',  s
                 </FloatLabel>
                 : 
                     label && type == 'date' ?
-                    <FloatLabel className={styles.lb}>
-                        <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                    <>
                         <label htmlFor={name} className={styles.label}>{label}</label>
-                    </FloatLabel>
+                        <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                    </>
                     :
                     <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                 }
