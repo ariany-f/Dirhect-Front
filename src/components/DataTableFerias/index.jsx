@@ -106,7 +106,7 @@ function DataTableFerias({ ferias, colaborador = null }) {
             }
         }
         
-     }, [colaborador])
+     }, [colaborador, ferias])
 
     return (
         <>

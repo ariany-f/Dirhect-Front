@@ -28,7 +28,18 @@ function ColabroadorFerias() {
     const {usuario} = useSessaoUsuarioContext()
 
     useEffect(() => {
-            
+        if(!ferias)
+        {
+            http.get('ferias/?format=json')
+            .then(response => {
+                setFerias(response)
+            })
+            .catch(erro => {
+
+            })
+            .finally(function() {
+            })
+        }
     }, [ferias])
 
     return (
