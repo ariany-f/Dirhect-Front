@@ -87,7 +87,8 @@ import ColaboradorDependentes from '@pages/Colaboradores/Detalhes/dependentes'
 import Dependentes from '@pages/Dependentes'
 import DependentesListagem from '@pages/Dependentes/lista'
 import ColabroadorFerias from '@pages/Colaboradores/Detalhes/ferias'
-import FeriasListagem from '@pages/Ausencias/ferias'
+import Ferias from '@pages/Ferias'
+import FeriasListagem from '@pages/Ferias/lista'
 import Ausencias from '@pages/Ausencias'
 import FeriasAusenciasListagem from '@pages/Ausencias/lista'
 import AusenciasListagem from '@pages/Ausencias/ausencias'
@@ -262,12 +263,13 @@ function AppRouter() {
 
               <Route path="ausencias" element={<AusenciasListagem/>} />
               
-              <Route path="ferias" element={<Ausencias/>}>
+              <Route path="ferias" element={<FeriasListagem />} />
+              {/* <Route path="ferias" element={<Ferias/>}>
                 <Route index element={<FeriasListagem />} />
                 <Route path="all" element={<FeriasAusenciasListagem />} />
                 <Route path="ausencias" element={<AusenciasListagem />} />
                 <Route path="solicitar" element={<ValidarAdmissoes />} />
-              </Route>
+              </Route> */}
 
                 <Route path="vagas" element={<Vagas />} >
                   <Route index element={<VagasAbertas />} />

@@ -4,7 +4,6 @@ import { Column } from 'primereact/column';
 import './DataTable.css'
 import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
-import colaboradores from '@json/colaboradores.json'
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
@@ -15,76 +14,8 @@ function formatarDataBr(data) {
     return `${dia}/${mes}/${ano}`;
 }
 
-const fakeData = [
-    {
-        id: 1,
-        colaborador_id: 8,
-        data_inicio: formatarDataBr("2025-02-01"),
-        data_fim: formatarDataBr("2025-02-10"),
-        data_inicio_aquisicao: formatarDataBr("2024-02-01"),
-        data_fim_aquisicao: formatarDataBr("2024-02-10"),
-        dias: 10,
-        decimo: "Sim",
-        abono: "6"
-    },
-    {
-        id: 2,
-        colaborador_id: 11,
-        data_inicio: formatarDataBr("2025-03-05"),
-        data_fim: formatarDataBr("2025-03-15"),
-        data_inicio_aquisicao: formatarDataBr("2024-03-05"),
-        data_fim_aquisicao: formatarDataBr("2024-03-15"),
-        dias: 11,
-        decimo: "Não",
-        abono: "5"
-    },
-    {
-        id: 3,
-        colaborador_id: 12,
-        data_inicio: formatarDataBr("2025-04-10"),
-        data_fim: formatarDataBr("2025-04-20"),
-        data_inicio_aquisicao: formatarDataBr("2024-04-10"),
-        data_fim_aquisicao: formatarDataBr("2024-04-20"),
-        dias: 11,
-        decimo: "Sim",
-        abono: "10"
-    },
-    {
-        id: 4,
-        colaborador_id: 13,
-        data_inicio: formatarDataBr("2025-05-01"),
-        data_fim: formatarDataBr("2025-05-10"),
-        data_inicio_aquisicao: formatarDataBr("2024-05-01"),
-        data_fim_aquisicao: formatarDataBr("2024-05-10"),
-        dias: 10,
-        decimo: "Sim",
-        abono: "5"
-    },
-    {
-        id: 5,
-        colaborador_id: 8,
-        data_inicio: formatarDataBr("2025-06-15"),
-        data_fim: formatarDataBr("2025-06-25"),
-        data_inicio_aquisicao: formatarDataBr("2024-06-15"),
-        data_fim_aquisicao: formatarDataBr("2024-06-25"),
-        dias: 11,
-        decimo: "Não",
-        abono: "5"
-    },
-    {
-        id: 6,
-        colaborador_id: 11,
-        data_inicio: formatarDataBr("2025-07-01"),
-        data_fim: formatarDataBr("2025-07-10"),
-        data_inicio_aquisicao: formatarDataBr("2024-07-01"),
-        data_fim_aquisicao: formatarDataBr("2024-07-10"),
-        dias: 10,
-        decimo: "Sim",
-        abono: "10"
-    }
-];
-
 function DataTableFerias({ ferias, colaborador = null }) {
+    const [colaboradores, setColaboradores] = useState(null)
     const [selectedFerias, setSelectedFerias] = useState(0);
     const [modalOpened, setModalOpened] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -109,39 +40,50 @@ function DataTableFerias({ ferias, colaborador = null }) {
         cpf = cpf.replace(/[^\d]/g, "");
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
-
+    
+    const representativeInicioTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_inicio).toLocaleDateString("pt-BR")}</p>
+    }
+    
+    const representativeFimTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_fim).toLocaleDateString("pt-BR")}</p>
+    }
+    
+    const representativeInicioAquisicaoTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.datapagamento).toLocaleDateString("pt-BR")}</p>
+    }
+    
+    const representativeFimAquisicaoTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.fimperaquis).toLocaleDateString("pt-BR")}</p>
+    }
     
     const representativeColaboradorTemplate = (rowData) => {
-        const colab = colaboradores.filter(collaborator => collaborator.id == rowData.colaborador_id);
-        if(colab.length > 0)
-        {
-            return <div key={rowData.id}>
-                <Texto weight={700} width={'100%'}>
-                    {colab[0].dados_pessoa_fisica?.nome}
-                </Texto>
-                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                    Dias de Férias:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.dias}</p>
-                </div>
-                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                    Dias de Abono:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.abono}</p>
-                </div>
+       
+        return <div key={rowData.id}>
+            <Texto weight={700} width={'100%'}>
+                {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario}
+            </Texto>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                Dias de Férias:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.nrodiasferias}</p>
             </div>
-        }
-        else
-        {
-            return "--"
-        }
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                Dias de Abono:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.nrodiasabono}</p>
+            </div>
+        </div>
     }
 
     
     const representativ13Template = (rowData) => {
-        let tag = rowData.decimo;
-        switch(rowData.decimo)
+        let tag = rowData?.decimo;
+        switch(rowData?.decimo)
         {
             case 'Sim':
                 tag = <Tag severity="success" value="Sim"></Tag>;
                 break;
             case 'Não':
+                tag = <Tag severity="danger" value="Não"></Tag>;
+                break;
+            default:
                 tag = <Tag severity="danger" value="Não"></Tag>;
                 break;
         }
@@ -152,7 +94,7 @@ function DataTableFerias({ ferias, colaborador = null }) {
     
 
     // Filtra os dados com base no colaborador, se fornecido
-    const filteredData = colaborador ? fakeData.filter(feria => feria.colaborador_id == colaborador) : fakeData;
+    const filteredData = colaborador ? ferias.filter(feria => feria.funcionario == colaborador) : ferias;
 
     return (
         <>
@@ -164,10 +106,10 @@ function DataTableFerias({ ferias, colaborador = null }) {
             </div>}
             <DataTable value={filteredData} filters={filters} globalFilterFields={['colaborador_id']} emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: '68vw' }}>
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '30%' }}></Column>}
-                <Column field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
-                <Column field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
-                <Column field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
-                <Column field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
+                <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
+                <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
+                <Column body={representativeInicioTemplate} field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
+                <Column body={representativeFimTemplate} field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
                 <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
