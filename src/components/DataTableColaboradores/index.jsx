@@ -129,6 +129,9 @@ function DataTableColaboradores({ colaboradores }) {
             case 'I':
                 situacao = <Tag severity="warning" value="Invalidez"></Tag>;
                 break;
+            case 'D':
+                situacao = <Tag severity="warning" value="Demitido"></Tag>;
+                break;
         }
         return (
             <>
