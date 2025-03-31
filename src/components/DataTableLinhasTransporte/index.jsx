@@ -163,16 +163,16 @@ function DataTableLinhasTransporte({ linhas }) {
                         style={{ width: '55%' }}
                     />
                     <Column 
-                        body={operadoraTemplate}
-                        field="operadora.nome"
-                        header="Operadora"
-                        style={{ width: '25%' }}
-                    />
-                    <Column 
                         body={tarifaTemplate}
                         field="tarifa"
                         header="Tarifa"
                         style={{ width: '20%' }}
+                    />
+                    <Column 
+                        body={operadoraTemplate}
+                        field="operadora.nome"
+                        header="Operadora"
+                        style={{ width: '25%' }}
                     />
                 </DataTable>
             </DetalhesContainer>
