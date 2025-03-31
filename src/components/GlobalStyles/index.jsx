@@ -329,6 +329,13 @@ template {
 .p-tooltip-text	{
   color: var(--white);
 }
+.cursor-pointer{
+  cursor: pointer;
+}
+.p-megamenu .p-menuitem.p-highlight > .p-menuitem-content
+{
+  background-color: transparent;
+}
 `
 
 
