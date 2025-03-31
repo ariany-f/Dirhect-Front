@@ -346,27 +346,27 @@ function BarraLateral() {
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
-                    {
-                        "id": 8,
-                        "url": "/linhas-transporte",
-                        "pageTitulo": "Linhas de Transporte",
-                        "icone": <FaBusAlt size={20} className="icon" />,
-                        "itemTitulo": "Linhas de Transporte"
-                    },
-                    {
-                        "id": 9,
-                        "url": "/beneficio",
-                        "pageTitulo": "Benefícios",
-                        "icone": <RiHandCoinFill size={20} className="icon" />,
-                        "itemTitulo": "Benefícios"
-                    },
-                    {
-                        "id": 10,
-                        "url": "/operadoras",
-                        "pageTitulo": "Operadoras",
-                        "icone": <FaBuilding size={20} className="icon" />,
-                        "itemTitulo": "Operadoras"
-                    },
+                    // {
+                    //     "id": 8,
+                    //     "url": "/linhas-transporte",
+                    //     "pageTitulo": "Linhas de Transporte",
+                    //     "icone": <FaBusAlt size={20} className="icon" />,
+                    //     "itemTitulo": "Linhas de Transporte"
+                    // },
+                    // {
+                    //     "id": 9,
+                    //     "url": "/beneficio",
+                    //     "pageTitulo": "Benefícios",
+                    //     "icone": <RiHandCoinFill size={20} className="icon" />,
+                    //     "itemTitulo": "Benefícios"
+                    // },
+                    // {
+                    //     "id": 10,
+                    //     "url": "/operadoras",
+                    //     "pageTitulo": "Operadoras",
+                    //     "icone": <FaBuilding size={20} className="icon" />,
+                    //     "itemTitulo": "Operadoras"
+                    // },
                     {
                         "id": 11,
                         "url": "/contratos",
@@ -374,13 +374,13 @@ function BarraLateral() {
                         "icone": <RiFileListFill size={20} className="icon" />,
                         "itemTitulo": "Contratos"
                     },
-                    {
-                        "id": 12,
-                        "url": "/elegibilidade",
-                        "pageTitulo": "Elegibilidade",
-                        "icone": <LuSparkles size={20} className="icon" />,
-                        "itemTitulo": "Elegibilidade"
-                    },
+                    // {
+                    //     "id": 12,
+                    //     "url": "/elegibilidade",
+                    //     "pageTitulo": "Elegibilidade",
+                    //     "icone": <LuSparkles size={20} className="icon" />,
+                    //     "itemTitulo": "Elegibilidade"
+                    // },
                     {
                         "id": 13,
                         "url": "/pedidos",

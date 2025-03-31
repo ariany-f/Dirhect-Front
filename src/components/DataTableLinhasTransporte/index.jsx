@@ -1,6 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FilterMatchMode } from 'primereact/api';
+import CustomImage from '@components/CustomImage';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { RiBusFill } from 'react-icons/ri';
@@ -33,55 +34,76 @@ const BadgeTransporte = styled.div`
     font-weight: 500;
 `;
 
+const FornecedorContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+`;
+
 function DataTableLinhasTransporte({ linhas }) {
-    const [selectedOperadora, setSelectedOperadora] = useState(null);
+    const [selectedFornecedor, setSelectedFornecedor] = useState(null);
     const [filters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
     
-    // Processa as operadoras únicas
-    const operadoras = [...new Set(linhas.map(linha => linha.operadora))].map(operadora => {
-        const linhasOperadora = linhas.filter(linha => linha.operadora === operadora);
-        return {
-            nome: operadora,
-            quantidade: linhasOperadora.length,
-            tarifaMedia: linhasOperadora.reduce((sum, linha) => sum + linha.tarifa, 0) / linhasOperadora.length
-        };
-    });
-
-    // Seleciona a primeira operadora automaticamente
-    useEffect(() => {
-        if (operadoras.length > 0 && !selectedOperadora) {
-            setSelectedOperadora(operadoras[0]);
+    // Processa os fornecedores únicos
+    const fornecedores = linhas.reduce((acc, linha) => {
+        const existing = acc.find(f => f.nome === linha.fornecedor.nome);
+        if (!existing) {
+            acc.push({
+                ...linha.fornecedor,
+                quantidade: 1,
+                tarifaMedia: linha.tarifa
+            });
+        } else {
+            existing.quantidade += 1;
+            existing.tarifaMedia = ((existing.tarifaMedia * (existing.quantidade - 1)) + linha.tarifa) / existing.quantidade;
         }
-    }, [operadoras]);
+        return acc;
+    }, []);
 
-    // Filtra linhas pela operadora selecionada
-    const linhasOperadora = selectedOperadora 
-        ? linhas.filter(linha => linha.operadora === selectedOperadora.nome)
+    // Seleciona o primeiro fornecedor automaticamente
+    useEffect(() => {
+        if (fornecedores.length > 0 && !selectedFornecedor) {
+            setSelectedFornecedor(fornecedores[0]);
+        }
+    }, [fornecedores]);
+
+    // Filtra linhas pelo fornecedor selecionado
+    const linhasFornecedor = selectedFornecedor 
+        ? linhas.filter(linha => linha.fornecedor.nome === selectedFornecedor.nome)
         : [];
 
     // Templates para as colunas
     const tarifaTemplate = (rowData) => Real.format(rowData.tarifa);
     const tarifaMediaTemplate = (rowData) => Real.format(rowData.tarifaMedia);
 
-    const operadoraTemplate = (rowData) => {
+    const fornecedorTemplate = (rowData) => {
         return (
-            <BadgeTransporte>
-                <RiBusFill size={20} />
+            <FornecedorContainer>
+                <CustomImage 
+                    src={rowData.imagem} 
+                    alt={rowData.nome} 
+                    width={'70px'} 
+                    height={35} 
+                    size={90} 
+                    title={rowData.nome} 
+                />
                 <div>
                     <div style={{ fontWeight: '700' }}>{rowData.nome}</div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--neutro-500)' }}>
-                        {rowData.quantidade} linhas
+                        {rowData.quantidade} linhas • Tarifa média: {Real.format(rowData.tarifaMedia)}
                     </div>
                 </div>
-            </BadgeTransporte>
+            </FornecedorContainer>
         );
     };
 
     const linhaTemplate = (rowData) => {
         return (
             <BadgeTransporte>
+                <RiBusFill size={20} />
                 <div>
                     <div style={{ fontWeight: '700' }}>{rowData.nome}</div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--neutro-500)' }}>
@@ -92,10 +114,10 @@ function DataTableLinhasTransporte({ linhas }) {
         );
     };
 
-    const fornecedorTemplate = (rowData) => {
+    const operadoraTemplate = (rowData) => {
         return (
             <BadgeTransporte>
-                <div>{rowData.nome_fornecedor}</div>
+                <div>{rowData.operadora.nome}</div>
             </BadgeTransporte>
         );
     };
@@ -104,12 +126,12 @@ function DataTableLinhasTransporte({ linhas }) {
         <ContainerDividido>
             <ListaContainer>
                 <DataTable 
-                    value={operadoras} 
-                    selection={selectedOperadora} 
-                    onSelectionChange={(e) => setSelectedOperadora(e.value)} 
+                    value={fornecedores} 
+                    selection={selectedFornecedor} 
+                    onSelectionChange={(e) => setSelectedFornecedor(e.value)} 
                     selectionMode="single" 
                     dataKey="nome"
-                    emptyMessage="Nenhuma operadora encontrada"
+                    emptyMessage="Nenhum fornecedor encontrado"
                     filters={filters}
                     globalFilterFields={['nome']}
                     tableStyle={{ minWidth: '100%' }}
@@ -117,9 +139,8 @@ function DataTableLinhasTransporte({ linhas }) {
                     rows={7}
                 >
                     <Column 
-                        body={operadoraTemplate}
-                        field="nome"
-                        header="Operadoras"
+                        body={fornecedorTemplate}
+                        header="Fornecedores"
                         style={{ width: '100%' }}
                     />
                 </DataTable>
@@ -127,10 +148,10 @@ function DataTableLinhasTransporte({ linhas }) {
 
             <DetalhesContainer>
                 <DataTable 
-                    value={linhasOperadora} 
-                    emptyMessage="Selecione uma operadora"
+                    value={linhasFornecedor} 
+                    emptyMessage="Selecione um fornecedor"
                     filters={filters}
-                    globalFilterFields={['nome', 'codigo', 'nome_fornecedor']}
+                    globalFilterFields={['nome', 'codigo', 'operadora.nome']}
                     tableStyle={{ minWidth: '100%' }}
                     paginator
                     rows={7}
@@ -139,19 +160,19 @@ function DataTableLinhasTransporte({ linhas }) {
                         body={linhaTemplate}
                         field="nome"
                         header="Linhas"
-                        style={{ width: '40%' }}
+                        style={{ width: '55%' }}
                     />
                     <Column 
-                        body={fornecedorTemplate}
-                        field="nome_fornecedor"
-                        header="Fornecedor"
-                        style={{ width: '30%' }}
+                        body={operadoraTemplate}
+                        field="operadora.nome"
+                        header="Operadora"
+                        style={{ width: '25%' }}
                     />
                     <Column 
                         body={tarifaTemplate}
                         field="tarifa"
                         header="Tarifa"
-                        style={{ width: '30%', textAlign: 'right' }}
+                        style={{ width: '20%' }}
                     />
                 </DataTable>
             </DetalhesContainer>

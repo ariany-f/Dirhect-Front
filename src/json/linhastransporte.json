@@ -2,81 +2,141 @@
     {
         "id": 1,
         "nome": "MOGI DAS CRUZES/SAO JOSE DOS CAMPOS - PASSARO MARR",
-        "operadora": "EMPRESA DE ONIBUS PASSARO MARRON S A",
+        "operadora": {
+            "nome":"EMPRESA DE ONIBUS PASSARO MARRON S A",
+            "imagem": ""
+        },
         "codigo": "3334",
         "tarifa": 32.75,
-        "nome_fornecedor": "Ticket"
+        "fornecedor": {
+            "nome":"Ticket",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/ticket-logo_LkWC45O.png"
+        }
     },
     {
         "id": 2,
         "nome": "EMTU",
-        "operadora": "EMPRESA DE ONIBUS PASSARO MARRON S A",
+        "operadora": {
+            "nome":"EMPRESA DE ONIBUS PASSARO MARRON S A",
+            "imagem": ""
+        },
         "codigo": "3314",
         "tarifa": 6.05,
-        "nome_fornecedor": "Alelo"
+        "fornecedor": {
+            "nome":"Alelo",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/alelo-logo-5.png"
+        }
     },
     {
         "id": 3,
         "nome": "EMTU",
-        "operadora": "RAPIDO LUXO CAMPINAS LTDA",
+        "operadora": {
+            "nome":"RAPIDO LUXO CAMPINAS LTDA",
+            "imagem": ""
+        },
         "codigo": "3550",
         "tarifa": 14.75,
-        "nome_fornecedor": "Ticket"
+        "fornecedor": {
+            "nome":"Ticket",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/ticket-logo_LkWC45O.png"
+        }
     },
     {
         "id": 4,
         "nome": "MACEIO/SANTA LUZIA VT",
-        "operadora": "EXPRESSO SANTO ANTONIO LTDA",
+        "operadora": {
+            "nome":"EXPRESSO SANTO ANTONIO LTDA",
+            "imagem": ""
+        },
         "codigo": "13",
         "tarifa": 7.00,
-        "nome_fornecedor": "Alelo"
+        "fornecedor": {
+            "nome":"Alelo",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/alelo-logo-5.png"
+        }
     },
     {
         "id": 5,
         "nome": "BALSA/ARRAIAL D'AJUDA",
-        "operadora": "VIACAO AGUIA AZUL LTDA VIACAO AGUIA AZUL LTDA",
+        "operadora": {
+            "nome":"VIACAO AGUIA AZUL LTDA VIACAO AGUIA AZUL LTDA",
+            "imagem": ""
+        },
         "codigo": "38",
         "tarifa": 5.00,
-        "nome_fornecedor": "Ticket"
+        "fornecedor": {
+            "nome":"Ticket",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/ticket-logo_LkWC45O.png"
+        }
     },
     {
         "id": 6,
         "nome": "A138 - PRAIA DO FORTE - TERMINAL MUSSURUNGA",
-        "operadora": "CONSORCIO METROPASSE",
+        "operadora": {
+            "nome":"CONSORCIO METROPASSE",
+            "imagem": ""
+        },
         "codigo": "74",
         "tarifa": 10.40,
-        "nome_fornecedor": "Ticket"
+        "fornecedor": {
+            "nome":"Ticket",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/ticket-logo_LkWC45O.png"
+        }
     },
     {
         "id": 7,
         "nome": "RD TUR - GOV MANGABEIRA/SALVADOR C/SEG C/TX EMBQ",
-        "operadora": "RD TURISMO TRANSPORTES RODOVIARIOS LTDA",
+        "operadora": {
+            "nome":"RD TURISMO TRANSPORTES RODOVIARIOS LTDA",
+            "imagem": ""
+        },
         "codigo": "137",
         "tarifa": 43.91,
-        "nome_fornecedor": "Ticket"
+        "fornecedor": {
+            "nome":"Ticket",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/ticket-logo_LkWC45O.png"
+        }
     },
     {
         "id": 8,
         "nome": "INHAMBUPE/CATU",
-        "operadora": "VIAÇÃO JEQUIÉ CIDADE SOL LTDA",
+        "operadora": {
+            "nome":"VIAÇÃO JEQUIÉ CIDADE SOL LTDA",
+            "imagem": ""
+        },
         "codigo": "162",
         "tarifa": 28.77,
-        "nome_fornecedor": "Ticket"
+        "fornecedor": {
+            "nome":"Ticket",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/ticket-logo_LkWC45O.png"
+        }
     },
     {
         "id": 9,
         "nome": "SANTANA DO LIVRAMENTO/SAO GABRIEL VT",
-        "operadora": "PLANALTO TRANSPORTES LTDA",
+        "operadora": {
+            "nome":"PLANALTO TRANSPORTES LTDA",
+            "imagem": ""
+        },
         "codigo": "2156",
         "tarifa": 63.35,
-        "nome_fornecedor": "Ticket"
+        "fornecedor": {
+            "nome":"Ticket",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/ticket-logo_LkWC45O.png"
+        }
     },
     {
         "id": 10,
         "nome": "SAO JOSE/MONTEIRO  VTE",
-        "operadora": "CIDADE NATUREZA TRANSPORTES E TURISMO LTDA EPP",
+        "operadora": {
+            "nome":"CIDADE NATUREZA TRANSPORTES E TURISMO LTDA EPP",
+            "imagem": ""
+        },
         "codigo": "2745",
         "tarifa": 6.55,
-        "nome_fornecedor": "Alelo"
+        "fornecedor": {
+            "nome":"Alelo",
+            "imagem": "https://ativary.dirhect.net/media/operadoras/alelo-logo-5.png"
+        }
     }
 ]

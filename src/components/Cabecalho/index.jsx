@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import { RiOrganizationChart } from "react-icons/ri";
+import { RiHandCoinFill, RiOrganizationChart } from "react-icons/ri";
 import styles from './Cabecalho.module.css';
 import Frame from "@components/Frame";
 import Texto from "@components/Texto";
@@ -9,6 +9,8 @@ import { MdOutlineKeyboardArrowDown, MdShoppingCart } from 'react-icons/md';
 import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
+import { FaBuilding, FaBusAlt } from "react-icons/fa";
+import { LuSparkles } from "react-icons/lu";
 
 // MegaMenu Container
 const MegaMenuWrapper = styled.div`
@@ -69,8 +71,12 @@ const MenuColumn = styled.div`
 `;
 
 // Menu Item
+
+// Update the MenuItem styled component to include icons
 const MenuItem = styled(Link)`
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 12px;
   color: var(--black);
   text-decoration: none;
@@ -201,17 +207,36 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     {
       title: "Benefícios",
       items: [
-        { label: 'Benefícios', url: '/beneficio' }, 
-        { label: 'Operadoras', url: '/operadoras' }, 
-        { label: 'Linhas de Transporte', url: '/linhas-transporte' }
+        { 
+          label: 'Benefícios', 
+          url: '/beneficio',
+          icon: <RiHandCoinFill size={16}/>
+        }, 
+        { 
+          label: 'Operadoras', 
+          url: '/operadoras',
+          icon: <FaBuilding size={16} />
+        }, 
+        { 
+          label: 'Linhas de Transporte', 
+          url: '/linhas-transporte',
+          icon: <FaBusAlt size={16} />
+        }
       ]
     },
     {
       title: "Organização",
       items: [
-        { label: 'Estrutura Organizacional', url: '/estrutura' },
-        { label: 'Colaboradores', url: '/colaborador' },
-        { label: 'Elegibilidade', url: '/elegibilidade' }
+        { 
+          label: 'Estrutura Organizacional', 
+          url: '/estrutura',
+          icon: <RiOrganizationChart size={18}/>
+        },
+        { 
+          label: 'Elegibilidade', 
+          url: '/elegibilidade',
+          icon: <LuSparkles size={16} className="icon" />
+        }
       ]
     }
   ];
@@ -245,6 +270,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                         to={item.url}
                         onClick={() => setMenuAberto(false)}
                       >
+                        {item.icon}
                         <Texto weight="500" size={'14px'} color="black">
                           {item.label}
                         </Texto>
