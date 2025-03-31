@@ -134,7 +134,7 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
             setNome(filial.nome);
             setCidade(filial.cidade);
             setEstado(filial.estado);
-            setLogradouro(filial.logradoro)
+            setLogradouro(filial.logradouro)
             setNumero(filial.numero);
             setComplemento(filial.complemento);
             setBairro(filial.bairro);
