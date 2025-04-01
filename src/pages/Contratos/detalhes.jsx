@@ -102,11 +102,7 @@ function DetalhesContratos() {
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício ao Contrato</Botao>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
-                        <Texto>Observação</Texto>
-                        {contrato?.observacao ?
-                            <Texto weight="800">{contrato?.observacao}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                        }
+                       
                     </div>
                     </>
                     : <></>
