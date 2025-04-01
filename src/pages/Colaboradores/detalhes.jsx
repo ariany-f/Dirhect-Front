@@ -149,7 +149,6 @@ function ColaboradorDetalhes() {
     }
 
     function copiarTexto(texto) {
-        console.log(texto)
         navigator.clipboard.writeText(texto);
         toast.current.show({ severity: 'info', summary: '', detail: 'Texto copiado para a área de transferência.', life: 2000 });
     }
