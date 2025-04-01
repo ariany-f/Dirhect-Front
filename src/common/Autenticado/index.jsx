@@ -24,7 +24,7 @@ const MarginContainer = styled.div`
     flex-direction: column;
     height: initial;
     align-items: flex-start;
-    margin: 0 6vw;
+    margin: 0 4vw;
 `
 
 function Autenticado() {   

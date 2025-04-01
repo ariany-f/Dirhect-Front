@@ -109,57 +109,6 @@ function ColaboradorDadosPessoais() {
     return (
         <>
         <Toast ref={toast} />
-        <Titulo><h6>Identificação</h6></Titulo>
-        <div className={styles.card_dashboard}>
-            <Col12>
-                <Col3>
-                    <Texto>Chapa</Texto>
-                    {colaborador?.chapa ?
-                        <Texto weight="800">{colaborador?.chapa}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Nome completo</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.nome ?
-                        <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.nome}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Nome social</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.nome_social ?
-                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica.nome_social}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </Col3>
-                <Col3>
-                    <Texto>Nascimento</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.data_nascimento ?
-                        <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Sexo</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.sexo ?
-                        <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.sexo}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </Col3>
-                <Col3>
-                    <Texto>CPF</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.cpf ?
-                        <Texto weight="800">{formataCPF(colaborador?.funcionario_pessoa_fisica?.cpf)}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Identidade</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.identidade ?
-                        <Texto weight="800">{(colaborador?.funcionario_pessoa_fisica.identidade)}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Data Emissão Identidade</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.data_emissao_ident ?
-                        <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_emissao_ident).toLocaleDateString('pt-BR')}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </Col3>
-            </Col12>
-        </div>
         <Titulo><h6>Informações gerais</h6></Titulo>
         <div className={styles.card_dashboard}>
             <Col12>
@@ -178,6 +127,17 @@ function ColaboradorDadosPessoais() {
                     {colaborador?.funcionario_pessoa_fisica?.cor_raca ?
                     <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.cor_raca}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    
+                    <Texto>Identidade</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.identidade ?
+                        <Texto weight="800">{(colaborador?.funcionario_pessoa_fisica.identidade)}</Texto>
+                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    <Texto>Data Emissão Identidade</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.data_emissao_ident ?
+                        <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_emissao_ident).toLocaleDateString('pt-BR')}</Texto>
+                        : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                 </Col3>
                 <Col3>
@@ -202,6 +162,22 @@ function ColaboradorDadosPessoais() {
                     <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_venc_habilitacao).toLocaleDateString('pt-BR')}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                     }
+                    
+                    <Texto>Circunscrição Militar</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.circunscricao_militar ?
+                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.circunscricao_militar}</Texto>
+                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    <Texto>Certificado de Reservista</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.certificado_reservista ?
+                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.certificado_reservista}</Texto>
+                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    <Texto>Situação Militar</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.situacao_militar ?
+                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.situacao_militar}</Texto>
+                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
                 </Col3>
                 <Col3>
                     <Texto>Titulo de Eleitor</Texto>
@@ -224,27 +200,31 @@ function ColaboradorDadosPessoais() {
                     <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_titulo_eleitor).toLocaleDateString('pt-BR')}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                     }
-                </Col3>
-                <Col3>
-                    <Texto>Circunscrição Militar</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.circunscricao_militar ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.circunscricao_militar}</Texto>
+                    <Texto>Carteira de Trabalho</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.carteira_trabalho ?
+                        <>
+                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.carteira_trabalho}</Texto>
+                            {colaborador?.funcionario_pessoa_fisica?.serie_carteira_trab ?
+                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.serie_carteira_trab}</Texto>
+                            : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                        </>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                     }
-                    <Texto>Certificado de Reservista</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.certificado_reservista ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.certificado_reservista}</Texto>
+                    <Texto>Data de Emissão CTPS</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.data_emissao_ctps ?
+                    <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_emissao_ctps).toLocaleDateString('pt-BR')}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                     }
-                    <Texto>Situação Militar</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.situacao_militar ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.situacao_militar}</Texto>
+                    <Texto>Data de Validade CTPS</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.data_venc_ctps ?
+                    <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_venc_ctps).toLocaleDateString('pt-BR')}</Texto>
                     : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                 </Col3>
             </Col12>
         </div>
-        <Col12>
+        {/* <Col12>
             <Col6>
                 <Titulo><h6>Informações de contato</h6></Titulo>
                 <div className={styles.card_dashboard}>
@@ -276,54 +256,7 @@ function ColaboradorDadosPessoais() {
                     </ContainerHorizontal>
                 </div>
             </Col6>
-            <Col6>
-                <Titulo><h6>Informações trabalhistas</h6></Titulo>
-                <div className={styles.card_dashboard}>
-                    <Col12>
-                        <Col3>
-                            <Texto>Data de Admissão</Texto>
-                            {colaborador?.dt_admissao ?
-                                <Texto weight="800">{new Date(colaborador?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Salário</Texto>
-                            {colaborador?.salario ?
-                                <Texto weight="800">{Real.format(colaborador?.salario)}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Deficiente Físico</Texto>
-                            {colaborador?.funcionario_pessoa_fisica?.deficiente_fisico ?
-                                <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.deficiente_fisico}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                        </Col3>
-                        <Col3>
-                            <Texto>Carteira de Trabalho</Texto>
-                            {colaborador?.funcionario_pessoa_fisica?.carteira_trabalho ?
-                                <>
-                                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.carteira_trabalho}</Texto>
-                                    {colaborador?.funcionario_pessoa_fisica?.serie_carteira_trab ?
-                                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.serie_carteira_trab}</Texto>
-                                    : <Skeleton variant="rectangular" width={200} height={25} />
-                                    }
-                                </>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Data de Emissão CTPS</Texto>
-                            {colaborador?.funcionario_pessoa_fisica?.data_emissao_ctps ?
-                            <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_emissao_ctps).toLocaleDateString('pt-BR')}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Data de Validade CTPS</Texto>
-                            {colaborador?.funcionario_pessoa_fisica?.data_venc_ctps ?
-                            <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_venc_ctps).toLocaleDateString('pt-BR')}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                        </Col3>
-                    </Col12>
-                </div>  
-            </Col6>
-        </Col12>
+        </Col12> */}
         <ModalAlterarTelefone dadoAntigo={((colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica?.telefone1) ? (colaborador?.funcionario_pessoa_fisica?.telefone1) : '')} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
         <ModalAlterarEmail dadoAntigo={(colaborador?.funcionario_pessoa_fisica ? colaborador?.funcionario_pessoa_fisica?.email : '')} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
        

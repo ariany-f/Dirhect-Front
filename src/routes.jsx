@@ -20,6 +20,7 @@ import AdicionarCelular from '@pages/AdicionarCelular'
 import AdicionarEmail from '@pages/AdicionarEmail'
 import ColaboradorDetalhes from '@pages/Colaboradores/detalhes'
 import ColaboradorDadosPessoais from '@pages/Colaboradores/Detalhes/dados-pessoais'
+import ColaboradorDadosContratuais from '@pages/Colaboradores/Detalhes/dados-contratuais'
 import ColaboradorCartoes from '@pages/Colaboradores/Detalhes/cartoes'
 import ColaboradorSaldo from '@pages/Colaboradores/Detalhes/saldo'
 import ColaboradorCarteiras from '@pages/Colaboradores/Detalhes/carteiras'
@@ -185,7 +186,8 @@ function AppRouter() {
                     <Route path="desativados" element={<ColaboradoresDesativados />} />
                 </Route>
                 <Route path="colaborador/detalhes/:id" element={<ColaboradorDetalhes />} >
-                    <Route index element={<ColaboradorDadosPessoais />} />
+                    <Route index element={<ColaboradorDadosContratuais />} />
+                    <Route path="dados-pessoais" element={<ColaboradorDadosPessoais />} />
                     <Route path="cartoes" element={<ColaboradorCartoes />} />
                     <Route path="saldo" element={<ColaboradorSaldo />} />
                     <Route path="dependentes" element={<ColaboradorDependentes />} />

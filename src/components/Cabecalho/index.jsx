@@ -102,7 +102,7 @@ const HeaderEstilizado = styled.header`
   align-items: center;
   height: fit-content;
   top: 0;
-  padding: 0 6vw;
+  padding: 0 4vw 0 5vw;
   flex-wrap: wrap;
 `;
 

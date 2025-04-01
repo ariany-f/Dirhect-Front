@@ -2,15 +2,17 @@ import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-
 import BotaoVoltar from "@components/BotaoVoltar"
 import BotaoGrupo from "@components/BotaoGrupo"
 import BotaoSemBorda from "@components/BotaoSemBorda"
+import Texto from "@components/Texto"
 import Botao from "@components/Botao"
 import Titulo from "@components/Titulo"
 import Frame from "@components/Frame"
 import BadgeGeral from "@components/BadgeGeral"
 import FrameVertical from "@components/FrameVertical"
+import ContainerHorizontal from "@components/ContainerHorizontal"
 import Container from "@components/Container"
 import styles from './Colaboradores.module.css'
 import { Skeleton } from 'primereact/skeleton'
-import { FaTrash } from 'react-icons/fa'
+import { FaCopy, FaTrash } from 'react-icons/fa'
 import { Toast } from 'primereact/toast'
 import http from '@http'
 import { useEffect, useRef, useState } from 'react'
@@ -18,8 +20,55 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import { Tag } from 'primereact/tag';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
-import { RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
+import { RiFileCopy2Line, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { MdOutlineFastfood } from 'react-icons/md';
+import { IoCopyOutline } from 'react-icons/io5';
+import styled from 'styled-components';
+
+
+const Col12 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+`
+
+const Col6 = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    flex: 1 1 calc(50% - 10px);
+    gap: 8px;
+`
+
+const Col12Vertical = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 15px;
+    justify-content: space-between;
+`
+const Col4Vertical = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 calc(20% - 15px);
+    max-width: calc(20% - 15px);
+    gap: 8px;
+    border: 1px solid var(--neutro-200);
+    border-radius: 16px;
+    padding: 5px 24px;
+`
+const Col8Vertical = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 calc(80% - 15px);
+    max-width: calc(80% - 15px);
+    gap: 16px;
+`
+
+
 
 function ColaboradorDetalhes() {
 
@@ -94,27 +143,36 @@ function ColaboradorDetalhes() {
         return situacao
     }
 
+    function formataCPF(cpf) {
+        cpf = cpf.replace(/[^\d]/g, "");
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    }
+
     return (
         <Frame>
             <Toast ref={toast} />
             <ConfirmDialog />
-            <Container gap="32px">
-                    {colaborador && usuario.public_id != colaborador?.id && 
-                        <BotaoVoltar linkFixo="/colaborador" />
-                    }
+            {colaborador && usuario.public_id != colaborador?.id && 
+                <Container gap="24px" alinhamento="space-between">
                     {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
-                        <BotaoGrupo align="space-between">
+                        <>
+                        <BotaoVoltar linkFixo="/colaborador" />
+                        <BotaoGrupo align="start">
                             <Titulo align="left">
                                 <FrameVertical gap="10px">
-                                    <h3>{colaborador?.funcionario_pessoa_fisica?.nome}</h3>
+                                    <h3>{colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}</h3>
                                     {representativSituacaoTemplate()}
                                 </FrameVertical>
+                                {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica.email &&
+                                    <>
+                                        <p>{colaborador?.funcionario_pessoa_fisica.email}</p>  
+                                        <IoCopyOutline className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(colaborador?.funcionario_pessoa_fisica?.email)}} />
+                                    </>
+                                }
                             </Titulo>
-                            <BotaoSemBorda $color="var(--primaria)">
-                                <FaTrash /><Link onClick={desativarColaborador}>Desativar colaborador</Link>
-                            </BotaoSemBorda>
-                     </BotaoGrupo>
-                    : <Skeleton variant="rectangular" width={300} height={40} />
+                        </BotaoGrupo>
+                        </>
+                        : <Skeleton variant="rectangular" width={300} height={40} />
                     }
                     <FrameVertical gap="16px" alinhamento="left">
                         <BadgeGeral weight={500} severity="success" nomeBeneficio={
@@ -145,60 +203,109 @@ function ColaboradorDetalhes() {
                             </div>
                         }  />
                     </FrameVertical>
-                <BotaoGrupo>
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Dados Pessoais</Botao>
-                    </Link>
-                    {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/saldo`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/saldo` ? 'black':''} size="small" tab>Saldo em benefícios</Botao>
-                    </Link> */}
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/dependentes`}>
-                    <Botao 
-                        estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
-                        size="small" 
-                        tab
-                    >
-                        Dependentes
-                    </Botao>
-                </Link>
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
-                    </Link>
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
-                    </Link>
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/demissoes`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/demissoes` ? 'black':''} size="small" tab>Demissões</Botao>
-                    </Link>
-                    {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') &&
-                        <>
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos de Folha</Botao>
-                        </Link>
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>ESocial</Botao>
-                        </Link>
-                        </>
+                </Container>
+            }
+            <Col12Vertical>
+                <Col4Vertical>
+                    {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
+                        <div style={{marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Nome Social</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.nome_social}</Texto>
+                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(colaborador?.funcionario_pessoa_fisica?.nome_social)}} />
+                                </div>
+                            </Frame>
+                        
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>CPF</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Texto size={'14px'}>{formataCPF(colaborador?.funcionario_pessoa_fisica?.cpf)}</Texto>
+                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(colaborador?.funcionario_pessoa_fisica?.cpf)}} />
+                                </div>
+                            </Frame>
+                        
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Nascimento</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Texto size={'14px'}>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
+                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}} />
+                                </div>
+                            </Frame>
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Sexo</Texto>
+                                <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.sexo}</Texto>
+                            </Frame>
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Telefone</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.telefone1}</Texto>
+                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(colaborador?.funcionario_pessoa_fisica?.telefone1)}} />
+                                </div>
+                            </Frame>
+                     </div>
+                    : <Skeleton variant="rectangular" width={300} height={40} />
                     }
-
-                    {(usuario.tipo == 'equipeBeneficios') && 
-                        <>
-                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
-                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
+                </Col4Vertical>
+                <Col8Vertical>
+                    <BotaoGrupo gap="8px">
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Dados Contratuais</Botao>
+                        </Link>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-pessoais`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-pessoais` ? 'black':''} size="small" tab>Dados Pessoais</Botao>
+                        </Link>
+                        {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/saldo`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/saldo` ? 'black':''} size="small" tab>Saldo em benefícios</Botao>
+                        </Link> */}
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/dependentes`}>
+                        <Botao 
+                            estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
+                            size="small" 
+                            tab
+                        >
+                            Dependentes
+                        </Botao>
+                    </Link>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
+                        </Link>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
+                        </Link>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/demissoes`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/demissoes` ? 'black':''} size="small" tab>Demissões</Botao>
+                        </Link>
+                        {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') &&
+                            <>
+                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
+                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos de Folha</Botao>
                             </Link>
-                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/movimentos`}>
-                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
+                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
+                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>ESocial</Botao>
                             </Link>
-                        </>
-                    }
-                    
+                            </>
+                        }
 
-                    {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/carteiras`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/carteiras` ? 'black':''} size="small" tab>Carteiras</Botao>
-                    </Link> */}
-                </BotaoGrupo>
-                <Outlet context={colaborador}/>
-            </Container>
+                        {(usuario.tipo == 'equipeBeneficios') && 
+                            <>
+                                <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
+                                    <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
+                                </Link>
+                                <Link className={styles.link} to={`/colaborador/detalhes/${id}/movimentos`}>
+                                    <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
+                                </Link>
+                            </>
+                        }
+                        
+
+                        {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/carteiras`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/carteiras` ? 'black':''} size="small" tab>Carteiras</Botao>
+                        </Link> */}
+                    </BotaoGrupo>
+                    <Outlet context={colaborador}/>
+                </Col8Vertical>
+            </Col12Vertical>
         </Frame>
     )
 }
