@@ -93,7 +93,7 @@ function DataTableLinhasTransporte({ linhas }) {
                 <div>
                     <div style={{ fontWeight: '700' }}>{rowData.nome}</div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--neutro-500)' }}>
-                        {rowData.quantidade} linhas • Tarifa média: {Real.format(rowData.tarifaMedia)}
+                        {rowData.quantidade} linhas
                     </div>
                 </div>
             </FornecedorContainer>
