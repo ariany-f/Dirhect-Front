@@ -148,6 +148,12 @@ function ColaboradorDetalhes() {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
+    function copiarTexto(texto) {
+        console.log(texto)
+        navigator.clipboard.writeText(texto);
+        toast.current.show({ severity: 'info', summary: '', detail: 'Texto copiado para a área de transferência.', life: 2000 });
+    }
+
     return (
         <Frame>
             <Toast ref={toast} />
@@ -166,7 +172,7 @@ function ColaboradorDetalhes() {
                                 {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica.email &&
                                     <>
                                         <p>{colaborador?.funcionario_pessoa_fisica.email}</p>  
-                                        <IoCopyOutline className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(colaborador?.funcionario_pessoa_fisica?.email)}} />
+                                        <IoCopyOutline className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.email)}} />
                                     </>
                                 }
                             </Titulo>
@@ -213,7 +219,7 @@ function ColaboradorDetalhes() {
                                 <Texto size={'14px'} weight={600}>Nome Social</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
                                     <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.nome_social}</Texto>
-                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(colaborador?.funcionario_pessoa_fisica?.nome_social)}} />
+                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}} />
                                 </div>
                             </Frame>
                         
@@ -221,7 +227,7 @@ function ColaboradorDetalhes() {
                                 <Texto size={'14px'} weight={600}>CPF</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
                                     <Texto size={'14px'}>{formataCPF(colaborador?.funcionario_pessoa_fisica?.cpf)}</Texto>
-                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(colaborador?.funcionario_pessoa_fisica?.cpf)}} />
+                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.cpf)}} />
                                 </div>
                             </Frame>
                         
@@ -229,7 +235,7 @@ function ColaboradorDetalhes() {
                                 <Texto size={'14px'} weight={600}>Nascimento</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
                                     <Texto size={'14px'}>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
-                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}} />
+                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}} />
                                 </div>
                             </Frame>
                             <Frame gap="2px" alinhamento="start">
@@ -240,7 +246,7 @@ function ColaboradorDetalhes() {
                                 <Texto size={'14px'} weight={600}>Telefone</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
                                     <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.telefone1}</Texto>
-                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {navigator.clipboard.writeText(colaborador?.funcionario_pessoa_fisica?.telefone1)}} />
+                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.telefone1)}} />
                                 </div>
                             </Frame>
                      </div>
