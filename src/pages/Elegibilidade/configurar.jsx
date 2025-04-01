@@ -3,6 +3,7 @@ import http from '@http'
 import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Botao from "@components/Botao"
+import BotaoVoltar from "@components/BotaoVoltar"
 import Frame from "@components/Frame"
 import Texto from "@components/Texto"
 import CampoTexto from "@components/CampoTexto"
@@ -88,57 +89,53 @@ function ElegibilidadeConfigurar() {
     return (
         <>
             <Frame>
+                <BotaoVoltar linkFixo="/elegibilidade" />
                 <Toast ref={toast} />
-                <div className="card flex justify-content-center">
-                    <Stepper headerPosition="top" ref={stepperRef} style={{ flexBasis: '50rem' }}>
-                        <StepperPanel>
-                            <Titulo>
-                                <h6>Escolha como quer configurar elegibilidade</h6>
-                            </Titulo>
-                            <Col12>
-                                <Col6>
-                                    <CardSelecao>
-                                        <Frame>
-                                            <ContainerHorizontal gap={'16px'}>
-                                                <FaUser size={20} />
-                                                <Texto weight={700}>Filial</Texto>
-                                            </ContainerHorizontal>
-                                            <Frame alinhamento="center">
-                                                <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
-                                                    <li>
-                                                        Essa opção você selecionara cada filial e pode configurar o valor dos benefícios um a um ou selecionando todos
-                                                    </li>
-                                                </ul>
-                                            </Frame>
-                                        </Frame>
-                                        <Botao aoClicar={() => navegar('/elegibilidade/selecao-filiais')} size="medium">Configurar elegibilidade por filial</Botao>
-                                    </CardSelecao>
-                                </Col6>
-                                <Col6>
-                                    <CardSelecao>
-                                        <Frame>
-                                            <ContainerHorizontal gap={'16px'}>
-                                                <HiUserGroup size={28} />
-                                                <Texto weight={700}>Departamento</Texto>
-                                            </ContainerHorizontal>
-                                            <Frame alinhamento="center">
-                                                <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
-                                                    <li>
-                                                        Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
-                                                    </li>
-                                                    <li>
-                                                        Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
-                                                    </li>
-                                                </ul>
-                                            </Frame>
-                                        </Frame>
-                                        <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar elegibilidade por departamento</Botao>
-                                    </CardSelecao>
-                                </Col6>
-                            </Col12>
-                        </StepperPanel>
-                    </Stepper>
-                </div>
+                <br/>
+                <Titulo>
+                    <h6>Escolha como quer configurar elegibilidade</h6>
+                </Titulo>
+                <Col12>
+                    <Col6>
+                        <CardSelecao>
+                            <Frame>
+                                <ContainerHorizontal gap={'16px'}>
+                                    <FaUser size={20} />
+                                    <Texto weight={700}>Filial</Texto>
+                                </ContainerHorizontal>
+                                <Frame alinhamento="center">
+                                    <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                        <li>
+                                            Essa opção você selecionara cada filial e pode configurar o valor dos benefícios um a um ou selecionando todos
+                                        </li>
+                                    </ul>
+                                </Frame>
+                            </Frame>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-filiais')} size="medium">Configurar elegibilidade por filial</Botao>
+                        </CardSelecao>
+                    </Col6>
+                    <Col6>
+                        <CardSelecao>
+                            <Frame>
+                                <ContainerHorizontal gap={'16px'}>
+                                    <HiUserGroup size={28} />
+                                    <Texto weight={700}>Departamento</Texto>
+                                </ContainerHorizontal>
+                                <Frame alinhamento="center">
+                                    <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                        <li>
+                                            Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
+                                        </li>
+                                        <li>
+                                            Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
+                                        </li>
+                                    </ul>
+                                </Frame>
+                            </Frame>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar elegibilidade por departamento</Botao>
+                        </CardSelecao>
+                    </Col6>
+                </Col12>
             </Frame>
         </>
     )
