@@ -62,7 +62,7 @@ function DataTableFerias({ ferias, colaborador = null }) {
        
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario.nome}
+                {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario_nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 Dias de Férias:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.nrodiasferias}</p>
