@@ -67,7 +67,7 @@ const MenuGrid = styled.div`
 // Menu Column
 const MenuColumn = styled.div`
   flex: 1;
-  min-width: ${({ $minWidth }) => $minWidth || '180px'};
+  min-width: ${({ $minWidth }) => $minWidth || '250px'};
 `;
 
 // Menu Item
@@ -83,6 +83,9 @@ const MenuItem = styled(Link)`
   border-radius: 4px;
   transition: background-color 0.2s;
   font-size: 14px;
+  background-color: ${({ $isActive }) => $isActive ? 'var(--neutro-100)' : 'transparent'};
+  pointer-events: ${({ $isActive }) => $isActive ? 'none' : 'auto'};
+  cursor: ${({ $isActive }) => $isActive ? 'default' : 'pointer'};
   
   &:hover {
     background-color: var(--neutro-100);
@@ -269,6 +272,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                         key={itemIndex} 
                         to={item.url}
                         onClick={() => setMenuAberto(false)}
+                        $isActive={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}
                       >
                         {item.icon}
                         <Texto weight="500" size={'14px'} color="black">
