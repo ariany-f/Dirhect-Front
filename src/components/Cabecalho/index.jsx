@@ -129,6 +129,9 @@ const ItemEmpresa = styled.button`
   font-weight: 700;
   line-height: 20px;
   cursor: pointer;
+  text-align: center;
+  min-width: 150px;
+  justify-content: center;
 `;
 
 const ItemUsuario = styled.div`
@@ -287,7 +290,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
           </MegaMenuWrapper>
           
           {/* Rest of your header items... */}
-          {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
+          {/* {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
             <Frame alinhamento="center">
               <Link 
                 to="/estrutura"
@@ -306,7 +309,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                 </Texto>
               </Link>
             </Frame>
-          )}
+          )} */}
           
           {usuario.tipo !== "candidato" && (
             <Frame alinhamento="center">
