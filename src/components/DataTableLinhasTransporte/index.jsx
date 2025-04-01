@@ -20,7 +20,7 @@ const ContainerDividido = styled.div`
 `;
 
 const ListaContainer = styled.div`
-    width: 400px;
+    width: 350px;
 `;
 
 const DetalhesContainer = styled.div`
@@ -92,9 +92,9 @@ function DataTableLinhasTransporte({ linhas }) {
                 <CustomImage 
                     src={rowData.imagem} 
                     alt={rowData.nome} 
-                    width={'70px'} 
-                    height={35} 
-                    size={90} 
+                    width={'55px'} 
+                    height={30} 
+                    size={70} 
                     title={rowData.nome}
                 />
                 <div>
