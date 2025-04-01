@@ -48,7 +48,7 @@ const MegaMenuPanel = styled.div`
   border: 1px solid var(--neutro-200);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 16px;
+  padding: 20px;
   display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
   visibility: ${({ $isOpen }) => ($isOpen ? 'visible' : 'hidden')};
@@ -70,13 +70,11 @@ const MenuColumn = styled.div`
   min-width: ${({ $minWidth }) => $minWidth || '250px'};
 `;
 
-// Menu Item
-
 // Update the MenuItem styled component to include icons
 const MenuItem = styled(Link)`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   padding: 8px 12px;
   color: var(--black);
   text-decoration: none;
