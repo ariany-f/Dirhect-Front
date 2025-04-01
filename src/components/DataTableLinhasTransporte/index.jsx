@@ -5,7 +5,6 @@ import CustomImage from '@components/CustomImage';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { RiBusFill } from 'react-icons/ri';
-import { FaQuestion } from 'react-icons/fa';
 import './DataTable.css';
 
 let Real = new Intl.NumberFormat('pt-BR', {
@@ -41,13 +40,20 @@ const FornecedorContainer = styled.div`
     padding: 8px 0;
 `;
 
+const IconeFixo = styled.div`
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+`;
+
 function DataTableLinhasTransporte({ linhas }) {
     const [selectedFornecedor, setSelectedFornecedor] = useState(null);
     const [filters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
     
-    // Processa os fornecedores únicos
+    // Processa e ordena os fornecedores por nome
     const fornecedores = linhas.reduce((acc, linha) => {
         const existing = acc.find(f => f.nome === linha.fornecedor.nome);
         if (!existing) {
@@ -61,7 +67,7 @@ function DataTableLinhasTransporte({ linhas }) {
             existing.tarifaMedia = ((existing.tarifaMedia * (existing.quantidade - 1)) + linha.tarifa) / existing.quantidade;
         }
         return acc;
-    }, []);
+    }, []).sort((a, b) => a.nome.localeCompare(b.nome));
 
     // Seleciona o primeiro fornecedor automaticamente
     useEffect(() => {
@@ -77,7 +83,6 @@ function DataTableLinhasTransporte({ linhas }) {
 
     // Templates para as colunas
     const tarifaTemplate = (rowData) => Real.format(rowData.tarifa);
-    const tarifaMediaTemplate = (rowData) => Real.format(rowData.tarifaMedia);
 
     const fornecedorTemplate = (rowData) => {
         return (
@@ -103,7 +108,9 @@ function DataTableLinhasTransporte({ linhas }) {
     const linhaTemplate = (rowData) => {
         return (
             <BadgeTransporte>
-                <RiBusFill size={20} />
+                <IconeFixo>
+                    <RiBusFill size={20} />
+                </IconeFixo>
                 <div>
                     <div style={{ fontWeight: '700' }}>{rowData.nome}</div>
                     <div style={{ fontSize: '0.85rem', color: 'var(--neutro-500)' }}>
@@ -137,11 +144,14 @@ function DataTableLinhasTransporte({ linhas }) {
                     tableStyle={{ minWidth: '100%' }}
                     paginator
                     rows={7}
+                    sortField="nome"
+                    sortOrder={1} // Ordem ascendente
                 >
                     <Column 
                         body={fornecedorTemplate}
                         header="Fornecedores"
                         style={{ width: '100%' }}
+                        sortable
                     />
                 </DataTable>
             </ListaContainer>
