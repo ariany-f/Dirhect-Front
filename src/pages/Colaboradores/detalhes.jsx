@@ -157,65 +157,63 @@ function ColaboradorDetalhes() {
         <Frame>
             <Toast ref={toast} />
             <ConfirmDialog />
-            {colaborador && usuario.public_id != colaborador?.id && 
-                <Container gap="24px" alinhamento="space-between">
-                    {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
-                        <>
-                        <BotaoVoltar linkFixo="/colaborador" />
-                        <BotaoGrupo align="start">
-                            <Titulo align="left">
-                                <FrameVertical gap="10px">
-                                    <h3>{colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}</h3>
-                                    {representativSituacaoTemplate()}
-                                </FrameVertical>
-                                {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica.email &&
-                                    <>
-                                        <p>{colaborador?.funcionario_pessoa_fisica.email}</p>  
-                                        <IoCopyOutline className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.email)}} />
-                                    </>
-                                }
-                            </Titulo>
-                        </BotaoGrupo>
-                        </>
-                        : <>
-                            <Skeleton variant="rectangular" width={70} height={20} />
-                            <ContainerHorizontal gap="16px" align="start">
-                                <Skeleton variant="rectangular" width={340} height={40} />
-                                <Skeleton variant="rectangular" width={70} height={30} />
-                            </ContainerHorizontal>
-                        </>
-                    }
-                    <FrameVertical gap="16px" alinhamento="left">
-                        <BadgeGeral weight={500} severity="success" nomeBeneficio={
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <RiShoppingCartFill size={20} />
-                                <div>
-                                Alimentação <br/>
-                                R$ 150,00
-                                </div>
+            <Container gap="24px" alinhamento="space-between">
+                {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
+                    <>
+                    <BotaoVoltar linkFixo="/colaborador" />
+                    <BotaoGrupo align="start">
+                        <Titulo align="left">
+                            <FrameVertical gap="10px">
+                                <h3>{colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}</h3>
+                                {representativSituacaoTemplate()}
+                            </FrameVertical>
+                            {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica.email &&
+                                <>
+                                    <p>{colaborador?.funcionario_pessoa_fisica.email}</p>  
+                                    <IoCopyOutline className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.email)}} />
+                                </>
+                            }
+                        </Titulo>
+                    </BotaoGrupo>
+                    </>
+                    : <>
+                        <Skeleton variant="rectangular" width={70} height={20} />
+                        <ContainerHorizontal gap="16px" align="start">
+                            <Skeleton variant="rectangular" width={340} height={40} />
+                            <Skeleton variant="rectangular" width={70} height={30} />
+                        </ContainerHorizontal>
+                    </>
+                }
+                <FrameVertical gap="16px" alinhamento="left">
+                    <BadgeGeral weight={500} severity="success" nomeBeneficio={
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <RiShoppingCartFill size={20} />
+                            <div>
+                            Alimentação <br/>
+                            R$ 150,00
                             </div>
-                        }  />
-                        <BadgeGeral weight={500} severity="success" nomeBeneficio={
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <MdOutlineFastfood size={20} />
-                                <div>
-                                Refeição <br/>
-                                R$ 550,00
-                                </div>
+                        </div>
+                    }  />
+                    <BadgeGeral weight={500} severity="success" nomeBeneficio={
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <MdOutlineFastfood size={20} />
+                            <div>
+                            Refeição <br/>
+                            R$ 550,00
                             </div>
-                        }  />
-                        <BadgeGeral weight={500} severity="neutro" nomeBeneficio={
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <RiGasStationFill size={20} />
-                                <div>
-                                Combustível <br/>
-                                R$ 350,00
-                                </div>
+                        </div>
+                    }  />
+                    <BadgeGeral weight={500} severity="neutro" nomeBeneficio={
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <RiGasStationFill size={20} />
+                            <div>
+                            Combustível <br/>
+                            R$ 350,00
                             </div>
-                        }  />
-                    </FrameVertical>
-                </Container>
-            }
+                        </div>
+                    }  />
+                </FrameVertical>
+            </Container>
             <Col12Vertical>
                     {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                         <Col4Vertical>
