@@ -13,7 +13,6 @@ import { FaDownload } from 'react-icons/fa'
 import QuestionCard from '@components/QuestionCard'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 
-
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
