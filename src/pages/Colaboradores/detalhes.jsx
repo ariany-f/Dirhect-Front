@@ -177,7 +177,13 @@ function ColaboradorDetalhes() {
                             </Titulo>
                         </BotaoGrupo>
                         </>
-                        : <Skeleton variant="rectangular" width={300} height={40} />
+                        : <>
+                            <Skeleton variant="rectangular" width={70} height={20} />
+                            <ContainerHorizontal gap="16px" align="start">
+                                <Skeleton variant="rectangular" width={340} height={40} />
+                                <Skeleton variant="rectangular" width={70} height={30} />
+                            </ContainerHorizontal>
+                        </>
                     }
                     <FrameVertical gap="16px" alinhamento="left">
                         <BadgeGeral weight={500} severity="success" nomeBeneficio={
@@ -211,8 +217,8 @@ function ColaboradorDetalhes() {
                 </Container>
             }
             <Col12Vertical>
-                <Col4Vertical>
                     {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
+                        <Col4Vertical>
                         <div style={{marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Nome Social</Texto>
@@ -249,10 +255,11 @@ function ColaboradorDetalhes() {
                                 </div>
                             </Frame>
                      </div>
-                    : <Skeleton variant="rectangular" width={300} height={40} />
+                     </Col4Vertical>
+                    : <Skeleton variant="rectangular" width={220} height={420} />
                     }
-                </Col4Vertical>
-                <Col8Vertical>
+                    {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
+                    <Col8Vertical>
                     <BotaoGrupo gap="8px">
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Dados Contratuais</Botao>
@@ -310,6 +317,8 @@ function ColaboradorDetalhes() {
                     </BotaoGrupo>
                     <Outlet context={colaborador}/>
                 </Col8Vertical>
+                : <Skeleton variant="rectangular" width={900} height={420} />
+                }
             </Col12Vertical>
         </Frame>
     )
