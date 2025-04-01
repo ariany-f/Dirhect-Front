@@ -2,6 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FilterMatchMode } from 'primereact/api';
 import CustomImage from '@components/CustomImage';
+import BadgeGeral from '@components/BadgeGeral';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { RiBusFill } from 'react-icons/ri';
@@ -85,6 +86,7 @@ function DataTableLinhasTransporte({ linhas }) {
     const tarifaTemplate = (rowData) => Real.format(rowData.tarifa);
 
     const fornecedorTemplate = (rowData) => {
+        const isActive = selectedFornecedor?.nome == rowData?.nome;
         return (
             <FornecedorContainer>
                 <CustomImage 
@@ -93,13 +95,17 @@ function DataTableLinhasTransporte({ linhas }) {
                     width={'70px'} 
                     height={35} 
                     size={90} 
-                    title={rowData.nome} 
+                    title={rowData.nome}
                 />
                 <div>
-                    <div style={{ fontWeight: '700' }}>{rowData.nome}</div>
-                    <div style={{ fontSize: '0.85rem', color: 'var(--neutro-500)' }}>
-                        {rowData.quantidade} linhas
-                    </div>
+                    <BadgeGeral severity={isActive ? 'info' : ''} weight={500} nomeBeneficio={
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div>
+                                {rowData?.nome}
+                            </div>
+                        </div>
+                    }  />
+                    {rowData.quantidade} linhas
                 </div>
             </FornecedorContainer>
         );
