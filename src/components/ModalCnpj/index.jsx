@@ -5,7 +5,7 @@ import RadioButton from "@components/RadioButton"
 import CardText from "@components/CardText"
 import { useEffect, useState } from "react"
 import { RiCloseFill, RiBuildingLine } from 'react-icons/ri'
-import { useNavigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import http from '@http'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
@@ -208,6 +208,12 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                 selected,
                 comp[0].domain.split('.')[0]
             )
+        }
+
+         // Verifica se a URL atual termina com um ID numérico
+        const regexId = /\/\d+$/;
+        if (regexId.test(location.pathname)) {
+            navegar(-1); // Volta para a tela anterior
         }
 
         aoFechar()
