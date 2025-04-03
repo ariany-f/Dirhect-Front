@@ -44,12 +44,21 @@ function AusenciasListagem() {
     const {usuario} = useSessaoUsuarioContext()
     
     useEffect(() => {
-        if(context && (!ausencias))
+        console.log(context)
+        if(!ausencias)
         {
-            setAusencias(context)
+             http.get('historico_ausencia/?format=json')
+             .then(response => {
+                setAusencias(response)
+             })
+             .catch(erro => {
+ 
+             })
+             .finally(function() {
+             })
         }
-    }, [ausencias, context])
-
+        
+     }, [ausencias, context])
     
     return (
         <ConteudoFrame>

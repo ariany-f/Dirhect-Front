@@ -44,27 +44,11 @@ const ContainerSemRegistro = styled.div`
 // Configurar o localizador com Moment.js
 const localizer = momentLocalizer(moment);
 
-// Lista de colaboradores (cada um será um "recurso" no calendário)
-const colaboradores = [
-  { id: 1, title: 'João Silva' },
-  { id: 2, title: 'Maria Souza' },
-  { id: 3, title: 'Carlos Oliveira' },
-];
-
 function FeriasListagem() {
 
     const [ferias, setFerias] = useState(null)
     const context = useOutletContext()
     const [modalOpened, setModalOpened] = useState(false)
-    
-    // useEffect(() => {
-    //     console.log(context)
-    //     if(context && (!ferias))
-    //     {
-    //         setFerias(context)
-    //     }
-        
-    // }, [ferias, context])
 
     useEffect(() => {
         if(!ferias)
@@ -80,7 +64,7 @@ function FeriasListagem() {
              })
         }
         
-     }, [ferias])
+     }, [ferias, context])
 
     return (
         <ConteudoFrame>

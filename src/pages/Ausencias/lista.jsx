@@ -10,7 +10,7 @@ import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import DataTableContratos from '@components/DataTableContratos'
-import DataTableFerias from '@components/DataTableFerias'
+import DataTableAusencias from '@components/DataTableAusencias'
 import ModalFerias from '@components/ModalFerias'
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -44,50 +44,28 @@ const ContainerSemRegistro = styled.div`
 // Configurar o localizador com Moment.js
 const localizer = momentLocalizer(moment);
 
-// Lista de colaboradores (cada um será um "recurso" no calendário)
-const colaboradores = [
-  { id: 1, title: 'João Silva' },
-  { id: 2, title: 'Maria Souza' },
-  { id: 3, title: 'Carlos Oliveira' },
-];
-
-// Lista de eventos (períodos de férias dos colaboradores)
-const fr = [
-  {
-    id: 1,
-    title: 'Férias João',
-    start: new Date(2025, 5, 1), // 1º de junho de 2025
-    end: new Date(2025, 5, 15),  // 15 de junho de 2025
-    resourceId: 1, // João Silva
-  },
-  {
-    id: 2,
-    title: 'Férias Maria',
-    start: new Date(2025, 6, 10), // 10 de julho de 2025
-    end: new Date(2025, 6, 25),  // 25 de julho de 2025
-    resourceId: 2, // Maria Souza
-  },
-  {
-    id: 3,
-    title: 'Férias Carlos',
-    start: new Date(2025, 7, 5), // 5 de agosto de 2025
-    end: new Date(2025, 7, 20),  // 20 de agosto de 2025
-    resourceId: 3, // Carlos Oliveira
-  },
-];
-
 function FeriasAusenciasListagem() {
 
-    const [ferias, setFerias] = useState(null)
+    const [ausencias, setAusencias] = useState(null)
     const context = useOutletContext()
     const [modalOpened, setModalOpened] = useState(false)
     
+    
     useEffect(() => {
-        if(context && (!ferias))
+        if(!ausencias)
         {
-            setFerias(context)
+             http.get('historico_ausencia/?format=json')
+             .then(response => {
+                setAusencias(response)
+             })
+             .catch(erro => {
+ 
+             })
+             .finally(function() {
+             })
         }
-    }, [ferias, context])
+        
+     }, [ausencias])
 
     return (
         <ConteudoFrame>
@@ -99,8 +77,8 @@ function FeriasAusenciasListagem() {
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
                 </BotaoGrupo>
             </BotaoGrupo>
-            {ferias ?
-                <DataTableFerias ferias={ferias} />
+            {ausencias ?
+                <DataTableAusencias ausencias={ausencias} />
             :
             <ContainerSemRegistro>
             <section className={styles.container}>

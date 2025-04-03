@@ -29,7 +29,7 @@ function Ausencias() {
 
     useEffect(() => {
        
-        http.get('ausencia/?format=json')
+        http.get('historico_ausencia/?format=json')
         .then(response => {
             setAusencias(response)
         })
