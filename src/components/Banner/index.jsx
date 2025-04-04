@@ -1,4 +1,4 @@
-import imagem from './background-dirhect.png'
+import imagem from './background-dirhect.jpg'
 import styles from './Banner.module.css'
 import logo from '/imagens/logo.png'
 import { RiShoppingCartFill, RiBusFill, RiTrophyFill, RiOpenArmFill } from 'react-icons/ri'
