@@ -43,7 +43,7 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
     const representativeColaboradorTemplate = (rowData) => {
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.funcionario?.nome}
+                {rowData?.funcionario_nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 Dias de Ausência:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.ausencia}</p>
