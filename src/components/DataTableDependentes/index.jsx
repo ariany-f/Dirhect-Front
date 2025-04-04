@@ -9,6 +9,7 @@ import CampoTexto from '@components/CampoTexto';
 import styles from '@pages/Dependentes/Dependentes.module.css'
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import http from '@http';
 import { Tag } from 'primereact/tag';
 import { GrAddCircle } from 'react-icons/gr';
 import ModalAdicionarDependente from '@components/ModalAdicionarDependente';
@@ -23,6 +24,27 @@ function DataTableDependentes({ dependentes, search = true }) {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
+    const [dependentesComFuncionario, setDependentesComFuncionario] = useState([]);
+
+    useEffect(() => {
+        if (dependentes && dependentes.length > 0) {
+            Promise.all(
+                dependentes.map(dep =>
+                    http.get(`funcionario/${dep.id_funcionario}/?format=json`)
+                        .then(response => ({
+                            ...dep,
+                            funcionario: response
+                        }))
+                        .catch(error => {
+                            console.log(`Erro ao buscar funcionario ${dep.id_funcionario}:`, error);
+                            return dep; // mantém o dependente original
+                        })
+                )
+            ).then(resultado => {
+                setDependentesComFuncionario(resultado);
+            });
+        }
+    }, [dependentes]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -35,16 +57,14 @@ function DataTableDependentes({ dependentes, search = true }) {
 
     function verDetalhes(value)
     {
-        console.log(value)
         setSelectedDependente(value.id)
-        navegar(`/colaborador/detalhes/${value.id_funcionario.id}/dependentes/${value.id}`)
+        navegar(`/colaborador/detalhes/${value.id_funcionario}/dependentes/${value.id}`)
     }
     
     function formataCPF(cpf) {
         cpf = cpf.replace(/[^\d]/g, "");
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
-    
    
     const representativeCPFTemplate = (rowData) => {
     
@@ -56,19 +76,19 @@ function DataTableDependentes({ dependentes, search = true }) {
     const representativeNascimentoTemplate = (rowData) => {
         
         return ( 
-            rowData?.data_nascimento ?
-            <Texto weight={500}>{new Date(rowData?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
+            rowData?.dtnascimento ?
+            <Texto weight={500}>{new Date(rowData?.dtnascimento).toLocaleDateString('pt-BR')}</Texto>
             : '---'
         )
     }
     
     const representativeFuncNomeTemplate = (rowData) => {
-        const cpf = rowData?.id_funcionario?.funcionario_pessoa_fisica?.cpf ?
-        formataCPF(rowData?.id_funcionario?.funcionario_pessoa_fisica?.cpf)
+        const cpf = rowData?.funcionario?.funcionario_pessoa_fisica?.cpf ?
+        formataCPF(rowData?.funcionario?.funcionario_pessoa_fisica?.cpf)
         : '---';
         return <div key={rowData?.funcionario?.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.id_funcionario?.funcionario_pessoa_fisica?.nome}
+                {rowData?.funcionario?.funcionario_pessoa_fisica?.nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
@@ -78,12 +98,12 @@ function DataTableDependentes({ dependentes, search = true }) {
     
     
     const representativeNomeTemplate = (rowData) => {
-        const cpf = rowData?.dependente_pessoa_fisica?.cpf ?
-        formataCPF(rowData?.dependente_pessoa_fisica?.cpf)
+        const cpf = rowData?.cpf ?
+        formataCPF(rowData?.cpf)
         : '---';
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.dependente_pessoa_fisica?.nome}
+                {rowData?.nome_depend}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
@@ -122,7 +142,7 @@ function DataTableDependentes({ dependentes, search = true }) {
                     </BotaoGrupo>
                 </BotaoGrupo>
             }
-            <DataTable value={dependentes} filters={filters} globalFilterFields={['dependente_pessoa_fisica.nome', 'dependente_pessoa_fisica.cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={dependentesComFuncionario} filters={filters} globalFilterFields={['nome_depend', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '35%' }}></Column>
                 <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column body={representativeParentescoTemplate} header="Grau de Parentesco" style={{ width: '20%' }}></Column>
