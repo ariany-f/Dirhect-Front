@@ -212,7 +212,7 @@ function SelecionarEmpresa() {
             {serversOut &&
                 <WrapperOut>
                     <Texto><RiErrorWarningLine className={styles.warningIcon} size={20} />Servidores fora do ar. Por favor, tente novamente mais tarde.</Texto>
-                    <Botao estilo="vermilion" size="medium" filled aoClicar={() => setEmpresas(null)}>Tentar novamente</Botao>
+                    <Botao estilo="vermilion" size="medium" filled aoClicar={() => setEmpresas([])}>Tentar novamente</Botao>
                 </WrapperOut>
             }    
         </>
