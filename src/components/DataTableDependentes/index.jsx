@@ -24,27 +24,27 @@ function DataTableDependentes({ dependentes, search = true }) {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
-    const [dependentesComFuncionario, setDependentesComFuncionario] = useState([]);
+    // const [dependentesComFuncionario, setDependentesComFuncionario] = useState([]);
 
-    useEffect(() => {
-        if (dependentes && dependentes.length > 0) {
-            Promise.all(
-                dependentes.map(dep =>
-                    http.get(`funcionario/${dep.id_funcionario}/?format=json`)
-                        .then(response => ({
-                            ...dep,
-                            funcionario: response
-                        }))
-                        .catch(error => {
-                            console.log(`Erro ao buscar funcionario ${dep.id_funcionario}:`, error);
-                            return dep; // mantém o dependente original
-                        })
-                )
-            ).then(resultado => {
-                setDependentesComFuncionario(resultado);
-            });
-        }
-    }, [dependentes]);
+    // useEffect(() => {
+    //     if (dependentes && dependentes.length > 0) {
+    //         Promise.all(
+    //             dependentes.map(dep =>
+    //                 http.get(`funcionario/${dep.id_funcionario}/?format=json`)
+    //                     .then(response => ({
+    //                         ...dep,
+    //                         funcionario: response
+    //                     }))
+    //                     .catch(error => {
+    //                         console.log(`Erro ao buscar funcionario ${dep.id_funcionario}:`, error);
+    //                         return dep; // mantém o dependente original
+    //                     })
+    //             )
+    //         ).then(resultado => {
+    //             setDependentesComFuncionario(resultado);
+    //         });
+    //     }
+    // }, [dependentes]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -83,12 +83,12 @@ function DataTableDependentes({ dependentes, search = true }) {
     }
     
     const representativeFuncNomeTemplate = (rowData) => {
-        const cpf = rowData?.funcionario?.funcionario_pessoa_fisica?.cpf ?
-        formataCPF(rowData?.funcionario?.funcionario_pessoa_fisica?.cpf)
+        const cpf = rowData?.funcionario_pessoa_fisica?.cpf ?
+        formataCPF(rowData?.funcionario_pessoa_fisica?.cpf)
         : '---';
         return <div key={rowData?.funcionario?.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.funcionario?.funcionario_pessoa_fisica?.nome}
+                {rowData?.funcionario_pessoa_fisica?.nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
@@ -142,7 +142,7 @@ function DataTableDependentes({ dependentes, search = true }) {
                     </BotaoGrupo>
                 </BotaoGrupo>
             }
-            <DataTable value={dependentesComFuncionario} filters={filters} globalFilterFields={['nome_depend', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}>
+            <DataTable value={dependentes} filters={filters} globalFilterFields={['nome_depend', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}>
                 {search &&  <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '35%' }}></Column>}
                 <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column body={representativeParentescoTemplate} header="Grau de Parentesco" style={{ width: '20%' }}></Column>
