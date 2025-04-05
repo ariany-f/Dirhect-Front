@@ -283,9 +283,9 @@ function ColaboradorDetalhes() {
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
                         </Link>
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/demissoes`}>
+                        {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/demissoes`}>
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/demissoes` ? 'black':''} size="small" tab>Demissões</Botao>
-                        </Link>
+                        </Link> */}
                         {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') &&
                             <>
                             <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>

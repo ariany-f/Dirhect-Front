@@ -57,6 +57,7 @@ function ColaboradorDadosContratuais() {
         if(context && (!colaborador))
         {
             setColaborador(context);
+            console.log(context)
         }
     }, [colaborador, context])
 
@@ -129,6 +130,12 @@ function ColaboradorDadosContratuais() {
                             {colaborador?.funcionario_pessoa_fisica?.deficiente_fisico ?
                                 <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.deficiente_fisico}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                            {colaborador?.situacao && colaborador?.situacao == 'D' && colaborador?.dt_demissao &&
+                                <>
+                                    <Texto>Data de Demissão</Texto>
+                                    <Texto weight="800">{new Date(colaborador?.dt_demissao).toLocaleDateString('pt-BR')}</Texto>
+                                </>                             
                             }
                         </Col3>
                     </Col12>

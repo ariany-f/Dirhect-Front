@@ -32,7 +32,7 @@ function ColabroadorDemissoes() {
     useEffect(() => {
         if(!demissoes)
         {
-            http.get(`funcionario/?format=json&situacao=D&id=${id}`)
+            http.get(`funcionario/?format=json&situacao=D`)
             .then(response => {
                 setDemissoes(response);
             })
@@ -52,7 +52,7 @@ function ColabroadorDemissoes() {
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Criar solicitação de Demissão</Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>}
-            <DataTableDemissao colaborador={id} demissoes={demissoes}/>
+            {/* <DataTableDemissao colaborador={id} demissoes={demissoes}/> */}
             <ModalDemissao opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
         </>
     )
