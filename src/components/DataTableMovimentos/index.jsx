@@ -76,8 +76,8 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>}
-            <DataTable value={movimentos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados movimentos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw')}}>
-                <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '30%' }}></Column>
+            <DataTable value={movimentos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados movimentos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7} tableStyle={{ minWidth: ((!colaborador) ? '68vw' : '48vw'), maxWidth: (colaborador ? '58vw' : 'initial')}}>
+                <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '25%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '15%' }}></Column>
                 <Column field="data" header="Data do Movimento" style={{ width: '15%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Movimento" style={{ width: '10%' }}></Column>
