@@ -284,7 +284,7 @@ function ColaboradorDetalhes() {
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Função</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Texto size={'14px'}>{funcao.nome}</Texto>
+                                    <Tag severity="info" value={funcao.nome}></Tag>
                                 </div>
                             </Frame>
                             
