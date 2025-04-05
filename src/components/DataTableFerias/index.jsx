@@ -122,6 +122,8 @@ function DataTableFerias({ ferias, colaborador = null }) {
                 <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
                 <Column body={representativeInicioTemplate} field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
+                <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
+                <Column field="nrodiasferias" header="Férias" style={{ width: '10%' }}></Column>
                 <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
