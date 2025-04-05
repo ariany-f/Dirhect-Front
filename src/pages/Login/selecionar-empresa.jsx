@@ -3,7 +3,8 @@ import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
 import styled from "styled-components"
 import { useEffect, useRef, useState } from "react"
-import { RiBuildingLine } from "react-icons/ri"
+import { RiBuildingLine, RiErrorWarningLine } from "react-icons/ri"
+import Texto from "@components/Texto"
 import styles from './Login.module.css'
 import http from '@http';
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: center;
     gap: 16px;
     align-self: stretch;
 `;
@@ -33,6 +35,20 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
+const WrapperOut = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    align-self: stretch;
+    width: 100%;
+    @media (max-width: 768px) {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+`;
+
 function SelecionarEmpresa() {
     
     const { 
@@ -42,6 +58,7 @@ function SelecionarEmpresa() {
         setCompanies,
     } = useSessaoUsuarioContext()
 
+    const [serversOut, setServersOut] = useState(false)
     const [tenants, setTenants] = useState(null)
     const [empresas, setEmpresas] = useState(usuario.companies ?? null)
     const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? ArmazenadorToken.UserCompanyPublicId ?? '')
@@ -84,10 +101,14 @@ function SelecionarEmpresa() {
 
                  // Atualizar o estado com os clientes completos
                  setTenants(clientesCompletos);
+                 setServersOut(false)
              })
              .catch(erro => {
-                 console.error("Erro ao buscar clientes:", erro);
-                 setLoading(false)
+                setServersOut(true)
+                console.error("Erro ao buscar clientes:", erro);
+             })
+             .finally(function(){
+                setLoading(false)
              });
         }
 
@@ -152,11 +173,11 @@ function SelecionarEmpresa() {
         <>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <Titulo>
-                <h2>Selecione uma empresa</h2>
-            </Titulo>
-            {empresas && empresas.length > 0 &&
+            {empresas && empresas.length > 0 && (!serversOut) &&
                 <>
+                    <Titulo>
+                        <h2>Selecione uma empresa</h2>
+                    </Titulo>
                     <Wrapper>
                         {empresas.map((empresa, idx) => {
                             return (
@@ -187,6 +208,13 @@ function SelecionarEmpresa() {
                     <Botao estilo="vermilion" size="medium" filled aoClicar={selectCompany} >Confirmar</Botao>
                 </>
             }
+            
+            {serversOut &&
+                <WrapperOut>
+                    <Texto><RiErrorWarningLine className={styles.warningIcon} size={20} />Servidores fora do ar. Por favor, tente novamente mais tarde.</Texto>
+                    <Botao estilo="vermilion" size="medium" filled aoClicar={() => setEmpresas(null)}>Tentar novamente</Botao>
+                </WrapperOut>
+            }    
         </>
     )
 }
