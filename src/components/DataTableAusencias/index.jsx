@@ -8,6 +8,7 @@ import CampoTexto from '@components/CampoTexto';
 import { useEffect, useState } from 'react';
 import ModalFerias from '../ModalFerias';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
+import { Tag } from 'primereact/tag';
 
 function formatarDataBr(data) {
     const [ano, mes, dia] = data.split('-');
@@ -40,6 +41,22 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
+   
+    function representativSituacaoTemplate(rowData) {
+        let ausencia = rowData?.ausencia_nome[0].toUpperCase() + rowData?.ausencia_nome.substring(1);
+        
+        switch(rowData?.ausencia_nome)
+        {
+            case 'Afastamento':
+                ausencia = <Tag severity="danger" value="Afastamento"></Tag>;
+                break;
+            default:
+                ausencia = <Tag severity="warning" value={ausencia}></Tag>;
+                break;
+        }
+        return ausencia
+    }
+
     const representativeColaboradorTemplate = (rowData) => {
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
@@ -69,7 +86,7 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
             </div>}
             <DataTable value={ausencias} filters={filters} globalFilterFields={['funcionario']} emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario" header="Colaborador" style={{ width: '30%' }}></Column>}
-                <Column field="ausencia_nome" header="Ausência" style={{ width: '15%' }}></Column>
+                <Column body={representativSituacaoTemplate} field="ausencia_nome" header="Ausência" style={{ width: '15%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '15%' }}></Column>
             </DataTable>
