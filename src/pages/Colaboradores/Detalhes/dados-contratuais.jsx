@@ -121,6 +121,11 @@ function ColaboradorDadosContratuais() {
                                 <Texto weight="800">{new Date(colaborador?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
+                            <Texto>Tipo de Admissão</Texto>
+                            {colaborador?.tipo_admissao ?
+                                <Texto weight="800">{colaborador?.tipo_admissao}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
                             <Texto>Salário</Texto>
                             {colaborador?.salario ?
                                 <Texto weight="800">{Real.format(colaborador?.salario)}</Texto>
@@ -135,7 +140,15 @@ function ColaboradorDadosContratuais() {
                                 <>
                                     <Texto>Data de Demissão</Texto>
                                     <Texto weight="800">{new Date(colaborador?.dt_demissao).toLocaleDateString('pt-BR')}</Texto>
-                                </>                             
+                               
+                                {colaborador?.tipo_demissao ?
+                                    <>
+                                        <Texto>Tipo de Demissão</Texto>
+                                        <Texto weight="800">{colaborador?.tipo_demissao}</Texto>
+                                    </>   
+                                    : <Skeleton variant="rectangular" width={200} height={25} />
+                                }
+                                </>                    
                             }
                         </Col3>
                     </Col12>

@@ -53,8 +53,8 @@ const Col12Vertical = styled.div`
 const Col4Vertical = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1 1 calc(20% - 15px);
-    max-width: calc(20% - 15px);
+    flex: 1 1 calc(25% - 15px);
+    max-width: calc(25% - 15px);
     gap: 8px;
     border: 1px solid var(--neutro-200);
     border-radius: 16px;
@@ -63,8 +63,8 @@ const Col4Vertical = styled.div`
 const Col8Vertical = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1 1 calc(80% - 15px);
-    max-width: calc(80% - 15px);
+    flex: 1 1 calc(75% - 15px);
+    max-width: calc(75% - 15px);
     gap: 16px;
 `
 
@@ -75,6 +75,9 @@ function ColaboradorDetalhes() {
     let { id } = useParams()
     const location = useLocation();
     const [colaborador, setColaborador] = useState(null)
+    const [filial, setFilial] = useState(null)
+    const [funcao, setFuncao] = useState(null)
+    const [secao, setSecao] = useState(null)
     const navegar = useNavigate()
     const toast = useRef(null)
 
@@ -93,9 +96,34 @@ function ColaboradorDetalhes() {
                     setColaborador(response);
                 })
                 .catch(erro => console.log(erro))
+        } else {
+            if(!funcao)
+            {
+                http.get(`funcao/${colaborador.id_funcao}/?format=json`)
+                    .then(response => {
+                        setFuncao(response);
+                    })
+                    .catch(erro => console.log(erro))
+            }
+            if(!filial)
+            {
+                http.get(`filial/${colaborador.filial}/?format=json`)
+                    .then(response => {
+                        setFilial(response);
+                    })
+                    .catch(erro => console.log(erro))
+            }
+            if(!secao)
+            {
+                http.get(`secao/${colaborador.id_secao}/?format=json`)
+                    .then(response => {
+                        setSecao(response);
+                    })
+                    .catch(erro => console.log(erro))
+            }
         }
         
-    }, [colaborador])
+    }, [colaborador, funcao, filial, secao])
 
     const desativarColaborador = () => {
         confirmDialog({
@@ -250,6 +278,27 @@ function ColaboradorDetalhes() {
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
                                     <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.telefone1}</Texto>
                                     <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.telefone1)}} />
+                                </div>
+                            </Frame>
+                            
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Função</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Texto size={'14px'}>{funcao.nome}</Texto>
+                                </div>
+                            </Frame>
+                            
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Seção</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Tag severity="info" value={secao.nome}></Tag>
+                                </div>
+                            </Frame>
+                            
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Filial</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Tag severity="info" value={filial.nome}></Tag>
                                 </div>
                             </Frame>
                      </div>
