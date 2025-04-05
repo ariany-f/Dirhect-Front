@@ -284,21 +284,21 @@ function ColaboradorDetalhes() {
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Função</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={funcao.nome}></Tag>
+                                    <Tag severity="info" value={funcao?.nome}></Tag>
                                 </div>
                             </Frame>
                             
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Seção</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={secao.nome}></Tag>
+                                    <Tag severity="info" value={secao?.nome}></Tag>
                                 </div>
                             </Frame>
                             
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Filial</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={filial.nome}></Tag>
+                                    <Tag severity="info" value={filial?.nome}></Tag>
                                 </div>
                             </Frame>
                      </div>
