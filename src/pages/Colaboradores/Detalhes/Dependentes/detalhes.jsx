@@ -10,6 +10,7 @@ import FrameVertical from "@components/FrameVertical"
 import Container from "@components/Container"
 import styles from './../Detalhes.module.css'
 import { Skeleton } from 'primereact/skeleton'
+import Loading from '@components/Loading'
 import { FaArrowLeft, FaTrash } from 'react-icons/fa'
 import { Toast } from 'primereact/toast'
 import http from '@http'
@@ -52,6 +53,7 @@ function ColaboradorDependenteDetalhes() {
     let { id, codigo } = useParams()
     const location = useLocation();
     const [dependente, setDependente] = useState(null)
+    const [loading, setLoading] = useState(false)
     const navegar = useNavigate()
     const toast = useRef(null)
 
@@ -65,6 +67,7 @@ function ColaboradorDependenteDetalhes() {
     useEffect(() => {
         if(!dependente)
         {
+            setLoading(true)
             http.get(`dependente/${codigo}/?format=json`)
                 .then(response => {
                     setDependente(response);
@@ -97,15 +100,16 @@ function ColaboradorDependenteDetalhes() {
     return (
         <Frame>
             <Toast ref={toast} />
+            <Loading opened={loading} />
             <ConfirmDialog />
             <Container gap="32px">
-                {dependente && dependente?.dependente_pessoa_fisica ?
+                {dependente && dependente?.nome_depend ?
                     <BotaoGrupo align="space-between">
                         <Titulo align="left">
                             <Container gap="32px">
                                 <BotaoVoltar/>
                                 <BotaoGrupo align="space-between">
-                                    <h5>{dependente?.dependente_pessoa_fisica?.nome}</h5>
+                                    <h5>{dependente?.nome_depend}</h5>
                                     <small>{representativeParentescoTemplate(dependente)}</small>
                                 </BotaoGrupo>
                             </Container>
@@ -118,42 +122,37 @@ function ColaboradorDependenteDetalhes() {
                     <Col12>
                         <Col3>
                             <Texto>Nome completo</Texto>
-                            {dependente?.dependente_pessoa_fisica?.nome ?
-                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.nome}</Texto>
+                            {dependente?.nome_depend ?
+                                <Texto weight="800">{dependente?.nome_depend}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
-                            <Texto>Nome social</Texto>
-                            {dependente?.dependente_pessoa_fisica?.nome_social ?
-                                    <Texto weight="800">{dependente?.dependente_pessoa_fisica.nome_social}</Texto>
+                            <Texto>Estado Civil</Texto>
+                            {dependente?.estadocivil ?
+                                <Texto weight="800">{dependente?.estadocivil}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
                         <Col3>
                             <Texto>Nascimento</Texto>
-                            {dependente?.dependente_pessoa_fisica?.data_nascimento ?
-                                <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
+                            {dependente?.dtnascimento ?
+                                <Texto weight="800">{new Date(dependente?.dtnascimento).toLocaleDateString('pt-BR')}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Sexo</Texto>
-                            {dependente?.dependente_pessoa_fisica?.sexo ?
-                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.sexo}</Texto>
+                            {dependente?.sexo ?
+                                <Texto weight="800">{dependente?.sexo}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
                         <Col3>
                             <Texto>CPF</Texto>
-                            {dependente?.dependente_pessoa_fisica?.cpf ?
-                                <Texto weight="800">{formataCPF(dependente?.dependente_pessoa_fisica?.cpf)}</Texto>
+                            {dependente?.cpf ?
+                                <Texto weight="800">{formataCPF(dependente?.cpf)}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Identidade</Texto>
-                            {dependente?.dependente_pessoa_fisica?.identidade ?
-                                <Texto weight="800">{(dependente?.dependente_pessoa_fisica.identidade)}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Data Emissão Identidade</Texto>
-                            {dependente?.dependente_pessoa_fisica?.data_emissao_ident ?
-                                <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_emissao_ident).toLocaleDateString('pt-BR')}</Texto>
+                            {dependente?.nroregistro ?
+                                <Texto weight="800">{(dependente?.nroregistro)}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col3>
