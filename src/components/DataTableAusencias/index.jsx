@@ -68,7 +68,8 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
                 </span>
             </div>}
             <DataTable value={ausencias} filters={filters} globalFilterFields={['funcionario']} emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
-                {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>}
+                {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario" header="Colaborador" style={{ width: '30%' }}></Column>}
+                <Column field="ausencia_nome" header="Ausência" style={{ width: '15%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '15%' }}></Column>
             </DataTable>
