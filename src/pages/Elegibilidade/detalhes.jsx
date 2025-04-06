@@ -253,8 +253,6 @@ function DetalhesElegibilidade() {
                     </>
                     : <></>
                 }
-                
-                <DataTableElegibilidadeDetalhes elegibilidade={elegibilidade?.contratos} pagination={false} />
 
                 <TabView>
                     <TabPanel header="Filiais">
