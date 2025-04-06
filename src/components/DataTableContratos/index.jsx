@@ -67,7 +67,7 @@ function DataTableContratos({ contratos }) {
     }
 
     function representativSituacaoTemplate(rowData) {
-        
+        const status =  rowData.status;
         if (rowData?.dt_fim) {
             // Criar a data de fim considerando apenas a parte da data (ignorar hora)
             let partesData = rowData.dt_fim.split('-'); // Divide "YYYY-MM-DD"
@@ -84,8 +84,11 @@ function DataTableContratos({ contratos }) {
             if (dataFim.getFullYear() === hoje.getFullYear() && dataFim.getMonth() === hoje.getMonth()) {
                 return <Tag severity="warning" value="Vencimento Próximo"></Tag>;
             }
-
-            return <Tag severity="info" value="Em andamento"></Tag>;
+            if(status == 'A')
+            {
+                return <Tag severity="info" value="Em andamento"></Tag>;
+            }
+            return <Tag severity="danger" value="Inativo"></Tag>;
         }
         return <Tag severity="info" value="A definir"></Tag>;
     }    
