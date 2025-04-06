@@ -100,12 +100,13 @@ function DetalhesContratos() {
                                     <b>#{contrato?.id} - {contrato?.dados_operadora?.nome}</b>
                                 </ContainerHorizontal>
                             </FrameVertical>
-                        
-                            <FrameVertical gap="10px" padding={"0px 0px 0px 5px"}>
-                                <ContainerHorizontal gap="10px">
-                                    <Texto size={"12px"}>De {new Date(contrato?.dt_inicio).toLocaleDateString('pt-BR')} a {new Date(contrato?.dt_fim).toLocaleDateString('pt-BR')}</Texto>
-                                </ContainerHorizontal>
-                            </FrameVertical>
+                            {contrato?.dt_inicio && contrato?.dt_fim && 
+                                <FrameVertical gap="10px" padding={"0px 0px 0px 5px"}>
+                                    <ContainerHorizontal gap="10px">
+                                        <Texto size={"12px"}>De {new Date(contrato?.dt_inicio).toLocaleDateString('pt-BR')} a {new Date(contrato?.dt_fim).toLocaleDateString('pt-BR')}</Texto>
+                                    </ContainerHorizontal>
+                                </FrameVertical>
+                            }
                         </Frame>
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício ao Contrato</Botao>
                     </BotaoGrupo>
