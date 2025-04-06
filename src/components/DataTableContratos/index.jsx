@@ -39,12 +39,20 @@ function DataTableContratos({ contratos }) {
     }
 
     const representativeInicioTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_inicio).toLocaleDateString("pt-BR")}</p>
+        if(rowData.dt_inicio)
+        {
+            return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_inicio).toLocaleDateString("pt-BR")}</p>
+        } 
+        return 'Não definida'
     }
     
 
     const representativeFimTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_fim).toLocaleDateString("pt-BR")}</p>
+        if(rowData.dt_fim)
+        {
+            return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_fim).toLocaleDateString("pt-BR")}</p>
+        }
+        return 'Não definida'
     }
 
     const representativeFornecedorTemplate = (rowData) => {
@@ -60,7 +68,7 @@ function DataTableContratos({ contratos }) {
 
     function representativSituacaoTemplate(rowData) {
         let status = rowData?.status;
-    
+        
         if (rowData?.dt_fim) {
             // Criar a data de fim considerando apenas a parte da data (ignorar hora)
             let partesData = rowData.dt_fim.split('-'); // Divide "YYYY-MM-DD"
