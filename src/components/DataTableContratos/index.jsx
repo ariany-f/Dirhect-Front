@@ -84,6 +84,8 @@ function DataTableContratos({ contratos }) {
             if (dataFim.getFullYear() === hoje.getFullYear() && dataFim.getMonth() === hoje.getMonth()) {
                 return <Tag severity="warning" value="Vencimento Próximo"></Tag>;
             }
+
+            return <Tag severity="info" value="Em andamento"></Tag>;
         }
         return <Tag severity="info" value="A definir"></Tag>;
     }    
