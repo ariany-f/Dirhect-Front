@@ -90,7 +90,7 @@ function DataTableContratos({ contratos }) {
             }
             return <Tag severity="danger" value="Inativo"></Tag>;
         }
-        return <Tag severity="info" value="A definir"></Tag>;
+        return <Tag severity="neutral" value="A definir"></Tag>;
     }    
     
     function representativStatusTemplate(rowData) {
