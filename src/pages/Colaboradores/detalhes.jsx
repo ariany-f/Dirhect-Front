@@ -97,7 +97,7 @@ function ColaboradorDetalhes() {
                 })
                 .catch(erro => console.log(erro))
         } else {
-            if(!funcao)
+            if((!funcao) && colaborador.id_funcao)
             {
                 http.get(`funcao/${colaborador.id_funcao}/?format=json`)
                     .then(response => {
@@ -105,7 +105,7 @@ function ColaboradorDetalhes() {
                     })
                     .catch(erro => console.log(erro))
             }
-            if(!filial)
+            if((!filial) && colaborador.filial)
             {
                 http.get(`filial/${colaborador.filial}/?format=json`)
                     .then(response => {
@@ -113,7 +113,7 @@ function ColaboradorDetalhes() {
                     })
                     .catch(erro => console.log(erro))
             }
-            if(!secao)
+            if((!secao) && colaborador.id_secao)
             {
                 http.get(`secao/${colaborador.id_secao}/?format=json`)
                     .then(response => {
@@ -284,21 +284,21 @@ function ColaboradorDetalhes() {
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Função</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={funcao?.nome}></Tag>
+                                    <Tag severity="info" value={funcao?.nome ?? 'Não definida'}></Tag>
                                 </div>
                             </Frame>
                             
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Seção</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={secao?.nome}></Tag>
+                                    <Tag severity="info" value={secao?.nome ?? 'Não definida'}></Tag>
                                 </div>
                             </Frame>
                             
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Filial</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={filial?.nome}></Tag>
+                                    <Tag severity="info" value={filial?.nome ?? 'Não definida'}></Tag>
                                 </div>
                             </Frame>
                      </div>
