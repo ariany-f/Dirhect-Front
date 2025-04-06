@@ -67,7 +67,6 @@ function DataTableContratos({ contratos }) {
     }
 
     function representativSituacaoTemplate(rowData) {
-        let status = rowData?.status;
         
         if (rowData?.dt_fim) {
             // Criar a data de fim considerando apenas a parte da data (ignorar hora)
@@ -86,10 +85,17 @@ function DataTableContratos({ contratos }) {
                 return <Tag severity="warning" value="Vencimento Próximo"></Tag>;
             }
         }
+        return 'Não definido';
+    }    
+    
+    function representativStatusTemplate(rowData) {
+        let status = rowData?.status;
     
         switch (status) {
             case 'A':
                 return <Tag severity="success" value="Ativo"></Tag>;
+            case 'I':
+                return <Tag severity="danger" value="Inativo"></Tag>;
             default:
                 return status; // Retorna o valor original se não houver correspondência
         }
@@ -119,7 +125,8 @@ function DataTableContratos({ contratos }) {
                 <Column field="observacao" header="Observação" style={{ width: '24%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
-                <Column body={representativSituacaoTemplate} field="status" header="Status" style={{ width: '20%' }}></Column>
+                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '20%' }}></Column>
+                <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '20%' }}></Column>
             </DataTable>
         </>
     )
