@@ -93,12 +93,20 @@ function DetalhesContratos() {
                 {contrato && contrato?.dados_operadora?.nome ?
                     <>
                     <BotaoGrupo align="space-between">
-                        <FrameVertical gap="10px">
-                            <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={contrato?.dados_operadora?.id}>
-                                <CustomImage src={contrato?.dados_operadora?.imagem} alt={contrato?.dados_operadora?.nome} width={90} height={45} title={contrato?.dados_operadora?.nome} />
-                                <b>{contrato?.dados_operadora?.nome}</b>
-                            </ContainerHorizontal>
-                        </FrameVertical>
+                        <Frame gap="15px">
+                            <FrameVertical gap="10px">
+                                <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={contrato?.dados_operadora?.id}>
+                                    <CustomImage src={contrato?.dados_operadora?.imagem} alt={contrato?.dados_operadora?.nome} width={90} height={45} title={contrato?.dados_operadora?.nome} />
+                                    <b>#{contrato?.id} - {contrato?.dados_operadora?.nome}</b>
+                                </ContainerHorizontal>
+                            </FrameVertical>
+                        
+                            <FrameVertical gap="10px" padding={"0px 0px 0px 5px"}>
+                                <ContainerHorizontal gap="10px">
+                                    <Texto size={"12px"}>De {new Date(contrato?.dt_inicio).toLocaleDateString('pt-BR')} a {new Date(contrato?.dt_fim).toLocaleDateString('pt-BR')}</Texto>
+                                </ContainerHorizontal>
+                            </FrameVertical>
+                        </Frame>
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício ao Contrato</Botao>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>

@@ -58,7 +58,7 @@ function DataTableContratos({ contratos }) {
     const representativeFornecedorTemplate = (rowData) => {
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
-                #{rowData?.id} - {rowData?.dados_operadora?.nome}
+                {rowData?.dados_operadora?.nome}
             </Texto>
             {/* <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                 Benefícios:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.beneficios.length}</p>
