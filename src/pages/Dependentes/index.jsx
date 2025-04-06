@@ -18,21 +18,6 @@ function Dependentes() {
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
-        if(!funcionarios)
-        {
-            setLoading(true)
-            http.get('funcionario/?format=json')
-                .then(response => {
-                    setFuncionarios(response)
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
-                .finally(function() {
-                    setLoading(false)
-                })
-        }
-
         if(!dependentes)
         {
             setLoading(true)
@@ -64,7 +49,7 @@ function Dependentes() {
             }
         }
         
-    }, [dependentes, funcionarios])
+    }, [dependentes])
 
     return (
         <DependentesProvider>

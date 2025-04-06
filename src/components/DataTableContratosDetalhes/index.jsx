@@ -326,6 +326,7 @@ function DataTableContratosDetalhes({ beneficios }) {
                 .then(response => {
                     if(response.id)
                     {
+                        selectedItems.push(response)
                         toast.current.show({severity:'success', summary: 'Adicionado com Sucesso', detail: 'Sucesso!', life: 3000});
                     }
                 })

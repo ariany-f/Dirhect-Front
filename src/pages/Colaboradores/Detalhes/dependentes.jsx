@@ -8,7 +8,6 @@ import http from '@http'
 import Loading from '@components/Loading'
 import DataTableDependentes from '@components/DataTableDependentes'
 
-
 function ColaboradorDependentes() {
 
     let { id } = useParams()
