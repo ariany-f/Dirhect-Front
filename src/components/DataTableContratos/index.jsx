@@ -130,7 +130,7 @@ function DataTableContratos({ contratos }) {
                 <Column field="observacao" header="Observação" style={{ width: '24%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
-                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '20%' }}></Column>
+                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '20%' }}></Column>
             </DataTable>
         </>
