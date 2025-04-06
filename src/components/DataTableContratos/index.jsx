@@ -125,9 +125,9 @@ function DataTableContratos({ contratos }) {
                 </span>
             </div>
             <DataTable value={contratos} filters={filters} globalFilterFields={['nome_fornecedor']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '6%' }}></Column>
+                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '8%' }}></Column>
                 <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '20%' }}></Column>
-                <Column field="observacao" header="Observação" style={{ width: '24%' }}></Column>
+                <Column field="observacao" header="Observação" style={{ width: '22%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '10%' }}></Column>
