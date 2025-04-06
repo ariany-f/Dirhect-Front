@@ -85,7 +85,7 @@ function DataTableContratos({ contratos }) {
                 return <Tag severity="warning" value="Vencimento Próximo"></Tag>;
             }
         }
-        return 'Não definido';
+        return <Tag severity="info" value="A definir"></Tag>;
     }    
     
     function representativStatusTemplate(rowData) {
