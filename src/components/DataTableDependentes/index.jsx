@@ -81,6 +81,30 @@ function DataTableDependentes({ dependentes, search = true }) {
             : '---'
         )
     }
+
+    const representativeIdadeTemplate = (rowData) => {
+        const calcularIdade = (dataNascimento) => {
+            const hoje = new Date();
+            const nascimento = new Date(dataNascimento);
+            let idade = hoje.getFullYear() - nascimento.getFullYear();
+            const mes = hoje.getMonth() - nascimento.getMonth();
+    
+            if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+                idade--;
+            }
+    
+            return idade;
+        };
+    
+        return (
+            rowData?.dtnascimento ?
+            <Texto weight={500}>
+                {calcularIdade(rowData.dtnascimento)} anos
+            </Texto>
+            : '---'
+        );
+    };
+    
     
     const representativeFuncNomeTemplate = (rowData) => {
         const cpf = rowData?.funcionario_pessoa_fisica?.cpf ?
@@ -143,10 +167,11 @@ function DataTableDependentes({ dependentes, search = true }) {
                 </BotaoGrupo>
             }
             <DataTable value={dependentes} filters={filters} globalFilterFields={['nome_depend', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}>
-                {search &&  <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '35%' }}></Column>}
-                <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
+                {search &&  <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '30%' }}></Column>}
+                <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '30%' }}></Column>
                 <Column body={representativeParentescoTemplate} header="Grau de Parentesco" style={{ width: '20%' }}></Column>
-                <Column body={representativeNascimentoTemplate} header="Nascimento" style={{ width: '20%' }}></Column>
+                <Column body={representativeNascimentoTemplate} header="Nascimento" style={{ width: '15%' }}></Column>
+                <Column body={representativeIdadeTemplate} header="Idade" style={{ width: '25%' }}></Column>
             </DataTable>
             <DependenteProvider>
                 <ModalAdicionarDependente opened={modalOpened} aoFechar={() => setModalOpened(false)} />
