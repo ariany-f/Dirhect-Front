@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom"
 import http from "@http"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
-import { useDepartamentoContext } from "@contexts/Departamento"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -183,14 +182,12 @@ function ModalBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalv
                         
                         <Frame padding="12px 0px">
                             <Col12>
-                                <Col12>
-                                    <Col6>
-                                        <DropdownItens camposVazios={classError} valor={tipo} setValor={setTipo} options={dropdownTipos} label="Tipo" name="tipo" placeholder="Tipo"/> 
-                                    </Col6>
-                                    <Col6Centered>
-                                        <CampoTexto camposVazios={classError} name="descricao" valor={descricao} setValor={setDescricao} type="text" label="Descrição" placeholder="Digite a descrição" />
-                                    </Col6Centered>
-                                </Col12>
+                                <Col6>
+                                    <DropdownItens camposVazios={classError} valor={tipo} setValor={setTipo} options={dropdownTipos} label="Tipo" name="tipo" placeholder="Tipo"/> 
+                                </Col6>
+                                <Col6Centered>
+                                    <CampoTexto camposVazios={classError} name="descricao" valor={descricao} setValor={setDescricao} type="text" label="Descrição" placeholder="Digite a descrição" />
+                                </Col6Centered>
                             </Col12>
                         </Frame>
                         <form method="dialog">
