@@ -97,11 +97,10 @@ function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagi
         }
     };
 
-    const representativeDescriptionTemplate = (rowData) => {
-
+    const representativeDescriptionTemplate = (rowData) => {  
         var fim = (rowData.hora_fim) ? new Date(rowData.hora_fim).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Não definido';
         var inicio = (rowData.hora_inicio) ? new Date(rowData.hora_inicio).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Não definido';
-        return `#${rowData.codigo} - ${rowData.descricao} - ${inicio} - ${fim}`
+        return <Texto width={'100%'} weight={800}>{`#${rowData.codigo} - ${rowData.descricao} - ${inicio} - ${fim}`}</Texto>
     }
 
      const representativeBeneficiosTemplate = (rowData) => {
@@ -131,8 +130,8 @@ function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagi
                 </div>
             }
             <DataTable value={horarios} filters={filters} globalFilterFields={['id', 'codigo', 'descricao']} emptyMessage="Não foram encontrados horarios" selection={selected ? selectedHorarios : selectedHorario} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
-                <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
+                <Column body={representativeDescriptionTemplate} style={{ width: '30%' }}></Column>
+                <Column body={representativeBeneficiosTemplate} style={{ width: '65%' }}></Column>
                 <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>
             </DataTable>
         </>

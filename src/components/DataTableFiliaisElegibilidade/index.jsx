@@ -121,8 +121,8 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
         }
     }
     
-    const representativeDescriptionTemplate = (rowData) => {
-        return `#${rowData.id} - ${rowData.nome}`
+   const representativeDescriptionTemplate = (rowData) => {
+        return <Texto width={'100%'} weight={800}>{`#${rowData.id} - ${rowData.nome}`}</Texto>
     }
 
     const representativeBeneficiosTemplate = (rowData) => {

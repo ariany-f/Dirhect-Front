@@ -106,11 +106,11 @@ function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagina
         else {
             return <p>Não informado</p>;
         }
-    };    
+    };
     
     const representativeDescriptionTemplate = (rowData) => {
         var cargo = (rowData?.cargo && rowData?.cargo.nome) ? rowData?.cargo.nome : '';
-        return `#${rowData.id} - ${rowData.nome} ${cargo}`
+        return <Texto width={'100%'} weight={800}>{`#${rowData.id} - ${rowData.nome} ${cargo}`}</Texto>
     }
 
      const representativeBeneficiosTemplate = (rowData) => {

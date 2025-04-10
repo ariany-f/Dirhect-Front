@@ -78,8 +78,8 @@ function DataTableCentrosCustoElegibilidade({ centros_custo = [], showSearch = t
         }
     }    
     
-    const representativeDescriptionTemplate = (rowData) => {
-        return `#${rowData.id} - ${rowData.nome}`
+   const representativeDescriptionTemplate = (rowData) => {
+        return <Texto width={'100%'} weight={800}>{`#${rowData.id} - ${rowData.nome}`}</Texto>
     }
 
      const representativeBeneficiosTemplate = (rowData) => {

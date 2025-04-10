@@ -69,10 +69,11 @@ function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, 
             return "---"
         }
     }
-
+    
     const representativeDescriptionTemplate = (rowData) => {
-        return `#${rowData.codigo} - ${rowData.descricao}`
+        return <Texto width={'100%'} weight={800}>{`#${rowData.codigo} - ${rowData.descricao}`}</Texto>
     }
+
      const representativeBeneficiosTemplate = (rowData) => {
         return (
         <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
@@ -153,8 +154,8 @@ function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, 
                 </div>
             }
             <DataTable value={sindicatos} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage="Não foram encontradas sindicatos" selection={selected ? selectedSindicatos : selectedSindicato} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeDescriptionTemplate} field="descricao" style={{ width: '20%' }}></Column>
-                <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
+                <Column body={representativeDescriptionTemplate} field="descricao" style={{ width: '30%' }}></Column>
+                <Column body={representativeBeneficiosTemplate} style={{ width: '65%' }}></Column>
                 <Column body={<MdOutlineKeyboardArrowRight/>} style={{ width: '5%' }}></Column>
             </DataTable>
             <ModalEditarSindicato aoSalvar={editarSindicato} sindicato={selectedSindicato} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
