@@ -28,7 +28,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableHorariosElegibilidade({ horarios, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
    
     const[selectedHorario, setSelectedHorario] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -37,15 +37,6 @@ function DataTableHorariosElegibilidade({ horarios, showSearch = true, paginatio
     })
     const [selectedHorarios, setSelectedHorarios] = useState([]);
     const navegar = useNavigate()
-
-    useEffect(() => {
-        if (selected && Array.isArray(selected) && selected.length > 0 && horarios) {
-            const horariosSelecionados = horarios.filter(cargo => selected.includes(cargo.id));
-            setSelectedHorarios(horariosSelecionados);
-        } else {
-            setSelectedHorarios([]);
-        }
-    }, [selected, horarios]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };

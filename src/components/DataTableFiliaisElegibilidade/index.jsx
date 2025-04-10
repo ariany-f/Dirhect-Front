@@ -20,7 +20,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableFiliaisElegibilidade({ filiais, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
 
     const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -30,15 +30,6 @@ function DataTableFiliaisElegibilidade({ filiais, showSearch = true, pagination 
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const [selectedFiliais, setSelectedFiliais] = useState([]);
-
-    useEffect(() => {
-        if (selected && Array.isArray(selected) && selected.length > 0 && filiais) {
-            const filiaisSelecionadas = filiais.filter(filial => selected.includes(filial.id));
-            setSelectedFiliais(filiaisSelecionadas);
-        } else {
-            setSelectedFiliais([]);
-        }
-    }, [selected, filiais]);
 
     const navegar = useNavigate()
 
@@ -59,10 +50,6 @@ function DataTableFiliaisElegibilidade({ filiais, showSearch = true, pagination 
         setSelectedFilial(value); // Atualiza o estado
         setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
     }
-    
-    useEffect(() => {
-        console.log("Filial selecionada mudou:", selectedFilial);
-    }, [selectedFilial]);
 
     function formataCNPJ(cnpj) {
         cnpj = cnpj.replace(/[^\d]/g, "");

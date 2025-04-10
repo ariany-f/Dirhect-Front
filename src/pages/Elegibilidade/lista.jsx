@@ -9,7 +9,7 @@ import Texto from '@components/Texto'
 import http from '@http'
 import CheckboxContainer from "@components/CheckboxContainer"
 import Container from '@components/Container'
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
+import { ConfirmDialog } from 'primereact/confirmdialog'
 import DataTableFiliaisElegibilidade from '@components/DataTableFiliaisElegibilidade'
 import DataTableSindicatosElegibilidade from '@components/DataTableSindicatosElegibilidade'
 import DataTableDepartamentosElegibilidade from '@components/DataTableDepartamentosElegibilidade'
@@ -21,15 +21,11 @@ import DataTableHorariosElegibilidade from '@components/DataTableHorariosElegibi
 import Loading from '@components/Loading'
 import Frame from '@components/Frame'
 import styled from "styled-components"
-import { Link, Outlet, useLocation, useOutlet, useOutletContext } from "react-router-dom"
-import { FaDownload } from 'react-icons/fa'
-import { useState, useEffect, useRef } from 'react'
-import React, { createContext, useContext } from 'react';
-import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTableElegibilidade from '@components/DataTableElegibilidade'
+import { Link, useOutletContext } from "react-router-dom"
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import { Toast } from 'primereact/toast'
 import { TabPanel, TabView } from 'primereact/tabview'
+import { useState, useEffect, useRef } from 'react'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -38,35 +34,33 @@ const ConteudoFrame = styled.div`
     width: 100%;
 `
 
-
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
 });
 
 const ElegibilidadeLista = () => {
-
-    const location = useLocation();
     const context = useOutletContext()
     const toast = useRef(null)
-    const [loading, setLoading] = useState(false)
-    const [filiais, setFiliais] = useState(null)
-    const [departamentos, setDepartamentos] = useState(null)
-    const [secoes, setSecoes] = useState(null)
-    const [cargos, setCargos] = useState(null)
-    const [funcoes, setFuncoes] = useState(null)
-    const [centros_custo, setCentrosCusto] = useState(null)
-    const [sindicatos, setSindicatos] = useState(null)
-    const [horarios, setHorarios] = useState(null)
+    const [loading, setLoading] = useState(true)
+
+    const [filiais, setFiliais] = useState([])
+    const [departamentos, setDepartamentos] = useState([])
+    const [secoes, setSecoes] = useState([])
+    const [cargos, setCargos] = useState([])
+    const [funcoes, setFuncoes] = useState([])
+    const [centros_custo, setCentrosCusto] = useState([])
+    const [sindicatos, setSindicatos] = useState([])
+    const [horarios, setHorarios] = useState([])
+    const [atualizado, setAtualizado] = useState(false)
 
     const fetchData = (endpoint, setter) => {
         http.get(`${endpoint}/?format=json`)
-            .then(setter)
-            .catch(console.error)
-    };
+            .then( (response) => {setter(response);})
+            .catch((err) => {console.log(err); setLoading(false);})
+    }
 
     useEffect(() => {
-        setLoading(true);
         fetchData('filial', setFiliais);
         fetchData('departamento', setDepartamentos);
         fetchData('secao', setSecoes);
@@ -75,50 +69,44 @@ const ElegibilidadeLista = () => {
         fetchData('sindicato', setSindicatos);
         fetchData('horario', setHorarios);
         fetchData('funcao', setFuncoes);
-    }, []);
+    }, [])
 
     useEffect(() => {
-        if(context && context.length > 0) {
-            const atualizarDados = () => {
-                const adicionarElegibilidade = (entidade, setEntidade, nomeEntidade) => {
-                    
-                    setEntidade(prev =>
-                        prev?.map(item => {
-                            const correspondente = context.find(
-                                el => el.content_type_name === nomeEntidade && el.entidade_id_origem === item.id
-                            );
-                            return {
-                                ...item,
-                                elegibilidade: correspondente || null
-                            };
-                        }) || []
-                    );
-                };
-            
-                adicionarElegibilidade(filiais, setFiliais, 'Filial');
-                adicionarElegibilidade(departamentos, setDepartamentos, 'Departamento');
-                adicionarElegibilidade(secoes, setSecoes, 'Secao');
-                adicionarElegibilidade(cargos, setCargos, 'Cargo');
-                adicionarElegibilidade(funcoes, setFuncoes, 'Funcao');
-                adicionarElegibilidade(centros_custo, setCentrosCusto, 'Centro de Custo');
-                adicionarElegibilidade(sindicatos, setSindicatos, 'Sindicato');
-                adicionarElegibilidade(horarios, setHorarios, 'Horario');
-                // Espera o próximo "tick" de renderização antes de liberar o loading
-                requestAnimationFrame(() => {
-                    setLoading(false);
-                });
-            };
+        const todasAsListasCarregadas = [
+            filiais, departamentos, secoes, cargos,
+            funcoes, centros_custo, sindicatos, horarios
+        ].every(lista => Array.isArray(lista) && lista.length > 0)
 
-            atualizarDados();
-        }
-        else
-        {
-            if(filiais && departamentos && secoes && cargos && funcoes && centros_custo && sindicatos && horarios && filiais.length  > 0 && departamentos.length > 0 && secoes.length > 0 && cargos.length > 0 && funcoes.length > 0 && centros_custo.length > 0 && sindicatos.length > 0 && horarios.length > 0)
-            {
-                setLoading(false)
+        if (context && context.length > 0 && todasAsListasCarregadas && !atualizado) {
+
+            const adicionarElegibilidade = (lista, setLista, nomeEntidade) => {
+                if (!lista || lista.length === 0) return
+                const atualizada = lista.map(item => {
+                    const correspondente = context.find(
+                        el => el.content_type_name === nomeEntidade && el.entidade_id_origem === item.id
+                    )
+                    return {
+                        ...item,
+                        elegibilidade: correspondente || null
+                    }
+                })
+                setLista(atualizada)
             }
+
+            adicionarElegibilidade(filiais, setFiliais, 'Filial')
+            adicionarElegibilidade(departamentos, setDepartamentos, 'Departamento')
+            adicionarElegibilidade(secoes, setSecoes, 'Secao')
+            adicionarElegibilidade(cargos, setCargos, 'Cargo')
+            adicionarElegibilidade(funcoes, setFuncoes, 'Funcao')
+            adicionarElegibilidade(centros_custo, setCentrosCusto, 'Centro de Custo')
+            adicionarElegibilidade(sindicatos, setSindicatos, 'Sindicato')
+            adicionarElegibilidade(horarios, setHorarios, 'Horario')
+            setAtualizado(true)
+            setLoading(false)
+        } else if (todasAsListasCarregadas) {
+            setLoading(false)
         }
-    }, [context, filiais, departamentos, secoes, cargos, funcoes, centros_custo, sindicatos, horarios]);
+    }, [context, filiais, departamentos, secoes, cargos, funcoes, centros_custo, sindicatos, horarios])
 
     return (
         <ConteudoFrame>
@@ -128,12 +116,16 @@ const ElegibilidadeLista = () => {
             <BotaoGrupo align="end">
                 <BotaoGrupo>
                     <Link to="/elegibilidade/configurar">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Configurar</Botao>
+                        <Botao estilo="vermilion" size="small" tab>
+                            <GrAddCircle className={styles.icon} /> Configurar
+                        </Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
             <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
-                <Link to={'/elegibilidade/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
+                <Link to="/elegibilidade/como-funciona" style={{ fontSize: '14px', marginLeft: '8px' }}>
+                    Como funciona?
+                </Link>
             </QuestionCard>
             <Frame>
                 <Container gap="32px">
@@ -142,7 +134,7 @@ const ElegibilidadeLista = () => {
                             <DataTableFiliaisElegibilidade filiais={filiais} showSearch={false} />
                         </TabPanel>
                         <TabPanel header="Departamentos">
-                            <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false}  />
+                            <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false} />
                         </TabPanel>
                         <TabPanel header="Seções">
                             <DataTableSecoesElegibilidade secoes={secoes} showSearch={false} />
@@ -165,9 +157,8 @@ const ElegibilidadeLista = () => {
                     </TabView>
                 </Container>
             </Frame>
-    
         </ConteudoFrame>
-    );
-};
+    )
+}
 
-export default ElegibilidadeLista; 
+export default ElegibilidadeLista

@@ -28,7 +28,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableFuncoesElegibilidade({ funcoes, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
    
     const[selectedFuncao, setSelectedFuncao] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -37,15 +37,6 @@ function DataTableFuncoesElegibilidade({ funcoes, showSearch = true, pagination 
     })
     const [selectedFuncaos, setSelectedFuncaos] = useState([]);
     const navegar = useNavigate()
-
-    useEffect(() => {
-        if (selected && Array.isArray(selected) && selected.length > 0 && funcoes) {
-            const funcoesSelecionados = funcoes.filter(cargo => selected.includes(cargo.id));
-            setSelectedFuncaos(funcoesSelecionados);
-        } else {
-            setSelectedFuncaos([]);
-        }
-    }, [selected, funcoes]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };

@@ -25,7 +25,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableDepartamentosElegibilidade({ departamentos, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
    
     const[selectedDepartamento, setSelectedDepartamento] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -35,15 +35,6 @@ function DataTableDepartamentosElegibilidade({ departamentos, showSearch = true,
     const navegar = useNavigate()
 
     const [selectedDepartamentos, setSelectedDepartamentos] = useState([]);
-
-    useEffect(() => {
-        if (selected && Array.isArray(selected) && selected.length > 0 && departamentos) {
-            const departamentosSelecionados = departamentos.filter(departamento => selected.includes(departamento.id));
-            setSelectedDepartamentos([...departamentosSelecionados]); // Garante que o array é atualizado
-        } else {
-            setSelectedDepartamentos([]); // Evita manter seleções erradas
-        }
-    }, [selected, departamentos]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };

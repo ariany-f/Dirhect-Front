@@ -26,7 +26,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableCentrosCustoElegibilidade({ centros_custo, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableCentrosCustoElegibilidade({ centros_custo = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
    
     const[selectedCentroCusto, setSelectedCentroCusto] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -35,15 +35,6 @@ function DataTableCentrosCustoElegibilidade({ centros_custo, showSearch = true, 
     })
     const [selectedCentrosCusto, setSelectedCentrosCusto] = useState([]);
     const navegar = useNavigate()
-
-    useEffect(() => {
-        if (selected && Array.isArray(selected) && selected.length > 0 && centros_custo) {
-            const centrosCustoSelecionados = centros_custo.filter(centro_custo => selected.includes(centro_custo.id));
-            setSelectedCentrosCusto([...centrosCustoSelecionados]); // Garante que o array é atualizado
-        } else {
-            setSelectedCentrosCusto([]); // Garante que não há itens selecionados ao limpar
-        }
-    }, [centros_custo, selected]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };

@@ -28,7 +28,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableCargosElegibilidade({ cargos, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableCargosElegibilidade({ cargos = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
    
     const[selectedCargo, setSelectedCargo] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -37,15 +37,6 @@ function DataTableCargosElegibilidade({ cargos, showSearch = true, pagination = 
     })
     const [selectedCargos, setSelectedCargos] = useState([]);
     const navegar = useNavigate()
-
-    useEffect(() => {
-        if (selected && Array.isArray(selected) && selected.length > 0 && cargos) {
-            const cargosSelecionados = cargos.filter(cargo => selected.includes(cargo.id));
-            setSelectedCargos(cargosSelecionados);
-        } else {
-            setSelectedCargos([]);
-        }
-    }, [selected, cargos]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -88,8 +79,6 @@ function DataTableCargosElegibilidade({ cargos, showSearch = true, pagination = 
     const representativeDescriptionTemplate = (rowData) => {
         return `#${rowData.id} - ${rowData.nome}`
     }
-
-    
 
     const representativeBeneficiosTemplate = (rowData) => {
         return (

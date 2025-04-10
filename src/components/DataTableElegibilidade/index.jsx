@@ -14,7 +14,7 @@ let Real = new Intl.NumberFormat('pt-BR', {
     currency: 'BRL',
 });
 
-function DataTableElegibilidade({ elegibilidade, colaborador = null }) {
+function DataTableElegibilidade({ elegibilidade = [], colaborador = null }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');

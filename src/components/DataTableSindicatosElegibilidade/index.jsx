@@ -20,7 +20,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableSindicatosElegibilidade({ sindicatos, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
 
     const[selectedSindicato, setSelectedSindicato] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -30,15 +30,6 @@ function DataTableSindicatosElegibilidade({ sindicatos, showSearch = true, pagin
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const [selectedSindicatos, setSelectedSindicatos] = useState([]);
-
-    useEffect(() => {
-        if (selected && Array.isArray(selected) && selected.length > 0 && sindicatos) {
-            const sindicatosSelecionadas = sindicatos.filter(filial => selected.includes(filial.id));
-            setSelectedSindicatos(sindicatosSelecionadas);
-        } else {
-            setSelectedSindicatos([]);
-        }
-    }, [selected, sindicatos]);
 
     const navegar = useNavigate()
 
@@ -59,10 +50,6 @@ function DataTableSindicatosElegibilidade({ sindicatos, showSearch = true, pagin
         setSelectedSindicato(value); // Atualiza o estado
         setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
     }
-    
-    useEffect(() => {
-        console.log("Sindicato selecionado mudou:", selectedSindicato);
-    }, [selectedSindicato]);
 
     function formataCNPJ(cnpj) {
         cnpj = cnpj.replace(/[^\d]/g, "");
