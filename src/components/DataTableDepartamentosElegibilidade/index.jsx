@@ -6,6 +6,7 @@ import { Column } from 'primereact/column';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import BadgeBeneficio from '@components/BadgeBeneficio'
 import { FaBan } from 'react-icons/fa';
 import './DataTable.css'
 
@@ -99,11 +100,11 @@ function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = 
         <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
             <Texto weight={300}>Benefícios configurados</Texto>
             <Beneficios>
-                {(!rowData?.benefits) || rowData?.benefits.length === 0
+                {(!rowData?.beneficios) || rowData?.beneficios.length === 0
                 ?
                     <FaBan size={10} />
                 :
-                    rowData?.benefits.map((benefit, index) => {
+                    rowData?.beneficios.map((benefit, index) => {
                         return (
                             <BadgeBeneficio key={index} nomeBeneficio={benefit.name}/>
                         )

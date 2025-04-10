@@ -109,11 +109,11 @@ function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagi
         <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
             <Texto weight={300}>Benefícios configurados</Texto>
             <Beneficios>
-                {(!rowData?.benefits) || rowData?.benefits.length === 0
+                {(!rowData?.beneficios) || rowData?.beneficios.length === 0
                 ?
                     <FaBan size={10} />
                 :
-                    rowData?.benefits.map((benefit, index) => {
+                    rowData?.beneficios.map((benefit, index) => {
                         return (
                             <BadgeBeneficio key={index} nomeBeneficio={benefit.name}/>
                         )

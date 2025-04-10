@@ -5,6 +5,7 @@ import http from '@http'
 import './DataTable.css'
 import { Toast } from 'primereact/toast'
 import CampoTexto from '@components/CampoTexto';
+import BadgeBeneficio from '@components/BadgeBeneficio'
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
@@ -77,11 +78,11 @@ function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, 
         <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
             <Texto weight={300}>Benefícios configurados</Texto>
             <Beneficios>
-                {(!rowData?.benefits) || rowData?.benefits.length === 0
+                {(!rowData?.beneficios) || rowData?.beneficios.length === 0
                 ?
                     <FaBan size={10} />
                 :
-                    rowData?.benefits.map((benefit, index) => {
+                    rowData?.beneficios.map((benefit, index) => {
                         return (
                             <BadgeBeneficio key={index} nomeBeneficio={benefit.name}/>
                         )

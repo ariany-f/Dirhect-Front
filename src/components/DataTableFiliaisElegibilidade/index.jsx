@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import ModalEditarFilial from '../ModalEditarFilial';
 import styled from 'styled-components';
+import BadgeBeneficio from '@components/BadgeBeneficio'
 import { FaBan } from 'react-icons/fa';
 
 const Beneficios = styled.div`
@@ -129,11 +130,11 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
         <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
             <Texto weight={300}>Benefícios configurados</Texto>
             <Beneficios>
-                {(!rowData?.benefits) || rowData?.benefits.length === 0
+                {(!rowData?.beneficios) || rowData?.beneficios.length === 0
                 ?
                     <FaBan size={10} />
                 :
-                    rowData?.benefits.map((benefit, index) => {
+                    rowData?.beneficios.map((benefit, index) => {
                         return (
                             <BadgeBeneficio key={index} nomeBeneficio={benefit.name}/>
                         )
