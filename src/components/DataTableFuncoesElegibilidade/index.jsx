@@ -107,7 +107,7 @@ function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagina
             return <p>Não informado</p>;
         }
     };
-    
+
     const representativeDescriptionTemplate = (rowData) => {
         var cargo = (rowData?.cargo && rowData?.cargo.nome) ? rowData?.cargo.nome : '';
         return <Texto width={'100%'} weight={800}>{`#${rowData.id} - ${rowData.nome} ${cargo}`}</Texto>
@@ -116,7 +116,7 @@ function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagina
      const representativeBeneficiosTemplate = (rowData) => {
         return (
         <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
-            <Texto weight={300}>Benefícios configurados</Texto>
+            <Texto weight={300}>Benefícios elegíveis</Texto>
             <Beneficios>
                 {(!rowData?.elegibilidade?.item_beneficio?.beneficio || !rowData?.elegibilidade?.item_beneficio?.beneficio?.dados_beneficio?.descricao)
                 ?

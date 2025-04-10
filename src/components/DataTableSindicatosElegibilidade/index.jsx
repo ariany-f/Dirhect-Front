@@ -77,7 +77,7 @@ function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, 
      const representativeBeneficiosTemplate = (rowData) => {
         return (
         <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
-            <Texto weight={300}>Benefícios configurados</Texto>
+            <Texto weight={300}>Benefícios elegíveis</Texto>
             <Beneficios>
                 {(!rowData?.elegibilidade?.item_beneficio?.beneficio || !rowData?.elegibilidade?.item_beneficio?.beneficio?.dados_beneficio?.descricao)
                 ?
