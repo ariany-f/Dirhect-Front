@@ -178,19 +178,19 @@ function BadgeBeneficio({ nomeBeneficio, layout = 'inline' }) {
     if(layout == 'inline')
     {
         return (
-            <div key={item.id} className={styles.beneficio}>
+            <div key={icone[0].id} className={styles.beneficio}>
                 {icone.length > 0 ? icone[0].icone : <FaQuestion size={20} />}
-                <p>{item.name}</p>
+                <p>{icone[0].name}</p>
             </div>
         )
     }
     else if(layout == 'grid')
     {
         return (
-            <div key={item.id} className={styles.beneficio_grid}>
+            <div key={icone[0].id} className={styles.beneficio_grid}>
                 <div className={styles.inside_grid}>
                     {icone[0].icone}
-                    <p>{item.name}</p>
+                    <p>{icone[0].name}</p>
                 </div>
             </div>
         )

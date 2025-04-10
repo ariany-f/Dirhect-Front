@@ -22,7 +22,7 @@ const Beneficios = styled.div`
 `
 
 function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
-
+    console.log(filiais)
     const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -130,15 +130,13 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
         <div style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
             <Texto weight={300}>Benefícios configurados</Texto>
             <Beneficios>
-                {(!rowData?.beneficios) || rowData?.beneficios.length === 0
+                {(!rowData?.elegibilidade?.item_beneficio?.beneficio || !rowData?.elegibilidade?.item_beneficio?.beneficio?.dados_beneficio?.descricao)
                 ?
                     <FaBan size={10} />
                 :
-                    rowData?.beneficios.map((benefit, index) => {
-                        return (
-                            <BadgeBeneficio key={index} nomeBeneficio={benefit.name}/>
-                        )
-                    })
+                
+                <BadgeBeneficio key={rowData?.elegibilidade?.item_beneficio?.beneficio?.dados_beneficio?.id} nomeBeneficio={rowData?.elegibilidade?.item_beneficio?.beneficio?.dados_beneficio?.descricao}/>
+                    
                 }
             </Beneficios>
         </div>)
