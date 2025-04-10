@@ -4,11 +4,12 @@ import Titulo from '@components/Titulo'
 import BotaoVoltar from '@components/BotaoVoltar'
 import { GrAddCircle } from 'react-icons/gr'
 import styled from "styled-components"
+import http from '@http'
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { RecargaSaldoLivreProvider } from "@contexts/RecargaSaldoLivre"
 import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
-import elegibilidade from '@json/elegibilidade.json'
+// import elegibilidade from '@json/elegibilidade.json'
 import React, { createContext, useContext } from 'react';
 
 const ConteudoFrame = styled.div`
@@ -21,6 +22,14 @@ const ConteudoFrame = styled.div`
 const Elegibilidade = () => {
 
     const location = useLocation();
+    const [elegibilidade, setElegibilidade] = useState([])
+
+    useEffect(() => {
+        http.get(`/matriz_eligibilidade/?format=json`)
+        .then(response => {
+            setElegibilidade(response)
+        })
+    }, [])
 
     return (
         
