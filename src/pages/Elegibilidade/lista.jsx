@@ -113,7 +113,7 @@ const ElegibilidadeLista = () => {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <ConfirmDialog />
-            <BotaoGrupo align="end">
+            {/* <BotaoGrupo align="end">
                 <BotaoGrupo>
                     <Link to="/elegibilidade/configurar">
                         <Botao estilo="vermilion" size="small" tab>
@@ -121,7 +121,7 @@ const ElegibilidadeLista = () => {
                         </Botao>
                     </Link>
                 </BotaoGrupo>
-            </BotaoGrupo>
+            </BotaoGrupo> */}
             <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
                 <Link to="/elegibilidade/como-funciona" style={{ fontSize: '14px', marginLeft: '8px' }}>
                     Como funciona?
