@@ -15,7 +15,7 @@ const icones = [
         "flexible_value": false,
         "description": "Mercados, supermercados e aplicativo de delivery.",
         "food_meal_one_category": false,
-        "icone": <RiShoppingCartFill size={20} />
+        "icone": <RiShoppingCartFill size={16} />
     },
     {
         "id": 2,
@@ -23,7 +23,7 @@ const icones = [
         "flexible_value": false,
         "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
-        "icone": <IoFastFoodSharp size={20} />
+        "icone": <IoFastFoodSharp size={16} />
     },
     {
         "id": 3,
@@ -31,7 +31,7 @@ const icones = [
         "flexible_value": true,
         "description": "Postos de combustível, estacionamentos, pedágio, carros por aplicativo, recarga de bilhete de transporte e passagens de ônibus e trem.",
         "food_meal_one_category": false,
-        "icone": <RiBusFill size={20} />
+        "icone": <RiBusFill size={16} />
     },
     {
         "id": 4,
@@ -39,7 +39,7 @@ const icones = [
         "flexible_value": true,
         "description": "Compra de cadeira ergométrica, itens de papelaria, assistência técnica de computador e custeio de contas de energia e internet",
         "food_meal_one_category": false,
-        "icone": <RiComputerLine size={20} />
+        "icone": <RiComputerLine size={16} />
     },
     {
         "id": 5,
@@ -47,7 +47,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <RiGasStationFill size={20} />
+        "icone": <RiGasStationFill size={16} />
     },
     {
         "id": 6,
@@ -55,7 +55,7 @@ const icones = [
         "flexible_value": true,
         "description": "Streaming de vídeo e música, bancas de jornais, jogos online, ingressos para shows teatros e museus, instrumentos musicais, escolas de arte e música e parques de diversões, zoológicos e aquários.",
         "food_meal_one_category": false,
-        "icone": <FaTheaterMasks size={20} />
+        "icone": <FaTheaterMasks size={16} />
     },
     {
         "id": 7,
@@ -63,7 +63,7 @@ const icones = [
         "flexible_value": true,
         "description": "Cursos online e presenciais, cursos de extensão, cursos e app de idiomas, ensino superior e técnico, eventos e feiras profissionais e livrarias e papelarias",
         "food_meal_one_category": false,
-        "icone": <BiBookReader  size={20} />
+        "icone": <BiBookReader  size={16} />
     },
     {
         "id": 8,
@@ -71,7 +71,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <FaHeartPulse size={20} />
+        "icone": <FaHeartPulse size={16} />
     },
     {
         "id": 9,
@@ -79,7 +79,7 @@ const icones = [
         "flexible_value": false,
         "description": "Alimentação e Refeição, tudo em uma só categoria.",
         "food_meal_one_category": true,
-        "icone": <PiForkKnifeFill size={20} />
+        "icone": <PiForkKnifeFill size={16} />
     },
     {
         "id": 10,
@@ -87,7 +87,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <RiGasStationFill size={20} />
+        "icone": <RiGasStationFill size={16} />
     },
     {
         "id": 11,
@@ -95,7 +95,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <MdSecurity size={20} />
+        "icone": <MdSecurity size={16} />
     },
     {
         "id": 12,
@@ -111,7 +111,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <FaCoins size={20} />
+        "icone": <FaCoins size={16} />
     },
     {
         "id": 14,
@@ -119,7 +119,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <FaTooth size={20} />
+        "icone": <FaTooth size={16} />
     },
     {
         "id": 15,
@@ -127,7 +127,7 @@ const icones = [
         "flexible_value": false,
         "description": "Mercados, supermercados e aplicativo de delivery.",
         "food_meal_one_category": false,
-        "icone": <RiShoppingCartFill size={20} />
+        "icone": <RiShoppingCartFill size={16} />
     },
     {
         "id": 16,
@@ -135,7 +135,7 @@ const icones = [
         "flexible_value": false,
         "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
-        "icone": <IoFastFoodSharp size={20} />
+        "icone": <IoFastFoodSharp size={16} />
     },
     {
         "id": 15,
@@ -143,7 +143,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <FaTooth size={20} />
+        "icone": <FaTooth size={16} />
     },
     {
         "id": 16,
@@ -151,7 +151,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <MdDirectionsBike size={20} />
+        "icone": <MdDirectionsBike size={16} />
     },
     {
         "id": 17,
@@ -159,7 +159,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <RiEBike2Fill size={20} />
+        "icone": <RiEBike2Fill size={16} />
     },
     {
         "id": 18,
@@ -167,7 +167,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <FaCar size={20} />
+        "icone": <FaCar size={16} />
     },
 ]
 
@@ -179,7 +179,7 @@ function BadgeBeneficio({ nomeBeneficio, layout = 'inline' }) {
     {
         return (
             <div key={icone[0].id} className={styles.beneficio}>
-                {icone.length > 0 ? icone[0].icone : <FaQuestion size={20} />}
+                {icone.length > 0 ? icone[0].icone : <FaQuestion size={16} />}
                 <p>{icone[0].name}</p>
             </div>
         )
