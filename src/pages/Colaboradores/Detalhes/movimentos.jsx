@@ -31,7 +31,7 @@ function ColaboradorMovimentos() {
         <>
             <Loading opened={loading} />
             <Titulo>
-                <h6>Movimentos</h6>
+                <h6>Movimentação</h6>
             </Titulo>
             <DataTableMovimentos movimentos={movimentos} colaborador={id}/>
         </>

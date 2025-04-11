@@ -193,7 +193,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
     { "id": 16, "url": "admissao", "pageTitulo": "Admissões" },
     { "id": 17, "url": "ciclos", "pageTitulo": "Lançamentos de Folha" },
     { "id": 18, "url": "pedidos", "pageTitulo": "Pedidos" },
-    { "id": 19, "url": "movimentos", "pageTitulo": "Movimentos" },
+    { "id": 19, "url": "movimentos", "pageTitulo": "Movimentação" },
     { "id": 20, "url": "tarefas", "pageTitulo": "Tarefas" },
     { "id": 21, "url": "marketplace", "pageTitulo": "Marketplace" },
     { "id": 22, "url": "operadoras", "pageTitulo": "Operadoras" }

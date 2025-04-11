@@ -391,9 +391,9 @@ function BarraLateral() {
                     {
                         "id": 14,
                         "url": "/movimentos",
-                        "pageTitulo": "Movimentos",
+                        "pageTitulo": "Movimentação",
                         "icone": <MdAllInbox size={20} fill="white" />,
-                        "itemTitulo": "Movimentos"
+                        "itemTitulo": "Movimentação"
                     }
                 ];
             default:

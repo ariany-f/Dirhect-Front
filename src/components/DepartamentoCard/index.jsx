@@ -49,7 +49,7 @@ function DepartamentoCard({department}) {
                 </div>
             </div>
             <div className={styles.right}>
-                <Texto weight={500}>Benefícios configurados</Texto>
+                <Texto weight={500}>Benefícios elegíveis</Texto>
                 <div className={styles.beneficios}>
                     {department.benefits.map((benefit, index) => {
                         return (
