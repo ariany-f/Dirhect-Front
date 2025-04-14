@@ -128,21 +128,35 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
 
     const representativeBeneficiosTemplate = (rowData) => {
         return (
-        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
-            <Texto weight={300}>Benefícios elegíveis</Texto>
-            <Beneficios>
-                {(!rowData?.elegibilidade?.item_beneficio?.beneficio || !rowData?.elegibilidade?.item_beneficio?.beneficio?.dados_beneficio?.descricao)
-                ?
-                    <FaBan size={10} />
-                :
-                
-                <BadgeBeneficio key={rowData?.elegibilidade?.item_beneficio?.beneficio?.dados_beneficio?.id} nomeBeneficio={rowData?.elegibilidade?.item_beneficio?.beneficio?.dados_beneficio?.descricao}/>
-                    
-                }
-            </Beneficios>
-        </div>)
+            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                <Texto weight={300}>Benefícios elegíveis</Texto>
+                <Beneficios>
+                    {!rowData?.elegibilidade || rowData.elegibilidade.length === 0 ? (
+                        <FaBan size={10} />
+                    ) : (
+                        // Filtra itens únicos por descrição antes de mapear
+                        rowData.elegibilidade
+                            .filter((item, index, self) => {
+                                const descricao = item.item_beneficio.beneficio?.dados_beneficio?.descricao || 
+                                                item.item_beneficio.descricao;
+                                return self.findIndex(i => 
+                                    (i.item_beneficio.beneficio?.dados_beneficio?.descricao || 
+                                     i.item_beneficio.descricao) === descricao
+                                ) === index;
+                            })
+                            .map(item => (
+                                <BadgeBeneficio 
+                                    key={item.item_beneficio.beneficio?.id || item.id}
+                                    nomeBeneficio={item.item_beneficio.beneficio?.dados_beneficio?.descricao || 
+                                                  item.item_beneficio.descricao}
+                                />
+                            ))
+                    )}
+                </Beneficios>
+            </div>
+        )
     }
-
+    
     return (
         <>
             <Toast ref={toast} />

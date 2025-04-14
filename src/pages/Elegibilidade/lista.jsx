@@ -79,7 +79,7 @@ const ElegibilidadeLista = () => {
             const adicionarElegibilidade = (lista, setLista, nomeEntidade) => {
                 if (!lista || lista.length === 0) return
                 const atualizada = lista.map(item => {
-                    const correspondente = context.find(
+                    const correspondente = context.filter(
                         el => el.content_type_name === nomeEntidade && el.entidade_id_origem === item.id_origem
                     )
                     return {
