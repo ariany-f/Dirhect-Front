@@ -374,13 +374,13 @@ function BarraLateral() {
                         "icone": <RiFileListFill size={20} className="icon" />,
                         "itemTitulo": "Contratos"
                     },
-                    // {
-                    //     "id": 12,
-                    //     "url": "/elegibilidade",
-                    //     "pageTitulo": "Elegibilidade",
-                    //     "icone": <LuSparkles size={20} className="icon" />,
-                    //     "itemTitulo": "Elegibilidade"
-                    // },
+                    {
+                        "id": 12,
+                        "url": "/elegibilidade",
+                        "pageTitulo": "Elegibilidade",
+                        "icone": <LuSparkles size={20} className="icon" />,
+                        "itemTitulo": "Elegibilidade"
+                    },
                     {
                         "id": 13,
                         "url": "/pedidos",
