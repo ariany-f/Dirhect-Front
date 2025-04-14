@@ -255,6 +255,12 @@ function ElegibilidadeEditarValor() {
         navegar(-1)
       }
     }, [elegibilidade])
+
+    function voltar()
+    {
+        setItemContrato([])
+        navegar(-1)
+    }
     
     function enviarNovaConfiguracao(configuracao) {
         setLoading(true);
@@ -356,7 +362,7 @@ function ElegibilidadeEditarValor() {
                     )}
                     
                     <ContainerButton>
-                        <Botao aoClicar={() => navegar(-1)} estilo="neutro" size="medium" filled>
+                        <Botao aoClicar={voltar} estilo="neutro" size="medium" filled>
                             Voltar
                         </Botao>
                         <Botao 
