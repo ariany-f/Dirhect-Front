@@ -1,14 +1,14 @@
-import styles from './Departamento.module.css'
+import styles from '@pages/Estrutura/Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import http from '@http'
-import DataTableCargos from '@components/DataTableCargos'
+import DataTableCentrosCusto from '@components/DataTableCentrosCusto'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
-import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
+import ModalAdicionarCentroCusto from '@components/ModalAdicionarCentroCusto'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 
@@ -38,32 +38,55 @@ const ContainerSemRegistro = styled.div`
 `
 
 
-function CargosLista() {
+function CentrosCustoLista() {
 
     const [loading, setLoading] = useState(false)
-    const [cargos, setCargos] = useState(null)
+    const [centros_custo, setCentrosCusto] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
     
-
     useEffect(() => {
-        if(!cargos) {
-            
-            setLoading(true)
-            http.get('cargo/?format=json')
-                .then(response => {
-                    setCargos(response)
-                    
-                })
-                .catch(erro => {
-                    
-                })
-                .finally(function() {
-                    setLoading(false)
-                })
-        }    
-    }, [cargos])
+       
+        setLoading(true)
+        http.get('centro_custo/?format=json')
+            .then(response => {
+                setCentrosCusto(response)
+                
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                setLoading(false)
+            })
+    }, [modalOpened])
+
+    
+    const adicionarCentroCusto = (nome, cc_pai) => {
+
+        setLoading(true)
+       
+        const data = {};
+        data.nome = nome;
+        data.cc_pai = cc_pai.code;
+
+        http.post('centro_custo/', data)
+            .then(response => {
+                if(response.id)
+                {
+                    setModalOpened(false)
+                }
+                
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                setLoading(false)
+            })
+    }
+
 
     return (
         <>
@@ -82,10 +105,10 @@ function CargosLista() {
                         <Botao estilo={''} size="small" tab>Seções</Botao>
                     </Link>
                     <Link to="/estrutura/centros-custo">
-                        <Botao estilo={''} size="small" tab>Centros de Custo</Botao>
+                        <Botao estilo={'black'} size="small" tab>Centros de Custo</Botao>
                     </Link>
                     <Link to="/estrutura/cargos">
-                        <Botao estilo={'black'} size="small" tab>Cargos</Botao>
+                        <Botao estilo={''} size="small" tab>Cargos</Botao>
                     </Link>
                     <Link to="/estrutura/funcoes">
                         <Botao estilo={''} size="small" tab>Funções</Botao>
@@ -97,24 +120,24 @@ function CargosLista() {
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um cargo</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um centro de custo</Botao>
             </BotaoGrupo>
             {
-                cargos && cargos.length > 0 ?
-                    <DataTableCargos cargos={cargos} />
+                centros_custo && centros_custo.length > 0 ?
+                    <DataTableCentrosCusto centros_custo={centros_custo} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
-                        <h6>Não há cargos registrados</h6>
-                        <p>Aqui você verá todos os cargos registrados.</p>
+                        <h6>Não há centros de custo registrados</h6>
+                        <p>Aqui você verá todos os centros de custo registrados.</p>
                     </section>
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarCentroCusto aoSalvar={adicionarCentroCusto} aoSucesso={toast} aoFechar={() => setModalOpened(false)} centros_custo={centros_custo} opened={modalOpened} />
         </>
     )
 }
 
-export default CargosLista
+export default CentrosCustoLista

@@ -1,5 +1,5 @@
 import Texto from '@components/Texto'
-import styles from './Departamento.module.css'
+import styles from '@pages/Estrutura/Departamento.module.css'
 import styled from 'styled-components';
 import http from '@http'
 import BadgeBeneficio from '@components/BadgeBeneficio';

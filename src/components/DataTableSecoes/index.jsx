@@ -1,4 +1,4 @@
-import styles from '@pages/Departamentos/Departamento.module.css'
+import styles from '@pages/Estrutura/Departamento.module.css'
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { DataTable } from 'primereact/datatable';
 import CampoTexto from '@components/CampoTexto';

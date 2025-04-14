@@ -48,7 +48,8 @@ function DataTableCentrosCustoElegibilidade({ centros_custo = [], showSearch = t
 
     function verDetalhes(value)
     {
-        setSelectedCentroCusto(value.public_id)
+        setSelectedCentroCusto(value.id)
+        navegar(`/estrutura/centro_custo/detalhes/${value.id}`)
     }
 
     function handleSelectChange(e) {

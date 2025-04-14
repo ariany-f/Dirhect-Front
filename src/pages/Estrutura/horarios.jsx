@@ -1,14 +1,14 @@
-import styles from './Departamento.module.css'
+import styles from '@pages/Estrutura/Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import http from '@http'
-import DataTableCentrosCusto from '@components/DataTableCentrosCusto'
+import DataTableHorarios from '@components/DataTableHorarios'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
-import ModalAdicionarCentroCusto from '@components/ModalAdicionarCentroCusto'
+import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 
@@ -38,55 +38,32 @@ const ContainerSemRegistro = styled.div`
 `
 
 
-function CentrosCustoLista() {
+function HorariosLista() {
 
     const [loading, setLoading] = useState(false)
-    const [centros_custo, setCentrosCusto] = useState(null)
+    const [horarios, setHorarios] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
     
+
     useEffect(() => {
-       
-        setLoading(true)
-        http.get('centro_custo/?format=json')
-            .then(response => {
-                setCentrosCusto(response)
-                
-            })
-            .catch(erro => {
-                
-            })
-            .finally(function() {
-                setLoading(false)
-            })
-    }, [modalOpened])
-
-    
-    const adicionarCentroCusto = (nome, cc_pai) => {
-
-        setLoading(true)
-       
-        const data = {};
-        data.nome = nome;
-        data.cc_pai = cc_pai.code;
-
-        http.post('centro_custo/', data)
-            .then(response => {
-                if(response.id)
-                {
-                    setModalOpened(false)
-                }
-                
-            })
-            .catch(erro => {
-                
-            })
-            .finally(function() {
-                setLoading(false)
-            })
-    }
-
+        if(!horarios) {
+            
+            setLoading(true)
+            http.get('horario/?format=json')
+                .then(response => {
+                    setHorarios(response)
+                    
+                })
+                .catch(erro => {
+                    
+                })
+                .finally(function() {
+                    setLoading(false)
+                })
+        }    
+    }, [horarios])
 
     return (
         <>
@@ -105,39 +82,36 @@ function CentrosCustoLista() {
                         <Botao estilo={''} size="small" tab>Seções</Botao>
                     </Link>
                     <Link to="/estrutura/centros-custo">
-                        <Botao estilo={'black'} size="small" tab>Centros de Custo</Botao>
+                        <Botao estilo={''} size="small" tab>Centros de Custo</Botao>
                     </Link>
                     <Link to="/estrutura/cargos">
-                        <Botao estilo={''} size="small" tab>Cargos</Botao>
-                    </Link>
-                    <Link to="/estrutura/funcoes">
-                        <Botao estilo={''} size="small" tab>Funções</Botao>
+                        <Botao estilo={''} size="small" tab>Cargos e Funções</Botao>
                     </Link>
                     <Link to="/estrutura/sindicatos">
                         <Botao estilo={''} size="small" tab>Sindicatos</Botao>
                     </Link>
                     <Link to="/estrutura/horarios">
-                        <Botao estilo={''} size="small" tab>Horários</Botao>
+                        <Botao estilo={'black'} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um centro de custo</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um horário</Botao>
             </BotaoGrupo>
             {
-                centros_custo && centros_custo.length > 0 ?
-                    <DataTableCentrosCusto centros_custo={centros_custo} />
+                horarios && horarios.length > 0 ?
+                    <DataTableHorarios horarios={horarios} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
-                        <h6>Não há centros de custo registrados</h6>
-                        <p>Aqui você verá todos os centros de custo registrados.</p>
+                        <h6>Não há horarios registrados</h6>
+                        <p>Aqui você verá todos os horarios registrados.</p>
                     </section>
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarCentroCusto aoSalvar={adicionarCentroCusto} aoSucesso={toast} aoFechar={() => setModalOpened(false)} centros_custo={centros_custo} opened={modalOpened} />
+        <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
 
-export default CentrosCustoLista
+export default HorariosLista

@@ -1,4 +1,4 @@
-import styles from '@pages/Departamentos/Departamento.module.css'
+import styles from '@pages/Estrutura/Departamento.module.css'
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import { FaBan } from 'react-icons/fa'
@@ -49,7 +49,8 @@ function DataTableCargosElegibilidade({ cargos = [], showSearch = true, paginati
 
     function verDetalhes(value)
     {
-        setSelectedCargo(value.public_id)
+        setSelectedCargo(value.id)
+        navegar(`/estrutura/cargo/detalhes/${value.id}`)
     }
     
     function handleSelectChange(e) {

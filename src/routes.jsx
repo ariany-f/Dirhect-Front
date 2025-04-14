@@ -26,11 +26,11 @@ import ColaboradorSaldo from '@pages/Colaboradores/Detalhes/saldo'
 import ColaboradorCarteiras from '@pages/Colaboradores/Detalhes/carteiras'
 import ColaboradorRegistro from '@pages/Colaboradores/Registro/registro'
 import ColaboradorRegistroSucesso from '@pages/Colaboradores/Registro/sucesso'
-import Departamentos from '@pages/Departamentos'
-import DepartamentoLista from '@pages/Departamentos/lista'
-import DepartamentoDetalhes from '@pages/Departamentos/detalhes'
-import DepartamentoAdicionarColaboradores from '@pages/Departamentos/adicionar-colaboradores'
-import DepartamentoColaboradores from '@pages/Departamentos/colaboradores-sem-departamento'
+import Departamentos from '@pages/Estrutura'
+import DepartamentoLista from '@pages/Estrutura/lista'
+import DepartamentoDetalhes from '@pages/Estrutura/departamento/detalhes'
+import DepartamentoAdicionarColaboradores from '@pages/Estrutura/adicionar-colaboradores'
+import DepartamentoColaboradores from '@pages/Estrutura/colaboradores-sem-departamento'
 import LinhasTransporte from '@pages/LinhasTransporte'
 import ListaLinhasTransporte from '@pages/LinhasTransporte/lista'
 import PremiacaoEditarValor from '@pages/Pedidos/editar-valor'
@@ -46,8 +46,8 @@ import BeneficioEditarValor from '@pages/Beneficios/editar-valor'
 import ExtratoCommon from '@pages/Extrato'
 import Extrato from '@pages/Extrato/extrato'
 import ExtratoAdicionarSaldo from '@pages/Extrato/adicionar-saldo'
-import DepartamentoConfiguracaoBeneficios from '@pages/Departamentos/configuracao-beneficios'
-import DepartamentoListaColaboradores from '@pages/Departamentos/lista-colaboradores'
+import EstruturaConfiguracaoBeneficios from '@pages/Estrutura/configuracao-beneficios'
+import EstruturaListaColaboradores from '@pages/Estrutura/lista-colaboradores'
 import ColaboradorEnvioCartao from '@pages/Colaboradores/Registro/envio-cartao'
 import ColaboradorDadosIniciais from '@pages/Colaboradores/Registro/dados-iniciais'
 import ColaboradorBandeiraCartao from '@pages/Colaboradores/Registro/bandeira-cartao'
@@ -78,10 +78,10 @@ import Admissoes from '@pages/Admissoes'
 import CandidatoRegistro from '@pages/Admissoes/Registro'
 import ValidarAdmissoes from '@pages/Admissoes/validar'
 import DetalhesAdmissao from '@pages/Admissoes/detalhes'
-import FiliaisLista from '@pages/Departamentos/filiais'
-import CargosLista from '@pages/Departamentos/cargos'
-import SecoesLista from '@pages/Departamentos/secoes'
-import HorariosLista from './pages/Departamentos/horarios'
+import FiliaisLista from '@pages/Estrutura/filiais'
+import CargosLista from '@pages/Estrutura/cargos'
+import SecoesLista from '@pages/Estrutura/secoes'
+import HorariosLista from './pages/Estrutura/horarios'
 import Contratos from '@pages/Contratos'
 import ContratosListagem from '@pages/Contratos/lista'
 import ColaboradorDependentes from '@pages/Colaboradores/Detalhes/dependentes'
@@ -115,8 +115,8 @@ import DetalhesTarefas from '@pages/Tarefas/detalhes'
 import MeusCiclos from '@pages/Ciclos/meusCiclos'
 import DetalhesMeusCiclos from '@pages/Ciclos/detalhesMeusCiclos'
 import DetalhesContratos from '@pages/Contratos/detalhes'
-import CentrosCustoLista from '@pages/Departamentos/centros_custo'
-import SindicatosLista from '@pages/Departamentos/sindicatos'
+import CentrosCustoLista from '@pages/Estrutura/centros_custo'
+import SindicatosLista from '@pages/Estrutura/sindicatos'
 import Marketplace from '@pages/Marketplace'
 import MarketplaceLista from '@pages/Marketplace/grid'
 import PedidoAdicionarDetalhes from '@pages/Pedidos/adicionar-detalhes'
@@ -132,8 +132,15 @@ import DetalhesElegibilidade from '@pages/Elegibilidade/detalhes'
 import Operadoras from '@pages/Operadoras'
 import OperadorasListagem from '@pages/Operadoras/lista'
 import DetalhesOperadoras from '@pages/Operadoras/detalhes'
-import FuncoesLista from '@pages/Departamentos/funcoes'
+import FuncoesLista from '@pages/Estrutura/funcoes'
 import ColaboradorDependentesDetalhes from '@pages/Colaboradores/Detalhes/Dependentes/detalhes'
+import FilialDetalhes from '@pages/Estrutura/filial/detalhes'
+import CargoDetalhes from '@pages/Estrutura/cargo/detalhes'
+import FuncaoDetalhes from '@pages/Estrutura/funcao/detalhes'
+import SecaoDetalhes from '@pages/Estrutura/secao/detalhes'
+import HorarioDetalhes from '@pages/Estrutura/horario/detalhes'
+import CentrosCustoDetalhes from '@pages/Estrutura/centro_custo/detalhes'
+import SindicatoDetalhes from '@pages/Estrutura/sindicato/detalhes'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -236,8 +243,36 @@ function AppRouter() {
                   <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
                   <Route path="adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
                   <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} >
-                      <Route index element={<DepartamentoListaColaboradores />} />
-                      <Route path="configuracao-beneficios" element={<DepartamentoConfiguracaoBeneficios />} />
+                      <Route index element={<EstruturaListaColaboradores />} />
+                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Departamento" />} />
+                  </Route>
+                  <Route path="filial/detalhes/:id" element={<FilialDetalhes />} >
+                      <Route index element={<EstruturaListaColaboradores />} />
+                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Filial" />} />
+                  </Route>
+                  <Route path="cargo/detalhes/:id" element={<CargoDetalhes />} >
+                      <Route index element={<EstruturaListaColaboradores />} />
+                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Cargo" />} />
+                  </Route>
+                  <Route path="funcao/detalhes/:id" element={<FuncaoDetalhes />} >
+                      <Route index element={<EstruturaListaColaboradores />} />
+                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Funcao" />} />
+                  </Route>
+                  <Route path="centro_custo/detalhes/:id" element={<CentrosCustoDetalhes />} >
+                      <Route index element={<EstruturaListaColaboradores />} />
+                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="CentroCusto" />} />
+                  </Route>
+                  <Route path="secao/detalhes/:id" element={<SecaoDetalhes />} >
+                      <Route index element={<EstruturaListaColaboradores />} />
+                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Secao" />} />
+                  </Route>
+                  <Route path="horario/detalhes/:id" element={<HorarioDetalhes />} >
+                      <Route index element={<EstruturaListaColaboradores />} />
+                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Horario" />} />
+                  </Route>
+                  <Route path="sindicato/detalhes/:id" element={<SindicatoDetalhes />} >
+                      <Route index element={<EstruturaListaColaboradores />} />
+                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Sindicato" />} />
                   </Route>
                 </Route>
               

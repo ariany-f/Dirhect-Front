@@ -1,4 +1,4 @@
-import styles from './Departamento.module.css'
+import styles from '@pages/Estrutura/Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import DataTableDepartamentos from '@components/DataTableDepartamentos'

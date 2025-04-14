@@ -1,16 +1,19 @@
-import styles from './Departamento.module.css'
+import styles from '@pages/Estrutura/Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import http from '@http'
-import DataTableHorarios from '@components/DataTableHorarios'
+import DataTableDepartamentos from '@components/DataTableDepartamentos'
+import departments from '@json/departments.json'
+import CardText from '@components/CardText'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
-import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
+import ModalAdicionarFilial from '@components/ModalAdicionarFilial'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
+import DataTableFiliais from '@components/DataTableFiliais'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -38,32 +41,53 @@ const ContainerSemRegistro = styled.div`
 `
 
 
-function HorariosLista() {
+function FiliaisLista() {
 
     const [loading, setLoading] = useState(false)
-    const [horarios, setHorarios] = useState(null)
+    const [filiais, setFiliais] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
-    const navegar = useNavigate()
-    
 
     useEffect(() => {
-        if(!horarios) {
-            
-            setLoading(true)
-            http.get('horario/?format=json')
-                .then(response => {
-                    setHorarios(response)
-                    
-                })
-                .catch(erro => {
-                    
-                })
-                .finally(function() {
-                    setLoading(false)
-                })
-        }    
-    }, [horarios])
+        setLoading(true)
+        http.get('filial/?format=json')
+            .then(response => {
+                setFiliais(response)
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                setLoading(false)
+            })
+    }, [modalOpened])
+
+    const removerMascaraCNPJ = (cnpj) => {
+        return cnpj.replace(/[^\d]/g, ''); // Remove tudo que não for número
+    }
+    
+    const adicionarFilial = (nome, cnpj) => {
+
+        setLoading(true)
+       
+        const data = {};
+        data.nome = nome;
+        data.cnpj = removerMascaraCNPJ(cnpj);
+
+        http.post('filial/', data)
+            .then(response => {
+                if(response.id)
+                {
+                    setModalOpened(false)
+                }
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                setLoading(false)
+            })
+    }
 
     return (
         <>
@@ -73,7 +97,7 @@ function HorariosLista() {
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
                     <Link to="/estrutura">
-                        <Botao estilo={''} size="small" tab>Filiais</Botao>
+                        <Botao estilo={'black'} size="small" tab>Filiais</Botao>
                     </Link>
                     <Link to="/estrutura/departamentos">
                         <Botao estilo={''} size="small" tab>Departamentos</Botao>
@@ -85,33 +109,37 @@ function HorariosLista() {
                         <Botao estilo={''} size="small" tab>Centros de Custo</Botao>
                     </Link>
                     <Link to="/estrutura/cargos">
-                        <Botao estilo={''} size="small" tab>Cargos e Funções</Botao>
+                        <Botao estilo={''} size="small" tab>Cargos</Botao>
+                    </Link>
+                    <Link to="/estrutura/funcoes">
+                        <Botao estilo={''} size="small" tab>Funções</Botao>
                     </Link>
                     <Link to="/estrutura/sindicatos">
                         <Botao estilo={''} size="small" tab>Sindicatos</Botao>
                     </Link>
                     <Link to="/estrutura/horarios">
-                        <Botao estilo={'black'} size="small" tab>Horários</Botao>
+                        <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um horário</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar uma filial</Botao>
             </BotaoGrupo>
+            
             {
-                horarios && horarios.length > 0 ?
-                    <DataTableHorarios horarios={horarios} />
+                filiais && filiais.length > 0 ?
+                <DataTableFiliais filiais={filiais} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
-                        <h6>Não há horarios registrados</h6>
-                        <p>Aqui você verá todos os horarios registrados.</p>
+                        <h6>Não há filiais registradas</h6>
+                        <p>Aqui você verá todas as filiais registradas.</p>
                     </section>
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarFilial aoSalvar={adicionarFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
 
-export default HorariosLista
+export default FiliaisLista

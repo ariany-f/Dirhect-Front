@@ -49,7 +49,8 @@ function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, 
 
     function verDetalhes(value) {
         setSelectedSindicato(value); // Atualiza o estado
-        setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
+        navegar(`/estrutura/sindicato/detalhes/${value.id}`)
+        // setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
     }
 
     function formataCNPJ(cnpj) {

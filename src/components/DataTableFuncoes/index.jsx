@@ -1,4 +1,4 @@
-import styles from '@pages/Departamentos/Departamento.module.css'
+import styles from '@pages/Estrutura/Departamento.module.css'
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import { FaBan } from 'react-icons/fa'

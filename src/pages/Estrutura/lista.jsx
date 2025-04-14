@@ -1,16 +1,17 @@
-import styles from './Departamento.module.css'
+import styles from '@pages/Estrutura/Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
-import http from '@http'
+import DataTableDepartamentos from '@components/DataTableDepartamentos'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
-import ModalAdicionarSindicato from '@components/ModalAdicionarSindicato'
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
+import { Link, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
-import DataTableSindicatos from '@components/DataTableSindicatos'
+import { useDepartamentoContext } from '@contexts/Departamento'
+import http from '../../http'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -37,40 +38,33 @@ const ContainerSemRegistro = styled.div`
     }
 `
 
-
-function SindicatosLista() {
+function DepartamentoLista() {
 
     const [loading, setLoading] = useState(false)
-    const [sindicatos, setSindicatos] = useState(null)
+    const [departamentos, setDepartamentos] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
+    const location = useLocation()
     const toast = useRef(null)
+    const navegar = useNavigate()
+    
+    const {
+        departamento,
+        setDepartamento,
+        setNome,
+        setDescription
+    } = useDepartamentoContext()
 
-    useEffect(() => {
-         
-        if(!sindicatos) {
-            
-            setLoading(true)
-            http.get('sindicato/?format=json')
-                .then(response => {
-                    setSindicatos(response)
-                    setLoading(false)
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
-        }    
-    }, [sindicatos])
 
-    const adicionarSindicato = (cnpj, codigo, descricao) => {
+    const adicionarDepartamento = (nome) => {
 
         setLoading(true)
-       
+        setDepartamento()
+        setDescription('')
+        setNome(nome)
         const data = {};
-        data.cnpj = cnpj;
-        data.codigo = codigo;
-        data.descricao = descricao;
+        data.nome = nome;
 
-        http.post('sindicato/', data)
+        http.post('departamento/', data)
             .then(response => {
                 if(response.id)
                 {
@@ -85,6 +79,20 @@ function SindicatosLista() {
             })
     }
 
+    useEffect(() => {
+        setLoading(true)
+        http.get('departamento/?format=json')
+            .then(response => {
+                setDepartamentos(response)
+            })
+            .catch(erro => {
+                
+            })
+            .finally(function() {
+                setLoading(false)
+            })
+    }, [modalOpened])
+
     return (
         <>
         <ConteudoFrame>
@@ -96,7 +104,7 @@ function SindicatosLista() {
                         <Botao estilo={''} size="small" tab>Filiais</Botao>
                     </Link>
                     <Link to="/estrutura/departamentos">
-                        <Botao estilo={''} size="small" tab>Departamentos</Botao>
+                        <Botao estilo={'black'} size="small" tab>Departamentos</Botao>
                     </Link>
                     <Link to="/estrutura/secoes">
                         <Botao estilo={''} size="small" tab>Seções</Botao>
@@ -111,31 +119,30 @@ function SindicatosLista() {
                         <Botao estilo={''} size="small" tab>Funções</Botao>
                     </Link>
                     <Link to="/estrutura/sindicatos">
-                        <Botao estilo={'black'} size="small" tab>Sindicatos</Botao>
+                        <Botao estilo={''} size="small" tab>Sindicatos</Botao>
                     </Link>
                     <Link to="/estrutura/horarios">
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um sindicato</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
             </BotaoGrupo>
-            
             {
-                sindicatos && sindicatos.length > 0 ?
-                <DataTableSindicatos sindicatos={sindicatos} />
+                departamentos && departamentos.length > 0 ?
+                    <DataTableDepartamentos departamentos={departamentos} />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
-                        <h6>Não há sindicatos registradas</h6>
-                        <p>Aqui você verá todas as sindicatos registradas.</p>
+                        <h6>Não há departamentos registrados</h6>
+                        <p>Aqui você verá todos os departamentos registrados.</p>
                     </section>
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarSindicato aoSalvar={adicionarSindicato} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarDepartamento aoSalvar={adicionarDepartamento} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
 
-export default SindicatosLista
+export default DepartamentoLista

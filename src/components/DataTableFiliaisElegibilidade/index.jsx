@@ -49,7 +49,8 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
 
     function verDetalhes(value) {
         setSelectedFilial(value); // Atualiza o estado
-        setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
+        navegar(`/estrutura/filial/detalhes/${value.id}`);
+        // setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
     }
 
     function formataCNPJ(cnpj) {
