@@ -1,7 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalServices, MdSecurity } from 'react-icons/md'
+import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalServices, MdSecurity, MdSettings } from 'react-icons/md'
 import './DataTable.css'
 import Titulo from '@components/Titulo';
 import BadgeGeral from '@components/BadgeGeral';
@@ -18,13 +18,15 @@ import { IoEllipsisVertical, IoFastFoodSharp } from 'react-icons/io5';
 import { BiBookReader, BiShield } from 'react-icons/bi';
 import { RiBusFill, RiComputerLine, RiEBike2Fill, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
-import { FaCar, FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
+import { FaCar, FaCoins, FaPen, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
 import { CiMoneyBill } from 'react-icons/ci';
 import styled from 'styled-components';
 import { Toast } from 'primereact/toast';
 import { GrAddCircle } from 'react-icons/gr';
 import { MdDirectionsBike } from "react-icons/md";
+import { Tooltip } from 'primereact/tooltip';
+import ModalAdicionarElegibilidadeItemContrato from '../ModalAdicionarElegibilidadeItemContrato';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -225,6 +227,7 @@ function DataTableContratosDetalhes({ beneficios }) {
     const[selectedBeneficio, setSelectedBeneficio] = useState(0)
     const[selectedItemBeneficio, setSelectedItemBeneficio] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
+    const [modalElegibilidadeOpened, setModalElegibilidadeOpened] = useState(false)
     const [sendData, setSendData] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [expandedRows, setExpandedRows] = useState(null);
@@ -271,6 +274,25 @@ function DataTableContratosDetalhes({ beneficios }) {
     const representativeDescontoTemplate = (rowData) => {
         return (
             Real.format(rowData.valor_desconto)
+        )
+    }
+
+    
+    const representativeOptionsTemplate = (rowData) => {
+        return (
+            <div style={{display: 'flex', gap: '20px'}}>
+                <Tooltip target=".settings" mouseTrack mouseTrackRight={10} />
+                <MdSettings className="settings" data-pr-tooltip="Configurar Elegibilidade" size={16} onClick={() => {
+                    setSelectedItemBeneficio(rowData.id)
+                    setModalElegibilidadeOpened(true)
+                }} />
+                <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
+                <FaPen className="edit" data-pr-tooltip="Editar Item" size={16} onClick={() => {
+                    setSelectedItemBeneficio(rowData.id)
+                    setSendData(rowData)
+                    setModalOpened(true)
+                }} />
+            </div>
         )
     }
 
@@ -390,7 +412,7 @@ function DataTableContratosDetalhes({ beneficios }) {
                             selection={selectedItemBeneficio}
                             selectionMode="single"
                             emptyMessage="Não há configurações cadastradas" 
-                            onSelectionChange={(e) => {setSelectedItemBeneficio(e.value.id); setSendData(e.value); setModalOpened(true)}} 
+                            // onSelectionChange={(e) => {setSelectedItemBeneficio(e.value.id); setSendData(e.value); setModalOpened(true)}} 
                             value={selectedItems} 
                         >
                             <Column body={representativeTemplate} field="descricao" header="Descrição" style={{ width: '25%' }} />
@@ -398,11 +420,13 @@ function DataTableContratosDetalhes({ beneficios }) {
                             <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '12%' }} />
                             <Column body={representativeEmpresaTemplate} field="valor_empresa" header="Empresa" style={{ width: '15%' }} />
                             <Column body={representativeDescontoTemplate} field="valor_desconto" header="Desconto" style={{ width: '15%' }} />
+                            <Column body={representativeOptionsTemplate} header="" style={{ width: '15%' }} />
                         </DataTable>
                     </Col7>
                 : null
                 }
             </Col12>
+            <ModalAdicionarElegibilidadeItemContrato aoSalvar={() => true} aoFechar={() => setModalElegibilidadeOpened(false)} opened={modalElegibilidadeOpened} />
             <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} nomeBeneficio={selectedBeneficio?.dados_beneficio?.descricao} dadoAntigo={sendData} />
         </>
     )

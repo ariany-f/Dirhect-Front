@@ -412,7 +412,7 @@ function ModalConfigurarBeneficios({ opened = false, aoClicar, aoFechar, aoSuces
 
      // Template para os itens de contrato (com imagem)
      const beneficioOptionTemplate = (option) => {
-         if(option)
+        if(option)
         {
             const iconeEncontrado = icones.find(icone => icone.name === option.beneficio?.icone);
             return (

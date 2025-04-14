@@ -336,6 +336,17 @@ template {
 {
   background-color: transparent;
 }
+
+.p-multiselect-select-all .p-checkbox {
+  margin-right: 10px;
+}
+.p-multiselect-filter-container .p-multiselect-filter-icon {
+ display: none!important;
+}
+
+.p-multiselect-items .p-multiselect-checkbox {
+  margin-right: 10px;
+}
 `
 
 

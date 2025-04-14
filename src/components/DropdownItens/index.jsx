@@ -81,6 +81,7 @@ function DropdownItens({
     placeholder, 
     name, 
     label, 
+    filter = false,
     camposVazios = [],
     optionTemplate // Nova prop para o template personalizado
 }) {
@@ -122,16 +123,31 @@ function DropdownItens({
                 {(label) ?
                 <label htmlFor={name} className={styles.label}>{label}</label>
                 : ''}
-                <Select 
-                    id={name}
-                    placeholder={placeholder} 
-                    options={options} 
-                    value={valor} 
-                    optionLabel="name" 
-                    onChange={changeValor}
-                    itemTemplate={optionTemplate} // Template para os itens da lista
-                    valueTemplate={optionTemplate} // Template para o valor selecionado
-                />
+                {
+                    filter ?  
+                        <Select 
+                            filter
+                            id={name}
+                            placeholder={placeholder} 
+                            options={options} 
+                            value={valor} 
+                            optionLabel="name" 
+                            onChange={changeValor}
+                            itemTemplate={optionTemplate} // Template para os itens da lista
+                            valueTemplate={optionTemplate} // Template para o valor selecionado
+                        />
+                    :
+                    <Select 
+                        id={name}
+                        placeholder={placeholder} 
+                        options={options} 
+                        value={valor} 
+                        optionLabel="name" 
+                        onChange={changeValor}
+                        itemTemplate={optionTemplate} // Template para os itens da lista
+                        valueTemplate={optionTemplate} // Template para o valor selecionado
+                    />
+                }
             </div>
             {classeCampoVazio.includes(name) ?
                 <p className={styles.erroMessage}>Você deve preencher esse campo</p>
