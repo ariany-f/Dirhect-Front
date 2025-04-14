@@ -113,7 +113,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
      const [tiposDesconto, setTiposDesconto] = useState([
         {code: 'D', name: 'Valor Diário'},
         {code: 'C', name: '% sobre o valor da compra'},
-        {code: 'S', name: 'Percentual do Valor do Salário'},
+        {code: 'S', name: '% do Valor do Salário'},
         {code: 'F', name: 'Valor Fixo'}
      ]);
     

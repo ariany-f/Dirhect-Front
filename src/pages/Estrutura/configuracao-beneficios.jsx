@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom'
 import Frame from "@components/Frame"
 import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
+import FrameVertical from "@components/FrameVertical"
+import CustomImage from "@components/CustomImage"
 import Texto from "@components/Texto"
 import BotaoSemBorda from "@components/BotaoSemBorda"
 import MainContainer from "@components/MainContainer"
@@ -290,6 +292,26 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
         return iconeEncontrado ? iconeEncontrado.icone : null;
     }
 
+    const getTipoCalculo = (tipo) => {
+        const tipoMap = {
+            'F': 'Valor Fixo',
+            'M': 'Valor Mensal',
+            'D': 'Valor Diário',
+            'T': 'Tabela Interna'
+        }
+        return tipoMap[tipo] || tipo;
+    }
+    
+    const getTipoDesconto = (tipo) => {
+        const tipoMap = {
+            'F': 'Valor Fixo',
+            'C': '% sobre o valor da compra',
+            'S': '% do Valor do Salário',
+            'D': 'Valor Diário'
+        }
+        return tipoMap[tipo] || tipo;
+    }
+
     return (
         <Frame>
             {configuracoes && configuracoes.length > 0 ? (
@@ -297,6 +319,7 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                     {configuracoes.map((config) => {
                         const beneficio = config.item_beneficio;
                         const dadosBeneficio = beneficio.beneficio.dados_beneficio;
+                        const ben = beneficio.beneficio;
                         const icone = getIcone(dadosBeneficio.descricao);
                         
                         return (
@@ -304,7 +327,10 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                                 <Beneficio>
                                     <Col12Spaced>
                                         <Col6>
-                                            {icone && <Texto weight={600}>{icone}  {dadosBeneficio.descricao}</Texto>}
+                                            <FrameVertical gap="8px" align="center">
+                                                <CustomImage src={ben.image_operadora} alt={ben.nome_operadora} width={'40px'} height={25} size={80} title={ben.nome_operadora} />
+                                                <Texto weight={600} size="12px">{ben.nome_operadora}</Texto>
+                                            </FrameVertical>
                                         </Col6>
                                         <Col6>
                                             <BotaoSemBorda aoClicar={() => {}}>
@@ -314,22 +340,31 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                                     </Col12Spaced>
                                     
                                     <div style={{ marginTop: '16px' }}>
-                                        <Texto>Plano: {beneficio.descricao}</Texto>
-                                        
+                                        {icone && <Texto weight={600}>{icone}  {dadosBeneficio.descricao}</Texto>}
+                                        <br />
+                                        <Texto size={'12px'} weight={600}>Descrição: </Texto>
+                                        <Texto size={'12px'} >{beneficio.descricao}</Texto>
+                                        <Texto size={'12px'} weight={600}>Tipo Desconto:</Texto>
+                                        <Texto size={'12px'} >{getTipoDesconto(beneficio.tipo_desconto)}</Texto>
                                         <Col12Spaced style={{ marginTop: '12px' }}>
                                             <Col6>
                                                 <Badge>
-                                                    {beneficio.tipo_calculo === 'F' ? 'Fixo' : 'Variável'}
+                                                    {getTipoCalculo(beneficio.tipo_calculo)}
                                                 </Badge>
-                                                <Texto weight={600}>
+                                                <Texto color="green" weight={600}>
                                                     {Real.format(beneficio.valor)}
                                                 </Texto>
                                             </Col6>
-                                            
                                             <Col6>
-                                                <Badge>Desconto</Badge>
-                                                <Texto weight={600}>
+                                                <Badge>Colaborador</Badge>
+                                                <Texto color="red" weight={600}>
                                                     {Real.format(beneficio.valor_desconto)}
+                                                </Texto>
+                                            </Col6>
+                                            <Col6>
+                                                <Badge>Empresa</Badge>
+                                                <Texto color="red" weight={600}>
+                                                    {Real.format(beneficio.valor_empresa)}
                                                 </Texto>
                                             </Col6>
                                         </Col12Spaced>
