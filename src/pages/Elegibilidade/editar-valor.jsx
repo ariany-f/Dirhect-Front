@@ -403,8 +403,8 @@ function ElegibilidadeEditarValor() {
                         </Titulo>
                     </BotaoGrupo>
                     <br />
- {/* Seção de seleção de benefícios */}
- <Col12>
+                    {/* Seção de seleção de benefícios */}
+                    <Col12>
                         <Col6>
                             <DropdownItens 
                                 valor={contratoSelecionado} 

@@ -111,9 +111,7 @@ function CentroCustoDetalhes() {
                 </BotaoGrupo>
                 
                 {location.pathname == `/estrutura/centro_custo/detalhes/${id}` &&
-                    <BotaoGrupo>
-                        <Botao aoClicar={() => navegar(`/estrutura/${id}/adicionar-colaboradores`)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar colaboradores</Botao>
-                    </BotaoGrupo>
+                  <></>
                 }
                 {location.pathname == `/estrutura/centro_custo/detalhes/${id}/configuracao-beneficios` &&
                     <BotaoGrupo align="center">

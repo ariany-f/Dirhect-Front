@@ -7,6 +7,7 @@
 .icon * {
     box-sizing: initial;
     stroke: var(--white);
+    color: var(--black);
 }
 .link {
     text-decoration: none;

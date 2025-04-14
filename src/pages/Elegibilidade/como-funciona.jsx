@@ -4,7 +4,7 @@ import SubTitulo from "@components/SubTitulo"
 import CardText from "@components/CardText"
 import Frame from "@components/Frame"
 import styled from "styled-components"
-import styles from './SaldoLivre.module.css'
+import styles from './Elegibilidade.module.css'
 import { LiaBirthdayCakeSolid } from "react-icons/lia"
 import { FaChartLine, FaUserPlus } from "react-icons/fa";
 import { TbChristmasTree } from "react-icons/tb";

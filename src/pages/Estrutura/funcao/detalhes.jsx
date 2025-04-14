@@ -111,9 +111,7 @@ function FuncaoDetalhes() {
                 </BotaoGrupo>
                 
                 {location.pathname == `/estrutura/funcao/detalhes/${id}` &&
-                    <BotaoGrupo>
-                        <Botao aoClicar={() => navegar(`/estrutura/${id}/adicionar-colaboradores`)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar colaboradores</Botao>
-                    </BotaoGrupo>
+                    <></>
                 }
                 {location.pathname == `/estrutura/funcao/detalhes/${id}/configuracao-beneficios` &&
                     <BotaoGrupo align="center">

@@ -1,13 +1,9 @@
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
-import Titulo from '@components/Titulo'
-import BotaoVoltar from '@components/BotaoVoltar'
-import styles from './SaldoLivre.module.css'
+import styles from './Elegibilidade.module.css'
 import { GrAddCircle } from 'react-icons/gr'
 import QuestionCard from '@components/QuestionCard'
-import Texto from '@components/Texto'
 import http from '@http'
-import CheckboxContainer from "@components/CheckboxContainer"
 import Container from '@components/Container'
 import { ConfirmDialog } from 'primereact/confirmdialog'
 import DataTableFiliaisElegibilidade from '@components/DataTableFiliaisElegibilidade'
@@ -26,6 +22,7 @@ import { AiFillQuestionCircle } from 'react-icons/ai'
 import { Toast } from 'primereact/toast'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { useState, useEffect, useRef } from 'react'
+import { BiChevronRight } from 'react-icons/bi'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -132,9 +129,23 @@ const ElegibilidadeLista = () => {
                 <Container gap="32px">
                     <TabView>
                         <TabPanel header="Filiais">
+                            <BotaoGrupo align="end">
+                                <Link to="/elegibilidade/selecao-filiais">
+                                    <Botao estilo="neutro" size="small">
+                                        Configuração de filiais em lote<BiChevronRight size={20} className={styles.icon} />
+                                    </Botao>
+                                </Link>
+                            </BotaoGrupo>
                             <DataTableFiliaisElegibilidade filiais={filiais} showSearch={false} />
                         </TabPanel>
                         <TabPanel header="Departamentos">
+                        <BotaoGrupo align="end">
+                                <Link to="/elegibilidade/selecao-departamentos">
+                                    <Botao estilo="neutro" size="small">
+                                        Configuração de departamentos em lote<BiChevronRight size={20} className={styles.icon} />
+                                    </Botao>
+                                </Link>
+                            </BotaoGrupo>
                             <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false} />
                         </TabPanel>
                         <TabPanel header="Seções">

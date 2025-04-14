@@ -111,9 +111,7 @@ function HorarioDetalhes() {
                 </BotaoGrupo>
                 
                 {location.pathname == `/estrutura/horario/detalhes/${id}` &&
-                    <BotaoGrupo>
-                        <Botao aoClicar={() => navegar(`/estrutura/${id}/adicionar-colaboradores`)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar colaboradores</Botao>
-                    </BotaoGrupo>
+                    <></>
                 }
                 {location.pathname == `/estrutura/horario/detalhes/${id}/configuracao-beneficios` &&
                     <BotaoGrupo align="center">
