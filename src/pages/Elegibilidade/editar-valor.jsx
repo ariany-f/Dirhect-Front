@@ -203,6 +203,27 @@ const Col6 = styled.div`
     flex: 1 1 calc(50% - 8px);
 `;
 
+
+const ContainerButton = styled.div`
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    justify-content: space-between;
+    & button {
+        width: initial;
+    }
+`
+
+const LadoALado = styled.div`
+    display: flex;
+    gap: 24px;
+    & span {
+        display: flex;
+        align-items: center;
+    }
+`
+
+
 function ElegibilidadeEditarValor() {
 
     const navegar = useNavigate()
@@ -426,36 +447,13 @@ function ElegibilidadeEditarValor() {
                             />
                         </Col6>
                     </Col12>
-
-                    {/* Botão para salvar (opcional) */}
-                    <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-                        <Botao 
-                            estilo="vermilion" 
-                            size="medium" 
-                            filled
-                            onClick={() => {
-                                // Lógica para salvar os itens selecionados
-                                if (itemContratoSelecionado) {
-                                    toast.current.show({
-                                        severity: 'success',
-                                        summary: 'Sucesso',
-                                        detail: 'Benefício vinculado com sucesso',
-                                        life: 3000
-                                    });
-                                } else {
-                                    toast.current.show({
-                                        severity: 'error',
-                                        summary: 'Erro',
-                                        detail: 'Selecione um item de contrato',
-                                        life: 3000
-                                    });
-                                }
-                            }}
-                        >
-                            Vincular Benefício
-                        </Botao>
-                    </div>
-                    {/* <DataTablePremiacaoEditarValor aoEnviar={submeterSaldoLivre} tipo={tipo} recarga={tipo === 'filiais' ? recarga.filiais : recarga.departamentos} /> */}
+                    <ContainerButton>
+                        <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                        <LadoALado>
+                            <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{elegibilidade.filiais ? (elegibilidade.filiais.length-1) : 0}</Texto></span>
+                            <Botao aoClicar={() => true} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                        </LadoALado>
+                    </ContainerButton>
                 </>
             : <Skeleton variant="rectangular" width={300} height={60} />
             }
