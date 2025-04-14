@@ -141,7 +141,7 @@ function ElegibilidadeSelecionarFiliais() {
                         dataKey="id"
                         tableStyle={{ minWidth: '68vw' }}
                     >
-                        <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+                        <Column selectionMode="multiple" header="Todas&nbsp;" headerStyle={{ width: '3rem' }}></Column>
                         <Column field="nome" header="Nome" sortable></Column>
                         <Column 
                             body={representativeCNPJTemplate} 
