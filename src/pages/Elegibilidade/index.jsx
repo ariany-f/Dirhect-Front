@@ -6,7 +6,7 @@ import { GrAddCircle } from 'react-icons/gr'
 import styled from "styled-components"
 import http from '@http'
 import { Link, Outlet, useLocation } from "react-router-dom"
-import { RecargaSaldoLivreProvider } from "@contexts/RecargaSaldoLivre"
+import { ConfiguracaoElegibilidadeProvider } from "@contexts/ConfiguracaoElegibilidade"
 import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 // import elegibilidade from '@json/elegibilidade.json'
@@ -33,11 +33,11 @@ const Elegibilidade = () => {
 
     return (
         
-        <RecargaSaldoLivreProvider>
+        <ConfiguracaoElegibilidadeProvider>
             <ConteudoFrame>
                 <Outlet context={elegibilidade} />
             </ConteudoFrame>
-        </RecargaSaldoLivreProvider>
+        </ConfiguracaoElegibilidadeProvider>
     );
 };
 

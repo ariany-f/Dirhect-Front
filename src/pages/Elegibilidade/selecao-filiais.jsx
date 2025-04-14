@@ -14,7 +14,7 @@ import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components'
-import { useRecargaSaldoLivreContext } from '@contexts/RecargaSaldoLivre'
+import { useConfiguracaoElegibilidadeContext } from '@contexts/ConfiguracaoElegibilidade'
 
 const ContainerButton = styled.div`
     display: flex;
@@ -38,9 +38,9 @@ const LadoALado = styled.div`
 function ElegibilidadeSelecionarFiliais() {
 
     const {
-        recarga,
+        elegibilidade,
         setFiliais
-    } = useRecargaSaldoLivreContext()
+    } = useConfiguracaoElegibilidadeContext()
 
     const [modalOpened, setModalOpened] = useState(false)
     const navegar = useNavigate()

@@ -1,22 +1,16 @@
-import { useRecargaSaldoLivreContext } from "@contexts/RecargaSaldoLivre"
-import http from '@http'
+import { useConfiguracaoElegibilidadeContext } from "@contexts/ConfiguracaoElegibilidade"
 import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Botao from "@components/Botao"
 import BotaoVoltar from "@components/BotaoVoltar"
 import Frame from "@components/Frame"
 import Texto from "@components/Texto"
-import CampoTexto from "@components/CampoTexto"
 import Titulo from "@components/Titulo"
 import './SelecionarFiliais.css'
 import { Toast } from 'primereact/toast'
 import styled from 'styled-components'
-import { Stepper } from 'primereact/stepper';
-import { StepperPanel } from 'primereact/stepperpanel';
-import { Button } from 'primereact/button';
 import 'primereact/resources/themes/lara-light-cyan/theme.css';
 import ContainerHorizontal from '@components/ContainerHorizontal'
-import BotaoSemBorda from '@components/BotaoSemBorda'
 import { FaPencilAlt, FaUser } from 'react-icons/fa'
 import { HiArrowLeft, HiArrowRight, HiUserGroup } from 'react-icons/hi'
 
@@ -82,9 +76,8 @@ function ElegibilidadeConfigurar() {
     const stepperRef = useRef(null);
     
     const {
-        recarga,
-        setNome
-    } = useRecargaSaldoLivreContext()
+        elegibilidade
+    } = useConfiguracaoElegibilidadeContext()
     
     return (
         <>
