@@ -37,6 +37,12 @@ const Col12 = styled.div`
     justify-content: space-between;
 `;
 
+const Col4 = styled.div`
+    width: ${(props) => (props.expanded ? "calc(33% - 6px)" : "100%")};
+    transition: all 0.3s ease;
+    padding: 0px;
+`;
+
 const Col5 = styled.div`
     width: ${(props) => (props.expanded ? "calc(44% - 6px)" : "100%")};
     transition: all 0.3s ease;
@@ -44,7 +50,7 @@ const Col5 = styled.div`
 `;
 
 const Col7 = styled.div`
-    width: ${(props) => (props.expanded ? "calc(56% - 6px)" : "100%")};
+    width: ${(props) => (props.expanded ? "calc(66% - 6px)" : "100%")};
     transition: all 0.3s ease;
     padding: 0px;
 `;
@@ -358,7 +364,7 @@ function DataTableContratosDetalhes({ beneficios }) {
             <Toast ref={toast} />
             <Col12>
                 {/* <ContextMenu model={menuModel(selectedBeneficio)} ref={cm} onHide={() => setSelectedBeneficio(null)} /> */}
-                <Col5 expanded={selectedBeneficio}>
+                <Col4 expanded={selectedBeneficio}>
                     <DataTable 
                         value={beneficios} 
                         filters={filters} 
@@ -370,16 +376,15 @@ function DataTableContratosDetalhes({ beneficios }) {
                         onSelectionChange={onRowSelect}
                         selectionMode="single"
                     >
-                        <Column body={representativeBeneficiosTemplate} field="dados_beneficio.descricao" header="Benefício" style={{ width: '45%' }}></Column>
-                        <Column field="observacao" header="Observação" style={{ width: '35%' }}></Column>
+                        <Column body={representativeBeneficiosTemplate} field="dados_beneficio.descricao" header="Benefício" style={{ width: '95%' }}></Column>
                     </DataTable>
-                </Col5>
+                </Col4>
 
                 {selectedBeneficio && selectedItems ? 
                     <Col7 expanded={selectedBeneficio}>
                         <BotaoGrupo align="space-between">
                             <h5>{selectedBeneficio.dados_beneficio.descricao}</h5>
-                            <Botao aoClicar={() => {setSendData({});setSelectedItemBeneficio(null);setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Valores</Botao>
+                            <Botao aoClicar={() => {setSendData({});setSelectedItemBeneficio(null);setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Itens</Botao>
                         </BotaoGrupo>
                         <DataTable  
                             selection={selectedItemBeneficio}

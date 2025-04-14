@@ -335,17 +335,10 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                             <Col6 key={config.id}>
                                 <Beneficio>
                                     <Col12Spaced>
-                                        <Col6>
-                                            <FrameVertical gap="8px" align="center">
-                                                <CustomImage src={ben.image_operadora} alt={ben.nome_operadora} width={'40px'} height={25} size={80} title={ben.nome_operadora} />
-                                                <Texto weight={600} size="12px">{ben.nome_operadora}</Texto>
-                                            </FrameVertical>
-                                        </Col6>
-                                        <Col6>
-                                            <BotaoSemBorda aoClicar={() => {}}>
-                                                <FaPen /> Editar
-                                            </BotaoSemBorda>
-                                        </Col6>
+                                        <FrameVertical gap="8px" align="center">
+                                            <CustomImage src={ben.image_operadora} alt={ben.nome_operadora} width={'40px'} height={25} size={80} title={ben.nome_operadora} />
+                                            <Texto weight={600} size="12px">{ben.nome_operadora}</Texto>
+                                        </FrameVertical>
                                     </Col12Spaced>
                                     
                                     <div style={{ marginTop: '16px' }}>

@@ -112,11 +112,11 @@ const ElegibilidadeLista = () => {
             <ConfirmDialog />
             <BotaoGrupo align="end">
                 <BotaoGrupo>
-                    <Link to="/elegibilidade/configurar">
+                    {/* <Link to="/elegibilidade/configurar">
                         <Botao estilo="vermilion" size="small" tab>
                             <GrAddCircle className={styles.icon} /> Configurar
                         </Botao>
-                    </Link>
+                    </Link> */}
                 </BotaoGrupo>
             
                 <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>

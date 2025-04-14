@@ -114,7 +114,7 @@ function DetalhesContratos() {
                                 </FrameVertical>
                             }
                         </Frame>
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício ao Contrato</Botao>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="black" color="black"/> Adicionar Benefício ao Contrato</Botao>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
                        
