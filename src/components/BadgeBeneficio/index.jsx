@@ -171,7 +171,7 @@ const icones = [
     },
 ]
 
-function BadgeBeneficio({ nomeBeneficio, layout = 'inline' }) {
+function BadgeBeneficio({ nomeBeneficio, layout = 'inline'}) {
 
     const icone = icones.filter(item => item.name == nomeBeneficio);
 

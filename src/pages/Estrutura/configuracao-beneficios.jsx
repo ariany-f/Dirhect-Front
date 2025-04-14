@@ -20,6 +20,7 @@ import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
 import { MdDirectionsBike } from "react-icons/md";
 import styled from 'styled-components'
 import ModalConfigurarBeneficios from '../../components/ModalConfigurarBeneficios'
+import BadgeBeneficio from '../../components/BadgeBeneficio'
 
 const icones = [
     {
@@ -28,7 +29,7 @@ const icones = [
         "flexible_value": false,
         "description": "Mercados, supermercados e aplicativo de delivery.",
         "food_meal_one_category": false,
-        "icone": <RiShoppingCartFill size={16} />
+        "icone": <RiShoppingCartFill size={12} />
     },
     {
         "id": 2,
@@ -36,7 +37,7 @@ const icones = [
         "flexible_value": false,
         "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
-        "icone": <IoFastFoodSharp size={16} />
+        "icone": <IoFastFoodSharp size={12} />
     },
     {
         "id": 3,
@@ -44,7 +45,7 @@ const icones = [
         "flexible_value": true,
         "description": "Postos de combustível, estacionamentos, pedágio, carros por aplicativo, recarga de bilhete de transporte e passagens de ônibus e trem.",
         "food_meal_one_category": false,
-        "icone": <RiBusFill size={16} />
+        "icone": <RiBusFill size={12} />
     },
     {
         "id": 4,
@@ -52,7 +53,7 @@ const icones = [
         "flexible_value": true,
         "description": "Compra de cadeira ergométrica, itens de papelaria, assistência técnica de computador e custeio de contas de energia e internet",
         "food_meal_one_category": false,
-        "icone": <RiComputerLine size={16} />
+        "icone": <RiComputerLine size={12} />
     },
     {
         "id": 5,
@@ -60,7 +61,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <RiGasStationFill size={16} />
+        "icone": <RiGasStationFill size={12} />
     },
     {
         "id": 6,
@@ -68,7 +69,7 @@ const icones = [
         "flexible_value": true,
         "description": "Streaming de vídeo e música, bancas de jornais, jogos online, ingressos para shows teatros e museus, instrumentos musicais, escolas de arte e música e parques de diversões, zoológicos e aquários.",
         "food_meal_one_category": false,
-        "icone": <FaTheaterMasks size={16} />
+        "icone": <FaTheaterMasks size={12} />
     },
     {
         "id": 7,
@@ -76,7 +77,7 @@ const icones = [
         "flexible_value": true,
         "description": "Cursos online e presenciais, cursos de extensão, cursos e app de idiomas, ensino superior e técnico, eventos e feiras profissionais e livrarias e papelarias",
         "food_meal_one_category": false,
-        "icone": <BiBookReader  size={16} />
+        "icone": <BiBookReader  size={12} />
     },
     {
         "id": 8,
@@ -84,7 +85,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <FaHeartPulse size={16} />
+        "icone": <FaHeartPulse size={12} />
     },
     {
         "id": 9,
@@ -92,7 +93,7 @@ const icones = [
         "flexible_value": false,
         "description": "Alimentação e Refeição, tudo em uma só categoria.",
         "food_meal_one_category": true,
-        "icone": <PiForkKnifeFill size={16} />
+        "icone": <PiForkKnifeFill size={12} />
     },
     {
         "id": 10,
@@ -100,7 +101,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <RiGasStationFill size={16} />
+        "icone": <RiGasStationFill size={12} />
     },
     {
         "id": 11,
@@ -108,7 +109,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <MdSecurity size={16} />
+        "icone": <MdSecurity size={12} />
     },
     {
         "id": 12,
@@ -124,7 +125,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <FaCoins size={16} />
+        "icone": <FaCoins size={12} />
     },
     {
         "id": 14,
@@ -132,7 +133,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <FaTooth size={16} />
+        "icone": <FaTooth size={12} />
     },
     {
         "id": 15,
@@ -140,7 +141,7 @@ const icones = [
         "flexible_value": false,
         "description": "Mercados, supermercados e aplicativo de delivery.",
         "food_meal_one_category": false,
-        "icone": <RiShoppingCartFill size={16} />
+        "icone": <RiShoppingCartFill size={12} />
     },
     {
         "id": 16,
@@ -148,7 +149,7 @@ const icones = [
         "flexible_value": false,
         "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
         "food_meal_one_category": false,
-        "icone": <IoFastFoodSharp size={16} />
+        "icone": <IoFastFoodSharp size={12} />
     },
     {
         "id": 15,
@@ -156,7 +157,7 @@ const icones = [
         "flexible_value": true,
         "description": "",
         "food_meal_one_category": false,
-        "icone": <FaTooth size={16} />
+        "icone": <FaTooth size={12} />
     },
     {
         "id": 16,
@@ -164,7 +165,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <MdDirectionsBike size={16} />
+        "icone": <MdDirectionsBike size={12} />
     },
     {
         "id": 17,
@@ -180,7 +181,7 @@ const icones = [
         "flexible_value": true,
         "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
         "food_meal_one_category": false,
-        "icone": <FaCar size={16} />
+        "icone": <FaCar size={12} />
     },
 ]
 
@@ -212,17 +213,25 @@ const Col12Spaced = styled.div`
     justify-content: space-between;
 `
 
-const Col6Input = styled.div`
-    flex: 1;
-    width: 50%;
+const Col6Container = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--neutro-200);
+    background: var(--neutro-100);
 `
 
 const Col6 = styled.div`
     display: inline-flex;
-    align-items: start;
+    align-items: center;
     justify-content: center;
     gap: 8px;
     flex-direction: column;
+    text-align: center;
 `
 
 const Item = styled.div`
@@ -340,33 +349,38 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                                     </Col12Spaced>
                                     
                                     <div style={{ marginTop: '16px' }}>
-                                        {icone && <Texto weight={600}>{icone}  {dadosBeneficio.descricao}</Texto>}
+                                        {icone && 
+                                            <div style={{display: 'flex', fontSize: '12px', gap: '4px', fontWeight: 600}} key={icone.id}>
+                                                {icone}
+                                                <p color="black">{dadosBeneficio.descricao}</p>
+                                            </div>
+                                        }
                                         <br />
                                         <Texto size={'12px'} weight={600}>Descrição: </Texto>
                                         <Texto size={'12px'} >{beneficio.descricao}</Texto>
                                         <Texto size={'12px'} weight={600}>Tipo Desconto:</Texto>
                                         <Texto size={'12px'} >{getTipoDesconto(beneficio.tipo_desconto)}</Texto>
                                         <Col12Spaced style={{ marginTop: '12px' }}>
-                                            <Col6>
-                                                <Badge>
-                                                    {getTipoCalculo(beneficio.tipo_calculo)}
-                                                </Badge>
-                                                <Texto color="green" weight={600}>
+                                            <Col6Container>
+                                                <Texto color="green" weight={400}>
                                                     {Real.format(beneficio.valor)}
                                                 </Texto>
-                                            </Col6>
-                                            <Col6>
-                                                <Badge>Colaborador</Badge>
-                                                <Texto color="red" weight={600}>
+                                                <Texto weight={600} size="10px">
+                                                    {getTipoCalculo(beneficio.tipo_calculo)}
+                                                </Texto>
+                                            </Col6Container>
+                                            <Col6Container>
+                                                <Texto color="red" weight={400}>
                                                     {Real.format(beneficio.valor_desconto)}
                                                 </Texto>
-                                            </Col6>
-                                            <Col6>
-                                                <Badge>Empresa</Badge>
-                                                <Texto color="red" weight={600}>
+                                                <Texto weight={600} size="10px">Colaborador</Texto>
+                                            </Col6Container>
+                                            <Col6Container>
+                                                <Texto color="red" weight={400}>
                                                     {Real.format(beneficio.valor_empresa)}
                                                 </Texto>
-                                            </Col6>
+                                                <Texto weight={600} size="10px">Empresa</Texto>
+                                            </Col6Container>
                                         </Col12Spaced>
                                     </div>
                                 </Beneficio>

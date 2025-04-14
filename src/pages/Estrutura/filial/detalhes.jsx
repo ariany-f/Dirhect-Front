@@ -116,11 +116,11 @@ function FilialDetalhes() {
             }
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
-                    <Link to={`/estrutura/filial/detalhes/${id}`}>
-                        <Botao estilo={location.pathname == `/estrutura/filial/detalhes/${id}`?'black':''} size="small" tab>Colaboradores</Botao>
-                    </Link>
                     <Link to={`/estrutura/filial/detalhes/${id}/configuracao-beneficios`}>
                         <Botao estilo={location.pathname == `/estrutura/filial/detalhes/${id}/configuracao-beneficios`?'black':''} size="small" tab>Configuração de Benefícios</Botao>
+                    </Link>
+                    <Link to={`/estrutura/filial/detalhes/${id}`}>
+                        <Botao estilo={location.pathname == `/estrutura/filial/detalhes/${id}`?'black':''} size="small" tab>Colaboradores</Botao>
                     </Link>
                 </BotaoGrupo>
                 
