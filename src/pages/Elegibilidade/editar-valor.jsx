@@ -25,6 +25,9 @@ import { MdOutlineMedicalServices, MdOutlineFastfood, MdSecurity, MdDirectionsBi
 import styles from '@components/BadgeBeneficio/BadgeBeneficio.module.css'
 import { IoFastFoodSharp } from 'react-icons/io5'
 import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
+import ModalConfigurarBeneficios from "../../components/ModalConfigurarBeneficios";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 const icones = [
     {
@@ -223,236 +226,154 @@ const LadoALado = styled.div`
     }
 `
 
+let Real = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+});
 
 function ElegibilidadeEditarValor() {
 
     const navegar = useNavigate()
     let { tipo } = useParams()
+    const [itensAdicionados, setItemAdicionados] = useState([])
     const {
         elegibilidade,
+        setItemContrato,
         setFiliais,
         setDepartamentos
     } = useConfiguracaoElegibilidadeContext()
     const [loading, setLoading] = useState(false)
-    const [edicaoAberta, setEdicaoAberta] = useState(false)
+    const [modalBeneficioOpened, setModalBeneficioOpened] = useState(false)
     const toast = useRef(null)
-     // Estados para os benefícios (igual ao modal)
-     const [contratos, setContratos] = useState([]);
-     const [itensContrato, setItensContrato] = useState([]);
-     const [BeneficiosContrato, setBeneficiosContrato] = useState([]);
-     const [contratoSelecionado, setContratoSelecionado] = useState(null);
-     const [beneficioContratoSelecionado, setBeneficioContratoSelecionado] = useState(null);
-     const [itemContratoSelecionado, setItemContratoSelecionado] = useState(null);
-     const [carregandoContratos, setCarregandoContratos] = useState(false);
-     const [carregandoItens, setCarregandoItens] = useState(false);
-     const [carregandoBeneficios, setCarregandoBeneficios] = useState(false);
- 
 
     useEffect(() => {
       if(!elegibilidade)
       {
         setFiliais([])
         setDepartamentos([])
+        setItemContrato([])
         navegar(-1)
       }
-      else
-      {
-        console.log(elegibilidade)
-      }
     }, [elegibilidade])
-
-     // Carrega contratos ao montar o componente
-     useEffect(() => {
-        carregarContratos();
-    }, []);
-
-    // Funções de carregamento (iguais ao modal)
-    const carregarContratos = async () => {
-        setCarregandoContratos(true);
-        try {
-            const response = await http.get('contrato/?format=json');
-            setContratos(response.map(contrato => ({
-                id: contrato.id,
-                name: `${contrato.dados_operadora.nome} ${contrato.observacao}`,
-                code: contrato.id,
-                operadora: {
-                    nome: contrato.dados_operadora.nome,
-                    imagem: contrato.dados_operadora.imagem
-                }
-            })));
-        } catch (erro) {
-            console.error('Erro ao carregar contratos:', erro);
-        } finally {
-            setCarregandoContratos(false);
-        }
-    };
-
-    const carregarBeneficiosContrato = async (contratoId) => {
-        if (!contratoId) return;
-        
-        setCarregandoBeneficios(true);
-        try {
-            const response = await http.get(`contrato/${contratoId}/?format=json`);
-            setBeneficiosContrato(response.beneficios.map(item => ({
-                id: item.id,
-                name: `${item.dados_beneficio.descricao} (${item.dados_beneficio.descricao})`,
-                contrato: contratoId,
-                beneficio: {
-                    icone: item.dados_beneficio.descricao
-                },
-                code: item.id
-            })));
-        } catch (erro) {
-            console.error('Erro ao carregar itens do contrato:', erro);
-        } finally {
-            setCarregandoBeneficios(false);
-        }
-    };
     
-    const carregarItensContratoBeneficio = async (contratoId, beneficioId) => {
-        if (!contratoId) return;
-        
-        setCarregandoItens(true);
-        try {
-            const response = await http.get(`contrato/${contratoId}/?format=json`);
-            const filtered = response.beneficios.filter(item => item.id === beneficioId);
-            setItensContrato(filtered[0].itens.map(item => ({
-                id: item.id,
-                name: `${item.descricao} (${item.descricao})`,
-                code: item.id
-            })));
-        } catch (erro) {
-            console.error('Erro ao carregar itens do contrato:', erro);
-        } finally {
-            setCarregandoItens(false);
-        }
-    };
-
-    const handleContratoChange = (contrato) => {
-        setContratoSelecionado(contrato);
-        setBeneficioContratoSelecionado(null);
-        setItemContratoSelecionado(null);
-        if (contrato) {
-            carregarBeneficiosContrato(contrato.code);
-        } else {
-            setBeneficiosContrato([]);
-        }
-    };
-
-    const handleBeneficioChange = (beneficio) => {
-        setBeneficioContratoSelecionado(beneficio);
-        setItemContratoSelecionado(null);
-        if (beneficio) {
-            carregarItensContratoBeneficio(beneficio.contrato, beneficio.code);
-        } else {
-            setItensContrato([]);
-        }
-    };
-
-    // Templates para os dropdowns (iguais ao modal)
-    const beneficioOptionTemplate = (option) => {
-        if(option) {
-            const iconeEncontrado = icones.find(icone => icone.name === option.beneficio?.icone);
-            return (
-                <div className="flex align-items-center" style={{display:'flex', gap:'10px', alignItems:'center', justifyContent: 'start'}}>
-                    {iconeEncontrado && iconeEncontrado.icone}
-                    <Texto weight={600} size="12px">{option.name}</Texto>
-                </div>
-            );
-        }
-        return <div className="flex align-items-center">Selecione um benefício</div>;
-    };
-
-    const contratoOptionTemplate = (option) => {
-        if(option) {
-            return (
-                <div className="flex align-items-center" style={{display:'flex', gap:'10px'}}>
-                    {option.operadora?.imagem && (
-                        <CustomImage 
-                            alt={option.operadora.nome} 
-                            src={option.operadora.imagem} 
-                            width={'30px'}
-                            height={20} 
-                            size={80} 
-                            title={option?.operadora?.nome} 
-                        />
-                    )}
-                    <Texto weight={600} size="12px">{option.name}</Texto>
-                </div>
-            );
-        }
-        return <div className="flex align-items-center">Selecione um contrato</div>;
-    };
-
-    const editarRecarga = (evento) => {
-        if (evento.key === 'Enter') {
-            evento.preventDefault()
-            setEdicaoAberta(false)
-        }
+    function enviarNovaConfiguracao(configuracao) {
+        setLoading(true);
+    
+        // Buscar os detalhes do item no endpoint
+        http.get(`contrato_beneficio_item/${configuracao.contrato_item}/?format=json`)
+        .then(response => {
+            setItemAdicionados(response);
+            setItemContrato(response);
+            setModalBeneficioOpened(false);
+        })
+        .catch(error => {
+            console.error('Erro ao buscar detalhes do item:', error);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
     }
 
     return (
         <Frame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            {elegibilidade ?
+            {elegibilidade ? (
                 <>
                     <BotaoGrupo align="space-between">
                         <Titulo>
                             <h6>Itens Elegíveis</h6>
                         </Titulo>
+                        <Botao 
+                            aoClicar={() => setModalBeneficioOpened(true)}
+                            estilo="primaria"
+                            size="medium"
+                            filled
+                        >
+                            Adicionar Item
+                        </Botao>
                     </BotaoGrupo>
-                    <br />
-                    {/* Seção de seleção de benefícios */}
-                    <Col12>
-                        <Col6>
-                            <DropdownItens 
-                                valor={contratoSelecionado} 
-                                setValor={handleContratoChange} 
-                                options={contratos} 
-                                label="Contrato" 
-                                name="contrato" 
-                                placeholder={carregandoContratos ? "Carregando..." : "Selecione o contrato"}
-                                disabled={carregandoContratos}
-                                optionTemplate={contratoOptionTemplate}
-                            /> 
-                        </Col6>
-                        <Col6>
-                            <DropdownItens 
-                                valor={beneficioContratoSelecionado} 
-                                setValor={handleBeneficioChange} 
-                                options={BeneficiosContrato} 
-                                label="Benefícios do Contrato" 
-                                name="beneficioContrato" 
-                                placeholder={carregandoBeneficios ? "Carregando..." : (contratoSelecionado ? "Selecione o benefício" : "Selecione um contrato primeiro")}
-                                disabled={!contratoSelecionado || carregandoBeneficios}
-                                optionTemplate={beneficioOptionTemplate}
-                            />
-                        </Col6>
-                    </Col12>
-                    <Col12>
-                        <Col6>
-                            <DropdownItens 
-                                valor={itemContratoSelecionado} 
-                                setValor={setItemContratoSelecionado} 
-                                options={itensContrato} 
-                                label="Item do Contrato" 
-                                name="itemContrato" 
-                                placeholder={carregandoItens ? "Carregando..." : (contratoSelecionado ? "Selecione o item" : "Selecione um benefício primeiro")}
-                                disabled={!contratoSelecionado || carregandoItens}
-                            />
-                        </Col6>
-                    </Col12>
+                    
+                    {/* Tabela de itens adicionados */}
+                    {elegibilidade.itens_contrato.length > 0 ? (
+                        <div style={{ marginTop: '20px' }}>
+                            <DataTable 
+                                value={elegibilidade.itens_contrato}
+                                emptyMessage="Nenhum item adicionado"
+                                tableStyle={{ minWidth: '72vw' }}
+                            >
+                                <Column 
+                                    field="rowData.beneficio.nome_operadora" 
+                                    header="Operadora" 
+                                    style={{ width: '20%' }}
+                                    body={(rowData) => (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <CustomImage src={rowData.beneficio.image_operadora} alt={rowData.beneficio.nome_operadora} width={24} height={24} />
+                                            <Texto>{rowData.beneficio.nome_operadora}</Texto>
+                                        </div>
+                                    )}
+                                />
+                                <Column 
+                                    field="rowData.beneficio.dados_beneficio.descricao" 
+                                    header="Benefício" 
+                                    style={{ width: '10%' }}
+                                    body={(rowData) => (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            {icones.find(icone => icone.name === rowData.beneficio.dados_beneficio.descricao).icone}
+                                            {rowData.beneficio.dados_beneficio.descricao}
+                                        </div>
+                                    )}
+                                />
+                                <Column 
+                                    field="descricao" 
+                                    header="Descrição" 
+                                    style={{ width: '10%' }}
+                                />
+                                <Column 
+                                    field="valor" 
+                                    header="Valor" 
+                                    style={{ width: '10%' }}
+                                    body={(rowData) => Real.format(rowData.valor || 0)}
+                                />
+                                <Column 
+                                    field="valor_empresa" 
+                                    header="Valor Empresa" 
+                                    style={{ width: '10%' }}
+                                    body={(rowData) => Real.format(rowData.valor_empresa || 0)}
+                                />
+                                <Column 
+                                    field="valor_colaborador" 
+                                    header="Valor Colaborador" 
+                                    style={{ width: '10%' }}
+                                    body={(rowData) => Real.format(rowData.valor_desconto || 0)}
+                                />
+                            </DataTable>
+                        </div>
+                    ) : (
+                        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                            <Texto>Nenhum item de contrato adicionado ainda</Texto>
+                        </div>
+                    )}
+                    
                     <ContainerButton>
-                        <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                        <LadoALado>
-                            <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{elegibilidade.filiais ? (elegibilidade.filiais.length-1) : 0}</Texto></span>
-                            <Botao aoClicar={() => true} estilo="vermilion" size="medium" filled>Continuar</Botao>
-                        </LadoALado>
+                        <Botao aoClicar={() => navegar(-1)} estilo="neutro" size="medium" filled>
+                            Voltar
+                        </Botao>
+                        <Botao 
+                            aoClicar={() => console.log('Salvar', itensAdicionados)}
+                            estilo="vermilion" 
+                            size="medium" 
+                            filled
+                            disabled={itensAdicionados.length === 0}
+                        >
+                            Salvar Configuração
+                        </Botao>
                     </ContainerButton>
                 </>
-            : <Skeleton variant="rectangular" width={300} height={60} />
-            }
+            ) : (
+                <Skeleton variant="rectangular" width={300} height={60} />
+            )}
+            <ModalConfigurarBeneficios opened={modalBeneficioOpened} aoFechar={() => setModalBeneficioOpened(false)} aoSalvar={enviarNovaConfiguracao} />
         </Frame>
     )
 }

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArmazenadorToken } from '../utils';
 
 const elegibilidadeInicial = {
-    item_contrato: "",
+    itens_contrato: [],
     filiais: [],
     departamentos: [],
     funcoes: [],
@@ -216,14 +216,36 @@ export const ConfiguracaoElegibilidadeProvider = ({ children }) => {
             })
         }
     }
-    const setItemContrato = (item_contrato) => {
+    const setItemContrato = (item) => {
         setElegibilidade(estadoAnterior => {
-            return {
-                ...estadoAnterior,
-                item_contrato
+            // Se for um array vazio, limpa os itens
+            if (Array.isArray(item) && item.length === 0) {
+                return {
+                    ...estadoAnterior,
+                    itens_contrato: []
+                };
             }
-        })
-    }
+            
+            // Se for um novo item (objeto), adiciona ao array existente
+            if (typeof item === 'object' && !Array.isArray(item)) {
+                return {
+                    ...estadoAnterior,
+                    itens_contrato: [...(estadoAnterior.itens_contrato || []), item]
+                };
+            }
+            
+            // Se for um array de itens, substitui completamente
+            if (Array.isArray(item)) {
+                return {
+                    ...estadoAnterior,
+                    itens_contrato: item
+                };
+            }
+            
+            // Caso contrário, mantém o estado como está
+            return estadoAnterior;
+        });
+    };
     const submeterElegibilidade = () => {
         let obj = {}
         obj['name'] = elegibilidade.name
@@ -279,6 +301,7 @@ export const ConfiguracaoElegibilidadeProvider = ({ children }) => {
         setHorarios,
         setSecoes,
         setSindicatos,
+        setCargos,
         setFuncoes,
         submeterElegibilidade
     }
