@@ -49,12 +49,12 @@ const CardText = styled.div`
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
 `
 
 const Col6 = styled.div`
     padding: 10px;
-    flex: 1 1 50%;
+    flex: 1 1 32%;
     display: flex;
 `
 
@@ -104,7 +104,7 @@ function ElegibilidadeConfigurar() {
                                     </ul>
                                 </Frame>
                             </Frame>
-                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-filiais')} size="medium">Configurar elegibilidade por filial</Botao>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-filiais')} size="medium">Configurar por filial</Botao>
                         </CardSelecao>
                     </Col6>
                     <Col6>
@@ -125,7 +125,135 @@ function ElegibilidadeConfigurar() {
                                     </ul>
                                 </Frame>
                             </Frame>
-                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar elegibilidade por departamento</Botao>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar por departamento</Botao>
+                        </CardSelecao>
+                    </Col6>
+                </Col12>
+                <Col12>
+                    <Col6>
+                        <CardSelecao>
+                            <Frame>
+                                <ContainerHorizontal gap={'16px'}>
+                                    <HiUserGroup size={28} />
+                                    <Texto weight={700}>Cargo</Texto>
+                                </ContainerHorizontal>
+                                <Frame alinhamento="center">
+                                    <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                        <li>
+                                            Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
+                                        </li>
+                                        <li>
+                                            Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
+                                        </li>
+                                    </ul>
+                                </Frame>
+                            </Frame>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar por cargo</Botao>
+                        </CardSelecao>
+                    </Col6>
+                    <Col6>
+                        <CardSelecao>
+                            <Frame>
+                                <ContainerHorizontal gap={'16px'}>
+                                    <HiUserGroup size={28} />
+                                    <Texto weight={700}>Função</Texto>
+                                </ContainerHorizontal>
+                                <Frame alinhamento="center">
+                                    <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                        <li>
+                                            Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
+                                        </li>
+                                        <li>
+                                            Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
+                                        </li>
+                                    </ul>
+                                </Frame>
+                            </Frame>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar por função</Botao>
+                        </CardSelecao>
+                    </Col6>
+                    <Col6>
+                        <CardSelecao>
+                            <Frame>
+                                <ContainerHorizontal gap={'16px'}>
+                                    <HiUserGroup size={28} />
+                                    <Texto weight={700}>Sindicato</Texto>
+                                </ContainerHorizontal>
+                                <Frame alinhamento="center">
+                                    <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                        <li>
+                                            Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
+                                        </li>
+                                        <li>
+                                            Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
+                                        </li>
+                                    </ul>
+                                </Frame>
+                            </Frame>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar por sindicato</Botao>
+                        </CardSelecao>
+                    </Col6>
+                    <Col6>
+                        <CardSelecao>
+                            <Frame>
+                                <ContainerHorizontal gap={'16px'}>
+                                    <HiUserGroup size={28} />
+                                    <Texto weight={700}>Horario</Texto>
+                                </ContainerHorizontal>
+                                <Frame alinhamento="center">
+                                    <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                        <li>
+                                            Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
+                                        </li>
+                                        <li>
+                                            Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
+                                        </li>
+                                    </ul>
+                                </Frame>
+                            </Frame>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar por horário</Botao>
+                        </CardSelecao>
+                    </Col6>
+                    <Col6>
+                        <CardSelecao>
+                            <Frame>
+                                <ContainerHorizontal gap={'16px'}>
+                                    <HiUserGroup size={28} />
+                                    <Texto weight={700}>Centro de Custo</Texto>
+                                </ContainerHorizontal>
+                                <Frame alinhamento="center">
+                                    <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                        <li>
+                                            Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
+                                        </li>
+                                        <li>
+                                            Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
+                                        </li>
+                                    </ul>
+                                </Frame>
+                            </Frame>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar por centro de custo</Botao>
+                        </CardSelecao>
+                    </Col6>
+                    <Col6>
+                        <CardSelecao>
+                            <Frame>
+                                <ContainerHorizontal gap={'16px'}>
+                                    <HiUserGroup size={28} />
+                                    <Texto weight={700}>Seção</Texto>
+                                </ContainerHorizontal>
+                                <Frame alinhamento="center">
+                                    <ul style={{padding: '20px', textAlign: 'left', fontSize: '14px'}}>
+                                        <li>
+                                            Essa opção você selecionara o departamento e configura o valor para todos os colaboradores do departamento selecionando.
+                                        </li>
+                                        <li>
+                                            Caso já tenha configurado os valores dos benefícios anteriormente dentro da área do departamento.
+                                        </li>
+                                    </ul>
+                                </Frame>
+                            </Frame>
+                            <Botao aoClicar={() => navegar('/elegibilidade/selecao-departamentos')} size="medium">Configurar por seção</Botao>
                         </CardSelecao>
                     </Col6>
                 </Col12>

@@ -398,13 +398,9 @@ function ElegibilidadeEditarValor() {
             {elegibilidade ?
                 <>
                     <BotaoGrupo align="space-between">
-                        {
-                            <>
-                                <Titulo>
-                                    <h3>Configuração de Elegibilidade</h3>
-                                </Titulo>
-                            </>
-                        }
+                        <Titulo>
+                            <h6>Itens Elegíveis</h6>
+                        </Titulo>
                     </BotaoGrupo>
                     <br />
  {/* Seção de seleção de benefícios */}

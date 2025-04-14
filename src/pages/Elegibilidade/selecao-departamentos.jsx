@@ -14,7 +14,7 @@ import { DataTable } from 'primereact/datatable'
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import styled from 'styled-components';
-import { useRecargaSaldoLivreContext } from '@contexts/RecargaSaldoLivre';
+import { useConfiguracaoElegibilidadeContext } from '@contexts/ConfiguracaoElegibilidade';
 
 const ContainerButton = styled.div`
     display: flex;
@@ -48,9 +48,9 @@ function ElegibilidadeSelecionarDepartamentos() {
     const toast = useRef(null)
     
     const {
-        recarga,
+        elegibilidade,
         setDepartamentos
-    } = useRecargaSaldoLivreContext()
+    } = useConfiguracaoElegibilidadeContext()
 
     useEffect(() => {
         

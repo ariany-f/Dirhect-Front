@@ -121,14 +121,13 @@ const ElegibilidadeLista = () => {
                         </Botao>
                     </Link>
                 </BotaoGrupo>
-            </BotaoGrupo>
             
-            <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
-                <Link to="/elegibilidade/como-funciona" style={{ fontSize: '14px', marginLeft: '8px' }}>
-                    Como funciona?
-                </Link>
-                
-            </QuestionCard>
+                <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
+                    <Link to="/elegibilidade/como-funciona" style={{ fontSize: '14px', marginLeft: '8px' }}>
+                        Como funciona?
+                    </Link>
+                </QuestionCard>
+            </BotaoGrupo>
             <Frame>
                 <Container gap="32px">
                     <TabView>
