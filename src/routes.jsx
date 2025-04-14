@@ -243,36 +243,36 @@ function AppRouter() {
                   <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
                   <Route path="adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
                   <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} >
-                      <Route index element={<EstruturaListaColaboradores />} />
-                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Departamento" />} />
+                      <Route index element={<EstruturaConfiguracaoBeneficios type="Departamento" />} />
+                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
                   </Route>
                   <Route path="filial/detalhes/:id" element={<FilialDetalhes />} >
-                      <Route index element={<EstruturaListaColaboradores />} />
-                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Filial" />} />
+                      <Route index element={<EstruturaConfiguracaoBeneficios type="Filial" />} />
+                      <Route  path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
                   </Route>
                   <Route path="cargo/detalhes/:id" element={<CargoDetalhes />} >
-                      <Route index element={<EstruturaListaColaboradores />} />
-                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Cargo" />} />
+                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                      <Route index element={<EstruturaConfiguracaoBeneficios type="Cargo" />} />
                   </Route>
                   <Route path="funcao/detalhes/:id" element={<FuncaoDetalhes />} >
-                      <Route index element={<EstruturaListaColaboradores />} />
-                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Funcao" />} />
+                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                      <Route index element={<EstruturaConfiguracaoBeneficios type="Funcao" />} />
                   </Route>
                   <Route path="centro_custo/detalhes/:id" element={<CentrosCustoDetalhes />} >
-                      <Route index element={<EstruturaListaColaboradores />} />
-                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="CentroCusto" />} />
+                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                      <Route index element={<EstruturaConfiguracaoBeneficios type="CentroCusto" />} />
                   </Route>
                   <Route path="secao/detalhes/:id" element={<SecaoDetalhes />} >
-                      <Route index element={<EstruturaListaColaboradores />} />
-                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Secao" />} />
+                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                      <Route index element={<EstruturaConfiguracaoBeneficios type="Secao" />} />
                   </Route>
                   <Route path="horario/detalhes/:id" element={<HorarioDetalhes />} >
-                      <Route index element={<EstruturaListaColaboradores />} />
-                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Horario" />} />
+                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                      <Route index element={<EstruturaConfiguracaoBeneficios type="Horario" />} />
                   </Route>
                   <Route path="sindicato/detalhes/:id" element={<SindicatoDetalhes />} >
-                      <Route index element={<EstruturaListaColaboradores />} />
-                      <Route path="configuracao-beneficios" element={<EstruturaConfiguracaoBeneficios type="Sindicato" />} />
+                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                      <Route index element={<EstruturaConfiguracaoBeneficios type="Sindicato" />} />
                   </Route>
                 </Route>
               

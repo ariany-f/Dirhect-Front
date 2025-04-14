@@ -103,17 +103,17 @@ function CargoDetalhes() {
             <BotaoGrupo align="space-between">
                 <BotaoGrupo>
                     <Link to={`/estrutura/cargo/detalhes/${id}`}>
-                        <Botao estilo={location.pathname == `/estrutura/cargo/detalhes/${id}`?'black':''} size="small" tab>Colaboradores</Botao>
+                        <Botao estilo={location.pathname == `/estrutura/cargo/detalhes/${id}`?'black':''} size="small" tab>Configuração de Benefícios</Botao>
                     </Link>
-                    <Link to={`/estrutura/cargo/detalhes/${id}/configuracao-beneficios`}>
-                        <Botao estilo={location.pathname == `/estrutura/cargo/detalhes/${id}/configuracao-beneficios`?'black':''} size="small" tab>Configuração de Benefícios</Botao>
+                    <Link to={`/estrutura/cargo/detalhes/${id}/adicionar-colaboradores`}>
+                        <Botao estilo={location.pathname == `/estrutura/cargo/detalhes/${id}/adicionar-colaboradores`?'black':''} size="small" tab>Colaboradores</Botao>
                     </Link>
                 </BotaoGrupo>
                 
-                {location.pathname == `/estrutura/cargo/detalhes/${id}` &&
+                {location.pathname == `/estrutura/cargo/detalhes/${id}/adicionar-colaboradores` &&
                    <></>
                 }
-                {location.pathname == `/estrutura/cargo/detalhes/${id}/configuracao-beneficios` &&
+                {location.pathname == `/estrutura/cargo/detalhes/${id}` &&
                     <BotaoGrupo align="center">
                         <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
                             <AiFillQuestionCircle className="question-icon" size={20} />
