@@ -376,7 +376,7 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                                                 <Texto weight={600} size="10px">Colaborador</Texto>
                                             </Col6Container>
                                             <Col6Container>
-                                                <Texto color="red" weight={400}>
+                                                <Texto color="var(--primaria)" weight={400}>
                                                     {Real.format(beneficio.valor_empresa)}
                                                 </Texto>
                                                 <Texto weight={600} size="10px">Empresa</Texto>

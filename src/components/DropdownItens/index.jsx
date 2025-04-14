@@ -18,12 +18,7 @@ const Select = styled(Dropdown)`
     margin-top: 2px;
     font-size: 14px;
     width: ${ props => props.$width ?  props.$width : 'inherit' };
-    & option {
-        font-family: var(--fonte-primaria);
-        font-size: 18px;
-        font-weight: 500;
-    }
-
+    
     &.error {
         outline: 1px solid var(--error);
     }
@@ -55,17 +50,17 @@ const Select = styled(Dropdown)`
         font-size: 14px;
         font-style: normal;
         font-weight: 600;
-        line-height: 20px; /* 142.857% */
+        line-height: 20px;
     }
     
-    &::-ms-input-placeholder { /* Edge 12 -18 */
+    &::-ms-input-placeholder {
         color: var(--neutro-200);
         font-feature-settings: 'clig' off, 'liga' off;
         font-family: var(--font-secondaria);
         font-size: 14px;
         font-style: normal;
         font-weight: 600;
-        line-height: 20px; /* 142.857% */
+        line-height: 20px;
     }
 
     &:active {
@@ -79,8 +74,16 @@ const Select = styled(Dropdown)`
     }
 `
 
-function DropdownItens({ valor, setValor, options=[], placeholder, name, label, camposVazios = []}) {
-
+function DropdownItens({ 
+    valor, 
+    setValor, 
+    options = [], 
+    placeholder, 
+    name, 
+    label, 
+    camposVazios = [],
+    optionTemplate // Nova prop para o template personalizado
+}) {
     const [erro, setErro] = useState('')
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -88,51 +91,56 @@ function DropdownItens({ valor, setValor, options=[], placeholder, name, label, 
 
     const validationSchema = Yup.object().shape({})
 
-    function changeValor(evento)
-    {
-        const valorCampo = evento.target.value
+    function changeValor(evento) {
+        const valorCampo = evento.value // Alterado para evento.value (PrimeReact usa value em vez de target.value)
 
         setValor(valorCampo)
 
         const CampoObject = {
             [name]: valorCampo
-
         }
 
         validationSchema
             .validate(CampoObject, { abortEarly: false })
             .then(valid => {
-                if(!!valid)
-                {
+                if(!!valid) {
                     document.getElementById(name).classList.remove('error')
                     setErro('')
                 }
             })
             .catch(function (erro) {
-                if(typeof erro.inner == 'object')
-                {
+                if(typeof erro.inner == 'object') {
                     document.getElementById(name).classList.add('error')
                     setErro(Object.values(erro.inner)[0].message)
                 }
             })
     }
 
-    
     return (
         <>
-        <div className={styles.inputContainer}>
-            {(label) ?
-            <label htmlFor={name} className={styles.label}>{label}</label>
-            : ''}
-            <Select placeholder={placeholder} options={options} value={valor} optionLabel="name" onChange={(e) => changeValor(e)}></Select>
-        </div>
-        {classeCampoVazio.includes(name)?
-            <p className={styles.erroMessage}>Você deve preencher esse campo</p>
-            : (erro &&
-                <p className={styles.erroMessage}>{erro}</p>
-            )
-        }
+            <div className={styles.inputContainer}>
+                {(label) ?
+                <label htmlFor={name} className={styles.label}>{label}</label>
+                : ''}
+                <Select 
+                    id={name}
+                    placeholder={placeholder} 
+                    options={options} 
+                    value={valor} 
+                    optionLabel="name" 
+                    onChange={changeValor}
+                    itemTemplate={optionTemplate} // Template para os itens da lista
+                    valueTemplate={optionTemplate} // Template para o valor selecionado
+                />
+            </div>
+            {classeCampoVazio.includes(name) ?
+                <p className={styles.erroMessage}>Você deve preencher esse campo</p>
+                : (erro &&
+                    <p className={styles.erroMessage}>{erro}</p>
+                )
+            }
         </>       
     )
 }
+
 export default DropdownItens
