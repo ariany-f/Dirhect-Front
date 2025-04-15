@@ -282,12 +282,12 @@ function DataTableContratosDetalhes({ beneficios }) {
             <div style={{display: 'flex', gap: '20px'}}>
                 <Tooltip target=".settings" mouseTrack mouseTrackRight={10} />
                 <MdSettings className="settings" data-pr-tooltip="Configurar Elegibilidade" size={16} onClick={() => {
-                    setSelectedItemBeneficio(rowData.id)
+                    setSelectedItemBeneficio(rowData)
                     setModalElegibilidadeOpened(true)
                 }} />
                 <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
                 <FaPen className="edit" data-pr-tooltip="Editar Item" size={16} onClick={() => {
-                    setSelectedItemBeneficio(rowData.id)
+                    setSelectedItemBeneficio(rowData)
                     setSendData(rowData)
                     setModalOpened(true)
                 }} />
@@ -380,6 +380,45 @@ function DataTableContratosDetalhes({ beneficios }) {
         }
     }, [beneficios]);
 
+    function salvarGrupos(data) {
+        // Função para transformar os dados
+        const transformarDados = (dados) => {
+            const resultado = {
+                regra_elegibilidade: [{
+                    filial: { index: null, id: [] },
+                    departamentos: { index: null, id: [] }
+                }]
+            };
+    
+            dados.forEach((item, index) => {
+                if (item.tipo === "Filial") {
+                    resultado.regra_elegibilidade[0].filial.index = index;
+                    resultado.regra_elegibilidade[0].filial.id = item.data.map(d => d.id);
+                } else if (item.tipo === "Departamento") {
+                    resultado.regra_elegibilidade[0].departamentos.index = index;
+                    resultado.regra_elegibilidade[0].departamentos.id = item.data.map(d => d.id);
+                }
+            });
+    
+            return resultado;
+        };
+    
+        // Transformando os dados
+        const dadosTransformados = transformarDados(data);
+    
+        // Restante do seu código de salvamento...
+        http.put(`contrato_beneficio_item/${selectedItemBeneficio.id}/?format=json`, dadosTransformados)
+        .then(response => {
+           toast.current.show({severity:'success', summary: 'Salvo com sucesso', life: 3000});
+        })
+        .catch(erro => {
+            toast.current.show({severity:'error', summary: 'Não foi possível atualizar', detail: 'Erro!', life: 3000});
+        })
+        .finally(() => {
+            setModalElegibilidadeOpened(false);
+        });
+    }
+
     return (
         <>
             <Toast ref={toast} />
@@ -411,7 +450,6 @@ function DataTableContratosDetalhes({ beneficios }) {
                             selection={selectedItemBeneficio}
                             selectionMode="single"
                             emptyMessage="Não há configurações cadastradas" 
-                            // onSelectionChange={(e) => {setSelectedItemBeneficio(e.value.id); setSendData(e.value); setModalOpened(true)}} 
                             value={selectedItems} 
                         >
                             <Column body={representativeTemplate} field="descricao" header="Descrição" style={{ width: '25%' }} />
@@ -425,8 +463,8 @@ function DataTableContratosDetalhes({ beneficios }) {
                 : null
                 }
             </Col12>
-            <ModalAdicionarElegibilidadeItemContrato aoSalvar={() => true} aoFechar={() => setModalElegibilidadeOpened(false)} opened={modalElegibilidadeOpened} />
-            <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} nomeBeneficio={selectedBeneficio?.dados_beneficio?.descricao} dadoAntigo={sendData} />
+            <ModalAdicionarElegibilidadeItemContrato item={selectedItemBeneficio} aoSalvar={salvarGrupos} aoFechar={() => setModalElegibilidadeOpened(false)} opened={modalElegibilidadeOpened} />
+            <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio.id} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} nomeBeneficio={selectedBeneficio?.dados_beneficio?.descricao} dadoAntigo={sendData} />
         </>
     )
 }

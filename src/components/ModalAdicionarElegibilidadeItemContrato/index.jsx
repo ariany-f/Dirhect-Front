@@ -262,7 +262,8 @@ const ContainerGrupos = styled.div`
     border-radius: 8px;
 `;
 
-function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoSalvar }) {
+function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoSalvar, item }) {
+
     const { usuario } = useSessaoUsuarioContext();
     
     const [tipoSelecionado, setTipoSelecionado] = useState(null);
@@ -281,6 +282,85 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         {code: 'sindicato', name: 'Sindicato'},
         {code: 'horario', name: 'Horário'}
     ];
+
+    // Adicione este useEffect no componente ModalAdicionarElegibilidadeItemContrato
+    useEffect(() => {
+        if (opened && item?.regra_elegibilidade) {
+            carregarGruposExistentes(item.regra_elegibilidade);
+        } else if (!opened) {
+            // Limpa os grupos quando o modal fecha
+            setGruposAdicionados([]);
+        }
+    }, [opened, item]);
+
+    // Função para carregar os grupos existentes
+    const carregarGruposExistentes = async (regras) => {
+        if (!regras || regras.length === 0) return;
+    
+        const regra = regras[0]; // Pega a primeira regra
+        const novosGrupos = [];
+        
+        // Mapeamento mais completo entre chaves do objeto e tipos
+        const tiposMapeados = {
+            filial: 'Filial',
+            departamentos: 'Departamento', // Note que aqui está no plural para match com o objeto
+            secao: 'Seção',
+            centro_custo: 'Centro de Custo',
+            cargos: 'Cargo',
+            funcao: 'Função',
+            sindicatos: 'Sindicato',
+            horario: 'Horário'
+        };
+    
+        // Para cada tipo possível no objeto regra_elegibilidade
+        for (const [tipoNoObjeto, tipoNome] of Object.entries(tiposMapeados)) {
+            if (regra[tipoNoObjeto] && Array.isArray(regra[tipoNoObjeto].id)) {
+                try {
+                    // Determina o endpoint da API (singular)
+                    const endpoint = tipoNoObjeto.endsWith('s') ? 
+                        tipoNoObjeto.substring(0, tipoNoObjeto.length - 1) : 
+                        tipoNoObjeto;
+                    
+                    // Busca os dados completos
+                    const response = await http.get(`${endpoint}/?format=json`);
+                    
+                    // Filtra apenas os itens que estão na regra
+                    const itensFiltrados = response.filter(item => 
+                        regra[tipoNoObjeto].id.includes(item.id)
+                    );
+    
+                    if (itensFiltrados.length > 0) {
+                        // Formata os dados
+                        const opcoesFormatadas = itensFiltrados.map(item => {
+                            const textoCompleto = item.nome || item.descricao || item.name;
+                            return {
+                                id: item.id,
+                                name: textoCompleto.length > 50 
+                                    ? `${textoCompleto.substring(0, 47)}...` 
+                                    : textoCompleto,
+                                textoCompleto: textoCompleto
+                            };
+                        });
+    
+                        // Adiciona o grupo
+                        novosGrupos.push({
+                            id: `${tipoNome}-${Date.now()}`,
+                            data: opcoesFormatadas,
+                            tipo: tipoNome,
+                            opcoes: opcoesFormatadas.map(o => o.textoCompleto),
+                            indexOriginal: regra[tipoNoObjeto].index || 0
+                        });
+                    }
+                } catch (erro) {
+                    console.error(`Erro ao carregar ${tipoNoObjeto}:`, erro);
+                }
+            }
+        }
+    
+        // Ordena mantendo a ordem original
+        novosGrupos.sort((a, b) => a.indexOriginal - b.indexOriginal);
+        setGruposAdicionados(novosGrupos);
+    };
 
     const buscarOpcoes = async (tipo) => {
         setCarregando(true);
@@ -341,6 +421,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
             // Cria novo grupo
             const novoGrupo = {
                 id: `${tipoSelecionado.name}-${Date.now()}`,
+                data: opcoesSelecionadas,
                 tipo: tipoSelecionado.name,
                 opcoes: opcoesSelecionadas.map(o => o.textoCompleto)
             };
