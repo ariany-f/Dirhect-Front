@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom"
 import http from "@http"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
-import { useDepartamentoContext } from "@contexts/Departamento"
+import IconeBeneficio from '@components/IconeBeneficio';
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -136,52 +136,82 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
 
     const navegar = useNavigate()
 
-    useEffect(() => {
-        if (opened) {
-            setBeneficios([]); 
-            setDropdownBeneficios([]);
-    
-            if (operadora?.beneficios_vinculados?.length > 0) {
-                const novosBeneficios = operadora.beneficios_vinculados.map((item) => ({
-                    id: item.beneficio.id,
-                    descricao: item.beneficio.descricao,
-                    tipo: item.tipo
-                }));
-    
-                setBeneficios(novosBeneficios);
-    
-                const dropdownItens = novosBeneficios.map((item) => ({
-                    name: item.descricao,
-                    code: item.id
-                }));
-    
-                setDropdownBeneficios(dropdownItens);
-            }
-        }
-    }, [opened, operadora]);
-    
     
     useEffect(() => {
-        if (beneficios.length > 0 && dropdownBeneficios.length === 0) {
-            const novosDropdownItens = beneficios.map(item => ({
-                name: item.descricao,
-                code: item.id
-            }));
-    
-            setDropdownBeneficios(novosDropdownItens);
+        if(opened && beneficios.length === 0) {
+            http.get('/beneficio/?format=json')
+                .then(response => {
+                    setBeneficios(response);
+                    
+                    // Formatando os benefícios para o dropdown com ícones
+                    const novosBeneficios = response.map(item => ({
+                        name: item.descricao,
+                        code: item.id,
+                        descricao: item.descricao,
+                        tipo: item.tipo,
+                        icone: item.icone || item.descricao, // Usa o ícone ou o nome como fallback
+                        icon: item.icone || item.descricao // Usa o ícone ou o nome como fallback
+                    }));
+                    
+                    setDropdownBeneficios(novosBeneficios);
+                });
         }
-    }, [beneficios]);
+    }, [opened]);
+
     
-    const validarESalvar = () => {
-        let errors = [];
-        if (!beneficio || !beneficio.code) errors.push('beneficio');
+    // useEffect(() => {
+    //     if (beneficios.length > 0 && dropdownBeneficios.length === 0) {
+    //         const novosDropdownItens = beneficios.map(item => ({
+    //             name: item.descricao,
+    //             code: item.id
+    //         }));
+    
+    //         setDropdownBeneficios(novosDropdownItens);
+    //     }
+    // }, [beneficios]);
+
+
+
+      // Template para os itens do dropdown
+      const beneficioOptionTemplate = (option) => {
+        if (!option) return <div>Selecione um benefício</div>;
         
-        if (errors.length > 0) {
-            setClassError(errors);
-        } else {
-            aoSalvar(beneficio.code);
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '10px',
+                padding: '0 12px'
+            }}>
+                <IconeBeneficio nomeIcone={option.icon} size={18} />
+                <span>{option.name}</span>
+            </div>
+        );
+    };
+
+    // Template para o valor selecionado
+    const beneficioValueTemplate = (option) => {
+        if (!option) return <span>Selecione um benefício</span>;
+        
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '10px'
+            }}>
+                <IconeBeneficio nomeIcone={option.icon} size={18} />
+                <span>{option.name}</span>
+            </div>
+        );
+    };
+
+    const validarESalvar = () => {
+        if (!beneficio?.code) {
+            setClassError(['beneficio']);
+            return;
         }
-    }
+        aoSalvar(beneficio);
+    };
 
     return(
         <>
@@ -201,7 +231,17 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
                         </Frame>
                         
                         <Frame padding="24px 0px">
-                            <DropdownItens camposVazios={classError} valor={beneficio} setValor={setBeneficio} options={dropdownBeneficios} label="Benefício" name="beneficio" placeholder="Benefício"/> 
+                            <DropdownItens 
+                                    camposVazios={classError.includes('beneficio') ? ['beneficio'] : []}
+                                    valor={beneficio} 
+                                    setValor={setBeneficio} 
+                                    options={dropdownBeneficios} 
+                                    label="Benefício*" 
+                                    name="beneficio" 
+                                    placeholder="Selecione um benefício"
+                                    optionTemplate={beneficioOptionTemplate}
+                                    valueTemplate={beneficioValueTemplate}
+                                />
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>

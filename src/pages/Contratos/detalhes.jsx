@@ -45,6 +45,7 @@ function DetalhesContratos() {
     const [modalOpened, setModalOpened] = useState(false)
    
     useEffect(() => {
+        console.log(contrato)
         if(contrato.length == 0)
         {
             http.get(`contrato/${id}/?format=json`)
@@ -61,18 +62,18 @@ function DetalhesContratos() {
 
     }, [contrato])
 
-    const vincularBeneficio = (id_beneficio) => {
+    const vincularBeneficio = (beneficio) => {
        
         const data = {};
-        data.contrato = parseInt(id);
-        data.beneficio = parseInt(id_beneficio);
-
+        data.operadora = parseInt(id);
+        data.beneficio = parseInt(beneficio.code);
         http.post('contrato_beneficio/', data)
         .then(response => {
             if(response.id)
             {
                 contrato.beneficios.push(response)
                 toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Benefício vinculado com sucesso!', life: 3000});
+                // setContrato([]);
             }
         })
         .catch(erro => {
