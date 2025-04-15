@@ -386,7 +386,13 @@ function DataTableContratosDetalhes({ beneficios }) {
             const resultado = {
                 regra_elegibilidade: [{
                     filial: { index: null, id: [] },
-                    departamentos: { index: null, id: [] }
+                    departamento: { index: null, id: [] },
+                    secao: { index: null, id: [] },
+                    centro_custo: { index: null, id: [] },
+                    cargo: { index: null, id: [] },
+                    funcao: { index: null, id: [] },
+                    sindicato: { index: null, id: [] },
+                    horario: { index: null, id: [] }
                 }]
             };
     
