@@ -3,7 +3,6 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineFastfood, MdOutlineKeyboardArrowRight, MdOutlineMedicalServices, MdSecurity, MdSettings } from 'react-icons/md'
 import './DataTable.css'
-import Titulo from '@components/Titulo';
 import BadgeGeral from '@components/BadgeGeral';
 import BotaoGrupo from '@components/BotaoGrupo';
 import styles from '@pages/Contratos/Contratos.module.css'
@@ -13,14 +12,12 @@ import { useEffect, useRef, useState } from 'react';
 import http from '@http';
 import { Tag } from 'primereact/tag';
 import ModalAlterarRegrasBeneficio from '../ModalAlterar/regras_beneficio';
-import { ContextMenu } from 'primereact/contextmenu';
 import { IoEllipsisVertical, IoFastFoodSharp } from 'react-icons/io5';
 import { BiBookReader, BiShield } from 'react-icons/bi';
 import { RiBusFill, RiComputerLine, RiEBike2Fill, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
 import { FaCar, FaCoins, FaPen, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
-import { CiMoneyBill } from 'react-icons/ci';
 import styled from 'styled-components';
 import { Toast } from 'primereact/toast';
 import { GrAddCircle } from 'react-icons/gr';
@@ -56,8 +53,6 @@ const Col7 = styled.div`
     transition: all 0.3s ease;
     padding: 0px;
 `;
-
-
 
 const icones = [
     {
