@@ -66,7 +66,7 @@ function DataTableContratosDetalhes({ beneficios }) {
         return beneficios.map(beneficio => {
 
             // Se já tiver o ícone processado, mantém como está
-            if (beneficio.dados_beneficio.icon_component) {
+            if (beneficio.dados_beneficio.icone) {
                 return beneficio;
             }
             
@@ -74,7 +74,7 @@ function DataTableContratosDetalhes({ beneficios }) {
                 ...beneficio,
                 dados_beneficio: {
                     ...beneficio.dados_beneficio,
-                    icon_component: (beneficio.dados_beneficio.icon_component || beneficio.dados_beneficio.descricao || 'default')
+                    icone: (beneficio.dados_beneficio.icone || beneficio.dados_beneficio.descricao || 'default')
                 }
             };
         });
@@ -147,7 +147,7 @@ function DataTableContratosDetalhes({ beneficios }) {
 
     const representativeBeneficiosTemplate = (rowData) => {
         const isActive = selectedBeneficio == rowData;
-        console.log(rowData?.dados_beneficio?.icon_component)
+        console.log(rowData?.dados_beneficio?.icone)
         return (
             <div key={rowData?.dados_beneficio?.id}>
                 <BadgeGeral 
@@ -156,7 +156,7 @@ function DataTableContratosDetalhes({ beneficios }) {
                     nomeBeneficio={
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <IconeBeneficio 
-                                nomeIcone={rowData?.dados_beneficio?.icon_component} 
+                                nomeIcone={rowData?.dados_beneficio?.icone} 
                                 size={20}
                             />
                             <div>

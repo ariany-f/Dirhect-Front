@@ -11,6 +11,9 @@ import {
     IoEllipsisVertical 
 } from 'react-icons/io5';
 import { 
+    IoMdFitness
+} from 'react-icons/io';
+import { 
     BiBookReader, 
     BiShield 
 } from 'react-icons/bi';
@@ -88,6 +91,7 @@ const iconMap = {
     'Educação': BiBookReader,
     // Saúde
     'Saúde': FaHeartPulse,
+    'Saude': FaHeartPulse,
     // Auxílio Alimentação
     'Auxílio Alimentação': PiForkKnifeFill,
     'Vale Alimentação': PiForkKnifeFill,
@@ -97,6 +101,8 @@ const iconMap = {
     'Empréstimo Consignado': FaMoneyBillTransfer,
     // Previdência Privada
     'Previdência Privada': FaCoins,
+    // Academia
+    'Academia': IoMdFitness,
     // Saúde Odonto
     'Saúde Odonto': FaTooth,
     // Seguro Bike

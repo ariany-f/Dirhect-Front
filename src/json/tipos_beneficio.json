@@ -1,0 +1,8 @@
+[
+    {"code": "C", "nome": "Cultura"},
+    {"code": "E", "nome": "Educação"},
+    {"code": "H", "nome": "Home & Office"},
+    {"code": "M", "nome": "Mobilidade"},
+    {"code": "P", "nome": "P(rograma) de A(limentação) do T(rabalhador)"},
+    {"code": "S", "nome": "Saúde e Bem Estar"}
+]

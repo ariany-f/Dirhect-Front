@@ -1,17 +1,17 @@
-import Botao from "@components/Botao"
-import Frame from "@components/Frame"
-import CampoTexto from "@components/CampoTexto"
-import CheckboxContainer from '@components/CheckboxContainer'
-import Titulo from "@components/Titulo"
-import SubTitulo from "@components/SubTitulo"
-import DropdownItens from "@components/DropdownItens"
-import { RiCloseFill } from 'react-icons/ri'
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import http from "@http"
-import styled from "styled-components"
-import styles from './ModalAdicionarDepartamento.module.css'
+import { useState, useEffect } from "react";
+import { RiCloseFill } from 'react-icons/ri';
+import styled from "styled-components";
+import Botao from "@components/Botao";
+import Frame from "@components/Frame";
+import CampoTexto from "@components/CampoTexto";
+import Titulo from "@components/Titulo";
+import DropdownItens from "@components/DropdownItens";
+import IconeBeneficio from '@components/IconeBeneficio';
+import icones_beneficios from '@json/icones_beneficio.json';
+import tiposBeneficio from '@json/tipos_beneficio.json';
+import styles from './ModalAdicionarDepartamento.module.css';
 
+// Estilos (mantidos os mesmos)
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
     position: fixed;
@@ -19,7 +19,8 @@ const Overlay = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-`
+    z-index: 1000;
+`;
 
 const Col12 = styled.div`
     display: flex;
@@ -28,34 +29,18 @@ const Col12 = styled.div`
     gap: 16px;
     padding: 16px;
     width: 100%;
-`
+`;
 
 const Col6 = styled.div`
     flex: 1 1 calc(50% - 8px);
-`
-
-const Col6Centered = styled.div`
-    display: flex;
-    flex: 1 1 calc(50% - 8px);
-    justify-content: start;
-    padding-top: 14px;
-    align-items: center;
-`
-
-const Col4 = styled.div`
-    flex: 1 1 25%;
-`
-
-const Col4Centered = styled.div`
-    display: flex;
-    flex: 1 1 25%;
-    justify-content: center;
-    align-items: center;
-`
+    min-width: 250px;
+`;
 
 const DialogEstilizado = styled.dialog`
     display: flex;
     width: 40vw;
+    min-width: 500px;
+    max-width: 800px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -64,144 +49,226 @@ const DialogEstilizado = styled.dialog`
     margin: 0 auto;
     top: 15vh;
     padding: 24px;
+    background: white;
+    z-index: 1001;
+    
     & button.close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        
         & .fechar {
             box-sizing: initial;
             fill: var(--primaria);
             stroke: var(--primaria);
             color: var(--primaria);
         }
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        cursor: pointer;
-        border: none;
-        background-color: initial;
     }
-    & .icon {
-        margin-right: 5px;
-        box-sizing: initial;
-        fill: var(--primaria);
-        stroke: var(--primaria);
-        color: var(--primaria);
-    }
-    & .frame:nth-of-type(1) {
-        gap: 24px;
-        & .frame {
-            margin-bottom: 24px;
-            & p{
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            & b {
-                font-weight: 800;
-                font-size: 14px;
-            }
-        }
-    }
-`
+`;
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
-    align-self: stretch;
+    width: 100%;
 `;
 
-const Item = styled.div`
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 16px;
-    display: flex;
-    padding: 20px;
-    justify-content: space-between;
-    align-items: center;
-    width: 94%;
-    border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
-`;
-
-function ModalBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
-
-    const [classError, setClassError] = useState([])
-    const [nome, setNome] = useState('');
-    const [tipos, setTipos] = useState([
-       {code: 'C', nome: 'Cultura'},
-       {code: 'E', nome: 'Educação'},
-       {code: 'H', nome: 'Home & Office'},
-       {code: 'M', nome: 'Mobilidade'},
-       {code: 'P', nome: 'P(rograma) de A(limentação) do T(rabalhador)'},
-       {code: 'S', nome: 'Saúde e Bem Estar'}
-    ]);
+function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
+    const [classError, setClassError] = useState([]);
+    const [iconeSelecionado, setIconeSelecionado] = useState(null);
     const [dropdownTipos, setDropdownTipos] = useState([]);
-    const [tipo, setTipo] = useState('');
+    const [tipoSelecionado, setTipoSelecionado] = useState(null);
     const [descricao, setDescricao] = useState('');
-
-    const navegar = useNavigate()
+    const [opcoesIcones, setOpcoesIcones] = useState([]);
 
     useEffect(() => {
-        setDropdownTipos((estadoAnterior) => {
-            const novosTipos = tipos.map((item) => ({
-                name: item.nome,
-                code: item.code
-            }));
-            return [...estadoAnterior, ...novosTipos];
-        });
+        // Configura os tipos para o dropdown a partir do JSON importado
+        setDropdownTipos(tiposBeneficio.map(item => ({
+            name: item.nome,
+            code: item.code
+        })));
 
-    }, [])
-    
+        // Configura as opções de ícones baseado no JSON
+        const iconesFormatados = Object.keys(icones_beneficios)
+            .filter(key => key !== 'default')
+            .map(key => ({
+                name: key,
+                code: key,
+                icon: key
+            }));
+        
+        setOpcoesIcones(iconesFormatados);
+    }, []);
+
     const validarESalvar = () => {
         let errors = [];
-        if (!tipo || !tipo.code) errors.push('tipo');
+        if (!tipoSelecionado) errors.push('tipo');
+        if (!iconeSelecionado) errors.push('icone');
+        if (!descricao.trim()) errors.push('descricao');
         
         if (errors.length > 0) {
             setClassError(errors);
-        } else {
-            aoSalvar(tipo.code, descricao);
+            return;
         }
-    }
 
-    return(
+        const dadosParaAPI = {
+            tipo: tipoSelecionado.code,
+            descricao: descricao.trim(),
+            icone: iconeSelecionado.code
+        };
+        
+        aoSalvar(dadosParaAPI);
+    };
+
+    // Template para os itens do dropdown de ícones
+    const iconeOptionTemplate = (option) => {
+        if (!option) {
+            return ( 
+                <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    padding: '0'
+                }}>
+                    <span>Selecione um ícone</span>
+                </div>
+            );
+        }
+
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                padding: '0'
+            }}>
+                <IconeBeneficio nomeIcone={option.code} size={18} />
+                <span>{option.code}</span>
+            </div>
+        );
+    };
+
+    // Template para o valor selecionado no dropdown
+    const iconeValueTemplate = (option) => {
+        if (!option) {
+            return (
+                <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    padding: '0'
+                }}>
+                    <span>Selecione um ícone</span>
+                </div>
+            );
+        }
+
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                padding: '0'
+            }}>
+                <IconeBeneficio nomeIcone={option.code} size={18} />
+                <span>{option.code}</span>
+            </div>
+        );
+    };
+
+    // Template para os tipos de benefício
+    const tipoOptionTemplate = (option) => {
+        if (option) {
+            return (
+                <div style={{ padding: '2px 0' }}>
+                    {option.name}
+                </div>
+            );
+        }
+
+        return <span>Selecione um tipo</span>;
+    };
+
+    return (
         <>
-            {opened &&
-            <>
+            {opened && (
                 <Overlay>
-                    <DialogEstilizado id="modal-add-departamento" open={opened}>
+                    <DialogEstilizado open={opened}>
                         <Frame>
                             <Titulo>
-                                <form method="dialog">
-                                    <button className="close" onClick={aoFechar} formMethod="dialog">
-                                        <RiCloseFill size={20} className="fechar" />  
-                                    </button>
-                                </form>
+                                <button className="close" onClick={aoFechar}>
+                                    <RiCloseFill size={20} className="fechar" />  
+                                </button>
                                 <h6>Novo Benefício</h6>
                             </Titulo>
                         </Frame>
                         
-                        <Frame padding="12px 0px">
+                        <Wrapper>
                             <Col12>
                                 <Col6>
-                                    <DropdownItens camposVazios={classError} valor={tipo} setValor={setTipo} options={dropdownTipos} label="Tipo" name="tipo" placeholder="Tipo"/> 
+                                    <DropdownItens 
+                                        camposVazios={classError.includes('tipo') ? ['tipo'] : []}
+                                        valor={tipoSelecionado} 
+                                        setValor={setTipoSelecionado} 
+                                        options={dropdownTipos} 
+                                        label="Tipo de Benefício*" 
+                                        name="tipo" 
+                                        placeholder="Selecione o tipo"
+                                        optionTemplate={tipoOptionTemplate}
+                                    />
                                 </Col6>
-                                <Col6Centered>
-                                    <CampoTexto camposVazios={classError} name="descricao" valor={descricao} setValor={setDescricao} type="text" label="Descrição" placeholder="Digite a descrição" />
-                                </Col6Centered>
+                                
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError.includes('icone') ? ['icone'] : []}
+                                        valor={iconeSelecionado} 
+                                        setValor={setIconeSelecionado} 
+                                        options={opcoesIcones} 
+                                        label="Ícone*" 
+                                        name="icone" 
+                                        placeholder="Selecione um ícone"
+                                        optionTemplate={iconeOptionTemplate}
+                                        valueTemplate={iconeValueTemplate}
+                                    />
+                                </Col6>
+                                
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError.includes('descricao') ? ['descricao'] : []}
+                                        name="descricao" 
+                                        valor={descricao} 
+                                        setValor={setDescricao} 
+                                        type="text" 
+                                        label="Descrição*" 
+                                        placeholder="Digite a descrição" 
+                                    />
+                                </Col6>
                             </Col12>
-                        </Frame>
-                        <form method="dialog">
+                            
                             <div className={styles.containerBottom}>
-                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao 
+                                    aoClicar={aoFechar} 
+                                    estilo="neutro" 
+                                    size="medium" 
+                                    filled
+                                >
+                                    Cancelar
+                                </Botao>
+                                <Botao 
+                                    aoClicar={validarESalvar} 
+                                    estilo="vermilion" 
+                                    size="medium" 
+                                    filled
+                                >
+                                    Salvar Benefício
+                                </Botao>
                             </div>
-                        </form>
+                        </Wrapper>
                     </DialogEstilizado>
                 </Overlay>
-            </>
-            }
+            )}
         </>
-    )
+    );
 }
 
-export default ModalBeneficios
+export default ModalBeneficios;

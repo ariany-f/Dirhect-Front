@@ -28,7 +28,7 @@ import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
 import ModalConfigurarBeneficios from "../../components/ModalConfigurarBeneficios";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import IconeBeneficio from "../../components/IconeBeneficio";
+import IconeBeneficio from "@components/IconeBeneficio"
 
 // Estilos reutilizáveis (pode mover para um arquivo separado)
 const Col12 = styled.div`

@@ -44,16 +44,14 @@ function Beneficios() {
         }
     }, [])
 
-    const adicionarBeneficio = (tipo, descricao) => {
-        if(tipo == '' || descricao == '')
+    const adicionarBeneficio = (beneficio) => {
+        if(beneficio.tipo == '' || beneficio.descricao == '')
         {
             toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos', life: 3000 });
             return;
         }
-        const data = {};
-        data.tipo = tipo;
-        data.descricao = descricao;
-
+        const data = beneficio;
+       
         http.post('beneficio/', data)
             .then(response => {
                 if(response.id)

@@ -19,7 +19,7 @@ import SwitchInput from '@components/SwitchInput';
 import { IoFastFoodSharp } from 'react-icons/io5';
 import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6';
 import { MdDirectionsBike } from "react-icons/md";
-import IconeBeneficio from '../IconeBeneficio';
+import IconeBeneficio from '@components/IconeBeneficio';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',

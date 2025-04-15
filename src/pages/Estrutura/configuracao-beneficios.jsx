@@ -7,21 +7,10 @@ import SubTitulo from "@components/SubTitulo"
 import FrameVertical from "@components/FrameVertical"
 import CustomImage from "@components/CustomImage"
 import Texto from "@components/Texto"
-import BotaoSemBorda from "@components/BotaoSemBorda"
 import MainContainer from "@components/MainContainer"
 import Dashboard from '@assets/Dashboard.svg'
-import { RiBusFill, RiComputerLine, RiShoppingCartFill, RiGasStationFill, RiEBike2Fill } from 'react-icons/ri'
-import { FaPen, FaCar, FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa'
-import { BiBookReader } from 'react-icons/bi'
-import { PiForkKnifeFill } from 'react-icons/pi'
-import { MdOutlineMedicalServices, MdOutlineFastfood, MdSecurity } from 'react-icons/md'
-import { IoFastFoodSharp } from 'react-icons/io5'
-import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6'
-import { MdDirectionsBike } from "react-icons/md";
 import styled from 'styled-components'
-import ModalConfigurarBeneficios from '../../components/ModalConfigurarBeneficios'
-import BadgeBeneficio from '../../components/BadgeBeneficio'
-import IconeBeneficio from '../../components/IconeBeneficio'
+import IconeBeneficio from "@components/IconeBeneficio"
 
 const Beneficio = styled.div`
    display: flex;

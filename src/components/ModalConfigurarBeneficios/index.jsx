@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom"
 import http from "@http"
 import styled from "styled-components"
 import styles from './ModalConfigurarBeneficios.module.css'
-import IconeBeneficio from "../IconeBeneficio"
+import IconeBeneficio from "@components/IconeBeneficio"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -253,7 +253,7 @@ function ModalConfigurarBeneficios({ opened = false, aoClicar, aoFechar, aoSuces
         {
             return (
                 <div className="flex align-items-center" style={{display:'flex', gap:'10px', alignItems:'center', justifyContent: 'start'}}>
-                    <IconeBeneficio nomeIcone={option.name} />
+                    <IconeBeneficio nomeIcone={option.beneficio.icone} />
                     <Texto weight={600} size="12px">{option.name}</Texto>
                 </div>
             );
