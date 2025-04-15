@@ -125,7 +125,7 @@ function DataTableBeneficios({ beneficios, onBeneficioDeleted }) {
             <DataTable 
                 value={beneficios} 
                 filters={filters} 
-                globalFilterFields={['description']} 
+                globalFilterFields={['descricao']} 
                 emptyMessage="Não foram encontradas recargas" 
                 paginator 
                 rows={7}
