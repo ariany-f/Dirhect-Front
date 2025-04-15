@@ -401,8 +401,26 @@ function DataTableContratosDetalhes({ beneficios }) {
                     resultado.regra_elegibilidade[0].filial.index = index;
                     resultado.regra_elegibilidade[0].filial.id = item.data.map(d => d.id);
                 } else if (item.tipo === "Departamento") {
-                    resultado.regra_elegibilidade[0].departamentos.index = index;
-                    resultado.regra_elegibilidade[0].departamentos.id = item.data.map(d => d.id);
+                    resultado.regra_elegibilidade[0].departamento.index = index;
+                    resultado.regra_elegibilidade[0].departamento.id = item.data.map(d => d.id);
+                } else if (item.tipo === "Seção") {
+                    resultado.regra_elegibilidade[0].secao.index = index;
+                    resultado.regra_elegibilidade[0].secao.id = item.data.map(d => d.id);
+                } else if (item.tipo === "Centro de Custo") {
+                    resultado.regra_elegibilidade[0].centro_custo.index = index;
+                    resultado.regra_elegibilidade[0].centro_custo.id = item.data.map(d => d.id);
+                } else if (item.tipo === "Cargo") {
+                    resultado.regra_elegibilidade[0].cargo.index = index;
+                    resultado.regra_elegibilidade[0].cargo.id = item.data.map(d => d.id);
+                } else if (item.tipo === "Função") {
+                    resultado.regra_elegibilidade[0].funcao.index = index;
+                    resultado.regra_elegibilidade[0].funcao.id = item.data.map(d => d.id);
+                } else if (item.tipo === "Sindicato") {
+                    resultado.regra_elegibilidade[0].sindicato.index = index;
+                    resultado.regra_elegibilidade[0].sindicato.id = item.data.map(d => d.id);
+                } else if (item.tipo === "Horário") {
+                    resultado.regra_elegibilidade[0].horario.index = index;
+                    resultado.regra_elegibilidade[0].horario.id = item.data.map(d => d.id);
                 }
             });
     
