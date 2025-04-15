@@ -297,13 +297,12 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     const carregarGruposExistentes = async (regras) => {
         if (!regras || regras.length === 0) return;
     
-        const regra = regras[0]; // Pega a primeira regra
         const novosGrupos = [];
         
-        // Mapeamento mais completo entre chaves do objeto e tipos
+        // Mapeamento entre chaves do objeto e tipos
         const tiposMapeados = {
             filial: 'Filial',
-            departamento: 'Departamento', // Note que aqui está no plural para match com o objeto
+            departamento: 'Departamento',
             secao: 'Seção',
             centro_custo: 'Centro de Custo',
             cargo: 'Cargo',
@@ -312,47 +311,50 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
             horario: 'Horário'
         };
     
-        // Para cada tipo possível no objeto regra_elegibilidade
-        for (const [tipoNoObjeto, tipoNome] of Object.entries(tiposMapeados)) {
-            if (regra[tipoNoObjeto] && Array.isArray(regra[tipoNoObjeto].id)) {
-                try {
-                    // Determina o endpoint da API (singular)
-                    const endpoint = tipoNoObjeto.endsWith('s') ? 
-                        tipoNoObjeto.substring(0, tipoNoObjeto.length - 1) : 
-                        tipoNoObjeto;
-                    
-                    // Busca os dados completos
-                    const response = await http.get(`${endpoint}/?format=json`);
-                    
-                    // Filtra apenas os itens que estão na regra
-                    const itensFiltrados = response.filter(item => 
-                        regra[tipoNoObjeto].id.includes(item.id)
-                    );
+        // Para cada regra no array regra_elegibilidade
+        for (const regra of regras) {
+            // Para cada tipo possível no objeto regra
+            for (const [tipoNoObjeto, tipoNome] of Object.entries(tiposMapeados)) {
+                if (regra[tipoNoObjeto] && Array.isArray(regra[tipoNoObjeto].id)) {
+                    try {
+                        // Determina o endpoint da API (singular)
+                        const endpoint = tipoNoObjeto.endsWith('s') ? 
+                            tipoNoObjeto.substring(0, tipoNoObjeto.length - 1) : 
+                            tipoNoObjeto;
+                        
+                        // Busca os dados completos
+                        const response = await http.get(`${endpoint}/?format=json`);
+                        
+                        // Filtra apenas os itens que estão na regra
+                        const itensFiltrados = response.filter(item => 
+                            regra[tipoNoObjeto].id.includes(item.id)
+                        );
     
-                    if (itensFiltrados.length > 0) {
-                        // Formata os dados
-                        const opcoesFormatadas = itensFiltrados.map(item => {
-                            const textoCompleto = item.nome || item.descricao || item.name;
-                            return {
-                                id: item.id,
-                                name: textoCompleto.length > 50 
-                                    ? `${textoCompleto.substring(0, 47)}...` 
-                                    : textoCompleto,
-                                textoCompleto: textoCompleto
-                            };
-                        });
+                        if (itensFiltrados.length > 0) {
+                            // Formata os dados
+                            const opcoesFormatadas = itensFiltrados.map(item => {
+                                const textoCompleto = item.nome || item.descricao || item.name;
+                                return {
+                                    id: item.id,
+                                    name: textoCompleto.length > 50 
+                                        ? `${textoCompleto.substring(0, 47)}...` 
+                                        : textoCompleto,
+                                    textoCompleto: textoCompleto
+                                };
+                            });
     
-                        // Adiciona o grupo
-                        novosGrupos.push({
-                            id: `${tipoNome}-${Date.now()}`,
-                            data: opcoesFormatadas,
-                            tipo: tipoNome,
-                            opcoes: opcoesFormatadas.map(o => o.textoCompleto),
-                            indexOriginal: regra[tipoNoObjeto].index || 0
-                        });
+                            // Adiciona o grupo
+                            novosGrupos.push({
+                                id: `${tipoNome}-${Date.now()}`,
+                                data: opcoesFormatadas,
+                                tipo: tipoNome,
+                                opcoes: opcoesFormatadas.map(o => o.textoCompleto),
+                                indexOriginal: regra[tipoNoObjeto].index || 0
+                            });
+                        }
+                    } catch (erro) {
+                        console.error(`Erro ao carregar ${tipoNoObjeto}:`, erro);
                     }
-                } catch (erro) {
-                    console.error(`Erro ao carregar ${tipoNoObjeto}:`, erro);
                 }
             }
         }

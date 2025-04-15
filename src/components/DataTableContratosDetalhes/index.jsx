@@ -147,7 +147,7 @@ function DataTableContratosDetalhes({ beneficios }) {
 
     const representativeBeneficiosTemplate = (rowData) => {
         const isActive = selectedBeneficio == rowData;
-        console.log(rowData?.dados_beneficio?.icone)
+        
         return (
             <div key={rowData?.dados_beneficio?.id}>
                 <BadgeGeral 
@@ -240,43 +240,32 @@ function DataTableContratosDetalhes({ beneficios }) {
     function salvarGrupos(data) {
         const transformarDados = (dados) => {
             const resultado = {
-                regra_elegibilidade: [{
-                    filial: { index: null, id: [] },
-                    departamento: { index: null, id: [] },
-                    secao: { index: null, id: [] },
-                    centro_custo: { index: null, id: [] },
-                    cargo: { index: null, id: [] },
-                    funcao: { index: null, id: [] },
-                    sindicato: { index: null, id: [] },
-                    horario: { index: null, id: [] }
-                }]
+                regra_elegibilidade: []
             };
     
             dados.forEach((item, index) => {
-                if (item.tipo === "Filial") {
-                    resultado.regra_elegibilidade[0].filial.index = index;
-                    resultado.regra_elegibilidade[0].filial.id = item.data.map(d => d.id);
-                } else if (item.tipo === "Departamento") {
-                    resultado.regra_elegibilidade[0].departamento.index = index;
-                    resultado.regra_elegibilidade[0].departamento.id = item.data.map(d => d.id);
-                } else if (item.tipo === "Seção") {
-                    resultado.regra_elegibilidade[0].secao.index = index;
-                    resultado.regra_elegibilidade[0].secao.id = item.data.map(d => d.id);
-                } else if (item.tipo === "Centro de Custo") {
-                    resultado.regra_elegibilidade[0].centro_custo.index = index;
-                    resultado.regra_elegibilidade[0].centro_custo.id = item.data.map(d => d.id);
-                } else if (item.tipo === "Cargo") {
-                    resultado.regra_elegibilidade[0].cargo.index = index;
-                    resultado.regra_elegibilidade[0].cargo.id = item.data.map(d => d.id);
-                } else if (item.tipo === "Função") {
-                    resultado.regra_elegibilidade[0].funcao.index = index;
-                    resultado.regra_elegibilidade[0].funcao.id = item.data.map(d => d.id);
-                } else if (item.tipo === "Sindicato") {
-                    resultado.regra_elegibilidade[0].sindicato.index = index;
-                    resultado.regra_elegibilidade[0].sindicato.id = item.data.map(d => d.id);
-                } else if (item.tipo === "Horário") {
-                    resultado.regra_elegibilidade[0].horario.index = index;
-                    resultado.regra_elegibilidade[0].horario.id = item.data.map(d => d.id);
+                if (!item.data || item.data.length === 0) return; // Ignora se não tiver dados
+    
+                const campo = {
+                    'Filial': 'filial',
+                    'Departamento': 'departamento',
+                    'Seção': 'secao',
+                    'Centro de Custo': 'centro_custo',
+                    'Cargo': 'cargo',
+                    'Função': 'funcao',
+                    'Sindicato': 'sindicato',
+                    'Horário': 'horario'
+                }[item.tipo];
+    
+                if (campo) {
+                    // Cria um novo objeto para cada regra
+                    const novaRegra = {};
+                    novaRegra[campo] = {
+                        index: index,
+                        id: item.data.map(d => d.id)
+                    };
+                    
+                    resultado.regra_elegibilidade.push(novaRegra);
                 }
             });
     
@@ -296,7 +285,6 @@ function DataTableContratosDetalhes({ beneficios }) {
             setModalElegibilidadeOpened(false);
         });
     }
-
     return (
         <>
             <Toast ref={toast} />
