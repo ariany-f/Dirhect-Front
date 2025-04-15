@@ -295,8 +295,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                 return {
                     id: item.id,
                     name: textoLimitado,
-                    // Mantém o texto original como propriedade adicional se precisar
-                    textoCompleto: textoCompleto
+                    textoCompleto: textoCompleto,
                 };
             });
             setOpcoesDisponiveis(opcoesFormatadas);
@@ -316,13 +315,13 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     };
       
     const adicionarGrupo = () => {
-        if (!tipoSelecionado || opcoesSelecionadas.length === 0) {
+        if (!tipoSelecionado || (!tipoSelecionado.name) || opcoesSelecionadas.length === 0) {
             alert('Selecione um tipo e pelo menos uma opção');
             return;
         }
         
         // Verifica se já existe um grupo deste tipo
-        const grupoExistenteIndex = gruposAdicionados.findIndex(g => g.tipo === tipoSelecionado);
+        const grupoExistenteIndex = gruposAdicionados.findIndex(g => g.tipo === tipoSelecionado.name);
         
         if (grupoExistenteIndex >= 0) {
             // Atualiza grupo existente
@@ -341,9 +340,9 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         } else {
             // Cria novo grupo
             const novoGrupo = {
-                id: `${tipoSelecionado}-${Date.now()}`,
-                tipo: tipoSelecionado,
-                opcoes: opcoesSelecionadas.map(o => o.name)
+                id: `${tipoSelecionado.name}-${Date.now()}`,
+                tipo: tipoSelecionado.name,
+                opcoes: opcoesSelecionadas.map(o => o.textoCompleto)
             };
             
             setGruposAdicionados([...gruposAdicionados, novoGrupo]);
@@ -366,7 +365,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     };
 
     const handleTipoChange = async (tipo) => {
-        setTipoSelecionado(tipo.name);
+        setTipoSelecionado(tipo);
         setOpcoesSelecionadas([]);
         await buscarOpcoes(tipo.code);
     };
@@ -407,7 +406,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                 
                                 {tipoSelecionado && (
                                     <div style={{ width: '100%' }}>
-                                        <label className={styles.label}>{tipoSelecionado}</label>
+                                        <label className={styles.label}>{tipoSelecionado.name}</label>
                                         <StyledMultiSelect
                                             value={opcoesSelecionadas}
                                             onChange={handleMultiSelectChange}
@@ -415,7 +414,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                             optionLabel="name"
                                             filter
                                             display="chip"
-                                            placeholder={carregando ? "Carregando..." : `Selecione ${tipoSelecionado}`}
+                                            placeholder={carregando ? "Carregando..." : `Selecione ${tipoSelecionado.name}`}
                                             disabled={carregando}
                                             showSelectAll={true}
                                             panelClassName={styles.dropdownPanel}
@@ -433,11 +432,11 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                         filled
                                         disabled={!tipoSelecionado || opcoesSelecionadas.length === 0}
                                     >
-                                        {tipoSelecionado &&
+                                        {tipoSelecionado && tipoSelecionado?.name &&
                                             <>
-                                            {gruposAdicionados.some(g => g.tipo === tipoSelecionado) 
-                                                ? `Adicionar a ${tipoSelecionado.toLowerCase()}` 
-                                                : `Adicionar grupo ${tipoSelecionado.toLowerCase()}`}
+                                            {gruposAdicionados.some(g => g.tipo === tipoSelecionado.name) 
+                                                ? `Adicionar a ${tipoSelecionado.name.toLowerCase()}` 
+                                                : `Adicionar grupo ${tipoSelecionado.name.toLowerCase()}`}
                                             <FaArrowRight size={12} />
                                             </> 
                                         }
