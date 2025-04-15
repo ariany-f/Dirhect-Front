@@ -81,9 +81,10 @@ const Col12 = styled.div`
 
 const Col6 = styled.div`
     padding: 10px;
-    flex: 1 1 50%;
+    flex: 1 1 calc(50% - 5px);
     gap: 5px;
     display: flex;
+    max-width: calc(50% - 5px);
     flex-direction: column;
 `
 
