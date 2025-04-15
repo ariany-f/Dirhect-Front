@@ -303,12 +303,12 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         // Mapeamento mais completo entre chaves do objeto e tipos
         const tiposMapeados = {
             filial: 'Filial',
-            departamentos: 'Departamento', // Note que aqui está no plural para match com o objeto
+            departamento: 'Departamento', // Note que aqui está no plural para match com o objeto
             secao: 'Seção',
             centro_custo: 'Centro de Custo',
-            cargos: 'Cargo',
+            cargo: 'Cargo',
             funcao: 'Função',
-            sindicatos: 'Sindicato',
+            sindicato: 'Sindicato',
             horario: 'Horário'
         };
     
