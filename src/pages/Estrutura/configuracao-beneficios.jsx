@@ -21,170 +21,7 @@ import { MdDirectionsBike } from "react-icons/md";
 import styled from 'styled-components'
 import ModalConfigurarBeneficios from '../../components/ModalConfigurarBeneficios'
 import BadgeBeneficio from '../../components/BadgeBeneficio'
-
-const icones = [
-    {
-        "id": 1,
-        "name": "Alimentação",
-        "flexible_value": false,
-        "description": "Mercados, supermercados e aplicativo de delivery.",
-        "food_meal_one_category": false,
-        "icone": <RiShoppingCartFill size={12} />
-    },
-    {
-        "id": 2,
-        "name": "Refeição",
-        "flexible_value": false,
-        "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
-        "food_meal_one_category": false,
-        "icone": <IoFastFoodSharp size={12} />
-    },
-    {
-        "id": 3,
-        "name": "Mobilidade",
-        "flexible_value": true,
-        "description": "Postos de combustível, estacionamentos, pedágio, carros por aplicativo, recarga de bilhete de transporte e passagens de ônibus e trem.",
-        "food_meal_one_category": false,
-        "icone": <RiBusFill size={12} />
-    },
-    {
-        "id": 4,
-        "name": "Home Office",
-        "flexible_value": true,
-        "description": "Compra de cadeira ergométrica, itens de papelaria, assistência técnica de computador e custeio de contas de energia e internet",
-        "food_meal_one_category": false,
-        "icone": <RiComputerLine size={12} />
-    },
-    {
-        "id": 5,
-        "name": "Combustível",
-        "flexible_value": true,
-        "description": "",
-        "food_meal_one_category": false,
-        "icone": <RiGasStationFill size={12} />
-    },
-    {
-        "id": 6,
-        "name": "Cultura",
-        "flexible_value": true,
-        "description": "Streaming de vídeo e música, bancas de jornais, jogos online, ingressos para shows teatros e museus, instrumentos musicais, escolas de arte e música e parques de diversões, zoológicos e aquários.",
-        "food_meal_one_category": false,
-        "icone": <FaTheaterMasks size={12} />
-    },
-    {
-        "id": 7,
-        "name": "Educação",
-        "flexible_value": true,
-        "description": "Cursos online e presenciais, cursos de extensão, cursos e app de idiomas, ensino superior e técnico, eventos e feiras profissionais e livrarias e papelarias",
-        "food_meal_one_category": false,
-        "icone": <BiBookReader  size={12} />
-    },
-    {
-        "id": 8,
-        "name": "Saúde",
-        "flexible_value": true,
-        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
-        "food_meal_one_category": false,
-        "icone": <FaHeartPulse size={12} />
-    },
-    {
-        "id": 9,
-        "name": "Auxílio Alimentação",
-        "flexible_value": false,
-        "description": "Alimentação e Refeição, tudo em uma só categoria.",
-        "food_meal_one_category": true,
-        "icone": <PiForkKnifeFill size={12} />
-    },
-    {
-        "id": 10,
-        "name": "Vale Combustível",
-        "flexible_value": true,
-        "description": "",
-        "food_meal_one_category": false,
-        "icone": <RiGasStationFill size={12} />
-    },
-    {
-        "id": 11,
-        "name": "Seguro de Vida",
-        "flexible_value": true,
-        "description": "",
-        "food_meal_one_category": false,
-        "icone": <MdSecurity size={12} />
-    },
-    {
-        "id": 12,
-        "name": "Empréstimo Consignado",
-        "flexible_value": true,
-        "description": "",
-        "food_meal_one_category": false,
-        "icone": <FaMoneyBillTransfer size={30} />
-    },
-    {
-        "id": 13,
-        "name": "Previdência Privada",
-        "flexible_value": true,
-        "description": "",
-        "food_meal_one_category": false,
-        "icone": <FaCoins size={12} />
-    },
-    {
-        "id": 14,
-        "name": "Saúde Odonto",
-        "flexible_value": true,
-        "description": "",
-        "food_meal_one_category": false,
-        "icone": <FaTooth size={12} />
-    },
-    {
-        "id": 15,
-        "name": "Vale Alimentação",
-        "flexible_value": false,
-        "description": "Mercados, supermercados e aplicativo de delivery.",
-        "food_meal_one_category": false,
-        "icone": <RiShoppingCartFill size={12} />
-    },
-    {
-        "id": 16,
-        "name": "Vale Refeição",
-        "flexible_value": false,
-        "description": "Restaurantes, cafeterias, padarias, mercados, aplicativo de delivery e lojas de conveniência.",
-        "food_meal_one_category": false,
-        "icone": <IoFastFoodSharp size={12} />
-    },
-    {
-        "id": 15,
-        "name": "Odonto",
-        "flexible_value": true,
-        "description": "",
-        "food_meal_one_category": false,
-        "icone": <FaTooth size={12} />
-    },
-    {
-        "id": 16,
-        "name": "Seguro Bike",
-        "flexible_value": true,
-        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
-        "food_meal_one_category": false,
-        "icone": <MdDirectionsBike size={12} />
-    },
-    {
-        "id": 17,
-        "name": "Seguro Moto",
-        "flexible_value": true,
-        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
-        "food_meal_one_category": false,
-        "icone": <RiEBike2Fill size={16} />
-    },
-    {
-        "id": 18,
-        "name": "Seguro Automotivo",
-        "flexible_value": true,
-        "description": "Farmácias, exames, consultas, serviços hospitalares, serviços médicos eterapias.",
-        "food_meal_one_category": false,
-        "icone": <FaCar size={12} />
-    },
-]
-
+import IconeBeneficio from '../../components/IconeBeneficio'
 
 const Beneficio = styled.div`
    display: flex;
@@ -288,19 +125,7 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
         }
         console.log(configuracoes)
     }, [configuracoes, id, type])
-
-    // Função para encontrar o ícone correspondente ao benefício
-    const getIcone = (descricaoBeneficio) => {
-        const beneficioMap = {
-            'Vale Combustível': 'Vale Combustivel',
-            'Saúde': 'Saúde'
-        };
-        
-        const nomeIcone = beneficioMap[descricaoBeneficio] || descricaoBeneficio;
-        const iconeEncontrado = icones.find(icone => icone.name === nomeIcone);
-        return iconeEncontrado ? iconeEncontrado.icone : null;
-    }
-
+    
     const getTipoCalculo = (tipo) => {
         const tipoMap = {
             'F': 'Valor Fixo',
@@ -329,7 +154,7 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                         const beneficio = config.item_beneficio;
                         const dadosBeneficio = beneficio.beneficio.dados_beneficio;
                         const ben = beneficio.beneficio;
-                        const icone = getIcone(dadosBeneficio.descricao);
+                        const icone = <IconeBeneficio nomeIcone={dadosBeneficio.descricao}/>
                         
                         return (
                             <Col6 key={config.id}>
