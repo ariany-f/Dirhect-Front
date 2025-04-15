@@ -47,7 +47,7 @@ function DataTableBeneficios({ beneficios, onBeneficioDeleted }) {
 
     const excluirBeneficio = (beneficioId) => {
         if (window.confirm('Tem certeza que deseja excluir este benefício?')) {
-            http.delete(`/api/beneficios/${beneficioId}/`)
+            http.delete(`/api/beneficios/${beneficioId}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',
