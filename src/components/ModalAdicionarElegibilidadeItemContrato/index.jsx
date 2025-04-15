@@ -151,9 +151,9 @@ const DialogEstilizado = styled.dialog`
     align-items: center;
     border-radius: 5px;
     border: none;
-    top: 2vh;
+    top: 3vh;
     left: ${props => props.$opened ? '29vw' : '100vw'};
-    height: 96vh;
+    height: 94vh;
     padding: 24px;
     transition: left 0.3s ease-in-out;
     background: white;
@@ -443,12 +443,14 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                     )}
                                 </ContainerGrupos>
                             </DndProvider>
-                            <BotaoGrupo align="end">
-                                <Botao size="medium" aoClicar={salvarGrupos}>Salvar</Botao>
-                            </BotaoGrupo>
                         </Col6>
                     </Col12>
                 </Frame>
+                <div style={{width: '100%'}}>
+                    <BotaoGrupo align="end">
+                        <Botao size="medium" aoClicar={salvarGrupos}>Salvar</Botao>
+                    </BotaoGrupo>
+                </div>
             </DialogEstilizado>
         </Overlay>
     );
