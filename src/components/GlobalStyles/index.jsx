@@ -347,6 +347,49 @@ template {
 .p-multiselect-items .p-multiselect-checkbox {
   margin-right: 10px;
 }
+/* Lista de grupos */
+.listaGrupos {
+    width: 100%;
+    margin-bottom: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Item de grupo */
+.itemGrupo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: var(--neutro-100);
+    border-radius: 4px;
+    border-left: 4px solid var(--primaria);
+}
+
+.grupoInfo {
+    display: flex;
+    gap: 8px;
+}
+
+.grupoTipo {
+    font-weight: bold;
+    color: var(--primaria);
+}
+
+.botaoRemover {
+    background: none;
+    border: none;
+    color: var(--error);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 8px;
+}
+
+/* Efeito de arrastar */
+.itemGrupo:active {
+    background-color: var(--neutro-200);
+}
 `
 
 

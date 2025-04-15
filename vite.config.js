@@ -5,6 +5,11 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  include: [
+    'react-dnd',
+    'react-dnd-html5-backend'
+  ],
+  exclude: ['react-dnd-multi-backend'],
   resolve: {
     alias: [
       { find: '@', replacement: path.resolve(__dirname, './src') },

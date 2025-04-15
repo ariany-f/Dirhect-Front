@@ -276,7 +276,6 @@ function DataTableContratosDetalhes({ beneficios }) {
             Real.format(rowData.valor_desconto)
         )
     }
-
     
     const representativeOptionsTemplate = (rowData) => {
         return (
