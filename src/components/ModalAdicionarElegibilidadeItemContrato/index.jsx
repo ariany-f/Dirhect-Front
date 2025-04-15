@@ -17,6 +17,7 @@ import { RiCloseFill, RiDraggable } from "react-icons/ri"
 import { TfiSave } from "react-icons/tfi";
 import { GrAddCircle } from "react-icons/gr"
 import { MdArrowRight } from "react-icons/md"
+import { FaArrowRight } from "react-icons/fa"
 
 // Componente de Item Arrastável com novos estilos
 const DraggableItem = ({ grupo, index, moveItem, removerGrupo }) => {
@@ -411,9 +412,9 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                         disabled={!tipoSelecionado || opcoesSelecionadas.length === 0}
                                     >
                                         {gruposAdicionados.some(g => g.tipo === tipoSelecionado) 
-                                            ? `Adicionar a ${tipoSelecionado}` 
-                                            : `Adicionar grupo ${tipoSelecionado}`}
-                                        <MdArrowRight />
+                                            ? `Adicionar a ${tipoSelecionado.toLowerCase()}` 
+                                            : `Adicionar grupo ${tipoSelecionado.toLowerCase()}`}
+                                        <FaArrowRight size={12} />
                                     </Botao>
                                 </BotaoGrupo>
                             </Wrapper>
