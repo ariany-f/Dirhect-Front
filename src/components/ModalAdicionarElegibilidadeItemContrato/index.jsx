@@ -412,10 +412,14 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                         filled
                                         disabled={!tipoSelecionado || opcoesSelecionadas.length === 0}
                                     >
-                                        {gruposAdicionados.some(g => g.tipo === tipoSelecionado) 
-                                            ? `Adicionar a ${tipoSelecionado.toLowerCase()}` 
-                                            : `Adicionar grupo ${tipoSelecionado.toLowerCase()}`}
-                                        <FaArrowRight size={12} />
+                                        {tipoSelecionado &&
+                                            <>
+                                            {gruposAdicionados.some(g => g.tipo === tipoSelecionado) 
+                                                ? `Adicionar a ${tipoSelecionado.toLowerCase()}` 
+                                                : `Adicionar grupo ${tipoSelecionado.toLowerCase()}`}
+                                            <FaArrowRight size={12} />
+                                            </> 
+                                        }
                                     </Botao>
                                 </BotaoGrupo>
                             </Wrapper>
