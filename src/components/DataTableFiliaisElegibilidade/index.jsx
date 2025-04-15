@@ -147,8 +147,8 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
                             .map(item => (
                                 <BadgeBeneficio 
                                     key={item.item_beneficio.beneficio?.id || item.id}
-                                    nomeBeneficio={item.item_beneficio.beneficio?.dados_beneficio?.descricao || 
-                                                  item.item_beneficio.descricao}
+                                    nomeBeneficio={item.item_beneficio.beneficio?.dados_beneficio?.icone || item.item_beneficio.beneficio?.dados_beneficio?.descricao || 
+                                        item.item_beneficio.icone || item.item_beneficio.descricao}
                                 />
                             ))
                     )}

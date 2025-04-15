@@ -56,12 +56,11 @@ function DataTableOperadorasDetalhes({ beneficios }) {
     }
 
     const representativeBeneficiosTemplate = (rowData) => {
-       
         return (
             <>
             <BadgeGeral weight={500} nomeBeneficio={
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <IconeBeneficio nomeIcone={rowData.beneficio.descricao} />
+                    <IconeBeneficio nomeIcone={rowData.beneficio.icone ?? rowData.beneficio.descricao} />
                     <div>
                         {rowData.beneficio.descricao}
                     </div>

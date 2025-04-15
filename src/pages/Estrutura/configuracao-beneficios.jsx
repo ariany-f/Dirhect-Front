@@ -143,7 +143,7 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                         const beneficio = config.item_beneficio;
                         const dadosBeneficio = beneficio.beneficio.dados_beneficio;
                         const ben = beneficio.beneficio;
-                        const icone = <IconeBeneficio nomeIcone={dadosBeneficio.descricao}/>
+                        const icone = <IconeBeneficio nomeIcone={dadosBeneficio.icone ?? dadosBeneficio.descricao}/>
                         
                         return (
                             <Col6 key={config.id}>
