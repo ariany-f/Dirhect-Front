@@ -131,6 +131,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
                 <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
+                    gap: '10px',
                     padding: '0'
                 }}>
                     <span>Selecione um ícone</span>
@@ -142,6 +143,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
             <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
+                gap: '10px',
                 padding: '0'
             }}>
                 <IconeBeneficio nomeIcone={option.code} size={18} />
@@ -157,6 +159,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
                 <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
+                    gap: '10px',
                     padding: '0'
                 }}>
                     <span>Selecione um ícone</span>
@@ -168,6 +171,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
             <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
+                gap: '10px',
                 padding: '0'
             }}>
                 <IconeBeneficio nomeIcone={option.code} size={18} />
