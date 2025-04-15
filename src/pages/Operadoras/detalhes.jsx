@@ -50,16 +50,16 @@ function DetalhesOperadoras() {
         }
     }, [operadora, modalOpened])
 
-    const vincularBeneficio = (id_beneficio) => {
-       
+    const vincularBeneficio = (beneficio) => {
         const data = {};
         data.operadora = parseInt(id);
-        data.beneficio = parseInt(id_beneficio);
+        data.beneficio = parseInt(beneficio.code);
 
         http.post('beneficio_operadora/', data)
         .then(response => {
             if(response.id)
             {
+                operadora.beneficios_vinculados.push({id: beneficio.code, beneficio:beneficio})
                 toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Benefício vinculado com sucesso!', life: 3000});
             }
         })

@@ -141,6 +141,9 @@ function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucess
                     const novosBeneficios = response.map(item => ({
                         name: item.descricao,
                         code: item.id,
+                        descricao: item.descricao,
+                        tipo: item.tipo,
+                        icone: item.icone || item.descricao, // Usa o ícone ou o nome como fallback
                         icon: item.icone || item.descricao // Usa o ícone ou o nome como fallback
                     }));
                     
@@ -187,7 +190,7 @@ function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucess
             setClassError(['beneficio']);
             return;
         }
-        aoSalvar(beneficio.code);
+        aoSalvar(beneficio);
     };
 
     return (
