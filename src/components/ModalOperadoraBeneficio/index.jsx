@@ -12,6 +12,7 @@ import http from "@http"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
 import { useDepartamentoContext } from "@contexts/Departamento"
+import IconeBeneficio from '@components/IconeBeneficio';
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -125,89 +126,121 @@ const Item = styled.div`
 `;
 
 function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
-
-    const [classError, setClassError] = useState([])
-    const [observacao, setObservacao] = useState('');
+    const [classError, setClassError] = useState([]);
     const [beneficios, setBeneficios] = useState([]);
     const [dropdownBeneficios, setDropdownBeneficios] = useState([]);
-    const [beneficio, setBeneficio] = useState('');
-    const [data_inicio, setDataInicio] = useState('');
-    const [data_fim, setDataFim] = useState('');
-
-    const navegar = useNavigate()
-
-    useEffect(() => {
-       
-        if(opened){
-
-            if(beneficios.length == 0)
-            {
-                http.get('/beneficio/?format=json')
-                .then(response => {
-                    setBeneficios(response)
-                })
-            }
-            else
-            {
-                if(dropdownBeneficios.length == 0 && beneficios.length > 0)
-                {
-                    setDropdownBeneficios((estadoAnterior) => {
-                        const novosBeneficios = beneficios.map((item) => ({
-                            name: item.descricao,
-                            code: item.id
-                        }));
-                        return [...estadoAnterior, ...novosBeneficios];
-                    });
-                }
-            }
-        }
-
-
-    }, [opened, beneficios])
+    const [beneficio, setBeneficio] = useState(null);
     
-    const validarESalvar = () => {
-        let errors = [];
-        if (!beneficio || !beneficio.code) errors.push('beneficio');
-        
-        if (errors.length > 0) {
-            setClassError(errors);
-        } else {
-            aoSalvar(beneficio.code);
+    useEffect(() => {
+        if(opened && beneficios.length === 0) {
+            http.get('/beneficio/?format=json')
+                .then(response => {
+                    setBeneficios(response);
+                    
+                    // Formatando os benefícios para o dropdown com ícones
+                    const novosBeneficios = response.map(item => ({
+                        name: item.descricao,
+                        code: item.id,
+                        icon: item.icone || item.descricao // Usa o ícone ou o nome como fallback
+                    }));
+                    
+                    setDropdownBeneficios(novosBeneficios);
+                });
         }
-    }
+    }, [opened]);
 
-    return(
+    // Template para os itens do dropdown
+    const beneficioOptionTemplate = (option) => {
+        if (!option) return <div>Selecione um benefício</div>;
+        
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '10px',
+                padding: '0 12px'
+            }}>
+                <IconeBeneficio nomeIcone={option.icon} size={18} />
+                <span>{option.name}</span>
+            </div>
+        );
+    };
+
+    // Template para o valor selecionado
+    const beneficioValueTemplate = (option) => {
+        if (!option) return <span>Selecione um benefício</span>;
+        
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '10px'
+            }}>
+                <IconeBeneficio nomeIcone={option.icon} size={18} />
+                <span>{option.name}</span>
+            </div>
+        );
+    };
+
+    const validarESalvar = () => {
+        if (!beneficio?.code) {
+            setClassError(['beneficio']);
+            return;
+        }
+        aoSalvar(beneficio.code);
+    };
+
+    return (
         <>
-            {opened &&
-            <>
+            {opened && (
                 <Overlay>
-                    <DialogEstilizado id="modal-add-departamento" open={opened}>
+                    <DialogEstilizado open={opened}>
                         <Frame>
                             <Titulo>
-                                <form method="dialog">
-                                    <button className="close" onClick={aoFechar} formMethod="dialog">
-                                        <RiCloseFill size={20} className="fechar" />  
-                                    </button>
-                                </form>
+                                <button className="close" onClick={aoFechar}>
+                                    <RiCloseFill size={20} className="fechar" />  
+                                </button>
                                 <h6>Adicionar Benefício à Operadora</h6>
                             </Titulo>
                         </Frame>
                         
                         <Frame padding="24px 0px">
-                            <DropdownItens camposVazios={classError} valor={beneficio} setValor={setBeneficio} options={dropdownBeneficios} label="Benefício" name="beneficio" placeholder="Benefício"/> 
+                            <DropdownItens 
+                                camposVazios={classError.includes('beneficio') ? ['beneficio'] : []}
+                                valor={beneficio} 
+                                setValor={setBeneficio} 
+                                options={dropdownBeneficios} 
+                                label="Benefício*" 
+                                name="beneficio" 
+                                placeholder="Selecione um benefício"
+                                optionTemplate={beneficioOptionTemplate}
+                                valueTemplate={beneficioValueTemplate}
+                            />
                         </Frame>
-                        <form method="dialog">
-                            <div className={styles.containerBottom}>
-                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
-                            </div>
-                        </form>
+                        
+                        <div className={styles.containerBottom}>
+                            <Botao 
+                                aoClicar={aoFechar} 
+                                estilo="neutro" 
+                                size="medium" 
+                                filled
+                            >
+                                Voltar
+                            </Botao>
+                            <Botao 
+                                aoClicar={validarESalvar} 
+                                estilo="vermilion" 
+                                size="medium" 
+                                filled
+                            >
+                                Confirmar
+                            </Botao>
+                        </div>
                     </DialogEstilizado>
                 </Overlay>
-            </>
-            }
+            )}
         </>
-    )
+    );
 }
 
-export default ModalOperadoraBeneficios
+export default ModalOperadoraBeneficios;
