@@ -112,20 +112,31 @@ const DraggableItem = ({ grupo, index, moveItem, removerGrupo }) => {
                     flexWrap: 'wrap', 
                     gap: '8px'
                 }}>
-                    {grupo.opcoes.map((opcao, i) => (
-                        <span 
-                            key={i} 
-                            style={{
-                                backgroundColor: '#f5f5f5',
-                                padding: '4px 12px',
-                                borderRadius: '16px',
-                                fontSize: '13px',
-                                color: '#424242'
-                            }}
-                        >
-                            {opcao}
-                        </span>
-                    ))}
+                     {grupo.opcoes.map((opcao, i) => {
+                        const textoLimitado = opcao.length > 50 
+                            ? `${opcao.substring(0, 47)}...` 
+                            : opcao;
+                       
+                        return (
+                            <span 
+                                key={i} 
+                                style={{
+                                    backgroundColor: '#f5f5f5',
+                                    padding: '4px 12px',
+                                    borderRadius: '16px',
+                                    fontSize: '13px',
+                                    color: '#424242',
+                                    maxWidth: '200px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap'
+                                }}
+                                title={opcao} // Mostra o texto completo no hover
+                            >
+                                {textoLimitado}
+                            </span>
+                        );
+                    })}
                 </div>
             </div>
         </div>
@@ -203,6 +214,7 @@ const Col12 = styled.div`
 
 const Col6 = styled.div`
     flex: 1 1 calc(50% - 8px);
+    max-width: calc(50% - 8px);
 `;
 
 const StyledMultiSelect = styled(MultiSelect)`
@@ -260,24 +272,33 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     const [gruposAdicionados, setGruposAdicionados] = useState([]);
     
     const tipos = [
-        'Filial',
-        'Departamento',
-        'Seção',
-        'Centro de Custo',
-        'Cargo',
-        'Função',
-        'Sindicato',
-        'Horário'
+        {code: 'filial', name: 'Filial'},
+        {code: 'departamento', name: 'Departamento'},
+        {code: 'secao', name: 'Seção'},
+        {code: 'centro_custo', name: 'Centro de Custo'},
+        {code: 'cargo', name: 'Cargo'},
+        {code: 'funcao', name: 'Função'},
+        {code: 'sindicato', name: 'Sindicato'},
+        {code: 'horario', name: 'Horário'}
     ];
 
     const buscarOpcoes = async (tipo) => {
         setCarregando(true);
         try {
             const response = await http.get(`${tipo.toLowerCase()}/?format=json`);
-            const opcoesFormatadas = response.map(item => ({
-                id: item.id,
-                name: item.nome || item.descricao || item.name
-            }));
+            const opcoesFormatadas = response.map(item => {
+                const textoCompleto = item.nome || item.descricao || item.name;
+                const textoLimitado = textoCompleto.length > 50 
+                    ? `${textoCompleto.substring(0, 47)}...` 
+                    : textoCompleto;
+                
+                return {
+                    id: item.id,
+                    name: textoLimitado,
+                    // Mantém o texto original como propriedade adicional se precisar
+                    textoCompleto: textoCompleto
+                };
+            });
             setOpcoesDisponiveis(opcoesFormatadas);
         } catch (erro) {
             console.error(`Erro ao buscar ${tipo}:`, erro);
@@ -345,9 +366,9 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     };
 
     const handleTipoChange = async (tipo) => {
-        setTipoSelecionado(tipo);
+        setTipoSelecionado(tipo.name);
         setOpcoesSelecionadas([]);
-        await buscarOpcoes(tipo);
+        await buscarOpcoes(tipo.code);
     };
 
     const handleMultiSelectChange = (e) => {
