@@ -141,6 +141,8 @@ const Overlay = styled.div`
     bottom: 0;
     left: 0;
     opacity: ${props => props.$opened ? 1 : 0};
+    transition: visibility 0.5s ease-in-out;
+    visibility: ${props => props.$opened ? 'visible' : 'hidden'};
     pointer-events: ${props => props.$opened ? 'all' : 'none'};
 `
 
@@ -158,7 +160,6 @@ const DialogEstilizado = styled.dialog`
     padding: 24px;
     transition: left 0.3s ease-in-out;
     background: white;
-    
     & button.close {
         & .fechar {
             box-sizing: initial;
