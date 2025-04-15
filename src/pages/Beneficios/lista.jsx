@@ -57,14 +57,24 @@ function Beneficios() {
                 if(response.id)
                 {
                     beneficios.push(response)
-                    setModalOpened(false)
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Benefício adicionado com sucesso',
+                        life: 3000
+                    });
                 }
             })
             .catch(erro => {
-                
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Benefício não pôde ser adicionado',
+                    life: 3000
+                });
             })
             .finally(function() {
-                
+                setModalOpened(false)
             })
     }
 
