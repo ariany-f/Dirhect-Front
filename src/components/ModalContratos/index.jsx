@@ -1,9 +1,9 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import CampoTexto from "@components/CampoTexto"
-import CheckboxContainer from '@components/CheckboxContainer'
 import Titulo from "@components/Titulo"
-import SubTitulo from "@components/SubTitulo"
+import Texto from "@components/Texto"
+import CustomImage from "@components/CustomImage"
 import DropdownItens from "@components/DropdownItens"
 import { RiCloseFill } from 'react-icons/ri'
 import { useState, useEffect } from "react"
@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom"
 import http from "@http"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
-import { useDepartamentoContext } from "@contexts/Departamento"
 
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
@@ -124,71 +123,109 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
 
-    const [classError, setClassError] = useState([])
+function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
+    const [classError, setClassError] = useState([]);
     const [observacao, setObservacao] = useState('');
     const [operadoras, setOperadoras] = useState([]);
     const [dropdownOperadoras, setDropdownOperadoras] = useState([]);
-    const [operadora, setOperadora] = useState('');
+    const [operadora, setOperadora] = useState(null);
     const [data_inicio, setDataInicio] = useState('');
     const [data_fim, setDataFim] = useState('');
 
-    const navegar = useNavigate()
+    const navegar = useNavigate();
 
     useEffect(() => {
-       
-        if(opened){
-
-            if(operadoras.length == 0)
-            {
-                http.get('/operadora/?format=json')
+        if(opened && operadoras.length === 0) {
+            http.get('/operadora/?format=json')
                 .then(response => {
-                    setOperadoras(response)
-                })
-            }
-            else
-            {
-                if(dropdownOperadoras.length == 0)
-                {
-                    setDropdownOperadoras((estadoAnterior) => {
-                        const novasOperadoras = operadoras.map((item) => ({
-                            name: item.nome,
-                            code: item.id
-                        }));
-                        return [...estadoAnterior, ...novasOperadoras];
-                    });
-                }
-            }
+                    setOperadoras(response);
+                    // Formatando as operadoras para o dropdown com imagens
+                    const novasOperadoras = response.map(item => ({
+                        name: item.nome,
+                        code: item.id,
+                        operadora: {
+                            nome: item.nome,
+                            imagem: item.imagem // Assumindo que a API retorna uma URL de imagem
+                        }
+                    }));
+                    setDropdownOperadoras(novasOperadoras);
+                });
         }
+    }, [opened]);
 
+    // Template para os itens do dropdown de operadoras
+    const operadoraOptionTemplate = (option) => {
+        if (!option) return <div>Selecione uma operadora</div>;
+        
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '10px',
+                padding: '0 12px'
+            }}>
+                {option.operadora?.imagem && (
+                    <CustomImage 
+                        alt={option.operadora.nome} 
+                        src={option.operadora.imagem} 
+                        width={'30px'}
+                        height={20}
+                        title={option.operadora.nome}
+                    />
+                )}
+                <Texto weight={600} size="12px">{option.name}</Texto>
+            </div>
+        );
+    };
 
-    }, [opened, operadoras])
-    
+    // Template para o valor selecionado
+    const operadoraValueTemplate = (option) => {
+        if (!option) return <span>Selecione uma operadora</span>;
+        
+        return (
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '10px'
+            }}>
+                {option.operadora?.imagem && (
+                    <CustomImage 
+                        alt={option.operadora.nome} 
+                        src={option.operadora.imagem} 
+                        width={'24px'}
+                        height={16}
+                        title={option.operadora.nome}
+                    />
+                )}
+                <span>{option.name}</span>
+            </div>
+        );
+    };
+
     const validarESalvar = () => {
         let errors = [];
-        if (!operadora || !operadora.code) errors.push('operadora');
+        if (!operadora?.code) errors.push('operadora');
+        if (!data_inicio) errors.push('data_inicio');
         
         if (errors.length > 0) {
             setClassError(errors);
-        } else {
-            aoSalvar(operadora.code, observacao, data_inicio, data_fim);
+            return;
         }
-    }
 
-    return(
+        aoSalvar(operadora.code, observacao, data_inicio, data_fim);
+    };
+
+    return (
         <>
-            {opened &&
-            <>
+            {opened && (
                 <Overlay>
-                    <DialogEstilizado id="modal-add-departamento" open={opened}>
+                    <DialogEstilizado open={opened}>
                         <Frame>
                             <Titulo>
-                                <form method="dialog">
-                                    <button className="close" onClick={aoFechar} formMethod="dialog">
-                                        <RiCloseFill size={20} className="fechar" />  
-                                    </button>
-                                </form>
+                                <button className="close" onClick={aoFechar}>
+                                    <RiCloseFill size={20} className="fechar" />  
+                                </button>
                                 <h6>Novo Contrato</h6>
                             </Titulo>
                         </Frame>
@@ -197,58 +234,78 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                             <Col12>
                                 <Col12>
                                     <Col6>
-                                        <DropdownItens camposVazios={classError} valor={operadora} setValor={setOperadora} options={dropdownOperadoras} label="Operadora" name="operadora" placeholder="Operadora"/> 
+                                        <DropdownItens 
+                                            camposVazios={classError.includes('operadora') ? ['operadora'] : []}
+                                            valor={operadora} 
+                                            setValor={setOperadora} 
+                                            options={dropdownOperadoras} 
+                                            label="Operadora*" 
+                                            name="operadora" 
+                                            placeholder="Selecione a operadora"
+                                            optionTemplate={operadoraOptionTemplate}
+                                            valueTemplate={operadoraValueTemplate}
+                                        /> 
                                     </Col6>
                                     <Col6Centered>
                                         <CampoTexto
-                                            camposVazios={classError}
                                             name="observacao"
                                             valor={observacao}
                                             setValor={setObservacao}
                                             type="text"
                                             label="Observação"
-                                            placeholder="Digite o observacao"
+                                            placeholder="Digite a observação"
                                         />
                                     </Col6Centered>
                                 </Col12>
                                 <Col12>
                                     <Col6>
                                         <CampoTexto
-                                        camposVazios={classError}
-                                        name="data_inicio"
-                                        valor={data_inicio}
-                                        setValor={setDataInicio}
-                                        type="date"
-                                        label="Data Inicio"
-                                        placeholder="Digite a Data Inicio"
+                                            camposVazios={classError.includes('data_inicio') ? ['data_inicio'] : []}
+                                            name="data_inicio"
+                                            valor={data_inicio}
+                                            setValor={setDataInicio}
+                                            type="date"
+                                            label="Data Início*"
+                                            placeholder="Digite a Data Início"
                                         />
                                     </Col6>
                                     <Col6>
                                         <CampoTexto
-                                        camposVazios={classError}
-                                        name="data_fim"
-                                        valor={data_fim}
-                                        setValor={setDataFim}
-                                        type="date"
-                                        label="Data Fim"
-                                        placeholder="Digite a Data Fim"
+                                            name="data_fim"
+                                            valor={data_fim}
+                                            setValor={setDataFim}
+                                            type="date"
+                                            label="Data Fim"
+                                            placeholder="Digite a Data Fim"
                                         />
                                     </Col6>
                                 </Col12>
                             </Col12>
                         </Frame>
-                        <form method="dialog">
-                            <div className={styles.containerBottom}>
-                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
-                            </div>
-                        </form>
+                        
+                        <div className={styles.containerBottom}>
+                            <Botao 
+                                aoClicar={aoFechar} 
+                                estilo="neutro" 
+                                size="medium" 
+                                filled
+                            >
+                                Voltar
+                            </Botao>
+                            <Botao 
+                                aoClicar={validarESalvar} 
+                                estilo="vermilion" 
+                                size="medium" 
+                                filled
+                            >
+                                Confirmar
+                            </Botao>
+                        </div>
                     </DialogEstilizado>
                 </Overlay>
-            </>
-            }
+            )}
         </>
-    )
+    );
 }
 
-export default ModalContratos
+export default ModalContratos;
