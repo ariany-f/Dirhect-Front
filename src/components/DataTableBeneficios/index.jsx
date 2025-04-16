@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { Tag } from 'primereact/tag';
 import IconeBeneficio from '@components/IconeBeneficio';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast';
 import { FaTrash } from 'react-icons/fa';
 import tiposBeneficio from '@json/tipos_beneficio.json';
@@ -46,8 +47,12 @@ function DataTableBeneficios({ beneficios, onBeneficioDeleted }) {
     }
 
     const excluirBeneficio = (beneficioId) => {
-        if (window.confirm('Tem certeza que deseja excluir este benefício?')) {
-            http.delete(`/api/beneficios/${beneficioId}/?format=json`)
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir este benefício?',
+            header: 'Deletar',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                http.delete(`/api/beneficios/${beneficioId}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',
@@ -69,7 +74,11 @@ function DataTableBeneficios({ beneficios, onBeneficioDeleted }) {
                     });
                     console.error('Erro ao excluir benefício:', error);
                 });
-        }
+            },
+            reject: () => {
+
+            },
+        });
     };
 
     const representativeStatusTemplate = (rowData) => {
@@ -105,6 +114,7 @@ function DataTableBeneficios({ beneficios, onBeneficioDeleted }) {
 
     return (
         <>
+            <ConfirmDialog />
             <Toast ref={toast} />
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <span className="p-input-icon-left">
