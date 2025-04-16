@@ -94,7 +94,7 @@ function DetalhesOperadoras() {
                     : <></>
                 }
                 <DataTableOperadorasDetalhes beneficios={operadora?.beneficios_vinculados} />
-                <ModalOperadoraBeneficios aoSalvar={vincularBeneficio} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+                <ModalOperadoraBeneficios aoSalvar={vincularBeneficio} beneficiosOperadora={operadora?.beneficios_vinculados} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Container>
         </Frame>
         </>

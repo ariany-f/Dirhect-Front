@@ -125,7 +125,9 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
+function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, beneficiosOperadora = [] }) {
+    console.log(beneficiosOperadora);
+    
     const [classError, setClassError] = useState([]);
     const [beneficios, setBeneficios] = useState([]);
     const [dropdownBeneficios, setDropdownBeneficios] = useState([]);
@@ -136,23 +138,30 @@ function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucess
             http.get('/beneficio/?format=json')
                 .then(response => {
                     setBeneficios(response);
+                   // Extrair apenas os IDs dos benefícios já associados à operadora
+                   const idsBeneficiosOperadora = beneficiosOperadora.map(b => b.beneficio.id);
+                    
+                   // Filtrar benefícios que ainda não estão na operadora
+                   const beneficiosDisponiveis = response.filter(beneficio => 
+                       !idsBeneficiosOperadora.includes(beneficio.id)
+                   );
                     
                     // Formatando os benefícios para o dropdown com ícones
-                    const novosBeneficios = response.map(item => ({
+                    const novosBeneficios = beneficiosDisponiveis.map(item => ({
                         name: item.descricao,
                         code: item.id,
                         descricao: item.descricao,
                         tipo: item.tipo,
-                        icone: item.icone || item.descricao, // Usa o ícone ou o nome como fallback
-                        icon: item.icone || item.descricao // Usa o ícone ou o nome como fallback
+                        icone: item.icone || item.descricao,
+                        icon: item.icone || item.descricao
                     }));
                     
                     setDropdownBeneficios(novosBeneficios);
                 });
         }
-    }, [opened]);
+    }, [opened, beneficiosOperadora]);
 
-    // Template para os itens do dropdown
+    // Restante do código permanece o mesmo...
     const beneficioOptionTemplate = (option) => {
         if (!option) return <div>Selecione um benefício</div>;
         
@@ -169,7 +178,6 @@ function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucess
         );
     };
 
-    // Template para o valor selecionado
     const beneficioValueTemplate = (option) => {
         if (!option) return <span>Selecione um benefício</span>;
         

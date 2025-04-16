@@ -18,6 +18,7 @@ import { TfiSave } from "react-icons/tfi";
 import { GrAddCircle } from "react-icons/gr"
 import { MdArrowRight } from "react-icons/md"
 import { FaArrowRight } from "react-icons/fa"
+import { Toast } from "primereact/toast"
 
 // Componente de Item Arrastável com novos estilos
 const DraggableItem = ({ grupo, index, moveItem, removerGrupo }) => {
@@ -271,6 +272,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     const [opcoesSelecionadas, setOpcoesSelecionadas] = useState([]);
     const [carregando, setCarregando] = useState(false);
     const [gruposAdicionados, setGruposAdicionados] = useState([]);
+    const toast = useRef(null);
     
     const tipos = [
         {code: 'filial', name: 'Filial'},
@@ -398,7 +400,12 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
       
     const adicionarGrupo = () => {
         if (!tipoSelecionado || (!tipoSelecionado.name) || opcoesSelecionadas.length === 0) {
-            alert('Selecione um tipo e pelo menos uma opção');
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Selecione um tipo e pelo menos uma opção',
+                life: 3000
+            });
             return;
         }
         
@@ -440,7 +447,12 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
       
     const salvarGrupos = () => {
         if (gruposAdicionados.length === 0) {
-            alert('Adicione pelo menos um grupo antes de salvar');
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Adicione pelo menos um grupo antes de salvar',
+                life: 3000
+            });
             return;
         }
         
@@ -465,6 +477,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
 
     return (
         <Overlay $opened={opened}>
+            <Toast ref={toast} />
             <DialogEstilizado id="modal-cnpj" open={opened} $opened={opened}>
                 <Frame>
                     <Titulo>
@@ -507,6 +520,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                         />
                                     </div>
                                 )}
+                                {tipoSelecionado && tipoSelecionado?.name &&
                                 <BotaoGrupo align="end">
                                     <Botao 
                                         aoClicar={adicionarGrupo}
@@ -524,7 +538,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                             </> 
                                         }
                                     </Botao>
-                                </BotaoGrupo>
+                                </BotaoGrupo>}
                             </Wrapper>
                         </Col6>
                         <Col6>
