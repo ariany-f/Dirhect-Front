@@ -15,7 +15,7 @@ const DialogEstilizado = styled.dialog`
     align-items: center;
     top: 84px;  
     position: fixed;
-    right: 84px;
+    right: 55px;
     inset-inline-start: unset;
     z-index: 9;
     & ul{
