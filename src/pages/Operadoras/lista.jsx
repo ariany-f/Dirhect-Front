@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import styles from './Operadoras.module.css'
 import styled from "styled-components"
 import { Link, useOutletContext } from "react-router-dom"
 import Management from '@assets/Management.svg'
 import { GrAddCircle } from 'react-icons/gr'
 import Botao from '@components/Botao'
+import { Toast } from 'primereact/toast'
 import http from "@http"
+import axios from 'axios';
 import BotaoGrupo from '@components/BotaoGrupo'
 import Container from '@components/Container'
 import DataTableOperadoras from '@components/DataTableOperadoras'
@@ -41,7 +43,7 @@ function OperadorasListagem() {
     const [operadoras, setOperadoras] = useState(null)
     const context = useOutletContext()
     const [modalOpened, setModalOpened] = useState(false)
-
+    const toast = useRef(null)
     
     useEffect(() => {
         if(context)
@@ -51,29 +53,47 @@ function OperadorasListagem() {
     }, [context])
 
     
-    const adicionarOperadora = (nome) => {
+    const adicionarOperadora = async (operadora) => {
+        const formData = new FormData();
 
-        const data = {};
-        data.nome = nome;
+        // Adiciona o nome normalmente
+        formData.append('nome', operadora.nome);
 
-        http.post('operadora/', data)
-            .then(response => {
-                if(response.id)
-                {
-                    context.push(response)
-                    setModalOpened(false)
-                }
-            })
-            .catch(erro => {
-                
-            })
-            .finally(function() {
-                
-            })
+        // Adiciona o arquivo de imagem
+        formData.append('imagem', operadora.imagem); // operadora.imagem deve ser do tipo File
+
+        const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net"; // Para Vite
+        const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
+        const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
+        const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;            
+        const response = await axios.post(`${baseUrl}operadora/`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        if(response?.data.id)
+        {
+            context.push(response?.data)
+            setModalOpened(false)
+            toast.current.show({
+                message: 'Operadora adicionada com sucesso!',
+                type: 'success',
+            });
+            return true;
+        }
+        else
+        {
+            toast.current.show({
+                message: 'Erro ao adicionar operadora!',
+                type: 'error',
+            });
+            return false;
+        }
     }
     
     return (
         <ConteudoFrame>
+            <Toast ref={toast} />
             <BotaoGrupo align="end">
                 <BotaoGrupo>
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Operadora</Botao>

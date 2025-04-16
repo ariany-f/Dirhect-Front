@@ -165,10 +165,10 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                 gap: '10px',
                 padding: '0 12px'
             }}>
-                {option.operadora?.imagem && (
+                {option.operadora?.imagem_url && (
                     <CustomImage 
                         alt={option.operadora.nome} 
-                        src={option.operadora.imagem} 
+                        src={option.operadora.imagem_url} 
                         width={'30px'}
                         height={20}
                         title={option.operadora.nome}
@@ -189,10 +189,10 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                 alignItems: 'center', 
                 gap: '10px'
             }}>
-                {option.operadora?.imagem && (
+                {option.operadora?.imagem_url && (
                     <CustomImage 
                         alt={option.operadora.nome} 
-                        src={option.operadora.imagem} 
+                        src={option.operadora.imagem_url} 
                         width={'24px'}
                         height={16}
                         title={option.operadora.nome}

@@ -36,7 +36,7 @@ function DataTableOperadoras({ operadoras, search = true }) {
     }
 
     const representativeNomeTemplate = (rowData) => {
-        return  <CustomImage src={rowData?.imagem} alt={rowData?.nome} width={'70px'} height={35} size={90} title={rowData?.nome} />
+        return  <CustomImage src={rowData?.imagem_url} alt={rowData?.nome} width={'70px'} height={35} size={90} title={rowData?.nome} />
     }
 
     const representativeTemplate = (rowData) => {

@@ -109,7 +109,7 @@ function DataTableContratos({ contratos }) {
     const representativeNomeTemplate = (rowData) => {
         if(rowData?.dados_operadora)
         {
-            return  <CustomImage src={rowData?.dados_operadora?.imagem} alt={rowData?.dados_operadora?.nome} width={'70px'} height={35} size={90} title={rowData?.dados_operadora?.nome} />
+            return  <CustomImage src={rowData?.dados_operadora?.imagem_url} alt={rowData?.dados_operadora?.nome} width={'70px'} height={35} size={90} title={rowData?.dados_operadora?.nome} />
         }
         else
         {

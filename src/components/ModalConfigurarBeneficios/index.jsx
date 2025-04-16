@@ -161,7 +161,7 @@ function ModalConfigurarBeneficios({ opened = false, aoClicar, aoFechar, aoSuces
                 code: contrato.id,
                 operadora: {
                     nome: contrato.dados_operadora.nome,
-                    imagem: contrato.dados_operadora.imagem
+                    imagem: contrato.dados_operadora.imagem_url
                 }
             })));
         } catch (erro) {
@@ -274,10 +274,10 @@ function ModalConfigurarBeneficios({ opened = false, aoClicar, aoFechar, aoSuces
         {
             return (
                 <div className="flex align-items-center" style={{display:'flex', gap:'10px'}}>
-                    {option.operadora?.imagem && (
+                    {option.operadora?.imagem_url && (
                         <CustomImage 
                             alt={option.operadora.nome} 
-                            src={option.operadora.imagem} 
+                            src={option.operadora.imagem_url} 
                             width={'30px'}
                             height={20} size={80} 
                             title={option?.operadora?.nome} 

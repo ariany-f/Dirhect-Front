@@ -1,16 +1,13 @@
-import Botao from "@components/Botao"
-import Frame from "@components/Frame"
-import CampoTexto from "@components/CampoTexto"
-import CheckboxContainer from '@components/CheckboxContainer'
-import Titulo from "@components/Titulo"
-import SubTitulo from "@components/SubTitulo"
-import { RiCloseFill } from 'react-icons/ri'
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import styled from "styled-components"
-import styles from './ModalOperadoras.module.css'
-import { useOperadorasContext } from "@contexts/Operadoras"
+import { useState, useRef } from "react";
+import { RiCloseFill, RiUpload2Fill } from 'react-icons/ri';
+import styled from "styled-components";
+import Botao from "@components/Botao";
+import Frame from "@components/Frame";
+import CampoTexto from "@components/CampoTexto";
+import Titulo from "@components/Titulo";
+import styles from './ModalOperadoras.module.css';
 
+// Estilos atualizados
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
     position: fixed;
@@ -18,150 +15,244 @@ const Overlay = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-`
-
-const Col12 = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-`
-
-const Col6 = styled.div`
-    padding: 20px;
-    flex: 1 1 50%;
-`
-
-
-const Col4 = styled.div`
-    padding: 20px;
-    flex: 1 1 25%;
-`
-
-const Col4Centered = styled.div`
-    display: flex;
-    flex: 1 1 25%;
-    justify-content: center;
-    align-items: center;
-`
+    z-index: 1000;
+`;
 
 const DialogEstilizado = styled.dialog`
     display: flex;
-    width: 30vw;
+    width: 40vw;
+    min-width: 500px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 16px;
     border: none;
     margin: 0 auto;
-    top: 15vh;
+    top: 10vh;
     padding: 24px;
+    background: white;
+    z-index: 1001;
+    
     & button.close {
-        & .fechar {
-            box-sizing: initial;
-            fill: var(--primaria);
-            stroke: var(--primaria);
-            color: var(--primaria);
-        }
         position: absolute;
         right: 20px;
         top: 20px;
         cursor: pointer;
         border: none;
-        background-color: initial;
-    }
-    & .icon {
-        margin-right: 5px;
-        box-sizing: initial;
-        fill: var(--primaria);
-        stroke: var(--primaria);
-        color: var(--primaria);
-    }
-    & .frame:nth-of-type(1) {
-        gap: 24px;
-        & .frame {
-            margin-bottom: 24px;
-            & p{
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            & b {
-                font-weight: 800;
-                font-size: 14px;
-            }
+        background-color: transparent;
+        
+        & .fechar {
+            color: var(--primaria);
         }
     }
-`
+`;
 
-const Wrapper = styled.div`
+const ImageUploadContainer = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    align-self: stretch;
-`;
-
-const Item = styled.div`
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 16px;
-    display: flex;
-    padding: 20px;
-    justify-content: space-between;
     align-items: center;
-    width: 94%;
-    border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
+    gap: 16px;
+    margin: 20px 0;
 `;
 
-function ModalOperadoras({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
-
-    const [classError, setClassError] = useState([])
-    const [nome, setNome] = useState('');
-
-    const navegar = useNavigate()
+const UploadArea = styled.label`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+    border: 2px dashed var(--primaria);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: ${props => props.$hasImage ? 'transparent' : 'var(--neutro-50)'};
+    overflow: hidden;
     
+    &:hover {
+        border-color: var(--primaria-escuro);
+        background-color: var(--neutro-100);
+    }
+`;
 
-    return(
+const UploadPreview = styled.img`
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+`;
+
+const UploadIcon = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--primaria);
+    
+    & svg {
+        font-size: 48px;
+        margin-bottom: 8px;
+    }
+`;
+
+const UploadText = styled.span`
+    text-align: center;
+    color: var(--neutro-600);
+    padding: 0 16px;
+    font-size: 12px;
+`;
+
+function ModalOperadoras({ opened = false, aoFechar, aoSalvar }) {
+    const [nome, setNome] = useState('');
+    const [imagem, setImagem] = useState(null);
+    const [previewImagem, setPreviewImagem] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
+    const fileInputRef = useRef(null);
+    const [base64Image, setBase64Image] = useState('');
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+            setImagem(file);
+            
+            // Criar preview
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setPreviewImagem(event.target.result);
+            };
+            reader.onloadend = () => {
+                setBase64Image(reader.result); // Aqui está a imagem em base64
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleRemoveImage = () => {
+        setImagem(null);
+        setPreviewImagem('');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!nome.trim()) {
+            alert('Por favor, informe o nome da operadora');
+            return;
+        }
+
+        setIsUploading(true);
+        
+        try {
+            await aoSalvar({
+                nome: nome,
+                imagem: imagem,
+                base64Image: base64Image
+            });
+           
+        } catch (error) {
+            console.error('Erro ao salvar operadora:', error);
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    return (
         <>
-            {opened &&
-            <>
+            {opened && (
                 <Overlay>
-                    <DialogEstilizado id="modal-add-departamento" open={opened}>
+                    <DialogEstilizado open={opened}>
                         <Frame>
                             <Titulo>
-                                <form method="dialog">
-                                    <button className="close" onClick={aoFechar} formMethod="dialog">
-                                        <RiCloseFill size={20} className="fechar" />  
-                                    </button>
-                                </form>
+                                <button className="close" onClick={aoFechar}>
+                                    <RiCloseFill size={20} className="fechar" />  
+                                </button>
                                 <h6>Nova Operadora</h6>
                             </Titulo>
                         </Frame>
-                        
-                        <Frame padding="24px 12px">
+                        <br/>
+                        <Frame padding="24px">
                             <CampoTexto
-                                camposVazios={classError}
                                 name="nome"
                                 valor={nome}
                                 setValor={setNome}
                                 type="text"
-                                label="Nome"
+                                label="Nome da Operadora*"
                                 placeholder="Digite o nome da operadora"
                             />
+                            
+                            <ImageUploadContainer>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    id="operadora-image-upload"
+                                />
+                                
+                                <UploadArea 
+                                    htmlFor="operadora-image-upload"
+                                    $hasImage={!!previewImagem}
+                                >
+                                    {previewImagem ? (
+                                        <UploadPreview 
+                                            src={previewImagem} 
+                                            alt="Preview da imagem da operadora"
+                                        />
+                                    ) : (
+                                        <UploadIcon>
+                                            <RiUpload2Fill size={'28px'} />
+                                            <UploadText>Clique para adicionar uma imagem</UploadText>
+                                            <UploadText>(PNG, JPG, até 2MB)</UploadText>
+                                        </UploadIcon>
+                                    )}
+                                </UploadArea>
+                                
+                                {previewImagem && (
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <Botao 
+                                            aoClicar={() => fileInputRef.current.click()}
+                                            estilo="neutro" 
+                                            size="small"
+                                        >
+                                            Alterar Imagem
+                                        </Botao>
+                                        <Botao 
+                                            aoClicar={handleRemoveImage}
+                                            estilo="erro" 
+                                            size="small"
+                                        >
+                                            Remover Imagem
+                                        </Botao>
+                                    </div>
+                                )}
+                            </ImageUploadContainer>
                         </Frame>
-                        <form method="dialog">
-                            <div className={styles.containerBottom}>
-                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(nome)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
-                            </div>
-                        </form>
+                        
+                        <div className={styles.containerBottom}>
+                            <Botao 
+                                aoClicar={aoFechar} 
+                                estilo="neutro" 
+                                size="medium" 
+                                filled
+                                disabled={isUploading}
+                            >
+                                Cancelar
+                            </Botao>
+                            <Botao 
+                                aoClicar={handleSubmit} 
+                                estilo="vermilion" 
+                                size="small" 
+                                filled
+                                loading={isUploading}
+                            >
+                                {isUploading ? 'Salvando...' : 'Salvar Operadora'}
+                            </Botao>
+                        </div>
                     </DialogEstilizado>
                 </Overlay>
-            </>
-            }
+            )}
         </>
-    )
+    );
 }
 
-export default ModalOperadoras
+export default ModalOperadoras;
