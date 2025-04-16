@@ -294,7 +294,7 @@ function DataTableContratosDetalhes({ beneficios }) {
                         value={beneficiosProcessados} 
                         filters={filters} 
                         globalFilterFields={['nome']} 
-                        emptyMessage="Não foram encontrados beneficios" 
+                        emptyMessage="Não foram encontrados beneficios vinculados à este contrato" 
                         paginator 
                         rows={7}
                         selection={selectedBeneficio} 

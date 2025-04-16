@@ -146,7 +146,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                         code: item.id,
                         operadora: {
                             nome: item.nome,
-                            imagem: item.imagem // Assumindo que a API retorna uma URL de imagem
+                            imagem_url: item.imagem_url // Assumindo que a API retorna uma URL de imagem
                         }
                     }));
                     setDropdownOperadoras(novasOperadoras);

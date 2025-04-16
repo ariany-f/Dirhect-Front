@@ -161,7 +161,7 @@ function ModalConfigurarBeneficios({ opened = false, aoClicar, aoFechar, aoSuces
                 code: contrato.id,
                 operadora: {
                     nome: contrato.dados_operadora.nome,
-                    imagem: contrato.dados_operadora.imagem_url
+                    imagem_url: contrato.dados_operadora.imagem_url
                 }
             })));
         } catch (erro) {

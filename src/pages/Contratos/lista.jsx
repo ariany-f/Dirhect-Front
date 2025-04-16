@@ -47,11 +47,12 @@ const ContratosLista = () => {
                 if(response.id)
                 {
                     context.push(response)
+                    toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Contrato criado com sucesso', life: 3000 });
                     setModalOpened(false)
                 }
             })
             .catch(erro => {
-                
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar contrato', life: 3000 });
             })
             .finally(function() {
                 

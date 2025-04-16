@@ -73,7 +73,7 @@ function DetalhesContratos() {
             {
                 contrato.beneficios.push(response)
                 toast.current.show({severity:'success', summary: 'Sucesso', detail: 'Benefício vinculado com sucesso!', life: 3000});
-                // setContrato([]);
+                setContrato([]);
             }
         })
         .catch(erro => {

@@ -76,7 +76,7 @@ function DataTableOperadorasDetalhes({ beneficios }) {
                 value={beneficios} 
                 filters={filters} 
                 globalFilterFields={['nome']} 
-                emptyMessage="Não foram encontrados beneficios" 
+                emptyMessage="Não foram encontrados beneficios vinculados à essa operadora" 
                 paginator rows={7}
                 selection={selectedBeneficio} 
                 onSelectionChange={(e) => {setSendData(e.value);}} 

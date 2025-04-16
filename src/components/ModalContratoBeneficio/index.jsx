@@ -7,7 +7,7 @@ import SubTitulo from "@components/SubTitulo"
 import DropdownItens from "@components/DropdownItens"
 import { RiCloseFill } from 'react-icons/ri'
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import http from "@http"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
@@ -125,7 +125,7 @@ const Item = styled.div`
 `;
 
 function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, operadora = [] }) {
-
+    
     const [classError, setClassError] = useState([])
     const [observacao, setObservacao] = useState('');
     const [beneficios, setBeneficios] = useState([]);
@@ -136,41 +136,35 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
 
     const navegar = useNavigate()
 
-    
     useEffect(() => {
         if(opened && beneficios.length === 0) {
             http.get('/beneficio/?format=json')
                 .then(response => {
                     setBeneficios(response);
-                    
-                    // Formatando os benefícios para o dropdown com ícones
-                    const novosBeneficios = response.map(item => ({
+
+                    // Extrai os IDs dos benefícios vinculados
+                    const idsVinculados = operadora.beneficios_vinculados.map(v => v.beneficio.id);
+
+                    // Filtra os benefícios que estão vinculados
+                    const vinculados = response.filter(item =>
+                        idsVinculados.includes(item.id)
+                    );
+
+                    // Mapeia para o formato do dropdown
+                    const novosBeneficios = vinculados.map(item => ({
                         name: item.descricao,
                         code: item.id,
                         descricao: item.descricao,
                         tipo: item.tipo,
-                        icone: item.icone || item.descricao, // Usa o ícone ou o nome como fallback
-                        icon: item.icone || item.descricao // Usa o ícone ou o nome como fallback
+                        icone: item.icone || item.descricao,
+                        icon: item.icone || item.descricao
                     }));
+
                     
                     setDropdownBeneficios(novosBeneficios);
                 });
         }
     }, [opened]);
-
-    
-    // useEffect(() => {
-    //     if (beneficios.length > 0 && dropdownBeneficios.length === 0) {
-    //         const novosDropdownItens = beneficios.map(item => ({
-    //             name: item.descricao,
-    //             code: item.id
-    //         }));
-    
-    //         setDropdownBeneficios(novosDropdownItens);
-    //     }
-    // }, [beneficios]);
-
-
 
       // Template para os itens do dropdown
       const beneficioOptionTemplate = (option) => {
@@ -242,6 +236,11 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
                                     optionTemplate={beneficioOptionTemplate}
                                     valueTemplate={beneficioValueTemplate}
                                 />
+                                 {dropdownBeneficios.length === 0 && (
+                                    <p style={{ color: 'var(--warning-700)', marginTop: '8px', fontSize: '14px' }}>
+                                        Nenhum benefício disponível para essa operadora. Você pode vincular benefícios à esta operadora clicando <Link to={`/operadoras/detalhes/${operadora.id}`}>aqui</Link>.
+                                    </p>
+                                )}
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>
