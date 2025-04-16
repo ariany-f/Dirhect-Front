@@ -124,7 +124,7 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, operadora = [] }) {
+function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, operadora = [], beneficiosContrato = [] }) {
     
     const [classError, setClassError] = useState([])
     const [observacao, setObservacao] = useState('');
@@ -142,16 +142,22 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
                 .then(response => {
                     setBeneficios(response);
 
-                    // Extrai os IDs dos benefícios vinculados
-                    const idsVinculados = operadora.beneficios_vinculados.map(v => v.beneficio.id);
+                    // Extrai os IDs dos benefícios vinculados à operadora
+                    const idsVinculadosOperadora = operadora.beneficios_vinculados?.map(v => v.beneficio.id) || [];
+                    
+                    // Extrai os IDs dos benefícios já no contrato
+                    const idsBeneficiosContrato = beneficiosContrato.map(b => b.beneficio.id);
 
-                    // Filtra os benefícios que estão vinculados
-                    const vinculados = response.filter(item =>
-                        idsVinculados.includes(item.id)
+                    // Filtra os benefícios que:
+                    // 1. Estão vinculados à operadora
+                    // 2. Ainda não estão no contrato
+                    const disponiveis = response.filter(item =>
+                        idsVinculadosOperadora.includes(item.id) && 
+                        !idsBeneficiosContrato.includes(item.id)
                     );
 
                     // Mapeia para o formato do dropdown
-                    const novosBeneficios = vinculados.map(item => ({
+                    const novosBeneficios = disponiveis.map(item => ({
                         name: item.descricao,
                         code: item.id,
                         descricao: item.descricao,
@@ -164,7 +170,7 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
                     setDropdownBeneficios(novosBeneficios);
                 });
         }
-    }, [opened]);
+    }, [opened, operadora, beneficiosContrato]);
 
       // Template para os itens do dropdown
       const beneficioOptionTemplate = (option) => {
@@ -238,7 +244,12 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
                                 />
                                  {dropdownBeneficios.length === 0 && (
                                     <p style={{ color: 'var(--warning-700)', marginTop: '8px', fontSize: '14px' }}>
-                                        Nenhum benefício disponível para essa operadora. Você pode vincular benefícios à esta operadora clicando <Link to={`/operadoras/detalhes/${operadora.id}`}>aqui</Link>.
+                                        {operadora.beneficios_vinculados?.length > 0 
+                                            ? "Todos os benefícios disponíveis já foram adicionados ao contrato."
+                                            : "Nenhum benefício disponível para essa operadora. Você pode vincular benefícios à esta operadora clicando "}
+                                        {operadora.beneficios_vinculados?.length === 0 && (
+                                            <Link to={`/operadoras/detalhes/${operadora.id}`}>aqui</Link>
+                                        )}.
                                     </p>
                                 )}
                         </Frame>

@@ -195,8 +195,7 @@ function AdicionarCnpj() {
             }
         })
         .catch(erro => {
-            alert(erro)
-            console.error(erro)
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: response.message, life: 3000 });
         })
     }
     

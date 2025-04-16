@@ -6,6 +6,7 @@ import Frame from "@components/Frame";
 import CampoTexto from "@components/CampoTexto";
 import Titulo from "@components/Titulo";
 import styles from './ModalOperadoras.module.css';
+import { Toast } from "primereact/toast";
 
 // Estilos atualizados
 const Overlay = styled.div`
@@ -107,6 +108,7 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar }) {
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef(null);
     const [base64Image, setBase64Image] = useState('');
+    const toast = useRef(null);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -135,7 +137,7 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar }) {
 
     const handleSubmit = async () => {
         if (!nome.trim()) {
-            alert('Por favor, informe o nome da operadora');
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Por favor, informe o nome da operadora' });
             return;
         }
 
@@ -159,6 +161,7 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar }) {
         <>
             {opened && (
                 <Overlay>
+                    <Toast ref={toast} />
                     <DialogEstilizado open={opened}>
                         <Frame>
                             <Titulo>
