@@ -15,7 +15,7 @@ import ModalDemissao from '../ModalDemissao';
 import ModalFerias from '../ModalFerias';
 import { Tag } from 'primereact/tag';
 
-function DataTableColaboradores({ colaboradores }) {
+function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
@@ -59,14 +59,7 @@ function DataTableColaboradores({ colaboradores }) {
             <Texto weight={600}>{formataCPF(rowData?.funcionario_pessoa_fisica?.cpf)}</Texto>
         )
     }
-    
-    // const representativeNomeTemplate = (rowData) => {
-        
-    //     return (
-    //         <Texto weight={600}>{rowData?.funcionario_pessoa_fisica?.nome}</Texto>
-    //     )
-    // }
-    
+
     const representativeChapaTemplate = (rowData) => {
         
         return (
@@ -197,9 +190,13 @@ function DataTableColaboradores({ colaboradores }) {
                 filters={filters} 
                 globalFilterFields={['chapa', 'funcionario_pessoa_fisica.nome', 'funcionario_pessoa_fisica.cpf']} 
                 emptyMessage="Não foram encontrados colaboradores" 
-                paginator 
+                paginator={paginator}
+                lazy
+                rows={rows} 
+                totalRecords={totalRecords} 
+                first={first} 
+                onPage={onPage} 
                 removableSort 
-                rows={6} 
                 tableStyle={{ minWidth: '68vw' }}
                 onContextMenuSelectionChange={(e) => {
                     setSelectedCollaborator(e.value); 
@@ -212,7 +209,6 @@ function DataTableColaboradores({ colaboradores }) {
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento " header="Data de Nascimento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>
-                {/* <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Nº Dependentes" style={{ width: '12%' }}></Column> */}
                 <Column header="" style={{ width: '10%' }} body={(rowData) => (
                     <button 
                         onClick={(e) => {

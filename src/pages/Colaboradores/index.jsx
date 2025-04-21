@@ -8,8 +8,6 @@ import { Link, Outlet, useLocation } from "react-router-dom"
 import { FaDownload } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
 import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
-import QuestionCard from '@components/QuestionCard'
-import { AiFillQuestionCircle } from 'react-icons/ai'
 import http from '@http'
 import Loading from '@components/Loading'
 
@@ -27,23 +25,23 @@ function Colaboradores() {
     const [funcionarios, setFuncionarios] = useState(null)
     const [loading, setLoading] = useState(false)
 
-    useEffect(() => {
-        if(!funcionarios)
-        {
-            setLoading(true)
-            http.get('funcionario/?format=json')
-                .then(response => {
-                    setFuncionarios(response)
-                })
-                .catch(erro => {
+    // useEffect(() => {
+    //     if(!funcionarios)
+    //     {
+    //         setLoading(true)
+    //         http.get('funcionario/?format=json')
+    //             .then(response => {
+    //                 setFuncionarios(response)
+    //             })
+    //             .catch(erro => {
 
-                })
-                .finally(function() {
-                    setLoading(false)
-                })
-        }
+    //             })
+    //             .finally(function() {
+    //                 setLoading(false)
+    //             })
+    //     }
        
-    }, [funcionarios])
+    // }, [funcionarios])
     
     return (
         <ConteudoFrame>
@@ -63,7 +61,7 @@ function Colaboradores() {
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
-            <Outlet context={funcionarios} />
+            <Outlet/>
             <ModalImportarPlanilha opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
     )

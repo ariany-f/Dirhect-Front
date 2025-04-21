@@ -1,7 +1,6 @@
 import DataTableColaboradores from '@components/DataTableColaboradores'
 import http from '@http'
 import Loading from '@components/Loading'
-// import collaborators from '@json/colaboradores.json'
 import { useEffect, useState } from "react";
 import styles from './Colaboradores.module.css'
 import { useOutletContext } from 'react-router-dom';
@@ -36,15 +35,43 @@ const ContainerSemRegistro = styled.div`
 function ColaboradoresCadastrados() {
     
     const [loading, setLoading] = useState(false)
-    const context = useOutletContext();
     const [colaboradores, setColaboradores] = useState([])
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [first, setFirst] = useState(0);
+
+    const loadData = (currentPage, currentPageSize) => {
+        setLoading(true);
+        http.get(`funcionario/?format=json&page=${currentPage}&page_size=${currentPageSize}`)
+            .then(response => {
+                setColaboradores(response.results);
+                setTotalRecords(response.count);
+                setTotalPages(response.total_pages);
+            })
+            .catch(erro => {
+                // Tratar erro
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
 
     useEffect(() => {
-        if(context && (colaboradores.length === 0))
-        {
-            setColaboradores(context)
-        }
-    }, [colaboradores, context])
+        loadData(page, pageSize);
+    }, []);
+
+    const onPage = (event) => {
+        const newPage = event.page + 1;
+        const newPageSize = event.rows;
+        
+        setFirst(event.first);
+        setPage(newPage);
+        setPageSize(newPageSize);
+        
+        loadData(newPage, newPageSize);
+    };
 
     return (
         <>
@@ -52,7 +79,15 @@ function ColaboradoresCadastrados() {
             
             {
                 colaboradores.length > 0 ?
-                <DataTableColaboradores colaboradores={colaboradores} />
+                <DataTableColaboradores 
+                    colaboradores={colaboradores} 
+                    paginator={true} 
+                    rows={pageSize} 
+                    totalRecords={totalRecords} 
+                    totalPages={totalPages}
+                    first={first} 
+                    onPage={onPage} 
+                />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
