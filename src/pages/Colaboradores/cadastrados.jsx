@@ -41,10 +41,11 @@ function ColaboradoresCadastrados() {
     const [totalRecords, setTotalRecords] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [first, setFirst] = useState(0);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    const loadData = (currentPage, currentPageSize) => {
+    const loadData = (currentPage, currentPageSize, search = '') => {
         setLoading(true);
-        http.get(`funcionario/?format=json&page=${currentPage}&page_size=${currentPageSize}`)
+        http.get(`funcionario/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
             .then(response => {
                 setColaboradores(response.results);
                 setTotalRecords(response.count);
@@ -59,7 +60,7 @@ function ColaboradoresCadastrados() {
     };
 
     useEffect(() => {
-        loadData(page, pageSize);
+        loadData(page, pageSize, searchTerm);
     }, []);
 
     const onPage = (event) => {
@@ -70,7 +71,14 @@ function ColaboradoresCadastrados() {
         setPage(newPage);
         setPageSize(newPageSize);
         
-        loadData(newPage, newPageSize);
+        loadData(newPage, newPageSize, searchTerm);
+    };
+
+    const onSearch = (search) => {
+        setSearchTerm(search);
+        setPage(1);
+        setFirst(0);
+        loadData(1, pageSize, search);
     };
 
     return (
@@ -86,7 +94,8 @@ function ColaboradoresCadastrados() {
                     totalRecords={totalRecords} 
                     totalPages={totalPages}
                     first={first} 
-                    onPage={onPage} 
+                    onPage={onPage}
+                    onSearch={onSearch}
                 />
                 :
                 <ContainerSemRegistro>

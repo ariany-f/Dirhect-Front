@@ -15,7 +15,7 @@ import ModalDemissao from '../ModalDemissao';
 import ModalFerias from '../ModalFerias';
 import { Tag } from 'primereact/tag';
 
-function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages }) {
+function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
@@ -27,12 +27,8 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const {usuario} = useSessaoUsuarioContext()
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        onSearch(value);
     };
 
     function verDetalhes(value)
@@ -175,11 +171,12 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         <>
             <div className="flex justify-content-end">
                 <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
+                    <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                 </span>
             </div>
             <ContextMenu model={menuModel(selectedCollaborator)} ref={cm} onHide={() => setSelectedCollaborator(null)} />
-            <DataTable onContextMenu={(e) => {
+            <DataTable 
+                onContextMenu={(e) => {
                     cm.current.show(e.originalEvent);
                 }}
                 selection={selectedCollaborator} 
@@ -187,8 +184,6 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 selectionMode="single"
                 contextMenuSelection={selectedCollaborator} 
                 value={colaboradores} 
-                filters={filters} 
-                globalFilterFields={['chapa', 'funcionario_pessoa_fisica.nome', 'funcionario_pessoa_fisica.cpf']} 
                 emptyMessage="Não foram encontrados colaboradores" 
                 paginator={paginator}
                 lazy
@@ -202,7 +197,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     setSelectedCollaborator(e.value); 
                     cm.current.show(e.originalEvent)}
                 }
-                >
+            >
                 <Column body={representativeChapaTemplate} field="chapa" header="Chapa" sortable style={{ width: '10%' }}></Column>
                 <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
                 <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
