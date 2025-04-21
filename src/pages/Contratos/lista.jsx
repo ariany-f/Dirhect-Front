@@ -23,39 +23,52 @@ const ConteudoFrame = styled.div`
 `
 
 const ContratosLista = () => {
-
     const location = useLocation();
     const [modalOpened, setModalOpened] = useState(false)
     const context = useOutletContext()
     const toast = useRef(null)
     
-    const adicionarContrato = (operadora, observacao, dt_inicio, dt_fim) => {
+    const onPage = (event) => {
+        const newPage = event.page + 1
+        const newPageSize = event.rows
+        
+        context.setFirst(event.first)
+        context.setPage(newPage)
+        context.setPageSize(newPageSize)
+        
+        context.loadData(newPage, newPageSize, context.searchTerm)
+    }
 
-        if(operadora == '' || observacao == '' || dt_inicio == '' || dt_fim == '')
-        {
+    const onSearch = (search) => {
+        context.setSearchTerm(search)
+        context.setPage(1)
+        context.setFirst(0)
+        context.loadData(1, context.pageSize, search)
+    }
+
+    const adicionarContrato = (operadora, observacao, dt_inicio, dt_fim) => {
+        if(operadora == '' || observacao == '' || dt_inicio == '' || dt_fim == '') {
             toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos', life: 3000 });
             return;
         }
-        const data = {};
-        data.operadora = operadora;
-        data.observacao = observacao;
-        data.dt_inicio = dt_inicio;
-        data.dt_fim = dt_fim;
+        const data = {
+            operadora,
+            observacao,
+            dt_inicio,
+            dt_fim
+        };
 
         http.post('contrato/', data)
             .then(response => {
-                if(response.id)
-                {
+                if(response.id) {
                     context.push(response)
                     toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Contrato criado com sucesso', life: 3000 });
                     setModalOpened(false)
+                    context.loadData(context.page, context.pageSize, context.searchTerm)
                 }
             })
             .catch(erro => {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar contrato', life: 3000 });
-            })
-            .finally(function() {
-                
             })
     }
 
@@ -64,13 +77,28 @@ const ContratosLista = () => {
             <Toast ref={toast} />
             <BotaoGrupo align="end">
                 <BotaoGrupo align="center">
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Criar Contrato</Botao>
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
+                        <GrAddCircle className={styles.icon} fill="white" color="white"/> Criar Contrato
+                    </Botao>
                 </BotaoGrupo>
             </BotaoGrupo>
 
-            <DataTableContratos contratos={context} />
+            <DataTableContratos 
+                contratos={context.contratos}
+                paginator={true}
+                rows={context.pageSize}
+                totalRecords={context.totalRecords}
+                totalPages={context.totalPages}
+                first={context.first}
+                onPage={onPage}
+                onSearch={onSearch}
+            />
 
-            <ModalContratos aoSalvar={adicionarContrato} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+            <ModalContratos 
+                aoSalvar={adicionarContrato} 
+                opened={modalOpened} 
+                aoFechar={() => setModalOpened(false)} 
+            />
         </ConteudoFrame>
     );
 };

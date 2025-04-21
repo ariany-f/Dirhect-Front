@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 // import contratos from '@json/contratos.json'
 import React, { createContext, useContext } from 'react';
 import http from '@http'
+import Loading from '@components/Loading'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -13,27 +14,61 @@ const ConteudoFrame = styled.div`
 `
 
 const Contratos = () => {
-
     const location = useLocation();
     const [contratos, setContratos] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
+    const [totalRecords, setTotalRecords] = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
+    const [first, setFirst] = useState(0)
+    const [searchTerm, setSearchTerm] = useState('')
+
+    const loadData = (currentPage, currentPageSize, search = '') => {
+        setLoading(true)
+        http.get(`contrato/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
+            .then(response => {
+                setContratos(response.results)
+                setTotalRecords(response.count)
+                setTotalPages(response.total_pages)
+            })
+            .catch(erro => {
+                console.error('Erro ao carregar contratos:', erro)
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
 
     useEffect(() => {
-      
-        http.get('contrato/?format=json')
-        .then(response => {
-            setContratos(response)
-        })
-        .catch(erro => {
-
-        })
-        .finally(function() {
-        })
-       
+        loadData(page, pageSize, searchTerm)
     }, [])
+
+    const contextValue = {
+        contratos,
+        page,
+        pageSize,
+        totalRecords,
+        totalPages,
+        first,
+        searchTerm,
+        setPage,
+        setPageSize,
+        setFirst,
+        setSearchTerm,
+        loadData,
+        push: (newContrato) => {
+            setContratos(prevContratos => {
+                if (!prevContratos) return [newContrato];
+                return [...prevContratos, newContrato];
+            });
+        }
+    }
 
     return (
         <ConteudoFrame>
-            <Outlet context={contratos} />
+            <Loading opened={loading} />
+            <Outlet context={contextValue} />
         </ConteudoFrame>
     );
 };

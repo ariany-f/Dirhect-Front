@@ -14,42 +14,37 @@ let Real = new Intl.NumberFormat('pt-BR', {
     currency: 'BRL',
 });
 
-function DataTableContratos({ contratos }) {
-
-    const[selectedVaga, setSelectedVaga] = useState(0)
+function DataTableContratos({ 
+    contratos,
+    paginator = true,
+    rows,
+    totalRecords,
+    first,
+    onPage,
+    onSearch
+}) {
+    const [selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        onSearch(value);
     };
 
-
-    function verDetalhes(value)
-    {
+    function verDetalhes(value) {
         navegar(`/contratos/detalhes/${value.id}`)
     }
 
     const representativeInicioTemplate = (rowData) => {
-        if(rowData.dt_inicio)
-        {
+        if(rowData.dt_inicio) {
             return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_inicio).toLocaleDateString("pt-BR")}</p>
         } 
         return 'Não definida'
     }
-    
 
     const representativeFimTemplate = (rowData) => {
-        if(rowData.dt_fim)
-        {
+        if(rowData.dt_fim) {
             return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_fim).toLocaleDateString("pt-BR")}</p>
         }
         return 'Não definida'
@@ -60,32 +55,25 @@ function DataTableContratos({ contratos }) {
             <Texto weight={700} width={'100%'}>
                 {rowData?.dados_operadora?.nome}
             </Texto>
-            {/* <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                Benefícios:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.beneficios.length}</p>
-            </div> */}
         </div>
     }
 
     function representativSituacaoTemplate(rowData) {
-        const status =  rowData.status;
+        const status = rowData.status;
         if (rowData?.dt_fim) {
-            // Criar a data de fim considerando apenas a parte da data (ignorar hora)
-            let partesData = rowData.dt_fim.split('-'); // Divide "YYYY-MM-DD"
-            let dataFim = new Date(partesData[0], partesData[1] - 1, partesData[2]); // Ano, Mês (0-indexado), Dia
+            let partesData = rowData.dt_fim.split('-');
+            let dataFim = new Date(partesData[0], partesData[1] - 1, partesData[2]);
             
-            // Criar a data de hoje sem hora, minutos, segundos ou milissegundos
             let hoje = new Date();
-            hoje.setHours(0, 0, 0, 0); // Zera as horas, minutos, segundos e milissegundos
+            hoje.setHours(0, 0, 0, 0);
     
             if (dataFim.getTime() < hoje.getTime()) {
                 return <Tag severity="danger" value="Vencido"></Tag>;
             }
-            // Verificar se o vencimento é neste mês
             if (dataFim.getFullYear() === hoje.getFullYear() && dataFim.getMonth() === hoje.getMonth()) {
                 return <Tag severity="warning" value="Vencimento Próximo"></Tag>;
             }
-            if(status == 'A')
-            {
+            if(status == 'A') {
                 return <Tag severity="info" value="Em andamento"></Tag>;
             }
             return <Tag severity="danger" value="Inativo"></Tag>;
@@ -102,29 +90,52 @@ function DataTableContratos({ contratos }) {
             case 'I':
                 return <Tag severity="danger" value="Inativo"></Tag>;
             default:
-                return status; // Retorna o valor original se não houver correspondência
+                return status;
         }
     }    
     
     const representativeNomeTemplate = (rowData) => {
-        if(rowData?.dados_operadora)
-        {
-            return  <CustomImage src={rowData?.dados_operadora?.imagem_url} alt={rowData?.dados_operadora?.nome} width={'70px'} height={35} size={90} title={rowData?.dados_operadora?.nome} />
+        if(rowData?.dados_operadora) {
+            return <CustomImage 
+                src={rowData?.dados_operadora?.imagem_url} 
+                alt={rowData?.dados_operadora?.nome} 
+                width={'70px'} 
+                height={35} 
+                size={90} 
+                title={rowData?.dados_operadora?.nome} 
+            />
         }
-        else
-        {
-            return '';
-        }
+        return '';
     }
     
     return (
         <>
             <div className="flex justify-content-end">
                 <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+                    <CampoTexto 
+                        width={'320px'} 
+                        valor={globalFilterValue} 
+                        setValor={onGlobalFilterChange} 
+                        type="search" 
+                        label="" 
+                        placeholder="Buscar contratos" 
+                    />
                 </span>
             </div>
-            <DataTable value={contratos} filters={filters} globalFilterFields={['nome_fornecedor']}  emptyMessage="Não foram encontrados contratos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={contratos} 
+                emptyMessage="Não foram encontrados contratos" 
+                selection={selectedVaga} 
+                onSelectionChange={(e) => verDetalhes(e.value)} 
+                selectionMode="single" 
+                paginator={paginator}
+                lazy
+                rows={rows}
+                totalRecords={totalRecords}
+                first={first}
+                onPage={onPage}
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '8%' }}></Column>
                 <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '20%' }}></Column>
                 <Column field="observacao" header="Observação" style={{ width: '22%' }}></Column>
