@@ -18,19 +18,26 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableSecoes({ secoes, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
-   
-    const[selectedSecao, setSelectedSecao] = useState(0)
+function DataTableSecoes({ 
+    secoes, 
+    showSearch = true, 
+    pagination = true, 
+    rows, 
+    totalRecords, 
+    first, 
+    onPage, 
+    onSearch, 
+    selected = null, 
+    setSelected = () => {} 
+}) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
     const [selectedSecoes, setSelectedSecoes] = useState([]);
-    const navegar = useNavigate()
+    const [selectedSecao, setSelectedSecao] = useState(null);
+    const navegar = useNavigate();
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && secoes) {
-            const secoesSelecionadas = secoes.filter(secao => selected.includes(secao.id));
+            const secoesSelecionadas = secoes.filter(sec => selected.includes(sec.id));
             setSelectedSecoes(secoesSelecionadas);
         } else {
             setSelectedSecoes([]);
@@ -38,18 +45,28 @@ function DataTableSecoes({ secoes, showSearch = true, pagination = true, selecte
     }, [selected, secoes]);
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        onSearch(value);
     };
 
-    function verDetalhes(value)
-    {
-        setSelectedSecao(value.id)
+    function verDetalhes(value) {
+        setSelectedSecao(value.id);
+        navegar(`/estrutura/secao/detalhes/${value.id}`);
     }
+
+    const representativeDepartamentoTemplate = (rowData) => {
+        if(rowData?.departamento && rowData?.departamento?.nome) {
+            return rowData?.departamento?.nome;
+        }
+        return 'Não informado';
+    };
+
+    const representativeFilialTemplate = (rowData) => {
+        if(rowData?.departamento?.filial && rowData?.departamento?.filial?.nome) {
+            return rowData?.departamento?.filial?.nome;
+        }
+        return 'Não informado';
+    };
 
     function handleSelectChange(e) {
         if (selected) {
@@ -58,65 +75,63 @@ function DataTableSecoes({ secoes, showSearch = true, pagination = true, selecte
 
             if (Array.isArray(selectedValue)) {
                 setSelectedSecoes(selectedValue);
-                setSelected(selectedValue.map(secao => secao.id)); // Mantém os IDs no estado global
+                setSelected(selectedValue.map(sec => sec.id));
             } else {
-                if (newSelection.some(secao => secao.id === selectedValue.id)) {
-                    newSelection = newSelection.filter(secao => secao.id !== selectedValue.id);
+                if (newSelection.some(sec => sec.id === selectedValue.id)) {
+                    newSelection = newSelection.filter(sec => sec.id !== selectedValue.id);
                 } else {
                     newSelection.push(selectedValue);
                 }
                 setSelectedSecoes(newSelection);
-                setSelected(newSelection.map(secao => secao.id));
+                setSelected(newSelection.map(sec => sec.id));
             }
         } else {
-            setSelectedSecao(e.value.id);
+            setSelectedSecao(e.value);
             verDetalhes(e.value);
         }
     }
 
-    const representativeFilialTemplate = (rowData) => {
-        if(rowData?.filial && rowData?.filial?.nome)
-        {
-            return rowData?.filial?.nome
-        }
-        else
-        {
-            return 'Não informado'
-        }
-    };
-
-    const representativeDepartamentoTemplate = (rowData) => {
-        if(rowData?.departamento && rowData?.departamento?.nome)
-        {
-            return rowData?.departamento?.nome
-        }
-        else
-        {
-            return 'Não informado'
-        }
-    };
-
     return (
         <>
-            {showSearch &&
+            {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar seção" />
+                        <CampoTexto 
+                            width={'320px'} 
+                            valor={globalFilterValue} 
+                            setValor={onGlobalFilterChange} 
+                            type="search" 
+                            label="" 
+                            placeholder="Buscar seções" 
+                        />
                     </span>
                 </div>
             }
-            <DataTable value={secoes} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selected ? selectedSecoes : selectedSecao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={secoes} 
+                emptyMessage="Não foram encontradas seções" 
+                selection={selected ? selectedSecoes : selectedSecao} 
+                onSelectionChange={handleSelectChange} 
+                selectionMode={selected ? "checkbox" : "single"} 
+                paginator={pagination} 
+                lazy
+                rows={rows} 
+                totalRecords={totalRecords} 
+                first={first} 
+                onPage={onPage}
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="id" header="Id" style={{ width: '15%' }}></Column>
+                <Column field="id_origem" header="Código" style={{ width: '15%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '25%' }}></Column>
-                <Column body={representativeFilialTemplate} field="filial" header="Filial" style={{ width: '20%' }}></Column>
-                <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" style={{ width: '20%' }}></Column>
+                <Column body={representativeFilialTemplate} field="departamento.filial.nome" header="Filial" style={{ width: '20%' }}></Column>
+                <Column body={representativeDepartamentoTemplate} field="departamento.nome" header="Departamento" style={{ width: '20%' }}></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '20%' }}></Column>
             </DataTable>
         </>
-    )
+    );
 }
 
-export default DataTableSecoes
+export default DataTableSecoes;

@@ -17,33 +17,35 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableDepartamentos({ departamentos, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
-   
-    const[selectedDepartamento, setSelectedDepartamento] = useState(0)
+function DataTableDepartamentos({ 
+    departamentos, 
+    showSearch = true, 
+    pagination = true, 
+    rows, 
+    totalRecords, 
+    first, 
+    onPage, 
+    onSearch, 
+    selected = null, 
+    setSelected = () => {} 
+}) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
-    const navegar = useNavigate()
-
     const [selectedDepartamentos, setSelectedDepartamentos] = useState([]);
+    const [selectedDepartamento, setSelectedDepartamento] = useState(null);
+    const navegar = useNavigate()
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && departamentos) {
-            const departamentosSelecionados = departamentos.filter(departamento => selected.includes(departamento.id));
-            setSelectedDepartamentos([...departamentosSelecionados]); // Garante que o array é atualizado
+            const departamentosSelecionados = departamentos.filter(dep => selected.includes(dep.id));
+            setSelectedDepartamentos(departamentosSelecionados);
         } else {
-            setSelectedDepartamentos([]); // Evita manter seleções erradas
+            setSelectedDepartamentos([]);
         }
     }, [selected, departamentos]);
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        onSearch(value);
     };
 
     function verDetalhes(value)
@@ -66,50 +68,66 @@ function DataTableDepartamentos({ departamentos, showSearch = true, pagination =
     function handleSelectChange(e) {
         if (selected) {
             let selectedValue = e.value;
+            let newSelection = [...selectedDepartamentos];
 
             if (Array.isArray(selectedValue)) {
                 setSelectedDepartamentos(selectedValue);
-                setSelected(selectedValue.map(departamento => departamento.id)); // Salva os IDs selecionados
+                setSelected(selectedValue.map(dep => dep.id));
             } else {
-                let newSelection = [...selectedDepartamentos];
-
-                // Se o item já estiver selecionado, remove
-                if (newSelection.some(departamento => departamento.id === selectedValue.id)) {
-                    newSelection = newSelection.filter(departamento => departamento.id !== selectedValue.id);
+                if (newSelection.some(dep => dep.id === selectedValue.id)) {
+                    newSelection = newSelection.filter(dep => dep.id !== selectedValue.id);
                 } else {
-                    // Caso contrário, adiciona à seleção
                     newSelection.push(selectedValue);
                 }
-
                 setSelectedDepartamentos(newSelection);
-                setSelected(newSelection.map(departamento => departamento.id)); // Mantém IDs no estado global
+                setSelected(newSelection.map(dep => dep.id));
             }
         } else {
-            setSelectedDepartamento(e.value.id);
+            setSelectedDepartamento(e.value);
             verDetalhes(e.value);
         }
     }
 
     return (
         <>
-            {showSearch &&
+            {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar departamento" />
+                        <CampoTexto 
+                            width={'320px'} 
+                            valor={globalFilterValue} 
+                            setValor={onGlobalFilterChange} 
+                            type="search" 
+                            label="" 
+                            placeholder="Buscar departamentos" 
+                        />
                     </span>
                 </div>
             }
-            <DataTable value={departamentos} filters={filters} globalFilterFields={['id', 'filial.nome']} emptyMessage="Não foram encontrados departamentos" selection={selected ? selectedDepartamentos : selectedDepartamento} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={departamentos} 
+                emptyMessage="Não foram encontrados departamentos" 
+                selection={selected ? selectedDepartamentos : selectedDepartamento} 
+                onSelectionChange={handleSelectChange} 
+                selectionMode={selected ? "checkbox" : "single"} 
+                paginator={pagination} 
+                lazy
+                rows={rows} 
+                totalRecords={totalRecords} 
+                first={first} 
+                onPage={onPage}
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 {selected &&
-                    <Column selectionMode="multiple" style={{ width: '15%' }}></Column>
+                    <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="id" header="Id" style={{ width: '15%' }}></Column>
-                <Column field="nome" header="Nome" style={{ width: '30%' }}></Column>
+                <Column field="codigo" header="Código" style={{ width: '20%' }}></Column>
+                <Column field="nome" header="Nome" style={{ width: '40%' }}></Column>
                 <Column body={representativeFilialTemplate} field="filial.nome" header="Filial" style={{ width: '20%' }}></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
-    )
+    );
 }
 
-export default DataTableDepartamentos
+export default DataTableDepartamentos;

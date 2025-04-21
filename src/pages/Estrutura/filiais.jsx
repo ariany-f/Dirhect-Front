@@ -42,25 +42,54 @@ const ContainerSemRegistro = styled.div`
 
 
 function FiliaisLista() {
-
     const [loading, setLoading] = useState(false)
     const [filiais, setFiliais] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [first, setFirst] = useState(0);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        setLoading(true)
-        http.get('filial/?format=json')
+    const loadData = (currentPage, currentPageSize, search = '') => {
+        setLoading(true);
+        http.get(`filial/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
             .then(response => {
-                setFiliais(response)
+                setFiliais(response.results);
+                setTotalRecords(response.count);
+                setTotalPages(response.total_pages);
             })
             .catch(erro => {
-                
+                // Tratar erro
             })
-            .finally(function() {
-                setLoading(false)
-            })
-    }, [modalOpened])
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
+    useEffect(() => {
+        loadData(page, pageSize, searchTerm);
+    }, [modalOpened]);
+
+    const onPage = (event) => {
+        const newPage = event.page + 1;
+        const newPageSize = event.rows;
+        
+        setFirst(event.first);
+        setPage(newPage);
+        setPageSize(newPageSize);
+        
+        loadData(newPage, newPageSize, searchTerm);
+    };
+
+    const onSearch = (search) => {
+        setSearchTerm(search);
+        setPage(1);
+        setFirst(0);
+        loadData(1, pageSize, search);
+    };
 
     const removerMascaraCNPJ = (cnpj) => {
         return cnpj.replace(/[^\d]/g, ''); // Remove tudo que não for número
@@ -126,7 +155,16 @@ function FiliaisLista() {
             
             {
                 filiais && filiais.length > 0 ?
-                <DataTableFiliais filiais={filiais} />
+                <DataTableFiliais 
+                    filiais={filiais}
+                    paginator={true}
+                    rows={pageSize}
+                    totalRecords={totalRecords}
+                    totalPages={totalPages}
+                    first={first}
+                    onPage={onPage}
+                    onSearch={onSearch}
+                />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>

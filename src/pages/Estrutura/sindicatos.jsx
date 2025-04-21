@@ -2,15 +2,15 @@ import styles from '@pages/Estrutura/Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
 import http from '@http'
+import DataTableSindicatos from '@components/DataTableSindicatos'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
 import ModalAdicionarSindicato from '@components/ModalAdicionarSindicato'
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
-import DataTableSindicatos from '@components/DataTableSindicatos'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -37,50 +37,92 @@ const ContainerSemRegistro = styled.div`
     }
 `
 
-
 function SindicatosLista() {
-
     const [loading, setLoading] = useState(false)
     const [sindicatos, setSindicatos] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
+    const [totalRecords, setTotalRecords] = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
+    const [first, setFirst] = useState(0)
+    const [searchTerm, setSearchTerm] = useState('')
+
+    const loadData = (currentPage, currentPageSize, search = '') => {
+        setLoading(true)
+        http.get(`sindicato/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
+            .then(response => {
+                setSindicatos(response.results)
+                setTotalRecords(response.count)
+                setTotalPages(response.total_pages)
+            })
+            .catch(erro => {
+                console.error('Erro ao carregar sindicatos:', erro)
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao carregar sindicatos'
+                })
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
 
     useEffect(() => {
-         
-        if(!sindicatos) {
-            
-            setLoading(true)
-            http.get('sindicato/?format=json')
-                .then(response => {
-                    setSindicatos(response)
-                    setLoading(false)
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
-        }    
-    }, [sindicatos])
+        loadData(page, pageSize, searchTerm)
+    }, [modalOpened])
 
-    const adicionarSindicato = (cnpj, codigo, descricao) => {
+    const onPage = (event) => {
+        const newPage = event.page + 1
+        const newPageSize = event.rows
+        
+        setFirst(event.first)
+        setPage(newPage)
+        setPageSize(newPageSize)
+        
+        loadData(newPage, newPageSize, searchTerm)
+    }
 
+    const onSearch = (search) => {
+        setSearchTerm(search)
+        setPage(1)
+        setFirst(0)
+        loadData(1, pageSize, search)
+    }
+
+    const removerMascaraCNPJ = (cnpj) => {
+        return cnpj.replace(/[^\d]/g, '');
+    }
+
+    const adicionarSindicato = (nome, cnpj) => {
         setLoading(true)
        
-        const data = {};
-        data.cnpj = cnpj;
-        data.codigo = codigo;
-        data.descricao = descricao;
+        const data = {
+            nome,
+            cnpj: removerMascaraCNPJ(cnpj)
+        }
 
         http.post('sindicato/', data)
             .then(response => {
-                if(response.id)
-                {
+                if(response.id) {
                     setModalOpened(false)
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Sindicato criado com sucesso!'
+                    })
                 }
             })
             .catch(erro => {
-                
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao criar sindicato'
+                })
             })
-            .finally(function() {
+            .finally(() => {
                 setLoading(false)
             })
     }
@@ -117,23 +159,38 @@ function SindicatosLista() {
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um sindicato</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
+                    <GrAddCircle className={styles.icon}/> Criar um sindicato
+                </Botao>
             </BotaoGrupo>
             
-            {
-                sindicatos && sindicatos.length > 0 ?
-                <DataTableSindicatos sindicatos={sindicatos} />
+            {sindicatos && sindicatos.length > 0 ?
+                <DataTableSindicatos 
+                    sindicatos={sindicatos}
+                    paginator={true}
+                    rows={pageSize}
+                    totalRecords={totalRecords}
+                    totalPages={totalPages}
+                    first={first}
+                    onPage={onPage}
+                    onSearch={onSearch}
+                />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
-                        <img src={Management} />
-                        <h6>Não há sindicatos registradas</h6>
-                        <p>Aqui você verá todas as sindicatos registradas.</p>
+                        <img src={Management} alt="Sem sindicatos" />
+                        <h6>Não há sindicatos registrados</h6>
+                        <p>Aqui você verá todos os sindicatos registrados.</p>
                     </section>
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarSindicato aoSalvar={adicionarSindicato} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarSindicato 
+            aoSalvar={adicionarSindicato} 
+            aoSucesso={toast} 
+            aoFechar={() => setModalOpened(false)} 
+            opened={modalOpened} 
+        />
         </>
     )
 }

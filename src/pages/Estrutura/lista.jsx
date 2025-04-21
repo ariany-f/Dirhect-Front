@@ -1,17 +1,17 @@
 import styles from '@pages/Estrutura/Departamento.module.css'
 import styled from 'styled-components'
 import { useEffect, useState, useRef } from 'react'
+import http from '@http'
 import DataTableDepartamentos from '@components/DataTableDepartamentos'
+import CardText from '@components/CardText'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
-import { Link, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
-import { useDepartamentoContext } from '@contexts/Departamento'
-import http from '../../http'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -38,60 +38,87 @@ const ContainerSemRegistro = styled.div`
     }
 `
 
-function DepartamentoLista() {
-
+function DepartamentosLista() {
     const [loading, setLoading] = useState(false)
     const [departamentos, setDepartamentos] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
-    const location = useLocation()
     const toast = useRef(null)
-    const navegar = useNavigate()
-    
-    const {
-        departamento,
-        setDepartamento,
-        setNome,
-        setDescription
-    } = useDepartamentoContext()
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
+    const [totalRecords, setTotalRecords] = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
+    const [first, setFirst] = useState(0)
+    const [searchTerm, setSearchTerm] = useState('')
 
-
-    const adicionarDepartamento = (nome) => {
-
+    const loadData = (currentPage, currentPageSize, search = '') => {
         setLoading(true)
-        setDepartamento()
-        setDescription('')
-        setNome(nome)
-        const data = {};
-        data.nome = nome;
-
-        http.post('departamento/', data)
+        http.get(`departamento/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
             .then(response => {
-                if(response.id)
-                {
-                    setModalOpened(false)
-                }
+                setDepartamentos(response.results)
+                setTotalRecords(response.count)
+                setTotalPages(response.total_pages)
             })
             .catch(erro => {
-                
+                console.error('Erro ao carregar departamentos:', erro)
             })
-            .finally(function() {
+            .finally(() => {
                 setLoading(false)
             })
     }
 
     useEffect(() => {
+        loadData(page, pageSize, searchTerm)
+    }, [modalOpened])
+
+    const onPage = (event) => {
+        const newPage = event.page + 1
+        const newPageSize = event.rows
+        
+        setFirst(event.first)
+        setPage(newPage)
+        setPageSize(newPageSize)
+        
+        loadData(newPage, newPageSize, searchTerm)
+    }
+
+    const onSearch = (search) => {
+        setSearchTerm(search)
+        setPage(1)
+        setFirst(0)
+        loadData(1, pageSize, search)
+    }
+
+    const adicionarDepartamento = (nome, codigo, descricao) => {
         setLoading(true)
-        http.get('departamento/?format=json')
+        
+        const data = {
+            nome,
+            codigo,
+            descricao
+        }
+
+        http.post('departamento/', data)
             .then(response => {
-                setDepartamentos(response)
+                if(response.id) {
+                    setModalOpened(false)
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Departamento criado com sucesso!'
+                    })
+                }
             })
             .catch(erro => {
-                
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao criar departamento'
+                })
             })
-            .finally(function() {
+            .finally(() => {
                 setLoading(false)
             })
-    }, [modalOpened])
+    }
 
     return (
         <>
@@ -125,24 +152,40 @@ function DepartamentoLista() {
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um departamento</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
+                    <GrAddCircle className={styles.icon}/> Criar um departamento
+                </Botao>
             </BotaoGrupo>
-            {
-                departamentos && departamentos.length > 0 ?
-                    <DataTableDepartamentos departamentos={departamentos} />
+            
+            {departamentos && departamentos.length > 0 ?
+                <DataTableDepartamentos 
+                    departamentos={departamentos}
+                    paginator={true}
+                    rows={pageSize}
+                    totalRecords={totalRecords}
+                    totalPages={totalPages}
+                    first={first}
+                    onPage={onPage}
+                    onSearch={onSearch}
+                />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
-                        <img src={Management} />
+                        <img src={Management} alt="Sem departamentos" />
                         <h6>Não há departamentos registrados</h6>
                         <p>Aqui você verá todos os departamentos registrados.</p>
                     </section>
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarDepartamento aoSalvar={adicionarDepartamento} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
+        <ModalAdicionarDepartamento 
+            aoSalvar={adicionarDepartamento} 
+            aoSucesso={toast} 
+            aoFechar={() => setModalOpened(false)} 
+            opened={modalOpened} 
+        />
         </>
     )
 }
 
-export default DepartamentoLista
+export default DepartamentosLista 

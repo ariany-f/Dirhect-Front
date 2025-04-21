@@ -9,94 +9,64 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import ModalEditarSindicato from '../ModalEditarSindicato';
+import styled from 'styled-components';
 
-function DataTableSindicatos({ sindicatos, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+const NumeroColaboradores = styled.p`
+    color: var(--base-black);
+    font-feature-settings: 'clig' off, 'liga' off;
+    font-family: var(--fonte-secundaria);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+`
 
-    const[selectedSindicato, setSelectedSindicato] = useState({})
+function DataTableSindicatos({ 
+    sindicatos, 
+    showSearch = true, 
+    pagination = true, 
+    rows, 
+    totalRecords, 
+    first, 
+    onPage, 
+    onSearch, 
+    selected = null, 
+    setSelected = () => {} 
+}) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
-    const [modalOpened, setModalOpened] = useState(false)
-    const toast = useRef(null)
     const [selectedSindicatos, setSelectedSindicatos] = useState([]);
+    const [selectedSindicato, setSelectedSindicato] = useState(null);
+    const navegar = useNavigate();
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && sindicatos) {
-            const sindicatosSelecionadas = sindicatos.filter(filial => selected.includes(filial.id));
-            setSelectedSindicatos(sindicatosSelecionadas);
+            const sindicatosSelecionados = sindicatos.filter(sindicato => selected.includes(sindicato.id));
+            setSelectedSindicatos(sindicatosSelecionados);
         } else {
             setSelectedSindicatos([]);
         }
     }, [selected, sindicatos]);
 
-    const navegar = useNavigate()
-
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        onSearch(value);
     };
 
-    const removerMascaraCNPJ = (cnpj) => {
-        return cnpj.replace(/[^\d]/g, ''); // Remove tudo que não for número
-    }
-
     function verDetalhes(value) {
-        setSelectedSindicato(value); // Atualiza o estado
-        setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
+        setSelectedSindicato(value.id);
+        navegar(`/estrutura/sindicato/detalhes/${value.id}`);
     }
-    
-    useEffect(() => {
-        console.log("Sindicato selecionado mudou:", selectedSindicato);
-    }, [selectedSindicato]);
 
     function formataCNPJ(cnpj) {
         cnpj = cnpj.replace(/[^\d]/g, "");
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
     }
-    
+
     const representativeCNPJTemplate = (rowData) => {
-        if(rowData?.cnpj)
-        {
-            return (
-                formataCNPJ(rowData.cnpj)
-            )
+        if(rowData?.cnpj) {
+            return formataCNPJ(rowData.cnpj);
         }
-        else
-        {
-            return "---"
-        }
-    }
-
-    
-    const editarSindicato = ( cnpj, codigo, descricao, id ) => {
-
-        // setLoading(true)
-       
-        const data = {};
-        data.id = id;
-        data.codigo = codigo;
-        data.descricao = descricao;
-        data.cnpj = removerMascaraCNPJ(cnpj);
-
-        http.put(`sindicato/${id}/`, data)
-            .then(response => {
-                if(response.id)
-                {
-                    setModalOpened(false)
-                }
-            })
-            .catch(erro => {
-                
-            })
-            .finally(function() {
-                // setLoading(false)
-            })
-    }
+        return "---";
+    };
 
     function handleSelectChange(e) {
         if (selected) {
@@ -105,46 +75,60 @@ function DataTableSindicatos({ sindicatos, showSearch = true, pagination = true,
 
             if (Array.isArray(selectedValue)) {
                 setSelectedSindicatos(selectedValue);
-                setSelected(selectedValue.map(filial => filial.id)); // Mantém os IDs no estado global
+                setSelected(selectedValue.map(sindicato => sindicato.id));
             } else {
-                if (newSelection.some(filial => filial.id === selectedValue.id)) {
-                    newSelection = newSelection.filter(filial => filial.id !== selectedValue.id);
+                if (newSelection.some(sindicato => sindicato.id === selectedValue.id)) {
+                    newSelection = newSelection.filter(sindicato => sindicato.id !== selectedValue.id);
                 } else {
                     newSelection.push(selectedValue);
                 }
                 setSelectedSindicatos(newSelection);
-                setSelected(newSelection.map(filial => filial.id));
+                setSelected(newSelection.map(sindicato => sindicato.id));
             }
         } else {
-            if(e.value)
-            {
-                setSelectedSindicato(e.value.id);
-                verDetalhes(e.value);
-            }
+            setSelectedSindicato(e.value);
+            verDetalhes(e.value);
         }
     }
 
     return (
         <>
-            <Toast ref={toast} />
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar sindicatos" />
+                        <CampoTexto 
+                            width={'320px'} 
+                            valor={globalFilterValue} 
+                            setValor={onGlobalFilterChange} 
+                            type="search" 
+                            label="" 
+                            placeholder="Buscar sindicatos" 
+                        />
                     </span>
                 </div>
             }
-            <DataTable value={sindicatos} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage="Não foram encontradas sindicatos" selection={selected ? selectedSindicatos : selectedSindicato} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={sindicatos} 
+                emptyMessage="Não foram encontrados sindicatos" 
+                selection={selected ? selectedSindicatos : selectedSindicato} 
+                onSelectionChange={handleSelectChange} 
+                selectionMode={selected ? "checkbox" : "single"} 
+                paginator={pagination} 
+                lazy
+                rows={rows} 
+                totalRecords={totalRecords} 
+                first={first} 
+                onPage={onPage}
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="codigo" header="Código" style={{ width: '15%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '25%' }}></Column>
-                <Column body={representativeCNPJTemplate} header="CNPJ" style={{ width: '25%' }}></Column>
+                <Column field="descricao" header="Nome" style={{ width: '45%' }}></Column>
+                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" style={{ width: '45%' }}></Column>
             </DataTable>
-            <ModalEditarSindicato aoSalvar={editarSindicato} sindicato={selectedSindicato} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
-    )
+    );
 }
 
-export default DataTableSindicatos
+export default DataTableSindicatos;

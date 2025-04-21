@@ -37,34 +37,63 @@ const ContainerSemRegistro = styled.div`
     }
 `
 
-
 function CentrosCustoLista() {
-
     const [loading, setLoading] = useState(false)
     const [centros_custo, setCentrosCusto] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
-    
-    useEffect(() => {
-       
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
+    const [totalRecords, setTotalRecords] = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
+    const [first, setFirst] = useState(0)
+    const [searchTerm, setSearchTerm] = useState('')
+
+    const loadData = (currentPage, currentPageSize, search = '') => {
         setLoading(true)
-        http.get('centro_custo/?format=json')
+        http.get(`centro_custo/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
             .then(response => {
-                setCentrosCusto(response)
-                
+                setCentrosCusto(response.results)
+                setTotalRecords(response.count)
+                setTotalPages(response.total_pages)
             })
             .catch(erro => {
-                
+                console.error('Erro ao carregar centros de custo:', erro)
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao carregar centros de custo'
+                })
             })
-            .finally(function() {
+            .finally(() => {
                 setLoading(false)
             })
+    }
+
+    useEffect(() => {
+        loadData(page, pageSize, searchTerm)
     }, [modalOpened])
 
-    
-    const adicionarCentroCusto = (nome, cc_pai) => {
+    const onPage = (event) => {
+        const newPage = event.page + 1
+        const newPageSize = event.rows
+        
+        setFirst(event.first)
+        setPage(newPage)
+        setPageSize(newPageSize)
+        
+        loadData(newPage, newPageSize, searchTerm)
+    }
 
+    const onSearch = (search) => {
+        setSearchTerm(search)
+        setPage(1)
+        setFirst(0)
+        loadData(1, pageSize, search)
+    }
+
+    const adicionarCentroCusto = (nome, cc_pai) => {
         setLoading(true)
        
         const data = {};
@@ -73,20 +102,26 @@ function CentrosCustoLista() {
 
         http.post('centro_custo/', data)
             .then(response => {
-                if(response.id)
-                {
+                if(response.id) {
                     setModalOpened(false)
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Centro de custo criado com sucesso!'
+                    })
                 }
-                
             })
             .catch(erro => {
-                
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao criar centro de custo'
+                })
             })
-            .finally(function() {
+            .finally(() => {
                 setLoading(false)
             })
     }
-
 
     return (
         <>
@@ -120,22 +155,39 @@ function CentrosCustoLista() {
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um centro de custo</Botao>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
+                    <GrAddCircle className={styles.icon}/> Criar um centro de custo
+                </Botao>
             </BotaoGrupo>
-            {
-                centros_custo && centros_custo.length > 0 ?
-                    <DataTableCentrosCusto centros_custo={centros_custo} />
+            
+            {centros_custo && centros_custo.length > 0 ?
+                <DataTableCentrosCusto 
+                    centros_custo={centros_custo}
+                    paginator={true}
+                    rows={pageSize}
+                    totalRecords={totalRecords}
+                    totalPages={totalPages}
+                    first={first}
+                    onPage={onPage}
+                    onSearch={onSearch}
+                />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
-                        <img src={Management} />
+                        <img src={Management} alt="Sem centros de custo" />
                         <h6>Não há centros de custo registrados</h6>
                         <p>Aqui você verá todos os centros de custo registrados.</p>
                     </section>
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
-        <ModalAdicionarCentroCusto aoSalvar={adicionarCentroCusto} aoSucesso={toast} aoFechar={() => setModalOpened(false)} centros_custo={centros_custo} opened={modalOpened} />
+        <ModalAdicionarCentroCusto 
+            aoSalvar={adicionarCentroCusto} 
+            aoSucesso={toast} 
+            aoFechar={() => setModalOpened(false)} 
+            centros_custo={centros_custo}
+            opened={modalOpened} 
+        />
         </>
     )
 }

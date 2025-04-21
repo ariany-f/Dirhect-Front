@@ -10,13 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import ModalEditarFilial from '../ModalEditarFilial';
 
-function DataTableFiliais({ filiais, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { } }) {
 
     const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const [selectedFiliais, setSelectedFiliais] = useState([]);
@@ -33,12 +30,8 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        onSearch(value);
     };
 
     const removerMascaraCNPJ = (cnpj) => {
@@ -55,10 +48,10 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
     }, [selectedFilial]);
 
     function formataCNPJ(cnpj) {
-        cnpj = cnpj.replace(/[^\d]/g, "");
-        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+        cnpj = cnpj.replace(/[^\d]/g, "")
+        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5")
     }
-    
+
     const representativeCNPJTemplate = (rowData) => {
         if(rowData?.cnpj)
         {
@@ -133,7 +126,20 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
                     </span>
                 </div>
             }
-            <DataTable value={filiais} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage="Não foram encontradas filiais" selection={selected ? selectedFiliais : selectedFilial} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={filiais} 
+                emptyMessage="Não foram encontradas filiais" 
+                selection={selected ? selectedFiliais : selectedFilial} 
+                onSelectionChange={handleSelectChange} 
+                selectionMode={selected ? "checkbox" : "single"} 
+                paginator={pagination} 
+                lazy
+                rows={rows} 
+                totalRecords={totalRecords} 
+                first={first} 
+                onPage={onPage}
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
@@ -145,5 +151,4 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, selec
         </>
     )
 }
-
 export default DataTableFiliais

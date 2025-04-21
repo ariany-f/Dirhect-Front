@@ -22,19 +22,26 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableHorarios({ horarios, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
-   
-    const[selectedHorario, setSelectedHorario] = useState(0)
+function DataTableHorarios({ 
+    horarios, 
+    showSearch = true, 
+    pagination = true, 
+    rows, 
+    totalRecords, 
+    first, 
+    onPage, 
+    onSearch, 
+    selected = null, 
+    setSelected = () => {} 
+}) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
     const [selectedHorarios, setSelectedHorarios] = useState([]);
-    const navegar = useNavigate()
+    const [selectedHorario, setSelectedHorario] = useState(null);
+    const navegar = useNavigate();
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && horarios) {
-            const horariosSelecionados = horarios.filter(cargo => selected.includes(cargo.id));
+            const horariosSelecionados = horarios.filter(horario => selected.includes(horario.id));
             setSelectedHorarios(horariosSelecionados);
         } else {
             setSelectedHorarios([]);
@@ -42,19 +49,15 @@ function DataTableHorarios({ horarios, showSearch = true, pagination = true, sel
     }, [selected, horarios]);
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        onSearch(value);
     };
 
-    function verDetalhes(value)
-    {
-        setSelectedHorario(value.public_id)
+    function verDetalhes(value) {
+        setSelectedHorario(value.id);
+        navegar(`/estrutura/horario/detalhes/${value.id}`);
     }
-    
+
     function handleSelectChange(e) {
         if (selected) {
             let selectedValue = e.value;
@@ -62,65 +65,61 @@ function DataTableHorarios({ horarios, showSearch = true, pagination = true, sel
 
             if (Array.isArray(selectedValue)) {
                 setSelectedHorarios(selectedValue);
-                setSelected(selectedValue.map(cargo => cargo.id)); // Mantém os IDs no estado global
+                setSelected(selectedValue.map(horario => horario.id));
             } else {
-                if (newSelection.some(cargo => cargo.id === selectedValue.id)) {
-                    newSelection = newSelection.filter(cargo => cargo.id !== selectedValue.id);
+                if (newSelection.some(horario => horario.id === selectedValue.id)) {
+                    newSelection = newSelection.filter(horario => horario.id !== selectedValue.id);
                 } else {
                     newSelection.push(selectedValue);
                 }
                 setSelectedHorarios(newSelection);
-                setSelected(newSelection.map(cargo => cargo.id));
+                setSelected(newSelection.map(horario => horario.id));
             }
         } else {
-            setSelectedHorario(e.value.id);
+            setSelectedHorario(e.value);
             verDetalhes(e.value);
         }
     }
-
-    const representativeHoraInicio = (rowData) => {
-        if(rowData.hora_inicio)
-        {
-            return new Date(rowData.hora_inicio).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        }
-        else
-        {
-            return 'Não definido'
-        }
-    };
-
-    const representativeHoraFim = (rowData) => {
-        if(rowData.hora_fim)
-        {
-            return new Date(rowData.hora_fim).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        }
-        else
-        {
-            return 'Não definido'
-        }
-    };
 
     return (
         <>
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar horário" />
+                        <CampoTexto 
+                            width={'320px'} 
+                            valor={globalFilterValue} 
+                            setValor={onGlobalFilterChange} 
+                            type="search" 
+                            label="" 
+                            placeholder="Buscar horários" 
+                        />
                     </span>
                 </div>
             }
-            <DataTable value={horarios} filters={filters} globalFilterFields={['id', 'codigo', 'descricao']} emptyMessage="Não foram encontrados horarios" selection={selected ? selectedHorarios : selectedHorario} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={horarios} 
+                emptyMessage="Não foram encontrados horários" 
+                selection={selected ? selectedHorarios : selectedHorario} 
+                onSelectionChange={handleSelectChange} 
+                selectionMode={selected ? "checkbox" : "single"} 
+                paginator={pagination} 
+                lazy
+                rows={rows} 
+                totalRecords={totalRecords} 
+                first={first} 
+                onPage={onPage}
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="id" header="Id" style={{ width: '10%' }}></Column>
-                <Column field="codigo" header="Código" style={{ width: '10%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
-                <Column body={representativeHoraInicio} field="hora_inicio" header="Hora Início" style={{ width: '15%' }}></Column>
-                <Column body={representativeHoraFim} field="hora_fim" header="Hora Fim" style={{ width: '15%' }}></Column>
+                <Column field="codigo" header="Código" style={{ width: '15%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '75%' }}></Column>
+                <Column field="jornada" header="Jornada" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
-    )
+    );
 }
 
-export default DataTableHorarios
+export default DataTableHorarios;
