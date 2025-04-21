@@ -22,31 +22,69 @@ const ConteudoFrame = styled.div`
 `
 
 function Beneficios() {
-
     const [loading, setLoading] = useState(false)
     const [beneficios, setBeneficios] = useState([])
     const [modalOpened, setModalOpened] = useState(false)
-    const toast = useRef(null);
+    const [lazyParams, setLazyParams] = useState({
+        first: 0,
+        rows: 10,
+        page: 1
+    })
+    const [totalRecords, setTotalRecords] = useState(0)
+    const [searchTerm, setSearchTerm] = useState('')
+    const toast = useRef(null)
+    const timeoutRef = useRef(null)
+
+    const loadBeneficios = () => {
+        setLoading(true)
+        http.get(`beneficio/?format=json&page=${lazyParams.page}&page_size=${lazyParams.rows}${searchTerm ? `&search=${searchTerm}` : ''}`)
+            .then(response => {
+                setBeneficios(response.results)
+                setTotalRecords(response.count)
+            })
+            .catch(erro => {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao carregar benefícios',
+                    life: 3000
+                })
+            })
+            .finally(() => {
+                setLoading(false)
+            })
+    }
 
     useEffect(() => {
-        if(beneficios.length === 0)
-        {
-            setLoading(true)
-            http.get('beneficio/?format=json')
-                .then(response => {
-                   setBeneficios(response)
-                })
-                .catch(erro => {
-                })
-                .finally(() => {
-                    setLoading(false)
-                })
+        loadBeneficios()
+    }, [lazyParams, searchTerm])
+
+    const onPage = (event) => {
+        setLazyParams(prevState => ({
+            ...prevState,
+            first: event.first,
+            rows: event.rows,
+            page: event.page + 1
+        }))
+    }
+
+    const onSearch = (value) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current)
         }
-    }, [])
+
+        timeoutRef.current = setTimeout(() => {
+            setSearchTerm(value)
+            setLazyParams(prevState => ({
+                ...prevState,
+                first: 0,
+                page: 1
+            }))
+        }, 500)
+    }
 
     const adicionarBeneficio = (beneficio) => {
-        if(beneficio.tipo == '' || beneficio.descricao == '')
-        {
+        if(beneficio.tipo == '' || beneficio.descricao == '') {
             toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos', life: 3000 });
             return;
         }
@@ -54,9 +92,8 @@ function Beneficios() {
        
         http.post('beneficio/', data)
             .then(response => {
-                if(response.id)
-                {
-                    beneficios.push(response)
+                if(response.id) {
+                    loadBeneficios()
                     toast.current.show({
                         severity: 'success',
                         summary: 'Sucesso',
@@ -80,9 +117,9 @@ function Beneficios() {
 
     return (
         <>
+            <Loading opened={loading} />
             <ConteudoFrame>
                 <Toast ref={toast} />
-                <Loading opened={loading} />
                 <BotaoGrupo align="space-between">
                     <BotaoSemBorda color="var(--primaria)">
                         <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
@@ -90,7 +127,16 @@ function Beneficios() {
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Benefício</Botao>
                 </BotaoGrupo>
                 <Container>
-                    <DataTableBeneficios beneficios={beneficios} />
+                    <DataTableBeneficios 
+                        beneficios={beneficios}
+                        paginator={true}
+                        rows={lazyParams.rows}
+                        totalRecords={totalRecords}
+                        first={lazyParams.first}
+                        onPage={onPage}
+                        onSearch={onSearch}
+                        onBeneficioDeleted={loadBeneficios}
+                    />
                 </Container>
                 <ModalBeneficios aoSalvar={adicionarBeneficio} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
             </ConteudoFrame>
