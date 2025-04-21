@@ -22,7 +22,7 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableFuncoes({ funcoes, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows = 10, totalRecords, totalPages, first, onPage, onSearch, selected = null, setSelected = () => { } }) {
    
     const[selectedFuncao, setSelectedFuncao] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -42,12 +42,8 @@ function DataTableFuncoes({ funcoes, showSearch = true, pagination = true, selec
     }, [selected, funcoes]);
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        onSearch(value);
     };
 
     function verDetalhes(value)
@@ -120,7 +116,20 @@ function DataTableFuncoes({ funcoes, showSearch = true, pagination = true, selec
                     </span>
                 </div>
             }
-            <DataTable value={funcoes} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados funcoes" selection={selected ? selectedFuncaos : selectedFuncao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={funcoes} 
+                emptyMessage="Não foram encontrados funcoes" 
+                selection={selected ? selectedFuncaos : selectedFuncao} 
+                onSelectionChange={handleSelectChange} 
+                selectionMode={selected ? "checkbox" : "single"} 
+                paginator={paginator} 
+                lazy
+                rows={rows}
+                totalRecords={totalRecords}
+                first={first}
+                onPage={onPage}
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }

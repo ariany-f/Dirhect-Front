@@ -22,7 +22,7 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableCargos({ cargos, showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 10, totalRecords, totalPages, first, onPage, onSearch, selected = null, setSelected = () => { } }) {
    
     const[selectedCargo, setSelectedCargo] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -42,12 +42,8 @@ function DataTableCargos({ cargos, showSearch = true, pagination = true, selecte
     }, [selected, cargos]);
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        onSearch(value);
     };
 
     function verDetalhes(value)
@@ -83,11 +79,24 @@ function DataTableCargos({ cargos, showSearch = true, pagination = true, selecte
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar departamento" />
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar cargo" />
                     </span>
                 </div>
             }
-            <DataTable value={cargos} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados cargos" selection={selected ? selectedCargos : selectedCargo} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={cargos} 
+                emptyMessage="Não foram encontrados cargos" 
+                selection={selected ? selectedCargos : selectedCargo} 
+                onSelectionChange={handleSelectChange} 
+                selectionMode={selected ? "checkbox" : "single"} 
+                paginator={paginator} 
+                lazy
+                rows={rows}
+                totalRecords={totalRecords}
+                first={first}
+                onPage={onPage}
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }

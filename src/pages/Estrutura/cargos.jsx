@@ -41,29 +41,54 @@ const ContainerSemRegistro = styled.div`
 function CargosLista() {
 
     const [loading, setLoading] = useState(false)
-    const [cargos, setCargos] = useState(null)
+    const [cargos, setCargos] = useState([])
     const [modalOpened, setModalOpened] = useState(false)
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
+    const [totalRecords, setTotalRecords] = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
+    const [first, setFirst] = useState(0)
+    const [searchTerm, setSearchTerm] = useState('')
     const toast = useRef(null)
     const navegar = useNavigate()
     
+    const loadData = (currentPage, currentPageSize, search = '') => {
+        setLoading(true);
+        http.get(`cargo/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
+            .then(response => {
+                setCargos(response.results);
+                setTotalRecords(response.count);
+                setTotalPages(response.total_pages);
+            })
+            .catch(erro => {
+                // Tratar erro
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
 
     useEffect(() => {
-        if(!cargos) {
-            
-            setLoading(true)
-            http.get('cargo/?format=json')
-                .then(response => {
-                    setCargos(response)
-                    
-                })
-                .catch(erro => {
-                    
-                })
-                .finally(function() {
-                    setLoading(false)
-                })
-        }    
-    }, [cargos])
+        loadData(page, pageSize, searchTerm);
+    }, []);
+
+    const onPage = (event) => {
+        const newPage = event.page + 1;
+        const newPageSize = event.rows;
+        
+        setFirst(event.first);
+        setPage(newPage);
+        setPageSize(newPageSize);
+        
+        loadData(newPage, newPageSize, searchTerm);
+    };
+
+    const onSearch = (search) => {
+        setSearchTerm(search);
+        setPage(1);
+        setFirst(0);
+        loadData(1, pageSize, search);
+    };
 
     return (
         <>
@@ -101,7 +126,16 @@ function CargosLista() {
             </BotaoGrupo>
             {
                 cargos && cargos.length > 0 ?
-                    <DataTableCargos cargos={cargos} />
+                    <DataTableCargos 
+                        cargos={cargos}
+                        paginator={true}
+                        rows={pageSize}
+                        totalRecords={totalRecords}
+                        totalPages={totalPages}
+                        first={first}
+                        onPage={onPage}
+                        onSearch={onSearch}
+                    />
                 :
                 <ContainerSemRegistro>
                     <section className={styles.container}>
