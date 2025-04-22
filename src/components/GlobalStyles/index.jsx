@@ -390,6 +390,9 @@ template {
 .itemGrupo:active {
     background-color: var(--neutro-200);
 }
+.p-scrollpanel-wrapper {
+    z-index:0;
+}
 `
 
 
