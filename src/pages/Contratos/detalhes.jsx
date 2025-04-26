@@ -99,7 +99,7 @@ function DetalhesContratos() {
                             <FrameVertical gap="10px">
                                 <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={contrato?.dados_operadora?.id}>
                                     <CustomImage src={contrato?.dados_operadora?.imagem_url} alt={contrato?.dados_operadora?.nome} width={90} height={45} title={contrato?.dados_operadora?.nome} />
-                                    <b>#{contrato?.id} - {contrato?.dados_operadora?.nome}</b>
+                                    <b>{contrato?.num_contrato_origem ? `#${contrato?.num_contrato_origem} -` : ``} {contrato?.dados_operadora?.nome}</b>
                                     {
                                         contrato?.status == 'A' ?
                                         <Tag severity="success" value="Ativo"></Tag> :
