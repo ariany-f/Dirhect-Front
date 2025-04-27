@@ -71,9 +71,6 @@ function FeriasListagem() {
     return (
         <ConteudoFrame>
             <BotaoGrupo align="end">
-                <BotaoGrupo align="center">
-                    <Botao aoClicar={() => true} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Registrar Ausência</Botao>
-                </BotaoGrupo>
                 {(usuario.tipo === 'equipeFolhaPagamento' || usuario.tipo === 'colaborador') && (
                     <BotaoGrupo align="center">
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
