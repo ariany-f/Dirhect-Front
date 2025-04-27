@@ -276,7 +276,21 @@ function DataTableContratosDetalhes({ beneficios }) {
     
         http.put(`contrato_beneficio_item/${selectedItemBeneficio.id}/?format=json`, dadosTransformados)
         .then(response => {
-           toast.current.show({severity:'success', summary: 'Salvo com sucesso', life: 3000});
+            // Atualiza o item selecionado com os novos dados
+            const updatedItem = {
+                ...selectedItemBeneficio,
+                regra_elegibilidade: dadosTransformados.regra_elegibilidade
+            };
+            
+            // Atualiza o item na lista de itens selecionados
+            const updatedItems = selectedItems.map(item => 
+                item.id === selectedItemBeneficio.id ? updatedItem : item
+            );
+            
+            setSelectedItems(updatedItems);
+            setSelectedItemBeneficio(updatedItem);
+            
+            toast.current.show({severity:'success', summary: 'Salvo com sucesso', life: 3000});
         })
         .catch(erro => {
             toast.current.show({severity:'error', summary: 'Não foi possível atualizar', detail: 'Erro!', life: 3000});
