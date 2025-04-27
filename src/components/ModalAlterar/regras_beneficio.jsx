@@ -103,6 +103,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     const [descricao, setDescricao] = useState('')
     const [tipo_calculo, setTipoCalculo] = useState('')
     const [tipo_desconto, setTipoDesconto] = useState('')
+    const [erroValor, setErroValor] = useState('')
 
     const [tiposCalculo, setTiposCalculo] = useState([
         {code: 'M', name: 'Valor Mensal'},
@@ -173,6 +174,47 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
         });
     }, [])
 
+    const calcularValorEmpresa = (valorCompra, valorColaborador) => {
+        const valorCompraNum = parseFloat(valorCompra.replace(/[^\d,]/g, '').replace(',', '.')) || 0
+        const valorColaboradorNum = parseFloat(valorColaborador.replace(/[^\d,]/g, '').replace(',', '.')) || 0
+
+        if (valorColaboradorNum > valorCompraNum) {
+            setErroValor('O valor do colaborador não pode ser maior que o valor da compra')
+            return ''
+        } else {
+            setErroValor('')
+            return (valorCompraNum - valorColaboradorNum).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            })
+        }
+    }
+
+    const formatarValor = (valor) => {
+        if (!valor) return ''
+        const valorNumerico = parseFloat(valor.replace(/[^\d,]/g, '').replace(',', '.'))
+        return valorNumerico.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        })
+    }
+
+    const handleValorCompraChange = (novoValor) => {
+        setValor(novoValor)
+        if (desconto) {
+            const novoValorEmpresa = calcularValorEmpresa(novoValor, desconto)
+            setEmpresa(novoValorEmpresa)
+        }
+    }
+
+    const handleValorColaboradorChange = (novoValor) => {
+        setDesconto(novoValor)
+        if (valor) {
+            const novoValorEmpresa = calcularValorEmpresa(valor, novoValor)
+            setEmpresa(novoValorEmpresa)
+        }
+    }
+
     const validarESalvar = () => {
         let errors = [];
         if (!tipo_calculo || !tipo_calculo.code) errors.push('tipo_calculo');
@@ -231,30 +273,36 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                         camposVazios={classError} 
                                         name="valor" 
                                         valor={valor} 
-                                        setValor={setValor} 
+                                        setValor={handleValorCompraChange} 
                                         type="text" 
                                         label="Valor Compra" 
-                                        placeholder="Digite o valor da compra" />
+                                        placeholder="Digite o valor da compra"
+                                        patternMask="BRL" />
                                 </Col6>
                                 <Col6>
                                     <CampoTexto 
                                         camposVazios={classError} 
                                         name="desconto" 
                                         valor={desconto} 
-                                        setValor={setDesconto} 
+                                        setValor={handleValorColaboradorChange} 
                                         type="text" 
                                         label="Valor Colaborador" 
-                                        placeholder="Digite o valor do colaborador" />
+                                        placeholder="Digite o valor do colaborador"
+                                        patternMask="BRL" />
+                                    {erroValor && <span style={{color: 'var(--error)', fontSize: '12px'}}>{erroValor}</span>}
                                 </Col6>
                                 <Col6>
                                     <CampoTexto 
                                         camposVazios={classError} 
                                         name="empresa" 
                                         valor={empresa} 
-                                        setValor={setEmpresa} 
+                                        setValor={() => {}} 
                                         type="text" 
                                         label="Valor empresa" 
-                                        placeholder="Digite o valor da empresa" />
+                                        placeholder="Valor empresa"
+                                        disabled
+                                        patternMask="BRL"
+                                        style={{backgroundColor: 'var(--neutro-100)'}} />
                                 </Col6>
                                 <Col6>
                                     <CheckboxContainer label="Extensível Dependente?" name="extensivo_dependentes" valor={extensivo_dependentes} setValor={handleChange} />
