@@ -129,23 +129,23 @@ const ElegibilidadeLista = () => {
                 <Container gap="32px">
                     <TabView>
                         <TabPanel header="Filiais">
-                            <BotaoGrupo align="end">
+                            {/* <BotaoGrupo align="end">
                                 <Link to="/elegibilidade/selecao-filiais">
                                     <Botao estilo="neutro" size="small">
                                         Configuração de filiais em lote<BiChevronRight size={20} className={styles.icon} />
                                     </Botao>
                                 </Link>
-                            </BotaoGrupo>
+                            </BotaoGrupo> */}
                             <DataTableFiliaisElegibilidade filiais={filiais} showSearch={false} />
                         </TabPanel>
                         <TabPanel header="Departamentos">
-                        <BotaoGrupo align="end">
+                            {/* <BotaoGrupo align="end">
                                 <Link to="/elegibilidade/selecao-departamentos">
                                     <Botao estilo="neutro" size="small">
                                         Configuração de departamentos em lote<BiChevronRight size={20} className={styles.icon} />
                                     </Botao>
                                 </Link>
-                            </BotaoGrupo>
+                            </BotaoGrupo> */}
                             <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false} />
                         </TabPanel>
                         <TabPanel header="Seções">
