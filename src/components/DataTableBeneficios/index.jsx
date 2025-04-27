@@ -35,7 +35,7 @@ function DataTableBeneficios({
     }, {});
     
     function verDetalhes(value) {
-        navegar(`/beneficio/detalhes/${value.id}`);
+        // navegar(`/beneficio/detalhes/${value.id}`);
     }
 
     const onGlobalFilterChange = (value) => {
