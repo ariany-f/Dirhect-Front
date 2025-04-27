@@ -11,7 +11,6 @@ const ConteudoFrame = styled.div`
     gap: 24px;
     width: 100%;
 `
-
 function Operadoras() {
 
     const [loading, setLoading] = useState(false)

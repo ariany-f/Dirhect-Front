@@ -3,11 +3,12 @@
 }
 .containerBottom {
     display: flex;
+    gap: 16px;
+    justify-content: flex-end;
     width: 100%;
-    justify-content: space-between;
-    & button {
-        width: initial;
-    }
+    padding: 16px;
+    margin-top: 16px;
+    border-top: 1px solid var(--border-color);
 }
 .cardEmpresa {
     display: flex;

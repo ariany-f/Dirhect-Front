@@ -323,6 +323,17 @@ template {
 .p-datatable .p-datatable-tbody>tr>td {
   border: none!important;
 }
+.p-datatable-tbody {
+  & .p-highlight {
+    & > td > div > p { 
+      color: var(--info-2-500) !important;
+      background-color: var(--info-2-50) !important;
+      padding: 4px 6px !important;
+      font-weight: 500 !important;
+      border-radius: 4px !important;
+    }
+  }
+}
 .p-inputswitch.p-highlight .p-inputswitch-slider {
   background-color: var(--primaria);
 }

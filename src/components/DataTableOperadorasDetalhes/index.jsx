@@ -15,12 +15,18 @@ import { FaCar, FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons
 import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
 import { MdDirectionsBike } from "react-icons/md";
 import IconeBeneficio from '@components/IconeBeneficio';
+import Texto from '@components/Texto';
+import CustomImage from '@components/CustomImage';
+import ContainerHorizontal from '@components/ContainerHorizontal';
+import { GrAddCircle } from 'react-icons/gr'
+import Botao from '@components/Botao'
+import styles from '@pages/Operadoras/Operadoras.module.css'
+import BotaoGrupo from '@components/BotaoGrupo';
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
 });
-
 
 const tipos = {
     'C': 'Cultura',
@@ -31,8 +37,7 @@ const tipos = {
     'S': 'Saúde e Bem Estar'
 }
 
-function DataTableOperadorasDetalhes({ beneficios }) {
-
+function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = null }) {
     const[selectedBeneficio, setSelectedBeneficio] = useState(0)
     const [sendData, setSendData] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -50,14 +55,8 @@ function DataTableOperadorasDetalhes({ beneficios }) {
         setGlobalFilterValue(value);
     };
 
-    const representativStatusTemplate = (rowData) => {
-        let status = tipos[rowData?.beneficio.tipo];
-        return status;
-    }
-
-    const representativeBeneficiosTemplate = (rowData) => {
+    const representativeBeneficioTemplate = (rowData) => {
         return (
-            <>
             <BadgeGeral weight={500} nomeBeneficio={
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <IconeBeneficio nomeIcone={rowData.beneficio.icone ?? rowData.beneficio.descricao} />
@@ -65,28 +64,62 @@ function DataTableOperadorasDetalhes({ beneficios }) {
                         {rowData.beneficio.descricao}
                     </div>
                 </div>
-            }  />
-           </>
+            } />
         )
     }
 
+    const representativeTipoTemplate = (rowData) => {
+        const tipos = {
+            'C': 'Cultura',
+            'E': 'Educação',
+            'H': 'Home & Office',
+            'M': 'Mobilidade',
+            'P': 'Programa de Alimentação do Trabalhador',
+            'S': 'Saúde e Bem Estar'
+        }
+        return <Tag value={tipos[rowData.beneficio.tipo]} severity="info" />
+    }
+
     return (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
+            <BotaoGrupo align="space-between">
+                <ContainerHorizontal padding={'0px'} align="start" gap={'10px'}>
+                    {operadora?.imagem_url && (
+                        <CustomImage 
+                            src={operadora.imagem_url} 
+                            alt={operadora.nome} 
+                            width={90} 
+                            height={45} 
+                            title={operadora.nome} 
+                        />
+                    )}
+                    {operadora?.nome && (
+                        <Texto size={24} weight={600}>{operadora.nome}</Texto>
+                    )}
+                </ContainerHorizontal>
+                <BotaoGrupo align="space-between">
+                    {onAddBeneficio && (
+                        <Botao aoClicar={onAddBeneficio} estilo="vermilion" size="small" tab>
+                            <GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício
+                        </Botao>
+                    )}
+                </BotaoGrupo>
+            </BotaoGrupo>
             <DataTable 
                 value={beneficios} 
                 filters={filters} 
-                globalFilterFields={['nome']} 
-                emptyMessage="Não foram encontrados beneficios vinculados à essa operadora" 
+                globalFilterFields={['beneficio.descricao']} 
+                emptyMessage="Não foram encontrados benefícios vinculados à esta operadora" 
                 paginator rows={7}
                 selection={selectedBeneficio} 
                 onSelectionChange={(e) => {setSendData(e.value);}} 
                 selectionMode="single"
-                tableStyle={{ minWidth: '68vw' }}
+                tableStyle={{ minWidth: '100%', maxWidth: '100%' }}
             >
-                <Column body={representativeBeneficiosTemplate} field="nome" header="Benefício" style={{ width: '25%' }}></Column>
-                <Column body={representativStatusTemplate} field="tipo" header="Tipo" style={{ width: '65%' }}></Column>
+                <Column body={representativeBeneficioTemplate} field="beneficio.descricao" header="Benefício" style={{ width: '50%' }}></Column>
+                <Column body={representativeTipoTemplate} field="beneficio.tipo" header="Tipo" style={{ width: '50%' }}></Column>
             </DataTable>
-        </>
+        </div>
     )
 }
 

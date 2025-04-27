@@ -11,7 +11,7 @@ import icones_beneficios from '@json/icones_beneficio.json';
 import tiposBeneficio from '@json/tipos_beneficio.json';
 import styles from './ModalAdicionarDepartamento.module.css';
 
-// Estilos (mantidos os mesmos)
+// Estilos
 const Overlay = styled.div`
     background-color: rgba(0,0,0,0.80);
     position: fixed;
@@ -216,7 +216,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
                                         setValor={setTipoSelecionado} 
                                         options={dropdownTipos} 
                                         label="Tipo de Benefício*" 
-                                        name="tipo" 
+                                        name="tipo"
                                         placeholder="Selecione o tipo"
                                         optionTemplate={tipoOptionTemplate}
                                     />
@@ -248,9 +248,9 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
                                     />
                                 </Col6>
                             </Col12>
-                            
+
                             <div className={styles.containerBottom}>
-                                <Botao 
+                                <Botao
                                     aoClicar={aoFechar} 
                                     estilo="neutro" 
                                     size="medium" 
@@ -258,7 +258,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
                                 >
                                     Cancelar
                                 </Botao>
-                                <Botao 
+                                <Botao
                                     aoClicar={validarESalvar} 
                                     estilo="vermilion" 
                                     size="medium" 

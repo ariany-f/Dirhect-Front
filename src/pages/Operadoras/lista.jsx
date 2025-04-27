@@ -12,6 +12,8 @@ import BotaoGrupo from '@components/BotaoGrupo'
 import Container from '@components/Container'
 import DataTableOperadoras from '@components/DataTableOperadoras'
 import ModalOperadoras from "../../components/ModalOperadoras"
+import DataTableOperadorasDetalhes from '@components/DataTableOperadorasDetalhes'
+import ModalBeneficios from '@components/ModalBeneficios'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -38,12 +40,34 @@ const ContainerSemRegistro = styled.div`
     }
 `
 
+const Col12 = styled.div`
+    display: flex;
+    gap: 6px;
+    justify-content: space-between;
+    margin-top: 24px;
+`;
+
+const Col4 = styled.div`
+    width: ${(props) => (props.expanded ? "calc(33% - 6px)" : "100%")};
+    transition: all 0.3s ease;
+    padding: 0px;
+`;
+
+const Col7 = styled.div`
+    width: ${(props) => (props.expanded ? "calc(66% - 6px)" : "100%")};
+    transition: all 0.3s ease;
+    padding: 0px;
+`;
+
 function OperadorasListagem() {
 
     const [operadoras, setOperadoras] = useState(null)
     const context = useOutletContext()
     const [modalOpened, setModalOpened] = useState(false)
+    const [modalBeneficioOpened, setModalBeneficioOpened] = useState(false)
     const toast = useRef(null)
+    const [selectedOperadora, setSelectedOperadora] = useState(null)
+    const [beneficios, setBeneficios] = useState(null)
     
     useEffect(() => {
         if(context)
@@ -52,17 +76,25 @@ function OperadorasListagem() {
         }
     }, [context])
 
+    useEffect(() => {
+        if (selectedOperadora) {
+            http.get(`operadora/${selectedOperadora.id}/?format=json`)
+                .then(response => {
+                    setBeneficios(response.beneficios_vinculados)
+                })
+                .catch(erro => {
+                    console.error('Erro ao carregar benefícios:', erro)
+                })
+        }
+    }, [selectedOperadora])
     
     const adicionarOperadora = async (operadora) => {
         const formData = new FormData();
 
-        // Adiciona o nome normalmente
         formData.append('nome', operadora.nome);
+        formData.append('imagem', operadora.imagem);
 
-        // Adiciona o arquivo de imagem
-        formData.append('imagem', operadora.imagem); // operadora.imagem deve ser do tipo File
-
-        const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net"; // Para Vite
+        const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
         const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
         const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
         const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;            
@@ -90,23 +122,72 @@ function OperadorasListagem() {
             return false;
         }
     }
+
+    const adicionarBeneficio = () => {
+        setModalBeneficioOpened(true)
+    }
+
+    const handleSalvarBeneficio = async (dadosBeneficio) => {
+        try {
+            const response = await http.post('beneficio/', {
+                ...dadosBeneficio,
+                operadora: selectedOperadora.id
+            })
+            
+            if (response) {
+                // Atualiza a lista de benefícios
+                const updatedBeneficios = [...beneficios, response]
+                setBeneficios(updatedBeneficios)
+                
+                toast.current.show({
+                    message: 'Benefício adicionado com sucesso!',
+                    type: 'success',
+                })
+            }
+        } catch (error) {
+            console.error('Erro ao adicionar benefício:', error)
+            toast.current.show({
+                message: 'Erro ao adicionar benefício!',
+                type: 'error',
+            })
+        } finally {
+            setModalBeneficioOpened(false)
+        }
+    }
     
     return (
         <ConteudoFrame>
             <Toast ref={toast} />
             <BotaoGrupo align="end">
                 <BotaoGrupo>
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Operadora</Botao>
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab>
+                        <GrAddCircle fill="black" color="black"/> Adicionar Operadora
+                    </Botao>
                 </BotaoGrupo>
             </BotaoGrupo>
             {
                 operadoras ?
-                <Container>
-                    <DataTableOperadoras search={false} operadoras={operadoras} />
-                </Container>
+                <Col12>
+                    <Col4 expanded={selectedOperadora}>
+                        <DataTableOperadoras 
+                            search={false} 
+                            operadoras={operadoras} 
+                            onSelectionChange={setSelectedOperadora}
+                        />
+                    </Col4>
+                    {selectedOperadora && beneficios ? 
+                        <Col7 expanded={selectedOperadora}>
+                            <DataTableOperadorasDetalhes 
+                                beneficios={beneficios} 
+                                onAddBeneficio={adicionarBeneficio}
+                                operadora={selectedOperadora}
+                            />
+                        </Col7>
+                    : null}
+                </Col12>
                 :
                 <ContainerSemRegistro>
-                <section className={styles.container}>
+                    <section className={styles.container}>
                         <img src={Management} />
                         <h6>Não há operadoras registrados</h6>
                         <p>Aqui você verá todos os operadoras registradas.</p>
@@ -115,6 +196,11 @@ function OperadorasListagem() {
             }
 
             <ModalOperadoras opened={modalOpened} aoFechar={() => setModalOpened(false)} aoSalvar={adicionarOperadora} />
+            <ModalBeneficios 
+                opened={modalBeneficioOpened} 
+                aoFechar={() => setModalBeneficioOpened(false)} 
+                aoSalvar={handleSalvarBeneficio} 
+            />
         </ConteudoFrame>
     )
 }
