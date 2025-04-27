@@ -14,6 +14,8 @@ import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import ModalDemissao from '../ModalDemissao';
 import ModalFerias from '../ModalFerias';
 import { Tag } from 'primereact/tag';
+import { FaTrash, FaUserTimes, FaUmbrella } from 'react-icons/fa';
+import { Tooltip } from 'primereact/tooltip';
 
 function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
@@ -130,6 +132,45 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         )
     }
 
+    const representativeActionsTemplate = (rowData) => {
+        if (usuario.tipo !== 'cliente' && usuario.tipo !== 'equipeFolhaPagamento') {
+            return null;
+        }
+
+        return (
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
+                <Tooltip target=".demissao" mouseTrack mouseTrackLeft={10} />
+                <FaUserTimes 
+                    className="demissao" 
+                    data-pr-tooltip="Solicitação de Demissão" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setModalOpened(true);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--erro)'
+                    }}
+                />
+
+                <Tooltip target=".ferias" mouseTrack mouseTrackLeft={10} />
+                <FaUmbrella 
+                    className="ferias" 
+                    data-pr-tooltip="Solicitação de Férias" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setModalFeriasOpened(true);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)'
+                    }}
+                />
+            </div>
+        );
+    };
 
     const cm = useRef(null);
     const menuModel = (selectedCollaborator) => {
@@ -138,10 +179,6 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         if(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento')
         {
             return [
-                { 
-                    label: <Texto weight={600}>Detalhes</Texto>, 
-                    command: () => verDetalhes(selectedCollaborator) 
-                },
                 { 
                     label: <Texto weight={600}>{'Demissão'}</Texto>, 
                     command: () => {
@@ -158,12 +195,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         }
         else
         {
-            return [
-                { 
-                    label: <Texto weight={600}>Detalhes</Texto>, 
-                    command: () => verDetalhes(selectedCollaborator) 
-                }
-            ];
+            return [];
         }
     };
 
@@ -204,18 +236,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento " header="Data de Nascimento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>
-                <Column header="" style={{ width: '10%' }} body={(rowData) => (
-                    <button 
-                        onClick={(e) => {
-                            e.preventDefault();  // Evita o comportamento padrão do botão
-                            setSelectedCollaborator(rowData);  // Define o cartão selecionado
-                            cm.current.show(e);  // Exibe o menu de contexto
-                        }} 
-                        className="p-button black p-button-text p-button-plain p-button-icon-only"
-                    >
-                        <IoEllipsisVertical />
-                    </button>
-                )}></Column>
+                <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>
             </DataTable>
             <ModalDemissao opened={modalOpened} aoFechar={() => setModalOpened(false)}/>
             <ModalFerias opened={modalFeriasOpened} aoFechar={() => setModalFeriasOpened(false)}/>

@@ -4,6 +4,7 @@ import './DataTable.css';
 import QuestionCard from '@components/QuestionCard';
 import BadgeGeral from '@components/BadgeGeral';
 import CampoTexto from '@components/CampoTexto';
+import BotaoGrupo from '@components/BotaoGrupo';
 import http from '@http';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
@@ -13,6 +14,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast';
 import { FaTrash } from 'react-icons/fa';
 import tiposBeneficio from '@json/tipos_beneficio.json';
+import { Tooltip } from 'primereact/tooltip';
 
 function DataTableBeneficios({ 
     beneficios, 
@@ -89,20 +91,20 @@ function DataTableBeneficios({
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ display: 'flex', gap: '10px' }}>
-                <button 
+                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <FaTrash 
+                    className="delete" 
+                    data-pr-tooltip="Excluir Benefício" 
+                    size={16} 
                     onClick={(e) => {
                         e.stopPropagation();
                         excluirBeneficio(rowData.id);
                     }}
                     style={{
-                        background: 'none',
-                        border: 'none',
                         cursor: 'pointer',
                         color: 'var(--erro)'
                     }}
-                >
-                    <FaTrash size={16} />
-                </button>
+                />
             </div>
         );
     };
@@ -111,22 +113,19 @@ function DataTableBeneficios({
         <>
             <ConfirmDialog />
             <Toast ref={toast} />
-            <div className="flex justify-content-end" style={{marginBottom: '1rem'}}>
-                <span className="p-input-icon-left">
-                    <CampoTexto  
-                        width={'320px'} 
-                        valor={globalFilterValue}
-                        setValor={onGlobalFilterChange}
-                        type="search" 
-                        label="" 
-                        placeholder="Buscar benefício" 
-                    />
-                </span>
+            <BotaoGrupo align="space-between">
+                <CampoTexto  
+                    width={'320px'} 
+                    valor={globalFilterValue}
+                    setValor={onGlobalFilterChange}
+                    type="search" 
+                    label="" 
+                    placeholder="Buscar benefício" 
+                />
                 <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
                     <p style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona esses benefícios?</p>
                 </QuestionCard>
-            </div>
-            
+            </BotaoGrupo>
             <DataTable 
                 value={beneficios} 
                 emptyMessage="Não foram encontrados benefícios" 
@@ -140,13 +139,9 @@ function DataTableBeneficios({
                 tableStyle={{ minWidth: '65vw' }}
                 lazy
             >
-                <Column body={representativeDescriptionTemplate} field="descricao" header="Nome" style={{ width: '20%' }}></Column>
-                <Column body={representativeStatusTemplate} header="Tipo" style={{ width: '60%' }}></Column>
-                <Column 
-                    body={representativeActionsTemplate} 
-                    header="Ações" 
-                    style={{ width: '20%', textAlign: 'center' }}
-                ></Column>
+                <Column body={representativeDescriptionTemplate} field="descricao" header="Nome" style={{ width: '20%' }}/>
+                <Column body={representativeStatusTemplate} header="Tipo" style={{ width: '60%' }}/>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '15%'}}/>
             </DataTable>
         </>
     );
