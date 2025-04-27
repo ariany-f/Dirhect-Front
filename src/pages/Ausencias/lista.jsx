@@ -15,6 +15,7 @@ import ModalFerias from '@components/ModalFerias'
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -49,7 +50,7 @@ function FeriasAusenciasListagem() {
     const [ausencias, setAusencias] = useState(null)
     const context = useOutletContext()
     const [modalOpened, setModalOpened] = useState(false)
-    
+    const { usuario } = useSessaoUsuarioContext()
     
     useEffect(() => {
         if(!ausencias)
@@ -73,9 +74,11 @@ function FeriasAusenciasListagem() {
                 <BotaoGrupo align="center">
                     <Botao aoClicar={() => true} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Registrar Ausência</Botao>
                 </BotaoGrupo>
-                <BotaoGrupo align="center">
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
-                </BotaoGrupo>
+                {(usuario.tipo === 'equipeFolhaPagamento' || usuario.tipo === 'colaborador') && (
+                    <BotaoGrupo align="center">
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
+                    </BotaoGrupo>
+                )}
             </BotaoGrupo>
             {ausencias ?
                 <DataTableAusencias ausencias={ausencias} />

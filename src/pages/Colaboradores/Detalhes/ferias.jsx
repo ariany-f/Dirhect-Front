@@ -50,7 +50,7 @@ function ColabroadorFerias() {
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
-            {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
+            {(usuario.tipo === 'equipeFolhaPagamento' || usuario.tipo === 'colaborador') && 
                 <BotaoGrupo align="end">
                     <BotaoGrupo align="center">
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Criar solicitação de Férias</Botao>
