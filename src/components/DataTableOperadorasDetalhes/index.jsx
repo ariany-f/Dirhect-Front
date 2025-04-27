@@ -46,6 +46,11 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
     })
     const navegar = useNavigate()
 
+    useEffect(() => {
+        setSelectedBeneficio(0)
+        setSendData({})
+    }, [beneficios])
+
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
 

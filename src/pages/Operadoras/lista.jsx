@@ -13,7 +13,7 @@ import Container from '@components/Container'
 import DataTableOperadoras from '@components/DataTableOperadoras'
 import ModalOperadoras from "../../components/ModalOperadoras"
 import DataTableOperadorasDetalhes from '@components/DataTableOperadorasDetalhes'
-import ModalBeneficios from '@components/ModalBeneficios'
+import ModalOperadoraBeneficio from '@components/ModalOperadoraBeneficio'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -129,14 +129,16 @@ function OperadorasListagem() {
 
     const handleSalvarBeneficio = async (dadosBeneficio) => {
         try {
-            const response = await http.post('beneficio/', {
-                ...dadosBeneficio,
+            const response = await http.post('beneficio_operadora/', {
+                beneficio: dadosBeneficio.code,
                 operadora: selectedOperadora.id
             })
             
             if (response) {
-                // Atualiza a lista de benefícios
-                const updatedBeneficios = [...beneficios, response]
+                // Busca os benefícios atualizados da operadora
+                const updatedBeneficios = await http.get(`operadora/${selectedOperadora.id}/?format=json`)
+                    .then(response => response.beneficios_vinculados)
+                
                 setBeneficios(updatedBeneficios)
                 
                 toast.current.show({
@@ -196,7 +198,7 @@ function OperadorasListagem() {
             }
 
             <ModalOperadoras opened={modalOpened} aoFechar={() => setModalOpened(false)} aoSalvar={adicionarOperadora} />
-            <ModalBeneficios 
+            <ModalOperadoraBeneficio 
                 opened={modalBeneficioOpened} 
                 aoFechar={() => setModalBeneficioOpened(false)} 
                 aoSalvar={handleSalvarBeneficio} 
