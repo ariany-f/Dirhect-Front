@@ -66,10 +66,10 @@ function DetalhesContratos() {
     }, [contrato])
 
     const vincularBeneficio = (beneficio) => {
-       
+        
         const data = {};
-        data.operadora = parseInt(id);
         data.beneficio = parseInt(beneficio.code);
+        data.contrato = parseInt(id);
         http.post('contrato_beneficio/', data)
         .then(response => {
             if(response.id)
