@@ -216,6 +216,8 @@ const Col12 = styled.div`
 const Col6 = styled.div`
     flex: 1 1 calc(50% - 8px);
     max-width: calc(50% - 8px);
+    max-height: 75vh;
+    overflow-y: auto;
 `;
 
 const StyledMultiSelect = styled(MultiSelect)`
