@@ -44,22 +44,25 @@ function DetalhesContratos() {
     const [loading, setLoading] = useState(false)
     const [modalOpened, setModalOpened] = useState(false)
    
-    useEffect(() => {
-        console.log(contrato)
-        if(contrato.length == 0)
-        {
-            http.get(`contrato/${id}/?format=json`)
+    const carregarContrato = () => {
+        setLoading(true);
+        http.get(`contrato/${id}/?format=json`)
             .then(response => {
                 setContrato(response)
             })
             .catch(erro => {
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar dados do contrato', life: 3000 });
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar dados do contrato', life: 3000 });
             })
             .finally(function() {
                 setLoading(false)
             })
-        }
+    }
 
+    useEffect(() => {
+        if(contrato.length == 0)
+        {
+            carregarContrato();
+        }
     }, [contrato])
 
     const vincularBeneficio = (beneficio) => {
@@ -123,7 +126,7 @@ function DetalhesContratos() {
                     </>
                     : <></>
                 }
-                <DataTableContratosDetalhes beneficios={contrato?.beneficios} />
+                <DataTableContratosDetalhes beneficios={contrato?.beneficios} onUpdate={carregarContrato} />
                 <ModalContratoBeneficios beneficiosContrato={contrato?.beneficios} operadora={contrato?.dados_operadora} aoSalvar={vincularBeneficio} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Container>
         </Frame>

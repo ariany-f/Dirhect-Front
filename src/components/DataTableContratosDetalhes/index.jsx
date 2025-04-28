@@ -48,7 +48,7 @@ const Col7 = styled.div`
     padding: 0px;
 `;
 
-function DataTableContratosDetalhes({ beneficios }) {
+function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     
     const[selectedBeneficio, setSelectedBeneficio] = useState(0)
     const[selectedItemBeneficio, setSelectedItemBeneficio] = useState(0)
@@ -173,6 +173,11 @@ function DataTableContratosDetalhes({ beneficios }) {
         if(descricao == '' || valor == '' || empresa == '' || desconto == '') {
             toast.current.show({severity:'error', summary: 'Erro', detail: 'Preencha todos os campos!', life: 3000});
         } else {
+            // Função para converter valor monetário em número
+            const converterParaNumero = (valorMonetario) => {
+                return parseFloat(valorMonetario.replace('R$', '').replace('.', '').replace(',', '.').trim());
+            };
+
             let data = {
                 descricao: descricao,
                 tipo_calculo: tipo_calculo,
@@ -181,9 +186,9 @@ function DataTableContratosDetalhes({ beneficios }) {
                 extensivel_depentende: extensivo_dependentes ?  true : false,
                 parametro_aplicacao: "I",
                 numero_decimal: true,
-                valor: valor,
-                valor_empresa: empresa,
-                valor_desconto: desconto
+                valor: converterParaNumero(valor),
+                valor_empresa: converterParaNumero(empresa),
+                valor_desconto: converterParaNumero(desconto)
             }
             
             if(id) {
@@ -191,6 +196,10 @@ function DataTableContratosDetalhes({ beneficios }) {
                 .then(response => {
                     if(response.id) {
                         toast.current.show({severity:'success', summary: 'Atualizado!', detail: 'Sucesso!', life: 3000});
+                        // Notifica o componente pai sobre a atualização
+                        if (onUpdate) {
+                            onUpdate();
+                        }
                     }
                 })
                 .catch(erro => {
@@ -220,6 +229,10 @@ function DataTableContratosDetalhes({ beneficios }) {
                         
                         setBeneficiosProcessados(updatedBeneficios);
                         toast.current.show({severity:'success', summary: 'Adicionado com Sucesso', detail: 'Sucesso!', life: 3000});
+                        // Notifica o componente pai sobre a atualização
+                        if (onUpdate) {
+                            onUpdate();
+                        }
                     }
                 })
                 .catch(erro => {
