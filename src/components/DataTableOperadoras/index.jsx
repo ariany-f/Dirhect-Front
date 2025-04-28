@@ -15,12 +15,19 @@ import styled from 'styled-components';
 
 function DataTableOperadoras({ operadoras, search = true, onSelectionChange }) {
 
-    const[selectedOperadora, setSelectedOperadora] = useState(0)
+    const[selectedOperadora, setSelectedOperadora] = useState(null)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
+
+    useEffect(() => {
+        if (operadoras && operadoras.length > 0 && !selectedOperadora) {
+            setSelectedOperadora(operadoras[0]);
+            onSelectionChange(operadoras[0]);
+        }
+    }, [operadoras, selectedOperadora, onSelectionChange]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };

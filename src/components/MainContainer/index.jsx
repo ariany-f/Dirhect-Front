@@ -12,12 +12,14 @@ const DivContainer = styled.div`
     // align-items: stretch;
     // max-width: min(100%, 428px);
 
-     justify-content: ${ props => props.$align ? props.$align : 'center' };
+    justify-content: ${ props => props.$align ? props.$align : 'center' };
     align-items: ${ props => props.$align == 'center' ? props.$align : 'initial' };
     text-align: ${ props => props.$align ? props.$align : 'center' };
     padding: ${ props => props.$padding ? props.$padding : '5vw 10vw' };
     overflow-y: auto;
     width: -webkit-fill-available;
+    height: 100%;
+    max-height: 100vh;
 `
 
 function MainContainer({ children, align, padding = '0 10vw', aoClicar = null }) {
