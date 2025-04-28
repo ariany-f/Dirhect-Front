@@ -40,7 +40,7 @@ const BarraLateralEstilizada = styled.aside`
     transition: .5s cubic-bezier(.36,-0.01,0,.77);
     gap: 32px;
     flex-shrink: 0;
-    background: linear-gradient(to bottom, #260084, #5d0b62);
+    background: linear-gradient(to bottom, #0c004c, #5d0b62);
     @media screen and (max-width: 760px) {
         display: none;
     }

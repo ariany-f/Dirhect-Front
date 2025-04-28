@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components'
 
 const EstilosGlobais = createGlobalStyle`
   :root {
-      --primaria: #244078;
+      --primaria: #0c004c;
       --vermilion-50: #FFF5EC;
       --vermilion-100: #FFE8D3;
       --vermilion-200: #FFCDA5;
