@@ -93,6 +93,12 @@
     flex: 1;
     min-height: -webkit-fill-available;
 }
+.empilhado.full_height {
+    height: 100%;
+}
+.empilhado.full_height .card_dashboard {
+    height: 100%;
+}
 .rightalign {
     text-align: right;
     & p{
@@ -154,4 +160,16 @@
 .icon * {
     box-sizing: initial;
     stroke: var(--white);
+}
+
+/* Animação de Fade In */
+.fadeIn {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.fadeIn.visible {
+    opacity: 1;
+    transform: translateY(0);
 }

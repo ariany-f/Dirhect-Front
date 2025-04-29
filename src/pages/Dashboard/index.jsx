@@ -65,17 +65,13 @@ function Dashboard() {
 
     return (
         <>
-        {/* {usuarioEstaLogado && */}
+        {colaboradores ?
             <>
-            {colaboradores ?
-                <>
-                    <DashboardCard colaboradores={colaboradores} />
-                </>
-            :
-                <Loading opened={loadingOpened} />
-            }
+                <DashboardCard colaboradores={colaboradores} />
             </>
-        {/* } */}
+        :
+            <Loading opened={loadingOpened} />
+        }
        </>
     )
 }

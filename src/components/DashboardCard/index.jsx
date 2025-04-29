@@ -16,6 +16,7 @@ import { AiOutlinePieChart } from 'react-icons/ai'
 import { BsHourglassSplit } from 'react-icons/bs'
 import { Timeline } from 'primereact/timeline'
 import { Tag } from 'primereact/tag'
+import { useEffect, useState } from 'react'
 
 let Real = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -23,6 +24,12 @@ let Real = new Intl.NumberFormat('pt-BR', {
 });
 
 function DashboardCard({ dashboardData, colaboradores = [] }){
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        setIsVisible(true);
+    }, []);
+
     const pedidos = [
         { titulo: 'Vale Alimentação', dataPedido: '25/02/2025', referencia:"03/2025", statusAtual: 'Em validação', total_colaboradores: 5, valor: 15630.00 },
         { titulo: 'Vale Refeição', dataPedido: '26/02/2025', referencia:"03/2025", statusAtual: 'Em preparação', total_colaboradores: 2, valor: 9870.00 },
@@ -107,44 +114,44 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
         <Container gap="32px">
             <div className={styles.wrapper_cards}>
                 <div className={styles.empilhado}>
-                    <div className={styles.card_dashboard}>
+                    <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                         <Frame estilo="spaced">
                             <Titulo><h6>Mês Atual</h6></Titulo>
-                            <Link to="/beneficio"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
-                        </Frame>
-                        <Frame estilo="spaced">
-                            <div className={styles.right}>
-                                <Texto size="14px" weight={500} color={'var(--neutro-500)'}>Admissões</Texto>
-                                <BadgeGeral severity="success" nomeBeneficio={10} iconeBeneficio={<FaUserPlus />}></BadgeGeral>
-                            </div>
-                            <div className={styles.right}>
-                                <Texto size="14px" weight={500} color={'var(--neutro-500)'}>Demissões</Texto>
-                                <BadgeGeral severity="error" nomeBeneficio={2} iconeBeneficio={<FaUserMinus />}></BadgeGeral>
-                            </div>
-                        </Frame>
-                        <Frame estilo="spaced">
-                            <Titulo><h6>Lançamentos de Folha</h6></Titulo>
-                        </Frame>
-                        <div className={styles.transacao}>
-                            <div className={styles.empilhado} style={{gap: '4px'}}>
-                                <Frame estilo="spaced">
-                                    <div className={styles.badge_1}>
-                                        <div>{'Adiantamento'}</div>
-                                    </div>
-                                    <Texto weight={800}>18</Texto>
-                                </Frame>
-                                <Frame estilo="spaced">
-                                    <div className={styles.badge_2}>
-                                        {'Folha de Pagamento'}
-                                    </div>
-                                    <Texto weight={800}>54</Texto>
-                                </Frame>
-                            </div>
+                        <Link to="/beneficio"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
+                    </Frame>
+                    <Frame estilo="spaced">
+                        <div className={styles.right}>
+                            <Texto size="14px" weight={500} color={'var(--neutro-500)'}>Admissões</Texto>
+                            <BadgeGeral severity="success" nomeBeneficio={10} iconeBeneficio={<FaUserPlus />}></BadgeGeral>
+                        </div>
+                        <div className={styles.right}>
+                            <Texto size="14px" weight={500} color={'var(--neutro-500)'}>Demissões</Texto>
+                            <BadgeGeral severity="error" nomeBeneficio={2} iconeBeneficio={<FaUserMinus />}></BadgeGeral>
+                        </div>
+                    </Frame>
+                    <Frame estilo="spaced">
+                        <Titulo><h6>Lançamentos de Folha</h6></Titulo>
+                    </Frame>
+                    <div className={styles.transacao}>
+                        <div className={styles.empilhado} style={{gap: '4px'}}>
+                            <Frame estilo="spaced">
+                                <div className={styles.badge_1}>
+                                    <div>{'Adiantamento'}</div>
+                                </div>
+                                <Texto weight={800}>18</Texto>
+                            </Frame>
+                            <Frame estilo="spaced">
+                                <div className={styles.badge_2}>
+                                    {'Folha de Pagamento'}
+                                </div>
+                                <Texto weight={800}>54</Texto>
+                            </Frame>
                         </div>
                     </div>
+                    </div>
                 </div> 
-                <div className={styles.empilhado}>
-                    <div className={styles.card_dashboard}>
+                <div className={`${styles.empilhado} ${styles.full_height}`}>
+                    <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                         <Frame estilo="spaced">
                             <Titulo><h6>Colaboradores</h6></Titulo>
                             <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
@@ -154,11 +161,6 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                 <Texto color={'var(--primaria)'} weight={800} size={'32px'}><FaUser/>&nbsp;&nbsp;{colaboradores.length}</Texto>
                             </div>
                         </div>
-                        {/* <div className={styles.buttonContainer}>
-                            <Link to="/colaborador/registro">
-                                <Botao size="small"><GrAddCircle fill="white" className={styles.icon} size={16}/>Cadastrar novo colaborador</Botao>
-                            </Link>
-                        </div> */}
                         <Frame estilo="spaced">
                             <Titulo><h6>Dependentes</h6></Titulo>
                         </Frame>
@@ -177,7 +179,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                 </div>
 
                 <div className={styles.empilhado}>
-                    <div className={styles.card_dashboard}>
+                    <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                         <Frame estilo="spaced">
                             <Titulo><h6>Vagas</h6></Titulo>
                             <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
@@ -190,7 +192,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     </div>
                     <div className={styles.wrapper_cards} style={{flexFlow: 'initial'}}>
                         <div style={{flex: '1 1 50%'}}>
-                            <div className={styles.card_dashboard}>
+                            <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                                 <Frame estilo="spaced">
                                     <Titulo><h6>Férias</h6></Titulo>
                                 </Frame>
@@ -200,9 +202,9 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                            <div style={{flex: '1 1 50%'}}>
-                            <div className={styles.card_dashboard}>
+                        </div>
+                        <div style={{flex: '1 1 50%'}}>
+                            <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                                 <Frame estilo="spaced">
                                     <Titulo><h6>Afastamentos</h6></Titulo>
                                 </Frame>
@@ -218,7 +220,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                 </div>
             </div>
             <div className={styles.wrapper_cards}>
-                <div className={styles.card_dashboard}>
+                <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                     <Frame estilo="spaced">
                         <Titulo><h6>Últimos Pedidos</h6></Titulo>
                         <Link to="/pedidos"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
