@@ -124,7 +124,7 @@ function BarraLateral() {
 
     const location = useLocation()
     
-    const [barraLateralOpened, setBarraLateralOpened] = useState(true)
+    const [barraLateralOpened, setBarraLateralOpened] = useState(window.innerWidth > 760)
     const [image, setImage] = useState(false)
     const [breadCrumbItems, setBreadCrumbItems] = useState([])
     const ref = useRef(null)
@@ -134,6 +134,15 @@ function BarraLateral() {
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
 
+
+    useEffect(() => {
+        const handleResize = () => {
+            setBarraLateralOpened(window.innerWidth > 760)
+        }
+
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     useEffect(() => {
         if(logo){
@@ -494,7 +503,15 @@ function BarraLateral() {
                     <ListaEstilizada>
                         {itensMenu().map((item) => {
                             return (
-                                <StyledLink key={item.id} className="link p-ripple" to={item.url} onClick={() => setBarraLateralOpened(false)}>
+                                <StyledLink 
+                                    key={item.id} 
+                                    className="link p-ripple" 
+                                    to={item.url}
+                                    onClick={() => {
+                                        if (window.innerWidth <= 760) {
+                                            setBarraLateralOpened(false)
+                                        }
+                                    }}>
                                     <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
                                         {item.icone}
                                         {item.itemTitulo}
