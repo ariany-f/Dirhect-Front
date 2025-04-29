@@ -24,7 +24,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
 import { formatCPF } from '@utils/formats';
 
-function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch }) {
+function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
@@ -209,13 +209,15 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
 
     return (
         <>
-            <BotaoGrupo align="space-between" wrap>
-                <div className="flex justify-content-end">
-                    <span className="p-input-icon-left">
-                        <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
-                    </span>
-                </div>
-                <BotaoGrupo align="center" gap="8px">
+            <BotaoGrupo align={showSearch ? 'space-between' : 'end'} wrap>
+                {showSearch && (
+                    <div className="flex justify-content-end">
+                        <span className="p-input-icon-left">
+                            <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
+                        </span>
+                    </div>
+                )}
+                <BotaoGrupo align="end" gap="8px">
                     <BotaoSemBorda color="var(--primaria)">
                         <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
                     </BotaoSemBorda>

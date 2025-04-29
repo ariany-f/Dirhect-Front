@@ -129,9 +129,9 @@ function FilialDetalhes() {
                 }
                 {location.pathname == `/estrutura/filial/detalhes/${id}` &&
                     <BotaoGrupo align="center">
-                        <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
+                        {/* <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
                             <AiFillQuestionCircle className="question-icon" size={20} />
-                        </QuestionCard>
+                        </QuestionCard> */}
                         {/* <Botao aoClicar={() => setModalBeneficioOpened(true)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar benefício</Botao> */}
                     </BotaoGrupo>
                 }

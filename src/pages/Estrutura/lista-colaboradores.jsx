@@ -22,7 +22,7 @@ function EstruturaListaColaboradores() {
    
     return (
         <Frame>
-            <DataTableColaboradores colaboradores={colaboradores ?? []} />
+            <DataTableColaboradores colaboradores={colaboradores ?? []} showSearch={false} />
         </Frame>
     )
 }
