@@ -34,7 +34,7 @@ const ListaEstilizada = styled.ul`
 `
 
 const BarraLateralEstilizada = styled.aside`
-    display: 'inline-flex';
+    display: flex;
     padding: 26px 0px;
     margin-left: ${ props => (!!props.$opened) ? '0' : '-246px' };
     min-height: 100vh;
@@ -55,13 +55,22 @@ const BarraLateralEstilizada = styled.aside`
         margin-left: ${ props => (!!props.$opened) ? '0' : '-100%' };
         box-shadow: ${props => (!!props.$opened) ? '0 0 15px rgba(0,0,0,0.3)' : 'none'};
         height: 100vh;
+        display: flex;
+        overflow: hidden;
     }
 `
 
 const NavEstilizada = styled.nav`
     @media screen and (max-width: 760px) {
+        width: 100%;
         height: calc(100vh - 150px);
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        position: relative;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
 
         /* Estilização da scrollbar */
         &::-webkit-scrollbar {
