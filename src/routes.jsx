@@ -141,6 +141,7 @@ import SecaoDetalhes from '@pages/Estrutura/secao/detalhes'
 import HorarioDetalhes from '@pages/Estrutura/horario/detalhes'
 import CentrosCustoDetalhes from '@pages/Estrutura/centro_custo/detalhes'
 import SindicatoDetalhes from '@pages/Estrutura/sindicato/detalhes'
+import MobileScrollToTop from '@components/MobileScrollToTop'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -167,6 +168,7 @@ function AppRouter() {
   {
     return (
       <BrowserRouter>
+        <MobileScrollToTop />
         <SessaoUsuarioProvider>
           <Routes>
               <Route path="/primeiro-acesso" element={<PrimeiroAcessoCommon/>}>
