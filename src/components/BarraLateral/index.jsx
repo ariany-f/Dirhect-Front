@@ -32,6 +32,7 @@ const ListaEstilizada = styled.ul`
         width: 100%;
         height: calc(100vh - 200px);
         overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch !important; /* Essencial para iOS */
     }
 `
 
