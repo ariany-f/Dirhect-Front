@@ -83,28 +83,15 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
-            <BotaoGrupo align="space-between">
-                <ContainerHorizontal padding={'0px'} align="start" gap={'10px'}>
-                    {operadora?.imagem_url && (
-                        <CustomImage 
-                            src={operadora.imagem_url} 
-                            alt={operadora.nome} 
-                            width={90} 
-                            height={45} 
-                            title={operadora.nome} 
-                        />
-                    )}
-                    {operadora?.nome && (
+            <BotaoGrupo align="space-between">                    
+                {operadora?.nome && (
                         <Texto size={24} weight={600}>{operadora.nome}</Texto>
                     )}
-                </ContainerHorizontal>
-                <BotaoGrupo align="end">
-                    {onAddBeneficio && (
-                        <Botao aoClicar={onAddBeneficio} estilo="vermilion" size="small" tab>
-                            <GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício
-                        </Botao>
-                    )}
-                </BotaoGrupo>
+                {onAddBeneficio && (
+                    <Botao aoClicar={onAddBeneficio} estilo="vermilion" size="small" tab>
+                        <GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício
+                    </Botao>
+                )}
             </BotaoGrupo>
             <DataTable 
                 value={beneficios} 
@@ -117,8 +104,8 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
                 selectionMode="single"
                 tableStyle={{ minWidth: '100%', maxWidth: '100%' }}
             >
-                <Column body={representativeBeneficioTemplate} field="beneficio.descricao" header="Benefício" style={{ width: '50%' }}></Column>
-                <Column body={representativeTipoTemplate} field="beneficio.tipo" header="Tipo" style={{ width: '50%' }}></Column>
+                <Column body={representativeBeneficioTemplate} field="beneficio.descricao" style={{ width: '50%' }}></Column>
+                <Column body={representativeTipoTemplate} field="beneficio.tipo" style={{ width: '50%' }}></Column>
             </DataTable>
         </div>
     )
