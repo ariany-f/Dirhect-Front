@@ -31,8 +31,15 @@ const ListaEstilizada = styled.ul`
     @media screen and (max-width: 760px) {
         width: 100%;
         height: calc(100vh - 200px);
-        -webkit-overflow-scrolling: touch !important;
-        overflow-y: auto !important;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        position: relative;
+        transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0);
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
     }
 `
 
@@ -66,15 +73,18 @@ const NavEstilizada = styled.nav`
     @media screen and (max-width: 760px) {
         width: 100%;
         height: calc(100vh - 150px);
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        overscroll-behavior-y: contain;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
         position: relative;
         flex: 1;
         display: flex;
         flex-direction: column;
         transform: translate3d(0, 0, 0);
         -webkit-transform: translate3d(0, 0, 0);
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
         
         &::-webkit-scrollbar {
             width: 6px;
