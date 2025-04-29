@@ -152,6 +152,7 @@ const Overlay = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: 9;
     opacity: ${props => props.$opened ? 1 : 0};
     transition: visibility 0.5s ease-in-out;
     visibility: ${props => props.$opened ? 'visible' : 'hidden'};
@@ -166,6 +167,7 @@ const DialogEstilizado = styled.dialog`
     align-items: center;
     border-radius: 5px;
     border: none;
+    z-index: 10;
     top: 3vh;
     left: ${props => props.$opened ? '29vw' : '100vw'};
     height: 94vh;

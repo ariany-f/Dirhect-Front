@@ -105,7 +105,7 @@ const HeaderEstilizado = styled.header`
     padding: 2vh 4vw 2vh 5vw;
     flex-wrap: wrap;
     width: inherit;
-    z-index: 999;
+    z-index: 7;
     background-color: var(--white);
     box-shadow: 0px 1px 5px 0px lightgrey;
 `;

@@ -25,6 +25,7 @@ const Overlay = styled.div`
     left: 0;
     display: flex;
     align-items: center;
+    z-index: 9;
 `
 
 const DialogEstilizado = styled.dialog`

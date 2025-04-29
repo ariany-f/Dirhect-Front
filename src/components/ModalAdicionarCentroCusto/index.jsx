@@ -18,6 +18,7 @@ const Overlay = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: 9;
 `
 
 const AdicionarCnpjBotao = styled.div`

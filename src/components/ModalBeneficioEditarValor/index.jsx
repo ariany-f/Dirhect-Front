@@ -29,6 +29,7 @@ const Overlay = styled.div`
     bottom: 0;
     overflow-y: scroll;
     left: 0;
+    z-index: 9;
 `
 
 const DialogEstilizado = styled.dialog`
