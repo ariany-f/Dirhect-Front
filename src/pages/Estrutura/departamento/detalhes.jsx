@@ -118,7 +118,7 @@ function DepartamentoDetalhes() {
                         <QuestionCard color="var(--neutro-500)" alinhamento="start" element={<small>Porque configurar os benefícios?</small>}>
                             <AiFillQuestionCircle className="question-icon" size={20} />
                         </QuestionCard>
-                        <Botao aoClicar={() => setModalBeneficioOpened(true)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar benefício</Botao>
+                        {/* <Botao aoClicar={() => setModalBeneficioOpened(true)} estilo="vermilion" size="small"><GrAddCircle className={styles.icon}/>Adicionar benefício</Botao> */}
                     </BotaoGrupo>
                 }
             </BotaoGrupo>
