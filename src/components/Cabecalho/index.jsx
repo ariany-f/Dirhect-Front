@@ -43,7 +43,7 @@ const MenuTrigger = styled.button`
   }
 
   @media screen and (max-width: 768px) {
-    padding: 8px;
+    display: none;
   }
 `;
 
@@ -290,7 +290,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         { 
           label: 'Benefícios', 
           url: '/beneficio',
-          icon: <RiHandCoinFill size={16}/>
+          icon: <RiHandCoinFill size={18}/>
         }, 
         { 
           label: 'Operadoras', 
@@ -327,40 +327,42 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
         {isDesktop ? <h6>{titulo}</h6> : <>&nbsp;</>}
         <RightItems>
           <div className={styles.divisor}>
-            <MegaMenuWrapper 
-              ref={menuRef}
-              onMouseEnter={() => setMenuAberto(true)}
-              onMouseLeave={() => setMenuAberto(false)}
-            >
-              <MenuTrigger onClick={() => setMenuAberto(!menuAberto)}>
-                <Texto weight="600" size={'14px'} color="black">
-                  Opções
-                </Texto>
-                <ChevronIcon $isOpen={menuAberto} size={16} />
-              </MenuTrigger>
-              
-              <MegaMenuPanel $isOpen={menuAberto}>
-                <MenuGrid>
-                  {menuItems.map((column, index) => (
-                    <MenuColumn key={index}>
-                      {column.items.map((item, itemIndex) => (
-                        <MenuItem 
-                          key={itemIndex} 
-                          to={item.url}
-                          onClick={() => setMenuAberto(false)}
-                          $isActive={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}
-                        >
-                          {item.icon}
-                          <Texto weight="500" size={'14px'} color="black">
-                            {item.label}
-                          </Texto>
-                        </MenuItem>
-                      ))}
-                    </MenuColumn>
-                  ))}
-                </MenuGrid>
-              </MegaMenuPanel>
-            </MegaMenuWrapper>
+            {isDesktop && (
+              <MegaMenuWrapper 
+                ref={menuRef}
+                onMouseEnter={() => setMenuAberto(true)}
+                onMouseLeave={() => setMenuAberto(false)}
+              >
+                <MenuTrigger onClick={() => setMenuAberto(!menuAberto)}>
+                  <Texto weight="600" size={'14px'} color="black">
+                    Opções
+                  </Texto>
+                  <ChevronIcon $isOpen={menuAberto} size={16} />
+                </MenuTrigger>
+                
+                <MegaMenuPanel $isOpen={menuAberto}>
+                  <MenuGrid>
+                    {menuItems.map((column, index) => (
+                      <MenuColumn key={index}>
+                        {column.items.map((item, itemIndex) => (
+                          <MenuItem 
+                            key={itemIndex} 
+                            to={item.url}
+                            onClick={() => setMenuAberto(false)}
+                            $isActive={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}
+                          >
+                            {item.icon}
+                            <Texto weight="500" size={'14px'} color="black">
+                              {item.label}
+                            </Texto>
+                          </MenuItem>
+                        ))}
+                      </MenuColumn>
+                    ))}
+                  </MenuGrid>
+                </MegaMenuPanel>
+              </MegaMenuWrapper>
+            )}
             
             {usuario.tipo !== "candidato" && isDesktop && (
               <Frame alinhamento="center">
