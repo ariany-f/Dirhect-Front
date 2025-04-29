@@ -82,7 +82,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
+        <div style={{ display: 'flex', marginTop: '2.5vh', flexDirection: 'column', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
             <BotaoGrupo align="space-between">                    
                 {operadora?.nome && (
                         <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>

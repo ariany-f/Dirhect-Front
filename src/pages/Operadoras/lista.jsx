@@ -156,21 +156,14 @@ function OperadorasListagem() {
     return (
         <ConteudoFrame>
             <Toast ref={toast} />
-            <BotaoGrupo align="end">
-                <BotaoGrupo>
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab>
-                        <GrAddCircle fill="black" color="black"/> Adicionar Operadora
-                    </Botao>
-                </BotaoGrupo>
-            </BotaoGrupo>
-            {
-                operadoras ?
+            {operadoras ? (
                 <Col12 $gap="8px">
                     <Col4Expandable $expanded={!!selectedOperadora}>
                         <DataTableOperadoras 
                             search={false} 
                             operadoras={operadoras} 
                             onSelectionChange={setSelectedOperadora}
+                            onAddClick={() => setModalOpened(true)}
                         />
                     </Col4Expandable>
                     {selectedOperadora && beneficios ? 
@@ -183,7 +176,7 @@ function OperadorasListagem() {
                         </Col8Expandable>
                     : null}
                 </Col12>
-                :
+            ) : (
                 <ContainerSemRegistro>
                     <section className={styles.container}>
                         <img src={Management} />
@@ -191,7 +184,7 @@ function OperadorasListagem() {
                         <p>Aqui você verá todos os operadoras registradas.</p>
                     </section>
                 </ContainerSemRegistro>
-            }
+            )}
 
             <ModalOperadoras opened={modalOpened} aoFechar={() => setModalOpened(false)} aoSalvar={adicionarOperadora} />
             <ModalOperadoraBeneficio 
