@@ -30,6 +30,8 @@ const ListaEstilizada = styled.ul`
     width: 246px;
     @media screen and (max-width: 760px) {
         width: 100%;
+        height: calc(100vh - 200px);
+        overflow-y: scroll !important;
     }
 `
 
@@ -55,24 +57,29 @@ const BarraLateralEstilizada = styled.aside`
         margin-left: ${ props => (!!props.$opened) ? '0' : '-100%' };
         box-shadow: ${props => (!!props.$opened) ? '0 0 15px rgba(0,0,0,0.3)' : 'none'};
         height: 100vh;
-        display: flex;
-        overflow: hidden;
+        overflow: hidden; /* Contém o scroll apenas no conteúdo */
+        -webkit-overflow-scrolling: touch;
     }
 `
-
 const NavEstilizada = styled.nav`
-   @media screen and (max-width: 760px) {
+    @media screen and (max-width: 760px) {
         width: 100%;
         height: calc(100vh - 150px);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch; /* Suaviza o scroll em iOS */
-        overscroll-behavior-y: contain; /* Previne o efeito de "pull-to-refresh" */
+        overflow-y: scroll !important; /* Força o scroll */
+        -webkit-overflow-scrolling: touch !important; /* Essencial para iOS */
+        overscroll-behavior-y: contain;
         position: relative;
         flex: 1;
         display: flex;
         flex-direction: column;
-        touch-action: pan-y; /* Garante que eventos de toque funcionem */
-
+        
+        /* Adicione estas propriedades específicas para iOS */
+        transform: translateZ(0); /* Aceleração de hardware */
+        -webkit-transform: translateZ(0);
+        overflow-anchor: none; /* Previne saltos no scroll */
+        touch-action: pan-y;
+        will-change: transform; /* Otimização */
+        
         /* Estilização da scrollbar */
         &::-webkit-scrollbar {
             width: 6px;
@@ -85,10 +92,6 @@ const NavEstilizada = styled.nav`
         &::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.4);
         }
     }
 `
@@ -528,30 +531,38 @@ function BarraLateral() {
                     <Logo src={logo} ref={ref} alt="Logo" />
                     : ''
                 }
-                <NavEstilizada>
-                    <NavTitulo>{titulos[usuario.tipo]}</NavTitulo>
-                    <ListaEstilizada>
-                        {itensMenu().map((item) => {
-                            return (
-                                <StyledLink 
-                                    key={item.id} 
-                                    className="link p-ripple" 
-                                    to={item.url}
-                                    onClick={() => {
-                                        if (window.innerWidth <= 760) {
-                                            setBarraLateralOpened(false)
-                                        }
-                                    }}>
-                                    <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
-                                        {item.icone}
-                                        {item.itemTitulo}
-                                    </ItemNavegacao>
-                                    <Ripple />
-                                </StyledLink>
-                            )
-                        })}
-                    </ListaEstilizada>
-                </NavEstilizada>
+                {/* Adicione este wrapper */}
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    width: '100%'
+                }}>
+                    <NavEstilizada>
+                        <NavTitulo>{titulos[usuario.tipo]}</NavTitulo>
+                        <ListaEstilizada>
+                            {itensMenu().map((item) => {
+                                return (
+                                    <StyledLink 
+                                        key={item.id} 
+                                        className="link p-ripple" 
+                                        to={item.url}
+                                        onClick={() => {
+                                            if (window.innerWidth <= 760) {
+                                                setBarraLateralOpened(false)
+                                            }
+                                        }}>
+                                        <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                            {item.icone}
+                                            {item.itemTitulo}
+                                        </ItemNavegacao>
+                                        <Ripple />
+                                    </StyledLink>
+                                )
+                            })}
+                        </ListaEstilizada>
+                    </NavEstilizada>
+                </div>
             </BarraLateralEstilizada>
             <div style={{display: 'Flex', backgroundColor: 'transparent', height: '5vh', position: 'absolute', top: '2.5vh', border: 'none', borderRadius: '4px', zIndex: '8'}}>
                 <Botao aoClicar={toggleBarraLateral} tab={true} estilo={"neutro"} outStyle={{marginRight: '1vw', marginLeft: barraLateralOpened ? 'calc(246px + 1vw)' : '1vw', backdropFilter: 'blur(30px) saturate(2)', '-webkit-backdrop-filter': 'blur(30px) saturate(2)', transition: '.5s cubic-bezier(.36,-0.01,0,.77)'}} >
