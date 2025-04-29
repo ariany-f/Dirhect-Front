@@ -43,6 +43,8 @@ const DialogEstilizado = styled.dialog`
             padding: 16px 24px;
             width: 100%;
             transition: background 0.2s;
+            justify-content: end;
+            align-items: end;
 
             &:hover {
                 background: var(--neutro-100);
@@ -59,7 +61,7 @@ const DialogEstilizado = styled.dialog`
                 color: inherit;
                 & .group {
                     display: flex;
-                    justify-content: center;
+                    justify-content: end;
                     align-items: center;
                     gap: 16px;
                 }
