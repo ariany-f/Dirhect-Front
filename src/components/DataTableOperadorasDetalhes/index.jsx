@@ -98,7 +98,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
                         <Texto size={24} weight={600}>{operadora.nome}</Texto>
                     )}
                 </ContainerHorizontal>
-                <BotaoGrupo align="space-between">
+                <BotaoGrupo align="end">
                     {onAddBeneficio && (
                         <Botao aoClicar={onAddBeneficio} estilo="vermilion" size="small" tab>
                             <GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício

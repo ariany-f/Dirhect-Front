@@ -90,7 +90,7 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
                         <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                     </span>
                 </div>}
-                <BotaoGrupo>
+                <BotaoGrupo align="end">
                     <Link to="/pedidos/adicionar-detalhes">
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} color="white" fill="white"/> Criar Pedido</Botao>
                     </Link>

@@ -162,7 +162,7 @@ function DataTableDependentes({ dependentes, search = true }) {
                         </span>
                     </div>
                 }
-                <BotaoGrupo>
+                <BotaoGrupo align="end">
                     <Link to="/colaborador/registro">
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Dependente</Botao>
                     </Link>

@@ -156,7 +156,7 @@ function DataTableContratos({
                             placeholder="Buscar contratos" 
                         />
                     </span>
-                    <BotaoGrupo align="center">
+                    <BotaoGrupo align="end">
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
                             <GrAddCircle stroke="white"/> Criar Contrato
                         </Botao>
