@@ -82,10 +82,22 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
             <BotaoGrupo align="space-between">                    
                 {operadora?.nome && (
-                        <Texto size={24} weight={600}>{operadora.nome}</Texto>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                            {/* {operadora.imagem_url && (
+                                <CustomImage 
+                                    src={operadora.imagem_url} 
+                                    alt={operadora.nome} 
+                                    width={90} 
+                                    height={45} 
+                                    title={operadora.nome} 
+                                />
+                            )} */}
+                            Benefícios Disponíveis - 
+                            <Texto size={18} weight={600}>{operadora.nome}</Texto>
+                        </div>
                     )}
                 {onAddBeneficio && (
                     <Botao aoClicar={onAddBeneficio} estilo="vermilion" size="small" tab>

@@ -43,14 +43,14 @@ const ContainerSemRegistro = styled.div`
 
 // Extensão do Col4 para adicionar a transição
 const Col4Expandable = styled(Col4)`
-    width: ${(props) => (props.$expanded ? "calc(33% - 6px)" : "100%")};
+    width: ${(props) => (props.$expanded ? "calc(33% - 12px)" : "100%")};
     transition: all 0.3s ease;
     padding: 0px;
 `;
 
 // Extensão do Col7 para adicionar a transição
 const Col8Expandable = styled(Col8)`
-    width: ${(props) => (props.$expanded ? "calc(80% - 6px)" : "100%")};
+    width: ${(props) => (props.$expanded ? "calc(80% - 12px)" : "100%")};
     transition: all 0.3s ease;
     padding: 0px;
 `;
@@ -165,7 +165,7 @@ function OperadorasListagem() {
             </BotaoGrupo>
             {
                 operadoras ?
-                <Col12 $gap="6px">
+                <Col12 $gap="8px">
                     <Col4Expandable $expanded={!!selectedOperadora}>
                         <DataTableOperadoras 
                             search={false} 
