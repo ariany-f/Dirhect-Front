@@ -458,7 +458,7 @@ function BarraLateral() {
                         "id": 12,
                         "url": "/elegibilidade",
                         "pageTitulo": "Elegibilidade",
-                        "icone": <LuSparkles size={20} className="icon" />,
+                        "icone": <LuSparkles size={20} className="icon" stroke="white"/>,
                         "itemTitulo": "Elegibilidade"
                     },
                     {
