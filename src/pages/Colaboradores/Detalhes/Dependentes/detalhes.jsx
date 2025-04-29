@@ -23,7 +23,7 @@ import { RiEditBoxFill, RiGasStationFill, RiShoppingCartFill } from 'react-icons
 import { MdOutlineFastfood } from 'react-icons/md';
 import styled from 'styled-components';
 import { BiChevronLeft } from 'react-icons/bi';
-
+import { Real } from '@utils/formats'
 
 const Col12 = styled.div`
     display: flex;
@@ -42,11 +42,6 @@ const Col3 = styled.div`
     padding: 10px;
     flex: 1 1 1 1 33%;
 `
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-})
 
 function ColaboradorDependenteDetalhes() {
 

@@ -10,18 +10,9 @@ import IconeBeneficio from '@components/IconeBeneficio';
 import icones_beneficios from '@json/icones_beneficio.json';
 import tiposBeneficio from '@json/tipos_beneficio.json';
 import styles from './ModalAdicionarDepartamento.module.css';
+import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 
 // Estilos
-const Overlay = styled.div`
-    background-color: rgba(0,0,0,0.80);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 9;
-`;
-
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -34,39 +25,6 @@ const Col12 = styled.div`
 const Col6 = styled.div`
     flex: 1 1 calc(50% - 8px);
     min-width: 250px;
-`;
-
-const DialogEstilizado = styled.dialog`
-    display: flex;
-    width: 40vw;
-    min-width: 500px;
-    max-width: 800px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 16px;
-    border: none;
-    margin: 0 auto;
-    top: 15vh;
-    padding: 24px;
-    background: white;
-    z-index: 1001;
-    
-    & button.close {
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        cursor: pointer;
-        border: none;
-        background-color: transparent;
-        
-        & .fechar {
-            box-sizing: initial;
-            fill: var(--primaria);
-            stroke: var(--primaria);
-            color: var(--primaria);
-        }
-    }
 `;
 
 const Wrapper = styled.div`

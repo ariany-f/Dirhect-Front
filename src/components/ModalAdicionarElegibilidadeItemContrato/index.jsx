@@ -19,6 +19,7 @@ import { GrAddCircle } from "react-icons/gr"
 import { MdArrowRight } from "react-icons/md"
 import { FaArrowRight } from "react-icons/fa"
 import { Toast } from "primereact/toast"
+import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles'
 
 // Componente de Item Arrastável com novos estilos
 const DraggableItem = ({ grupo, index, moveItem, removerGrupo }) => {
@@ -143,60 +144,6 @@ const DraggableItem = ({ grupo, index, moveItem, removerGrupo }) => {
         </div>
     );
 };
-
-// Estilos originais mantidos
-const Overlay = styled.div`
-    background-color: rgba(0,0,0,0.50);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 9;
-    opacity: ${props => props.$opened ? 1 : 0};
-    transition: visibility 0.5s ease-in-out;
-    visibility: ${props => props.$opened ? 'visible' : 'hidden'};
-    pointer-events: ${props => props.$opened ? 'all' : 'none'};
-`
-
-const DialogEstilizado = styled.dialog`
-    display: flex;
-    width: 70vw;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 5px;
-    border: none;
-    z-index: 10;
-    top: 3vh;
-    left: ${props => props.$opened ? '29vw' : '100vw'};
-    height: 94vh;
-    padding: 24px;
-    transition: left 0.3s ease-in-out;
-    background: white;
-    & button.close {
-        & .fechar {
-            box-sizing: initial;
-            fill: var(--primaria);
-            stroke: var(--primaria);
-            color: var(--primaria);
-        }
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        cursor: pointer;
-        border: none;
-        background-color: initial;
-    }
-    
-    & .icon {
-        margin-right: 5px;
-        box-sizing: initial;
-        fill: var(--primaria);
-        stroke: var(--primaria);
-        color: var(--primaria);
-    }
-`
 
 const Wrapper = styled.div`
     display: flex;
@@ -480,9 +427,9 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     };
 
     return (
-        <Overlay $opened={opened}>
+        <OverlayRight $opened={opened}>
             <Toast ref={toast} />
-            <DialogEstilizado id="modal-cnpj" open={opened} $opened={opened}>
+            <DialogEstilizadoRight id="modal-cnpj" open={opened} $opened={opened}>
                 <Frame>
                     <Titulo>
                         <button className="close" onClick={aoFechar} formMethod="dialog">
@@ -578,8 +525,8 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                         <Botao size="medium" aoClicar={salvarGrupos}>Salvar</Botao>
                     </BotaoGrupo>
                 </div>
-            </DialogEstilizado>
-        </Overlay>
+            </DialogEstilizadoRight>
+        </OverlayRight>
     );
 }
 

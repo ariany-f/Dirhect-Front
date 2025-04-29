@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { Image } from 'primereact/image';
 import { Ripple } from 'primereact/ripple';
+import { ColGrid, ColContainer } from '@components/Colunas';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -19,43 +20,6 @@ const ConteudoFrame = styled.div`
     gap: 24px;
     width: 100%;
 `
-
-const Col6 = styled.div`
-    flex: 1 1 calc(25% - 16px); /* 4 colunas */
-    max-width: calc(25% - 16px);
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-
-    @media (max-width: 1240px) {
-        flex: 1 1 calc(33.333% - 16px); /* 3 colunas */
-        max-width: calc(33.333% - 16px);
-    }
-
-    @media (max-width: 900px) {
-        flex: 1 1 calc(50% - 16px); /* 2 colunas */
-        max-width: calc(50% - 16px);
-    }
-
-    @media (max-width: 600px) {
-        flex: 1 1 100%; /* 1 coluna */
-        max-width: 100%;
-    }
-`;
-
-
-const Col12 = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    width: 100%;
-    justify-content: flex-start;
-`;
 
 const ImageContainer = styled.div`
     width: 200px;
@@ -82,7 +46,7 @@ export default function MarketplaceLista() {
 
     const itemTemplate = (product, index) => {
         return (
-            <Col6 key={index}>
+            <ColGrid key={index}>
                 <ImageContainer>
                     <StyledImage src={product.banner} alt={product.nome} />
                 </ImageContainer>
@@ -103,7 +67,7 @@ export default function MarketplaceLista() {
                     Solicitar Cotação
                     <Ripple />
                 </Botao>
-            </Col6>
+            </ColGrid>
         );
     };
 
@@ -114,7 +78,7 @@ export default function MarketplaceLista() {
             return itemTemplate(product, index);
         });
 
-        return <Col12>{list}</Col12>;
+        return <ColContainer $gap="16px">{list}</ColContainer>;
     };
 
     return (

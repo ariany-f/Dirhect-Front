@@ -10,11 +10,7 @@ import { useEffect, useState } from 'react';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import BadgeStatusBalance from '../BadgeStatusBalance'
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 function DataTableBalance({ balance }) {
     

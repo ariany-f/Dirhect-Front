@@ -7,11 +7,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { RiBusFill } from 'react-icons/ri';
 import './DataTable.css';
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 const ContainerDividido = styled.div`
     display: flex;

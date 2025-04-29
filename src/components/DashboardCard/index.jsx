@@ -17,11 +17,7 @@ import { BsHourglassSplit } from 'react-icons/bs'
 import { Timeline } from 'primereact/timeline'
 import { Tag } from 'primereact/tag'
 import { useEffect, useState } from 'react'
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 function DashboardCard({ dashboardData, colaboradores = [] }){
     const [isVisible, setIsVisible] = useState(false);

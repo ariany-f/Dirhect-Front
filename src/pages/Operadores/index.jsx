@@ -32,11 +32,6 @@ function Operador() {
 
     return (
         <ConteudoFrame>
-            <BotaoGrupo align="end">
-                <Link to="/operador/registro">
-                    <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar operador</Botao>
-                </Link>
-            </BotaoGrupo>
             <DataTableOperadores operadores={operadores} />
         </ConteudoFrame>
     )

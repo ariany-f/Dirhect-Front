@@ -23,6 +23,7 @@ import { Toast } from 'primereact/toast'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { useState, useEffect, useRef } from 'react'
 import { BiChevronRight } from 'react-icons/bi'
+import { Real } from '@utils/formats'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -30,11 +31,6 @@ const ConteudoFrame = styled.div`
     gap: 24px;
     width: 100%;
 `
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
 
 const ElegibilidadeLista = () => {
     const context = useOutletContext()
@@ -110,21 +106,6 @@ const ElegibilidadeLista = () => {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <ConfirmDialog />
-            <BotaoGrupo align="end">
-                <BotaoGrupo>
-                    {/* <Link to="/elegibilidade/configurar">
-                        <Botao estilo="vermilion" size="small" tab>
-                            <GrAddCircle className={styles.icon} /> Configurar
-                        </Botao>
-                    </Link> */}
-                </BotaoGrupo>
-            
-                <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
-                    <Link to="/elegibilidade/como-funciona" style={{ fontSize: '14px', marginLeft: '8px' }}>
-                        Como funciona?
-                    </Link>
-                </QuestionCard>
-            </BotaoGrupo>
             <Frame>
                 <Container gap="32px">
                     <TabView>

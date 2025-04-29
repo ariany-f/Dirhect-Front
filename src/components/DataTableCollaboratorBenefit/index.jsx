@@ -8,11 +8,7 @@ import CampoTexto from '@components/CampoTexto'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { AiFillQuestionCircle } from 'react-icons/ai'
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 function DataTableCollaboratorBenefit({ beneficios }) {
    

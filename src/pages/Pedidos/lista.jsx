@@ -28,16 +28,6 @@ const PedidosLista = () => {
 
     return (
         <ConteudoFrame>
-            <BotaoGrupo align="end">
-                <BotaoGrupo>
-                    <Link to="/pedidos/adicionar-detalhes">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar Pedido</Botao>
-                    </Link>
-                </BotaoGrupo>
-            </BotaoGrupo>
-            <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
-                <Link to={'/pedidos/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
-            </QuestionCard>
             <DataTablePedidos pedidos={context} />
         </ConteudoFrame>
     );

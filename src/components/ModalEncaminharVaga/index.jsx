@@ -10,59 +10,14 @@ import Titulo from "@components/Titulo";
 import { RiCloseFill } from "react-icons/ri";
 import styles from "./ModalEncaminharVaga.module.css";
 import templates from "@json/templates-encaminhar-vaga.json";
-
+import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { Real } from '@utils/formats'
 // Função para formatar a data
 const formatDate = (date) => {
   if (!date) return "";
   const formattedDate = new Date(date);
   return new Intl.DateTimeFormat('pt-BR').format(formattedDate); // Formato dd/mm/yyyy
 };
-
-const Overlay = styled.div`
-  background-color: rgba(0, 0, 0, 0.80);
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  top: 0;
-  right: 0;
-  overflow-y: auto;
-  bottom: 0;
-  left: 0;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 5vh 0;
-    z-index: 9;
-`;
-
-const DialogEstilizado = styled.dialog`
-  position: relative;
-  width: 80vw;
-  background: white;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  margin: 2vh auto;
-  margin-top: 0;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 16px;
-  border: none;
-  padding: 24px;
-  & button.close {
-    & .fechar {
-      box-sizing: initial;
-      fill: var(--primaria);
-      stroke: var(--primaria);
-      color: var(--primaria);
-    }
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    cursor: pointer;
-    border: none;
-    background-color: initial;
-  }
-`;
 
 const Col12 = styled.div`
   display: flex;
@@ -99,11 +54,6 @@ const VariavelItem = styled.div`
   }
 `;
 
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
-
 function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
@@ -136,7 +86,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
     { code: 'SC', name: 'Exposição a Substâncias Cancerígenas' }
   ]);
   const [editorContent, setEditorContent] = useState("");
-  const [showEditorContent, setShowEditorContent] = useState(false); // Controle para mostrar o conteúdo do editor
+  const [showEditorContent, setShowEditorContent] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null); 
 
   const variaveis = [
@@ -178,7 +128,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
     // Substituir todas as ocorrências das variáveis
     Object.keys(variaveisMap).forEach((variavel) => {
       const valor = variaveisMap[variavel] || "";
-      const regex = new RegExp(variavel, "g"); // Expressão regular para capturar todas as ocorrências
+      const regex = new RegExp(variavel, "g");
       novoConteudo = novoConteudo.replace(regex, valor);
     });
   
@@ -186,9 +136,8 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
   };  
 
   const handleAddVariable = (variable) => {
-    // Apenas adicionar a variável ao conteúdo atual do editor
-    const updatedContent = editorContent + variable; // Concatenar a variável ao conteúdo
-    setEditorContent(updatedContent); // Atualizar conteúdo no estado
+    const updatedContent = editorContent + variable;
+    setEditorContent(updatedContent);
   };
 
   const handleSave = () => {
@@ -203,7 +152,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
   const handleTemplateChange = (e) => {
     const selectedTemplate = templates.find((template) => template.id === e.code);
     setSelectedTemplate(selectedTemplate);
-    setEditorContent(selectedTemplate.content); // Preencher o editor com o conteúdo do template
+    setEditorContent(selectedTemplate.content);
   };
 
   useEffect(() => {
@@ -223,11 +172,9 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
       <DialogEstilizado open={opened}>
         <Frame>
           <Titulo>
-            <form method="dialog">
-              <button className="close" onClick={aoFechar} formMethod="dialog">
-                <RiCloseFill size={20} className="fechar" />  
-              </button>
-            </form>
+            <button className="close" onClick={aoFechar}>
+              <RiCloseFill size={20} className="fechar" />  
+            </button>
             <h6>Encaminhar vaga para novo candidato</h6>
           </Titulo>
         </Frame>
@@ -252,46 +199,58 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
                   </Col6>
                 </Col12>
               ) : (
-                <div dangerouslySetInnerHTML={{ __html: substituirVariaveis(editorContent) }}></div> // Exibe o conteúdo renderizado como HTML com as variáveis substituídas
+                <>
+                  <DropdownItens
+                    valor={selectedTemplate}
+                    setValor={handleTemplateChange}
+                    options={dropdownTemplates}
+                    label="Template"
+                    name="template"
+                    placeholder="Selecione um template"
+                  />
+                  <Editor
+                    value={editorContent}
+                    onTextChange={(e) => setEditorContent(e.htmlValue)}
+                    style={{ height: '320px' }}
+                  />
+                  <VariaveisContainer>
+                    {variaveis.map((variavel, index) => (
+                      <VariavelItem
+                        key={index}
+                        onClick={() => handleAddVariable(variavel.value)}
+                      >
+                        {variavel.label}
+                      </VariavelItem>
+                    ))}
+                  </VariaveisContainer>
+                </>
               )}
             </Col6>
-
             <Col6>
-              <DropdownItens valor={selectedTemplate} setValor={handleTemplateChange} options={dropdownTemplates} label="Selecione um Template" name="template" placeholder="Template"/>
-
-              {/* Exibe o Quill Editor */}
-              <Editor
-                value={editorContent}
-                onTextChange={(e) => setEditorContent(e.htmlValue)} // Atualiza o conteúdo com o valor do editor
-                style={{ height: "300px" }}
-              />
-
-              {/* Variáveis */}
-              <VariaveisContainer>
-                <h6>Variáveis disponíveis</h6>
-                {variaveis.map((variavel) => (
-                  <VariavelItem key={variavel.value} onClick={() => handleAddVariable(variavel.value)}>
-                    {variavel.label}
-                  </VariavelItem>
-                ))}
-              </VariaveisContainer>
+              <div dangerouslySetInnerHTML={{ __html: substituirVariaveis(editorContent) }} />
             </Col6>
           </Col12>
-
-          <div className={styles.containerBottom}>
-                <BotaoGrupo>
-                    <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>
-                        Voltar
-                    </Botao>
-                    <Botao aoClicar={toggleEditorContent} estilo="vermilion" size="medium" filled>
-                        {showEditorContent ? "Editar Conteúdo" : "Visualizar Conteúdo"}
-                    </Botao>
-                </BotaoGrupo>
-                <Botao aoClicar={handleSave} estilo="vermilion" size="medium" filled>
-                    Confirmar
-                </Botao>
-          </div>
         </Frame>
+        <div className={styles.containerBottom}>
+          <BotaoGrupo>
+            <Botao
+              aoClicar={toggleEditorContent}
+              estilo="neutro"
+              size="medium"
+              filled
+            >
+              {showEditorContent ? "Voltar para Dados" : "Editar Template"}
+            </Botao>
+            <Botao
+              aoClicar={handleSave}
+              estilo="vermilion"
+              size="medium"
+              filled
+            >
+              Enviar
+            </Botao>
+          </BotaoGrupo>
+        </div>
       </DialogEstilizado>
     </Overlay>
   );

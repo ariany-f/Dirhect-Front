@@ -7,11 +7,7 @@ import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 function DataTableDemissao({ demissoes, colaborador = null }) {
 

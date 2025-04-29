@@ -31,11 +31,7 @@ import elegibilidades from '@json/elegibilidade.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import { TabPanel, TabView } from 'primereact/tabview'
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 const ConteudoFrame = styled.div`
     display: flex;

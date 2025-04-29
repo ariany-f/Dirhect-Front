@@ -4,8 +4,12 @@ import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
-import { useNavigate } from 'react-router-dom';
+import Botao from '@components/Botao';
+import BotaoGrupo from '@components/BotaoGrupo';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { GrAddCircle } from 'react-icons/gr';
+import styles from '@pages/Operadores/Operadores.module.css'
 
 function DataTableOperadores({ operadores }) {
 
@@ -45,11 +49,18 @@ function DataTableOperadores({ operadores }) {
 
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar operador" />
-                </span>
-            </div>
+            <BotaoGrupo align="space-between">
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar operador" />
+                    </span>
+                </div>
+                <BotaoGrupo align="end">
+                    <Link to="/operador/registro">
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar operador</Botao>
+                    </Link>
+                </BotaoGrupo>
+            </BotaoGrupo>
             <DataTable value={operadores} filters={filters} globalFilterFields={['username', 'email']}  emptyMessage="Não foram encontrados operadores" selection={selectedOperator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="username" body={representativeNameTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
                 <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column>

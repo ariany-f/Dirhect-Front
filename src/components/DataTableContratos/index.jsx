@@ -3,16 +3,18 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
+import BotaoGrupo from '@components/BotaoGrupo';
+import Botao from '@components/Botao';
 import CustomImage from '@components/CustomImage';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tag } from 'primereact/tag';
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { GrAddCircle } from 'react-icons/gr';
+import http from '@http'
+import ModalContratos from '@components/ModalContratos'
+import { Toast } from 'primereact/toast'
+import { Real } from '@utils/formats'
 
 function DataTableContratos({ 
     contratos,
@@ -21,10 +23,13 @@ function DataTableContratos({
     totalRecords,
     first,
     onPage,
-    onSearch
+    onSearch,
+    onUpdate
 }) {
     const [selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [modalOpened, setModalOpened] = useState(false)
+    const toast = useRef(null)
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
@@ -107,20 +112,56 @@ function DataTableContratos({
         }
         return '';
     }
+
+    const adicionarContrato = (operadora, observacao, dt_inicio, dt_fim) => {
+        if(operadora == '' || observacao == '' || dt_inicio == '' || dt_fim == '') {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos', life: 3000 });
+            return;
+        }
+        const data = {
+            operadora,
+            observacao,
+            dt_inicio,
+            dt_fim
+        };
+
+        http.post('contrato/', data)
+            .then(response => {
+                if(response.id) {
+                    toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Contrato criado com sucesso', life: 3000 });
+                    setModalOpened(false)
+                    if (onUpdate) {
+                        onUpdate()
+                    }
+                }
+            })
+            .catch(erro => {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar contrato', life: 3000 });
+            })
+    }
     
     return (
         <>
             <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto 
-                        width={'320px'} 
-                        valor={globalFilterValue} 
-                        setValor={onGlobalFilterChange} 
-                        type="search" 
-                        label="" 
-                        placeholder="Buscar contratos" 
-                    />
-                </span>
+                <Toast ref={toast} />
+                
+                <BotaoGrupo align="space-between">
+                    <span className="p-input-icon-left">
+                        <CampoTexto 
+                            width={'320px'} 
+                            valor={globalFilterValue} 
+                            setValor={onGlobalFilterChange} 
+                            type="search" 
+                            label="" 
+                            placeholder="Buscar contratos" 
+                        />
+                    </span>
+                    <BotaoGrupo align="center">
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
+                            <GrAddCircle stroke="white"/> Criar Contrato
+                        </Botao>
+                    </BotaoGrupo>
+                </BotaoGrupo>
             </div>
             <DataTable 
                 value={contratos} 
@@ -144,6 +185,12 @@ function DataTableContratos({
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '20%' }}></Column>
             </DataTable>
+            
+            <ModalContratos 
+                aoSalvar={adicionarContrato} 
+                opened={modalOpened} 
+                aoFechar={() => setModalOpened(false)} 
+            />
         </>
     )
 }

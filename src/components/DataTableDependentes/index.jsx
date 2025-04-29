@@ -7,7 +7,7 @@ import Botao from '@components/Botao';
 import BotaoGrupo from '@components/BotaoGrupo';
 import CampoTexto from '@components/CampoTexto';
 import styles from '@pages/Dependentes/Dependentes.module.css'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import http from '@http';
 import { Tag } from 'primereact/tag';
@@ -153,19 +153,22 @@ function DataTableDependentes({ dependentes, search = true }) {
 
     return (
         <>
-            {search ?
-                <div className="flex justify-content-end">
-                    <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
-                    </span>
-                </div>
-            :
-                <BotaoGrupo align="end">
-                    <BotaoGrupo align="center">
-                        <Botao estilo="vermilion" size="small" aoClicar={() => setModalOpened(true)} tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
-                    </BotaoGrupo>
+        
+            <BotaoGrupo align="space-between">
+                {search &&
+                    <div className="flex justify-content-end">
+                        <span className="p-input-icon-left">
+                            <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
+                        </span>
+                    </div>
+                }
+                <BotaoGrupo>
+                    <Link to="/colaborador/registro">
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Dependente</Botao>
+                    </Link>
                 </BotaoGrupo>
-            }
+            </BotaoGrupo>
+            
             <DataTable value={dependentes} filters={filters} globalFilterFields={['nome_depend', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}>
                 {search &&  <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '30%' }}></Column>}
                 <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '30%' }}></Column>

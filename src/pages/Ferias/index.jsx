@@ -16,7 +16,6 @@ import { AiFillQuestionCircle } from 'react-icons/ai'
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 24px;
     width: 100%;
 `
 
@@ -45,9 +44,9 @@ function Ferias() {
     return (
         <ContratosProvider>
              <ConteudoFrame>
-            <Loading opened={loading} />
-            <Outlet context={ausencias} />
-        </ConteudoFrame>
+                <Loading opened={loading} />
+                <Outlet context={ausencias} />
+            </ConteudoFrame>
         </ContratosProvider>
     )
 }

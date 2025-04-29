@@ -5,22 +5,29 @@ import { MdOutlineKeyboardArrowRight, MdTag } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
+import styles from '@pages/Colaboradores/Colaboradores.module.css'
 import BadgeGeral from '@components/BadgeGeral';
-import { useNavigate } from 'react-router-dom';
+import BotaoGrupo from '@components/BotaoGrupo';
+import Botao from '@components/Botao';
+import BotaoSemBorda from '@components/BotaoSemBorda';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { ContextMenu } from 'primereact/contextmenu';
 import { IoEllipsisVertical } from 'react-icons/io5';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import ModalDemissao from '../ModalDemissao';
+import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
 import ModalFerias from '../ModalFerias';
 import { Tag } from 'primereact/tag';
-import { FaTrash, FaUserTimes, FaUmbrella } from 'react-icons/fa';
+import { FaTrash, FaUserTimes, FaUmbrella, FaDownload } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
+import { GrAddCircle } from 'react-icons/gr';
 
 function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
+    const [modalImportarPlanilhaOpened, setModalImportarPlanilhaOpened] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -201,20 +208,30 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
 
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
-                </span>
-            </div>
-            <ContextMenu model={menuModel(selectedCollaborator)} ref={cm} onHide={() => setSelectedCollaborator(null)} />
+            <BotaoGrupo align="space-between">
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
+                    </span>
+                </div>
+                <BotaoGrupo align="center">
+                    <BotaoSemBorda color="var(--primaria)">
+                        <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
+                    </BotaoSemBorda>
+                    <Link to="/colaborador/registro">
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
+                    </Link>
+                </BotaoGrupo>
+            </BotaoGrupo>
+            {/* <ContextMenu model={menuModel(selectedCollaborator)} ref={cm} onHide={() => setSelectedCollaborator(null)} /> */}
             <DataTable 
-                onContextMenu={(e) => {
-                    cm.current.show(e.originalEvent);
-                }}
+                // onContextMenu={(e) => {
+                //     cm.current.show(e.originalEvent);
+                // }}
                 selection={selectedCollaborator} 
                 onSelectionChange={(e) => verDetalhes(e.value)}
                 selectionMode="single"
-                contextMenuSelection={selectedCollaborator} 
+                // contextMenuSelection={selectedCollaborator} 
                 value={colaboradores} 
                 emptyMessage="Não foram encontrados colaboradores" 
                 paginator={paginator}
@@ -225,10 +242,10 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 onPage={onPage} 
                 removableSort 
                 tableStyle={{ minWidth: '68vw' }}
-                onContextMenuSelectionChange={(e) => {
-                    setSelectedCollaborator(e.value); 
-                    cm.current.show(e.originalEvent)}
-                }
+                // onContextMenuSelectionChange={(e) => {
+                //     setSelectedCollaborator(e.value); 
+                //     cm.current.show(e.originalEvent)}
+                // }
             >
                 <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '10%' }}></Column>
                 <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
@@ -240,6 +257,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             </DataTable>
             <ModalDemissao opened={modalOpened} aoFechar={() => setModalOpened(false)}/>
             <ModalFerias opened={modalFeriasOpened} aoFechar={() => setModalFeriasOpened(false)}/>
+            <ModalImportarPlanilha opened={modalImportarPlanilhaOpened} aoFechar={() => setModalImportarPlanilhaOpened(false)} />
         </>
     )
 }

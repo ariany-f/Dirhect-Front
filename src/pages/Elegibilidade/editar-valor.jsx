@@ -29,6 +29,7 @@ import ModalConfigurarBeneficios from "../../components/ModalConfigurarBeneficio
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import IconeBeneficio from "@components/IconeBeneficio"
+import { Real } from '@utils/formats'
 
 // Estilos reutilizáveis (pode mover para um arquivo separado)
 const Col12 = styled.div`
@@ -63,11 +64,6 @@ const LadoALado = styled.div`
         align-items: center;
     }
 `
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
 
 function ElegibilidadeEditarValor() {
 

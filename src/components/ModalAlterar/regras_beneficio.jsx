@@ -14,80 +14,8 @@ import axios from "axios"
 import { Link } from "react-router-dom"
 import { FaDownload } from "react-icons/fa"
 import { IoSettingsSharp } from "react-icons/io5"
-
-const Overlay = styled.div`
-    background-color: rgba(0,0,0,0.80);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 9;
-`
-
-const DialogEstilizado = styled.dialog`
-    display: flex;
-    width: 40vw;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 16px;
-    border: none;
-    margin: 0 auto;
-    top: 10vh;
-    padding: 24px;
-    & button.close {
-        & .fechar {
-            box-sizing: initial;
-            fill: var(--primaria);
-            stroke: var(--primaria);
-            color: var(--primaria);
-        }
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        cursor: pointer;
-        border: none;
-        background-color: initial;
-    }
-    & .icon {
-        margin-right: 5px;
-        box-sizing: initial;
-        fill: var(--primaria);
-        stroke: var(--primaria);
-        color: var(--primaria);
-    }
-    & .frame:nth-of-type(1) {
-        gap: 24px;
-        & .frame {
-            margin-bottom: 24px;
-            & p{
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            & b {
-                font-weight: 800;
-                font-size: 14px;
-            }
-        }
-    }
-`
-
-const Col12 = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-`
-
-const Col6 = styled.div`
-    padding: 10px;
-    flex: 1 1 calc(50% - 5px);
-    gap: 5px;
-    display: flex;
-    max-width: calc(50% - 5px);
-    flex-direction: column;
-`
+import { Col12, Col6 } from '@components/Colunas'
+import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 
 function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo, nomeBeneficio = '' }) {
 
@@ -121,7 +49,6 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
      ]);
     
     useEffect(() => {
-
         /** Preenche os inputs com os dados atuais */
         if(dadoAntigo)
         {
@@ -245,11 +172,11 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                     </Frame>
                     <Frame padding="24px 0px">
                         <div>
-                        <Col12>
-                            <Col6>
+                        <Col12 $gap="16px">
+                            <Col6 $padding="10px">
                                 <DropdownItens camposVazios={classError} valor={tipo_desconto} setValor={setTipoDesconto} options={dropdownTiposDesconto} label="Tipo de Desconto" name="tipo_desconto" placeholder="Tipo de Desconto"/> 
                             </Col6>
-                            <Col6>
+                            <Col6 $padding="10px">
                                 <DropdownItens camposVazios={classError} valor={tipo_calculo} setValor={setTipoCalculo} options={dropdownTiposCalculo} label="Tipo de Cálculo" name="tipo_calculo" placeholder="Tipo de Cálculo"/> 
                                 {tipo_calculo.code === 'T' &&
                                     <BotaoSemBorda color="var(--primaria)">
@@ -258,57 +185,57 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                 }
                             </Col6>
                         </Col12>
-                           <Col12>
-                                <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        name="descricao" 
-                                        valor={descricao} 
-                                        setValor={setDescricao} 
-                                        type="text" 
-                                        label="Descrição" 
-                                        placeholder="Digite Descrição" />
-                                </Col6>
-                                <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        name="valor" 
-                                        valor={valor} 
-                                        setValor={handleValorCompraChange} 
-                                        type="text" 
-                                        label="Valor Compra" 
-                                        placeholder="Digite o valor da compra"
-                                        patternMask="BRL" />
-                                </Col6>
-                                <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        name="desconto" 
-                                        valor={desconto} 
-                                        setValor={handleValorColaboradorChange} 
-                                        type="text" 
-                                        label="Valor Colaborador" 
-                                        placeholder="Digite o valor do colaborador"
-                                        patternMask="BRL" />
-                                    {erroValor && <span style={{color: 'var(--error)', fontSize: '12px'}}>{erroValor}</span>}
-                                </Col6>
-                                <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        name="empresa" 
-                                        valor={empresa} 
-                                        setValor={() => {}} 
-                                        type="text" 
-                                        label="Valor empresa" 
-                                        placeholder="Valor empresa"
-                                        disabled
-                                        patternMask="BRL"
-                                        style={{backgroundColor: 'var(--neutro-100)'}} />
-                                </Col6>
-                                <Col6>
-                                    <CheckboxContainer label="Extensível Dependente?" name="extensivo_dependentes" valor={extensivo_dependentes} setValor={handleChange} />
-                                </Col6>
-                            </Col12>
+                        <Col12 $gap="16px">
+                            <Col6 $padding="10px">
+                                <CampoTexto 
+                                    camposVazios={classError} 
+                                    name="descricao" 
+                                    valor={descricao} 
+                                    setValor={setDescricao} 
+                                    type="text" 
+                                    label="Descrição" 
+                                    placeholder="Digite Descrição" />
+                            </Col6>
+                            <Col6 $padding="10px">
+                                <CampoTexto 
+                                    camposVazios={classError} 
+                                    name="valor" 
+                                    valor={valor} 
+                                    setValor={handleValorCompraChange} 
+                                    type="text" 
+                                    label="Valor Compra" 
+                                    placeholder="Digite o valor da compra"
+                                    patternMask="BRL" />
+                            </Col6>
+                            <Col6 $padding="10px">
+                                <CampoTexto 
+                                    camposVazios={classError} 
+                                    name="desconto" 
+                                    valor={desconto} 
+                                    setValor={handleValorColaboradorChange} 
+                                    type="text" 
+                                    label="Valor Colaborador" 
+                                    placeholder="Digite o valor do colaborador"
+                                    patternMask="BRL" />
+                                {erroValor && <span style={{color: 'var(--error)', fontSize: '12px'}}>{erroValor}</span>}
+                            </Col6>
+                            <Col6 $padding="10px">
+                                <CampoTexto 
+                                    camposVazios={classError} 
+                                    name="empresa" 
+                                    valor={empresa} 
+                                    setValor={() => {}} 
+                                    type="text" 
+                                    label="Valor empresa" 
+                                    placeholder="Valor empresa"
+                                    disabled
+                                    patternMask="BRL"
+                                    style={{backgroundColor: 'var(--neutro-100)'}} />
+                            </Col6>
+                            <Col6 $padding="10px">
+                                <CheckboxContainer label="Extensível Dependente?" name="extensivo_dependentes" valor={extensivo_dependentes} setValor={handleChange} />
+                            </Col6>
+                        </Col12>
                         </div>
                     </Frame>
                     <form method="dialog">

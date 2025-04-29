@@ -12,11 +12,7 @@ import { useRef, useState } from 'react'
 import ModalBeneficioEditarValor from '../ModalBeneficioEditarValor'
 import { Toast } from 'primereact/toast'
 import styled from 'styled-components'
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 const ContainerButton = styled.div`
     display: flex;

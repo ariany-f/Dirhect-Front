@@ -14,6 +14,7 @@ import DataTableOperadoras from '@components/DataTableOperadoras'
 import ModalOperadoras from "../../components/ModalOperadoras"
 import DataTableOperadorasDetalhes from '@components/DataTableOperadorasDetalhes'
 import ModalOperadoraBeneficio from '@components/ModalOperadoraBeneficio'
+import { Col12, Col4, Col8 } from '@components/Colunas'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -40,21 +41,16 @@ const ContainerSemRegistro = styled.div`
     }
 `
 
-const Col12 = styled.div`
-    display: flex;
-    gap: 6px;
-    justify-content: space-between;
-    margin-top: 24px;
-`;
-
-const Col4 = styled.div`
-    width: ${(props) => (props.expanded ? "calc(33% - 6px)" : "100%")};
+// Extensão do Col4 para adicionar a transição
+const Col4Expandable = styled(Col4)`
+    width: ${(props) => (props.$expanded ? "calc(33% - 6px)" : "100%")};
     transition: all 0.3s ease;
     padding: 0px;
 `;
 
-const Col7 = styled.div`
-    width: ${(props) => (props.expanded ? "calc(66% - 6px)" : "100%")};
+// Extensão do Col7 para adicionar a transição
+const Col8Expandable = styled(Col8)`
+    width: ${(props) => (props.$expanded ? "calc(80% - 6px)" : "100%")};
     transition: all 0.3s ease;
     padding: 0px;
 `;
@@ -169,22 +165,22 @@ function OperadorasListagem() {
             </BotaoGrupo>
             {
                 operadoras ?
-                <Col12>
-                    <Col4 expanded={selectedOperadora}>
+                <Col12 $gap="6px">
+                    <Col4Expandable $expanded={!!selectedOperadora}>
                         <DataTableOperadoras 
                             search={false} 
                             operadoras={operadoras} 
                             onSelectionChange={setSelectedOperadora}
                         />
-                    </Col4>
+                    </Col4Expandable>
                     {selectedOperadora && beneficios ? 
-                        <Col7 expanded={selectedOperadora}>
+                        <Col8Expandable $expanded={!!selectedOperadora}>
                             <DataTableOperadorasDetalhes 
                                 beneficios={beneficios} 
                                 onAddBeneficio={adicionarBeneficio}
                                 operadora={selectedOperadora}
                             />
-                        </Col7>
+                        </Col8Expandable>
                     : null}
                 </Col12>
                 :

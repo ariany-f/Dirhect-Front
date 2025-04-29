@@ -16,6 +16,7 @@ import { RiFileCopyLine, RiSearchEyeFill  } from "react-icons/ri"
 import { FaBarcode, FaPix, FaUser } from "react-icons/fa6"
 import { useEffect, useState } from "react"
 import http from '@http'
+import { Real } from '@utils/formats'
 
 const CodigoDiv = styled.div`
     padding: 10px;
@@ -23,11 +24,6 @@ const CodigoDiv = styled.div`
     border-radius: 8px;
     font-size: 14px;
 `
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
 
 function BeneficioPagamento() {
 

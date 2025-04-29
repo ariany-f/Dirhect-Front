@@ -20,66 +20,8 @@ import { IoBookOutline } from "react-icons/io5"
 import { currency, mask as masker, unMask } from "remask"
 import { useRecargaBeneficiosContext } from "@contexts/RecargaBeneficios"
 import DottedLine from "@components/DottedLine"
-
-const Overlay = styled.div`
-    background-color: rgba(0,0,0,0.80);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    overflow-y: scroll;
-    left: 0;
-    z-index: 9;
-`
-
-const DialogEstilizado = styled.dialog`
-    display: flex;
-    width: 80vw;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 16px;
-    border: none;
-    margin: 0 auto;
-    margin-top: 1%;
-    padding: 24px;
-    & button.close {
-        & .fechar {
-            box-sizing: initial;
-            fill: var(--primaria);
-            stroke: var(--primaria);
-            color: var(--primaria);
-        }
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        cursor: pointer;
-        border: none;
-        background-color: initial;
-    }
-    & .icon {
-        margin-right: 5px;
-        box-sizing: initial;
-        fill: var(--primaria);
-        stroke: var(--primaria);
-        color: var(--primaria);
-    }
-    & .frame:nth-of-type(1) {
-        gap: 24px;
-        & .frame {
-            margin-bottom: 24px;
-            & p{
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            & b {
-                font-weight: 800;
-                font-size: 14px;
-            }
-        }
-    }
-`
+import { Real } from '@utils/formats'
+import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 
 const CardBeneficio = styled.div`
     display: flex;
@@ -130,11 +72,6 @@ const LadoALado = styled.div`
         align-items: center;
     }
 `
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
 
 function ModalBeneficioEditarValor({ opened = false, aoClicar, aoFechar, selecionados = [] }) {
 

@@ -1,0 +1,8 @@
+.containerBottom {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 16px;
+    width: 100%;
+    border-top: 1px solid #e0e0e0;
+} 

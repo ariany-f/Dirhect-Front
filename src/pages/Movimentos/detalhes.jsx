@@ -22,11 +22,7 @@ import movimentos from '@json/movimentos.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import { HiUserRemove, HiUserAdd } from "react-icons/hi";
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 const ConteudoFrame = styled.div`
     display: flex;

@@ -4,15 +4,17 @@ import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
+import BotaoGrupo from '@components/BotaoGrupo';
+import Botao from '@components/Botao';
 import Texto from '@components/Texto';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Tag } from 'primereact/tag';
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { GrAddCircle } from 'react-icons/gr';
+import QuestionCard from '@components/QuestionCard';
+import { AiFillQuestionCircle } from 'react-icons/ai';
+import styles from '@pages/Pedidos/Pedidos.module.css'
+import { Real } from '@utils/formats'
 
 function DataTablePedidos({ pedidos, colaborador = null }) {
 
@@ -81,12 +83,23 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
     
     return (
         <>
-            {!colaborador &&
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
-                </span>
-            </div>}
+            <BotaoGrupo align="space-between">
+                {!colaborador &&
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+                    </span>
+                </div>}
+                <BotaoGrupo>
+                    <Link to="/pedidos/adicionar-detalhes">
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} color="white" fill="white"/> Criar Pedido</Botao>
+                    </Link>
+                    <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
+                        <Link to={'/pedidos/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>
+                    </QuestionCard>
+                </BotaoGrupo>
+            </BotaoGrupo>
+           
             <DataTable value={pedidos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados pedidos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>

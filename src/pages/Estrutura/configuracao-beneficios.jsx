@@ -11,6 +11,7 @@ import MainContainer from "@components/MainContainer"
 import Dashboard from '@assets/Dashboard.svg'
 import styled from 'styled-components'
 import IconeBeneficio from "@components/IconeBeneficio"
+import { Real } from '@utils/formats'
 
 const Beneficio = styled.div`
    display: flex;
@@ -90,11 +91,6 @@ const Badge = styled.div`
         font-weight: 700;
     }
 `
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
 
 function EstruturaConfiguracaoBeneficios(type = 'Filial') {
 

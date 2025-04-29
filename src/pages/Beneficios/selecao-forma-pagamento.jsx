@@ -19,6 +19,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import RadioButton from '@components/RadioButton'
 import { FaPix, FaBarcode, FaCreditCard } from "react-icons/fa6"
 import http from '@http'
+import { Real } from '@utils/formats'
 
 const Col12 = styled.div`
     display: flex;
@@ -62,11 +63,6 @@ const ContainerButton = styled.div`
         width: initial;
     }
 `
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
 
 function BeneficioSelecionarFormaPagamento() {
 

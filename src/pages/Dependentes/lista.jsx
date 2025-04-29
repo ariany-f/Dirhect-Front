@@ -51,13 +51,6 @@ function DependentesListagem() {
     
     return (
         <ConteudoFrame>
-            <BotaoGrupo align="end">
-                <BotaoGrupo>
-                    <Link to="/colaborador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Dependente</Botao>
-                    </Link>
-                </BotaoGrupo>
-            </BotaoGrupo>
             {
                 dependentes ?
                     <DataTableDependentes dependentes={dependentes} />

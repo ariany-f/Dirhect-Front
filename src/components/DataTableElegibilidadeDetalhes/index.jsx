@@ -20,12 +20,7 @@ import { IoFastFoodSharp } from 'react-icons/io5';
 import { FaHeartPulse, FaMoneyBillTransfer } from 'react-icons/fa6';
 import { MdDirectionsBike } from "react-icons/md";
 import IconeBeneficio from '@components/IconeBeneficio';
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
-
+import { Real } from '@utils/formats'
 
 const Col12 = styled.div`
     display: flex;

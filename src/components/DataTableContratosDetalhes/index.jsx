@@ -18,11 +18,7 @@ import { GrAddCircle } from 'react-icons/gr';
 import IconeBeneficio from '@components/IconeBeneficio';
 import { Tooltip } from 'primereact/tooltip';
 import ModalAdicionarElegibilidadeItemContrato from '../ModalAdicionarElegibilidadeItemContrato';
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 const Col12 = styled.div`
     display: flex;

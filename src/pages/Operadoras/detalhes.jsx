@@ -18,11 +18,7 @@ import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import DataTableOperadorasDetalhes from '@components/DataTableOperadorasDetalhes'
 import ModalOperadoraBeneficios from '../../components/ModalOperadoraBeneficio'
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 const ConteudoFrame = styled.div`
     display: flex;

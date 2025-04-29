@@ -10,11 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Tag } from 'primereact/tag';
 import { RiDownload2Line, RiUpload2Line } from 'react-icons/ri';
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 function DataTableMovimentos({ movimentos, colaborador = null }) {
 

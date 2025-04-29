@@ -14,7 +14,7 @@ import { Toast } from 'primereact/toast'
 import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
 import ModalAlterarEmail from '@components/ModalAlterar/email'
 import styled from "styled-components"
-
+import { Real } from '@utils/formats'
 
 const Col12 = styled.div`
     display: flex;
@@ -33,11 +33,6 @@ const Col3 = styled.div`
     padding: 10px;
     flex: 1 1 1 1 33%;
 `
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-})
 
 function ColaboradorDadosPessoais() {
 

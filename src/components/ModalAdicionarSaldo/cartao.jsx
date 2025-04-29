@@ -10,64 +10,9 @@ import { useState } from "react"
 import { currency, mask as masker, unMask } from "remask"
 import Cards from 'react-credit-cards-2'
 import 'react-credit-cards-2/dist/es/styles-compiled.css'
+import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { Real } from '@utils/formats'
 
-const Overlay = styled.div`
-    background-color: rgba(0,0,0,0.80);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-`
-
-const DialogEstilizado = styled.dialog`
-    display: flex;
-    width: 80vw;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 16px;
-    border: none;
-    margin: 0 auto;
-    top: 5vh;
-    padding: 24px;
-    & button.close {
-        & .fechar {
-            box-sizing: initial;
-            fill: var(--primaria);
-            stroke: var(--primaria);
-            color: var(--primaria);
-        }
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        cursor: pointer;
-        border: none;
-        background-color: initial;
-    }
-    & .icon {
-        margin-right: 5px;
-        box-sizing: initial;
-        fill: var(--primaria);
-        stroke: var(--primaria);
-        color: var(--primaria);
-    }
-    & .frame:nth-of-type(1) {
-        gap: 24px;
-        & .frame {
-            margin-bottom: 24px;
-            & p{
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            & b {
-                font-weight: 800;
-                font-size: 14px;
-            }
-        }
-    }
-`
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -79,11 +24,6 @@ const Col6 = styled.div`
     padding: 10px;
     flex: 1 1 50%;
 `
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
 
 function ModalAdicionarSaldoCartao({ opened = false, aoClicar, aoFechar }) {   
 

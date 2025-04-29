@@ -22,11 +22,7 @@ import { GrAddCircle } from 'react-icons/gr'
 import Botao from '@components/Botao'
 import styles from '@pages/Operadoras/Operadoras.module.css'
 import BotaoGrupo from '@components/BotaoGrupo';
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 const tipos = {
     'C': 'Cultura',

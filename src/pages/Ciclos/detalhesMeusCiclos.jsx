@@ -21,11 +21,7 @@ import { addLocale } from 'primereact/api'
 import ciclos from '@json/meusciclos.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 const ConteudoFrame = styled.div`
     display: flex;

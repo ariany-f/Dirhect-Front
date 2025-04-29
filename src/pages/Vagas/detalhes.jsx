@@ -18,11 +18,7 @@ import DataTableCandidatos from '@components/DataTableCandidatos'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import ModalEncaminharVaga from '@components/ModalEncaminharVaga'
-
-let Real = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-});
+import { Real } from '@utils/formats'
 
 const ConteudoFrame = styled.div`
     display: flex;

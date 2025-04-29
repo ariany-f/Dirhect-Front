@@ -1,166 +1,123 @@
-import Botao from "@components/Botao"
-import Frame from "@components/Frame"
-import CampoTexto from "@components/CampoTexto"
-import Titulo from "@components/Titulo"
-import SubTitulo from "@components/SubTitulo"
-import { RiCloseFill } from 'react-icons/ri'
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import styled from "styled-components"
-import styles from './ModalAdicionarFilial.module.css'
-import { useDepartamentoContext } from "@contexts/Departamento"
+import { useState } from "react";
+import { RiCloseFill } from 'react-icons/ri';
+import styled from "styled-components";
+import Botao from "@components/Botao";
+import Frame from "@components/Frame";
+import CampoTexto from "@components/CampoTexto";
+import Titulo from "@components/Titulo";
+import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import styles from './ModalAdicionarFilial.module.css';
 
-const Overlay = styled.div`
-    background-color: rgba(0,0,0,0.80);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 9;
-`
-
-const AdicionarCnpjBotao = styled.div`
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--primaria);
+const Col12 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
     padding: 16px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-`
+    width: 100%;
+`;
 
-const DialogEstilizado = styled.dialog`
-    display: flex;
-    width: 40vw;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 16px;
-    border: none;
-    margin: 0 auto;
-    top: 22vh;
-    padding: 24px;
-    & button.close {
-        & .fechar {
-            box-sizing: initial;
-            fill: var(--primaria);
-            stroke: var(--primaria);
-            color: var(--primaria);
-        }
-        position: absolute;
-        right: 20px;
-        top: 20px;
-        cursor: pointer;
-        border: none;
-        background-color: initial;
-    }
-    & .icon {
-        margin-right: 5px;
-        box-sizing: initial;
-        fill: var(--primaria);
-        stroke: var(--primaria);
-        color: var(--primaria);
-    }
-    & .frame:nth-of-type(1) {
-        gap: 24px;
-        & .frame {
-            margin-bottom: 24px;
-            & p{
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            & b {
-                font-weight: 800;
-                font-size: 14px;
-            }
-        }
-    }
-`
+const Col6 = styled.div`
+    flex: 1 1 calc(50% - 8px);
+    min-width: 250px;
+`;
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
-    align-self: stretch;
+    width: 100%;
 `;
 
-const Item = styled.div`
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 16px;
-    display: flex;
-    padding: 20px;
-    justify-content: space-between;
-    align-items: center;
-    width: 94%;
-    border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
-`;
+function ModalAdicionarFilial({ opened = false, aoFechar, aoSalvar }) {
+    const [classError, setClassError] = useState([]);
+    const [nome, setNome] = useState('');
+    const [codigo, setCodigo] = useState('');
 
-function ModalAdicionarFilial({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
+    const validarESalvar = () => {
+        let errors = [];
+        if (!nome.trim()) errors.push('nome');
+        if (!codigo.trim()) errors.push('codigo');
+        
+        if (errors.length > 0) {
+            setClassError(errors);
+            return;
+        }
 
-    const [classError, setClassError] = useState([])
-    const [nome, setNome] = useState('')
-    const [cnpj, setCNPJ] = useState('')
+        const dadosParaAPI = {
+            nome: nome.trim(),
+            codigo: codigo.trim()
+        };
+        
+        aoSalvar(dadosParaAPI);
+    };
 
-    const navegar = useNavigate()
-
-    return(
+    return (
         <>
-            {opened &&
-            <>
+            {opened && (
                 <Overlay>
-                    <DialogEstilizado id="modal-add-departamento" open={opened}>
+                    <DialogEstilizado open={opened}>
                         <Frame>
                             <Titulo>
-                                <form method="dialog">
-                                    <button className="close" onClick={aoFechar} formMethod="dialog">
-                                        <RiCloseFill size={20} className="fechar" />  
-                                    </button>
-                                </form>
-                                <h6>Criar filial</h6>
-                                <SubTitulo>
-                                    Digite o nome da filial:
-                                </SubTitulo>
+                                <button className="close" onClick={aoFechar}>
+                                    <RiCloseFill size={20} className="fechar" />  
+                                </button>
+                                <h6>Nova Filial</h6>
                             </Titulo>
                         </Frame>
                         
-                        <Frame padding="24px 0px">
-                            <CampoTexto 
-                                    numeroCaracteres={50}
-                                    camposVazios={classError} 
-                                    valor={nome} 
-                                    type="text" 
-                                    setValor={setNome} 
-                                    placeholder="ex. Filial 1"
-                                    label="Nome da Filial" 
-                                />
-                                <CampoTexto 
-                                    numeroCaracteres={18}
-                                    camposVazios={classError} 
-                                    patternMask={['99.999.999/9999-99']} 
-                                    valor={cnpj} 
-                                    type="text" 
-                                    setValor={setCNPJ} 
-                                    placeholder=""
-                                    label="CNPJ da Filial" 
-                                />
-                        </Frame>
-                        <form method="dialog">
+                        <Wrapper>
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError.includes('nome') ? ['nome'] : []}
+                                        name="nome" 
+                                        valor={nome} 
+                                        setValor={setNome} 
+                                        type="text" 
+                                        label="Nome*" 
+                                        placeholder="Digite o nome" 
+                                    />
+                                </Col6>
+                                
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError.includes('codigo') ? ['codigo'] : []}
+                                        name="codigo" 
+                                        valor={codigo} 
+                                        setValor={setCodigo} 
+                                        type="text" 
+                                        label="Código*" 
+                                        placeholder="Digite o código" 
+                                    />
+                                </Col6>
+                            </Col12>
+
                             <div className={styles.containerBottom}>
-                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(nome, cnpj)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao
+                                    aoClicar={aoFechar} 
+                                    estilo="neutro" 
+                                    size="medium" 
+                                    filled
+                                >
+                                    Cancelar
+                                </Botao>
+                                <Botao
+                                    aoClicar={validarESalvar} 
+                                    estilo="vermilion" 
+                                    size="medium" 
+                                    filled
+                                >
+                                    Salvar Filial
+                                </Botao>
                             </div>
-                        </form>
+                        </Wrapper>
                     </DialogEstilizado>
                 </Overlay>
-            </>
-            }
+            )}
         </>
-    )
+    );
 }
 
-export default ModalAdicionarFilial
+export default ModalAdicionarFilial;
