@@ -28,6 +28,9 @@ const ListaEstilizada = styled.ul`
     padding: 0;
     margin: 0;
     width: 246px;
+    @media screen and (max-width: 760px) {
+        width: 100%;
+    }
 `
 
 const BarraLateralEstilizada = styled.aside`

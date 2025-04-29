@@ -2,4 +2,14 @@
     display: flex;
     max-height: 100vh;
     min-height: 100vh;
+    width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        overflow-y: auto;
+        max-height: none;
+        min-height: 100vh;
+    }
 }
