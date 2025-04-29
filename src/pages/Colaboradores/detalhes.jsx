@@ -25,13 +25,17 @@ import { MdOutlineFastfood } from 'react-icons/md';
 import { IoCopyOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 
-
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     justify-content: space-between;
-`
+    
+    @media screen and (max-width: 768px) {
+        flex-direction: column;
+        gap: 16px;
+    }
+`;
 
 const Col6 = styled.div`
     display: flex;
@@ -39,7 +43,12 @@ const Col6 = styled.div`
     padding: 10px;
     flex: 1 1 calc(50% - 10px);
     gap: 8px;
-`
+
+    @media screen and (max-width: 768px) {
+        flex: 1 1 100%;
+        padding: 0;
+    }
+`;
 
 const Col12Vertical = styled.div`
     display: flex;
@@ -49,7 +58,13 @@ const Col12Vertical = styled.div`
     width: 100%;
     gap: 15px;
     justify-content: space-between;
-`
+
+    @media screen and (max-width: 768px) {
+        flex-direction: column;
+        margin-top: 16px;
+    }
+`;
+
 const Col4Vertical = styled.div`
     display: flex;
     flex-direction: column;
@@ -59,16 +74,73 @@ const Col4Vertical = styled.div`
     border: 1px solid var(--neutro-200);
     border-radius: 16px;
     padding: 5px 24px;
-`
+
+    @media screen and (max-width: 768px) {
+        flex: 1 1 100%;
+        max-width: 100%;
+        order: 2;
+    }
+`;
+
 const Col8Vertical = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1 1 calc(75% - 15px);
     max-width: calc(75% - 15px);
     gap: 16px;
-`
 
+    @media screen and (max-width: 768px) {
+        flex: 1 1 100%;
+        max-width: 100%;
+        order: 1;
 
+        & ${BotaoGrupo} {
+            flex-wrap: wrap;
+            gap: 8px;
+            
+            & a {
+                flex: 1 1 calc(50% - 4px);
+                min-width: calc(50% - 4px);
+            }
+
+            & button {
+                width: 100%;
+            }
+        }
+    }
+`;
+
+const BeneficiosContainer = styled(FrameVertical)`
+    @media screen and (max-width: 768px) {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-start;
+
+        & > div {
+            flex: 1 1 calc(50% - 4px);
+            min-width: calc(50% - 4px);
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        & > div {
+            flex: 1 1 100%;
+        }
+    }
+`;
+
+const HeaderContainer = styled(Container)`
+    @media screen and (max-width: 768px) {
+        & h3 {
+            font-size: 1.2rem;
+        }
+        
+        & ${BadgeGeral} {
+            font-size: 0.9rem;
+        }
+    }
+`;
 
 function ColaboradorDetalhes() {
 
@@ -185,24 +257,24 @@ function ColaboradorDetalhes() {
         <Frame>
             <Toast ref={toast} />
             <ConfirmDialog />
-            <Container gap="24px" alinhamento="space-between">
+            <HeaderContainer gap="24px" alinhamento="space-between">
                 {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                     <>
-                    <BotaoVoltar linkFixo="/colaborador" />
-                    <BotaoGrupo align="start">
-                        <Titulo align="left">
-                            <FrameVertical gap="10px">
-                                <h3>{colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}</h3>
-                                {representativSituacaoTemplate()}
-                            </FrameVertical>
-                            {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica.email &&
-                                <>
-                                    <p>{colaborador?.funcionario_pessoa_fisica.email}</p>  
-                                    <IoCopyOutline className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.email)}} />
-                                </>
-                            }
-                        </Titulo>
-                    </BotaoGrupo>
+                        <BotaoVoltar linkFixo="/colaborador" />
+                        <BotaoGrupo align="start">
+                            <Titulo align="left">
+                                <FrameVertical gap="10px">
+                                    <h3>{colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}</h3>
+                                    {representativSituacaoTemplate()}
+                                </FrameVertical>
+                                {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica.email &&
+                                    <>
+                                        <p>{colaborador?.funcionario_pessoa_fisica.email}</p>  
+                                        <IoCopyOutline className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.email)}} />
+                                    </>
+                                }
+                            </Titulo>
+                        </BotaoGrupo>
                     </>
                     : <>
                         <Skeleton variant="rectangular" width={70} height={20} />
@@ -212,13 +284,13 @@ function ColaboradorDetalhes() {
                         </ContainerHorizontal>
                     </>
                 }
-                <FrameVertical gap="16px" alinhamento="left">
+                {/* <BeneficiosContainer gap="16px" alinhamento="left">
                     <BadgeGeral weight={500} severity="success" nomeBeneficio={
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <RiShoppingCartFill size={20} />
                             <div>
-                            Alimentação <br/>
-                            R$ 150,00
+                                Alimentação <br/>
+                                R$ 150,00
                             </div>
                         </div>
                     }  />
@@ -226,8 +298,8 @@ function ColaboradorDetalhes() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <MdOutlineFastfood size={20} />
                             <div>
-                            Refeição <br/>
-                            R$ 550,00
+                                Refeição <br/>
+                                R$ 550,00
                             </div>
                         </div>
                     }  />
@@ -235,13 +307,13 @@ function ColaboradorDetalhes() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <RiGasStationFill size={20} />
                             <div>
-                            Combustível <br/>
-                            R$ 350,00
+                                Combustível <br/>
+                                R$ 350,00
                             </div>
                         </div>
                     }  />
-                </FrameVertical>
-            </Container>
+                </BeneficiosContainer> */}
+            </HeaderContainer>
             <Col12Vertical>
                     {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                         <Col4Vertical>
