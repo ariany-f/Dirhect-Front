@@ -61,16 +61,17 @@ const BarraLateralEstilizada = styled.aside`
 `
 
 const NavEstilizada = styled.nav`
-    @media screen and (max-width: 760px) {
+   @media screen and (max-width: 760px) {
         width: 100%;
         height: calc(100vh - 150px);
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-y: contain;
+        -webkit-overflow-scrolling: touch; /* Suaviza o scroll em iOS */
+        overscroll-behavior-y: contain; /* Previne o efeito de "pull-to-refresh" */
         position: relative;
         flex: 1;
         display: flex;
         flex-direction: column;
+        touch-action: pan-y; /* Garante que eventos de toque funcionem */
 
         /* Estilização da scrollbar */
         &::-webkit-scrollbar {
@@ -105,6 +106,7 @@ const Overlay = styled.div`
         background: rgba(0, 0, 0, 0.5);
         z-index: 1099;
         backdrop-filter: blur(2px);
+        touch-action: none; /* Previne eventos de toque no overlay */
     }
 `
 
