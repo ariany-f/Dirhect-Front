@@ -16,9 +16,25 @@
 
 .link {
     text-decoration: none;
-    color: inherit;
-    display: flex;
-    gap: 10px;
+    color: var(--white);
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+
+.link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Customização do efeito Ripple */
+.p-ripple .p-ink {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Ajuste para garantir que o Ripple fique contido no link */
+.p-ripple {
+    position: relative;
+    overflow: hidden;
 }
 
 .link.disabled {

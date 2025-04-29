@@ -21,6 +21,7 @@ import { MdAllInbox, MdBusiness, MdHandshake, MdShoppingCart, MdShoppingCartChec
 import { GoTasklist } from "react-icons/go";
 import { IoBusiness } from "react-icons/io5"
 import { PiHandshake } from "react-icons/pi"
+import { Ripple } from 'primereact/ripple'
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -61,6 +62,10 @@ const Logo = styled.img`
     max-width: 245px;
 `
 
+const StyledLink = styled(Link)`
+    position: relative;
+    overflow: hidden;
+`
 
 function BarraLateral() {
 
@@ -433,18 +438,19 @@ function BarraLateral() {
                 <ListaEstilizada>
                     {itensMenu().map((item) => {
                         return (
-                            <Link key={item.id} className="link" to={item.url}>
+                            <StyledLink key={item.id} className="link p-ripple" to={item.url}>
                                 <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
                                     {item.icone}
                                     {item.itemTitulo}
                                 </ItemNavegacao>
-                            </Link>
+                                <Ripple />
+                            </StyledLink>
                         )
                     })}
                 </ListaEstilizada>
             </nav>
         </BarraLateralEstilizada>
-        <div style={{display: 'Flex', backgroundColor: 'transparent', height: '5vh', position: 'absolute', top: '3vh', border: 'none', borderRadius: '4px'}}>
+        <div style={{display: 'Flex', backgroundColor: 'transparent', height: '5vh', position: 'absolute', top: '3vh', border: 'none', borderRadius: '4px', zIndex: '9991'}}>
         <Botao aoClicar={toggleBarraLateral} tab={true} estilo={"neutro"} outStyle={{marginRight: '1vw', marginLeft: barraLateralOpened ? 'calc(246px + 1vw)' : '1vw', backdropFilter: 'blur(30px) saturate(2)', '-webkit-backdrop-filter': 'blur(30px) saturate(2)', transition: '.5s cubic-bezier(.36,-0.01,0,.77)'}} >
             <FaBars></FaBars>
         </Botao>

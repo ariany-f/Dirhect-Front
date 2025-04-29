@@ -21,6 +21,11 @@ const DialogEstilizado = styled.dialog`
     z-index: 9;
     & ul{
         padding: 0;
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        align-items: end;
         & li{
             list-style: none;
             display: flex;

@@ -97,13 +97,17 @@ const ChevronIcon = styled(MdOutlineKeyboardArrowDown)`
 
 // Rest of your styled components remain the same...
 const HeaderEstilizado = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: fit-content;
-  top: 0;
-  padding: 0 4vw 0 5vw;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    height: fit-content;
+    padding: 2vh 4vw 2vh 5vw;
+    flex-wrap: wrap;
+    width: inherit;
+    z-index: 999;
+    background-color: var(--white);
+    box-shadow: 0px 1px 5px 0px lightgrey;
 `;
 
 const RightItems = styled.nav`

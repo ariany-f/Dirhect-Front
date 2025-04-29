@@ -111,7 +111,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
     };
 
     return (
-        <Container gap="32px">
+        <>
             <div className={styles.wrapper_cards}>
                 <div className={styles.empilhado}>
                     <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
@@ -256,7 +256,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     </div>
                 </div>
             </div>
-        </Container> 
+        </> 
     )
 }
 
