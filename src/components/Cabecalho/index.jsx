@@ -16,6 +16,10 @@ import { LuSparkles } from "react-icons/lu";
 const MegaMenuWrapper = styled.div`
   position: relative;
   display: inline-block;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 `;
 
 // Menu Trigger Button
@@ -36,6 +40,10 @@ const MenuTrigger = styled.button`
   
   &:hover {
     background-color: var(--neutro-100);
+  }
+
+  @media screen and (max-width: 768px) {
+    padding: 8px;
   }
 `;
 
@@ -97,17 +105,41 @@ const ChevronIcon = styled(MdOutlineKeyboardArrowDown)`
 
 // Rest of your styled components remain the same...
 const HeaderEstilizado = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  height: fit-content;
+  padding: 2vh 4vw 2vh 5vw;
+  width: inherit;
+  z-index: 7;
+  background-color: var(--white);
+  box-shadow: 0px 1px 5px 0px lightgrey;
+
+  @media screen and (max-width: 768px) {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 8px;
+  }
+`;
+
+const HeaderTop = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const HeaderBottom = styled.div`
+  display: none;
+  width: 100%;
+
+  @media screen and (max-width: 768px) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: fixed;
-    height: fit-content;
-    padding: 2vh 4vw 2vh 5vw;
-    flex-wrap: wrap;
-    width: inherit;
-    z-index: 7;
-    background-color: var(--white);
-    box-shadow: 0px 1px 5px 0px lightgrey;
+    gap: 12px;
+  }
 `;
 
 const RightItems = styled.nav`
@@ -115,6 +147,14 @@ const RightItems = styled.nav`
   align-items: center;
   gap: 48px;
   flex-wrap: wrap;
+
+  @media screen and (max-width: 1024px) {
+    gap: 24px;
+  }
+
+  @media screen and (max-width: 768px) {
+    gap: 12px;
+  }
 `;
 
 const ItemEmpresa = styled.button`
@@ -134,6 +174,13 @@ const ItemEmpresa = styled.button`
   text-align: center;
   min-width: 150px;
   justify-content: center;
+
+  @media screen and (max-width: 768px) {
+    min-width: unset;
+    padding: 8px;
+    font-size: 13px;
+    flex: 1;
+  }
 `;
 
 const ItemUsuario = styled.div`
@@ -156,6 +203,19 @@ const ItemUsuario = styled.div`
     width: 40px;
     height: 40px;
   }
+
+  @media screen and (max-width: 768px) {
+    & .user {
+      width: 32px;
+      height: 32px;
+    }
+  }
+`;
+
+const MarketplaceButton = styled(Frame)`
+    @media screen and (max-width: 768px) {
+        display: none;
+    }
 `;
 
 const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) => {
@@ -163,6 +223,18 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
   const [menuAberto, setMenuAberto] = useState(false);
   const { usuario } = useSessaoUsuarioContext();
   const menuRef = useRef(null);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -251,104 +323,82 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
 
   return (
     <HeaderEstilizado>
-      <h6>{titulo}</h6>
-      <RightItems>
-        <div className={styles.divisor}>
-          <MegaMenuWrapper 
-            ref={menuRef}
-            onMouseEnter={() => setMenuAberto(true)}
-            onMouseLeave={() => setMenuAberto(false)}
-          >
-            <MenuTrigger
-              onClick={() => setMenuAberto(!menuAberto)}
+      <HeaderTop>
+        {isDesktop ? <h6>{titulo}</h6> : <>&nbsp;</>}
+        <RightItems>
+          <div className={styles.divisor}>
+            <MegaMenuWrapper 
+              ref={menuRef}
+              onMouseEnter={() => setMenuAberto(true)}
+              onMouseLeave={() => setMenuAberto(false)}
             >
-              <Texto weight="600" size={'14px'} color="black">
-                Opções
-              </Texto>
-              <ChevronIcon $isOpen={menuAberto} size={16} />
-            </MenuTrigger>
+              <MenuTrigger onClick={() => setMenuAberto(!menuAberto)}>
+                <Texto weight="600" size={'14px'} color="black">
+                  Opções
+                </Texto>
+                <ChevronIcon $isOpen={menuAberto} size={16} />
+              </MenuTrigger>
+              
+              <MegaMenuPanel $isOpen={menuAberto}>
+                <MenuGrid>
+                  {menuItems.map((column, index) => (
+                    <MenuColumn key={index}>
+                      {column.items.map((item, itemIndex) => (
+                        <MenuItem 
+                          key={itemIndex} 
+                          to={item.url}
+                          onClick={() => setMenuAberto(false)}
+                          $isActive={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}
+                        >
+                          {item.icon}
+                          <Texto weight="500" size={'14px'} color="black">
+                            {item.label}
+                          </Texto>
+                        </MenuItem>
+                      ))}
+                    </MenuColumn>
+                  ))}
+                </MenuGrid>
+              </MegaMenuPanel>
+            </MegaMenuWrapper>
             
-            <MegaMenuPanel $isOpen={menuAberto}>
-              <MenuGrid>
-                {menuItems.map((column, index) => (
-                  <MenuColumn key={index}>
-                    {column.items.map((item, itemIndex) => (
-                      <MenuItem 
-                        key={itemIndex} 
-                        to={item.url}
-                        onClick={() => setMenuAberto(false)}
-                        $isActive={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}
-                      >
-                        {item.icon}
-                        <Texto weight="500" size={'14px'} color="black">
-                          {item.label}
-                        </Texto>
-                      </MenuItem>
-                    ))}
-                  </MenuColumn>
-                ))}
-              </MenuGrid>
-            </MegaMenuPanel>
-          </MegaMenuWrapper>
+            {usuario.tipo !== "candidato" && isDesktop && (
+              <Frame alinhamento="center">
+                <Link 
+                  to="/marketplace"
+                  className={styles.link}
+                  style={{
+                    border: '1px solid var(--neutro-200)',
+                    cursor: 'pointer',
+                    borderRadius: '8px',
+                    padding: '8px',
+                    boxSizing: 'initial'
+                  }}
+                >
+                  <Texto weight="600" size={'14px'} color="black">
+                    <MdShoppingCart size={18} />
+                    &nbsp;Marketplace
+                  </Texto>
+                </Link>
+              </Frame>
+            )}
+          </div>
           
-          {/* Rest of your header items... */}
-          {/* {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
-            <Frame alinhamento="center">
-              <Link 
-                to="/estrutura"
-                className={styles.link} 
-                style={{
-                  border: '1px solid var(--neutro-200)',
-                  cursor: 'pointer',
-                  borderRadius: '8px',
-                  padding: '8px',
-                  boxSizing: 'initial'
-                }}
-              >
-                <Texto weight="600" size={'14px'} color="black">
-                  <RiOrganizationChart size={18} />
-                  &nbsp;Estrutura Organizacional
-                </Texto>
-              </Link>
-            </Frame>
-          )} */}
-          
-          {usuario.tipo !== "candidato" && (
-            <Frame alinhamento="center">
-              <Link 
-                to="/marketplace"
-                className={styles.link}
-                style={{
-                  border: '1px solid var(--neutro-200)',
-                  cursor: 'pointer',
-                  borderRadius: '8px',
-                  padding: '8px',
-                  boxSizing: 'initial'
-                }}
-              >
-                <Texto weight="600" size={'14px'} color="black">
-                  <MdShoppingCart size={18} />
-                  &nbsp;Marketplace
-                </Texto>
-              </Link>
-            </Frame>
-          )}
-        </div>
-        
-        <div className={styles.divisor}>
-          {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
-            <ItemEmpresa onClick={aoClicar}>
-              {nomeEmpresa}
-              <BsArrowLeftRight />
-            </ItemEmpresa>
-          )}
-          
-          <ItemUsuario onClick={toggleMenu}>
-            <div className="user">{usuario.name?.charAt(0) || 'U'}</div>
-            <MdOutlineKeyboardArrowDown />
-          </ItemUsuario>
-        </div>
-      </RightItems>
+          <div className={styles.divisor}>
+            {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
+              <ItemEmpresa onClick={aoClicar}>
+                {nomeEmpresa}
+                <BsArrowLeftRight />
+              </ItemEmpresa>
+            )}
+            
+            <ItemUsuario onClick={toggleMenu}>
+              <div className="user">{usuario.name?.charAt(0) || 'U'}</div>
+              <MdOutlineKeyboardArrowDown />
+            </ItemUsuario>
+          </div>
+        </RightItems>
+      </HeaderTop>
       
       <Menu opened={menuOpened} aoFechar={toggleMenu} />
     </HeaderEstilizado>

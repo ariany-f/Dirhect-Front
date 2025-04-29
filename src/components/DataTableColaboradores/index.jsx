@@ -230,7 +230,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     cm.current.show(e.originalEvent)}
                 }
             >
-                <Column body={representativeChapaTemplate} field="chapa" header="Chapa" sortable style={{ width: '10%' }}></Column>
+                <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '10%' }}></Column>
                 <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
                 <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>

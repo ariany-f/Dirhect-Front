@@ -190,8 +190,8 @@ function ColaboradorDadosIniciais() {
                         valor={colaborador.chapa} 
                         setValor={setChapa} 
                         type="text" 
-                        label="Chapa" 
-                        placeholder="Digite a chapa do colaborador" />
+                        label="Matrícula" 
+                        placeholder="Digite a matrícula do colaborador" />
                 </Col4>
             </Col12>
             <Col12>

@@ -29,6 +29,7 @@ const ListaEstilizada = styled.ul`
     margin: 0;
     width: 246px;
 `
+
 const BarraLateralEstilizada = styled.aside`
     display: 'inline-flex';
     padding: 26px 0px;
@@ -42,10 +43,59 @@ const BarraLateralEstilizada = styled.aside`
     gap: 32px;
     flex-shrink: 0;
     background: linear-gradient(to bottom, #0c004c, #5d0b62);
+
     @media screen and (max-width: 760px) {
-        display: none;
+        position: fixed;
+        z-index: 1100;
+        width: 85%;
+        max-width: 320px;
+        margin-left: ${ props => (!!props.$opened) ? '0' : '-100%' };
+        box-shadow: ${props => (!!props.$opened) ? '0 0 15px rgba(0,0,0,0.3)' : 'none'};
+        height: 100vh;
     }
 `
+
+const NavEstilizada = styled.nav`
+    @media screen and (max-width: 760px) {
+        height: calc(100vh - 150px);
+        overflow-y: auto;
+
+        /* Estilização da scrollbar */
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    }
+`
+
+const Overlay = styled.div`
+    display: none;
+    
+    @media screen and (max-width: 760px) {
+        display: ${props => (!!props.$opened) ? 'block' : 'none'};
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1099;
+        backdrop-filter: blur(2px);
+    }
+`
+
 const NavTitulo = styled.p`
     color: var(--white);
     opacity: 0.5;
@@ -424,38 +474,40 @@ function BarraLateral() {
         setBarraLateralOpened(!barraLateralOpened);
     }
 
+    const fecharMenu = () => {
+        setBarraLateralOpened(false);
+    }
+
     return (
         <>
-        <BarraLateralEstilizada $opened={barraLateralOpened}>
-            
-
-             {image ?
-                <Logo src={logo} ref={ref} alt="Logo" />
-                : ''
-            }
-            <nav>
-                <NavTitulo>{titulos[usuario.tipo]}</NavTitulo>
-                <ListaEstilizada>
-                    {itensMenu().map((item) => {
-                        return (
-                            <StyledLink key={item.id} className="link p-ripple" to={item.url}>
-                                <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
-                                    {item.icone}
-                                    {item.itemTitulo}
-                                </ItemNavegacao>
-                                <Ripple />
-                            </StyledLink>
-                        )
-                    })}
-                </ListaEstilizada>
-            </nav>
-        </BarraLateralEstilizada>
-        <div style={{display: 'Flex', backgroundColor: 'transparent', height: '5vh', position: 'absolute', top: '2.5vh', border: 'none', borderRadius: '4px', zIndex: '8'}}>
-        <Botao aoClicar={toggleBarraLateral} tab={true} estilo={"neutro"} outStyle={{marginRight: '1vw', marginLeft: barraLateralOpened ? 'calc(246px + 1vw)' : '1vw', backdropFilter: 'blur(30px) saturate(2)', '-webkit-backdrop-filter': 'blur(30px) saturate(2)', transition: '.5s cubic-bezier(.36,-0.01,0,.77)'}} >
-            <FaBars></FaBars>
-        </Botao>
-        {/* <BreadCrumb model={breadCrumbItems} /> */}
-        </div>
+            <Overlay $opened={barraLateralOpened} onClick={fecharMenu} />
+            <BarraLateralEstilizada $opened={barraLateralOpened}>
+                {image ?
+                    <Logo src={logo} ref={ref} alt="Logo" />
+                    : ''
+                }
+                <NavEstilizada>
+                    <NavTitulo>{titulos[usuario.tipo]}</NavTitulo>
+                    <ListaEstilizada>
+                        {itensMenu().map((item) => {
+                            return (
+                                <StyledLink key={item.id} className="link p-ripple" to={item.url} onClick={() => setBarraLateralOpened(false)}>
+                                    <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                        {item.icone}
+                                        {item.itemTitulo}
+                                    </ItemNavegacao>
+                                    <Ripple />
+                                </StyledLink>
+                            )
+                        })}
+                    </ListaEstilizada>
+                </NavEstilizada>
+            </BarraLateralEstilizada>
+            <div style={{display: 'Flex', backgroundColor: 'transparent', height: '5vh', position: 'absolute', top: '2.5vh', border: 'none', borderRadius: '4px', zIndex: '8'}}>
+                <Botao aoClicar={toggleBarraLateral} tab={true} estilo={"neutro"} outStyle={{marginRight: '1vw', marginLeft: barraLateralOpened ? 'calc(246px + 1vw)' : '1vw', backdropFilter: 'blur(30px) saturate(2)', '-webkit-backdrop-filter': 'blur(30px) saturate(2)', transition: '.5s cubic-bezier(.36,-0.01,0,.77)'}} >
+                    <FaBars></FaBars>
+                </Botao>
+            </div>
         </>
     )
 }

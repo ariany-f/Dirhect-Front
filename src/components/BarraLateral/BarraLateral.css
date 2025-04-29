@@ -20,6 +20,7 @@
     display: block;
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 .link:hover {
@@ -35,6 +36,7 @@
 .p-ripple {
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 .link.disabled {
@@ -43,4 +45,15 @@
 
 .link.disabled li{
     cursor: default;
+}
+
+@media screen and (max-width: 768px) {
+    .link {
+        padding: 0;
+    }
+
+    .novidade {
+        font-size: 9px;
+        padding: 1px 4px;
+    }
 }

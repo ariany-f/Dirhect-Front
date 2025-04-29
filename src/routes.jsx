@@ -158,7 +158,7 @@ function AppRouter() {
     };
   }, []);
 
-  if (!isDesktop) {
+  if ( 1==0) {
     return (
       <MobileBlocker />
     );

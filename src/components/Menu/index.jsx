@@ -6,6 +6,7 @@ import { GiTreeBranch } from "react-icons/gi"
 import { Link, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { ArmazenadorToken } from "@utils"
+import { MdShoppingCart } from 'react-icons/md'
 
 const DialogEstilizado = styled.dialog`
     display: inline-flex;
@@ -18,9 +19,19 @@ const DialogEstilizado = styled.dialog`
     right: 55px;
     inset-inline-start: unset;
     transition: all 0.3s ease-in-out;
-    z-index: 9;
+    z-index: 1200;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    @media screen and (max-width: 768px) {
+        right: 16px;
+        top: 70px;
+    }
+
     & ul{
         padding: 0;
+        margin: 0;
         text-align: right;
         display: flex;
         flex-direction: column;
@@ -29,7 +40,14 @@ const DialogEstilizado = styled.dialog`
         & li{
             list-style: none;
             display: flex;
-            padding: 24px;
+            padding: 16px 24px;
+            width: 100%;
+            transition: background 0.2s;
+
+            &:hover {
+                background: var(--neutro-100);
+            }
+
             & .link {
                 width: 100%;
                 justify-content: end;
@@ -37,6 +55,8 @@ const DialogEstilizado = styled.dialog`
                 align-self: stretch;
                 font-size: 14px;
                 font-weight: 700;
+                text-decoration: none;
+                color: inherit;
                 & .group {
                     display: flex;
                     justify-content: center;
@@ -95,34 +115,34 @@ function Menu({ opened = false, aoFechar }){
                                     Meus dados
                                     <IoMdSettings size={20} className="icon"/>
                                 </div>
-                                {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
                         </li>
-                        {/* <li onClick={() => FecharMenu()}>
-                            <Link className="link" to="/estrutura">
-                                <div className="group">
-                                    Estrutura Organizacional
-                                    <RiOrganizationChart size={20} className="icon"/>
-                                </div>
-                            </Link>
-                        </li> */}
-                        <li onClick={() => FecharMenu()}>
-                            <Link className="link" to="/operador">
-                                <div className="group">
-                                    Usuários do Sistema
-                                    <RiUserFollowFill size={20} className="icon"/>
-                                </div>
-                                {/* <MdOutlineChevronRight size={20} /> */}
-                            </Link>
-                        </li>
+                        {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
+                            <li onClick={() => FecharMenu()}>
+                                <Link className="link" to="/operador">
+                                    <div className="group">
+                                        Usuários do Sistema
+                                        <RiUserFollowFill size={20} className="icon"/>
+                                    </div>
+                                </Link>
+                            </li>
+                        )}
+                        {usuario.tipo !== "candidato" && (
+                            <li onClick={() => FecharMenu()}>
+                                <Link className="link" to="/marketplace">
+                                    <div className="group">
+                                        Marketplace
+                                        <MdShoppingCart size={20} className="icon"/>
+                                    </div>
+                                </Link>
+                            </li>
+                        )}
                         <li onClick={Sair}>
                             <Link className="link">
                                 <div className="group">
                                     Sair
                                     <RiLogoutCircleLine size={20} className="icon sair"/>
                                 </div>
-                                
-                                {/* <MdOutlineChevronRight size={20} /> */}
                             </Link>
                         </li>
                     </ul>

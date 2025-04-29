@@ -79,7 +79,7 @@ function DataTableDemissao({ demissoes, colaborador = null }) {
             </div>}
             <DataTable value={demissoes} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas demissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
                 {!colaborador &&
-                    <Column body={representativeChapaTemplate} header="Chapa" style={{ width: '10%' }}></Column>
+                    <Column body={representativeChapaTemplate} header="Matrícula" style={{ width: '10%' }}></Column>
                 }
                 {!colaborador &&
                     <Column body={representativeColaboradorTemplate} header="Colaborador" style={{ width: '30%' }}></Column>

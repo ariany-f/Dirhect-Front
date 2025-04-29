@@ -1,45 +1,35 @@
-import { styled } from "styled-components"
+import styled from "styled-components"
 
-const ItemListaEstilizado = styled.li`
-    -moz-transition: all .1s ease;
-    -o-transition: all .1s ease;
-    -webkit-transition: all .1s ease;
-    transition: all .2s ease;
+const ItemEstilizado = styled.li`
     display: flex;
-    cursor: pointer;
-    color: ${ props => props.$ativo ? 'var(--secundaria)' : 'var(--white)' };
-    font-family: var(--fonte-secundaria);
+    padding: 10px 30px;
     align-items: center;
-    padding: 13px 30px;
+    gap: 10px;
+    cursor: pointer;
+    color: var(--white);
+    font-weight: 500;
     font-size: 14px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 20px; /* 142.857% */
-    gap: 12px;
-    width: 100%;
-    background-color: ${ props => props.$ativo ? 'var(--vermilion-600)' : 'none' };
+    line-height: 150%;
+    background-color: ${props => props.$ativo ? 'rgba(255, 255, 255, 0.1)' : 'transparent'};
+    transition: background-color 0.2s;
 
-    & .icon {
-        box-sizing: initial;
-        fill: ${ props => props.$ativo ? 'var(--secundaria)' : 'var(--white)' };
-        color: ${ props => props.$ativo ? 'var(--secundaria)' : 'var(--white)' };
-    }
-    
-    & .icon *{
-        fill: ${ props => props.$ativo ? 'var(--secundaria)' : 'var(--white)' };
-        color: ${ props => props.$ativo ? 'var(--secundaria)' : 'var(--white)' };
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
     }
 
-    &:hover{
-        color: var(--secundaria);
-        background-color: var(--vermilion-600);
+    @media screen and (max-width: 768px) {
+        padding: 14px 24px;
+        width: 100%;
+        justify-content: flex-start;
     }
 `
 
-const ItemNavegacao = ({children, ativo = false}) => {
-    return <ItemListaEstilizado $ativo={ativo}>
-        {children}
-    </ItemListaEstilizado>
+function ItemNavegacao({ children, ativo = false }) {
+    return (
+        <ItemEstilizado $ativo={ativo}>
+            {children}
+        </ItemEstilizado>
+    )
 }
 
 export default ItemNavegacao
