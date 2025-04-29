@@ -2,6 +2,7 @@ import http from '@http';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArmazenadorToken } from '../utils';
+import { PrimeReactProvider } from 'primereact/api';
 
 const usuarioInicial = {
     name: '',
@@ -459,7 +460,14 @@ export const SessaoUsuarioProvider = ({ children }) => {
         setTipo
     }
 
-    return (<SessaoUsuarioContext.Provider value={contexto}>
-        {children}
-    </SessaoUsuarioContext.Provider>)
+    const value = {
+        ripple: true
+    };
+    return (
+        <PrimeReactProvider value={value}>
+            <SessaoUsuarioContext.Provider value={contexto}>
+                {children}
+            </SessaoUsuarioContext.Provider>
+        </PrimeReactProvider>
+    )
 }

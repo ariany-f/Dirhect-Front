@@ -1,5 +1,6 @@
 import './Botao.css';
 import styled from "styled-components";
+import { Ripple } from 'primereact/ripple';
 
 const BotaoEstilizado = styled.button`
     display: flex;
@@ -21,16 +22,18 @@ const BotaoEstilizado = styled.button`
 
 function Botao( {children, extraclasses = '',estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px', outStyle='' } ) {
 
-    const classes = `${estilo} ${model} ${size} ${weight} ${extraclasses} ${tab ? 'tab' : ''}`;
+    const classes = `${estilo} ${model} ${size} ${weight} ${extraclasses} ${tab ? 'tab' : ''} p-ripple`;
    
     return (
         aoClicar ?
             <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} onClick={aoClicar} className={classes}>
                 {children}
+                <Ripple />
             </BotaoEstilizado>
         :
             <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} className={classes}>
                 {children}
+                <Ripple />
             </BotaoEstilizado>
     )
 }
