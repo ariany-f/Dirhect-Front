@@ -6,7 +6,6 @@ const Grupo = styled.div`
     gap: ${ props => props.$gap ? props.$gap : '16px' };
     justify-content: ${ props => props.$align ? props.$align : 'center'};
     align-items: ${ props => props.$verticalalign ? props.$verticalalign : 'center'};
-    width: -webkit-fill-available;
     @media screen and (max-width: 760px) {
         flex-wrap: wrap;
         gap: 12px;

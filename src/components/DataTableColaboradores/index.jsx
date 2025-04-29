@@ -211,20 +211,22 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         <>
             <BotaoGrupo align={showSearch ? 'space-between' : 'end'} wrap>
                 {showSearch && (
+                    <>
                     <div className="flex justify-content-end">
                         <span className="p-input-icon-left">
                             <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                         </span>
                     </div>
+                    <BotaoGrupo align="end" gap="8px">
+                        <BotaoSemBorda color="var(--primaria)">
+                            <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
+                        </BotaoSemBorda>
+                        <Link to="/colaborador/registro">
+                            <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
+                        </Link>
+                    </BotaoGrupo>
+                    </>
                 )}
-                <BotaoGrupo align="end" gap="8px">
-                    <BotaoSemBorda color="var(--primaria)">
-                        <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
-                    </BotaoSemBorda>
-                    <Link to="/colaborador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
-                    </Link>
-                </BotaoGrupo>
             </BotaoGrupo>
             {/* <ContextMenu model={menuModel(selectedCollaborator)} ref={cm} onHide={() => setSelectedCollaborator(null)} /> */}
             <DataTable 
