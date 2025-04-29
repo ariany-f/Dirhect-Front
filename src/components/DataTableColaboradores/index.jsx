@@ -22,6 +22,7 @@ import { Tag } from 'primereact/tag';
 import { FaTrash, FaUserTimes, FaUmbrella, FaDownload } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
+import { formatCPF } from '@utils/formats';
 
 function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
@@ -208,13 +209,13 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
 
     return (
         <>
-            <BotaoGrupo align="space-between">
+            <BotaoGrupo align="space-between" wrap>
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
                         <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                     </span>
                 </div>
-                <BotaoGrupo align="center">
+                <BotaoGrupo align="center" gap="8px">
                     <BotaoSemBorda color="var(--primaria)">
                         <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
                     </BotaoSemBorda>
