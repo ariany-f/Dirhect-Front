@@ -111,7 +111,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                     <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>}
-            <DataTable value={tarefas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados tarefas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={tarefas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados tarefas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '30%' }}></Column>
                 <Column body={representativeRecorrenciaTemplate} field="tipo_recorrencia" header="Recorrência" style={{width: '15%'}}></Column>
                 <Column body={representativeDataTemplate} field="data" header="Data de Entrega" style={{width: '15%'}}></Column>

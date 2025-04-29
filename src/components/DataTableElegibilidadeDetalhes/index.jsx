@@ -148,7 +148,7 @@ function DataTableElegibilidadeDetalhes({ elegibilidade = [], pagination = true 
     
     return (
         <>
-            <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)} rowExpansionTemplate={rowExpansionTemplate} value={elegibilidade} filters={filters} globalFilterFields={['data_inicio']}  emptyMessage="Não foram encontrados elegibilidade" paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 {/* <Column expander={allowExpansion} style={{ width: '5%' }} /> */}
                 <Column body={representativeContratoTemplate} field="nome_fornecedor" header="Contrato" style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} field="beneficios" header="Benefícios" style={{ width: '50%' }}></Column>

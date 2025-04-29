@@ -39,7 +39,7 @@ function DataTableEventosCiclos({ eventos, colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={eventos} filters={filters} globalFilterFields={['funcionario', 'rubrica']}  emptyMessage="Não foram encontrados eventos" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={eventos} filters={filters} globalFilterFields={['funcionario', 'rubrica']}  emptyMessage="Não foram encontrados eventos" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 {(!colaborador) && 
                     <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
                 }

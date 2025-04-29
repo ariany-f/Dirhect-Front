@@ -145,7 +145,7 @@ function DataTableLinhasTransporte({ linhas }) {
                     globalFilterFields={['nome']}
                     tableStyle={{ minWidth: '100%' }}
                     paginator
-                    rows={7}
+                    rows={10}
                     sortField="nome"
                     sortOrder={1} // Ordem ascendente
                 >
@@ -166,7 +166,7 @@ function DataTableLinhasTransporte({ linhas }) {
                     globalFilterFields={['nome', 'codigo', 'operadora.nome']}
                     tableStyle={{ minWidth: '100%' }}
                     paginator
-                    rows={7}
+                    rows={10}
                 >
                     <Column 
                         body={linhaTemplate}

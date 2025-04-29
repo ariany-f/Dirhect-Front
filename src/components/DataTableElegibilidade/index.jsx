@@ -69,7 +69,7 @@ function DataTableElegibilidade({ elegibilidade = [], colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>}
-            <DataTable value={elegibilidade} filters={filters} globalFilterFields={['tipo']}  emptyMessage="Não foram encontrados elegibilidade" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={elegibilidade} filters={filters} globalFilterFields={['tipo']}  emptyMessage="Não foram encontrados elegibilidade" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeTipoTemplate} field="nome" header="Nome" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
             </DataTable>

@@ -45,7 +45,7 @@ function DataTableCandidatos({ candidatos }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar candidato" />
                 </span>
             </div>
-            <DataTable value={candidatos} filters={filters} globalFilterFields={['nome', 'email']}  emptyMessage="Não foram encontrados candidatos" selection={selectedCandidato} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={candidatos} filters={filters} globalFilterFields={['nome', 'email']}  emptyMessage="Não foram encontrados candidatos" selection={selectedCandidato} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="nome" header="Nome" style={{ width: '15%' }}></Column>
                 <Column field="email" header="E-mail" style={{ width: '25%' }}></Column>
                 <Column field="telefone" header="Telefone" style={{ width: '15%' }}></Column>

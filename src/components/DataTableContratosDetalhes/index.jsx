@@ -319,7 +319,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                         globalFilterFields={['nome']} 
                         emptyMessage="Não foram encontrados beneficios vinculados à este contrato" 
                         paginator 
-                        rows={7}
+                        rows={10}
                         selection={selectedBeneficio} 
                         onSelectionChange={onRowSelect}
                         selectionMode="single"

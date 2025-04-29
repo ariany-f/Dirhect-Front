@@ -111,7 +111,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
                 filters={filters} 
                 globalFilterFields={['beneficio.descricao']} 
                 emptyMessage="Não foram encontrados benefícios vinculados à esta operadora" 
-                paginator rows={7}
+                paginator rows={10}
                 selection={selectedBeneficio} 
                 onSelectionChange={(e) => {setSendData(e.value);}} 
                 selectionMode="single"

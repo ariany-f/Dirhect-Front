@@ -42,10 +42,13 @@ function ColaboradoresCadastrados() {
     const [totalPages, setTotalPages] = useState(0);
     const [first, setFirst] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
 
-    const loadData = (currentPage, currentPageSize, search = '') => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
         setLoading(true);
-        http.get(`funcionario/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
+        const orderParam = sort ? `&ordering=${sort}` : '';
+        http.get(`funcionario/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setColaboradores(response.results);
                 setTotalRecords(response.count);
@@ -71,14 +74,25 @@ function ColaboradoresCadastrados() {
         setPage(newPage);
         setPageSize(newPageSize);
         
-        loadData(newPage, newPageSize, searchTerm);
+        loadData(newPage, newPageSize, searchTerm, getSortParam());
     };
 
     const onSearch = (search) => {
         setSearchTerm(search);
         setPage(1);
         setFirst(0);
-        loadData(1, pageSize, search);
+        loadData(1, pageSize, search, getSortParam());
+    };
+
+    const getSortParam = () => {
+        if (!sortField) return '';
+        return `${sortOrder === 'desc' ? '-' : ''}${sortField}`;
+    };
+
+    const onSort = ({ field, order }) => {
+        setSortField(field);
+        setSortOrder(order);
+        loadData(page, pageSize, searchTerm, `${order === 'desc' ? '-' : ''}${field}`);
     };
 
     return (
@@ -96,6 +110,7 @@ function ColaboradoresCadastrados() {
                     first={first} 
                     onPage={onPage}
                     onSearch={onSearch}
+                    onSort={onSort}
                 />
                 :
                 <ContainerSemRegistro>

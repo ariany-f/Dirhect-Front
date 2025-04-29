@@ -70,7 +70,7 @@ function DataTableMovimentosDetalhes({ movimentos }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={movimentos} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados movimentos" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={movimentos} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados movimentos" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="movimento" header="Movimento" style={{width: '35%'}}></Column>
             </DataTable>

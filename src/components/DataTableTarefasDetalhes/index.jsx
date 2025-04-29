@@ -58,7 +58,7 @@ function DataTableTarefasDetalhes({ tarefas }) {
     
     return (
         <>
-            <DataTable value={tarefas} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados tarefas" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={tarefas} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados tarefas" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="descricao" header="Descrição" style={{ width: '25%' }}></Column>
                 <Column body={representativePrazoTemplate} field="prazo" header="Prazo (SLA)" style={{ width: '15%' }}></Column>
                 <Column body={representativeCheckTemplate} field="check" header="Concluído" style={{ width: '15%' }}></Column>

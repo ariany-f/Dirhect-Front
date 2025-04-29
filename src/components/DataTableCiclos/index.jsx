@@ -86,7 +86,7 @@ function DataTableCiclos({ ciclos, colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={ciclos} groupRowsBy="data_referencia.year" rowGroupHeaderTemplate={headerTemplate} rowGroupMode="subheader" filters={filters} globalFilterFields={['tipo']}  emptyMessage="Não foram encontrados ciclos" selection={selectedCiclo} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={ciclos} groupRowsBy="data_referencia.year" rowGroupHeaderTemplate={headerTemplate} rowGroupMode="subheader" filters={filters} globalFilterFields={['tipo']}  emptyMessage="Não foram encontrados ciclos" selection={selectedCiclo} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column body={representativeMonthTemplate} field="data_referencia.month" header="Mês Referência" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>

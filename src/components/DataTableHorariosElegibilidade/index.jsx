@@ -145,7 +145,7 @@ function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagi
                     </span>
                 </div>
             }
-            <DataTable value={horarios} filters={filters} globalFilterFields={['id', 'codigo', 'descricao']} emptyMessage="Não foram encontrados horarios" selection={selected ? selectedHorarios : selectedHorario} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={horarios} filters={filters} globalFilterFields={['id', 'codigo', 'descricao']} emptyMessage="Não foram encontrados horarios" selection={selected ? selectedHorarios : selectedHorario} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} style={{ width: '30%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '65%' }}></Column>
                 <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight/>}></Column>

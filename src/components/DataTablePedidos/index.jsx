@@ -1,6 +1,8 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
@@ -80,6 +82,11 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
              Real.format(rowData.valor)
         )   
     }
+
+    const valorFooterTemplate = () => {
+        const total = pedidos?.reduce((sum, pedido) => sum + (pedido.valor || 0), 0);
+        return Real.format(total);
+    };
     
     return (
         <>
@@ -100,12 +107,37 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
                 </BotaoGrupo>
             </BotaoGrupo>
            
-            <DataTable value={pedidos} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados pedidos" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
+            <DataTable 
+                value={pedidos} 
+                filters={filters} 
+                globalFilterFields={['titulo']}  
+                emptyMessage="Não foram encontrados pedidos" 
+                selection={selectedVaga} 
+                onSelectionChange={(e) => verDetalhes(e.value)} 
+                selectionMode="single" 
+                paginator 
+                rows={10}  
+                tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
+                showGridlines
+                stripedRows
+                footerColumnGroup={
+                    <ColumnGroup>
+                        <Row>
+                            <Column footer={valorFooterTemplate} style={{ textAlign: 'right' }} />
+                        </Row>
+                    </ColumnGroup>
+                }
+            >
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
-                <Column body={representativeValorTemplate} field="valor" header="Valor Total" style={{ width: '25%' }}></Column>
+                <Column 
+                    body={representativeValorTemplate} 
+                    field="valor" 
+                    header="Valor Total" 
+                    style={{ width: '25%', textAlign: 'right' }}
+                ></Column>
             </DataTable>
         </>
     )

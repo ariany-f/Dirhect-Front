@@ -1,6 +1,8 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import { MdOutlineKeyboardArrowRight, MdTag } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
@@ -24,7 +26,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
 import { formatCPF } from '@utils/formats';
 
-function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true }) {
+function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
@@ -180,31 +182,17 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         );
     };
 
-    const cm = useRef(null);
-    const menuModel = (selectedCollaborator) => {
-        if (!selectedCollaborator) return [];
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
 
-        if(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento')
-        {
-            return [
-                { 
-                    label: <Texto weight={600}>{'Demissão'}</Texto>, 
-                    command: () => {
-                        setModalOpened(true);  // Se status for 'pending', cancela a solicitação
-                    }
-                },
-                { 
-                    label: <Texto weight={600}>{'Férias'}</Texto>, 
-                    command: () => {
-                        setModalFeriasOpened(true);  // Se status for 'pending', cancela a solicitação
-                    }
-                }
-            ];
-        }
-        else
-        {
-            return [];
-        }
+    const totalColaboradoresTemplate = () => {
+        return 'Total de Colaboradores: ' + totalRecords;
     };
 
     return (
@@ -228,15 +216,10 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     </>
                 )}
             </BotaoGrupo>
-            {/* <ContextMenu model={menuModel(selectedCollaborator)} ref={cm} onHide={() => setSelectedCollaborator(null)} /> */}
             <DataTable 
-                // onContextMenu={(e) => {
-                //     cm.current.show(e.originalEvent);
-                // }}
                 selection={selectedCollaborator} 
                 onSelectionChange={(e) => verDetalhes(e.value)}
                 selectionMode="single"
-                // contextMenuSelection={selectedCollaborator} 
                 value={colaboradores} 
                 emptyMessage="Não foram encontrados colaboradores" 
                 paginator={paginator}
@@ -245,18 +228,24 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 totalRecords={totalRecords} 
                 first={first} 
                 onPage={onPage} 
+                onSort={handleSort}
                 removableSort 
                 tableStyle={{ minWidth: '68vw' }}
-                // onContextMenuSelectionChange={(e) => {
-                //     setSelectedCollaborator(e.value); 
-                //     cm.current.show(e.originalEvent)}
-                // }
+                showGridlines
+                stripedRows
+                footerColumnGroup={
+                    <ColumnGroup>
+                        <Row>
+                            <Column footer={totalColaboradoresTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                        </Row>
+                    </ColumnGroup>
+                }
             >
                 <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '10%' }}></Column>
                 <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
                 <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento " header="Data de Nascimento" sortable style={{ width: '15%' }}></Column>
+                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Data de Nascimento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>
                 <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>
             </DataTable>

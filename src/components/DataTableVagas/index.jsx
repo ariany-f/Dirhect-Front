@@ -54,7 +54,7 @@ function DataTableVagas({ vagas }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar vaga" />
                 </span>
             </div>
-            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas vagas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={7}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas vagas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="titulo" header="Titulo" style={{ width: '35%' }}></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
                 <Column body={representativeAberturaTemplate} header="Data Abertura" style={{ width: '35%' }}></Column>

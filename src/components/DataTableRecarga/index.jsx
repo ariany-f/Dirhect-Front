@@ -77,7 +77,7 @@ function DataTableRecarga({ beneficios }) {
                     <p style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona esses benefícios?</p>
                 </QuestionCard>
             </div>
-            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={7}  onSelectionChange={(e) => verDetalhes(e.value)}  tableStyle={{ minWidth: '65vw' }}>
+            <DataTable value={beneficios} filters={filters} globalFilterFields={['description']} emptyMessage="Não foram encontradas recargas" paginator rows={10}  onSelectionChange={(e) => verDetalhes(e.value)}  tableStyle={{ minWidth: '65vw' }}>
                 <Column body={representativeDescriptionTemplate} header="Nome do pedido" style={{ width: '20%' }}></Column>
                 <Column body={representativeCreatedTemplate} header="Data de criação" style={{ width: '20%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '15%' }}></Column>

@@ -71,7 +71,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange }) {
                 filters={filters} 
                 globalFilterFields={['nome']} 
                 emptyMessage="Não foram encontrados operadoras" 
-                paginator rows={7}
+                paginator rows={10}
                 selection={selectedOperadora} 
                 onSelectionChange={(e) => {onSelectionChange(e.value);setSelectedOperadora(e.value)}} 
                 selectionMode="single"

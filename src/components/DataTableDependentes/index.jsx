@@ -169,7 +169,7 @@ function DataTableDependentes({ dependentes, search = true }) {
                 </BotaoGrupo>
             </BotaoGrupo>
             
-            <DataTable value={dependentes} filters={filters} globalFilterFields={['nome_depend', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={6}  tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}>
+            <DataTable value={dependentes} filters={filters} globalFilterFields={['nome_depend', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}>
                 {search &&  <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '30%' }}></Column>}
                 <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '30%' }}></Column>
                 <Column body={representativeParentescoTemplate} header="Grau de Parentesco" style={{ width: '20%' }}></Column>
