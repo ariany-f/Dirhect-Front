@@ -145,6 +145,25 @@ function BarraLateral() {
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
 
+    useEffect(() => {
+        const handleTouchMove = (e) => {
+            // Permite o scroll apenas dentro da barra lateral
+            if (barraLateralOpened && window.innerWidth <= 760) {
+                const navElement = document.querySelector('nav'); // Selecione seu nav corretamente
+                if (navElement && !navElement.contains(e.target)) {
+                    e.preventDefault();
+                }
+            }
+        };
+    
+        if (window.innerWidth <= 760) {
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        }
+    
+        return () => {
+            document.removeEventListener('touchmove', handleTouchMove);
+        };
+    }, [barraLateralOpened]);
 
     useEffect(() => {
         const handleResize = () => {
