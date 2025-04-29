@@ -46,11 +46,12 @@ const ElegibilidadeLista = () => {
     const [sindicatos, setSindicatos] = useState([])
     const [horarios, setHorarios] = useState([])
     const [atualizado, setAtualizado] = useState(false)
+    const [abasDisponiveis, setAbasDisponiveis] = useState([])
 
     const fetchData = (endpoint, setter) => {
         http.get(`${endpoint}/?format=json`)
-            .then( (response) => {setter(response);})
-            .catch((err) => {console.log(err); setLoading(false);})
+            .then((response) => { setter(response); })
+            .catch((err) => { console.log(err); setLoading(false); })
     }
 
     useEffect(() => {
@@ -71,10 +72,10 @@ const ElegibilidadeLista = () => {
         ].every(lista => Array.isArray(lista) && lista.length > 0)
 
         if (context && context.length > 0 && todasAsListasCarregadas && !atualizado) {
-
             const adicionarElegibilidade = (lista, setLista, nomeEntidade) => {
-                if (!lista || lista.length === 0) return
-                const atualizada = lista.map(item => {
+                if (!lista || lista.length === 0) return false
+                
+                const listaAtualizada = lista.map(item => {
                     const correspondente = context.filter(
                         el => el.content_type_name === nomeEntidade && el.entidade_id_origem === item.id_origem
                     )
@@ -83,23 +84,44 @@ const ElegibilidadeLista = () => {
                         elegibilidade: correspondente || null
                     }
                 })
-                setLista(atualizada)
+                
+                setLista(listaAtualizada)
+                // Retorna true se houver pelo menos uma elegibilidade na lista
+                return listaAtualizada.some(item => item.elegibilidade && item.elegibilidade.length > 0)
             }
 
-            adicionarElegibilidade(filiais, setFiliais, 'Filial')
-            adicionarElegibilidade(departamentos, setDepartamentos, 'Departamento')
-            adicionarElegibilidade(secoes, setSecoes, 'Secao')
-            adicionarElegibilidade(cargos, setCargos, 'Cargo')
-            adicionarElegibilidade(funcoes, setFuncoes, 'Funcao')
-            adicionarElegibilidade(centros_custo, setCentrosCusto, 'Centro de Custo')
-            adicionarElegibilidade(sindicatos, setSindicatos, 'Sindicato')
-            adicionarElegibilidade(horarios, setHorarios, 'Horario')
+            // Objeto para mapear as abas e suas elegibilidades
+            const abasComElegibilidade = {
+                filiais: adicionarElegibilidade(filiais, setFiliais, 'Filial'),
+                departamentos: adicionarElegibilidade(departamentos, setDepartamentos, 'Departamento'),
+                secoes: adicionarElegibilidade(secoes, setSecoes, 'Secao'),
+                cargos: adicionarElegibilidade(cargos, setCargos, 'Cargo'),
+                funcoes: adicionarElegibilidade(funcoes, setFuncoes, 'Funcao'),
+                centros_custo: adicionarElegibilidade(centros_custo, setCentrosCusto, 'Centro de Custo'),
+                sindicatos: adicionarElegibilidade(sindicatos, setSindicatos, 'Sindicato'),
+                horarios: adicionarElegibilidade(horarios, setHorarios, 'Horario')
+            }
+
+            // Atualiza as abas disponíveis
+            setAbasDisponiveis(Object.entries(abasComElegibilidade)
+                .filter(([_, temElegibilidade]) => temElegibilidade)
+                .map(([key]) => key))
+
             setAtualizado(true)
             setLoading(false)
         } else if (todasAsListasCarregadas) {
             setLoading(false)
         }
     }, [context, filiais, departamentos, secoes, cargos, funcoes, centros_custo, sindicatos, horarios])
+
+    const renderizarAba = (nome, componente) => {
+        if (!abasDisponiveis.includes(nome)) return null;
+        return (
+            <TabPanel header={nome.charAt(0).toUpperCase() + nome.slice(1).replace('_', ' ')}>
+                {componente}
+            </TabPanel>
+        );
+    };
 
     return (
         <ConteudoFrame>
@@ -109,44 +131,14 @@ const ElegibilidadeLista = () => {
             <Frame>
                 <Container gap="32px">
                     <TabView>
-                        <TabPanel header="Filiais">
-                            {/* <BotaoGrupo align="end">
-                                <Link to="/elegibilidade/selecao-filiais">
-                                    <Botao estilo="neutro" size="small">
-                                        Configuração de filiais em lote<BiChevronRight size={20} className={styles.icon} />
-                                    </Botao>
-                                </Link>
-                            </BotaoGrupo> */}
-                            <DataTableFiliaisElegibilidade filiais={filiais} showSearch={false} />
-                        </TabPanel>
-                        <TabPanel header="Departamentos">
-                            {/* <BotaoGrupo align="end">
-                                <Link to="/elegibilidade/selecao-departamentos">
-                                    <Botao estilo="neutro" size="small">
-                                        Configuração de departamentos em lote<BiChevronRight size={20} className={styles.icon} />
-                                    </Botao>
-                                </Link>
-                            </BotaoGrupo> */}
-                            <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false} />
-                        </TabPanel>
-                        <TabPanel header="Seções">
-                            <DataTableSecoesElegibilidade secoes={secoes} showSearch={false} />
-                        </TabPanel>
-                        <TabPanel header="Centros de Custo">
-                            <DataTableCentrosCustoElegibilidade centros_custo={centros_custo} showSearch={false} />
-                        </TabPanel>
-                        <TabPanel header="Cargos">
-                            <DataTableCargosElegibilidade cargos={cargos} showSearch={false} />
-                        </TabPanel>
-                        <TabPanel header="Funções">
-                            <DataTableFuncoesElegibilidade funcoes={funcoes} showSearch={false} />
-                        </TabPanel>
-                        <TabPanel header="Sindicatos">
-                            <DataTableSindicatosElegibilidade sindicatos={sindicatos} showSearch={false} />
-                        </TabPanel>
-                        <TabPanel header="Horários">
-                            <DataTableHorariosElegibilidade horarios={horarios} showSearch={false} />
-                        </TabPanel>
+                        {renderizarAba('filiais', <DataTableFiliaisElegibilidade filiais={filiais} showSearch={false} />)}
+                        {renderizarAba('departamentos', <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false} />)}
+                        {renderizarAba('secoes', <DataTableSecoesElegibilidade secoes={secoes} showSearch={false} />)}
+                        {renderizarAba('centros_custo', <DataTableCentrosCustoElegibilidade centros_custo={centros_custo} showSearch={false} />)}
+                        {renderizarAba('cargos', <DataTableCargosElegibilidade cargos={cargos} showSearch={false} />)}
+                        {renderizarAba('funcoes', <DataTableFuncoesElegibilidade funcoes={funcoes} showSearch={false} />)}
+                        {renderizarAba('sindicatos', <DataTableSindicatosElegibilidade sindicatos={sindicatos} showSearch={false} />)}
+                        {renderizarAba('horarios', <DataTableHorariosElegibilidade horarios={horarios} showSearch={false} />)}
                     </TabView>
                 </Container>
             </Frame>
