@@ -2,7 +2,7 @@ import { styled } from "styled-components"
 import ItemNavegacao from "./ItemNavegacao"
 import Botao from "@components/Botao"
 import { AiFillHome } from "react-icons/ai"
-import { HiMiniNewspaper, HiMiniShoppingBag  } from "react-icons/hi2";
+import { HiMiniNewspaper, HiMiniShoppingBag } from "react-icons/hi2"
 import { RiHandCoinFill, RiFilePaperFill, RiUser3Fill, RiTrophyFill, RiTeamFill, RiBankCardFill, RiFileListFill, RiLogoutCircleLine, RiBlenderFill } from "react-icons/ri"
 import { BiBusSchool, BiCart, BiDrink, BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
@@ -13,12 +13,12 @@ import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { FaBuilding, FaBusAlt, FaUmbrellaBeach } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
-import { FaBars } from "react-icons/fa";
+import { FaBars } from "react-icons/fa"
 import { BreadCrumb } from "primereact/breadcrumb"
 import { BsHourglassSplit } from "react-icons/bs"
-import { TbBeach, TbBusinessplan, TbTable, TbTableShare } from "react-icons/tb";
+import { TbBeach, TbBusinessplan, TbTable, TbTableShare } from "react-icons/tb"
 import { MdAllInbox, MdBusiness, MdHandshake, MdShoppingCart, MdShoppingCartCheckout } from "react-icons/md"
-import { GoTasklist } from "react-icons/go";
+import { GoTasklist } from "react-icons/go"
 import { IoBusiness } from "react-icons/io5"
 import { PiHandshake } from "react-icons/pi"
 import { Ripple } from 'primereact/ripple'
@@ -31,15 +31,15 @@ const ListaEstilizada = styled.ul`
     @media screen and (max-width: 760px) {
         width: 100%;
         height: calc(100vh - 200px);
-        overflow-y: scroll !important;
-        -webkit-overflow-scrolling: touch !important; /* Essencial para iOS */
+        -webkit-overflow-scrolling: touch !important;
+        overflow-y: auto !important;
     }
 `
 
 const BarraLateralEstilizada = styled.aside`
     display: flex;
     padding: 26px 0px;
-    margin-left: ${ props => (!!props.$opened) ? '0' : '-246px' };
+    margin-left: ${props => (!!props.$opened) ? '0' : '-246px'};
     min-height: 100vh;
     flex-direction: column;
     align-items: flex-start;
@@ -55,33 +55,27 @@ const BarraLateralEstilizada = styled.aside`
         z-index: 1100;
         width: 85%;
         max-width: 320px;
-        margin-left: ${ props => (!!props.$opened) ? '0' : '-100%' };
+        margin-left: ${props => (!!props.$opened) ? '0' : '-100%'};
         box-shadow: ${props => (!!props.$opened) ? '0 0 15px rgba(0,0,0,0.3)' : 'none'};
         height: 100vh;
-        overflow: hidden; /* Contém o scroll apenas no conteúdo */
-        -webkit-overflow-scrolling: touch;
+        overflow: hidden;
     }
 `
+
 const NavEstilizada = styled.nav`
     @media screen and (max-width: 760px) {
         width: 100%;
         height: calc(100vh - 150px);
-        overflow-y: scroll !important; /* Força o scroll */
-        -webkit-overflow-scrolling: touch !important; /* Essencial para iOS */
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
         overscroll-behavior-y: contain;
         position: relative;
         flex: 1;
         display: flex;
         flex-direction: column;
+        transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0);
         
-        /* Adicione estas propriedades específicas para iOS */
-        transform: translateZ(0); /* Aceleração de hardware */
-        -webkit-transform: translateZ(0);
-        overflow-anchor: none; /* Previne saltos no scroll */
-        touch-action: pan-y;
-        will-change: transform; /* Otimização */
-        
-        /* Estilização da scrollbar */
         &::-webkit-scrollbar {
             width: 6px;
         }
@@ -110,7 +104,6 @@ const Overlay = styled.div`
         background: rgba(0, 0, 0, 0.5);
         z-index: 1099;
         backdrop-filter: blur(2px);
-        touch-action: none; /* Previne eventos de toque no overlay */
     }
 `
 
@@ -136,7 +129,6 @@ const StyledLink = styled(Link)`
 `
 
 function BarraLateral() {
-
     const location = useLocation()
     
     const [barraLateralOpened, setBarraLateralOpened] = useState(window.innerWidth > 760)
@@ -151,23 +143,22 @@ function BarraLateral() {
 
     useEffect(() => {
         const handleTouchMove = (e) => {
-            // Permite o scroll apenas dentro da barra lateral
             if (barraLateralOpened && window.innerWidth <= 760) {
-                const navElement = document.querySelector('nav'); // Selecione seu nav corretamente
+                const navElement = document.querySelector('nav')
                 if (navElement && !navElement.contains(e.target)) {
-                    e.preventDefault();
+                    e.preventDefault()
                 }
             }
-        };
-    
-        if (window.innerWidth <= 760) {
-            document.addEventListener('touchmove', handleTouchMove, { passive: false });
         }
-    
+
+        if (window.innerWidth <= 760) {
+            document.addEventListener('touchmove', handleTouchMove, { passive: false })
+        }
+
         return () => {
-            document.removeEventListener('touchmove', handleTouchMove);
-        };
-    }, [barraLateralOpened]);
+            document.removeEventListener('touchmove', handleTouchMove)
+        }
+    }, [barraLateralOpened])
 
     useEffect(() => {
         const handleResize = () => {
@@ -179,22 +170,21 @@ function BarraLateral() {
     }, [])
 
     useEffect(() => {
-        if(logo){
+        if(logo) {
             setImage(true)
         }
     }, [logo])
 
     useEffect(() => {
-        const pathSegments = location.pathname.split('/').filter(Boolean);
+        const pathSegments = location.pathname.split('/').filter(Boolean)
         const newBreadCrumbItems = pathSegments.map((segment, index) => ({
             label: segment.charAt(0).toUpperCase() + segment.slice(1),
             url: '/' + pathSegments.slice(0, index + 1).join('/')
-        }));
-        setBreadCrumbItems(newBreadCrumbItems);
-    }, [location]);
+        }))
+        setBreadCrumbItems(newBreadCrumbItems)
+    }, [location])
 
     const itensMenu = () => {
-
         switch (usuario.tipo) {
             case 'cliente':
                 return [
@@ -268,7 +258,7 @@ function BarraLateral() {
                         "icone": <GoTasklist size={20} fill="white" />,
                         "itemTitulo": "Tarefas"
                     },
-                ];
+                ]
             case 'candidato':
                 return [
                     {
@@ -278,7 +268,7 @@ function BarraLateral() {
                         "icone": <RiFileListFill size={20} className="icon" />,
                         "itemTitulo": "Minha Admissão"
                     }
-                ];
+                ]
             case 'funcionario':
                 return [
                     {
@@ -329,7 +319,7 @@ function BarraLateral() {
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Ciclos de Pagamento"
                     }
-                ];
+                ]
             case 'equipeFolhaPagamento':
                 return [
                     {
@@ -395,7 +385,7 @@ function BarraLateral() {
                         "icone": <GoTasklist size={20} fill="white" />,
                         "itemTitulo": "Tarefas"
                     },
-                ];
+                ]
             case 'equipeBeneficios':
                 return [
                     {
@@ -447,27 +437,6 @@ function BarraLateral() {
                         "icone": <RiUser3Fill size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
-                    // {
-                    //     "id": 8,
-                    //     "url": "/linhas-transporte",
-                    //     "pageTitulo": "Linhas de Transporte",
-                    //     "icone": <FaBusAlt size={20} className="icon" />,
-                    //     "itemTitulo": "Linhas de Transporte"
-                    // },
-                    // {
-                    //     "id": 9,
-                    //     "url": "/beneficio",
-                    //     "pageTitulo": "Benefícios",
-                    //     "icone": <RiHandCoinFill size={20} className="icon" />,
-                    //     "itemTitulo": "Benefícios"
-                    // },
-                    // {
-                    //     "id": 10,
-                    //     "url": "/operadoras",
-                    //     "pageTitulo": "Operadoras",
-                    //     "icone": <FaBuilding size={20} className="icon" />,
-                    //     "itemTitulo": "Operadoras"
-                    // },
                     {
                         "id": 11,
                         "url": "/contratos",
@@ -496,11 +465,11 @@ function BarraLateral() {
                         "icone": <MdAllInbox size={20} fill="white" />,
                         "itemTitulo": "Movimentação"
                     }
-                ];
+                ]
             default:
-                return [];
+                return []
         }
-    };
+    }
     
     const home = [
         'adicionar-cnpj',
@@ -517,57 +486,70 @@ function BarraLateral() {
     }
 
     function toggleBarraLateral() {
-        setBarraLateralOpened(!barraLateralOpened);
+        setBarraLateralOpened(!barraLateralOpened)
     }
 
     const fecharMenu = () => {
-        setBarraLateralOpened(false);
+        setBarraLateralOpened(false)
     }
 
     return (
         <>
             <Overlay $opened={barraLateralOpened} onClick={fecharMenu} />
             <BarraLateralEstilizada $opened={barraLateralOpened}>
-                {image ?
-                    <Logo src={logo} ref={ref} alt="Logo" />
-                    : ''
-                }
-                {/* Adicione este wrapper */}
+                {image && <Logo src={logo} ref={ref} alt="Logo" />}
+                
                 <div style={{
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%',
-                    width: '100%'
+                    width: '100%',
+                    overflow: 'hidden'
                 }}>
                     <NavEstilizada>
                         <NavTitulo>{titulos[usuario.tipo]}</NavTitulo>
                         <ListaEstilizada>
-                            {itensMenu().map((item) => {
-                                return (
-                                    <StyledLink 
-                                        key={item.id} 
-                                        className="link p-ripple" 
-                                        to={item.url}
-                                        onClick={() => {
-                                            if (window.innerWidth <= 760) {
-                                                setBarraLateralOpened(false)
-                                            }
-                                        }}>
-                                        <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
-                                            {item.icone}
-                                            {item.itemTitulo}
-                                        </ItemNavegacao>
-                                        <Ripple />
-                                    </StyledLink>
-                                )
-                            })}
+                            {itensMenu().map((item) => (
+                                <StyledLink 
+                                    key={item.id} 
+                                    className="link p-ripple" 
+                                    to={item.url}
+                                    onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
+                                    <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                        {item.icone}
+                                        {item.itemTitulo}
+                                    </ItemNavegacao>
+                                    <Ripple />
+                                </StyledLink>
+                            ))}
                         </ListaEstilizada>
                     </NavEstilizada>
                 </div>
             </BarraLateralEstilizada>
-            <div style={{display: 'Flex', backgroundColor: 'transparent', height: '5vh', position: 'absolute', top: '2.5vh', border: 'none', borderRadius: '4px', zIndex: '8'}}>
-                <Botao aoClicar={toggleBarraLateral} tab={true} estilo={"neutro"} outStyle={{marginRight: '1vw', marginLeft: barraLateralOpened ? 'calc(246px + 1vw)' : '1vw', backdropFilter: 'blur(30px) saturate(2)', '-webkit-backdrop-filter': 'blur(30px) saturate(2)', transition: '.5s cubic-bezier(.36,-0.01,0,.77)'}} >
-                    <FaBars></FaBars>
+            
+            <div style={{
+                display: 'flex', 
+                backgroundColor: 'transparent', 
+                height: '5vh', 
+                position: 'absolute', 
+                top: '2.5vh', 
+                border: 'none', 
+                borderRadius: '4px', 
+                zIndex: '8'
+            }}>
+                <Botao 
+                    aoClicar={toggleBarraLateral} 
+                    tab={true} 
+                    estilo={"neutro"} 
+                    outStyle={{
+                        marginRight: '1vw', 
+                        marginLeft: barraLateralOpened ? 'calc(246px + 1vw)' : '1vw', 
+                        backdropFilter: 'blur(30px) saturate(2)', 
+                        WebkitBackdropFilter: 'blur(30px) saturate(2)', 
+                        transition: '.5s cubic-bezier(.36,-0.01,0,.77)'
+                    }} 
+                >
+                    <FaBars />
                 </Botao>
             </div>
         </>
