@@ -44,6 +44,13 @@ const DialogEstilizado = styled.dialog`
     margin: 0 auto;
     top: 10vh;
     padding: 24px;
+    
+    @media screen and (max-width: 768px) {
+        width: 90vw;
+        top: 5vh;
+        padding: 16px;
+    }
+
     & button.close {
         & .fechar {
             box-sizing: initial;
@@ -67,6 +74,8 @@ const DialogEstilizado = styled.dialog`
     }
     & .frame:nth-of-type(1) {
         gap: 24px;
+        width: 100%;
+        
         & .frame {
             margin-bottom: 24px;
             & p{
@@ -88,6 +97,7 @@ const Wrapper = styled.div`
     align-items: flex-start;
     gap: 16px;
     align-self: stretch;
+    width: 100%;
 `;
 
 const Item = styled.div`
@@ -99,8 +109,33 @@ const Item = styled.div`
     padding: 20px;
     justify-content: space-between;
     align-items: center;
-    width: 94%;
+    width: 100%;
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
+    
+    @media screen and (max-width: 768px) {
+        padding: 16px;
+        flex-direction: ${props => props.$active ? 'row' : 'column'};
+        gap: ${props => props.$active ? '0' : '10px'};
+        
+        & .${styles.cardEmpresa} {
+            width: 100%;
+            justify-content: ${props => props.$active ? 'flex-start' : 'center'};
+            text-align: ${props => props.$active ? 'left' : 'center'};
+        }
+        
+        & .${styles.DadosEmpresa} {
+            align-items: ${props => props.$active ? 'flex-start' : 'center'};
+            
+            & h6 {
+                font-size: 14px;
+                text-align: ${props => props.$active ? 'left' : 'center'};
+            }
+            
+            & div {
+                font-size: 12px;
+            }
+        }
+    }
 `;
 
 function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
