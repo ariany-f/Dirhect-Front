@@ -60,12 +60,32 @@ export const DialogEstilizado = styled.dialog`
         cursor: pointer;
         border: none;
         background-color: transparent;
+        padding: 8px;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+        
+        &:hover {
+            background-color: var(--neutro-100);
+        }
         
         & .fechar {
             box-sizing: initial;
             fill: var(--primaria);
             stroke: var(--primaria);
             color: var(--primaria);
+            width: 20px;
+            height: 20px;
+        }
+
+        @media screen and (max-width: 760px) {
+            padding: 12px;
+            right: 16px;
+            top: 16px;
+
+            & .fechar {
+                width: 24px;
+                height: 24px;
+            }
         }
     }
 `;
@@ -101,18 +121,39 @@ export const DialogEstilizadoRight = styled.dialog`
     background: white;
     
     & button.close {
-        & .fechar {
-            box-sizing: initial;
-            fill: var(--primaria);
-            stroke: var(--primaria);
-            color: var(--primaria);
-        }
         position: absolute;
         right: 20px;
         top: 20px;
         cursor: pointer;
         border: none;
-        background-color: initial;
+        background-color: transparent;
+        padding: 8px;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+        
+        &:hover {
+            background-color: var(--neutro-100);
+        }
+        
+        & .fechar {
+            box-sizing: initial;
+            fill: var(--primaria);
+            stroke: var(--primaria);
+            color: var(--primaria);
+            width: 20px;
+            height: 20px;
+        }
+
+        @media screen and (max-width: 760px) {
+            padding: 12px;
+            right: 16px;
+            top: 16px;
+
+            & .fechar {
+                width: 24px;
+                height: 24px;
+            }
+        }
     }
     
     & .icon {
