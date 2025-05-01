@@ -180,7 +180,7 @@ function DataTableContratos({
         });
     }
 
-    const actionBodyTemplate = (rowData) => {
+    const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
@@ -253,7 +253,7 @@ function DataTableContratos({
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>
-                <Column body={actionBodyTemplate} header="" style={{ width: '8%', textAlign: 'center' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '8%', textAlign: 'center' }}></Column>
             </DataTable>
             
             <ModalContratos 
