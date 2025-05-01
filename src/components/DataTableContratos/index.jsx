@@ -181,9 +181,9 @@ function DataTableContratos({
                 onPage={onPage}
                 tableStyle={{ minWidth: '68vw' }}
             >
-                <Column field="num_contrato_origem" header="Número" style={{ width: '7%' }}></Column>
-                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '8%' }}></Column>
-                <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '20%' }}></Column>
+                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '10%' }}></Column>
+                <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '15%' }}></Column>
+                <Column field="num_contrato_origem" header="Número Contrato" style={{ width: '12%' }}></Column>
                 <Column field="observacao" header="Observação" style={{ width: '15%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
