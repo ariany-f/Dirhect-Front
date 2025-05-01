@@ -25,6 +25,7 @@ import styled from 'styled-components';
 import ModalBeneficios from '@components/ModalBeneficios';
 import { GrAddCircle } from 'react-icons/gr';
 import styles from '@pages/Beneficios/Beneficios.module.css';
+import { useTranslation } from 'react-i18next';
 
 const StatusTag = styled.span`
     padding: 4px 8px;
@@ -57,6 +58,7 @@ function DataTableBeneficios({
     const [beneficiosStatus, setBeneficiosStatus] = useState({});
     const [modalOpened, setModalOpened] = useState(false);
     const [beneficioParaEditar, setBeneficioParaEditar] = useState(null);
+    const { t } = useTranslation('common');
 
     // Atualiza o estado dos status quando os benefícios mudam
     useEffect(() => {
@@ -286,7 +288,7 @@ function DataTableBeneficios({
                         <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
                     </BotaoSemBorda>
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
-                        <GrAddCircle className={styles.icon} stroke="white"/> Adicionar Benefício
+                        <GrAddCircle className={styles.icon} stroke="white"/> {t('add')} Benefício
                     </Botao>
                 </BotaoGrupo>
             </BotaoGrupo>

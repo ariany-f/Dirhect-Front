@@ -23,6 +23,7 @@ import { Tag } from 'primereact/tag'
 import DataTableContratosDetalhes from '@components/DataTableContratosDetalhes'
 import ModalContratoBeneficios from '../../components/ModalContratoBeneficio'
 import { Real } from '@utils/formats'
+import { useTranslation } from 'react-i18next'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -39,6 +40,7 @@ function DetalhesContratos() {
     const toast = useRef(null)
     const [loading, setLoading] = useState(false)
     const [modalOpened, setModalOpened] = useState(false)
+    const { t } = useTranslation('common');
    
     const carregarContrato = () => {
         setLoading(true);
@@ -114,7 +116,7 @@ function DetalhesContratos() {
                                 </FrameVertical>
                             }
                         </Frame>
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="black" color="black"/> Adicionar Benefício ao Contrato</Botao>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="black" color="black"/> {t('add')} Benefício ao Contrato</Botao>
                     </BotaoGrupo>
                     <div className={styles.card_dashboard}>
                        

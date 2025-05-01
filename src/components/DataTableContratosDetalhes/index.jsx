@@ -19,6 +19,7 @@ import IconeBeneficio from '@components/IconeBeneficio';
 import { Tooltip } from 'primereact/tooltip';
 import ModalAdicionarElegibilidadeItemContrato from '../ModalAdicionarElegibilidadeItemContrato';
 import { Real } from '@utils/formats'
+import { useTranslation } from 'react-i18next';
 
 const Col12 = styled.div`
     display: flex;
@@ -56,6 +57,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    const { t } = useTranslation('common');
 
     // Processa os benefícios para adicionar os componentes de ícone
     const processarBeneficios = (beneficios) => {
@@ -332,7 +334,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                     <Col7 expanded={selectedBeneficio}>
                         <BotaoGrupo align="space-between">
                             <h5>{selectedBeneficio.dados_beneficio.descricao}</h5>
-                            <Botao aoClicar={() => {setSendData({});setSelectedItemBeneficio(null);setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Itens</Botao>
+                            <Botao aoClicar={() => {setSendData({});setSelectedItemBeneficio(null);setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> {t('add')} Itens</Botao>
                         </BotaoGrupo>
                         <DataTable  
                             selection={selectedItemBeneficio}

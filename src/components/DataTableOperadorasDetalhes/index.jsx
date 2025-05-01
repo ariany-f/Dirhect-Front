@@ -23,6 +23,7 @@ import Botao from '@components/Botao'
 import styles from '@pages/Operadoras/Operadoras.module.css'
 import BotaoGrupo from '@components/BotaoGrupo';
 import { Real } from '@utils/formats'
+import { useTranslation } from 'react-i18next';
 
 const tipos = {
     'C': 'Cultura',
@@ -41,6 +42,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         setSelectedBeneficio(0)
@@ -101,7 +103,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
                     )}
                 {onAddBeneficio && (
                     <Botao aoClicar={onAddBeneficio} estilo="vermilion" size="small" tab>
-                        <GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício
+                        <GrAddCircle className={styles.icon} fill="white" color="white"/> {t('add')} Benefício
                     </Botao>
                 )}
             </BotaoGrupo>

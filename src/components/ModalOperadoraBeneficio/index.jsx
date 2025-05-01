@@ -14,59 +14,7 @@ import styles from './ModalAdicionarDepartamento.module.css'
 import { useDepartamentoContext } from "@contexts/Departamento"
 import IconeBeneficio from '@components/IconeBeneficio';
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
-
-const Col12 = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px;
-    width: 100%;
-`
-
-const Col6 = styled.div`
-    flex: 1 1 calc(50% - 8px);
-`
-
-const Col6Centered = styled.div`
-    display: flex;
-    flex: 1 1 calc(50% - 8px);
-    justify-content: start;
-    padding-top: 14px;
-    align-items: center;
-`
-
-const Col4 = styled.div`
-    flex: 1 1 25%;
-`
-
-const Col4Centered = styled.div`
-    display: flex;
-    flex: 1 1 25%;
-    justify-content: center;
-    align-items: center;
-`
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    align-self: stretch;
-`;
-
-const Item = styled.div`
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 16px;
-    display: flex;
-    padding: 20px;
-    justify-content: space-between;
-    align-items: center;
-    width: 94%;
-    border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
-`;
+import { useTranslation } from "react-i18next"
 
 function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, beneficiosOperadora = [] }) {
     console.log(beneficiosOperadora);
@@ -75,6 +23,7 @@ function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucess
     const [beneficios, setBeneficios] = useState([]);
     const [dropdownBeneficios, setDropdownBeneficios] = useState([]);
     const [beneficio, setBeneficio] = useState(null);
+    const { t } = useTranslation('common');
     
     useEffect(() => {
         if(opened && beneficios.length === 0) {
@@ -154,7 +103,7 @@ function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucess
                                 <button className="close" onClick={aoFechar}>
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
-                                <h6>Adicionar Benefício à Operadora</h6>
+                                <h6>{t('add')} Benefício à Operadora</h6>
                             </Titulo>
                         </Frame>
                         

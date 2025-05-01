@@ -17,8 +17,9 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import DataTableOperadorasDetalhes from '@components/DataTableOperadorasDetalhes'
-import ModalOperadoraBeneficios from '../../components/ModalOperadoraBeneficio'
+import ModalOperadoraBeneficios from '@components/ModalOperadoraBeneficio'
 import { Real } from '@utils/formats'
+import { useTranslation } from 'react-i18next'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -35,6 +36,7 @@ function DetalhesOperadoras() {
     const toast = useRef(null)
     const [loading, setLoading] = useState(false)
     const [modalOpened, setModalOpened] = useState(false)
+    const { t } = useTranslation('common');
    
     useEffect(() => {
         if(!operadora) {
@@ -84,7 +86,7 @@ function DetalhesOperadoras() {
                                 <b>{operadora?.nome}</b>
                             </ContainerHorizontal>
                         </FrameVertical>
-                        <Botao aoClicar={() => {setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Adicionar Benefício</Botao>
+                        <Botao aoClicar={() => {setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> {t('add')} Benefício</Botao>
                     </BotaoGrupo>
                     </>
                     : <></>

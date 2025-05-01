@@ -10,6 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { GrAddCircle } from 'react-icons/gr';
 import styles from '@pages/Operadores/Operadores.module.css'
+import { useTranslation } from 'react-i18next';
 
 function DataTableOperadores({ operadores }) {
 
@@ -19,6 +20,7 @@ function DataTableOperadores({ operadores }) {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
+    const { t } = useTranslation('common');
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -57,7 +59,7 @@ function DataTableOperadores({ operadores }) {
                 </div>
                 <BotaoGrupo align="end">
                     <Link to="/operador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar operador</Botao>
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> {t('add')} operador</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>

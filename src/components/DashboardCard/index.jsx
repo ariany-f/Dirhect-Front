@@ -18,9 +18,11 @@ import { Timeline } from 'primereact/timeline'
 import { Tag } from 'primereact/tag'
 import { useEffect, useState } from 'react'
 import { Real } from '@utils/formats'
+import { useTranslation } from 'react-i18next';
 
 function DashboardCard({ dashboardData, colaboradores = [] }){
     const [isVisible, setIsVisible] = useState(false);
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         setIsVisible(true);
@@ -113,7 +115,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                         <Frame estilo="spaced">
                             <Titulo><h6>Mês Atual</h6></Titulo>
-                        <Link to="/beneficio"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
+                        <Link to="/beneficio"><Texto weight={500} color={'var(--neutro-500)'}>{t('see_more')}&nbsp;<FaArrowRight /></Texto></Link>
                     </Frame>
                     <Frame estilo="spaced">
                         <div className={styles.right}>
@@ -150,7 +152,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                         <Frame estilo="spaced">
                             <Titulo><h6>Colaboradores</h6></Titulo>
-                            <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
+                            <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>{t('see_more')}&nbsp;<FaArrowRight /></Texto></Link>
                         </Frame>
                         <div className={styles.transacao}>
                             <div className={styles.center}>
@@ -178,7 +180,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                         <Frame estilo="spaced">
                             <Titulo><h6>Vagas</h6></Titulo>
-                            <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
+                            <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>{t('see_more')}&nbsp;<FaArrowRight /></Texto></Link>
                         </Frame>
                         <div className={styles.transacao}>
                             <div className={styles.right}>
@@ -219,7 +221,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                 <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                     <Frame estilo="spaced">
                         <Titulo><h6>Últimos Pedidos</h6></Titulo>
-                        <Link to="/pedidos"><Texto weight={500} color={'var(--neutro-500)'}>Ver mais&nbsp;<FaArrowRight /></Texto></Link>
+                        <Link to="/pedidos"><Texto weight={500} color={'var(--neutro-500)'}>{t('see_more')}&nbsp;<FaArrowRight /></Texto></Link>
                     </Frame>
                     <div className={styles.transacao}>
                         <div className={styles.empilhado}>

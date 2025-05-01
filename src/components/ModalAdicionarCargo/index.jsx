@@ -7,6 +7,7 @@ import CampoTexto from "@components/CampoTexto";
 import Titulo from "@components/Titulo";
 import styles from './ModalAdicionarCargo.module.css';
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { useTranslation } from "react-i18next";
 
 const Col12 = styled.div`
     width: 100%;
@@ -27,6 +28,7 @@ const ModalAdicionarCargo = ({ onClose, onSave }) => {
     const [nome, setNome] = useState('');
     const [codigo, setCodigo] = useState('');
     const [erros, setErros] = useState({});
+    const { t } = useTranslation('common');
 
     const validar = () => {
         const novosErros = {};
@@ -51,7 +53,7 @@ const ModalAdicionarCargo = ({ onClose, onSave }) => {
                         <button className="close" onClick={onClose}>
                             <RiCloseFill size={20} className="fechar" />  
                         </button>
-                        <h6>Adicionar Cargo</h6>
+                        <h6>{t('add')} Cargo</h6>
                     </Titulo>
                 </Frame>
                 <Wrapper>

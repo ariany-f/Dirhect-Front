@@ -14,6 +14,7 @@ import { Tag } from 'primereact/tag';
 import { GrAddCircle } from 'react-icons/gr';
 import ModalAdicionarDependente from '@components/ModalAdicionarDependente';
 import { DependenteProvider } from '@contexts/Dependente';
+import { useTranslation } from 'react-i18next';
 
 function DataTableDependentes({ dependentes, search = true }) {
 
@@ -24,6 +25,8 @@ function DataTableDependentes({ dependentes, search = true }) {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
+    const { t } = useTranslation('common');
+
     // const [dependentesComFuncionario, setDependentesComFuncionario] = useState([]);
 
     // useEffect(() => {
@@ -164,7 +167,7 @@ function DataTableDependentes({ dependentes, search = true }) {
                 }
                 <BotaoGrupo align="end">
                     <Link to="/colaborador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Dependente</Botao>
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> {t('add')} Dependente</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>

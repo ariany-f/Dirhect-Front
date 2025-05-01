@@ -13,6 +13,7 @@ import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
 import IconeBeneficio from '@components/IconeBeneficio'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { useTranslation } from "react-i18next"
 
 const Col12 = styled.div`
     display: flex;
@@ -76,6 +77,7 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
     const [beneficio, setBeneficio] = useState('');
     const [data_inicio, setDataInicio] = useState('');
     const [data_fim, setDataFim] = useState('');
+    const { t } = useTranslation('common');
 
     const navegar = useNavigate()
 
@@ -169,7 +171,7 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
                                         <RiCloseFill size={20} className="fechar" />  
                                     </button>
                                 </form>
-                                <h6>Adicionar Benefício ao Contrato</h6>
+                                <h6>{t('add')} Benefício ao Contrato</h6>
                             </Titulo>
                         </Frame>
                         

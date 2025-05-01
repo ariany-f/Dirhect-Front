@@ -7,6 +7,7 @@ import CampoTexto from "@components/CampoTexto";
 import Titulo from "@components/Titulo";
 import styles from './ModalAdicionarFuncionario.module.css';
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { useTranslation } from "react-i18next";
 
 const Col12 = styled.div`
     width: 100%;
@@ -29,6 +30,7 @@ const ModalAdicionarFuncionario = ({ onClose, onSave }) => {
     const [email, setEmail] = useState('');
     const [telefone, setTelefone] = useState('');
     const [erros, setErros] = useState({});
+    const { t } = useTranslation('common');
 
     const validar = () => {
         const novosErros = {};
@@ -55,7 +57,7 @@ const ModalAdicionarFuncionario = ({ onClose, onSave }) => {
                         <button className="close" onClick={onClose}>
                             <RiCloseFill size={20} className="fechar" />  
                         </button>
-                        <h6>Adicionar Funcionário</h6>
+                        <h6>{t('add')} Funcionário</h6>
                     </Titulo>
                 </Frame>
                 <Wrapper>
