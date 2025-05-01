@@ -15,12 +15,12 @@ import styled from 'styled-components';
 import { GrAddCircle } from 'react-icons/gr';
 import BotaoSemBorda from '@components/BotaoSemBorda';
 import BotaoGrupo from '@components/BotaoGrupo';
+import { useTranslation } from 'react-i18next';
 
 const TableHeader = styled.div`
     display: flex;
-    align-items: center;
-    justify-content: space-between;
     padding: 0.5rem 0;
+    flex-direction: column;
 
     .header-title {
         display: flex;
@@ -55,6 +55,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         if (operadoras && operadoras.length > 0 && !selectedOperadora) {
@@ -68,6 +69,17 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
         _filters['global'].value = value;
         setFilters(_filters);
         setGlobalFilterValue(value);
+    };
+
+    const handleSelectionChange = (e) => {
+        // Se o item clicado já está selecionado, não faz nada
+        if (e.value === null) {
+            return;
+        }
+        
+        // Caso contrário, atualiza a seleção
+        setSelectedOperadora(e.value);
+        onSelectionChange(e.value);
     };
 
     // function verDetalhes(value)
@@ -91,7 +103,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                 <BotaoGrupo align="space-between">
                     <Texto size={18} weight={500}>Operadoras</Texto>
                     <Botao aoClicar={onAddClick} estilo="neutro" size="small" tab>
-                        <GrAddCircle />
+                        <GrAddCircle /> {t('add')} Operadora
                     </Botao>
                 </BotaoGrupo>
                 {search && (
@@ -117,10 +129,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
             paginator 
             rows={10}
             selection={selectedOperadora} 
-            onSelectionChange={(e) => {
-                onSelectionChange(e.value);
-                setSelectedOperadora(e.value);
-            }} 
+            onSelectionChange={handleSelectionChange}
             selectionMode="single"
             tableStyle={{ minWidth: '100%', maxWidth: '100%' }}
             rowClassName={(data) => data === selectedOperadora ? 'p-highlight' : ''}
