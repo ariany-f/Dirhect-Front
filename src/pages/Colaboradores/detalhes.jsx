@@ -93,20 +93,6 @@ const Col8Vertical = styled.div`
         flex: 1 1 100%;
         max-width: 100%;
         order: 1;
-
-        & ${BotaoGrupo} {
-            flex-wrap: wrap;
-            gap: 8px;
-            
-            & a {
-                flex: 1 1 calc(50% - 4px);
-                min-width: calc(50% - 4px);
-            }
-
-            & button {
-                width: 100%;
-            }
-        }
     }
 `;
 
@@ -134,10 +120,6 @@ const HeaderContainer = styled(Container)`
     @media screen and (max-width: 768px) {
         & h3 {
             font-size: 1.2rem;
-        }
-        
-        & ${BadgeGeral} {
-            font-size: 0.9rem;
         }
     }
 `;
@@ -381,7 +363,10 @@ function ColaboradorDetalhes() {
                     <Col8Vertical>
                     <BotaoGrupo gap="8px">
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Dados Contratuais</Botao>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Benefícios</Botao>
+                        </Link>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-contratuais`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-contratuais` ? 'black':''} size="small" tab>Dados Contratuais</Botao>
                         </Link>
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-pessoais`}>
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-pessoais` ? 'black':''} size="small" tab>Dados Pessoais</Botao>
@@ -390,14 +375,14 @@ function ColaboradorDetalhes() {
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/saldo` ? 'black':''} size="small" tab>Saldo em benefícios</Botao>
                         </Link> */}
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}/dependentes`}>
-                        <Botao 
-                            estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
-                            size="small" 
-                            tab
-                        >
-                            Dependentes
-                        </Botao>
-                    </Link>
+                            <Botao 
+                                estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
+                                size="small" 
+                                tab
+                            >
+                                Dependentes
+                            </Botao>
+                        </Link>
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
                         </Link>
