@@ -9,8 +9,11 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import ModalEditarFilial from '../ModalEditarFilial';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { Tooltip } from 'primereact/tooltip';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
-function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { } }) {
+function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate }) {
 
     const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -116,9 +119,69 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
         }
     }
 
+    const excluirFilial = (id) => {
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir esta filial?',
+            header: 'Deletar',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                http.delete(`/api/filial/${id}/?format=json`)
+                .then(() => {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Filial excluída com sucesso',
+                        life: 3000
+                    });
+                    
+                    if (onUpdate) {
+                        onUpdate();
+                    }
+                })
+                .catch(error => {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Não foi possível excluir a filial',
+                        life: 3000
+                    });
+                    console.error('Erro ao excluir filial:', error);
+                });
+            },
+            reject: () => {}
+        });
+    };
+
+    const representativeActionsTemplate = (rowData) => {
+        return (
+            <div style={{ 
+                display: 'flex', 
+                gap: '8px',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line 
+                    className="delete" 
+                    data-pr-tooltip="Excluir Filial" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        excluirFilial(rowData.id);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--error)'
+                    }}
+                />
+            </div>
+        );
+    };
+
     return (
         <>
             <Toast ref={toast} />
+            <ConfirmDialog />
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
@@ -146,6 +209,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 <Column field="nome" header="Filial" style={{ width: '25%' }}></Column>
                 <Column field="cidade" header="Cidade" style={{ width: '15%' }}></Column>
                 <Column body={representativeCNPJTemplate} header="CNPJ" style={{ width: '25%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
             <ModalEditarFilial aoSalvar={editarFilial} filial={selectedFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>

@@ -95,7 +95,7 @@ function SindicatoDetalhes() {
                         <h3>{departamento.descricao}</h3>
                     </Titulo>
                     <BotaoSemBorda $color="var(--error)">
-                        <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Sindicato</Link>
+                        {/* <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Sindicato</Link> */}
                     </BotaoSemBorda>
                 </BotaoGrupo>
             : <Skeleton variant="rectangular" width={300} height={35} />

@@ -228,9 +228,9 @@ function DataTableContratos({
         return '';
     }
 
-    const salvarContrato = (operadora, observacao, dt_inicio, dt_fim) => {
-        if(operadora == '' || observacao == '' || dt_inicio == '' || dt_fim == '') {
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos', life: 3000 });
+    const salvarContrato = (operadora, observacao, dt_inicio, dt_fim, num_contrato_origem) => {
+        if(operadora == '' || dt_inicio == '' || num_contrato_origem == '') {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos obrigatórios', life: 3000 });
             return;
         }
 
@@ -238,7 +238,8 @@ function DataTableContratos({
             operadora,
             observacao,
             dt_inicio,
-            dt_fim
+            dt_fim,
+            num_contrato_origem
         };
 
         // Se tiver contratoParaEditar, faz PUT, senão faz POST

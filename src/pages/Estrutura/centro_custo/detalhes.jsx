@@ -95,7 +95,7 @@ function CentroCustoDetalhes() {
                         <h3>{departamento.nome}</h3>
                     </Titulo>
                     <BotaoSemBorda $color="var(--error)">
-                        <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Centro de Custo</Link>
+                        {/* <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Centro de Custo</Link> */}
                     </BotaoSemBorda>
                 </BotaoGrupo>
             : <Skeleton variant="rectangular" width={300} height={35} />

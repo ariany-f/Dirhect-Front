@@ -42,6 +42,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
     const [operadora, setOperadora] = useState(null);
     const [data_inicio, setDataInicio] = useState('');
     const [data_fim, setDataFim] = useState('');
+    const [numContrato, setNumContrato] = useState('');
 
     const navegar = useNavigate();
 
@@ -69,6 +70,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
             setObservacao(contrato.observacao || '');
             setDataInicio(contrato.dt_inicio || '');
             setDataFim(contrato.dt_fim || '');
+            setNumContrato(contrato.num_contrato_origem || '');
             
             // Encontra e seleciona a operadora correta no dropdown
             if (contrato.dados_operadora) {
@@ -83,6 +85,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
             setDataInicio('');
             setDataFim('');
             setOperadora(null);
+            setNumContrato('');
             setClassError([]);
         }
     }, [contrato, opened, dropdownOperadoras]);
@@ -140,13 +143,14 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
         let errors = [];
         if (!operadora?.code) errors.push('operadora');
         if (!data_inicio) errors.push('data_inicio');
+        if (!numContrato) errors.push('num_contrato');
         
         if (errors.length > 0) {
             setClassError(errors);
             return;
         }
 
-        aoSalvar(operadora.code, observacao, data_inicio, data_fim);
+        aoSalvar(operadora.code, observacao, data_inicio, data_fim, numContrato);
     };
 
     return (
@@ -179,16 +183,17 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                             valueTemplate={operadoraValueTemplate}
                                         /> 
                                     </Col6>
-                                    <Col6Centered>
+                                    <Col6>
                                         <CampoTexto
-                                            name="observacao"
-                                            valor={observacao}
-                                            setValor={setObservacao}
+                                            camposVazios={classError.includes('num_contrato') ? ['num_contrato'] : []}
+                                            name="num_contrato"
+                                            valor={numContrato}
+                                            setValor={setNumContrato}
                                             type="text"
-                                            label="Observação"
-                                            placeholder="Digite a observação"
+                                            label="Número do Contrato*"
+                                            placeholder="Digite o número do contrato"
                                         />
-                                    </Col6Centered>
+                                    </Col6>
                                 </Col12>
                                 <Col12>
                                     <Col6>
@@ -210,6 +215,18 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                             type="date"
                                             label="Data Fim"
                                             placeholder="Digite a Data Fim"
+                                        />
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6>
+                                        <CampoTexto
+                                            name="observacao"
+                                            valor={observacao}
+                                            setValor={setObservacao}
+                                            type="text"
+                                            label="Observação"
+                                            placeholder="Digite a observação"
                                         />
                                     </Col6>
                                 </Col12>

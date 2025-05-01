@@ -109,7 +109,7 @@ function FilialDetalhes() {
                         <h3>{filial.nome}</h3>
                     </Titulo>
                     <BotaoSemBorda $color="var(--error)">
-                        <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Filial</Link>
+                        {/* <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Filial</Link> */}
                     </BotaoSemBorda>
                 </BotaoGrupo>
             : <Skeleton variant="rectangular" width={300} height={35} />

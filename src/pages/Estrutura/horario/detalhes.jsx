@@ -95,7 +95,7 @@ function HorarioDetalhes() {
                         <h3>{departamento.descricao}</h3>
                     </Titulo>
                     <BotaoSemBorda $color="var(--error)">
-                        <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Horário</Link>
+                        {/* <FaTrash /><Link onClick={excluirDepartamento} className={styles.link}>Excluir Horário</Link> */}
                     </BotaoSemBorda>
                 </BotaoGrupo>
             : <Skeleton variant="rectangular" width={300} height={35} />
