@@ -16,6 +16,8 @@ import { FaDownload } from "react-icons/fa"
 import { IoSettingsSharp } from "react-icons/io5"
 import { Col12, Col6 } from '@components/Colunas'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import IconeBeneficio from '@components/IconeBeneficio'
+import BadgeGeral from '@components/BadgeGeral'
 
 const StyledDropdownContainer = styled.div`
     width: 100%;
@@ -43,7 +45,14 @@ const StyledInputContainer = styled.div`
     }
 `;
 
-function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo, nomeBeneficio = '' }) {
+const TituloComIcone = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+`;
+
+function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo, nomeBeneficio = '', iconeBeneficio = '' }) {
 
     const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
@@ -194,12 +203,14 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                 >
                     <Frame>
                         <Titulo>
-                             <form method="dialog">
+                            <form method="dialog">
                                 <button className="close" onClick={fecharModal} formMethod="dialog">
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
                             </form>
-                            <h6>{id ? 'Alterar' : 'Adicionar'} Configuração - {`${nomeBeneficio}`}</h6>
+                            <h6>{id ? 'Alterar' : 'Adicionar'} Configuração - {id && (
+                                   <IconeBeneficio nomeIcone={iconeBeneficio} size={16} />
+                            )} {id && nomeBeneficio}</h6>
                         </Titulo>
                     </Frame>
                     <Frame padding="24px 0px">
