@@ -1,5 +1,18 @@
 {
     "options": "Opções",
     "see_more": "Ver mais",
-    "add": "Adicionar"
+    "add": "Adicionar",
+    "back": "Voltar",
+    "users": "Usuários",
+    "me": "Meus dados",
+    "logout": "Sair",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "select_company": "Selecione uma empresa",
+    "welcome": "Bem-vindo",
+    "choose_profile": "Escolha o perfil para entrar",
+    "remember_me": "Lembrar de mim",
+    "forgot_password": "Esqueci minha senha",
+    "user": "Usuário",
+    "password": "Senha"
 }

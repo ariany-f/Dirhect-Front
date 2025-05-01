@@ -13,6 +13,7 @@ import ModalBeneficioEditarValor from '../ModalBeneficioEditarValor'
 import { Toast } from 'primereact/toast'
 import styled from 'styled-components'
 import { Real } from '@utils/formats'
+import { useTranslation } from 'react-i18next'
 
 const ContainerButton = styled.div`
     display: flex;
@@ -39,6 +40,7 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
+    const { t } = useTranslation('common');
 
     const representativeAmountAuxilioTemplate = (rowData) => {
         if('all_benefits' in rowData && rowData.all_benefits.length > 0)
@@ -221,7 +223,7 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
                 <Column body={representativeAmountEducacaoTemplate} header="Educação" style={{ width: '7.5%' }}></Column>
             </DataTable>
             <ContainerButton>
-                <Botao aoClicar={voltar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                <Botao aoClicar={voltar} estilo="neutro" formMethod="dialog" size="medium" filled>{t('back')}</Botao>
                 <LadoALado>
                     <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedItems ? selectedItems.length : 0}</Texto></span>
                     <Botao aoClicar={aoEnviar} estilo="vermilion" size="medium" filled>Continuar</Botao>

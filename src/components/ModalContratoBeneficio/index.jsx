@@ -200,7 +200,7 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>
-                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>{t('back')}</Botao>
                                 <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>

@@ -19,6 +19,7 @@ import { Toast } from 'primereact/toast'
 import axios from "axios"
 import { useDependenteContext } from "@contexts/Dependente"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { useTranslation } from "react-i18next"
 
 const Col12 = styled.div`
     display: flex;
@@ -79,6 +80,7 @@ function ModalAdicionarDependente({ opened = false, aoClicar, aoFechar, aoSucess
     const navigate = useNavigate();
     const [classError, setClassError] = useState([])
     const toast = useRef(null);
+    const { t } = useTranslation('common');
 
     const { 
         dependente, 
@@ -170,8 +172,8 @@ function ModalAdicionarDependente({ opened = false, aoClicar, aoFechar, aoSucess
                             </Col12>
                         </form>
                         <div className={styles.containerBottom}>
-                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>{t('back')}</Botao>
+                            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>{t('confirm')}</Botao>
                         </div>
                     </DialogEstilizado>
                 </Overlay>

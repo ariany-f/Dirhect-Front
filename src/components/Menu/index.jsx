@@ -10,6 +10,7 @@ import { MdShoppingCart } from 'react-icons/md'
 import { FaBuilding, FaBusAlt } from "react-icons/fa"
 import { LuSparkles } from "react-icons/lu"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 const DialogEstilizado = styled.dialog`
     display: inline-flex;
@@ -151,6 +152,7 @@ function Menu({ opened = false, aoFechar }){
     } = useSessaoUsuarioContext()
     const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
     const navegar = useNavigate()
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         const handleResize = () => {
@@ -207,7 +209,7 @@ function Menu({ opened = false, aoFechar }){
                         <li onClick={() => FecharMenu()}>
                             <Link className="link" to="/usuario">
                                 <div className="group">
-                                    Meus dados
+                                    {t('me')}
                                     <IoMdSettings size={20} className="icon"/>
                                 </div>
                             </Link>
@@ -216,7 +218,7 @@ function Menu({ opened = false, aoFechar }){
                             <li onClick={() => FecharMenu()}>
                                 <Link className="link" to="/operador">
                                     <div className="group">
-                                        Usuários do Sistema
+                                        {t('users')}
                                         <RiUserFollowFill size={20} className="icon"/>
                                     </div>
                                 </Link>
@@ -236,7 +238,7 @@ function Menu({ opened = false, aoFechar }){
                         <li onClick={Sair}>
                             <Link className="link">
                                 <div className="group">
-                                    Sair
+                                    {t('logout')}
                                     <RiLogoutCircleLine size={20} className="icon sair"/>
                                 </div>
                             </Link>

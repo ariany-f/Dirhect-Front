@@ -7,10 +7,12 @@ import { useEffect, useState } from "react"
 import styled from "styled-components"
 import styles from './ModalAlterar.module.css'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { useTranslation } from "react-i18next"
 
 function ModalAlterarEmail({ opened = false, aoClicar, aoFechar, dadoAntigo }) {
     const [email, setEmail] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
+    const { t } = useTranslation('common');
     
     useEffect(() => {
         /** Preenche o input com o dado atual */
@@ -52,7 +54,7 @@ function ModalAlterarEmail({ opened = false, aoClicar, aoFechar, dadoAntigo }) {
                     </Frame>
                     <form method="dialog">
                         <div className={styles.containerBottom}>
-                            <Botao aoClicar={fecharModal} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                            <Botao aoClicar={fecharModal} estilo="neutro" formMethod="dialog" size="medium" filled>{t('back')}</Botao>
                             <Botao aoClicar={salvarDados} estilo="vermilion" size="medium" filled>Salvar</Botao>
                         </div>
                     </form>

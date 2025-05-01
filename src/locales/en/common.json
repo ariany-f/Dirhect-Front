@@ -1,5 +1,18 @@
 {
     "options": "Options",
     "see_more": "See more",
-    "add": "Add"
+    "add": "Add",
+    "back": "Back",
+    "users": "Users",
+    "me": "My data",
+    "logout": "Logout",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "select_company": "Select company",
+    "welcome": "Welcome",
+    "choose_profile": "Choose profile to enter",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot password",
+    "user": "User",
+    "password": "Password"
 }

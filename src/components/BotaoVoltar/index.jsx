@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components";
 import { MdKeyboardArrowLeft } from "react-icons/md"
+import { useTranslation } from "react-i18next";
 
 const Anchor = styled.a`
     color: var(--primaria);
@@ -20,10 +21,11 @@ const Anchor = styled.a`
 function BotaoVoltar({ linkFixo = null }) {
 
     const navigate = useNavigate();
+    const { t } = useTranslation('common');
 
     return (
         <Anchor onClick={() => linkFixo ? navigate(linkFixo) : navigate(-1)}>
-            <MdKeyboardArrowLeft size={18} className="icon"/>&nbsp;Voltar
+            <MdKeyboardArrowLeft size={18} className="icon"/>&nbsp;{t('back')}
         </Anchor>
     )
 }

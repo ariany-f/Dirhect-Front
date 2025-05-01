@@ -21,6 +21,7 @@ import styled from "styled-components"
 import styles from './ModalConfigurarBeneficios.module.css'
 import IconeBeneficio from "@components/IconeBeneficio"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { useTranslation } from "react-i18next"
 
 const Col12 = styled.div`
     display: flex;
@@ -87,6 +88,7 @@ function ModalConfigurarBeneficios({ opened = false, aoClicar, aoFechar, aoSuces
     const [carregandoContratos, setCarregandoContratos] = useState(false);
     const [carregandoItens, setCarregandoItens] = useState(false);
     const [carregandoBeneficios, setCarregandoBeneficios] = useState(false);
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         if (opened) {
@@ -302,7 +304,7 @@ function ModalConfigurarBeneficios({ opened = false, aoClicar, aoFechar, aoSuces
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>
-                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
+                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>{t('back')}</Botao>
                                 <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Confirmar</Botao>
                             </div>
                         </form>

@@ -10,10 +10,12 @@ import { useState } from "react"
 import { currency, mask as masker, unMask } from "remask"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import { Real } from '@utils/formats'
+import { useTranslation } from "react-i18next"
 
 function ModalAdicionarSaldoBoletoBancario({ opened = false, aoClicar, aoFechar }) {   
 
     const [valor, setValor] = useState(Real.format(0))
+    const { t } = useTranslation('common');
 
     function removeMask(valor)
     {
@@ -48,8 +50,8 @@ function ModalAdicionarSaldoBoletoBancario({ opened = false, aoClicar, aoFechar 
                     </Frame>
                     <form method="dialog">
                         <div className={styles.containerBottom}>
-                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                            <Botao aoClicar={() => aoClicar(removeMask(valor))} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>{t('back')}</Botao>
+                            <Botao aoClicar={() => aoClicar(removeMask(valor))} estilo="vermilion" size="medium" filled>{t('confirm')}</Botao>
                         </div>
                     </form>
                 </DialogEstilizado>

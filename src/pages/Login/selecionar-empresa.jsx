@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom"
 import { Toast } from 'primereact/toast'
 import { ArmazenadorToken } from "@utils"
 import Loading from "@components/Loading"
+import { useTranslation } from "react-i18next"
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,6 +66,7 @@ function SelecionarEmpresa() {
     const [loading, setLoading] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         if((!tenants) && ((!empresas) || empresas.length == 0))
@@ -176,7 +178,7 @@ function SelecionarEmpresa() {
             {empresas && empresas.length > 0 && (!serversOut) &&
                 <>
                     <Titulo>
-                        <h2>Selecione uma empresa</h2>
+                        <h2>{t('select_company')}</h2>
                     </Titulo>
                     <Wrapper>
                         {empresas.map((empresa, idx) => {
@@ -205,7 +207,7 @@ function SelecionarEmpresa() {
                             )
                         })}
                     </Wrapper>
-                    <Botao estilo="vermilion" size="medium" filled aoClicar={selectCompany} >Confirmar</Botao>
+                    <Botao estilo="vermilion" size="medium" filled aoClicar={selectCompany} >{t('confirm')}</Botao>
                 </>
             }
             

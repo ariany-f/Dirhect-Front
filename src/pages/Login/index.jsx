@@ -14,6 +14,7 @@ import { Toast } from 'primereact/toast'
 import Loading from "@components/Loading"
 import { ArmazenadorToken } from "@utils"
 import loginData from '@json/login.json'; // Importando o JSON
+import { useTranslation } from "react-i18next"
 
 function Login() {
     const [classError, setClassError] = useState([])
@@ -21,7 +22,7 @@ function Login() {
     const navegar = useNavigate()
     const toast = useRef(null)
     const [logins, setLogins] = useState([])
-
+    const { t } = useTranslation('common');
     const { 
         usuario,
         setRemember,
@@ -118,25 +119,24 @@ function Login() {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <Titulo align="center">
-                <h2>Bem-vindo</h2>
+                <h2>{t('welcome')}</h2>
                 <SubTitulo>
-                    Escolha o perfil para entrar
+                    {t('choose_profile')}
                 </SubTitulo>
             </Titulo>
             <form>
                 <Frame gap="20px">
-                    <DropdownItens camposVazios={classError} valor={usuario.cpf} setValor={setCpf} options={logins} label="Usuário" name="cpf" placeholder="Usuário"/>
-                    <CampoTexto camposVazios={classError} onEnter={evento => AlreadyAccessed()} name="password" valor={usuario.password} setValor={setPassword} type="password" label="Senha" placeholder="Digite sua senha" />
+                    <DropdownItens camposVazios={classError} valor={usuario.cpf} setValor={setCpf} options={logins} label={t('user')} name="cpf" placeholder="Usuário"/>
+                    <CampoTexto camposVazios={classError} onEnter={evento => AlreadyAccessed()} name="password" valor={usuario.password} setValor={setPassword} type="password" label={t('password')} placeholder="Digite sua senha" />
                     <div className={styles.containerBottom}>
-                        <CheckboxContainer name="remember" valor={usuario.remember} setValor={setRemember} label="Lembrar de mim" />
+                        <CheckboxContainer name="remember" valor={usuario.remember} setValor={setRemember} label={t('remember_me')} />
                         <Link className={styles.link} to="/esqueci-a-senha">
-                            <Texto weight="800" color="var(--primaria)">Esqueci minha senha</Texto>
+                            <Texto weight="800" color="var(--primaria)">{t('forgot_password')}</Texto>
                         </Link>
                     </div>
                 </Frame>
             </form>
-            {/* <Botao aoClicar={evento => sendData(evento)} estilo="vermilion" size="medium" filled>Confirmar</Botao> */}
-            <Botao aoClicar={evento => AlreadyAccessed()} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+            <Botao aoClicar={evento => AlreadyAccessed()} estilo="vermilion" size="medium" filled>{t('confirm')}</Botao>
         </>
     )
 }

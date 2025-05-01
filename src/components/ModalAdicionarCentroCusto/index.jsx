@@ -11,6 +11,7 @@ import styled from "styled-components"
 import styles from './ModalAdicionarCentroCusto.module.css'
 import { useDepartamentoContext } from "@contexts/Departamento"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { useTranslation } from "react-i18next"
 
 const AdicionarCnpjBotao = styled.div`
     font-size: 14px;
@@ -49,6 +50,7 @@ function ModalAdicionarCentroCusto({ opened = false, aoClicar, aoFechar, aoSuces
     const [nome, setNome] = useState('')
     const [cc_pai, setCCPai] = useState('')
     const [centros, setCentros] = useState([])
+    const { t } = useTranslation('common');
 
     const navegar = useNavigate()
 
@@ -99,8 +101,8 @@ function ModalAdicionarCentroCusto({ opened = false, aoClicar, aoFechar, aoSuces
                         </Frame>
                         <form method="dialog">
                             <div className={styles.containerBottom}>
-                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(nome, cc_pai)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>{t('back')}</Botao>
+                                <Botao aoClicar={() => aoSalvar(nome, cc_pai)} estilo="vermilion" size="medium" filled>{t('confirm')}</Botao>
                             </div>
                         </form>
                     </DialogEstilizado>

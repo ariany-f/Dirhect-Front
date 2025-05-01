@@ -12,6 +12,7 @@ import Cards from 'react-credit-cards-2'
 import 'react-credit-cards-2/dist/es/styles-compiled.css'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import { Real } from '@utils/formats'
+import { useTranslation } from "react-i18next"
 
 const Col12 = styled.div`
     display: flex;
@@ -36,6 +37,7 @@ function ModalAdicionarSaldoCartao({ opened = false, aoClicar, aoFechar }) {
         name: '',
         focus: '',
     });
+    const { t } = useTranslation('common');
 
     function removeMask(valor)
     {
@@ -102,8 +104,8 @@ function ModalAdicionarSaldoCartao({ opened = false, aoClicar, aoFechar }) {
                     </Frame>
                     <form method="dialog">
                         <div className={styles.containerBottom}>
-                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                            <Botao aoClicar={() => aoClicar(removeMask(valor), state)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>{t('back')}</Botao>
+                            <Botao aoClicar={() => aoClicar(removeMask(valor), state)} estilo="vermilion" size="medium" filled>{t('confirm')}</Botao>
                         </div>
                     </form>
                 </DialogEstilizado>
