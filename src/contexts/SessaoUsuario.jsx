@@ -3,6 +3,16 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArmazenadorToken } from '../utils';
 import { PrimeReactProvider } from 'primereact/api';
+import { addLocale, locale } from 'primereact/api';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@locales/1i8n';
+// Importar traduções
+import enCommon from '@locales/en/common.json';
+import ptCommon from '@locales/pt/common.json';
+
+
+addLocale('pt', ptCommon);
+addLocale('en', enCommon);
 
 const usuarioInicial = {
     name: '',
@@ -465,9 +475,11 @@ export const SessaoUsuarioProvider = ({ children }) => {
     };
     return (
         <PrimeReactProvider value={value}>
-            <SessaoUsuarioContext.Provider value={contexto}>
-                {children}
-            </SessaoUsuarioContext.Provider>
+            <I18nextProvider i18n={i18n}>
+                <SessaoUsuarioContext.Provider value={contexto}>
+                    {children}
+                </SessaoUsuarioContext.Provider>
+            </I18nextProvider>
         </PrimeReactProvider>
     )
 }

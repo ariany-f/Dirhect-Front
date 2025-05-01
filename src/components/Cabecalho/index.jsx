@@ -11,6 +11,9 @@ import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 import { FaBuilding, FaBusAlt } from "react-icons/fa";
 import { LuSparkles } from "react-icons/lu";
+import LanguageSelector from "../LanguageSelector";
+import { useTranslation } from 'react-i18next';
+
 
 // MegaMenu Container
 const MegaMenuWrapper = styled.div`
@@ -231,6 +234,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
   const { usuario } = useSessaoUsuarioContext();
   const menuRef = useRef(null);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  const { t } = useTranslation('common');
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -342,7 +347,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
               >
                 <MenuTrigger onClick={() => setMenuAberto(!menuAberto)}>
                   <Texto weight="600" size={'14px'} color="black">
-                    Opções
+                    {t('options')}
                   </Texto>
                   <ChevronIcon $isOpen={menuAberto} size={16} />
                 </MenuTrigger>
@@ -405,6 +410,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
               <div className="user">{usuario.name?.charAt(0) || 'U'}</div>
               <MdOutlineKeyboardArrowDown />
             </ItemUsuario>
+            <LanguageSelector />
           </div>
         </RightItems>
       </HeaderTop>
