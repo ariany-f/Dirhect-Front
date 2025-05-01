@@ -22,5 +22,6 @@
     "dependents": "Dependents",
     "positions": "Positions",
     "vacations": "Vacations",
-    "absences": "Absences"
+    "absences": "Absences",
+    "last_orders": "Last orders"
 }

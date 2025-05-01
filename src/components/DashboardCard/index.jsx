@@ -220,7 +220,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
             <div className={styles.wrapper_cards}>
                 <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                     <Frame estilo="spaced">
-                        <Titulo><h6>Últimos Pedidos</h6></Titulo>
+                        <Titulo><h6>{t('last_orders')}</h6></Titulo>
                         <Link to="/pedidos"><Texto weight={500} color={'var(--neutro-500)'}>{t('see_more')}&nbsp;<FaArrowRight /></Texto></Link>
                     </Frame>
                     <div className={styles.transacao}>
