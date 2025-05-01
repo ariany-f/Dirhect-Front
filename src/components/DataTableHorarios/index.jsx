@@ -6,11 +6,16 @@ import { DataTable } from 'primereact/datatable';
 import CampoTexto from '@components/CampoTexto';
 import { Column } from 'primereact/column';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import BadgeBeneficio from '@components/BadgeBeneficio'
 import Texto from '@components/Texto';
 import './DataTable.css'
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { Tooltip } from 'primereact/tooltip';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Toast } from 'primereact/toast';
+import http from '@http';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -32,12 +37,14 @@ function DataTableHorarios({
     onPage, 
     onSearch, 
     selected = null, 
-    setSelected = () => {} 
+    setSelected = () => {},
+    onUpdate
 }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedHorarios, setSelectedHorarios] = useState([]);
     const [selectedHorario, setSelectedHorario] = useState(null);
     const navegar = useNavigate();
+    const toast = useRef(null);
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && horarios) {
@@ -81,8 +88,69 @@ function DataTableHorarios({
         }
     }
 
+    const excluirHorario = (id) => {
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir este horário?',
+            header: 'Deletar',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                http.delete(`/api/horario/${id}/?format=json`)
+                .then(() => {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Horário excluído com sucesso',
+                        life: 3000
+                    });
+                    
+                    if (onUpdate) {
+                        onUpdate();
+                    }
+                })
+                .catch(error => {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Não foi possível excluir o horário',
+                        life: 3000
+                    });
+                    console.error('Erro ao excluir horário:', error);
+                });
+            },
+            reject: () => {}
+        });
+    };
+
+    const representativeActionsTemplate = (rowData) => {
+        return (
+            <div style={{ 
+                display: 'flex', 
+                gap: '8px',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line 
+                    className="delete" 
+                    data-pr-tooltip="Excluir Horário" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        excluirHorario(rowData.id);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--error)'
+                    }}
+                />
+            </div>
+        );
+    };
+
     return (
         <>
+            <Toast ref={toast} />
+            <ConfirmDialog />
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
@@ -115,8 +183,9 @@ function DataTableHorarios({
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
                 <Column field="codigo" header="Código" style={{ width: '15%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '75%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '65%' }}></Column>
                 <Column field="jornada" header="Jornada" style={{ width: '10%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     );

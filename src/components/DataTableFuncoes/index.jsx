@@ -6,11 +6,16 @@ import { DataTable } from 'primereact/datatable';
 import CampoTexto from '@components/CampoTexto';
 import { Column } from 'primereact/column';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import BadgeBeneficio from '@components/BadgeBeneficio'
 import Texto from '@components/Texto';
 import './DataTable.css'
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { Tooltip } from 'primereact/tooltip';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Toast } from 'primereact/toast';
+import http from '@http';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -22,7 +27,7 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows = 10, totalRecords, totalPages, first, onPage, onSearch, selected = null, setSelected = () => { } }) {
+function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows = 10, totalRecords, totalPages, first, onPage, onSearch, selected = null, setSelected = () => { }, onUpdate }) {
    
     const[selectedFuncao, setSelectedFuncao] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -31,6 +36,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
     })
     const [selectedFuncaos, setSelectedFuncaos] = useState([]);
     const navegar = useNavigate()
+    const toast = useRef(null);
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && funcoes) {
@@ -107,8 +113,69 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
         }
     };    
 
+    const excluirFuncao = (id) => {
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir esta função?',
+            header: 'Deletar',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                http.delete(`/api/funcao/${id}/?format=json`)
+                .then(() => {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Função excluída com sucesso',
+                        life: 3000
+                    });
+                    
+                    if (onUpdate) {
+                        onUpdate();
+                    }
+                })
+                .catch(error => {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Não foi possível excluir a função',
+                        life: 3000
+                    });
+                    console.error('Erro ao excluir função:', error);
+                });
+            },
+            reject: () => {}
+        });
+    };
+
+    const representativeActionsTemplate = (rowData) => {
+        return (
+            <div style={{ 
+                display: 'flex', 
+                gap: '8px',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line 
+                    className="delete" 
+                    data-pr-tooltip="Excluir Função" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        excluirFuncao(rowData.id);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--error)'
+                    }}
+                />
+            </div>
+        );
+    };
+
     return (
         <>
+            <Toast ref={toast} />
+            <ConfirmDialog />
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
@@ -136,7 +203,8 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                 <Column field="id" header="Id" style={{ width: '10%' }}></Column>
                 <Column field="nome" header="Nome" style={{ width: '20%' }}></Column>
                 <Column field="cargo" header="Cargo" style={{ width: '15%' }} body={representativeCargoTemplate}></Column>
-                <Column body={representativeDetalhesTemplate} field="descricao" header="Descrição" style={{ width: '60%' }}></Column>
+                <Column body={representativeDetalhesTemplate} field="descricao" header="Descrição" style={{ width: '45%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     )

@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import ModalEditarSindicato from '../ModalEditarSindicato';
 import styled from 'styled-components';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { Tooltip } from 'primereact/tooltip';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -30,12 +33,14 @@ function DataTableSindicatos({
     onPage, 
     onSearch, 
     selected = null, 
-    setSelected = () => {} 
+    setSelected = () => {},
+    onUpdate
 }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedSindicatos, setSelectedSindicatos] = useState([]);
     const [selectedSindicato, setSelectedSindicato] = useState(null);
     const navegar = useNavigate();
+    const toast = useRef(null);
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && sindicatos) {
@@ -91,8 +96,69 @@ function DataTableSindicatos({
         }
     }
 
+    const excluirSindicato = (id) => {
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir este sindicato?',
+            header: 'Deletar',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                http.delete(`/api/sindicato/${id}/?format=json`)
+                .then(() => {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Sindicato excluído com sucesso',
+                        life: 3000
+                    });
+                    
+                    if (onUpdate) {
+                        onUpdate();
+                    }
+                })
+                .catch(error => {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Não foi possível excluir o sindicato',
+                        life: 3000
+                    });
+                    console.error('Erro ao excluir sindicato:', error);
+                });
+            },
+            reject: () => {}
+        });
+    };
+
+    const representativeActionsTemplate = (rowData) => {
+        return (
+            <div style={{ 
+                display: 'flex', 
+                gap: '8px',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line 
+                    className="delete" 
+                    data-pr-tooltip="Excluir Sindicato" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        excluirSindicato(rowData.id);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--error)'
+                    }}
+                />
+            </div>
+        );
+    };
+
     return (
         <>
+            <Toast ref={toast} />
+            <ConfirmDialog />
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
@@ -124,8 +190,9 @@ function DataTableSindicatos({
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="descricao" header="Nome" style={{ width: '45%' }}></Column>
-                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" style={{ width: '45%' }}></Column>
+                <Column field="descricao" header="Nome" style={{ width: '40%' }}></Column>
+                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" style={{ width: '40%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     );

@@ -4,9 +4,14 @@ import { DataTable } from 'primereact/datatable';
 import CampoTexto from '@components/CampoTexto';
 import { Column } from 'primereact/column';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import './DataTable.css'
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { Tooltip } from 'primereact/tooltip';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Toast } from 'primereact/toast';
+import http from '@http';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -28,12 +33,14 @@ function DataTableSecoes({
     onPage, 
     onSearch, 
     selected = null, 
-    setSelected = () => {} 
+    setSelected = () => {},
+    onUpdate
 }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedSecoes, setSelectedSecoes] = useState([]);
     const [selectedSecao, setSelectedSecao] = useState(null);
     const navegar = useNavigate();
+    const toast = useRef(null);
 
     useEffect(() => {
         if (selected && Array.isArray(selected) && selected.length > 0 && secoes) {
@@ -91,8 +98,69 @@ function DataTableSecoes({
         }
     }
 
+    const excluirSecao = (id) => {
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir esta seção?',
+            header: 'Deletar',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                http.delete(`/api/secao/${id}/?format=json`)
+                .then(() => {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Seção excluída com sucesso',
+                        life: 3000
+                    });
+                    
+                    if (onUpdate) {
+                        onUpdate();
+                    }
+                })
+                .catch(error => {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Não foi possível excluir a seção',
+                        life: 3000
+                    });
+                    console.error('Erro ao excluir seção:', error);
+                });
+            },
+            reject: () => {}
+        });
+    };
+
+    const representativeActionsTemplate = (rowData) => {
+        return (
+            <div style={{ 
+                display: 'flex', 
+                gap: '8px',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line 
+                    className="delete" 
+                    data-pr-tooltip="Excluir Seção" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        excluirSecao(rowData.id);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--error)'
+                    }}
+                />
+            </div>
+        );
+    };
+
     return (
         <>
+            <Toast ref={toast} />
+            <ConfirmDialog />
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
@@ -125,10 +193,11 @@ function DataTableSecoes({
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
                 <Column field="id_origem" header="Código" style={{ width: '15%' }}></Column>
-                <Column field="nome" header="Nome" style={{ width: '25%' }}></Column>
+                <Column field="nome" header="Nome" style={{ width: '20%' }}></Column>
                 <Column body={representativeFilialTemplate} field="departamento.filial.nome" header="Filial" style={{ width: '20%' }}></Column>
                 <Column body={representativeDepartamentoTemplate} field="departamento.nome" header="Departamento" style={{ width: '20%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '20%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '15%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     );
