@@ -11,10 +11,12 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { Tag } from 'primereact/tag';
 import { GrAddCircle } from 'react-icons/gr';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 import http from '@http'
 import ModalContratos from '@components/ModalContratos'
 import { Toast } from 'primereact/toast'
 import { Real } from '@utils/formats'
+import { ConfirmDialog,confirmDialog } from 'primereact/confirmdialog';
 
 function DataTableContratos({ 
     contratos,
@@ -144,11 +146,70 @@ function DataTableContratos({
             })
     }
     
+    const excluirContrato = (id) => {
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir este contrato?',
+            header: 'Deletar',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                http.delete(`/api/contrato/${beneficioId}/?format=json`)
+                .then(() => {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Contrato excluído com sucesso',
+                        life: 3000
+                    });
+                    
+                    if (onBeneficioDeleted) {
+                        onBeneficioDeleted();
+                    }
+                })
+                .catch(error => {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Não foi possível excluir o contrato',
+                        life: 3000
+                    });
+                    console.error('Erro ao excluir contrato:', error);
+                });
+            },
+            reject: () => {}
+        });
+    }
+
+    const actionBodyTemplate = (rowData) => {
+        return (
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                <button 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        excluirContrato(rowData.id);
+                    }} 
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: '6px',
+                        cursor: 'pointer',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: 'var(--error)',
+                    }}
+                    title="Excluir contrato"
+                >
+                    <RiDeleteBin6Line size={18} />
+                </button>
+            </div>
+        );
+    };
+
     return (
         <>
             <div className="flex justify-content-end">
                 <Toast ref={toast} />
-                
+                <ConfirmDialog />
                 <BotaoGrupo align="space-between">
                     <span className="p-input-icon-left">
                         <CampoTexto 
@@ -184,11 +245,12 @@ function DataTableContratos({
                 <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '10%' }}></Column>
                 <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '15%' }}></Column>
                 <Column field="num_contrato_origem" header="Número Contrato" style={{ width: '12%' }}></Column>
-                <Column field="observacao" header="Observação" style={{ width: '15%' }}></Column>
+                <Column field="observacao" header="Observação" style={{ width: '10%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '10%' }}></Column>
-                <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '20%' }}></Column>
+                <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>
+                <Column body={actionBodyTemplate} header="" style={{ width: '8%', textAlign: 'center' }}></Column>
             </DataTable>
             
             <ModalContratos 

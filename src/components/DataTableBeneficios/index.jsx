@@ -15,6 +15,7 @@ import { Toast } from 'primereact/toast';
 import { FaTrash } from 'react-icons/fa';
 import tiposBeneficio from '@json/tipos_beneficio.json';
 import { Tooltip } from 'primereact/tooltip';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 function DataTableBeneficios({ 
     beneficios, 
@@ -51,7 +52,7 @@ function DataTableBeneficios({
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/beneficios/${beneficioId}/?format=json`)
+                http.delete(`/api/beneficio/${beneficioId}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',
@@ -92,7 +93,7 @@ function DataTableBeneficios({
         return (
             <div style={{ display: 'flex', gap: '10px' }}>
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                <FaTrash 
+                <RiDeleteBin6Line 
                     className="delete" 
                     data-pr-tooltip="Excluir Benefício" 
                     size={16} 
@@ -140,8 +141,8 @@ function DataTableBeneficios({
                 lazy
             >
                 <Column body={representativeDescriptionTemplate} field="descricao" header="Nome" style={{ width: '20%' }}/>
-                <Column body={representativeStatusTemplate} header="Tipo" style={{ width: '60%' }}/>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '15%'}}/>
+                <Column body={representativeStatusTemplate} header="Tipo" style={{ width: '75%' }}/>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '5%'}}/>
             </DataTable>
         </>
     );

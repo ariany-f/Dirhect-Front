@@ -29,7 +29,7 @@ const ContainerSemRegistro = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 48px;
+    gap: 32px;
     width: 100%;
     text-align: center;
     & p {
@@ -41,16 +41,24 @@ const ContainerSemRegistro = styled.div`
     }
 `
 
+const Col12Expandable = styled(Col12)`
+    width: ${(props) => (props.$expanded ? "calc(100% - 0px)" : "100%")};
+    transition: all 0.3s ease;
+    padding: 0px;
+`
+
 // Extensão do Col4 para adicionar a transição
 const Col4Expandable = styled(Col4)`
-    width: ${(props) => (props.$expanded ? "calc(33% - 12px)" : "100%")};
+    width: ${(props) => (props.$expanded ? "calc(33% - 4px)" : "100%")};
     transition: all 0.3s ease;
     padding: 0px;
 `;
 
 // Extensão do Col7 para adicionar a transição
 const Col8Expandable = styled(Col8)`
-    width: ${(props) => (props.$expanded ? "calc(80% - 12px)" : "100%")};
+    width: ${(props) => (props.$expanded ? "calc(66% - 4px)" : "100%")};
+    flex: 1 1 calc(66% - ${props => props.$gap || '0px'});
+    max-width: calc(66% - ${props => props.$gap || '0px'});
     transition: all 0.3s ease;
     padding: 0px;
 `;
@@ -157,7 +165,7 @@ function OperadorasListagem() {
         <ConteudoFrame>
             <Toast ref={toast} />
             {operadoras ? (
-                <Col12 $gap="8px">
+                <Col12Expandable $gap="2px">
                     <Col4Expandable $expanded={!!selectedOperadora}>
                         <DataTableOperadoras 
                             search={false} 
@@ -175,7 +183,7 @@ function OperadorasListagem() {
                             />
                         </Col8Expandable>
                     : null}
-                </Col12>
+                </Col12Expandable>
             ) : (
                 <ContainerSemRegistro>
                     <section className={styles.container}>
