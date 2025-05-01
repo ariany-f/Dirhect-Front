@@ -405,12 +405,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                 <BsArrowLeftRight />
               </ItemEmpresa>
             )}
-            
+            <LanguageSelector />
             <ItemUsuario onClick={toggleMenu}>
               <div className="user">{usuario.name?.charAt(0) || 'U'}</div>
               <MdOutlineKeyboardArrowDown />
             </ItemUsuario>
-            <LanguageSelector />
           </div>
         </RightItems>
       </HeaderTop>
