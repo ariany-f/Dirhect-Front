@@ -162,8 +162,7 @@ const HeaderContainer = styled.div`
 
 function ColaboradorBeneficios() {
     let { id } = useParams()
-    const [beneficiosPossiveis, setBeneficiosPossiveis] = useState([])
-    const [beneficiosDetalhados, setBeneficiosDetalhados] = useState([])
+    const [beneficios, setBeneficios] = useState([])
     const [loading, setLoading] = useState(true)
     const toast = useRef(null)
 
@@ -175,24 +174,42 @@ function ColaboradorBeneficios() {
 
     useEffect(() => {
         if (id) {
-            carregarBeneficiosPossiveis()
+            carregarBeneficios()
         }
     }, [id])
 
-    const carregarBeneficiosPossiveis = async () => {
+    const carregarBeneficios = async () => {
         try {
             setLoading(true)
             const response = await http.get(`beneficios_possiveis/${id}/?format=json`)
             if (response) {
-                setBeneficiosPossiveis(response)
-                await carregarDetalhesBeneficios(response)
+                // Mapeia os benefícios para incluir o status inicial
+                const beneficiosComStatus = response.map(b => {
+                    let statusDropdown = 'pendente';
+                    let statusBeneficio = 'AGUARDANDO';
+
+                    // Aqui você pode adicionar sua lógica para determinar o status
+                    // Por exemplo, baseado em regras de negócio específicas
+                    if (b.regra_elegibilidade) {
+                        statusBeneficio = 'OBRIGATORIO';
+                        statusDropdown = 'sim';
+                    }
+
+                    return {
+                        ...b,
+                        statusBeneficio,
+                        status: statusDropdown
+                    };
+                });
+
+                setBeneficios(beneficiosComStatus);
             }
         } catch (erro) {
             console.error(erro)
             toast.current.show({ 
                 severity: 'error', 
                 summary: 'Erro', 
-                detail: 'Erro ao carregar benefícios possíveis', 
+                detail: 'Erro ao carregar benefícios', 
                 life: 3000 
             })
         } finally {
@@ -200,55 +217,8 @@ function ColaboradorBeneficios() {
         }
     }
 
-    const carregarDetalhesBeneficios = async (beneficios) => {
-        try {
-            const statusPossiveis = ['ATIVO', 'INATIVO', 'OBRIGATORIO', 'AGUARDANDO'];
-            const detalhesPromises = beneficios.map(b => 
-                http.get(`contrato_beneficio_item/${b.beneficio_id}/?format=json`)
-                    .then(response => {
-                        if (response) {
-                            const statusBeneficio = statusPossiveis[Math.floor(Math.random() * statusPossiveis.length)];
-                            let statusDropdown = 'pendente';
-
-                            switch (statusBeneficio) {
-                                case 'ATIVO':
-                                    statusDropdown = 'sim';
-                                    break;
-                                case 'INATIVO':
-                                    statusDropdown = 'nao';
-                                    break;
-                                case 'AGUARDANDO':
-                                    statusDropdown = 'pendente';
-                                    break;
-                                default:
-                                    statusDropdown = 'pendente';
-                            }
-
-                            return {
-                                ...response,
-                                statusBeneficio,
-                                status: statusDropdown
-                            }
-                        }
-                        return null
-                    })
-            )
-            
-            const detalhes = await Promise.all(detalhesPromises)
-            setBeneficiosDetalhados(detalhes.filter(d => d !== null))
-        } catch (erro) {
-            console.error(erro)
-            toast.current.show({ 
-                severity: 'error', 
-                summary: 'Erro', 
-                detail: 'Erro ao carregar detalhes dos benefícios', 
-                life: 3000 
-            })
-        }
-    }
-
     const handleStatusChange = (beneficioId, novoStatus) => {
-        setBeneficiosDetalhados(beneficios => 
+        setBeneficios(beneficios => 
             beneficios.map(b => 
                 b.id === beneficioId ? { ...b, status: novoStatus } : b
             )
@@ -294,9 +264,9 @@ function ColaboradorBeneficios() {
                         </Col6>
                     ))}
                 </Col12>
-            ) : beneficiosDetalhados.length > 0 ? (
+            ) : beneficios.length > 0 ? (
                 <Col12>
-                    {beneficiosDetalhados.map((beneficio) => {
+                    {beneficios.map((beneficio) => {
                         const dadosBeneficio = beneficio.beneficio.dados_beneficio;
                         const icone = <IconeBeneficio nomeIcone={dadosBeneficio.descricao}/>
                         
@@ -374,7 +344,7 @@ function ColaboradorBeneficios() {
                     })}
                 </Col12>
             ) : (
-                <Frame align="center">
+                <Frame align="center" padding="10vh 0px">
                     <MainContainer align="center">
                         <img src={Dashboard} size={100} alt="Nenhum benefício" />
                         <Titulo>
