@@ -13,6 +13,7 @@ import styles from './ModalCnpj.module.css'
 import { CiCirclePlus } from "react-icons/ci"
 import { ArmazenadorToken } from "@utils"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { useTranslation } from "react-i18next"
 
 const AdicionarCnpjBotao = styled.div`
     font-size: 14px;
@@ -85,6 +86,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
     const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         if(opened)
@@ -205,7 +207,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                 <DialogEstilizado id="modal-cnpj" open={opened}>
                     <Frame>
                         <Titulo>
-                            <h6>Selecione uma empresa</h6>
+                            <h6>{t('select_company')}</h6>
                         </Titulo>
                         {empresas && empresas.length > 0 &&
                         <>
@@ -246,8 +248,8 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                     </Frame>
                     <form method="dialog">
                         <div className={styles.containerBottom}>
-                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
-                            <Botao aoClicar={selectCompany} estilo="vermilion" size="medium" filled>Alterar</Botao>
+                            <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>{t('cancel')}</Botao>
+                            <Botao aoClicar={selectCompany} estilo="vermilion" size="medium" filled>{t('change')}</Botao>
                         </div>
                     </form>
                 </DialogEstilizado>
