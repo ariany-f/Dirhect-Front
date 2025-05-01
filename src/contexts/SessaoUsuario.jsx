@@ -10,7 +10,6 @@ import i18n from '@locales/1i8n';
 import enCommon from '@locales/en/common.json';
 import ptCommon from '@locales/pt/common.json';
 
-
 addLocale('pt', ptCommon);
 addLocale('en', enCommon);
 
