@@ -115,6 +115,9 @@ const HeaderEstilizado = styled.header`
   z-index: 7;
   background-color: var(--white);
   box-shadow: 0px 1px 5px 0px lightgrey;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 
   @media screen and (max-width: 768px) {
     padding: 12px 16px;
