@@ -34,39 +34,6 @@ const Col6Centered = styled.div`
     align-items: center;
 `
 
-const Col4 = styled.div`
-    flex: 1 1 25%;
-`
-
-const Col4Centered = styled.div`
-    display: flex;
-    flex: 1 1 25%;
-    justify-content: center;
-    align-items: center;
-`
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    align-self: stretch;
-`;
-
-const Item = styled.div`
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 16px;
-    display: flex;
-    padding: 20px;
-    justify-content: space-between;
-    align-items: center;
-    width: 94%;
-    border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
-`;
-
-
 function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, contrato = null }) {
     const [classError, setClassError] = useState([]);
     const [observacao, setObservacao] = useState('');

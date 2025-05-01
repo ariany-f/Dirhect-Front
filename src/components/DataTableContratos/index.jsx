@@ -228,11 +228,12 @@ function DataTableContratos({
         return '';
     }
 
-    const adicionarContrato = (operadora, observacao, dt_inicio, dt_fim) => {
+    const salvarContrato = (operadora, observacao, dt_inicio, dt_fim) => {
         if(operadora == '' || observacao == '' || dt_inicio == '' || dt_fim == '') {
             toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos', life: 3000 });
             return;
         }
+
         const data = {
             operadora,
             observacao,
@@ -240,20 +241,37 @@ function DataTableContratos({
             dt_fim
         };
 
-        http.post('contrato/', data)
+        // Se tiver contratoParaEditar, faz PUT, senão faz POST
+        const method = contratoParaEditar ? 'put' : 'post';
+        const url = contratoParaEditar ? `contrato/${contratoParaEditar.id}/` : 'contrato/';
+        const successMessage = contratoParaEditar ? 'Contrato atualizado com sucesso' : 'Contrato criado com sucesso';
+        const errorMessage = contratoParaEditar ? 'Erro ao atualizar contrato' : 'Erro ao criar contrato';
+
+        http[method](url, data)
             .then(response => {
-                if(response.id) {
-                    toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Contrato criado com sucesso', life: 3000 });
-                    setModalOpened(false)
+                if(response.id || response.success) {
+                    toast.current.show({ 
+                        severity: 'success', 
+                        summary: 'Sucesso', 
+                        detail: successMessage, 
+                        life: 3000 
+                    });
+                    setModalOpened(false);
+                    setContratoParaEditar(null);
                     if (onUpdate) {
-                        onUpdate()
+                        onUpdate();
                     }
                 }
             })
             .catch(erro => {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao criar contrato', life: 3000 });
-            })
-    }
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: errorMessage, 
+                    life: 3000 
+                });
+            });
+    };
     
     const excluirContrato = (id) => {
         confirmDialog({
@@ -381,10 +399,10 @@ function DataTableContratos({
                 onPage={onPage}
                 tableStyle={{ minWidth: '68vw' }}
             >
-                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '10%' }}></Column>
+                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '8%' }}></Column>
                 <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '15%' }}></Column>
                 <Column field="num_contrato_origem" header="Número Contrato" style={{ width: '10%' }}></Column>
-                <Column field="observacao" header="Observação" style={{ width: '10%' }}></Column>
+                <Column field="observacao" header="Observação" style={{ width: '12%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>
@@ -392,7 +410,7 @@ function DataTableContratos({
             </DataTable>
             
             <ModalContratos 
-                aoSalvar={adicionarContrato} 
+                aoSalvar={salvarContrato}
                 opened={modalOpened} 
                 aoFechar={() => {
                     setModalOpened(false);
