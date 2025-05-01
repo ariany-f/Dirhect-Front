@@ -252,7 +252,6 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     
         const novosGrupos = [];
         
-        // Mapeamento entre chaves do objeto e tipos
         const tiposMapeados = {
             filial: 'Filial',
             departamento: 'Departamento',
@@ -264,39 +263,27 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
             horario: 'Horário'
         };
     
-        // Para cada regra no array regra_elegibilidade
         for (const regra of regras) {
-            // Para cada tipo possível no objeto regra
             for (const [tipoNoObjeto, tipoNome] of Object.entries(tiposMapeados)) {
                 if (regra[tipoNoObjeto] && Array.isArray(regra[tipoNoObjeto].id)) {
                     try {
-                        // Determina o endpoint da API (singular)
                         const endpoint = tipoNoObjeto.endsWith('s') ? 
                             tipoNoObjeto.substring(0, tipoNoObjeto.length - 1) : 
                             tipoNoObjeto;
                         
-                        // Busca os dados completos
                         const response = await http.get(`${endpoint}/?format=json`);
                         
-                        // Filtra apenas os itens que estão na regra
                         const itensFiltrados = response.filter(item => 
                             regra[tipoNoObjeto].id.includes(item.id)
                         );
     
                         if (itensFiltrados.length > 0) {
-                            // Formata os dados
-                            const opcoesFormatadas = itensFiltrados.map(item => {
-                                const textoCompleto = item.nome || item.descricao || item.name;
-                                return {
-                                    id: item.id,
-                                    name: textoCompleto.length > 50 
-                                        ? `${textoCompleto.substring(0, 47)}...` 
-                                        : textoCompleto,
-                                    textoCompleto: textoCompleto
-                                };
-                            });
+                            const opcoesFormatadas = itensFiltrados.map(item => ({
+                                id: item.id,
+                                name: item.nome || item.descricao || item.name,
+                                textoCompleto: item.nome || item.descricao || item.name
+                            }));
     
-                            // Adiciona o grupo
                             novosGrupos.push({
                                 id: `${tipoNome}-${Date.now()}`,
                                 data: opcoesFormatadas,
@@ -312,43 +299,10 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
             }
         }
     
-        // Ordena mantendo a ordem original
         novosGrupos.sort((a, b) => a.indexOriginal - b.indexOriginal);
         setGruposAdicionados(novosGrupos);
     };
 
-    const buscarOpcoes = async (tipo) => {
-        setCarregando(true);
-        try {
-            const response = await http.get(`${tipo.toLowerCase()}/?format=json`);
-            const opcoesFormatadas = response.map(item => {
-                const textoCompleto = item.nome || item.descricao || item.name;
-                const textoLimitado = textoCompleto.length > 50 
-                    ? `${textoCompleto.substring(0, 47)}...` 
-                    : textoCompleto;
-                
-                return {
-                    id: item.id,
-                    name: textoLimitado,
-                    textoCompleto: textoCompleto,
-                };
-            });
-            setOpcoesDisponiveis(opcoesFormatadas);
-        } catch (erro) {
-            console.error(`Erro ao buscar ${tipo}:`, erro);
-        } finally {
-            setCarregando(false);
-        }
-    };
-
-    const moveItem = (dragIndex, hoverIndex) => {
-        const draggedItem = gruposAdicionados[dragIndex];
-        const newItems = [...gruposAdicionados];
-        newItems.splice(dragIndex, 1);
-        newItems.splice(hoverIndex, 0, draggedItem);
-        setGruposAdicionados(newItems);
-    };
-      
     const adicionarGrupo = () => {
         if (!tipoSelecionado || (!tipoSelecionado.name) || opcoesSelecionadas.length === 0) {
             toast.current.show({
@@ -366,14 +320,10 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         if (grupoExistenteIndex >= 0) {
             // Atualiza grupo existente
             const novosGrupos = [...gruposAdicionados];
-            const novasOpcoes = [...new Set([
-                ...novosGrupos[grupoExistenteIndex].opcoes,
-                ...opcoesSelecionadas.map(o => o.name)
-            ])];
-            
             novosGrupos[grupoExistenteIndex] = {
                 ...novosGrupos[grupoExistenteIndex],
-                opcoes: novasOpcoes
+                data: opcoesSelecionadas,
+                opcoes: opcoesSelecionadas.map(o => o.textoCompleto)
             };
             
             setGruposAdicionados(novosGrupos);
@@ -389,7 +339,76 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
             setGruposAdicionados([...gruposAdicionados, novoGrupo]);
         }
         
-        setOpcoesSelecionadas([]);
+        // Não limpa mais as seleções aqui
+        setTipoSelecionado(null);
+    };
+
+    const buscarOpcoes = async (tipoCode, tipoObj) => {
+        setCarregando(true);
+        try {
+            const response = await http.get(`${tipoCode.toLowerCase()}/?format=json`);
+            const opcoesFormatadas = response.map(item => ({
+                id: item.id,
+                name: item.nome || item.descricao || item.name,
+                textoCompleto: item.nome || item.descricao || item.name
+            }));
+            
+            setOpcoesDisponiveis(opcoesFormatadas);
+
+            // Encontra o grupo existente do tipo selecionado usando o nome do tipo passado
+            const grupoExistente = gruposAdicionados.find(g => g.tipo === tipoObj.name);
+            
+            if (grupoExistente && grupoExistente.data) {
+                // Seleciona os itens baseado nos IDs do grupo existente
+                const itensSelecionados = opcoesFormatadas.filter(opcao => 
+                    grupoExistente.data.some(itemGrupo => itemGrupo.id === opcao.id)
+                );
+                
+                setOpcoesSelecionadas(itensSelecionados);
+            } else {
+                setOpcoesSelecionadas([]); // Limpa seleções apenas se não houver grupo existente
+            }
+        } catch (erro) {
+            console.error(`Erro ao buscar ${tipoCode}:`, erro);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: `Erro ao carregar opções de ${getTipoNome(tipoCode)}`,
+                life: 3000
+            });
+        } finally {
+            setCarregando(false);
+        }
+    };
+
+    const getTipoNome = (code) => {
+        const tipo = tipos.find(t => t.code === code);
+        return tipo ? tipo.name : code;
+    };
+
+    const handleTipoChange = async (tipo) => {
+        if (tipo && tipo.code) {
+            setTipoSelecionado(tipo);
+            await buscarOpcoes(tipo.code, tipo);
+        }
+    };
+
+    const handleMultiSelectChange = (e) => {
+        if (e.value.length === opcoesDisponiveis.length) {
+            setOpcoesSelecionadas(opcoesDisponiveis);
+        } else if (opcoesSelecionadas.length === opcoesDisponiveis.length) {
+            setOpcoesSelecionadas(e.value);
+        } else {
+            setOpcoesSelecionadas(e.value);
+        }
+    };
+
+    const moveItem = (dragIndex, hoverIndex) => {
+        const draggedItem = gruposAdicionados[dragIndex];
+        const newItems = [...gruposAdicionados];
+        newItems.splice(dragIndex, 1);
+        newItems.splice(hoverIndex, 0, draggedItem);
+        setGruposAdicionados(newItems);
     };
       
     const removerGrupo = (id) => {
@@ -408,22 +427,6 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         }
         
         aoSalvar(gruposAdicionados);
-    };
-
-    const handleTipoChange = async (tipo) => {
-        setTipoSelecionado(tipo);
-        setOpcoesSelecionadas([]);
-        await buscarOpcoes(tipo.code);
-    };
-
-    const handleMultiSelectChange = (e) => {
-        if (e.value.length === opcoesDisponiveis.length) {
-            setOpcoesSelecionadas(opcoesDisponiveis);
-        } else if (opcoesSelecionadas.length === opcoesDisponiveis.length) {
-            setOpcoesSelecionadas(e.value);
-        } else {
-            setOpcoesSelecionadas(e.value);
-        }
     };
 
     return (
