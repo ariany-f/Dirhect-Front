@@ -35,7 +35,7 @@ const Wrapper = styled.div`
     width: 100%;
 `;
 
-function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
+function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null }) {
     const [classError, setClassError] = useState([]);
     const [iconeSelecionado, setIconeSelecionado] = useState(null);
     const [dropdownTipos, setDropdownTipos] = useState([]);
@@ -61,6 +61,33 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
         
         setOpcoesIcones(iconesFormatados);
     }, []);
+
+    // Efeito para preencher os campos quando estiver editando
+    useEffect(() => {
+        if (beneficio && opened) {
+            setDescricao(beneficio.descricao || '');
+            
+            // Encontra e seleciona o tipo correto
+            const tipo = dropdownTipos.find(t => t.code === beneficio.tipo);
+            setTipoSelecionado(tipo || null);
+            
+            // Encontra e seleciona o ícone correto
+            const icone = opcoesIcones.find(i => i.code === beneficio.icone);
+            if (icone) {
+                setIconeSelecionado({
+                    name: icone.code,
+                    code: icone.code,
+                    icon: icone.code
+                });
+            }
+        } else if (!opened) {
+            // Limpa os campos quando fecha o modal
+            setDescricao('');
+            setTipoSelecionado(null);
+            setIconeSelecionado(null);
+            setClassError([]);
+        }
+    }, [beneficio, opened, dropdownTipos, opcoesIcones]);
 
     const validarESalvar = () => {
         let errors = [];
@@ -161,7 +188,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
                                 <button className="close" onClick={aoFechar}>
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
-                                <h6>Novo Benefício</h6>
+                                <h6>{beneficio ? 'Editar Benefício' : 'Novo Benefício'}</h6>
                             </Titulo>
                         </Frame>
                         
@@ -222,7 +249,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar }) {
                                     size="medium" 
                                     filled
                                 >
-                                    Salvar Benefício
+                                    {beneficio ? 'Atualizar' : 'Salvar Benefício'}
                                 </Botao>
                             </div>
                         </Wrapper>

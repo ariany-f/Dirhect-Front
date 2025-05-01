@@ -5,6 +5,8 @@ import QuestionCard from '@components/QuestionCard';
 import BadgeGeral from '@components/BadgeGeral';
 import CampoTexto from '@components/CampoTexto';
 import BotaoGrupo from '@components/BotaoGrupo';
+import BotaoSemBorda from '@components/BotaoSemBorda';
+import Botao from '@components/Botao';
 import http from '@http';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRef, useState, useEffect } from 'react';
@@ -12,13 +14,17 @@ import { AiFillQuestionCircle } from 'react-icons/ai';
 import IconeBeneficio from '@components/IconeBeneficio';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast';
-import { FaTrash } from 'react-icons/fa';
+import { FaMapPin, FaTrash } from 'react-icons/fa';
 import tiposBeneficio from '@json/tipos_beneficio.json';
 import { Tooltip } from 'primereact/tooltip';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { FaPencil } from 'react-icons/fa6';
 import SwitchInput from '@components/SwitchInput';
 import { Tag } from 'primereact/tag';
 import styled from 'styled-components';
+import ModalBeneficios from '@components/ModalBeneficios';
+import { GrAddCircle } from 'react-icons/gr';
+import styles from '@pages/Beneficios/Beneficios.module.css';
 
 const StatusTag = styled.span`
     padding: 4px 8px;
@@ -49,6 +55,8 @@ function DataTableBeneficios({
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [beneficiosStatus, setBeneficiosStatus] = useState({});
+    const [modalOpened, setModalOpened] = useState(false);
+    const [beneficioParaEditar, setBeneficioParaEditar] = useState(null);
 
     // Atualiza o estado dos status quando os benefícios mudam
     useEffect(() => {
@@ -146,6 +154,48 @@ function DataTableBeneficios({
         }
     };
 
+    const salvarBeneficio = (dados) => {
+        const method = beneficioParaEditar ? 'put' : 'post';
+        const url = beneficioParaEditar ? 
+            `/api/beneficio/${beneficioParaEditar.id}/?format=json` : 
+            '/api/beneficio/?format=json';
+        const successMessage = beneficioParaEditar ? 
+            'Benefício atualizado com sucesso' : 
+            'Benefício criado com sucesso';
+        const errorMessage = beneficioParaEditar ? 
+            'Erro ao atualizar benefício' : 
+            'Erro ao criar benefício';
+
+        http[method](url, dados)
+            .then(() => {
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: successMessage,
+                    life: 3000
+                });
+                setModalOpened(false);
+                setBeneficioParaEditar(null);
+                if (onBeneficioDeleted) {
+                    onBeneficioDeleted();
+                }
+            })
+            .catch(error => {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: errorMessage,
+                    life: 3000
+                });
+                console.error('Erro ao salvar benefício:', error);
+            });
+    };
+
+    const abrirModalEdicao = (beneficio) => {
+        setBeneficioParaEditar(beneficio);
+        setModalOpened(true);
+    };
+
     const representativeStatusTemplate = (rowData) => {
         return tipos[rowData.tipo] || rowData.tipo;
     };
@@ -169,7 +219,6 @@ function DataTableBeneficios({
                     alignItems: 'center',
                     gap: '16px'
                 }}>
-                    
                     <StatusTag $status={beneficiosStatus[rowData.id]}>
                         {beneficiosStatus[rowData.id] ? "Ativo" : "Inativo"}
                     </StatusTag>
@@ -181,20 +230,40 @@ function DataTableBeneficios({
                         style={{ width: '36px' }}
                     />
                 </div>
-                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                <RiDeleteBin6Line 
-                    className="delete" 
-                    data-pr-tooltip="Excluir Benefício" 
-                    size={16} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        excluirBeneficio(rowData.id);
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--erro)'
-                    }}
-                />
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                }}>
+                    <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
+                    <FaPencil
+                        className="edit"
+                        data-pr-tooltip="Editar Benefício"
+                        size={14}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            abrirModalEdicao(rowData);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--primaria)',
+                        }}
+                    />
+                    <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                    <RiDeleteBin6Line 
+                        className="delete" 
+                        data-pr-tooltip="Excluir Benefício" 
+                        size={16} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            excluirBeneficio(rowData.id);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--erro)'
+                        }}
+                    />
+                </div>
             </div>
         );
     };
@@ -212,9 +281,14 @@ function DataTableBeneficios({
                     label="" 
                     placeholder="Buscar benefício" 
                 />
-                <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
-                    <p style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona esses benefícios?</p>
-                </QuestionCard>
+                <BotaoGrupo align="end">
+                    <BotaoSemBorda color="var(--primaria)">
+                        <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
+                    </BotaoSemBorda>
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
+                        <GrAddCircle className={styles.icon} stroke="white"/> Adicionar Benefício
+                    </Botao>
+                </BotaoGrupo>
             </BotaoGrupo>
             <DataTable 
                 value={beneficios} 
@@ -233,6 +307,16 @@ function DataTableBeneficios({
                 <Column body={representativeStatusTemplate} header="Tipo" style={{ width: '40%' }}/>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '20%'}}/>
             </DataTable>
+
+            <ModalBeneficios 
+                aoSalvar={salvarBeneficio}
+                opened={modalOpened} 
+                aoFechar={() => {
+                    setModalOpened(false);
+                    setBeneficioParaEditar(null);
+                }}
+                beneficio={beneficioParaEditar}
+            />
         </>
     );
 }

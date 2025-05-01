@@ -120,12 +120,6 @@ function Beneficios() {
             <Loading opened={loading} />
             <ConteudoFrame>
                 <Toast ref={toast} />
-                <BotaoGrupo align="space-between">
-                    <BotaoSemBorda color="var(--primaria)">
-                        <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
-                    </BotaoSemBorda>
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar Benefício</Botao>
-                </BotaoGrupo>
                 <Container>
                     <DataTableBeneficios 
                         beneficios={beneficios}
