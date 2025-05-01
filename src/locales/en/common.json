@@ -26,5 +26,7 @@
     "last_orders": "Last orders",
     "order_date": "Order date",
     "order_total_value": "Order total value",
-    "colaborators_to_receive": "Colaborators to receive"
+    "colaborators_to_receive": "Colaborators to receive",
+    "admissions": "Admissions",
+    "terminations": "Terminations"
 }

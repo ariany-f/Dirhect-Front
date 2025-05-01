@@ -119,11 +119,11 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     </Frame>
                     <Frame estilo="spaced">
                         <div className={styles.right}>
-                            <Texto size="14px" weight={500} color={'var(--neutro-500)'}>Admissões</Texto>
+                            <Texto size="14px" weight={500} color={'var(--neutro-500)'}>{t('admissions')}</Texto>
                             <BadgeGeral severity="success" nomeBeneficio={10} iconeBeneficio={<FaUserPlus />}></BadgeGeral>
                         </div>
                         <div className={styles.right}>
-                            <Texto size="14px" weight={500} color={'var(--neutro-500)'}>Demissões</Texto>
+                            <Texto size="14px" weight={500} color={'var(--neutro-500)'}>{t('terminations')}</Texto>
                             <BadgeGeral severity="error" nomeBeneficio={2} iconeBeneficio={<FaUserMinus />}></BadgeGeral>
                         </div>
                     </Frame>
