@@ -119,6 +119,10 @@ const HeaderEstilizado = styled.header`
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 
+  @-moz-document url-prefix() {
+    width: -moz-available;
+  }
+
   @media screen and (max-width: 768px) {
     padding: 12px 16px;
     flex-direction: column;
