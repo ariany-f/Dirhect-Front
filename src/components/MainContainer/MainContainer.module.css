@@ -5,4 +5,8 @@
     gap: 5vh;
     width: inherit;
     flex: 1;
+        
+    @-moz-document url-prefix() {
+        width: -moz-available;
+    }
 }
