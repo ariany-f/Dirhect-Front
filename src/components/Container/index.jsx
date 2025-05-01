@@ -5,6 +5,9 @@ const DivContainer = styled.div`
     gap: ${ props => props.$gap ? props.$gap : '48px' };
     padding: ${ props => props.$padding ? props.$padding : 'inherit' };
     justify-content: ${ props => props.$align ? props.$align : 'center' };
+    @-moz-document url-prefix() {
+        width: -moz-available;
+    }
 `
 
 function Container({ children, align, gap = '48px', padding = 'inherit' }) {
