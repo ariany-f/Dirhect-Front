@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { Tag } from 'primereact/tag';
 import { GrAddCircle } from 'react-icons/gr';
-import { RiDeleteBin6Line } from 'react-icons/ri';
+import { RiDeleteBin6Line, RiEditBoxLine } from 'react-icons/ri';
 import http from '@http'
 import ModalContratos from '@components/ModalContratos'
 import { Toast } from 'primereact/toast'
@@ -21,6 +21,7 @@ import { Tooltip } from 'primereact/tooltip';
 import SwitchInput from '@components/SwitchInput';
 import styled from 'styled-components';
 import styles from "@pages/Contratos/Contratos.module.css"
+import { FaPencil } from 'react-icons/fa6';
 
 const StatusTag = styled.span`
     padding: 4px 8px;
@@ -53,6 +54,7 @@ function DataTableContratos({
     const [contratosStatus, setContratosStatus] = useState({});
     const toast = useRef(null)
     const navegar = useNavigate()
+    const [contratoParaEditar, setContratoParaEditar] = useState(null);
 
     useEffect(() => {
         if (contratos?.length > 0) {
@@ -64,6 +66,45 @@ function DataTableContratos({
             );
         }
     }, [contratos]);
+
+    const editarContrato = (operadora, observacao, dt_inicio, dt_fim) => {
+        if(!contratoParaEditar) return;
+
+        const data = {
+            operadora,
+            observacao,
+            dt_inicio,
+            dt_fim
+        };
+
+        http.put(`contrato/${contratoParaEditar.id}/`, data)
+            .then(response => {
+                toast.current.show({ 
+                    severity: 'success', 
+                    summary: 'Sucesso', 
+                    detail: 'Contrato atualizado com sucesso', 
+                    life: 3000 
+                });
+                setModalOpened(false);
+                setContratoParaEditar(null);
+                if (onUpdate) {
+                    onUpdate();
+                }
+            })
+            .catch(erro => {
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: 'Erro ao atualizar contrato', 
+                    life: 3000 
+                });
+            });
+    };
+
+    const abrirModalEdicao = (contrato) => {
+        setContratoParaEditar(contrato);
+        setModalOpened(true);
+    };
 
     const atualizarStatus = async (id, novoStatus) => {
         try {
@@ -253,7 +294,7 @@ function DataTableContratos({
                 display: 'flex', 
                 gap: '16px',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'end'
             }}>
                 <div style={{
                     display: 'flex',
@@ -271,6 +312,20 @@ function DataTableContratos({
                         style={{ width: '36px' }}
                     />
                 </div>
+                <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
+                <FaPencil
+                    className="edit"
+                    data-pr-tooltip="Editar Contrato"
+                    size={16}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        abrirModalEdicao(rowData);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)',
+                    }}
+                />
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
                 <RiDeleteBin6Line 
                     className="delete" 
@@ -328,18 +383,22 @@ function DataTableContratos({
             >
                 <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '10%' }}></Column>
                 <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '15%' }}></Column>
-                <Column field="num_contrato_origem" header="Número Contrato" style={{ width: '12%' }}></Column>
+                <Column field="num_contrato_origem" header="Número Contrato" style={{ width: '10%' }}></Column>
                 <Column field="observacao" header="Observação" style={{ width: '10%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '18%', textAlign: 'center' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '20%', textAlign: 'center' }}></Column>
             </DataTable>
             
             <ModalContratos 
                 aoSalvar={adicionarContrato} 
                 opened={modalOpened} 
-                aoFechar={() => setModalOpened(false)} 
+                aoFechar={() => {
+                    setModalOpened(false);
+                    setContratoParaEditar(null);
+                }}
+                contrato={contratoParaEditar}
             />
         </>
     )

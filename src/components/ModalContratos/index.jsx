@@ -67,7 +67,7 @@ const Item = styled.div`
 `;
 
 
-function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
+function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, contrato = null }) {
     const [classError, setClassError] = useState([]);
     const [observacao, setObservacao] = useState('');
     const [operadoras, setOperadoras] = useState([]);
@@ -83,19 +83,42 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
             http.get('/operadora/?format=json')
                 .then(response => {
                     setOperadoras(response);
-                    // Formatando as operadoras para o dropdown com imagens
                     const novasOperadoras = response.map(item => ({
                         name: item.nome,
                         code: item.id,
                         operadora: {
                             nome: item.nome,
-                            imagem_url: item.imagem_url // Assumindo que a API retorna uma URL de imagem
+                            imagem_url: item.imagem_url
                         }
                     }));
                     setDropdownOperadoras(novasOperadoras);
                 });
         }
     }, [opened]);
+
+    // Efeito para preencher os campos quando estiver editando
+    useEffect(() => {
+        if (contrato && opened) {
+            setObservacao(contrato.observacao || '');
+            setDataInicio(contrato.dt_inicio || '');
+            setDataFim(contrato.dt_fim || '');
+            
+            // Encontra e seleciona a operadora correta no dropdown
+            if (contrato.dados_operadora) {
+                const operadoraEncontrada = dropdownOperadoras.find(
+                    op => op.code === contrato.dados_operadora.id
+                );
+                setOperadora(operadoraEncontrada || null);
+            }
+        } else if (!opened) {
+            // Limpa os campos quando fecha o modal
+            setObservacao('');
+            setDataInicio('');
+            setDataFim('');
+            setOperadora(null);
+            setClassError([]);
+        }
+    }, [contrato, opened, dropdownOperadoras]);
 
     // Template para os itens do dropdown de operadoras
     const operadoraOptionTemplate = (option) => {
@@ -169,7 +192,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                 <button className="close" onClick={aoFechar}>
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
-                                <h6>Novo Contrato</h6>
+                                <h6>{contrato ? 'Editar Contrato' : 'Novo Contrato'}</h6>
                             </Titulo>
                         </Frame>
                         
@@ -241,7 +264,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                 size="medium" 
                                 filled
                             >
-                                Confirmar
+                                {contrato ? 'Atualizar' : 'Confirmar'}
                             </Botao>
                         </div>
                     </DialogEstilizado>
