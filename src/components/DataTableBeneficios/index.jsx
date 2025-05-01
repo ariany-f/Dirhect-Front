@@ -176,7 +176,6 @@ function DataTableBeneficios({
                     <SwitchInput
                         checked={beneficiosStatus[rowData.id]}
                         onChange={(e) => {
-                            e.stopPropagation();
                             atualizarStatus(rowData.id, e.value);
                         }}
                         style={{ width: '36px' }}
