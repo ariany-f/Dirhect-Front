@@ -17,7 +17,6 @@ import { IoSettingsSharp } from "react-icons/io5"
 import { Col12, Col6 } from '@components/Colunas'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import IconeBeneficio from '@components/IconeBeneficio'
-import BadgeGeral from '@components/BadgeGeral'
 
 const StyledDropdownContainer = styled.div`
     width: 100%;
@@ -208,9 +207,9 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
                             </form>
-                            <h6>{id ? 'Alterar' : 'Adicionar'} Configuração - {id && (
+                            <h6>{id ? 'Alterar Configuração do' : 'Adicionar Configuração ao'} Contrato {id && ` - ${nomeBeneficio}`} {id && iconeBeneficio && (
                                    <IconeBeneficio nomeIcone={iconeBeneficio} size={16} />
-                            )} {id && nomeBeneficio}</h6>
+                            )}</h6>
                         </Titulo>
                     </Frame>
                     <Frame padding="24px 0px">

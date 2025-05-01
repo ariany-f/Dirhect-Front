@@ -161,6 +161,8 @@ const iconMap = {
     'PlanoSaude': FaHospital,
     'FaPills': FaPills,
     'Medicamentos': FaPills,
+    'Saude': FaPills,
+    'Saúde': FaPills,
     
     // Educação
     'FaGraduationCap': FaGraduationCap,
@@ -247,6 +249,7 @@ const iconMap = {
 };
 
 const IconeBeneficio = ({ nomeIcone, size = 20, className }) => {
+    console.log(iconMap[nomeIcone])
     const IconComponent = iconMap[nomeIcone] || iconMap['default'];
     
     return (

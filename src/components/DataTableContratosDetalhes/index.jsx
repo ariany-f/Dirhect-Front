@@ -352,7 +352,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 }
             </Col12>
             <ModalAdicionarElegibilidadeItemContrato item={selectedItemBeneficio} aoSalvar={salvarGrupos} aoFechar={() => setModalElegibilidadeOpened(false)} opened={modalElegibilidadeOpened} />
-            <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio?.id} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} nomeBeneficio={selectedBeneficio?.dados_beneficio?.descricao} dadoAntigo={sendData} />
+            <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio?.id} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} nomeBeneficio={selectedBeneficio?.dados_beneficio?.descricao} iconeBeneficio={selectedBeneficio?.dados_beneficio?.icone} dadoAntigo={sendData} />
         </>
     )
 }
