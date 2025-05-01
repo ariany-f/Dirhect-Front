@@ -23,5 +23,8 @@
     "positions": "Vagas",
     "vacations": "Férias",
     "absences": "Afastamentos",
-    "last_orders": "Últimos Pedidos"
+    "last_orders": "Últimos Pedidos",
+    "order_date": "Data do Pedido",
+    "order_total_value": "Valor Total",
+    "colaborators_to_receive": "Colaboradores a receber"
 }

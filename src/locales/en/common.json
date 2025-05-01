@@ -23,5 +23,8 @@
     "positions": "Positions",
     "vacations": "Vacations",
     "absences": "Absences",
-    "last_orders": "Last orders"
+    "last_orders": "Last orders",
+    "order_date": "Order date",
+    "order_total_value": "Order total value",
+    "colaborators_to_receive": "Colaborators to receive"
 }

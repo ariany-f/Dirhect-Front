@@ -233,12 +233,12 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                             <Texto weight={800}>{pedido.titulo}</Texto> - <Texto weight={400}>{pedido.referencia}</Texto>
                                             </div>
                                             <div style={{marginTop: '5px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                                                Colaboradores a receber:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{pedido.total_colaboradores}</p>
+                                                {t('colaborators_to_receive')}:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{pedido.total_colaboradores}</p>
                                             </div>
                                         </div>
                                         <div style={{textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'end'}}>
-                                            <div style={{display: 'flex', gap: '5px'}}><Texto size={"12px"}>Valor Total: </Texto><Texto weight={800}>{Real.format(pedido.valor)}</Texto></div>
-                                            <Texto size={"12px"}>Data do Pedido: {pedido.dataPedido}</Texto>
+                                            <div style={{display: 'flex', gap: '5px'}}><Texto size={"12px"}>{t('order_total_value')}: </Texto><Texto weight={800}>{Real.format(pedido.valor)}</Texto></div>
+                                            <Texto size={"12px"}>{t('order_date')}: {pedido.dataPedido}</Texto>
                                         </div>
                                     </div>
                                     <Timeline 
