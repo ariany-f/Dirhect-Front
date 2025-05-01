@@ -24,9 +24,12 @@ const StyledDropdown = styled(Dropdown)`
   }
 
   img.flag {
-    width: 18px;
+    width: 24px;
+    height: 24px;
     margin-right: 8px;
     border-radius: 50%;
+    object-fit: cover;
+    background-size: cover;
   }
 
   &.p-dropdown {
@@ -37,6 +40,15 @@ const StyledDropdown = styled(Dropdown)`
   .p-dropdown-panel {
     .p-dropdown-items {
       padding: 0.5rem;
+
+      .p-dropdown-item {
+        img.flag {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+      }
     }
   }
 `;
