@@ -4,7 +4,7 @@
     "add": "Add",
     "back": "Back",
     "users": "Users",
-    "me": "My data",
+    "me": "Me",
     "logout": "Logout",
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -15,5 +15,12 @@
     "remember_me": "Remember me",
     "forgot_password": "Forgot password",
     "user": "User",
-    "password": "Password"
+    "password": "Password",
+    "actual_month": "Actual month",
+    "payment_entries": "Payment entries",
+    "colaborators": "Colaborators",
+    "dependents": "Dependents",
+    "positions": "Positions",
+    "vacations": "Vacations",
+    "absences": "Absences"
 }

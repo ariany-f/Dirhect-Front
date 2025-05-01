@@ -15,5 +15,12 @@
     "remember_me": "Lembrar de mim",
     "forgot_password": "Esqueci minha senha",
     "user": "Usuário",
-    "password": "Senha"
+    "password": "Senha",
+    "actual_month": "Mês atual",
+    "payment_entries": "Lançamentos de Folha",
+    "colaborators": "Colaboradores",
+    "dependents": "Dependentes",
+    "positions": "Vagas",
+    "vacations": "Férias",
+    "absences": "Afastamentos"
 }

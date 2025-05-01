@@ -114,7 +114,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                 <div className={styles.empilhado}>
                     <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                         <Frame estilo="spaced">
-                            <Titulo><h6>Mês Atual</h6></Titulo>
+                            <Titulo><h6>{t('actual_month')}</h6></Titulo>
                         <Link to="/beneficio"><Texto weight={500} color={'var(--neutro-500)'}>{t('see_more')}&nbsp;<FaArrowRight /></Texto></Link>
                     </Frame>
                     <Frame estilo="spaced">
@@ -128,7 +128,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         </div>
                     </Frame>
                     <Frame estilo="spaced">
-                        <Titulo><h6>Lançamentos de Folha</h6></Titulo>
+                        <Titulo><h6>{t('payment_entries')}</h6></Titulo>
                     </Frame>
                     <div className={styles.transacao}>
                         <div className={styles.empilhado} style={{gap: '4px'}}>
@@ -151,7 +151,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                 <div className={`${styles.empilhado} ${styles.full_height}`}>
                     <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                         <Frame estilo="spaced">
-                            <Titulo><h6>Colaboradores</h6></Titulo>
+                            <Titulo><h6>{t('colaborators')}</h6></Titulo>
                             <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>{t('see_more')}&nbsp;<FaArrowRight /></Texto></Link>
                         </Frame>
                         <div className={styles.transacao}>
@@ -160,7 +160,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                             </div>
                         </div>
                         <Frame estilo="spaced">
-                            <Titulo><h6>Dependentes</h6></Titulo>
+                            <Titulo><h6>{t('dependents')}</h6></Titulo>
                         </Frame>
                         <Frame estilo="spaced">
                             <div className={styles.right}>
@@ -179,7 +179,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                 <div className={styles.empilhado}>
                     <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                         <Frame estilo="spaced">
-                            <Titulo><h6>Vagas</h6></Titulo>
+                            <Titulo><h6>{t('positions')}</h6></Titulo>
                             <Link to="/colaborador"><Texto weight={500} color={'var(--neutro-500)'}>{t('see_more')}&nbsp;<FaArrowRight /></Texto></Link>
                         </Frame>
                         <div className={styles.transacao}>
@@ -192,7 +192,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         <div style={{flex: '1 1 50%'}}>
                             <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                                 <Frame estilo="spaced">
-                                    <Titulo><h6>Férias</h6></Titulo>
+                                    <Titulo><h6>{t('vacations')}</h6></Titulo>
                                 </Frame>
                                 <div className={styles.transacao}>
                                     <div className={styles.right}>
@@ -204,7 +204,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         <div style={{flex: '1 1 50%'}}>
                             <div className={`${styles.card_dashboard} ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
                                 <Frame estilo="spaced">
-                                    <Titulo><h6>Afastamentos</h6></Titulo>
+                                    <Titulo><h6>{t('absences')}</h6></Titulo>
                                 </Frame>
                                 <div className={styles.transacao}>
                                     <div className={styles.right}>
