@@ -58,7 +58,7 @@ function DataTableDepartamentos({
     function verDetalhes(value)
     {
         setSelectedDepartamento(value.id)
-        navegar(`/estrutura/departamento/detalhes/${value.id}`)
+        // navegar(`/estrutura/departamento/detalhes/${value.id}`)
     }
 
     const representativeFilialTemplate = (rowData) => {

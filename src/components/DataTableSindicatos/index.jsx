@@ -58,7 +58,7 @@ function DataTableSindicatos({
 
     function verDetalhes(value) {
         setSelectedSindicato(value.id);
-        navegar(`/estrutura/sindicato/detalhes/${value.id}`);
+        // navegar(`/estrutura/sindicato/detalhes/${value.id}`);
     }
 
     function formataCNPJ(cnpj) {

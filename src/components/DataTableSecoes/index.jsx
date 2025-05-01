@@ -58,7 +58,7 @@ function DataTableSecoes({
 
     function verDetalhes(value) {
         setSelectedSecao(value.id);
-        navegar(`/estrutura/secao/detalhes/${value.id}`);
+        // navegar(`/estrutura/secao/detalhes/${value.id}`);
     }
 
     const representativeDepartamentoTemplate = (rowData) => {

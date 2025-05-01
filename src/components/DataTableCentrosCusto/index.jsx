@@ -57,7 +57,7 @@ function DataTableCentrosCusto({
 
     function verDetalhes(value) {
         setSelectedCentro(value.id);
-        navegar(`/estrutura/centro-custo/detalhes/${value.id}`);
+        // navegar(`/estrutura/centro-custo/detalhes/${value.id}`);
     }
 
     const representativeCCPaiTemplate = (rowData) => {

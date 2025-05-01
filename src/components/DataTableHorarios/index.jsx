@@ -62,7 +62,7 @@ function DataTableHorarios({
 
     function verDetalhes(value) {
         setSelectedHorario(value.id);
-        navegar(`/estrutura/horario/detalhes/${value.id}`);
+        // navegar(`/estrutura/horario/detalhes/${value.id}`);
     }
 
     function handleSelectChange(e) {
