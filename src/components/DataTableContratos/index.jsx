@@ -17,6 +17,7 @@ import ModalContratos from '@components/ModalContratos'
 import { Toast } from 'primereact/toast'
 import { Real } from '@utils/formats'
 import { ConfirmDialog,confirmDialog } from 'primereact/confirmdialog';
+import { Tooltip } from 'primereact/tooltip';
 
 function DataTableContratos({ 
     contratos,
@@ -182,11 +183,14 @@ function DataTableContratos({
     const actionBodyTemplate = (rowData) => {
         return (
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
                 <button 
+                    className="delete"
                     onClick={(e) => {
                         e.stopPropagation();
                         excluirContrato(rowData.id);
                     }} 
+                    data-pr-tooltip="Excluir Contrato" 
                     style={{
                         background: 'none',
                         border: 'none',
@@ -197,7 +201,6 @@ function DataTableContratos({
                         alignItems: 'center',
                         color: 'var(--error)',
                     }}
-                    title="Excluir contrato"
                 >
                     <RiDeleteBin6Line size={18} />
                 </button>
