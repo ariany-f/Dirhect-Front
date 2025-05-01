@@ -182,7 +182,7 @@ function ColaboradorBeneficios() {
     const carregarBeneficiosPossiveis = async () => {
         try {
             setLoading(true)
-            const response = await http.get(`beneficios_possiveis/${id}?format=json`)
+            const response = await http.get(`beneficios_possiveis/${id}/?format=json`)
             if (response) {
                 setBeneficiosPossiveis(response)
                 await carregarDetalhesBeneficios(response)
