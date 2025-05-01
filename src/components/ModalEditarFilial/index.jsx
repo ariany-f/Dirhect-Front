@@ -10,55 +10,10 @@ import styled from "styled-components"
 import styles from './ModalEditarFilial.module.css'
 import { useDepartamentoContext } from "@contexts/Departamento"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { Col12, Col6, Col4 } from '@components/Colunas';
 
-const AdicionarCnpjBotao = styled.div`
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--primaria);
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-`
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    align-self: stretch;
-`;
-
-const Item = styled.div`
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 16px;
-    display: flex;
-    padding: 20px;
-    justify-content: space-between;
-    align-items: center;
-    width: 94%;
-    border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
-`;
-
-const Col12 = styled.div`
-    display: flex;
-    width: 100%;
-    gap: 24px;
-    flex-wrap: wrap;
-`
-
-const Col6 = styled.div`
-    flex: 1 1 calc(50% - 12px);
-`
-
-const Col4 = styled.div`
-    flex: 1 1 1 calc(25% - 8px);
-`
 
 function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
-    
     
     const [classError, setClassError] = useState([])
     const [nome, setNome] = useState(filial.nome ?? '')
@@ -93,7 +48,13 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
             {opened &&
             <>
                 <Overlay>
-                    <DialogEstilizado id="modal-add-departamento" open={opened}>
+                    <DialogEstilizado 
+                        $width="60vw" 
+                        $minWidth="500px"
+                        $maxWidth="900px"
+                        id="modal-add-departamento" 
+                        open={opened}
+                    >
                         <Frame>
                             <Titulo>
                                 <form method="dialog">
@@ -119,6 +80,7 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
                                         setValor={setNome} 
                                         placeholder="ex. Filial 1"
                                         label="Nome da Filial" 
+                                        name="nome"
                                     />
                                 </Col6>
                                 <Col6>
@@ -129,74 +91,83 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
                                         valor={cnpj} 
                                         type="text" 
                                         setValor={setCNPJ} 
-                                        placeholder=""
+                                        placeholder="00.000.000/0000-00"
                                         label="CNPJ da Filial" 
+                                        name="cnpj"
                                     />
                                 </Col6>
                             </Col12>
                             <Col12>
-                                <Col4>
+                                <Col6>
                                     <CampoTexto 
                                         camposVazios={classError} 
                                         valor={logradouro} 
                                         type="text" 
                                         setValor={setLogradouro} 
-                                        placeholder=""
+                                        placeholder="Digite o logradouro"
                                         label="Logradouro da Filial" 
+                                        name="logradouro"
                                     />
-                                </Col4>
-                                <Col4>
+                                </Col6>
+                                <Col6>
                                     <CampoTexto 
                                         camposVazios={classError} 
                                         valor={numero} 
                                         type="text" 
                                         setValor={setNumero} 
-                                        placeholder=""
+                                        placeholder="Digite o número"
                                         label="Número do endereço da Filial" 
+                                        name="numero"
                                     />
-                                </Col4>
-                                <Col4>
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
                                     <CampoTexto 
                                         camposVazios={classError} 
                                         valor={bairro} 
                                         type="text" 
                                         setValor={setBairro} 
-                                        placeholder=""
+                                        placeholder="Digite o bairro"
                                         label="Bairro da Filial" 
+                                        name="bairro"
                                     />
-                                </Col4>
-                            </Col12>
-                            <Col12>
-                                <Col4>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        valor={cidade} 
-                                        type="text" 
-                                        setValor={setCidade} 
-                                        placeholder=""
-                                        label="Cidade da Filial" 
-                                    />
-                                </Col4>
-                                <Col4>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        valor={estado} 
-                                        type="text" 
-                                        setValor={setEstado} 
-                                        placeholder=""
-                                        label="Estado da Filial" 
-                                    />
-                                </Col4>
-                                <Col4>
+                                </Col6>
+                                <Col6>
                                     <CampoTexto 
                                         camposVazios={classError} 
                                         valor={complemento} 
                                         type="text" 
                                         setValor={setComplemento} 
-                                        placeholder=""
+                                        placeholder="Digite o complemento"
                                         label="Complemento da Filial" 
+                                        name="complemento"
                                     />
-                                </Col4>
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        valor={cidade} 
+                                        type="text" 
+                                        setValor={setCidade} 
+                                        placeholder="Digite a cidade"
+                                        label="Cidade da Filial" 
+                                        name="cidade"
+                                    />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        valor={estado} 
+                                        type="text" 
+                                        setValor={setEstado} 
+                                        placeholder="Digite o estado"
+                                        label="Estado da Filial" 
+                                        name="estado"
+                                    />
+                                </Col6>
                             </Col12>
                         </Frame>
                         <form method="dialog">

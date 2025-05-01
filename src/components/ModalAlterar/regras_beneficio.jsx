@@ -17,6 +17,32 @@ import { IoSettingsSharp } from "react-icons/io5"
 import { Col12, Col6 } from '@components/Colunas'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 
+const StyledDropdownContainer = styled.div`
+    width: 100%;
+    
+    .p-dropdown {
+        width: 100%;
+        margin-bottom: 18px;
+    }
+
+    .p-dropdown-label {
+        padding: 12px 16px;
+    }
+`;
+
+const StyledInputContainer = styled.div`
+    width: 100%;
+    margin-bottom: 18px;
+
+    .inputContainer {
+        width: 100%;
+    }
+
+    input {
+        width: 100%;
+    }
+`;
+
 function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo, nomeBeneficio = '' }) {
 
     const [alteravel, setAlteravel] = useState(dadoAntigo)
@@ -159,7 +185,13 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
         <>
             {opened &&
             <Overlay>
-                <DialogEstilizado id="modal-add-departamento" open={opened}>
+                <DialogEstilizado 
+                    $width="60vw" 
+                    $minWidth="500px"
+                    $maxWidth="900px"
+                    id="modal-add-departamento" 
+                    open={opened}
+                >
                     <Frame>
                         <Titulo>
                              <form method="dialog">
@@ -171,13 +203,32 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                         </Titulo>
                     </Frame>
                     <Frame padding="24px 0px">
-                        <div>
-                        <Col12 $gap="16px">
-                            <Col6 $padding="10px">
-                                <DropdownItens camposVazios={classError} valor={tipo_desconto} setValor={setTipoDesconto} options={dropdownTiposDesconto} label="Tipo de Desconto" name="tipo_desconto" placeholder="Tipo de Desconto"/> 
+                        <Col12>
+                            <Col6>
+                                <StyledDropdownContainer>
+                                    <DropdownItens 
+                                        camposVazios={classError} 
+                                        valor={tipo_desconto} 
+                                        setValor={setTipoDesconto} 
+                                        options={dropdownTiposDesconto} 
+                                        label="Tipo de Desconto" 
+                                        name="tipo_desconto" 
+                                        placeholder="Tipo de Desconto"
+                                    /> 
+                                </StyledDropdownContainer>
                             </Col6>
-                            <Col6 $padding="10px">
-                                <DropdownItens camposVazios={classError} valor={tipo_calculo} setValor={setTipoCalculo} options={dropdownTiposCalculo} label="Tipo de Cálculo" name="tipo_calculo" placeholder="Tipo de Cálculo"/> 
+                            <Col6>
+                                <StyledDropdownContainer>
+                                    <DropdownItens 
+                                        camposVazios={classError} 
+                                        valor={tipo_calculo} 
+                                        setValor={setTipoCalculo} 
+                                        options={dropdownTiposCalculo} 
+                                        label="Tipo de Cálculo" 
+                                        name="tipo_calculo" 
+                                        placeholder="Tipo de Cálculo"
+                                    /> 
+                                </StyledDropdownContainer>
                                 {tipo_calculo.code === 'T' &&
                                     <BotaoSemBorda color="var(--primaria)">
                                         <IoSettingsSharp/><Link to={'/contratos/configuracao'} className={styles.link}>Configurar Tabela Interna</Link>
@@ -185,58 +236,78 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                 }
                             </Col6>
                         </Col12>
-                        <Col12 $gap="16px">
-                            <Col6 $padding="10px">
-                                <CampoTexto 
-                                    camposVazios={classError} 
-                                    name="descricao" 
-                                    valor={descricao} 
-                                    setValor={setDescricao} 
-                                    type="text" 
-                                    label="Descrição" 
-                                    placeholder="Digite Descrição" />
+                        <Col12>
+                            <Col6>
+                                <StyledInputContainer>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="descricao" 
+                                        valor={descricao} 
+                                        setValor={setDescricao} 
+                                        type="text" 
+                                        label="Descrição" 
+                                        placeholder="Digite Descrição" 
+                                    />
+                                </StyledInputContainer>
                             </Col6>
-                            <Col6 $padding="10px">
-                                <CampoTexto 
-                                    camposVazios={classError} 
-                                    name="valor" 
-                                    valor={valor} 
-                                    setValor={handleValorCompraChange} 
-                                    type="text" 
-                                    label="Valor Compra" 
-                                    placeholder="Digite o valor da compra"
-                                    patternMask="BRL" />
-                            </Col6>
-                            <Col6 $padding="10px">
-                                <CampoTexto 
-                                    camposVazios={classError} 
-                                    name="desconto" 
-                                    valor={desconto} 
-                                    setValor={handleValorColaboradorChange} 
-                                    type="text" 
-                                    label="Valor Colaborador" 
-                                    placeholder="Digite o valor do colaborador"
-                                    patternMask="BRL" />
-                                {erroValor && <span style={{color: 'var(--error)', fontSize: '12px'}}>{erroValor}</span>}
-                            </Col6>
-                            <Col6 $padding="10px">
-                                <CampoTexto 
-                                    camposVazios={classError} 
-                                    name="empresa" 
-                                    valor={empresa} 
-                                    setValor={() => {}} 
-                                    type="text" 
-                                    label="Valor empresa" 
-                                    placeholder="Valor empresa"
-                                    disabled
-                                    patternMask="BRL"
-                                    style={{backgroundColor: 'var(--neutro-100)'}} />
-                            </Col6>
-                            <Col6 $padding="10px">
-                                <CheckboxContainer label="Extensível Dependente?" name="extensivo_dependentes" valor={extensivo_dependentes} setValor={handleChange} />
+                            <Col6>
+                                <StyledInputContainer>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="valor" 
+                                        valor={valor} 
+                                        setValor={handleValorCompraChange} 
+                                        type="text" 
+                                        label="Valor Compra" 
+                                        placeholder="Digite o valor da compra"
+                                        patternMask="BRL" 
+                                    />
+                                </StyledInputContainer>
                             </Col6>
                         </Col12>
-                        </div>
+                        <Col12>
+                            <Col6>
+                                <StyledInputContainer>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="desconto" 
+                                        valor={desconto} 
+                                        setValor={handleValorColaboradorChange} 
+                                        type="text" 
+                                        label="Valor Colaborador" 
+                                        placeholder="Digite o valor do colaborador"
+                                        patternMask="BRL" 
+                                    />
+                                    {erroValor && <span style={{color: 'var(--error)', fontSize: '12px'}}>{erroValor}</span>}
+                                </StyledInputContainer>
+                            </Col6>
+                            <Col6>
+                                <StyledInputContainer>
+                                    <CampoTexto 
+                                        camposVazios={classError} 
+                                        name="empresa" 
+                                        valor={empresa} 
+                                        setValor={() => {}} 
+                                        type="text" 
+                                        label="Valor empresa" 
+                                        placeholder="Valor empresa"
+                                        disabled
+                                        patternMask="BRL"
+                                        style={{backgroundColor: 'var(--neutro-100)'}} 
+                                    />
+                                </StyledInputContainer>
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <CheckboxContainer 
+                                    label="Extensível Dependente?" 
+                                    name="extensivo_dependentes" 
+                                    valor={extensivo_dependentes} 
+                                    setValor={handleChange} 
+                                />
+                            </Col6>
+                        </Col12>
                     </Frame>
                     <form method="dialog">
                         <div className={styles.containerBottom}>

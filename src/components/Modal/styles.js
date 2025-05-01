@@ -16,12 +16,12 @@ export const Overlay = styled.div`
 
 export const DialogEstilizado = styled.dialog`
     display: flex;
-    width: 40vw;
-    min-width: 500px;
-    max-width: 800px;
+    width: ${props => props.$width || '40vw'};
+    min-width: ${props => props.$minWidth || '500px'};
+    max-width: ${props => props.$maxWidth || '800px'};
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: stretch;
     border-radius: 16px;
     border: none;
     margin: 0 auto;
@@ -32,11 +32,22 @@ export const DialogEstilizado = styled.dialog`
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
-    will-change: transform;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+
+    & > * {
+        width: 100%;
+    }
+
+    & > form {
+        width: 100%;
+    }
+
+    & .p-float-label {
+        width: 100%;
+    }
+
+    & .p-inputtext {
+        width: 100%;
+    }
     
     @media screen and (max-width: 760px) {
         width: 100%;
@@ -63,6 +74,7 @@ export const DialogEstilizado = styled.dialog`
         padding: 8px;
         border-radius: 8px;
         transition: background-color 0.2s;
+        z-index: 2;
         
         &:hover {
             background-color: var(--neutro-100);
