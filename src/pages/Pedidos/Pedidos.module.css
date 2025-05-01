@@ -32,3 +32,7 @@
     color: #244078;
     text-decoration: underline;
 } 
+.icon * {
+    box-sizing: initial;
+    stroke: var(--white);
+}

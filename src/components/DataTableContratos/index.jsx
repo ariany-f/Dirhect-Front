@@ -16,8 +16,26 @@ import http from '@http'
 import ModalContratos from '@components/ModalContratos'
 import { Toast } from 'primereact/toast'
 import { Real } from '@utils/formats'
-import { ConfirmDialog,confirmDialog } from 'primereact/confirmdialog';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Tooltip } from 'primereact/tooltip';
+import SwitchInput from '@components/SwitchInput';
+import styled from 'styled-components';
+import styles from "@pages/Contratos/Contratos.module.css"
+
+const StatusTag = styled.span`
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    
+    ${props => props.$status === true ? `
+        background-color: rgba(0, 200, 83, 0.1);
+        color: var(--success);
+    ` : `
+        background-color: rgba(229, 115, 115, 0.1);
+        color: var(--error);
+    `}
+`;
 
 function DataTableContratos({ 
     contratos,
@@ -32,8 +50,57 @@ function DataTableContratos({
     const [selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [modalOpened, setModalOpened] = useState(false)
+    const [contratosStatus, setContratosStatus] = useState({});
     const toast = useRef(null)
     const navegar = useNavigate()
+
+    useEffect(() => {
+        if (contratos?.length > 0) {
+            setContratosStatus(
+                contratos.reduce((acc, contrato) => ({
+                    ...acc,
+                    [contrato.id]: contrato.status === 'A'
+                }), {})
+            );
+        }
+    }, [contratos]);
+
+    const atualizarStatus = async (id, novoStatus) => {
+        try {
+            setContratosStatus(prev => ({
+                ...prev,
+                [id]: novoStatus
+            }));
+
+            await http.put(`contrato/${id}/status`, {
+                status: novoStatus ? 'A' : 'I'
+            });
+
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: `Contrato ${novoStatus ? 'ativado' : 'desativado'} com sucesso`,
+                life: 3000
+            });
+
+            if (onUpdate) {
+                onUpdate();
+            }
+        } catch (error) {
+            setContratosStatus(prev => ({
+                ...prev,
+                [id]: !novoStatus
+            }));
+
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Não foi possível alterar o status do contrato',
+                life: 3000
+            });
+            console.error('Erro ao atualizar status:', error);
+        }
+    };
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
@@ -153,7 +220,7 @@ function DataTableContratos({
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/contrato/${beneficioId}/?format=json`)
+                http.delete(`/api/contrato/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',
@@ -162,8 +229,8 @@ function DataTableContratos({
                         life: 3000
                     });
                     
-                    if (onBeneficioDeleted) {
-                        onBeneficioDeleted();
+                    if (onUpdate) {
+                        onUpdate();
                     }
                 })
                 .catch(error => {
@@ -182,28 +249,42 @@ function DataTableContratos({
 
     const representativeActionsTemplate = (rowData) => {
         return (
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+            <div style={{ 
+                display: 'flex', 
+                gap: '16px',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px'
+                }}>
+                    <StatusTag $status={contratosStatus[rowData.id]}>
+                        {contratosStatus[rowData.id] ? "Ativo" : "Inativo"}
+                    </StatusTag>
+                    <SwitchInput
+                        checked={contratosStatus[rowData.id]}
+                        onChange={(e) => {
+                            atualizarStatus(rowData.id, e.value);
+                        }}
+                        style={{ width: '36px' }}
+                    />
+                </div>
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                <button 
-                    className="delete"
+                <RiDeleteBin6Line 
+                    className="delete" 
+                    data-pr-tooltip="Excluir Contrato" 
+                    size={16} 
                     onClick={(e) => {
                         e.stopPropagation();
                         excluirContrato(rowData.id);
-                    }} 
-                    data-pr-tooltip="Excluir Contrato" 
+                    }}
                     style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: '6px',
                         cursor: 'pointer',
-                        borderRadius: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
                         color: 'var(--error)',
                     }}
-                >
-                    <RiDeleteBin6Line size={18} />
-                </button>
+                />
             </div>
         );
     };
@@ -226,7 +307,7 @@ function DataTableContratos({
                     </span>
                     <BotaoGrupo align="end">
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
-                            <GrAddCircle stroke="white"/> Criar Contrato
+                            <GrAddCircle className={styles.icon} stroke="white"/> Criar Contrato
                         </Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>
@@ -251,9 +332,8 @@ function DataTableContratos({
                 <Column field="observacao" header="Observação" style={{ width: '10%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
-                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '8%', textAlign: 'center' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '18%', textAlign: 'center' }}></Column>
             </DataTable>
             
             <ModalContratos 
