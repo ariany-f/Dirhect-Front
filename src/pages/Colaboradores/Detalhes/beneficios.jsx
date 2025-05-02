@@ -385,6 +385,20 @@ function ColaboradorBeneficios() {
         { label: 'Não', value: 'nao', icon: <FaTimes /> }
     ]
 
+    const [tiposCalculo, setTiposCalculo] = useState([
+        {code: 'M', name: 'Valor Mensal'},
+        {code: 'D', name: 'Valor Diário'},
+        {code: 'F', name: 'Valor Fixo'},
+        {code: 'T', name: 'Tabela Interna'}
+     ]);
+
+     const [tiposDesconto, setTiposDesconto] = useState([
+        {code: 'D', name: 'Valor Diário'},
+        {code: 'C', name: '% sobre o valor da compra'},
+        {code: 'S', name: '% do Valor do Salário'},
+        {code: 'F', name: 'Valor Fixo'}
+     ]);
+
     useEffect(() => {
         if (id) {
             carregarBeneficios()
@@ -602,7 +616,17 @@ function ColaboradorBeneficios() {
                 <div style={{marginTop: 16}}>
                     <div weight={700} size={15} style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8}}>
                         <Texto weight={700} size={15}>Número do Contrato: </Texto>
-                        <Link to={`/contratos/detalhes/${contrato.id}`} style={{ textDecoration: 'underline', fontSize: 16, marginTop: 4 }}>{contrato?.num_contrato_origem || '---'}</Link>
+                        <Link to={`/contratos/detalhes/${contrato.id}`} style={{ textDecoration: 'underline', fontSize: 16 }}>{`#${contrato?.num_contrato_origem}` || '---'}</Link>
+                    </div>
+                </div>
+                {/* Benefício */}
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8}}>
+                <Texto weight={700} size={15}>Benefício:</Texto>
+                    <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                        {item.icone && (
+                            <IconeBeneficio nomeIcone={item.icone} size={16} />
+                        )}
+                        <span style={{fontWeight: 600, fontSize: 14}}>{item.descricao || beneficio?.descricao || '---'}</span>
                     </div>
                 </div>
                 {/* Item do Contrato */}
@@ -619,24 +643,34 @@ function ColaboradorBeneficios() {
                         </StatusContratoTag>
                     )}
                 </div> */}
-                {/* Benefício */}
-                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8}}>
-                <Texto weight={700} size={15}>Benefício:</Texto>
-                    <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-                        {item.icone && (
-                            <IconeBeneficio nomeIcone={item.icone} size={16} />
-                        )}
-                        <span style={{fontWeight: 600, fontSize: 14}}>{item.descricao || beneficio?.descricao || '---'}</span>
-                    </div>
-                </div>
                 {/* Regras de Elegibilidade */}
                 <div>
                     <Texto weight={700} size={15}>Regras de Elegibilidade:</Texto>
+                    <div style={{marginTop: 8}}>
                     {regrasTreeNodes.length > 0 ? (
                         <Tree value={regrasTreeNodes} />
                     ) : (
                         <span>Nenhuma regra cadastrada</span>
                     )}
+                    </div>
+                </div>
+                {/* Card de Informações de Valores */}
+                <div style={{
+                    background: 'var(--neutro-50)',
+                    borderRadius: 12,
+                    marginTop: 16,
+                    padding: '8px 12px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 8
+                }}>
+                    <Texto size="18px" weight={600} style={{marginBottom: 4}}>Outras Informações:</Texto>
+                    <Texto size="14px">Valor:&nbsp;<b style={{color: 'var(--green-700)'}}>{Real.format(item.item?.valor)}</b></Texto>
+                    <Texto size="14px">Valor Colaborador:&nbsp;<b style={{color: 'var(--error)'}}>{Real.format(item.item?.valor_desconto)}</b></Texto>
+                    <Texto size="14px">Valor Empresa:&nbsp;<b style={{color: 'var(--error)'}}>{Real.format(item.item?.valor_empresa)}</b></Texto>
+                    <Texto size="14px">Tipo de Cálculo:&nbsp;<b>{getTipoCalculo(item.item?.tipo_calculo) || '---'}</b></Texto>
+                    <Texto size="14px">Tipo de Desconto:&nbsp;<b>{getTipoDesconto(item.item?.tipo_desconto) || '---'}</b></Texto>
                 </div>
             </div>
         );
