@@ -69,7 +69,7 @@ const ElegibilidadeLista = () => {
         const todasAsListasCarregadas = [
             filiais, departamentos, secoes, cargos,
             funcoes, centros_custo, sindicatos, horarios
-        ].every(lista => Array.isArray(lista) && lista.length > 0)
+        ].every(lista => Array.isArray(lista));
 
         if (context && context.length > 0 && todasAsListasCarregadas && !atualizado) {
             const adicionarElegibilidade = (lista, setLista, nomeEntidade) => {
@@ -109,7 +109,9 @@ const ElegibilidadeLista = () => {
 
             setAtualizado(true)
             setLoading(false)
-        } else if (todasAsListasCarregadas) {
+        }
+        // Sempre fecha o loading quando todas as listas forem carregadas
+        if (todasAsListasCarregadas) {
             setLoading(false)
         }
     }, [context, filiais, departamentos, secoes, cargos, funcoes, centros_custo, sindicatos, horarios])
