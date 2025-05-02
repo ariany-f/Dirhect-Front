@@ -83,12 +83,11 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                 setSelectedOperadora(operadoras[0]);
                 onSelectionChange(operadoras[0]);
             }
-            
-            // Inicializa todas as operadoras como ativas
+            // Inicializa status de acordo com o campo ativo
             setOperadorasStatus(
                 operadoras.reduce((acc, operadora) => ({
                     ...acc,
-                    [operadora.id]: true
+                    [operadora.id]: operadora.ativo === true
                 }), {})
             );
         }
@@ -120,7 +119,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
 
             // Chamada à API
             await http.put(`operadora/${id}/status`, {
-                status: novoStatus ? 'A' : 'I'
+                ativo: novoStatus
             });
 
             toast.current.show({
