@@ -144,7 +144,7 @@ function DataTableBeneficios({
             toast.current.show({
                 severity: 'success',
                 summary: 'Sucesso',
-                detail: `Benefício ${novoStatus ? 'ativado' : 'desativado'} com sucesso`,
+                detail: `Benefício ${novoStatus ? 'desativado' : 'ativado'} com sucesso`,
                 life: 3000
             });
         } catch (error) {
