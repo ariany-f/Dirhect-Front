@@ -233,7 +233,6 @@ const ColItem = styled.div`
     min-width: 320px;
     max-width: 48%;
     box-sizing: border-box;
-    min-height: 120px;
     display: flex;
     flex-direction: column;
     background: var(--neutro-50);
@@ -536,21 +535,20 @@ function ColaboradorBeneficios() {
                                                                                                     <IconeBeneficio nomeIcone={item.item.icone} />
                                                                                                 </span>
                                                                                             )}
-                                                                                            <Texto size="12px">{item.plano}</Texto>
+                                                                                            <Texto size="12px" weight={600}>{item.plano}</Texto>
+                                                                                            <Dropdown
+                                                                                                value={item.status}
+                                                                                                options={statusOptions}
+                                                                                                onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
+                                                                                                style={{width: 170, minWidth: 160, fontSize: 12, height: 30}}
+                                                                                                panelStyle={{fontSize: 12}}
+                                                                                                appendTo={document.body}
+                                                                                            />
                                                                                         </div>
                                                                                         {item.status !== 'pendente' && (
                                                                                             <StatusItemTag status={item.obrigatoriedade ? 'OBRIGATORIO' : item.status}>{getStatusLabel(item)}</StatusItemTag>
                                                                                         )}
                                                                                     </TopRow>
-                                                                                    <StatusDropdownRow>
-                                                                                        <Dropdown
-                                                                                            value={item.status}
-                                                                                            options={statusOptions}
-                                                                                            onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
-                                                                                            style={{width: 250, minWidth: 250, zIndex: 1000}}
-                                                                                            appendTo={document.body}
-                                                                                        />
-                                                                                    </StatusDropdownRow>
                                                                                 </>
                                                                             }
                                                                         >
