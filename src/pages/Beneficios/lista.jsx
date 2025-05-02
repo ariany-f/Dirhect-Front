@@ -14,6 +14,13 @@ import styled from 'styled-components'
 import ModalBeneficios from '../../components/ModalBeneficios'
 import { Toast } from 'primereact/toast'
 
+const ConteudoFrame = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    width: 100%;
+`
+
 function Beneficios() {
     const [loading, setLoading] = useState(false)
     const [beneficios, setBeneficios] = useState([])
@@ -111,7 +118,7 @@ function Beneficios() {
     return (
         <>
             <Loading opened={loading} />
-            <>
+            <ConteudoFrame>
                 <Toast ref={toast} />
                 <Container>
                     <DataTableBeneficios 
@@ -126,7 +133,7 @@ function Beneficios() {
                     />
                 </Container>
                 <ModalBeneficios aoSalvar={adicionarBeneficio} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
-            </>
+            </ConteudoFrame>
         </>
     )
 }
