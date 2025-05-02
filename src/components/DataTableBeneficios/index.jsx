@@ -133,11 +133,11 @@ function DataTableBeneficios({
             // Chama o endpoint correto conforme o tipo de usuário
             if (usuario?.tipo === 'global') {
                 await http.put(`beneficio/${id}/?format=json`, {
-                    status: novoStatus ? 1 : 0
+                    status: novoStatus ? 0 : 1
                 });
             } else {
                 await http.put(`beneficio/${id}/?format=json`, {
-                    status_tenant: novoStatus ? 1 : 0
+                    status_tenant: novoStatus ? 0 : 1
                 });
             }
 
