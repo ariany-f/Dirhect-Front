@@ -151,7 +151,7 @@ function DataTableBeneficios({
             // Reverte o estado em caso de erro
             setBeneficiosStatus(prev => ({
                 ...prev,
-                [id]: !novoStatus
+                [id]: novoStatus
             }));
 
             toast.current.show({
