@@ -571,12 +571,12 @@ function ColaboradorBeneficios() {
                                         <StatusTag $tipo="AGUARDANDO">BENEFÍCIO OPCIONAL</StatusTag>
                                     )}
                                     {!itens[0].multiplos && (
-                                        <Texto size="10px" color="var(--info)">
+                                        <Texto size="10px" color="var(--warning)">
                                             Você só pode selecionar um dos itens abaixo
                                         </Texto>
                                     )}
                                     {itens[0].multiplos && (
-                                        <Texto size="10px" color="var(--info)">
+                                        <Texto size="10px">
                                             Pode selecionar mais de um deste grupo
                                         </Texto>
                                     )}
