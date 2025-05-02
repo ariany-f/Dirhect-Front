@@ -113,7 +113,7 @@ function DataTableContratos({
                 [id]: novoStatus
             }));
 
-            await http.put(`contrato/${id}/status`, {
+            await http.put(`contrato/${id}/?format=json`, {
                 status: novoStatus ? 'A' : 'I'
             });
 
@@ -325,8 +325,8 @@ function DataTableContratos({
                     </StatusTag>
                     <SwitchInput
                         checked={contratosStatus[rowData.id]}
-                        onChange={(e) => {
-                            atualizarStatus(rowData.id, e.value);
+                        onChange={() => {
+                            atualizarStatus(rowData.id, !contratosStatus[rowData.id]);
                         }}
                         style={{ width: '36px' }}
                     />
