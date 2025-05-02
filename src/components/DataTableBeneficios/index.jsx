@@ -27,6 +27,7 @@ import { GrAddCircle } from 'react-icons/gr';
 import styles from '@pages/Beneficios/Beneficios.module.css';
 import { useTranslation } from 'react-i18next';
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
+import { Checkbox } from 'primereact/checkbox';
 
 const StatusTag = styled.span`
     padding: 4px 8px;
@@ -287,6 +288,39 @@ function DataTableBeneficios({
         );
     };
 
+    // Função para atualizar multiplos/obrigatoriedade
+    const atualizarCampo = async (id, campo, valor) => {
+        try {
+            await http.put(`beneficio/${id}/?format=json`, {
+                [campo]: valor
+            });
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: `Campo '${campo}' atualizado com sucesso`,
+                life: 2000
+            });
+            if (onBeneficioDeleted) onBeneficioDeleted();
+        } catch (error) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: `Erro ao atualizar '${campo}'`,
+                life: 2000
+            });
+        }
+    };
+
+    // Colunas dinâmicas para multiplos e obrigatoriedade
+    const renderMultiplos = (rowData) => (
+        <SwitchInput checked={rowData.multiplos} disabled={usuario?.tipo === 'global'}
+            onChange={() => atualizarCampo(rowData.id, 'multiplos', !rowData.multiplos)} style={{ width: 36 }} />
+    );
+    const renderObrigatoriedade = (rowData) => (
+        <SwitchInput checked={rowData.obrigatoriedade} disabled={usuario?.tipo === 'global'}
+            onChange={() => atualizarCampo(rowData.id, 'obrigatoriedade', !rowData.obrigatoriedade)} style={{ width: 36 }} />
+    );
+
     return (
         <>
             <ConfirmDialog />
@@ -322,8 +356,10 @@ function DataTableBeneficios({
                 tableStyle={{ minWidth: '65vw' }}
                 lazy
             >
-                <Column body={representativeDescriptionTemplate} field="descricao" header="Nome" style={{ width: '20%' }}/>
-                <Column body={representativeStatusTemplate} header="Tipo" style={{ width: '40%' }}/>
+                <Column sortable body={representativeDescriptionTemplate} field="descricao" header="Nome" style={{ width: '20%' }}/>
+                <Column sortable body={representativeStatusTemplate} header="Tipo" style={{ width: '40%' }}/>
+                {usuario?.tipo !== 'global' && <Column sortable body={renderMultiplos} field="multiplos" header="Múltiplos" style={{ width: '10%' }}/>} 
+                {usuario?.tipo !== 'global' && <Column body={renderObrigatoriedade} field="obrigatoriedade" header="Obrigatório" style={{ width: '10%' }}/>} 
                 <Column body={representativeActionsTemplate} header="" style={{ width: '20%'}}/>
             </DataTable>
 

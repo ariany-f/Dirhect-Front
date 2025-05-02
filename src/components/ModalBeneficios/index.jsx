@@ -11,6 +11,8 @@ import icones_beneficios from '@json/icones_beneficio.json';
 import tiposBeneficio from '@json/tipos_beneficio.json';
 import styles from './ModalAdicionarDepartamento.module.css';
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
+import SwitchInput from '@components/SwitchInput';
 
 // Estilos
 const Col12 = styled.div`
@@ -36,12 +38,15 @@ const Wrapper = styled.div`
 `;
 
 function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null }) {
+    const { usuario } = useSessaoUsuarioContext();
     const [classError, setClassError] = useState([]);
     const [iconeSelecionado, setIconeSelecionado] = useState(null);
     const [dropdownTipos, setDropdownTipos] = useState([]);
     const [tipoSelecionado, setTipoSelecionado] = useState(null);
     const [descricao, setDescricao] = useState('');
     const [opcoesIcones, setOpcoesIcones] = useState([]);
+    const [multiplos, setMultiplos] = useState(false);
+    const [obrigatoriedade, setObrigatoriedade] = useState(false);
 
     useEffect(() => {
         // Configura os tipos para o dropdown a partir do JSON importado
@@ -80,12 +85,16 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
                     icon: icone.code
                 });
             }
+            setMultiplos(!!beneficio.multiplos);
+            setObrigatoriedade(!!beneficio.obrigatoriedade);
         } else if (!opened) {
             // Limpa os campos quando fecha o modal
             setDescricao('');
             setTipoSelecionado(null);
             setIconeSelecionado(null);
             setClassError([]);
+            setMultiplos(false);
+            setObrigatoriedade(false);
         }
     }, [beneficio, opened, dropdownTipos, opcoesIcones]);
 
@@ -103,7 +112,9 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
         const dadosParaAPI = {
             tipo: tipoSelecionado.code,
             descricao: descricao.trim(),
-            icone: iconeSelecionado.code
+            icone: iconeSelecionado.code,
+            multiplos: usuario?.tipo !== 'global' ? multiplos : undefined,
+            obrigatoriedade: usuario?.tipo !== 'global' ? obrigatoriedade : undefined
         };
         
         aoSalvar(dadosParaAPI);
@@ -232,6 +243,18 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
                                         placeholder="Digite a descrição" 
                                     />
                                 </Col6>
+                                {usuario?.tipo !== 'global' && (
+                                    <Col6>
+                                        <div style={{display: 'flex', alignItems: 'center', gap: 16, marginTop: 8}}>
+                                            <span>Múltiplos</span>
+                                            <SwitchInput checked={multiplos} onChange={() => setMultiplos(!multiplos)} style={{ width: 36 }} />
+                                        </div>
+                                        <div style={{display: 'flex', alignItems: 'center', gap: 16, marginTop: 8}}>
+                                            <span>Obrigatório</span>
+                                            <SwitchInput checked={obrigatoriedade} onChange={() => setObrigatoriedade(!obrigatoriedade)} style={{ width: 36 }} />
+                                        </div>
+                                    </Col6>
+                                )}
                             </Col12>
 
                             <div className={styles.containerBottom}>
