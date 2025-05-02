@@ -17,7 +17,7 @@ import { Toast } from 'primereact/toast'
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0px;
+    gap: 24px;
     width: 100%;
 `
 
@@ -120,18 +120,16 @@ function Beneficios() {
             <Loading opened={loading} />
             <ConteudoFrame>
                 <Toast ref={toast} />
-                <Container>
-                    <DataTableBeneficios 
-                        beneficios={beneficios}
-                        paginator={true}
-                        rows={lazyParams.rows}
-                        totalRecords={totalRecords}
-                        first={lazyParams.first}
-                        onPage={onPage}
-                        onSearch={onSearch}
-                        onBeneficioDeleted={loadBeneficios}
-                    />
-                </Container>
+                <DataTableBeneficios 
+                    beneficios={beneficios}
+                    paginator={true}
+                    rows={lazyParams.rows}
+                    totalRecords={totalRecords}
+                    first={lazyParams.first}
+                    onPage={onPage}
+                    onSearch={onSearch}
+                    onBeneficioDeleted={loadBeneficios}
+                />
                 <ModalBeneficios aoSalvar={adicionarBeneficio} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
             </ConteudoFrame>
         </>
