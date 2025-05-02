@@ -182,7 +182,7 @@ function Menu({ opened = false, aoFechar }){
         <>
         {opened &&
             <DialogEstilizado>
-                <nav>
+                <nav style={{ width: '100%' }}>
                     <ul>
                         {/* Menu Items - Apenas no Mobile */}
                         {!isDesktop && menuItems.map((section, sectionIndex) => (
