@@ -601,6 +601,16 @@ function ColaboradorBeneficios() {
                                                         )}
                                                         <span style={{fontWeight: 600, fontSize: 13}}>
                                                             {operadora?.nome}
+                                                            {contrato?.id && (
+                                                                <a
+                                                                    href={`/contratos/detalhes/${contrato.id}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    style={{ marginLeft: 8, fontSize: 11, color: 'var(--primaria)', textDecoration: 'underline', fontWeight: 400 }}
+                                                                >
+                                                                    Ver contrato
+                                                                </a>
+                                                            )}
                                                         </span>
                                                         {contrato.status && (
                                                             <StatusContratoTag status={getStatusContrato(contrato.status)}>
@@ -653,6 +663,7 @@ function ColaboradorBeneficios() {
                                                                                     appendTo={document.body}
                                                                                     valueTemplate={(_, props) => statusTemplate(statusOptions.find(opt => opt.value === item.status), { value: item }, true, false, true)}
                                                                                     itemTemplate={option => statusTemplate(option, { option: { ...option, obrigatoriedade: item.obrigatoriedade } }, false, true, false)}
+                                                                                    disabled={getStatusContrato(item.contratoInfo?.status) === 'Indisponível'}
                                                                                 />
                                                                             </div>
                                                                         </TopRow>
