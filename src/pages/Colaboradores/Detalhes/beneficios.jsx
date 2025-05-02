@@ -236,6 +236,7 @@ const ColItem = styled.div`
     min-height: 120px;
     display: flex;
     flex-direction: column;
+    background: var(--neutro-50);
     justify-content: flex-start;
 `;
 
@@ -263,8 +264,7 @@ const ContratoItensGrid = styled.div`
 
 // Componente para informações do contrato
 const InfoContrato = styled.div`
-    margin: 0 0 8px 0;
-    padding: 8px 12px;
+    padding: 14px 12px;
     background: var(--neutro-100);
     border-radius: 8px;
     font-size: 12px;
@@ -272,6 +272,44 @@ const InfoContrato = styled.div`
     display: flex;
     flex-direction: column;
     gap: 2px;
+    opacity: ${({ inativo }) => inativo ? 0.5 : 1};
+    cursor: ${({ inativo }) => inativo ? 'not-allowed' : 'default'};
+`
+
+// Tag de status do contrato
+const StatusContratoTag = styled.span`
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+    background: ${({ status }) =>
+        status === 'Ativo' ? 'rgba(0, 200, 83, 0.1)' :
+        status === 'Inativo' ? 'rgba(229, 115, 115, 0.1)' :
+        'rgba(255, 167, 38, 0.1)'};
+    color: ${({ status }) =>
+        status === 'Ativo' ? 'var(--success)' :
+        status === 'Inativo' ? 'var(--error)' :
+        'var(--warning)'};
+`;
+
+// Badge do número do contrato
+const ContratoBadge = styled.span`
+    display: inline-block;
+    background: var(--primaria-100, #e3e8f7);
+    color: var(--primaria, #5472d4);
+    font-size: 11px;
+    font-weight: 400;
+    border-radius: 8px;
+    padding: 2px 8px;
+    margin-left: 6px;
+`;
+
+// Container para os itens do contrato
+const ContratoItensBox = styled.div`
+    border-radius: 12px;
+    padding: 16px 12px;
 `;
 
 function ColaboradorBeneficios() {
@@ -463,86 +501,77 @@ function ColaboradorBeneficios() {
                                     return (
                                         <div key={contratoId} style={{width: '100%'}}>
                                             {contrato && (
-                                                <InfoContrato>
+                                                <InfoContrato inativo={getStatusContrato(contrato.status) === 'Inativo'}>
                                                     <div style={{display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2}}>
                                                         {operadora?.imagem_url && (
                                                             <img src={operadora.imagem_url} alt={operadora.nome} style={{width: 32, height: 20, objectFit: 'contain', borderRadius: 4, background: '#fff', border: '1px solid var(--neutro-200)'}} />
                                                         )}
                                                         <span style={{fontWeight: 600, color: 'var(--primaria)', fontSize: 13}}>
                                                             {operadora?.nome}
+                                                            {contrato.num_contrato_origem && (
+                                                                <ContratoBadge>{contrato.num_contrato_origem}</ContratoBadge>
+                                                            )}
                                                         </span>
+                                                        {contrato.status && (
+                                                            <StatusContratoTag status={getStatusContrato(contrato.status)}>
+                                                                {getStatusContrato(contrato.status)}
+                                                            </StatusContratoTag>
+                                                        )}
                                                     </div>
-                                                    {contrato.num_contrato_origem && (
-                                                        <span><b>Contrato:</b> {contrato.num_contrato_origem}</span>
-                                                    )}
-                                                    {contrato.status && (
-                                                        <span><b>Status:</b> {getStatusContrato(contrato.status)}</span>
-                                                    )}
-                                                    {contrato.dt_inicio && contrato.dt_fim && (
-                                                        <span><b>Vigência:</b> {contrato.dt_inicio} até {contrato.dt_fim}</span>
-                                                    )}
-                                                    {contrato.observacao && (
-                                                        <span><b>Observação:</b> {contrato.observacao}</span>
-                                                    )}
                                                     {contrato.cnpj && (
                                                         <span><b>CNPJ:</b> {contrato.cnpj}</span>
                                                     )}
-                                                </InfoContrato>
-                                            )}
-                                            <ContratoItensGrid>
-                                                {itensContrato.map((item, idx) => (
-                                                    <ColItem key={item.id}>
-                                                        <Accordion
-                                                            activeIndex={expandedItems[descricao] === item.id ? 0 : null}
-                                                            onTabChange={e => setExpandedItems(prev => ({ ...prev, [descricao]: e.index === 0 ? item.id : null }))}
-                                                        >
-                                                            <AccordionTab
-                                                                header={
-                                                                    <>
-                                                                        <TopRow>
-                                                                            <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-                                                                                {item.operadora?.imagem_url && (
-                                                                                    <OperadoraLogo src={item.operadora.imagem_url} alt={item.operadora.nome} />
-                                                                                )}
-                                                                                <Texto weight={500} size="12px">{item.operadora?.nome}</Texto>
-                                                                                {item.item.icone && (
-                                                                                    <span style={{marginLeft: 6, marginRight: 2}}>
-                                                                                        <IconeBeneficio nomeIcone={item.item.icone} />
-                                                                                    </span>
-                                                                                )}
-                                                                                <Texto size="12px">{item.plano}</Texto>
+                                                    <ContratoItensBox>
+                                                        <ContratoItensGrid>
+                                                            {itensContrato.map((item, idx) => (
+                                                                <ColItem key={item.id}>
+                                                                    <Accordion
+                                                                        activeIndex={expandedItems[descricao] === item.id ? 0 : null}
+                                                                        onTabChange={e => setExpandedItems(prev => ({ ...prev, [descricao]: e.index === 0 ? item.id : null }))}
+                                                                    >
+                                                                        <AccordionTab
+                                                                            header={
+                                                                                <>
+                                                                                    <TopRow>
+                                                                                        <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
+                                                                                            {item.item.icone && (
+                                                                                                <span style={{marginLeft: 6, marginRight: 2}}>
+                                                                                                    <IconeBeneficio nomeIcone={item.item.icone} />
+                                                                                                </span>
+                                                                                            )}
+                                                                                            <Texto size="12px">{item.plano}</Texto>
+                                                                                        </div>
+                                                                                        {item.status !== 'pendente' && (
+                                                                                            <StatusItemTag status={item.obrigatoriedade ? 'OBRIGATORIO' : item.status}>{getStatusLabel(item)}</StatusItemTag>
+                                                                                        )}
+                                                                                    </TopRow>
+                                                                                    <StatusDropdownRow>
+                                                                                        <Dropdown
+                                                                                            value={item.status}
+                                                                                            options={statusOptions}
+                                                                                            onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
+                                                                                            style={{width: 250, minWidth: 250, zIndex: 1000}}
+                                                                                            appendTo={document.body}
+                                                                                        />
+                                                                                    </StatusDropdownRow>
+                                                                                </>
+                                                                            }
+                                                                        >
+                                                                            <div style={{background: 'var(--neutro-50)', borderRadius: 8, margin: '8px 0', padding: 12}}>
+                                                                                <Texto size="12px" weight={600}>Detalhes do Plano: {item.plano}</Texto>
+                                                                                <Texto size="12px">Valor: {Real.format(item.item.valor)}</Texto>
+                                                                                <Texto size="12px">Desconto: {Real.format(item.item.valor_desconto)}</Texto>
+                                                                                <Texto size="12px">Empresa: {Real.format(item.item.valor_empresa)}</Texto>
+                                                                                <Texto size="12px">Tipo Cálculo: {item.item.tipo_calculo}</Texto>
+                                                                                <Texto size="12px">Tipo Desconto: {item.item.tipo_desconto}</Texto>
                                                                             </div>
-                                                                            {item.status !== 'pendente' && (
-                                                                                <StatusItemTag status={item.obrigatoriedade ? 'OBRIGATORIO' : item.status}>{getStatusLabel(item)}</StatusItemTag>
-                                                                            )}
-                                                                        </TopRow>
-                                                                        <StatusDropdownRow>
-                                                                            <Dropdown
-                                                                                value={item.status}
-                                                                                options={statusOptions}
-                                                                                onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
-                                                                                style={{width: 250, minWidth: 250, zIndex: 1000}}
-                                                                                appendTo={document.body}
-                                                                            />
-                                                                        </StatusDropdownRow>
-                                                                    </>
-                                                                }
-                                                            >
-                                                                <div style={{background: 'var(--neutro-50)', borderRadius: 8, margin: '8px 0', padding: 12}}>
-                                                                    <Texto size="12px" weight={600}>Detalhes do Plano: {item.plano}</Texto>
-                                                                    <Texto size="12px">Valor: {Real.format(item.item.valor)}</Texto>
-                                                                    <Texto size="12px">Desconto: {Real.format(item.item.valor_desconto)}</Texto>
-                                                                    <Texto size="12px">Empresa: {Real.format(item.item.valor_empresa)}</Texto>
-                                                                    <Texto size="12px">Tipo Cálculo: {item.item.tipo_calculo}</Texto>
-                                                                    <Texto size="12px">Tipo Desconto: {item.item.tipo_desconto}</Texto>
-                                                                </div>
-                                                            </AccordionTab>
-                                                        </Accordion>
-                                                    </ColItem>
-                                                ))}
-                                            </ContratoItensGrid>
-                                            {idxContrato < arrContratos.length - 1 && (
-                                                <div style={{borderBottom: '2px dashed var(--neutro-200)', margin: '16px 0'}}></div>
+                                                                        </AccordionTab>
+                                                                    </Accordion>
+                                                                </ColItem>
+                                                            ))}
+                                                        </ContratoItensGrid>
+                                                    </ContratoItensBox>
+                                                </InfoContrato>
                                             )}
                                         </div>
                                     )

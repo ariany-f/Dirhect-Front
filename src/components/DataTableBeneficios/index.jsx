@@ -126,7 +126,7 @@ function DataTableBeneficios({
         // Atualiza o estado local imediatamente para feedback instantâneo
         setBeneficiosStatus(prev => ({
             ...prev,
-            [id]: novoStatus
+            [id]: !!novoStatus
         }));
         try {
             // Chama o endpoint correto conforme o tipo de usuário
@@ -141,7 +141,7 @@ function DataTableBeneficios({
                 });
             }
             // Atualiza o estado local com o valor retornado pela API (caso backend retorne o objeto atualizado)
-            if (response && (response.ativo !== undefined || response.ativo_tenant !== undefined)) {
+            if (response && (typeof response.ativo === 'boolean' || typeof response.ativo_tenant === 'boolean')) {
                 setBeneficiosStatus(prev => ({
                     ...prev,
                     [id]: usuario?.tipo === 'global' ? response.ativo : response.ativo_tenant
@@ -150,7 +150,7 @@ function DataTableBeneficios({
             toast.current.show({
                 severity: 'success',
                 summary: 'Sucesso',
-                detail: `Benefício ${novoStatus ? 'ativado' : 'desativado'} com sucesso`,
+                detail: `Benefício ${!!novoStatus ? 'ativado' : 'desativado'} com sucesso`,
                 life: 3000
             });
         } catch (error) {
@@ -243,8 +243,8 @@ function DataTableBeneficios({
                     </StatusTag>
                     <SwitchInput
                         checked={statusAtual}
-                        onChange={(e) => {
-                            atualizarStatus(rowData.id, e.value);
+                        onChange={() => {
+                            atualizarStatus(rowData.id, !statusAtual);
                         }}
                         style={{ width: '36px' }}
                     />

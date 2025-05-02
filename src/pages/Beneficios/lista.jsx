@@ -39,7 +39,10 @@ function Beneficios() {
 
     const loadBeneficios = () => {
         setLoading(true)
-        http.get(`beneficio/?format=json&page=${lazyParams.page}&page_size=${lazyParams.rows}${searchTerm ? `&search=${searchTerm}` : ''}`)
+        let url = `beneficio/?format=json&page=${lazyParams.page}&page_size=${lazyParams.rows}`;
+        if (searchTerm) url += `&search=${searchTerm}`;
+        if (usuario?.tipo !== 'global') url += `&ativo=true`;
+        http.get(url)
             .then(response => {
                 setBeneficios(response.results)
                 setTotalRecords(response.count)
@@ -117,18 +120,13 @@ function Beneficios() {
             })
     }
 
-    // Filtra os benefícios conforme o tipo de usuário
-    const beneficiosFiltrados = usuario?.tipo !== 'global'
-        ? beneficios.filter(b => b.ativo === true)
-        : beneficios;
-
     return (
         <>
             <Loading opened={loading} />
             <ConteudoFrame>
                 <Toast ref={toast} />
                 <DataTableBeneficios 
-                    beneficios={beneficiosFiltrados}
+                    beneficios={beneficios}
                     paginator={true}
                     rows={lazyParams.rows}
                     totalRecords={totalRecords}
