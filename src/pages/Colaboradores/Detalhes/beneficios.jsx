@@ -190,9 +190,7 @@ const CardBeneficio = styled.div`
     width: inherit;
     max-width: 100vw;
     position: relative;
-    left: 50%;
-    right: 50%;
-    transform: translateX(-50%);
+    min-height: 180px;
 `
 
 const LinhaItem = styled.div`
@@ -224,6 +222,38 @@ const StatusItemTag = styled.div`
     display: inline-block;
 `
 
+const ItensGrid = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 24px;
+`;
+
+const ColItem = styled.div`
+    flex: 1 1 45%;
+    min-width: 320px;
+    max-width: 48%;
+    box-sizing: border-box;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+`;
+
+const TopRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: space-between;
+    width: 100%;
+`;
+
+const StatusDropdownRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+`;
+
 function ColaboradorBeneficios() {
     let { id } = useParams()
     const [beneficios, setBeneficios] = useState([])
@@ -232,7 +262,7 @@ function ColaboradorBeneficios() {
     const [expandedItems, setExpandedItems] = useState({})
 
     const statusOptions = [
-        { label: 'Pendente', value: 'pendente' },
+        { label: 'Pendente de escolha', value: 'pendente' },
         { label: 'Sim', value: 'sim' },
         { label: 'Não', value: 'nao' }
     ]
@@ -256,6 +286,7 @@ function ColaboradorBeneficios() {
                             lista.push({
                                 id: item.id,
                                 descricao: beneficio.descricao,
+                                icone: beneficio.icone,
                                 multiplos: beneficio.multiplos,
                                 obrigatoriedade: beneficio.obrigatoriedade,
                                 status: 'pendente',
@@ -368,64 +399,86 @@ function ColaboradorBeneficios() {
                 <div style={{width: '100%'}}>
                     {Object.entries(grupos).map(([descricao, itens]) => (
                         <CardBeneficio key={descricao}>
-                            <div style={{display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16}}>
-                                <IconeBeneficio nomeIcone={descricao} />
-                                <Texto weight={600} size="15px">{descricao}</Texto>
-                                {itens[0].obrigatoriedade && (
-                                    <StatusTag $tipo="OBRIGATORIO">OBRIGATÓRIO</StatusTag>
-                                )}
-                                {itens[0].multiplos && (
-                                    <Texto size="10px" color="var(--info)">
-                                        Pode escolher mais de um deste grupo
-                                    </Texto>
-                                )}
+                            <div style={{display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, justifyContent: 'space-between'}}>
+                                <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
+                                    <IconeBeneficio nomeIcone={itens[0].icone ?? descricao} />
+                                    <Texto weight={600} size="15px">{descricao}</Texto>
+                                </div>
+                                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4}}>
+                                    {itens[0].obrigatoriedade ? (
+                                        <StatusTag $tipo="OBRIGATORIO">BENEFÍCIO OBRIGATÓRIO</StatusTag>
+                                    ) : (
+                                        <StatusTag $tipo="AGUARDANDO">BENEFÍCIO OPCIONAL</StatusTag>
+                                    )}
+                                    {!itens[0].multiplos && (
+                                        <Texto size="10px" color="var(--info)">
+                                            Você só pode selecionar um dos itens abaixo
+                                        </Texto>
+                                    )}
+                                    {itens[0].multiplos && (
+                                        <Texto size="10px" color="var(--info)">
+                                            Pode selecionar mais de um deste grupo
+                                        </Texto>
+                                    )}
+                                </div>
                             </div>
-                            <Accordion
-                                activeIndex={expandedItems[descricao] ?? null}
-                                onTabChange={e => setExpandedItems(prev => ({ ...prev, [descricao]: e.index }))}
-                            >
+                            <ItensGrid>
                                 {itens.map((item, idx) => (
-                                    <AccordionTab
-                                        key={item.id}
-                                        header={
-                                            <LinhaItem>
-                                                <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-                                                    {item.operadora?.imagem_url && (
-                                                        <OperadoraLogo src={item.operadora.imagem_url} alt={item.operadora.nome} />
+                                    <ColItem key={item.id}>
+                                        <Accordion
+                                            activeIndex={expandedItems[descricao] === idx ? 0 : null}
+                                            onTabChange={e => setExpandedItems(prev => ({ ...prev, [descricao]: e.index === 0 ? idx : null }))}
+                                        >
+                                            <AccordionTab
+                                                header={
+                                                    <>
+                                                        <TopRow>
+                                                            <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
+                                                                {item.operadora?.imagem_url && (
+                                                                    <OperadoraLogo src={item.operadora.imagem_url} alt={item.operadora.nome} />
+                                                                )}
+                                                                <Texto weight={500} size="12px">{item.operadora?.nome}</Texto>
+                                                                {item.item.icone && (
+                                                                    <span style={{marginLeft: 6, marginRight: 2}}>
+                                                                        <IconeBeneficio nomeIcone={item.item.icone} />
+                                                                    </span>
+                                                                )}
+                                                                <Texto size="12px">{item.plano}</Texto>
+                                                            </div>
+                                                            {item.status !== 'pendente' && (
+                                                                <StatusItemTag status={item.obrigatoriedade ? 'OBRIGATORIO' : item.status}>{getStatusLabel(item)}</StatusItemTag>
+                                                            )}
+                                                        </TopRow>
+                                                        <StatusDropdownRow>
+                                                            <Dropdown
+                                                                value={item.status}
+                                                                options={statusOptions}
+                                                                onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
+                                                                style={{width: 250, minWidth: 250, zIndex: 1000}}
+                                                                appendTo={document.body}
+                                                            />
+                                                        </StatusDropdownRow>
+                                                    </>
+                                                }
+                                            >
+                                                <div style={{background: 'var(--neutro-50)', borderRadius: 8, margin: '8px 0', padding: 12}}>
+                                                    <Texto size="12px" weight={600}>Detalhes do Plano: {item.plano}</Texto>
+                                                    <Texto size="12px">Valor: {Real.format(item.item.valor)}</Texto>
+                                                    <Texto size="12px">Desconto: {Real.format(item.item.valor_desconto)}</Texto>
+                                                    <Texto size="12px">Empresa: {Real.format(item.item.valor_empresa)}</Texto>
+                                                    <Texto size="12px">Tipo Cálculo: {item.item.tipo_calculo}</Texto>
+                                                    <Texto size="12px">Tipo Desconto: {item.item.tipo_desconto}</Texto>
+                                                    {item.item.regra_elegibilidade && Array.isArray(item.item.regra_elegibilidade) && item.item.regra_elegibilidade.length > 0 && (
+                                                        <Texto size="11px" color="var(--info)">
+                                                            Elegibilidade: {JSON.stringify(item.item.regra_elegibilidade)}
+                                                        </Texto>
                                                     )}
-                                                    <Texto weight={500} size="12px">{item.operadora?.nome}</Texto>
                                                 </div>
-                                                <Texto size="12px">{item.plano}</Texto>
-                                                <Dropdown
-                                                    value={item.status}
-                                                    options={statusOptions}
-                                                    onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
-                                                    style={{width: 200, minWidth: 200, zIndex: 1000}}
-                                                    appendTo={document.body}
-                                                />
-                                                <StatusItemTag status={item.obrigatoriedade ? 'OBRIGATORIO' : item.status}>{getStatusLabel(item)}</StatusItemTag>
-                                                {item.obrigatoriedade && (
-                                                    <StatusTag $tipo="OBRIGATORIO">OBRIGATÓRIO</StatusTag>
-                                                )}
-                                            </LinhaItem>
-                                        }
-                                    >
-                                        <div style={{background: 'var(--neutro-50)', borderRadius: 8, margin: '8px 0', padding: 12}}>
-                                            <Texto size="12px" weight={600}>Detalhes do Plano: {item.plano}</Texto>
-                                            <Texto size="12px">Valor: {Real.format(item.item.valor)}</Texto>
-                                            <Texto size="12px">Desconto: {Real.format(item.item.valor_desconto)}</Texto>
-                                            <Texto size="12px">Empresa: {Real.format(item.item.valor_empresa)}</Texto>
-                                            <Texto size="12px">Tipo Cálculo: {item.item.tipo_calculo}</Texto>
-                                            <Texto size="12px">Tipo Desconto: {item.item.tipo_desconto}</Texto>
-                                            {item.item.regra_elegibilidade && Array.isArray(item.item.regra_elegibilidade) && item.item.regra_elegibilidade.length > 0 && (
-                                                <Texto size="11px" color="var(--info)">
-                                                    Elegibilidade: {JSON.stringify(item.item.regra_elegibilidade)}
-                                                </Texto>
-                                            )}
-                                        </div>
-                                    </AccordionTab>
+                                            </AccordionTab>
+                                        </Accordion>
+                                    </ColItem>
                                 ))}
-                            </Accordion>
+                            </ItensGrid>
                         </CardBeneficio>
                     ))}
                 </div>
