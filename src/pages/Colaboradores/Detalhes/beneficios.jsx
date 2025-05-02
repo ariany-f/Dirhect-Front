@@ -17,6 +17,7 @@ import Dashboard from '@assets/Dashboard.svg'
 import { useParams } from "react-router-dom"
 import { Button } from 'primereact/button'
 import { Accordion, AccordionTab } from 'primereact/accordion'
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
 
 const Beneficio = styled.div`
     display: flex;
@@ -521,38 +522,52 @@ function ColaboradorBeneficios() {
                                                         <ContratoItensGrid>
                                                             {itensContrato.map((item, idx) => (
                                                                 <ColItem key={item.id}>
-                                                                    <Accordion
-                                                                        activeIndex={expandedItems[descricao] === item.id ? 0 : null}
-                                                                        onTabChange={e => setExpandedItems(prev => ({ ...prev, [descricao]: e.index === 0 ? item.id : null }))}
-                                                                    >
-                                                                        <AccordionTab
-                                                                            header={
-                                                                                <>
-                                                                                    <TopRow>
-                                                                                        <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-                                                                                            {item.item.icone && (
-                                                                                                <span style={{marginLeft: 6, marginRight: 2}}>
-                                                                                                    <IconeBeneficio nomeIcone={item.item.icone} />
-                                                                                                </span>
-                                                                                            )}
-                                                                                            <Texto size="12px" weight={600}>{item.plano}</Texto>
-                                                                                            <Dropdown
-                                                                                                value={item.status}
-                                                                                                options={statusOptions}
-                                                                                                onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
-                                                                                                style={{width: 170, minWidth: 160, fontSize: 12, height: 30}}
-                                                                                                panelStyle={{fontSize: 12}}
-                                                                                                appendTo={document.body}
-                                                                                            />
-                                                                                        </div>
-                                                                                        {item.status !== 'pendente' && (
-                                                                                            <StatusItemTag status={item.obrigatoriedade ? 'OBRIGATORIO' : item.status}>{getStatusLabel(item)}</StatusItemTag>
-                                                                                        )}
-                                                                                    </TopRow>
-                                                                                </>
-                                                                            }
-                                                                        >
-                                                                            <div style={{background: 'var(--neutro-50)', borderRadius: 8, margin: '8px 0', padding: 12}}>
+                                                                    {/* Custom Accordion-like behavior */}
+                                                                    <div style={{width: '100%', padding: '12px'}}>
+                                                                        <TopRow>
+                                                                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12}}>
+                                                                                {item.item.icone && (
+                                                                                    <span style={{marginLeft: 6, marginRight: 2}}>
+                                                                                        <IconeBeneficio nomeIcone={item.item.icone} />
+                                                                                    </span>
+                                                                                )}
+                                                                                <Texto size="12px" weight={600}>{item.plano}</Texto>
+                                                                                <Dropdown
+                                                                                    value={item.status}
+                                                                                    options={statusOptions}
+                                                                                    onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
+                                                                                    style={{width: 170, minWidth: 160, fontSize: 12, height: 40}}
+                                                                                    panelStyle={{fontSize: 12}}
+                                                                                    appendTo={document.body}
+                                                                                />
+                                                                            </div>
+                                                                            {item.status !== 'pendente' && (
+                                                                                <StatusItemTag status={item.obrigatoriedade ? 'OBRIGATORIO' : item.status}>{getStatusLabel(item)}</StatusItemTag>
+                                                                            )}
+                                                                        </TopRow>
+                                                                        <div style={{display: 'flex', justifyContent: 'center', marginTop: '16px'}}>
+                                                                            <button
+                                                                                style={{
+                                                                                    background: 'none',
+                                                                                    border: 'none',
+                                                                                    cursor: 'pointer',
+                                                                                    width: 80,
+                                                                                    height: 10,
+                                                                                    display: 'flex',
+                                                                                    alignItems: 'center',
+                                                                                    justifyContent: 'center',
+                                                                                    fontSize: 32,
+                                                                                    fontWeight: 400,
+                                                                                    color: 'var(--primaria)',
+                                                                                    transition: 'background 0.2s, color 0.2s',
+                                                                                }}
+                                                                                onClick={() => setExpandedItems(prev => ({ ...prev, [descricao]: expandedItems[descricao] === item.id ? null : item.id }))}
+                                                                            >
+                                                                                {expandedItems[descricao] === item.id ? <FaChevronUp style={{width: 50, height: 15}} /> : <FaChevronDown style={{width: 50, height: 15}} />}
+                                                                            </button>
+                                                                        </div>
+                                                                        {expandedItems[descricao] === item.id && (
+                                                                            <div style={{background: 'var(--neutro-50)', borderRadius: 12, margin: '12px 0', padding: '24px 20px'}}>
                                                                                 <Texto size="12px" weight={600}>Detalhes do Plano: {item.plano}</Texto>
                                                                                 <Texto size="12px">Valor: {Real.format(item.item.valor)}</Texto>
                                                                                 <Texto size="12px">Desconto: {Real.format(item.item.valor_desconto)}</Texto>
@@ -560,8 +575,8 @@ function ColaboradorBeneficios() {
                                                                                 <Texto size="12px">Tipo Cálculo: {item.item.tipo_calculo}</Texto>
                                                                                 <Texto size="12px">Tipo Desconto: {item.item.tipo_desconto}</Texto>
                                                                             </div>
-                                                                        </AccordionTab>
-                                                                    </Accordion>
+                                                                        )}
+                                                                    </div>
                                                                 </ColItem>
                                                             ))}
                                                         </ContratoItensGrid>
