@@ -506,11 +506,8 @@ function ColaboradorBeneficios() {
                                                         {operadora?.imagem_url && (
                                                             <img src={operadora.imagem_url} alt={operadora.nome} style={{width: 32, height: 20, objectFit: 'contain', borderRadius: 4, background: '#fff', border: '1px solid var(--neutro-200)'}} />
                                                         )}
-                                                        <span style={{fontWeight: 600, color: 'var(--primaria)', fontSize: 13}}>
+                                                        <span style={{fontWeight: 600, fontSize: 13}}>
                                                             {operadora?.nome}
-                                                            {contrato.num_contrato_origem && (
-                                                                <ContratoBadge>{contrato.num_contrato_origem}</ContratoBadge>
-                                                            )}
                                                         </span>
                                                         {contrato.status && (
                                                             <StatusContratoTag status={getStatusContrato(contrato.status)}>
