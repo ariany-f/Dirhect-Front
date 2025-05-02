@@ -598,6 +598,11 @@ function ColaboradorBeneficios() {
                     </div>
                     <button onClick={onClose} style={{background: 'none', border: 'none', fontSize: 22, cursor: 'pointer'}}>&times;</button>
                 </div>
+                {/* Item do Contrato */}
+                <div style={{margin: '8px 0 0 0'}}>
+                    <Texto weight={700} size={15}>Item do Contrato:</Texto>
+                    <span style={{fontWeight: 600, fontSize: 14, marginLeft: 8}}>{item.plano || '---'}</span>
+                </div>
                 {/* Contrato */}
                 <div style={{marginTop: 16}}>
                     <div weight={700} size={15} style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8}}>
@@ -650,7 +655,7 @@ function ColaboradorBeneficios() {
             ) : Object.keys(grupos).length > 0 ? (
                 <div style={{
                     width: '100%',
-                    maxHeight: 'calc(100vh - 280px)', // 280px para considerar algum padding/topo
+                    maxHeight: 'calc(100vh - 290px)', // 290px para considerar algum padding/topo
                     overflowY: 'auto',
                     paddingRight: 8
                 }}>
@@ -705,13 +710,7 @@ function ColaboradorBeneficios() {
                                                             </StatusContratoTag>
                                                         )}
                                                         <div style={{marginLeft: 'auto'}}>
-                                                            <button
-                                                                style={{background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primaria)', fontSize: 18}}
-                                                                title="Mais informações"
-                                                                onClick={() => setModalInfo({ open: true, item: itensContrato[0] })}
-                                                            >
-                                                                <FaInfoCircle />
-                                                            </button>
+                                                           
                                                         </div>
                                                     </div>
                                                     {contrato.cnpj && (
@@ -724,33 +723,22 @@ function ColaboradorBeneficios() {
                                                                     {/* Custom Accordion-like behavior */}
                                                                     <div style={{width: '100%', padding: '12px'}}>
                                                                         <TopRow>
-                                                                            <div style={{display: 'flex', alignItems: 'center', gap: 8, flex: 1}}>
-                                                                                <button
-                                                                                    style={{
-                                                                                        background: 'none',
-                                                                                        border: 'none',
-                                                                                        cursor: 'pointer',
-                                                                                        display: 'flex',
-                                                                                        alignItems: 'center',
-                                                                                        justifyContent: 'center',
-                                                                                        fontSize: 16,
-                                                                                        color: 'var(--primaria)',
-                                                                                        marginRight: 4,
-                                                                                        padding: 0,
-                                                                                        width: 20,
-                                                                                        height: 20
-                                                                                    }}
-                                                                                    onClick={() => setExpandedItems(prev => ({ ...prev, [descricao]: expandedItems[descricao] === item.id ? null : item.id }))}
-                                                                                >
-                                                                                    <FaRegEye style={{ opacity: expandedItems[descricao] === item.id ? 1 : 0.5, width: 14, height: 14 }} />
-                                                                                </button>
-                                                                                <div>
+                                                                            <div style={{display: 'flex', alignItems: 'flex-start', gap: 8, flex: 1, flexDirection: 'column'}}>
+                                                                                <div style={{display: 'flex', alignItems: 'center', gap: 6}}>
                                                                                     <Texto size="14px" weight={600}>{item.plano}</Texto>
-                                                                                    <Texto size="12px" color="var(--neutro-400)">{Real.format(item.item.valor)}</Texto>
                                                                                 </div>
+                                                                                <Texto size="12px" color="var(--neutro-400)">{Real.format(item.item.valor)}</Texto>
                                                                             </div>
-                                                                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'flex-end', minWidth: 56}}>
-                                                                                <CustomDropdown
+                                                                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', minWidth: 56, gap: 8}}>
+                                                                               
+                                                                                <button
+                                                                                    style={{background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primaria)', fontSize: 16, padding: 0}}
+                                                                                    title="Mais informações"
+                                                                                    onClick={() => setModalInfo({ open: true, item })}
+                                                                                >
+                                                                                    <FaInfoCircle />
+                                                                                </button>
+                                                                                 <CustomDropdown
                                                                                     value={item.status}
                                                                                     options={statusOptions}
                                                                                     onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
