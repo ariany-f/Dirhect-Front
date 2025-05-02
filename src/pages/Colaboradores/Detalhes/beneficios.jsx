@@ -601,8 +601,8 @@ function ColaboradorBeneficios() {
                 {/* Contrato */}
                 <div style={{marginTop: 16}}>
                     <div weight={700} size={15} style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8}}>
-                        Número do Contrato: <Link to={`/contratos/detalhes/${contrato.id}`} style={{ textDecoration: 'underline', fontSize: 16, marginTop: 4 }}>{contrato?.num_contrato_origem || '---'}</Link>
-                        
+                        <Texto weight={700} size={15}>Número do Contrato: </Texto>
+                        <Link to={`/contratos/detalhes/${contrato.id}`} style={{ textDecoration: 'underline', fontSize: 16, marginTop: 4 }}>{contrato?.num_contrato_origem || '---'}</Link>
                     </div>
                 </div>
                 {/* Operadora */}
@@ -616,7 +616,7 @@ function ColaboradorBeneficios() {
                 </div> */}
                 {/* Benefício */}
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8}}>
-                    Benefício
+                <Texto weight={700} size={15}>Benefício:</Texto>
                     <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
                         {item.icone && (
                             <IconeBeneficio nomeIcone={item.icone} size={16} />
@@ -692,7 +692,7 @@ function ColaboradorBeneficios() {
                                         <div key={contratoId} style={{width: '100%'}}>
                                             {contrato && (
                                                 <InfoContrato inativo={getStatusContrato(contrato.status) === 'Indisponível'}>
-                                                    <div style={{display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2}}>
+                                                    <div style={{display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2, width: '100%'}}>
                                                         {operadora?.imagem_url && (
                                                             <img src={operadora.imagem_url} alt={operadora.nome} style={{width: 32, height: 20, objectFit: 'contain', borderRadius: 4, background: '#fff', border: '1px solid var(--neutro-200)'}} />
                                                         )}
@@ -704,6 +704,15 @@ function ColaboradorBeneficios() {
                                                                 {getStatusContrato(contrato.status)}
                                                             </StatusContratoTag>
                                                         )}
+                                                        <div style={{marginLeft: 'auto'}}>
+                                                            <button
+                                                                style={{background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primaria)', fontSize: 18}}
+                                                                title="Mais informações"
+                                                                onClick={() => setModalInfo({ open: true, item: itensContrato[0] })}
+                                                            >
+                                                                <FaInfoCircle />
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                     {contrato.cnpj && (
                                                         <span><b>CNPJ:</b> {contrato.cnpj}</span>
@@ -752,13 +761,6 @@ function ColaboradorBeneficios() {
                                                                                     itemTemplate={option => statusTemplate(option, { option: { ...option, obrigatoriedade: item.obrigatoriedade } }, false, true, false)}
                                                                                     disabled={getStatusContrato(item.contratoInfo?.status) === 'Indisponível'}
                                                                                 />
-                                                                                <button
-                                                                                    style={{marginTop: 8, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primaria)', fontSize: 18}}
-                                                                                    title="Mais informações"
-                                                                                    onClick={() => setModalInfo({ open: true, item })}
-                                                                                >
-                                                                                    <FaInfoCircle />
-                                                                                </button>
                                                                             </div>
                                                                         </TopRow>
                                                                         {expandedItems[descricao] === item.id && (
