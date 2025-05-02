@@ -90,10 +90,12 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
         Object.entries(regra).map(([key, value]) => ({
             key: `regra-${idx}-${key}`,
             label: capitalize(key),
-            children: Object.entries(value).map(([k, v]) => ({
-                key: `regra-${idx}-${key}-${k}`,
-                label: `${k}: ${Array.isArray(v) ? v.join(', ') : v}`
-            }))
+            children: Object.entries(value)
+                .filter(([k, _]) => k !== 'index')
+                .map(([k, v]) => ({
+                    key: `regra-${idx}-${key}-${k}`,
+                    label: `${k}: ${Array.isArray(v) ? v.join(', ') : v}`
+                }))
         }))
     );
     return (
