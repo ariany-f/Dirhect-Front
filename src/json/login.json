@@ -60,6 +60,18 @@
       ]
     },
     {
+      "tipo": "global",
+      "email": "global@example.com",
+      "senha": "123",
+      "cpf": "521.239.390-64",
+      "name": "Equipe Ativary",
+      "public_id": "global-001",
+      "empresas": [
+        "8fa184ff-503f-4d15-a1c0-610eb7db905b",
+        "0bfb18f7-58d1-45c4-9c59-eeeb77c132ca"
+      ]
+    },
+    {
       "tipo": "equipeFolhaPagamento",
       "email": "folhaPagamento@example.com",
       "senha": "123",

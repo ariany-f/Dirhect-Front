@@ -13,6 +13,7 @@ import DataTableBeneficios from '@components/DataTableBeneficios'
 import styled from 'styled-components'
 import ModalBeneficios from '../../components/ModalBeneficios'
 import { Toast } from 'primereact/toast'
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -34,6 +35,7 @@ function Beneficios() {
     const [searchTerm, setSearchTerm] = useState('')
     const toast = useRef(null)
     const timeoutRef = useRef(null)
+    const { usuario } = useSessaoUsuarioContext()
 
     const loadBeneficios = () => {
         setLoading(true)
@@ -115,13 +117,18 @@ function Beneficios() {
             })
     }
 
+    // Filtra os benefícios conforme o tipo de usuário
+    const beneficiosFiltrados = usuario?.tipo !== 'global'
+        ? beneficios.filter(b => b.ativo === true)
+        : beneficios;
+
     return (
         <>
             <Loading opened={loading} />
             <ConteudoFrame>
                 <Toast ref={toast} />
                 <DataTableBeneficios 
-                    beneficios={beneficios}
+                    beneficios={beneficiosFiltrados}
                     paginator={true}
                     rows={lazyParams.rows}
                     totalRecords={totalRecords}

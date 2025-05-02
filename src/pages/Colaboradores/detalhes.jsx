@@ -403,7 +403,7 @@ function ColaboradorDetalhes() {
                             </>
                         }
 
-                        {(usuario.tipo == 'equipeBeneficios') && 
+                        {(usuario.tipo == 'equipeBeneficios' || usuario.tipo == 'global') && 
                             <>
                                 <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
                                     <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>

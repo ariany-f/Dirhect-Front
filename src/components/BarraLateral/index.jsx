@@ -397,6 +397,7 @@ function BarraLateral() {
                     },
                 ]
             case 'equipeBeneficios':
+            case 'global':
                 return [
                     {
                         "id": 1,

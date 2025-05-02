@@ -26,6 +26,7 @@ import ModalBeneficios from '@components/ModalBeneficios';
 import { GrAddCircle } from 'react-icons/gr';
 import styles from '@pages/Beneficios/Beneficios.module.css';
 import { useTranslation } from 'react-i18next';
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 
 const StatusTag = styled.span`
     padding: 4px 8px;
@@ -59,6 +60,7 @@ function DataTableBeneficios({
     const [modalOpened, setModalOpened] = useState(false);
     const [beneficioParaEditar, setBeneficioParaEditar] = useState(null);
     const { t } = useTranslation('common');
+    const { usuario } = useSessaoUsuarioContext();
 
     // Atualiza o estado dos status quando os benefícios mudam
     useEffect(() => {
@@ -66,7 +68,7 @@ function DataTableBeneficios({
             setBeneficiosStatus(
                 beneficios.reduce((acc, beneficio) => ({
                     ...acc,
-                    [beneficio.id]: true // Simulando todos ativos inicialmente
+                    [beneficio.id]: usuario?.tipo === 'global' ? beneficio.ativo : beneficio.ativo_tenant
                 }), {})
             );
         }
@@ -128,10 +130,16 @@ function DataTableBeneficios({
                 [id]: novoStatus
             }));
 
-            // Simula chamada à API
-            await http.put(`beneficio/${id}/status`, {
-                status: novoStatus ? 1 : 0
-            });
+            // Chama o endpoint correto conforme o tipo de usuário
+            if (usuario?.tipo === 'global') {
+                await http.put(`beneficio/${id}/?format=json`, {
+                    status: novoStatus ? 1 : 0
+                });
+            } else {
+                await http.put(`beneficio/${id}/?format=json`, {
+                    status_tenant: novoStatus ? 1 : 0
+                });
+            }
 
             toast.current.show({
                 severity: 'success',
@@ -209,6 +217,9 @@ function DataTableBeneficios({
     };
 
     const representativeActionsTemplate = (rowData) => {
+     
+        // Determina qual status usar
+        const statusAtual = usuario?.tipo === 'global' ? rowData.ativo : rowData.ativo_tenant;
         return (
             <div style={{ 
                 display: 'flex', 
@@ -221,11 +232,11 @@ function DataTableBeneficios({
                     alignItems: 'center',
                     gap: '16px'
                 }}>
-                    <StatusTag $status={beneficiosStatus[rowData.id]}>
-                        {beneficiosStatus[rowData.id] ? "Ativo" : "Inativo"}
+                    <StatusTag $status={statusAtual}>
+                        {statusAtual ? "Ativo" : "Inativo"}
                     </StatusTag>
                     <SwitchInput
-                        checked={beneficiosStatus[rowData.id]}
+                        checked={statusAtual}
                         onChange={(e) => {
                             atualizarStatus(rowData.id, e.value);
                         }}
