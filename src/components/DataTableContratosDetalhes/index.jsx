@@ -244,6 +244,12 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     }
 
     const onRowSelect = (e) => {
+        if (!e.value || (e.value && e.value.id === selectedBeneficio?.id)) {
+            // Impede desselecionar ou selecionar o mesmo
+            setSelectedBeneficio(selectedBeneficio);
+            setSelectedItems(selectedBeneficio?.itens || []);
+            return;
+        }
         setSelectedBeneficio(e.value);
         setSelectedItems(e.value.itens || []);
     };

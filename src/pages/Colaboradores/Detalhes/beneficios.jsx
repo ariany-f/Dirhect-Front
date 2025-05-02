@@ -17,7 +17,8 @@ import Dashboard from '@assets/Dashboard.svg'
 import { useParams, Link } from "react-router-dom"
 import { Button } from 'primereact/button'
 import { Accordion, AccordionTab } from 'primereact/accordion'
-import { FaChevronDown, FaChevronUp, FaCheck, FaTimes, FaClock, FaRegEye } from 'react-icons/fa'
+import { FaChevronDown, FaChevronUp, FaCheck, FaTimes, FaClock, FaRegEye, FaInfoCircle } from 'react-icons/fa'
+import { Tree } from 'primereact/tree'
 
 const Beneficio = styled.div`
     display: flex;
@@ -376,6 +377,7 @@ function ColaboradorBeneficios() {
     const [loading, setLoading] = useState(true)
     const toast = useRef(null)
     const [expandedItems, setExpandedItems] = useState({})
+    const [modalInfo, setModalInfo] = useState({ open: false, item: null });
 
     const statusOptions = [
         { label: 'Pendente', value: 'pendente', icon: <FaClock /> },
@@ -545,6 +547,96 @@ function ColaboradorBeneficios() {
         );
     };
 
+    const formatarData = (data) => {
+        if (!data) return '---';
+        const d = new Date(data);
+        if (isNaN(d)) return data;
+        return d.toLocaleDateString('pt-BR');
+    };
+
+    const ModalInfo = ({ open, item, onClose }) => {
+        if (!open || !item) return null;
+        const contrato = item.contratoInfo;
+        const beneficio = item.item?.beneficio;
+        const operadora = contrato?.dados_operadora;
+        const regras = item.item?.regra_elegibilidade || [];
+
+        // Monta os nodes para o Tree
+        const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
+        const regrasTreeNodes = regras.flatMap((regra, idx) =>
+            Object.entries(regra).map(([key, value]) => ({
+                key: `regra-${idx}-${key}`,
+                label: capitalize(key),
+                children: Object.entries(value).map(([k, v]) => ({
+                    key: `regra-${idx}-${key}-${k}`,
+                    label: `${k}: ${Array.isArray(v) ? v.join(', ') : v}`
+                }))
+            }))
+        );
+
+        return (
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                width: 400,
+                height: '100vh',
+                background: '#fff',
+                boxShadow: '-2px 0 16px rgba(0,0,0,0.12)',
+                zIndex: 2000,
+                padding: 32,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 16
+            }}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                        {operadora?.imagem_url && (
+                            <CustomImage src={operadora.imagem_url} alt={operadora.nome} width={32} height={20} />
+                        )}
+                        <span>{operadora?.nome || '---'}</span>
+                    </div>
+                    <button onClick={onClose} style={{background: 'none', border: 'none', fontSize: 22, cursor: 'pointer'}}>&times;</button>
+                </div>
+                {/* Contrato */}
+                <div style={{marginTop: 16}}>
+                    <div weight={700} size={15} style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8}}>
+                        Número do Contrato: <Link to={`/contratos/detalhes/${contrato.id}`} style={{ textDecoration: 'underline', fontSize: 16, marginTop: 4 }}>{contrato?.num_contrato_origem || '---'}</Link>
+                        
+                    </div>
+                </div>
+                {/* Operadora */}
+                {/* <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8}}>
+                    Status: 
+                    {contrato?.status && (
+                        <StatusContratoTag status={getStatusContrato(contrato.status)}>
+                            {getStatusContrato(contrato.status)}
+                        </StatusContratoTag>
+                    )}
+                </div> */}
+                {/* Benefício */}
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8}}>
+                    Benefício
+                    <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                        {item.icone && (
+                            <IconeBeneficio nomeIcone={item.icone} size={16} />
+                        )}
+                        <span style={{fontWeight: 600, fontSize: 14}}>{item.descricao || beneficio?.descricao || '---'}</span>
+                    </div>
+                </div>
+                {/* Regras de Elegibilidade */}
+                <div>
+                    <Texto weight={700} size={15}>Regras de Elegibilidade:</Texto>
+                    {regrasTreeNodes.length > 0 ? (
+                        <Tree value={regrasTreeNodes} />
+                    ) : (
+                        <span>Nenhuma regra cadastrada</span>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
     return (
         <>
         <Toast ref={toast} />
@@ -556,7 +648,12 @@ function ColaboradorBeneficios() {
                     ))}
                 </div>
             ) : Object.keys(grupos).length > 0 ? (
-                <div style={{width: '100%'}}>
+                <div style={{
+                    width: '100%',
+                    maxHeight: 'calc(100vh - 280px)', // 280px para considerar algum padding/topo
+                    overflowY: 'auto',
+                    paddingRight: 8
+                }}>
                     {Object.entries(grupos).map(([descricao, itens]) => (
                         <CardBeneficio key={descricao}>
                             <div style={{display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, justifyContent: 'space-between'}}>
@@ -601,14 +698,6 @@ function ColaboradorBeneficios() {
                                                         )}
                                                         <span style={{fontWeight: 600, fontSize: 13}}>
                                                             {operadora?.nome}
-                                                            {contrato?.id && (
-                                                                <Link
-                                                                    to={`/contratos/detalhes/${contrato.id}`}
-                                                                    style={{ marginLeft: 8, fontSize: 11, color: 'var(--primaria)', textDecoration: 'underline', fontWeight: 400 }}
-                                                                >
-                                                                    Ver contrato
-                                                                </Link>
-                                                            )}
                                                         </span>
                                                         {contrato.status && (
                                                             <StatusContratoTag status={getStatusContrato(contrato.status)}>
@@ -663,6 +752,13 @@ function ColaboradorBeneficios() {
                                                                                     itemTemplate={option => statusTemplate(option, { option: { ...option, obrigatoriedade: item.obrigatoriedade } }, false, true, false)}
                                                                                     disabled={getStatusContrato(item.contratoInfo?.status) === 'Indisponível'}
                                                                                 />
+                                                                                <button
+                                                                                    style={{marginTop: 8, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primaria)', fontSize: 18}}
+                                                                                    title="Mais informações"
+                                                                                    onClick={() => setModalInfo({ open: true, item })}
+                                                                                >
+                                                                                    <FaInfoCircle />
+                                                                                </button>
                                                                             </div>
                                                                         </TopRow>
                                                                         {expandedItems[descricao] === item.id && (
@@ -703,6 +799,7 @@ function ColaboradorBeneficios() {
                 </Frame>
             )}
         </Frame>
+        <ModalInfo open={modalInfo.open} item={modalInfo.item} onClose={() => setModalInfo({ open: false, item: null })} />
         </>
     )
 }
