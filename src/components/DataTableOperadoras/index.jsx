@@ -22,7 +22,7 @@ import http from '@http';
 
 const TableHeader = styled.div`
     display: flex;
-    padding: 0.5rem 0;
+    padding: 0px;
     flex-direction: column;
 
     .header-title {
@@ -187,7 +187,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
         return (
             <TableHeader>
                 <BotaoGrupo align="space-between">
-                    <Texto size={18} weight={500}>Operadoras</Texto>
+                    <Texto size={'18px'} weight={600}>Operadoras</Texto>
                     <Botao aoClicar={onAddClick} estilo="neutro" size="small" tab>
                         <GrAddCircle /> {t('add')} Operadora
                     </Botao>
@@ -224,6 +224,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                 header={headerTemplate}
                 showGridlines
                 stripedRows
+                showHeader={false}
             >
                 <Column 
                     body={representativeNomeTemplate} 
@@ -232,7 +233,6 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                 />
                 <Column 
                     body={representativeActionsTemplate} 
-                    header="" 
                     style={{ width: '30%' }}
                 />
             </DataTable>

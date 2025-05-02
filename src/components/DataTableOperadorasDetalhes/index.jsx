@@ -24,6 +24,13 @@ import styles from '@pages/Operadoras/Operadoras.module.css'
 import BotaoGrupo from '@components/BotaoGrupo';
 import { Real } from '@utils/formats'
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+const TableHeader = styled.div`
+    display: flex;
+    padding: 0px;
+    flex-direction: column;
+`;
 
 const tipos = {
     'C': 'Cultura',
@@ -51,9 +58,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
-
         _filters['global'].value = value;
-
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
@@ -83,46 +88,49 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
         return <Tag value={tipos[rowData.beneficio.tipo]} severity="info" />
     }
 
-    return (
-        <div style={{ display: 'flex', marginTop: '2.5vh', flexDirection: 'column', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
-            <BotaoGrupo align="space-between">                    
-                {operadora?.nome && (
+    const headerTemplate = () => {
+        return (
+            <TableHeader>
+                <BotaoGrupo align="space-between">
+                    {operadora?.nome && (
                         <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                            {/* {operadora.imagem_url && (
-                                <CustomImage 
-                                    src={operadora.imagem_url} 
-                                    alt={operadora.nome} 
-                                    width={90} 
-                                    height={45} 
-                                    title={operadora.nome} 
-                                />
-                            )} */}
-                            Benefícios Disponíveis - 
-                            <Texto size={18} weight={600}>{operadora.nome}</Texto>
+                            <CustomImage src={operadora?.imagem_url} alt={operadora?.nome} width={'70px'} height={35} size={90} title={operadora?.nome} />
+                            <Texto size={16} weight={500}>{operadora?.nome}</Texto>
                         </div>
                     )}
-                {onAddBeneficio && (
-                    <Botao aoClicar={onAddBeneficio} estilo="vermilion" size="small" tab>
-                        <GrAddCircle className={styles.icon} fill="white" color="white"/> {t('add')} Benefício
-                    </Botao>
-                )}
-            </BotaoGrupo>
+                    {onAddBeneficio && (
+                        <Botao aoClicar={onAddBeneficio} estilo="vermilion" size="small" tab>
+                            <GrAddCircle className={styles.icon} fill="white" color="white"/> {t('add')} Benefício
+                        </Botao>
+                    )}
+                </BotaoGrupo>
+            </TableHeader>
+        );
+    };
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
             <DataTable 
                 value={beneficios} 
                 filters={filters} 
                 globalFilterFields={['beneficio.descricao']} 
                 emptyMessage="Não foram encontrados benefícios vinculados à esta operadora" 
-                paginator rows={10}
+                paginator 
+                rows={10}
                 selection={selectedBeneficio} 
                 onSelectionChange={(e) => {setSendData(e.value);}} 
                 selectionMode="single"
                 tableStyle={{ minWidth: '100%', maxWidth: '100%' }}
+                header={headerTemplate}
+                showHeader={false}
+                showGridlines
+                stripedRows
             >
-                <Column body={representativeBeneficioTemplate} field="beneficio.descricao" style={{ width: '50%' }}></Column>
-                <Column body={representativeTipoTemplate} field="beneficio.tipo" style={{ width: '50%' }}></Column>
+                <Column body={representativeBeneficioTemplate} field="beneficio.descricao" style={{ width: '50%' }} />
+                <Column body={representativeTipoTemplate} field="beneficio.tipo" style={{ width: '50%' }} />
             </DataTable>
         </div>
     )
 }
 
-export default DataTableOperadorasDetalhes
+export default DataTableOperadorasDetalhes;
