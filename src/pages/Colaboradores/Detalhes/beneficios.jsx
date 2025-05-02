@@ -14,7 +14,7 @@ import styled from "styled-components"
 import { Real } from '@utils/formats'
 import IconeBeneficio from "@components/IconeBeneficio"
 import Dashboard from '@assets/Dashboard.svg'
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import { Button } from 'primereact/button'
 import { Accordion, AccordionTab } from 'primereact/accordion'
 import { FaChevronDown, FaChevronUp, FaCheck, FaTimes, FaClock, FaRegEye } from 'react-icons/fa'
@@ -602,14 +602,12 @@ function ColaboradorBeneficios() {
                                                         <span style={{fontWeight: 600, fontSize: 13}}>
                                                             {operadora?.nome}
                                                             {contrato?.id && (
-                                                                <a
-                                                                    href={`/contratos/detalhes/${contrato.id}`}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
+                                                                <Link
+                                                                    to={`/contratos/detalhes/${contrato.id}`}
                                                                     style={{ marginLeft: 8, fontSize: 11, color: 'var(--primaria)', textDecoration: 'underline', fontWeight: 400 }}
                                                                 >
                                                                     Ver contrato
-                                                                </a>
+                                                                </Link>
                                                             )}
                                                         </span>
                                                         {contrato.status && (
