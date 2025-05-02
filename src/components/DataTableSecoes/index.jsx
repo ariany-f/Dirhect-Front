@@ -104,7 +104,7 @@ function DataTableSecoes({
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/secao/${id}/?format=json`)
+                http.delete(`/secao/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',

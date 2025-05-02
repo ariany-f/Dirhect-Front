@@ -86,7 +86,7 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/cargo/${id}/?format=json`)
+                http.delete(`/cargo/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',

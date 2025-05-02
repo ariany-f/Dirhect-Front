@@ -96,7 +96,7 @@ function DataTableCentrosCusto({
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/centro-custo/${id}/?format=json`)
+                http.delete(`/centro-custo/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',

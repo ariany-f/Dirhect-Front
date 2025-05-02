@@ -101,7 +101,7 @@ function DataTableDepartamentos({
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/departamento/${id}/?format=json`)
+                http.delete(`/departamento/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',

@@ -125,7 +125,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/filial/${id}/?format=json`)
+                http.delete(`/filial/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',

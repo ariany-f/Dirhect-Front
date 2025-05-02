@@ -280,7 +280,7 @@ function DataTableContratos({
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/contrato/${id}/?format=json`)
+                http.delete(`/contrato/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',

@@ -94,7 +94,7 @@ function DataTableHorarios({
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/horario/${id}/?format=json`)
+                http.delete(`/horario/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',

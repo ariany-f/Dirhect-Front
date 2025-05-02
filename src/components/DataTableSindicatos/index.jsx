@@ -102,7 +102,7 @@ function DataTableSindicatos({
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/sindicato/${id}/?format=json`)
+                http.delete(`/sindicato/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',

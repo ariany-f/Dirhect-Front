@@ -93,7 +93,7 @@ function DataTableBeneficios({
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/beneficio/${beneficioId}/?format=json`)
+                http.delete(`/beneficio/${beneficioId}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',
@@ -159,8 +159,8 @@ function DataTableBeneficios({
     const salvarBeneficio = (dados) => {
         const method = beneficioParaEditar ? 'put' : 'post';
         const url = beneficioParaEditar ? 
-            `/api/beneficio/${beneficioParaEditar.id}/?format=json` : 
-            '/api/beneficio/?format=json';
+            `/beneficio/${beneficioParaEditar.id}/?format=json` : 
+            '/beneficio/?format=json';
         const successMessage = beneficioParaEditar ? 
             'Benefício atualizado com sucesso' : 
             'Benefício criado com sucesso';

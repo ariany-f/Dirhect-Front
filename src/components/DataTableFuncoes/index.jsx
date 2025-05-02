@@ -119,7 +119,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/api/funcao/${id}/?format=json`)
+                http.delete(`/funcao/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',
