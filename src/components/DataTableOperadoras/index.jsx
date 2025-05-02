@@ -1,5 +1,5 @@
 import { DataTable } from 'primereact/datatable';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode } from 'primereact/api';
 import { Column } from 'primereact/column';
 import './DataTable.css'
 import ContainerHorizontal from '@components/ContainerHorizontal';
@@ -7,7 +7,7 @@ import CustomImage from '@components/CustomImage';
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Image } from 'primereact/image';
 import { Skeleton } from 'primereact/skeleton';
 import Botao from '@components/Botao';
@@ -16,6 +16,9 @@ import { GrAddCircle } from 'react-icons/gr';
 import BotaoSemBorda from '@components/BotaoSemBorda';
 import BotaoGrupo from '@components/BotaoGrupo';
 import { useTranslation } from 'react-i18next';
+import SwitchInput from '@components/SwitchInput';
+import { Toast } from 'primereact/toast';
+import http from '@http';
 
 const TableHeader = styled.div`
     display: flex;
@@ -48,19 +51,46 @@ const TableHeader = styled.div`
     }
 `;
 
+const StatusTag = styled.span`
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    
+    ${props => props.$status === true ? `
+        background-color: rgba(0, 200, 83, 0.1);
+        color: var(--success);
+    ` : `
+        background-color: rgba(229, 115, 115, 0.1);
+        color: var(--error);
+    `}
+`;
+
 function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onAddClick }) {
-    const[selectedOperadora, setSelectedOperadora] = useState(null)
+    const[selectedOperadora, setSelectedOperadora] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [operadorasStatus, setOperadorasStatus] = useState({});
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
-    const navegar = useNavigate()
+    });
+    const toast = useRef(null);
+    const navegar = useNavigate();
     const { t } = useTranslation('common');
 
     useEffect(() => {
-        if (operadoras && operadoras.length > 0 && !selectedOperadora) {
-            setSelectedOperadora(operadoras[0]);
-            onSelectionChange(operadoras[0]);
+        if (operadoras && operadoras.length > 0) {
+            if (!selectedOperadora) {
+                setSelectedOperadora(operadoras[0]);
+                onSelectionChange(operadoras[0]);
+            }
+            
+            // Inicializa todas as operadoras como ativas
+            setOperadorasStatus(
+                operadoras.reduce((acc, operadora) => ({
+                    ...acc,
+                    [operadora.id]: true
+                }), {})
+            );
         }
     }, [operadoras, selectedOperadora, onSelectionChange]);
 
@@ -72,21 +102,49 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
     };
 
     const handleSelectionChange = (e) => {
-        // Se o item clicado já está selecionado, não faz nada
         if (e.value === null) {
             return;
         }
         
-        // Caso contrário, atualiza a seleção
         setSelectedOperadora(e.value);
         onSelectionChange(e.value);
     };
 
-    // function verDetalhes(value)
-    // {
-    //     setSelectedOperadora(value.id)
-    //     navegar(`/operadoras/detalhes/${value.id}`)
-    // }
+    const atualizarStatus = async (id, novoStatus) => {
+        try {
+            // Atualiza o estado local imediatamente para feedback instantâneo
+            setOperadorasStatus(prev => ({
+                ...prev,
+                [id]: novoStatus
+            }));
+
+            // Chamada à API
+            await http.put(`operadora/${id}/status`, {
+                status: novoStatus ? 'A' : 'I'
+            });
+
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: `Operadora ${novoStatus ? 'ativada' : 'desativada'} com sucesso`,
+                life: 3000
+            });
+        } catch (error) {
+            // Reverte o estado em caso de erro
+            setOperadorasStatus(prev => ({
+                ...prev,
+                [id]: !novoStatus
+            }));
+
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Não foi possível alterar o status da operadora',
+                life: 3000
+            });
+            console.error('Erro ao atualizar status:', error);
+        }
+    };
 
     const representativeNomeTemplate = (rowData) => {
         return (
@@ -95,7 +153,35 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                 <Texto size={16} weight={500}>{rowData?.nome}</Texto>
             </div>
         )
-    }
+    };
+
+    const representativeActionsTemplate = (rowData) => {
+        return (
+            <div style={{ 
+                display: 'flex', 
+                gap: '16px',
+                alignItems: 'center',
+                justifyContent: 'flex-end'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px'
+                }}>
+                    <StatusTag $status={operadorasStatus[rowData.id]}>
+                        {operadorasStatus[rowData.id] ? "Ativo" : "Inativo"}
+                    </StatusTag>
+                    <SwitchInput
+                        checked={operadorasStatus[rowData.id]}
+                        onChange={(e) => {
+                            atualizarStatus(rowData.id, e.value);
+                        }}
+                        style={{ width: '36px' }}
+                    />
+                </div>
+            </div>
+        );
+    };
 
     const headerTemplate = () => {
         return (
@@ -121,31 +207,37 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
     };
 
     return (
-        <DataTable 
-            value={operadoras} 
-            filters={filters} 
-            globalFilterFields={['nome']} 
-            emptyMessage="Não foram encontradas operadoras" 
-            paginator 
-            rows={10}
-            selection={selectedOperadora} 
-            onSelectionChange={handleSelectionChange}
-            selectionMode="single"
-            tableStyle={{ minWidth: '100%', maxWidth: '100%' }}
-            rowClassName={(data) => data === selectedOperadora ? 'p-highlight' : ''}
-            header={headerTemplate}
-            showGridlines
-            stripedRows
-        >
-            <Column 
-                body={representativeNomeTemplate} 
-                header="Nome" 
-                style={{ width: '100%' }}
-                sortable
-                field="nome"
-            />
-        </DataTable>
-    )
+        <>
+            <Toast ref={toast} />
+            <DataTable 
+                value={operadoras} 
+                filters={filters} 
+                globalFilterFields={['nome']} 
+                emptyMessage="Não foram encontradas operadoras" 
+                paginator 
+                rows={10}
+                selection={selectedOperadora} 
+                onSelectionChange={handleSelectionChange}
+                selectionMode="single"
+                tableStyle={{ minWidth: '100%', maxWidth: '100%' }}
+                rowClassName={(data) => data === selectedOperadora ? 'p-highlight' : ''}
+                header={headerTemplate}
+                showGridlines
+                stripedRows
+            >
+                <Column 
+                    body={representativeNomeTemplate} 
+                    style={{ width: '70%' }}
+                    field="nome"
+                />
+                <Column 
+                    body={representativeActionsTemplate} 
+                    header="" 
+                    style={{ width: '30%' }}
+                />
+            </DataTable>
+        </>
+    );
 }
 
-export default DataTableOperadoras
+export default DataTableOperadoras;
