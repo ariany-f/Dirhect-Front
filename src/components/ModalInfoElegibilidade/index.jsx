@@ -115,7 +115,7 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
                             {operadora?.imagem_url && (
-                                <CustomImage src={operadora.imagem_url} alt={operadora.nome} width={32} height={20} />
+                                <CustomImage src={operadora.imagem_url} alt={operadora.nome} width={50} height={40} />
                             )}
                             <span>{operadora?.nome || '---'}</span>
                         </div>
