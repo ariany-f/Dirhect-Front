@@ -182,7 +182,7 @@ function Autenticado() {
                 {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/pedidos/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/pedidos/editar-valor/colaboradores' &&                       
                     <BarraLateral />
                 }
-                <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 7.5vh 0">
+                <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
                     {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/pedidos/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/pedidos/editar-valor/colaboradores' &&     
                         <>
                             <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa.toUpperCase()} />

@@ -598,17 +598,17 @@ function ColaboradorBeneficios() {
                     </div>
                     <button onClick={onClose} style={{background: 'none', border: 'none', fontSize: 22, cursor: 'pointer'}}>&times;</button>
                 </div>
-                {/* Item do Contrato */}
-                <div style={{margin: '8px 0 0 0'}}>
-                    <Texto weight={700} size={15}>Item do Contrato:</Texto>
-                    <span style={{fontWeight: 600, fontSize: 14, marginLeft: 8}}>{item.plano || '---'}</span>
-                </div>
                 {/* Contrato */}
                 <div style={{marginTop: 16}}>
                     <div weight={700} size={15} style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8}}>
                         <Texto weight={700} size={15}>Número do Contrato: </Texto>
                         <Link to={`/contratos/detalhes/${contrato.id}`} style={{ textDecoration: 'underline', fontSize: 16, marginTop: 4 }}>{contrato?.num_contrato_origem || '---'}</Link>
                     </div>
+                </div>
+                {/* Item do Contrato */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                    <Texto weight={700} size={15}>Item do Contrato:</Texto>
+                    <span style={{fontWeight: 600, fontSize: 14, marginLeft: 8}}>{item.plano || '---'}</span>
                 </div>
                 {/* Operadora */}
                 {/* <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8}}>
@@ -655,7 +655,7 @@ function ColaboradorBeneficios() {
             ) : Object.keys(grupos).length > 0 ? (
                 <div style={{
                     width: '100%',
-                    maxHeight: 'calc(100vh - 290px)', // 290px para considerar algum padding/topo
+                    maxHeight: 'calc(100vh - 270px)', // 270px para considerar algum padding/topo
                     overflowY: 'auto',
                     paddingRight: 8
                 }}>
@@ -729,7 +729,7 @@ function ColaboradorBeneficios() {
                                                                                 </div>
                                                                                 <Texto size="12px" color="var(--neutro-400)">{Real.format(item.item.valor)}</Texto>
                                                                             </div>
-                                                                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', minWidth: 56, gap: 8}}>
+                                                                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'space-around', minWidth: 56, gap: 0}}>
                                                                                
                                                                                 <button
                                                                                     style={{background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primaria)', fontSize: 16, padding: 0}}
