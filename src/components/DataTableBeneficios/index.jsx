@@ -123,37 +123,42 @@ function DataTableBeneficios({
     };
 
     const atualizarStatus = async (id, novoStatus) => {
+        // Atualiza o estado local imediatamente para feedback instantâneo
+        setBeneficiosStatus(prev => ({
+            ...prev,
+            [id]: novoStatus
+        }));
         try {
-            // Atualiza o estado local imediatamente para feedback instantâneo
-            setBeneficiosStatus(prev => ({
-                ...prev,
-                [id]: novoStatus
-            }));
-
             // Chama o endpoint correto conforme o tipo de usuário
+            let response;
             if (usuario?.tipo === 'global') {
-                await http.put(`beneficio/${id}/?format=json`, {
-                    status: novoStatus ? 0 : 1
+                response = await http.put(`beneficio/${id}/?format=json`, {
+                    ativo: !!novoStatus
                 });
             } else {
-                await http.put(`beneficio/${id}/?format=json`, {
-                    status_tenant: novoStatus ? 0 : 1
+                response = await http.put(`beneficio/${id}/?format=json`, {
+                    ativo_tenant: !!novoStatus
                 });
             }
-
+            // Atualiza o estado local com o valor retornado pela API (caso backend retorne o objeto atualizado)
+            if (response && (response.ativo !== undefined || response.ativo_tenant !== undefined)) {
+                setBeneficiosStatus(prev => ({
+                    ...prev,
+                    [id]: usuario?.tipo === 'global' ? response.ativo : response.ativo_tenant
+                }));
+            }
             toast.current.show({
                 severity: 'success',
                 summary: 'Sucesso',
-                detail: `Benefício ${novoStatus ? 'desativado' : 'ativado'} com sucesso`,
+                detail: `Benefício ${novoStatus ? 'ativado' : 'desativado'} com sucesso`,
                 life: 3000
             });
         } catch (error) {
             // Reverte o estado em caso de erro
             setBeneficiosStatus(prev => ({
                 ...prev,
-                [id]: novoStatus
+                [id]: !novoStatus
             }));
-
             toast.current.show({
                 severity: 'error',
                 summary: 'Erro',
@@ -217,9 +222,10 @@ function DataTableBeneficios({
     };
 
     const representativeActionsTemplate = (rowData) => {
-     
         // Determina qual status usar
-        const statusAtual = usuario?.tipo === 'global' ? rowData.ativo : rowData.ativo_tenant;
+        const statusAtual = beneficiosStatus[rowData.id] !== undefined
+            ? beneficiosStatus[rowData.id]
+            : (usuario?.tipo === 'global' ? rowData.ativo : rowData.ativo_tenant);
         return (
             <div style={{ 
                 display: 'flex', 
