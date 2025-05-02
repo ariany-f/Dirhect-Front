@@ -468,11 +468,11 @@ function ColaboradorBeneficios() {
                                                     <Texto size="12px">Empresa: {Real.format(item.item.valor_empresa)}</Texto>
                                                     <Texto size="12px">Tipo Cálculo: {item.item.tipo_calculo}</Texto>
                                                     <Texto size="12px">Tipo Desconto: {item.item.tipo_desconto}</Texto>
-                                                    {item.item.regra_elegibilidade && Array.isArray(item.item.regra_elegibilidade) && item.item.regra_elegibilidade.length > 0 && (
+                                                    {/* {item.item.regra_elegibilidade && Array.isArray(item.item.regra_elegibilidade) && item.item.regra_elegibilidade.length > 0 && (
                                                         <Texto size="11px" color="var(--info)">
                                                             Elegibilidade: {JSON.stringify(item.item.regra_elegibilidade)}
                                                         </Texto>
-                                                    )}
+                                                    )} */}
                                                 </div>
                                             </AccordionTab>
                                         </Accordion>
