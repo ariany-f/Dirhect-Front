@@ -15,6 +15,8 @@ import { Real } from '@utils/formats'
 import IconeBeneficio from "@components/IconeBeneficio"
 import Dashboard from '@assets/Dashboard.svg'
 import { useParams } from "react-router-dom"
+import { Button } from 'primereact/button'
+import { Accordion, AccordionTab } from 'primereact/accordion'
 
 const Beneficio = styled.div`
     display: flex;
@@ -160,11 +162,74 @@ const HeaderContainer = styled.div`
     gap: 4px;
 `
 
+const LinhaBeneficio = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--neutro-100);
+    cursor: pointer;
+`
+
+const OperadoraLogo = styled.img`
+    width: 32px;
+    height: 20px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid var(--neutro-200);
+`
+
+const CardBeneficio = styled.div`
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--neutro-200);
+    margin-bottom: 24px;
+    padding: 24px 12px 24px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    width: inherit;
+    max-width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    transform: translateX(-50%);
+`
+
+const LinhaItem = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--neutro-100);
+    &:last-child { border-bottom: none; }
+`
+
+const StatusItemTag = styled.div`
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+    background: ${({ status }) =>
+        status === 'sim' ? 'rgba(0, 200, 83, 0.1)' :
+        status === 'nao' ? 'rgba(229, 115, 115, 0.1)' :
+        status === 'OBRIGATORIO' ? 'rgba(41, 98, 255, 0.1)' :
+        'rgba(255, 167, 38, 0.1)'};
+    color: ${({ status }) =>
+        status === 'sim' ? 'var(--success)' :
+        status === 'nao' ? 'var(--error)' :
+        status === 'OBRIGATORIO' ? 'var(--info)' :
+        'var(--warning)'};
+    display: inline-block;
+`
+
 function ColaboradorBeneficios() {
     let { id } = useParams()
     const [beneficios, setBeneficios] = useState([])
     const [loading, setLoading] = useState(true)
     const toast = useRef(null)
+    const [expandedItems, setExpandedItems] = useState({})
 
     const statusOptions = [
         { label: 'Pendente', value: 'pendente' },
@@ -182,27 +247,28 @@ function ColaboradorBeneficios() {
         try {
             setLoading(true)
             const response = await http.get(`beneficios_possiveis/${id}/?format=json`)
-            if (response) {
-                // Mapeia os benefícios para incluir o status inicial
-                const beneficiosComStatus = response.map(b => {
-                    let statusDropdown = 'pendente';
-                    let statusBeneficio = 'AGUARDANDO';
-
-                    // Aqui você pode adicionar sua lógica para determinar o status
-                    // Por exemplo, baseado em regras de negócio específicas
-                    if (b.regra_elegibilidade) {
-                        statusBeneficio = 'OBRIGATORIO';
-                        statusDropdown = 'sim';
-                    }
-
-                    return {
-                        ...b,
-                        statusBeneficio,
-                        status: statusDropdown
-                    };
-                });
-
-                setBeneficios(beneficiosComStatus);
+            if (response && response.beneficios) {
+                // Para cada item/plano, cria um registro único
+                const lista = [];
+                response.beneficios.forEach(beneficio => {
+                    beneficio.contratos.forEach(contrato => {
+                        contrato.itens.forEach(item => {
+                            lista.push({
+                                id: item.id,
+                                descricao: beneficio.descricao,
+                                multiplos: beneficio.multiplos,
+                                obrigatoriedade: beneficio.obrigatoriedade,
+                                status: 'pendente',
+                                operadora: contrato.contrato_beneficio?.dados_operadora,
+                                plano: item.descricao,
+                                contratoInfo: contrato.contrato_beneficio,
+                                item,
+                                beneficioId: beneficio.id
+                            })
+                        })
+                    })
+                })
+                setBeneficios(lista)
             }
         } catch (erro) {
             console.error(erro)
@@ -217,18 +283,33 @@ function ColaboradorBeneficios() {
         }
     }
 
-    const handleStatusChange = (beneficioId, novoStatus) => {
-        setBeneficios(beneficios => 
-            beneficios.map(b => 
-                b.id === beneficioId ? { ...b, status: novoStatus } : b
+    // Agrupa por descricao (grupo)
+    const grupos = beneficios.reduce((acc, b) => {
+        if (!acc[b.descricao]) acc[b.descricao] = [];
+        acc[b.descricao].push(b);
+        return acc;
+    }, {});
+
+    const handleStatusChange = (itemId, novoStatus, grupoDescricao, multiplos) => {
+        setBeneficios(beneficios => {
+            if (!multiplos && novoStatus === 'sim') {
+                // Só um pode ser sim
+                return beneficios.map(b =>
+                    b.descricao === grupoDescricao
+                        ? { ...b, status: b.id === itemId ? 'sim' : 'nao' }
+                        : b
+                )
+            }
+            // Multiplos: cada um pode ser sim/nao/pendente
+            return beneficios.map(b =>
+                b.id === itemId ? { ...b, status: novoStatus } : b
             )
-        )
-        
+        })
         toast.current.show({ 
             severity: 'success', 
             summary: 'Sucesso', 
             detail: 'Status alterado com sucesso', 
-            life: 3000 
+            life: 2000 
         })
     }
 
@@ -252,97 +333,102 @@ function ColaboradorBeneficios() {
         return tipoMap[tipo] || tipo;
     }
 
+    const getStatusBeneficio = (beneficio) => {
+        if (beneficio.obrigatoriedade) return 'OBRIGATORIO';
+        return 'AGUARDANDO';
+    };
+
+    const agruparBeneficiosPorDescricao = (beneficios) => {
+        const grupos = {};
+        beneficios.forEach(b => {
+            if (!grupos[b.descricao]) grupos[b.descricao] = [];
+            grupos[b.descricao].push(b);
+        });
+        return Object.values(grupos);
+    };
+
+    function getStatusLabel(item) {
+        if (item.obrigatoriedade) return 'Obrigatório';
+        if (item.status === 'sim') return 'Ativado';
+        if (item.status === 'nao') return 'Inativo';
+        return 'Aguardando';
+    }
+
     return (
         <>
         <Toast ref={toast} />
         <Frame>
             {loading ? (
-                <Col12>
+                <div style={{padding: 32}}>
                     {[1,2,3].map(i => (
-                        <Col6 key={i}>
-                            <Skeleton width="100%" height="400px" borderRadius="16px" />
-                        </Col6>
+                        <Skeleton key={i} width="100%" height="60px" borderRadius="8px" style={{marginBottom: 16}} />
                     ))}
-                </Col12>
-            ) : beneficios.length > 0 ? (
-                <Col12>
-                    {beneficios.map((beneficio) => {
-                        const dadosBeneficio = beneficio.beneficio.dados_beneficio;
-                        const icone = <IconeBeneficio nomeIcone={dadosBeneficio.descricao}/>
-                        
-                        return (
-                            <Col6 key={beneficio.id}>
-                                <Beneficio>
-                                    <Col12Spaced>
-                                        <FrameVertical gap="8px" align="center">
-                                            {beneficio.beneficio.image_operadora &&
-                                                <CustomImage 
-                                                    src={beneficio.beneficio.image_operadora} 
-                                                    alt={beneficio.beneficio.nome_operadora} 
-                                                    width={'40px'} 
-                                                    height={25} 
-                                                    size={80} 
-                                                    title={beneficio.beneficio.nome_operadora} 
+                </div>
+            ) : Object.keys(grupos).length > 0 ? (
+                <div style={{width: '100%'}}>
+                    {Object.entries(grupos).map(([descricao, itens]) => (
+                        <CardBeneficio key={descricao}>
+                            <div style={{display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16}}>
+                                <IconeBeneficio nomeIcone={descricao} />
+                                <Texto weight={600} size="15px">{descricao}</Texto>
+                                {itens[0].obrigatoriedade && (
+                                    <StatusTag $tipo="OBRIGATORIO">OBRIGATÓRIO</StatusTag>
+                                )}
+                                {itens[0].multiplos && (
+                                    <Texto size="10px" color="var(--info)">
+                                        Pode escolher mais de um deste grupo
+                                    </Texto>
+                                )}
+                            </div>
+                            <Accordion
+                                activeIndex={expandedItems[descricao] ?? null}
+                                onTabChange={e => setExpandedItems(prev => ({ ...prev, [descricao]: e.index }))}
+                            >
+                                {itens.map((item, idx) => (
+                                    <AccordionTab
+                                        key={item.id}
+                                        header={
+                                            <LinhaItem>
+                                                <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
+                                                    {item.operadora?.imagem_url && (
+                                                        <OperadoraLogo src={item.operadora.imagem_url} alt={item.operadora.nome} />
+                                                    )}
+                                                    <Texto weight={500} size="12px">{item.operadora?.nome}</Texto>
+                                                </div>
+                                                <Texto size="12px">{item.plano}</Texto>
+                                                <Dropdown
+                                                    value={item.status}
+                                                    options={statusOptions}
+                                                    onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
+                                                    style={{width: 200, minWidth: 200, zIndex: 1000}}
+                                                    appendTo={document.body}
                                                 />
-                                            }
-                                            <Texto weight={600} size="12px">{beneficio.beneficio.nome_operadora}</Texto>
-                                        </FrameVertical>
-                                        <HeaderContainer>
-                                            {beneficio.statusBeneficio !== 'OBRIGATORIO' && (
-                                                <StatusContainer>
-                                                    <Dropdown
-                                                        value={beneficio.status}
-                                                        options={statusOptions}
-                                                        onChange={(e) => handleStatusChange(beneficio.id, e.value)}
-                                                        placeholder="Status"
-                                                    />
-                                                </StatusContainer>
+                                                <StatusItemTag status={item.obrigatoriedade ? 'OBRIGATORIO' : item.status}>{getStatusLabel(item)}</StatusItemTag>
+                                                {item.obrigatoriedade && (
+                                                    <StatusTag $tipo="OBRIGATORIO">OBRIGATÓRIO</StatusTag>
+                                                )}
+                                            </LinhaItem>
+                                        }
+                                    >
+                                        <div style={{background: 'var(--neutro-50)', borderRadius: 8, margin: '8px 0', padding: 12}}>
+                                            <Texto size="12px" weight={600}>Detalhes do Plano: {item.plano}</Texto>
+                                            <Texto size="12px">Valor: {Real.format(item.item.valor)}</Texto>
+                                            <Texto size="12px">Desconto: {Real.format(item.item.valor_desconto)}</Texto>
+                                            <Texto size="12px">Empresa: {Real.format(item.item.valor_empresa)}</Texto>
+                                            <Texto size="12px">Tipo Cálculo: {item.item.tipo_calculo}</Texto>
+                                            <Texto size="12px">Tipo Desconto: {item.item.tipo_desconto}</Texto>
+                                            {item.item.regra_elegibilidade && Array.isArray(item.item.regra_elegibilidade) && item.item.regra_elegibilidade.length > 0 && (
+                                                <Texto size="11px" color="var(--info)">
+                                                    Elegibilidade: {JSON.stringify(item.item.regra_elegibilidade)}
+                                                </Texto>
                                             )}
-                                            <StatusTag $tipo={beneficio.statusBeneficio}>
-                                                {beneficio.statusBeneficio}
-                                            </StatusTag>
-                                        </HeaderContainer>
-                                    </Col12Spaced>
-                                    
-                                    <BeneficioContent>
-                                        <div style={{display: 'flex', fontSize: '12px', gap: '4px', fontWeight: 600}}>
-                                            {icone}
-                                            <Texto>{dadosBeneficio.descricao}</Texto>
                                         </div>
-                                        <div>
-                                            <Texto size={'12px'} weight={600}>Descrição: </Texto>
-                                            <Texto size={'12px'}>{beneficio.descricao}</Texto>
-                                            <Texto size={'12px'} weight={600}>Tipo Desconto:</Texto>
-                                            <Texto size={'12px'}>{getTipoDesconto(beneficio.tipo_desconto)}</Texto>
-                                        </div>
-                                        <Col12Spaced style={{ marginTop: 'auto' }}>
-                                            <Col6Container>
-                                                <Texto color="green" weight={400}>
-                                                    {Real.format(beneficio.valor)}
-                                                </Texto>
-                                                <Texto weight={600} size="10px">
-                                                    {getTipoCalculo(beneficio.tipo_calculo)}
-                                                </Texto>
-                                            </Col6Container>
-                                            <Col6Container>
-                                                <Texto color="red" weight={400}>
-                                                    {Real.format(beneficio.valor_desconto)}
-                                                </Texto>
-                                                <Texto weight={600} size="10px">Colaborador</Texto>
-                                            </Col6Container>
-                                            <Col6Container>
-                                                <Texto color="var(--primaria)" weight={400}>
-                                                    {Real.format(beneficio.valor_empresa)}
-                                                </Texto>
-                                                <Texto weight={600} size="10px">Empresa</Texto>
-                                            </Col6Container>
-                                        </Col12Spaced>
-                                    </BeneficioContent>
-                                </Beneficio>
-                            </Col6>
-                        )
-                    })}
-                </Col12>
+                                    </AccordionTab>
+                                ))}
+                            </Accordion>
+                        </CardBeneficio>
+                    ))}
+                </div>
             ) : (
                 <Frame align="center" padding="10vh 0px">
                     <MainContainer align="center">

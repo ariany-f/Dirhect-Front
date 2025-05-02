@@ -161,8 +161,6 @@ const iconMap = {
     'PlanoSaude': FaHospital,
     'FaPills': FaPills,
     'Medicamentos': FaPills,
-    'Saude': FaPills,
-    'Saúde': FaPills,
     
     // Educação
     'FaGraduationCap': FaGraduationCap,
