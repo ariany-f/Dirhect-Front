@@ -119,7 +119,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
 
             // Chamada à API
             await http.put(`operadora/${id}/status`, {
-                ativo: novoStatus
+                ativo: novoStatus ? true : false
             });
 
             toast.current.show({
@@ -167,8 +167,8 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                     alignItems: 'center',
                     gap: '16px'
                 }}>
-                    <StatusTag $status={operadorasStatus[rowData.id]}>
-                        {operadorasStatus[rowData.id] ? "Ativo" : "Inativo"}
+                    <StatusTag $status={rowData.ativo === true}>
+                        {rowData.ativo === true ? "Ativo" : "Inativo"}
                     </StatusTag>
                     <SwitchInput
                         checked={operadorasStatus[rowData.id]}
