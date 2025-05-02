@@ -83,7 +83,8 @@ function DropdownItens({
     label, 
     filter = false,
     camposVazios = [],
-    optionTemplate // Nova prop para o template personalizado
+    optionTemplate, // Nova prop para o template personalizado
+    disabled = false // Adiciona a prop disabled
 }) {
     const [erro, setErro] = useState('')
     const classeCampoVazio = camposVazios.filter((val) => {
@@ -135,6 +136,7 @@ function DropdownItens({
                             onChange={changeValor}
                             itemTemplate={optionTemplate} // Template para os itens da lista
                             valueTemplate={optionTemplate} // Template para o valor selecionado
+                            disabled={disabled}
                         />
                     :
                     <Select 
@@ -146,6 +148,7 @@ function DropdownItens({
                         onChange={changeValor}
                         itemTemplate={optionTemplate} // Template para os itens da lista
                         valueTemplate={optionTemplate} // Template para o valor selecionado
+                        disabled={disabled}
                     />
                 }
             </div>

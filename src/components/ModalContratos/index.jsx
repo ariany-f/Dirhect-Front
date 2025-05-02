@@ -144,6 +144,8 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
         if (!operadora?.code) errors.push('operadora');
         if (!data_inicio) errors.push('data_inicio');
         if (!numContrato) errors.push('num_contrato');
+        if (!observacao) errors.push('observacao');
+        if (!data_fim) errors.push('data_fim');
         
         if (errors.length > 0) {
             setClassError(errors);
@@ -170,7 +172,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                         <Frame padding="12px 0px">
                             <Col12>
                                 <Col12>
-                                    <Col6>
+                                    <Col6 style={{ marginTop: '-12px' }}>
                                         <DropdownItens 
                                             camposVazios={classError.includes('operadora') ? ['operadora'] : []}
                                             valor={operadora} 
@@ -181,6 +183,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                             placeholder="Selecione a operadora"
                                             optionTemplate={operadoraOptionTemplate}
                                             valueTemplate={operadoraValueTemplate}
+                                            disabled={!!contrato}
                                         /> 
                                     </Col6>
                                     <Col6>
@@ -209,11 +212,12 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                     </Col6>
                                     <Col6>
                                         <CampoTexto
+                                            camposVazios={classError.includes('data_fim') ? ['data_fim'] : []}
                                             name="data_fim"
                                             valor={data_fim}
                                             setValor={setDataFim}
                                             type="date"
-                                            label="Data Fim"
+                                            label="Data Fim*"
                                             placeholder="Digite a Data Fim"
                                         />
                                     </Col6>
@@ -221,11 +225,12 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                 <Col12>
                                     <Col6>
                                         <CampoTexto
+                                            camposVazios={classError.includes('observacao') ? ['observacao'] : []}
                                             name="observacao"
                                             valor={observacao}
                                             setValor={setObservacao}
                                             type="text"
-                                            label="Observação"
+                                            label="Observação*"
                                             placeholder="Digite a observação"
                                         />
                                     </Col6>
