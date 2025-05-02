@@ -17,7 +17,7 @@ import Dashboard from '@assets/Dashboard.svg'
 import { useParams } from "react-router-dom"
 import { Button } from 'primereact/button'
 import { Accordion, AccordionTab } from 'primereact/accordion'
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
+import { FaChevronDown, FaChevronUp, FaCheck, FaTimes, FaClock, FaRegEye } from 'react-icons/fa'
 
 const Beneficio = styled.div`
     display: flex;
@@ -230,9 +230,8 @@ const ItensGrid = styled.div`
 `;
 
 const ColItem = styled.div`
-    flex: 1 1 45%;
-    min-width: 320px;
-    max-width: 48%;
+    flex: 1 1 calc(33.333% - 16px);
+    min-width: 280px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -246,6 +245,7 @@ const TopRow = styled.div`
     gap: 12px;
     justify-content: space-between;
     width: 100%;
+    padding: 0 12px;
 `;
 
 const StatusDropdownRow = styled.div`
@@ -259,7 +259,8 @@ const StatusDropdownRow = styled.div`
 const ContratoItensGrid = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: 0 24px;
+    gap: 24px;
+    width: 100%;
 `;
 
 // Componente para informações do contrato
@@ -285,12 +286,12 @@ const StatusContratoTag = styled.span`
     font-weight: 600;
     margin-left: 8px;
     background: ${({ status }) =>
-        status === 'Ativo' ? 'rgba(0, 200, 83, 0.1)' :
-        status === 'Inativo' ? 'rgba(229, 115, 115, 0.1)' :
+        status === 'Disponível' ? 'rgba(0, 200, 83, 0.1)' :
+        status === 'Indisponível' ? 'rgba(229, 115, 115, 0.1)' :
         'rgba(255, 167, 38, 0.1)'};
     color: ${({ status }) =>
-        status === 'Ativo' ? 'var(--success)' :
-        status === 'Inativo' ? 'var(--error)' :
+        status === 'Disponível' ? 'var(--success)' :
+        status === 'Indisponível' ? 'var(--error)' :
         'var(--warning)'};
 `;
 
@@ -312,6 +313,63 @@ const ContratoItensBox = styled.div`
     padding: 16px 12px;
 `;
 
+const StatusIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 4px;
+`;
+
+const CustomDropdown = styled(Dropdown)`
+    &.p-dropdown {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        width: 80px !important;
+        height: 40px !important;
+        min-width: 60px !important;
+        min-height: 40px !important;
+        padding: 0 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .p-dropdown-label {
+        padding: 0 !important;
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .p-dropdown-trigger {
+        display: none !important;
+    }
+    .p-inputtext {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+    }
+    .p-dropdown-panel {
+        min-width: 80px;
+        .p-dropdown-items {
+            padding: 4px;
+            .p-dropdown-item {
+                padding: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                &:hover {
+                    background: var(--neutro-100);
+                }
+            }
+        }
+    }
+`
+
 function ColaboradorBeneficios() {
     let { id } = useParams()
     const [beneficios, setBeneficios] = useState([])
@@ -320,9 +378,9 @@ function ColaboradorBeneficios() {
     const [expandedItems, setExpandedItems] = useState({})
 
     const statusOptions = [
-        { label: 'Pendente de escolha', value: 'pendente' },
-        { label: 'Sim', value: 'sim' },
-        { label: 'Não', value: 'nao' }
+        { label: 'Pendente', value: 'pendente', icon: <FaClock /> },
+        { label: 'Sim', value: 'sim', icon: <FaCheck /> },
+        { label: 'Não', value: 'nao', icon: <FaTimes /> }
     ]
 
     useEffect(() => {
@@ -446,11 +504,46 @@ function ColaboradorBeneficios() {
     // Função utilitária para status do contrato
     function getStatusContrato(status) {
         switch (status) {
-            case 'A': return 'Ativo';
-            case 'I': return 'Inativo';
+            case 'A': return 'Disponível';
+            case 'I': return 'Indisponível';
             default: return status;
         }
     }
+
+    const statusTemplate = (option, context, showChevron = false, showText = false, forceAdicionar = false) => {
+        if (!option) return null;
+
+        let obrigatorio = false;
+        if (context && context.value && context.value.obrigatoriedade) obrigatorio = true;
+        if (context && context.option && context.option.obrigatoriedade) obrigatorio = true;
+
+        let color = '';
+        if (option.value === 'sim') color = 'var(--success)';
+        else if (option.value === 'nao') color = 'var(--error)';
+        else if (option.value === 'pendente' && obrigatorio) color = 'var(--error)';
+        else color = 'var(--warning)';
+
+        let icon = null;
+        if (option.value === 'sim') icon = <FaCheck size={14} style={{ color, fontSize: 20 }} />;
+        else if (option.value === 'nao') icon = <FaTimes size={14} style={{ color, fontSize: 20 }} />;
+        else icon = <FaClock size={14} style={{ color, fontSize: 20 }} />;
+
+        return (
+            <StatusIcon style={{gap: 8, justifyContent: 'flex-end'}}>
+                {forceAdicionar && option.value === 'pendente' ? (
+                    <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--primaria)' }}>Adicionar</span>
+                ) : (
+                    <>
+                        {icon}
+                        {showText && (option.value === 'sim' || option.value === 'nao') && (
+                            <span style={{ fontSize: 14, fontWeight: 500, color: '#222' }}>{option.label}</span>
+                        )}
+                    </>
+                )}
+                {showChevron && <FaChevronDown style={{ color: 'var(--neutro-400)', fontSize: 16, marginLeft: 2 }} />}
+            </StatusIcon>
+        );
+    };
 
     return (
         <>
@@ -501,7 +594,7 @@ function ColaboradorBeneficios() {
                                     return (
                                         <div key={contratoId} style={{width: '100%'}}>
                                             {contrato && (
-                                                <InfoContrato inativo={getStatusContrato(contrato.status) === 'Inativo'}>
+                                                <InfoContrato inativo={getStatusContrato(contrato.status) === 'Indisponível'}>
                                                     <div style={{display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2}}>
                                                         {operadora?.imagem_url && (
                                                             <img src={operadora.imagem_url} alt={operadora.nome} style={{width: 32, height: 20, objectFit: 'contain', borderRadius: 4, background: '#fff', border: '1px solid var(--neutro-200)'}} />
@@ -525,49 +618,46 @@ function ColaboradorBeneficios() {
                                                                     {/* Custom Accordion-like behavior */}
                                                                     <div style={{width: '100%', padding: '12px'}}>
                                                                         <TopRow>
-                                                                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12}}>
-                                                                                {item.item.icone && (
-                                                                                    <span style={{marginLeft: 6, marginRight: 2}}>
-                                                                                        <IconeBeneficio nomeIcone={item.item.icone} />
-                                                                                    </span>
-                                                                                )}
-                                                                                <Texto size="12px" weight={600}>{item.plano}</Texto>
-                                                                                <Dropdown
+                                                                            <div style={{display: 'flex', alignItems: 'center', gap: 8, flex: 1}}>
+                                                                                <button
+                                                                                    style={{
+                                                                                        background: 'none',
+                                                                                        border: 'none',
+                                                                                        cursor: 'pointer',
+                                                                                        display: 'flex',
+                                                                                        alignItems: 'center',
+                                                                                        justifyContent: 'center',
+                                                                                        fontSize: 16,
+                                                                                        color: 'var(--primaria)',
+                                                                                        marginRight: 4,
+                                                                                        padding: 0,
+                                                                                        width: 20,
+                                                                                        height: 20
+                                                                                    }}
+                                                                                    onClick={() => setExpandedItems(prev => ({ ...prev, [descricao]: expandedItems[descricao] === item.id ? null : item.id }))}
+                                                                                >
+                                                                                    <FaRegEye style={{ opacity: expandedItems[descricao] === item.id ? 1 : 0.5, width: 14, height: 14 }} />
+                                                                                </button>
+                                                                                <div>
+                                                                                    <Texto size="14px" weight={600}>{item.plano}</Texto>
+                                                                                    <Texto size="12px" color="var(--neutro-400)">{Real.format(item.item.valor)}</Texto>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'flex-end', minWidth: 56}}>
+                                                                                <CustomDropdown
                                                                                     value={item.status}
                                                                                     options={statusOptions}
                                                                                     onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
-                                                                                    style={{width: 170, minWidth: 160, fontSize: 12, height: 40}}
-                                                                                    panelStyle={{fontSize: 12}}
+                                                                                    style={{width: 30, height: 25, minWidth: 20, minHeight: 30, padding: 0, background: 'transparent', border: 'none', boxShadow: 'none'}}
+                                                                                    panelStyle={{fontSize: 12, minWidth: 80}}
                                                                                     appendTo={document.body}
+                                                                                    valueTemplate={(_, props) => statusTemplate(statusOptions.find(opt => opt.value === item.status), { value: item }, true, false, true)}
+                                                                                    itemTemplate={option => statusTemplate(option, { option: { ...option, obrigatoriedade: item.obrigatoriedade } }, false, true, false)}
                                                                                 />
                                                                             </div>
-                                                                            {item.status !== 'pendente' && (
-                                                                                <StatusItemTag status={item.obrigatoriedade ? 'OBRIGATORIO' : item.status}>{getStatusLabel(item)}</StatusItemTag>
-                                                                            )}
                                                                         </TopRow>
-                                                                        <div style={{display: 'flex', justifyContent: 'center', marginTop: '16px'}}>
-                                                                            <button
-                                                                                style={{
-                                                                                    background: 'none',
-                                                                                    border: 'none',
-                                                                                    cursor: 'pointer',
-                                                                                    width: 80,
-                                                                                    height: 10,
-                                                                                    display: 'flex',
-                                                                                    alignItems: 'center',
-                                                                                    justifyContent: 'center',
-                                                                                    fontSize: 32,
-                                                                                    fontWeight: 400,
-                                                                                    color: 'var(--primaria)',
-                                                                                    transition: 'background 0.2s, color 0.2s',
-                                                                                }}
-                                                                                onClick={() => setExpandedItems(prev => ({ ...prev, [descricao]: expandedItems[descricao] === item.id ? null : item.id }))}
-                                                                            >
-                                                                                {expandedItems[descricao] === item.id ? <FaChevronUp style={{width: 50, height: 15}} /> : <FaChevronDown style={{width: 50, height: 15}} />}
-                                                                            </button>
-                                                                        </div>
                                                                         {expandedItems[descricao] === item.id && (
-                                                                            <div style={{background: 'var(--neutro-50)', borderRadius: 12, margin: '12px 0', padding: '24px 20px'}}>
+                                                                            <div style={{background: 'var(--neutro-50)', borderRadius: 12, marginTop: '12px', padding: '12px 14px'}}>
                                                                                 <Texto size="12px" weight={600}>Detalhes do Plano: {item.plano}</Texto>
                                                                                 <Texto size="12px">Valor: {Real.format(item.item.valor)}</Texto>
                                                                                 <Texto size="12px">Desconto: {Real.format(item.item.valor_desconto)}</Texto>
