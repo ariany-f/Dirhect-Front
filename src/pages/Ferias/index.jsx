@@ -12,6 +12,7 @@ import { Link, Outlet, useLocation } from "react-router-dom"
 import { FaDownload } from 'react-icons/fa'
 import QuestionCard from '@components/QuestionCard'
 import { AiFillQuestionCircle } from 'react-icons/ai'
+import CalendarFerias from './calendar_ferias'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -46,6 +47,7 @@ function Ferias() {
              <ConteudoFrame>
                 <Loading opened={loading} />
                 <Outlet context={ausencias} />
+                <CalendarFerias ausencias={ausencias} />
             </ConteudoFrame>
         </ContratosProvider>
     )
