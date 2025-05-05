@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMonth, getYear, differenceInCalendarDays, isAfter, isBefore, isWithinInterval } from 'date-fns';
+import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMonth, getYear, differenceInCalendarDays, isAfter, isBefore, isWithinInterval, format as formatDateFns } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList } from 'react-icons/fa';
 import { Dialog } from 'primereact/dialog';
@@ -75,6 +75,9 @@ const EmployeeCell = styled.div`
     background: #f5f5f5;
     border: 1px solid #eee;
     min-height: 44px;
+    position: sticky;
+    left: 0;
+    z-index: 2;
 `;
 
 const EmployeeRow = styled.div`
@@ -709,8 +712,22 @@ const CalendarFerias = ({ colaboradores }) => {
                     <div style={{textAlign: 'center'}}>
                         <p><b>Colaborador:</b> {modalEvento.colab.nome}</p>
                         <p><b>Tipo:</b> {modalEvento.tipo}</p>
-                        {modalEvento.evento.data_inicio && <p><b>Início:</b> {format(new Date(modalEvento.evento.data_inicio), 'dd/MM/yyyy')}</p>}
-                        {modalEvento.evento.data_fim && <p><b>Fim:</b> {format(new Date(modalEvento.evento.data_fim), 'dd/MM/yyyy')}</p>}
+                        {modalEvento.evento.data_inicio && (
+                            <p>
+                                <b>Início:</b> {format(new Date(modalEvento.evento.data_inicio), 'dd/MM/yyyy')}<br/>
+                                <span style={{color:'#888', fontSize:13}}>
+                                    {formatDateFns(new Date(modalEvento.evento.data_inicio), 'EEEE', { locale: ptBR })}
+                                </span>
+                            </p>
+                        )}
+                        {modalEvento.evento.data_fim && (
+                            <p>
+                                <b>Fim:</b> {format(new Date(modalEvento.evento.data_fim), 'dd/MM/yyyy')}<br/>
+                                <span style={{color:'#888', fontSize:13}}>
+                                    {formatDateFns(new Date(modalEvento.evento.data_fim), 'EEEE', { locale: ptBR })}
+                                </span>
+                            </p>
+                        )}
                         {modalEvento.evento.limite && <p><b>Limite:</b> {format(new Date(modalEvento.evento.limite), 'dd/MM/yyyy')}</p>}
                     </div>
                 )}
