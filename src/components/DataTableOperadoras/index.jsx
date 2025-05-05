@@ -19,6 +19,10 @@ import { useTranslation } from 'react-i18next';
 import SwitchInput from '@components/SwitchInput';
 import { Toast } from 'primereact/toast';
 import http from '@http';
+import { FaPencil } from 'react-icons/fa6';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { Tooltip } from 'primereact/tooltip';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const TableHeader = styled.div`
     display: flex;
@@ -66,7 +70,7 @@ const StatusTag = styled.span`
     `}
 `;
 
-function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onAddClick }) {
+function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onAddClick, onEditClick, onDeleteClick }) {
     const[selectedOperadora, setSelectedOperadora] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [operadorasStatus, setOperadorasStatus] = useState({});
@@ -118,7 +122,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
             }));
 
             // Chamada à API
-            await http.put(`operadora/${id}/status`, {
+            await http.put(`operadora/${id}/`, {
                 ativo: novoStatus ? true : false
             });
 
@@ -158,26 +162,42 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
         return (
             <div style={{ 
                 display: 'flex', 
-                gap: '16px',
+                gap: '12px',
                 alignItems: 'center',
                 justifyContent: 'flex-end'
             }}>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '16px'
-                }}>
-                    <StatusTag $status={rowData.ativo === true}>
-                        {rowData.ativo === true ? "Ativo" : "Inativo"}
-                    </StatusTag>
-                    <SwitchInput
-                        checked={operadorasStatus[rowData.id]}
-                        onChange={(e) => {
-                            atualizarStatus(rowData.id, e.value);
-                        }}
-                        style={{ width: '36px' }}
-                    />
-                </div>
+                <StatusTag $status={rowData.ativo === true}>
+                    {rowData.ativo === true ? "Ativo" : "Inativo"}
+                </StatusTag>
+                <SwitchInput
+                    checked={operadorasStatus[rowData.id]}
+                    onChange={(e) => {
+                        atualizarStatus(rowData.id, e.value);
+                    }}
+                    style={{ width: '36px' }}
+                />
+                <Tooltip target={`.edit-operadora-${rowData.id}`} mouseTrack mouseTrackLeft={10} />
+                <FaPencil
+                    className={`edit edit-operadora-${rowData.id}`}
+                    data-pr-tooltip="Editar Operadora"
+                    size={16}
+                    onClick={e => { onEditClick(rowData); }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)'
+                    }}
+                />
+                <Tooltip target={`.delete-operadora-${rowData.id}`} mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line
+                    className={`delete delete-operadora-${rowData.id}`}
+                    data-pr-tooltip="Excluir Operadora"
+                    size={16}
+                    onClick={e => { onDeleteClick(rowData); }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--error)'
+                    }}
+                />
             </div>
         );
     };
@@ -206,8 +226,9 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
     };
 
     return (
-        <>
+        <div style={{ width: '100%' }}>
             <Toast ref={toast} />
+            <ConfirmDialog />
             <DataTable 
                 value={operadoras} 
                 filters={filters} 
@@ -218,24 +239,23 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                 selection={selectedOperadora} 
                 onSelectionChange={handleSelectionChange}
                 selectionMode="single"
-                tableStyle={{ minWidth: '100%', maxWidth: '100%' }}
+                tableStyle={{ minWidth: '35vw', maxWidth: '100%' }}
                 rowClassName={(data) => data === selectedOperadora ? 'p-highlight' : ''}
                 header={headerTemplate}
                 showGridlines
                 stripedRows
-                showHeader={false}
             >
                 <Column 
                     body={representativeNomeTemplate} 
-                    style={{ width: '70%' }}
+                    style={{ width: '50%' }}
                     field="nome"
                 />
                 <Column 
                     body={representativeActionsTemplate} 
-                    style={{ width: '30%' }}
+                    style={{ width: '50%' }}
                 />
             </DataTable>
-        </>
+        </div>
     );
 }
 

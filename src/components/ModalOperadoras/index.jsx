@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { RiCloseFill, RiUpload2Fill } from 'react-icons/ri';
 import styled from "styled-components";
 import Botao from "@components/Botao";
@@ -62,7 +62,7 @@ const UploadText = styled.span`
     font-size: 12px;
 `;
 
-function ModalOperadoras({ opened = false, aoFechar, aoSalvar }) {
+function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
     const [nome, setNome] = useState('');
     const [imagem, setImagem] = useState(null);
     const [previewImagem, setPreviewImagem] = useState('');
@@ -70,6 +70,21 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar }) {
     const fileInputRef = useRef(null);
     const [base64Image, setBase64Image] = useState('');
     const toast = useRef(null);
+
+    // Preencher campos ao abrir para edição
+    useEffect(() => {
+        if (opened && operadora) {
+            setNome(operadora.nome || '');
+            setImagem(null);
+            setBase64Image('');
+            setPreviewImagem(operadora.imagem_url || '');
+        } else if (opened) {
+            setNome('');
+            setImagem(null);
+            setBase64Image('');
+            setPreviewImagem('');
+        }
+    }, [opened, operadora]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -129,7 +144,7 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar }) {
                                 <button className="close" onClick={aoFechar}>
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
-                                <h6>Nova Operadora</h6>
+                                <h6>{operadora ? 'Editar Operadora' : 'Nova Operadora'}</h6>
                             </Titulo>
                         </Frame>
                         <br/>

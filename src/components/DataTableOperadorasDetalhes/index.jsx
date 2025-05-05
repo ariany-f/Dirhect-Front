@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Tag } from 'primereact/tag';
 import { IoEllipsisVertical, IoFastFoodSharp } from 'react-icons/io5';
 import { BiBookReader, BiShield } from 'react-icons/bi';
-import { RiBusFill, RiComputerLine, RiEBike2Fill, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
+import { RiBusFill, RiComputerLine, RiEBike2Fill, RiGasStationFill, RiShoppingCartFill, RiDeleteBin6Line } from 'react-icons/ri';
 import { PiForkKnifeFill } from 'react-icons/pi';
 import { FaCar, FaCoins, FaQuestion, FaTheaterMasks, FaTooth } from 'react-icons/fa';
 import { FaHeartPulse, FaMoneyBillTransfer } from "react-icons/fa6";
@@ -25,6 +25,7 @@ import BotaoGrupo from '@components/BotaoGrupo';
 import { Real } from '@utils/formats'
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { Tooltip } from 'primereact/tooltip';
 
 const TableHeader = styled.div`
     display: flex;
@@ -41,7 +42,7 @@ const tipos = {
     'S': 'Saúde e Bem Estar'
 }
 
-function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = null }) {
+function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBeneficio, operadora = null }) {
     const[selectedBeneficio, setSelectedBeneficio] = useState(0)
     const [sendData, setSendData] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -88,6 +89,24 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
         return <Tag value={tipos[rowData.beneficio.tipo]} severity="info" />
     }
 
+    const representativeActionsTemplate = (rowData) => {
+        return (
+            <>
+                <Tooltip target={`.delete-beneficio-operadora-${rowData.id}`} mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line
+                    className={`delete-beneficio-operadora-${rowData.id}`}
+                    data-pr-tooltip="Excluir benefício da operadora"
+                    size={16}
+                    onClick={e => { onDeleteBeneficio && onDeleteBeneficio(rowData); }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--error)'
+                    }}
+                />
+            </>
+        );
+    };
+
     const headerTemplate = () => {
         return (
             <TableHeader>
@@ -109,27 +128,26 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, operadora = n
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
-            <DataTable 
-                value={beneficios} 
-                filters={filters} 
-                globalFilterFields={['beneficio.descricao']} 
-                emptyMessage="Não foram encontrados benefícios vinculados à esta operadora" 
-                paginator 
-                rows={10}
-                selection={selectedBeneficio} 
-                onSelectionChange={(e) => {setSendData(e.value);}} 
-                selectionMode="single"
-                tableStyle={{ minWidth: '100%', maxWidth: '100%' }}
-                header={headerTemplate}
-                showHeader={false}
-                showGridlines
-                stripedRows
-            >
-                <Column body={representativeBeneficioTemplate} field="beneficio.descricao" style={{ width: '50%' }} />
-                <Column body={representativeTipoTemplate} field="beneficio.tipo" style={{ width: '50%' }} />
-            </DataTable>
-        </div>
+        <DataTable 
+            value={beneficios} 
+            filters={filters} 
+            globalFilterFields={['beneficio.descricao']} 
+            emptyMessage="Não foram encontrados benefícios vinculados à esta operadora" 
+            paginator 
+            rows={10}
+            selection={selectedBeneficio} 
+            onSelectionChange={(e) => {setSendData(e.value);}} 
+            selectionMode="single"
+            tableStyle={{ minWidth: '36vw', maxWidth: '100%' }}
+            header={headerTemplate}
+            showHeader={false}
+            showGridlines
+            stripedRows
+        >
+            <Column body={representativeBeneficioTemplate} field="beneficio.descricao" style={{ width: '45%' }} />
+            <Column body={representativeTipoTemplate} field="beneficio.tipo" style={{ width: '45%' }} />
+            <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }} />
+        </DataTable>
     )
 }
 

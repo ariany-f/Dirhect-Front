@@ -14,7 +14,8 @@ import DataTableOperadoras from '@components/DataTableOperadoras'
 import ModalOperadoras from "../../components/ModalOperadoras"
 import DataTableOperadorasDetalhes from '@components/DataTableOperadorasDetalhes'
 import ModalOperadoraBeneficio from '@components/ModalOperadoraBeneficio'
-import { Col12, Col4, Col8 } from '@components/Colunas'
+import { Col12, Col6 } from '@components/Colunas'
+import { confirmDialog } from 'primereact/confirmdialog';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -45,20 +46,15 @@ const Col12Expandable = styled(Col12)`
     width: ${(props) => (props.$expanded ? "calc(100% - 8px)" : "100%")};
     transition: all 0.3s ease;
     padding: 0px;
+    justify-content: center;
 `
 
 // Extensão do Col4 para adicionar a transição
-const Col4Expandable = styled(Col4)`
-    width: ${(props) => (props.$expanded ? "calc(33% - 8px)" : "100%")};
-    transition: all 0.3s ease;
-    padding: 0px;
-`;
-
-// Extensão do Col7 para adicionar a transição
-const Col8Expandable = styled(Col8)`
-    width: ${(props) => (props.$expanded ? "calc(66% - 8px)" : "100%")};
-    flex: 1 1 calc(66% - ${props => props.$gap || '8px'});
-    max-width: calc(66% - ${props => props.$gap || '8px'});
+const Col6Expandable = styled(Col6)`
+    width: ${(props) => (props.$expanded ? "calc(50% - 8px)" : "100%")};
+    min-width: calc(50% - ${props => props.$gap || '8px'});
+    flex: 1 1 calc(50% - ${props => props.$gap || '8px'});
+    max-width: calc(50% - ${props => props.$gap || '8px'});
     transition: all 0.3s ease;
     padding: 0px;
 `;
@@ -72,6 +68,7 @@ function OperadorasListagem() {
     const toast = useRef(null)
     const [selectedOperadora, setSelectedOperadora] = useState(null)
     const [beneficios, setBeneficios] = useState(null)
+    const [operadoraEditando, setOperadoraEditando] = useState(null);
     
     useEffect(() => {
         if(context)
@@ -94,10 +91,10 @@ function OperadorasListagem() {
     
     const adicionarOperadora = async (operadora) => {
         const formData = new FormData();
-
         formData.append('nome', operadora.nome);
-        formData.append('imagem', operadora.imagem);
-
+        if (operadora.imagem) {
+            formData.append('imagem', operadora.imagem);
+        }
         const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
         const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
         const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
@@ -160,28 +157,153 @@ function OperadorasListagem() {
             setModalBeneficioOpened(false)
         }
     }
+
+    // Função para abrir modal de edição
+    const editarOperadora = (operadora) => {
+        setOperadoraEditando(operadora);
+        setModalOpened(true);
+    };
+
+    // Função para salvar edição
+    const salvarEdicaoOperadora = async (operadora) => {
+        const formData = new FormData();
+        formData.append('nome', operadora.nome);
+        if (operadora.imagem) formData.append('imagem', operadora.imagem);
+        const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
+        const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
+        const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
+        const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
+        const response = await axios.put(`${baseUrl}operadora/${operadoraEditando.id}/`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        if(response?.data.id) {
+            setOperadoras(operadoras.map(op => op.id === response.data.id ? response.data : op));
+            setOperadoraEditando(null);
+            setModalOpened(false);
+            toast.current.show({
+                message: 'Operadora editada com sucesso!',
+                type: 'success',
+            });
+            return true;
+        } else {
+            toast.current.show({
+                message: 'Erro ao editar operadora!',
+                type: 'error',
+            });
+            return false;
+        }
+    };
+
+    // Função para recarregar operadoras do backend
+    const reloadOperadoras = async () => {
+        const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
+        const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
+        const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
+        const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
+        const response = await axios.get(`${baseUrl}operadora/`);
+        if (response?.data) setOperadoras(response.data);
+    };
+
+    // Função para deletar operadora com confirmação
+    const deletarOperadora = (operadora) => {
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir esta operadora?',
+            header: 'Confirmação',
+            icon: 'pi pi-info-circle',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
+            accept: async () => {
+                const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
+                const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
+                const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
+                const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
+                try {
+                    await axios.delete(`${baseUrl}operadora/${operadora.id}/`);
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Operadora excluída com sucesso!',
+                        life: 3000
+                    });
+                    reloadOperadoras();
+                } catch {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Erro ao excluir operadora!',
+                        life: 3000
+                    });
+                }
+            }
+        });
+    };
+
+    // Função para deletar benefício vinculado à operadora
+    const deletarBeneficioOperadora = (beneficioOperadora) => {
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir este benefício da operadora?',
+            header: 'Confirmação',
+            icon: 'pi pi-info-circle',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
+            accept: async () => {
+                const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
+                const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
+                const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
+                const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
+                try {
+                    await axios.delete(`${baseUrl}beneficio_operadora/${beneficioOperadora.id}/`);
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Benefício desvinculado com sucesso!',
+                        life: 3000
+                    });
+                    // Recarrega os benefícios da operadora selecionada
+                    if (selectedOperadora) {
+                        const updatedBeneficios = await http.get(`operadora/${selectedOperadora.id}/?format=json`)
+                            .then(response => response.beneficios_vinculados)
+                        setBeneficios(updatedBeneficios)
+                    }
+                } catch {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Erro ao excluir benefício!',
+                        life: 3000
+                    });
+                }
+            }
+        });
+    };
     
     return (
         <ConteudoFrame>
             <Toast ref={toast} />
             {operadoras ? (
                 <Col12Expandable $gap="8px">
-                    <Col4Expandable $expanded={!!selectedOperadora}>
+                    <Col6Expandable $expanded={!!selectedOperadora}>
                         <DataTableOperadoras 
                             search={false} 
                             operadoras={operadoras} 
                             onSelectionChange={setSelectedOperadora}
-                            onAddClick={() => setModalOpened(true)}
+                            onAddClick={() => { setOperadoraEditando(null); setModalOpened(true); }}
+                            onEditClick={editarOperadora}
+                            onDeleteClick={deletarOperadora}
+                            onReload={reloadOperadoras}
                         />
-                    </Col4Expandable>
+                    </Col6Expandable>
                     {selectedOperadora && beneficios ? 
-                        <Col8Expandable $expanded={!!selectedOperadora}>
+                        <Col6Expandable $expanded={!!selectedOperadora}>
                             <DataTableOperadorasDetalhes 
                                 beneficios={beneficios} 
                                 onAddBeneficio={adicionarBeneficio}
                                 operadora={selectedOperadora}
+                                onDeleteBeneficio={deletarBeneficioOperadora}
                             />
-                        </Col8Expandable>
+                        </Col6Expandable>
                     : null}
                 </Col12Expandable>
             ) : (
@@ -194,7 +316,12 @@ function OperadorasListagem() {
                 </ContainerSemRegistro>
             )}
 
-            <ModalOperadoras opened={modalOpened} aoFechar={() => setModalOpened(false)} aoSalvar={adicionarOperadora} />
+            <ModalOperadoras 
+                opened={modalOpened} 
+                aoFechar={() => { setModalOpened(false); setOperadoraEditando(null); }} 
+                aoSalvar={operadoraEditando ? salvarEdicaoOperadora : adicionarOperadora} 
+                operadora={operadoraEditando}
+            />
             <ModalOperadoraBeneficio 
                 opened={modalBeneficioOpened} 
                 aoFechar={() => setModalBeneficioOpened(false)} 
