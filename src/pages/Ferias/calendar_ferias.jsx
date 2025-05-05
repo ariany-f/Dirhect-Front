@@ -14,6 +14,7 @@ const CalendarContainer = styled.div`
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    user-select: none;
 `;
 
 const CalendarHeader = styled.div`
@@ -210,6 +211,7 @@ const CalendarScrollArea = styled.div`
     background: #fff;
     scrollbar-width: thin;
     scrollbar-color: #d1d5db #f5f5f5;
+    user-select: none;
     &::-webkit-scrollbar {
         height: 8px;
         width: 8px;
