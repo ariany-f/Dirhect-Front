@@ -148,6 +148,7 @@ const DataDiaSemana = styled.span`
 
 export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     if (!evento) return null;
+    console.log(evento);
     const gestor = evento.colab?.gestor;
     let totalDias = null;
     if (evento.evento?.data_inicio && evento.evento?.data_fim) {
@@ -162,7 +163,10 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const reprovarFerias = () => {
         alert('Férias reprovadas!');
     };
-    const statusType = mapStatusToType(evento.evento?.status);
+    let statusType = mapStatusToType(evento.evento?.status);
+    if (evento.tipo) {
+        statusType = evento.tipo;
+    }
     let statusLabel = '';
     switch (statusType) {
       case 'aSolicitar': statusLabel = 'Recesso a vencer'; break;
@@ -183,6 +187,10 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         </AlertaAviso>
       );
     }
+    const podeSolicitar = statusType === 'aSolicitar';
+    const solicitarFerias = () => {
+        alert('Solicitação de férias iniciada!');
+    };
     return (
         <OverlayRight $opened={opened} onClick={aoFechar}>
             <DialogEstilizadoRight $align="flex-end" open={opened} $opened={opened} onClick={e => e.stopPropagation()}>
@@ -241,7 +249,13 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                     </DetalhesCard>
                     {alerta}
                 </Frame>
-                {podeAprovar && (
+                {podeSolicitar ? (
+                    <BotaoGrupo align="end">
+                        <Botao estilo="primario" size="medium" aoClicar={solicitarFerias}>
+                            Solicitar Férias
+                        </Botao>
+                    </BotaoGrupo>
+                ) : podeAprovar && (
                     <BotaoGrupo align="end">
                         <Botao estilo="cinza" size="medium" aoClicar={reprovarFerias}>
                             Reprovar
