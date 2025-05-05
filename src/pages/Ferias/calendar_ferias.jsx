@@ -10,7 +10,6 @@ const GRADIENT = 'linear-gradient(to left, #0c004c, #5d0b62)';
 
 const CalendarContainer = styled.div`
     width: 100%;
-    margin-top: 20px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
