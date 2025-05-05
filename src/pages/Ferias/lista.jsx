@@ -110,10 +110,10 @@ function FeriasListagem() {
             </BotaoGrupo>
             <TabPanel>
                 <TabButton active={tab === 'calendario'} onClick={() => setTab('calendario')}>
-                    <FaRegCalendarAlt fill={tab === 'calendario' ? 'white' : '#000'} /> Calendário
+                    <FaRegCalendarAlt fill={tab === 'calendario' ? 'white' : '#000'} />
                 </TabButton>
                 <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
-                    <FaListUl fill={tab === 'lista' ? 'white' : '#000'} /> Lista
+                    <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
                 </TabButton>
             </TabPanel>
             {ferias ?

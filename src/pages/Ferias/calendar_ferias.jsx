@@ -279,6 +279,7 @@ const MonthSeparator = styled.div`
     background: #5d0b62;
     z-index: 3;
     pointer-events: none;
+    opacity: 0.5;
 `;
 
 // Dados fake de colaboradores e férias
@@ -588,11 +589,12 @@ const CalendarFerias = ({ colaboradores }) => {
                     {/* Linhas roxas de separação dos meses */}
                     {monthsArray.map((m, idx) => {
                         if (idx === 0) return null; // não desenha antes do primeiro mês
-                        const startIdx = differenceInCalendarDays(m.start, startDate);
+                        const startIdx = differenceInCalendarDays(m.start, startDate); // índice do dia 1 do mês
+                        const leftPx = 200 + startIdx * dayWidth; // 200px da coluna fixa + dias * largura do dia
                         return (
                             <MonthSeparator
                                 key={idx}
-                                style={{ left: `calc(${(startIdx / totalDays) * 100}% + 200px)` }}
+                                style={{ left: `${leftPx}px` }}
                             />
                         );
                     })}
