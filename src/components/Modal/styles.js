@@ -121,7 +121,7 @@ export const DialogEstilizadoRight = styled.dialog`
     width: 70vw;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    align-items: ${props => props.$align || 'center'};
     border-radius: 5px;
     border: none;
     z-index: 10;

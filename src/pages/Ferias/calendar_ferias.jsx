@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMonth, getYear, differenceInCalendarDays, isAfter, isBefore, isWithinInterval, format as formatDateFns } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList } from 'react-icons/fa';
-import { Dialog } from 'primereact/dialog';
 import { Tooltip } from 'primereact/tooltip';
+import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
+import colaboradoresFake from '@json/ferias.json';
 
 const GRADIENT = 'linear-gradient(to left, #0c004c, #5d0b62)';
 
@@ -281,134 +282,6 @@ const MonthSeparator = styled.div`
     pointer-events: none;
     opacity: 0.5;
 `;
-
-// Dados fake de colaboradores e férias
-const colaboradoresFake = [
-    {
-        nome: 'MARISA MONTE',
-        ausencias: [
-            // Férias concluídas (passadas)
-            {
-                data_inicio: '2025-01-10',
-                data_fim: '2025-01-25',
-                status: 'C',
-            },
-        ],
-        feriasARequisitar: [
-            {
-                limite: '2025-09-15',
-            },
-        ],
-    },
-    {
-        nome: 'CAROL SHAW',
-        ausencias: [
-            // Férias solicitadas (aguardando aprovação)
-            {
-                data_inicio: '2025-05-05',
-                data_fim: '2025-05-20',
-                status: 'S',
-            },
-        ],
-        feriasARequisitar: [],
-    },
-    {
-        nome: 'FRANCES ALLEN',
-        ausencias: [
-            // Férias aprovadas (futuras)
-            {
-                data_inicio: '2025-12-01',
-                data_fim: '2025-12-16',
-                status: 'A',
-            },
-        ],
-        feriasARequisitar: [],
-    },
-    {
-        nome: 'GRACE HOPPER',
-        ausencias: [
-            // Férias em curso (agora)
-            {
-                data_inicio: '2025-06-01',
-                data_fim: '2025-06-20',
-                status: 'E',
-            },
-        ],
-        feriasARequisitar: [],
-    },
-    {
-        nome: 'ADA LOVELACE',
-        ausencias: [
-            // Férias concluídas (passadas)
-            {
-                data_inicio: '2025-03-15',
-                data_fim: '2025-03-30',
-                status: 'C',
-            },
-        ],
-        feriasARequisitar: [],
-    },
-    {
-        nome: 'ALAN TURING',
-        ausencias: [
-            // Férias solicitadas (aguardando aprovação)
-            {
-                data_inicio: '2025-07-05',
-                data_fim: '2025-07-20',
-                status: 'S',
-            },
-        ],
-        feriasARequisitar: [],
-    },
-    {
-        nome: 'KATHERINE JOHNSON',
-        ausencias: [
-            // Férias aprovadas (futuras)
-            {
-                data_inicio: '2025-09-10',
-                data_fim: '2025-09-25',
-                status: 'A',
-            },
-        ],
-        feriasARequisitar: [],
-    },
-    {
-        nome: 'JOHN VON NEUMANN',
-        ausencias: [
-            // Férias rejeitadas (não exibidas, mas útil para lógica)
-            {
-                data_inicio: '2025-04-01',
-                data_fim: '2025-04-16',
-                status: 'R',
-            },
-        ],
-        feriasARequisitar: [],
-    },
-    {
-        nome: 'DONNA DUBINSKY',
-        ausencias: [
-            // Férias em curso (agora)
-            {
-                data_inicio: '2025-06-10',
-                data_fim: '2025-06-25',
-                status: 'E',
-            },
-        ],
-        feriasARequisitar: [],
-    },
-    {
-        nome: 'TIM BERNERS-LEE',
-        ausencias: [
-            // Férias aprovadas (futuras)
-            {
-                data_inicio: '2025-11-10',
-                data_fim: '2025-11-25',
-                status: 'A',
-            },
-        ],
-        feriasARequisitar: [],
-    },
-];
 
 function getDaysArray(start, end) {
     const arr = [];
@@ -723,38 +596,11 @@ const CalendarFerias = ({ colaboradores }) => {
                     ))}
                 </CalendarGrid>
             </CalendarScrollArea>
-            <Dialog
-                header="Detalhes do Evento"
-                visible={!!modalEvento}
-                onHide={handleCloseModal}
-                style={{ width: '400px' }}
-                breakpoints={{ '960px': '90vw', '640px': '100vw' }}
-                footer={<button onClick={handleCloseModal} style={{marginTop: 8, padding: '8px 24px', borderRadius: 8, background: '#5d0b62', color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer'}}>Fechar</button>}
-            >
-                {modalEvento && (
-                    <div style={{textAlign: 'center'}}>
-                        <p><b>Colaborador:</b> {modalEvento.colab.nome}</p>
-                        <p><b>Tipo:</b> {modalEvento.tipo}</p>
-                        {modalEvento.evento.data_inicio && (
-                            <p>
-                                <b>Início:</b> {format(new Date(modalEvento.evento.data_inicio), 'dd/MM/yyyy')}<br/>
-                                <span style={{color:'#888', fontSize:13}}>
-                                    {formatDateFns(new Date(modalEvento.evento.data_inicio), 'EEEE', { locale: ptBR })}
-                                </span>
-                            </p>
-                        )}
-                        {modalEvento.evento.data_fim && (
-                            <p>
-                                <b>Fim:</b> {format(new Date(modalEvento.evento.data_fim), 'dd/MM/yyyy')}<br/>
-                                <span style={{color:'#888', fontSize:13}}>
-                                    {formatDateFns(new Date(modalEvento.evento.data_fim), 'EEEE', { locale: ptBR })}
-                                </span>
-                            </p>
-                        )}
-                        {modalEvento.evento.limite && <p><b>Limite:</b> {format(new Date(modalEvento.evento.limite), 'dd/MM/yyyy')}</p>}
-                    </div>
-                )}
-            </Dialog>
+            <ModalDetalhesFerias
+                opened={!!modalEvento}
+                evento={modalEvento}
+                aoFechar={handleCloseModal}
+            />
         </CalendarContainer>
     );
 };

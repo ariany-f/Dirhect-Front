@@ -1,0 +1,94 @@
+[
+    {
+        "id": 1,
+        "nome": "MARISA MONTE",
+        "gestor": "ANA PAULA SOUZA",
+        "ausencias": [
+            { "data_inicio": "2025-01-10", "data_fim": "2025-01-25", "status": "C" }
+        ],
+        "feriasARequisitar": [
+            { "limite": "2025-09-15" }
+        ]
+    },
+    {
+        "id": 2,
+        "nome": "CAROL SHAW",
+        "gestor": "ANA PAULA SOUZA",
+        "ausencias": [
+            { "data_inicio": "2025-05-05", "data_fim": "2025-05-20", "status": "S" }
+        ],
+        "feriasARequisitar": []
+    },
+    {
+        "id": 3,
+        "nome": "FRANCES ALLEN",
+        "gestor": "JOÃO CARLOS LIMA",
+        "ausencias": [
+            { "data_inicio": "2025-12-01", "data_fim": "2025-12-16", "status": "A" }
+        ],
+        "feriasARequisitar": []
+    },
+    {
+        "id": 4,
+        "nome": "GRACE HOPPER",
+        "gestor": "JOÃO CARLOS LIMA",
+        "ausencias": [
+            { "data_inicio": "2025-06-01", "data_fim": "2025-06-20", "status": "E" }
+        ],
+        "feriasARequisitar": []
+    },
+    {
+        "id": 5,
+        "nome": "ADA LOVELACE",
+        "gestor": "JOÃO CARLOS LIMA",
+        "ausencias": [
+            { "data_inicio": "2025-03-15", "data_fim": "2025-03-30", "status": "C" }
+        ],
+        "feriasARequisitar": []
+    },
+    {
+        "id": 6,
+        "nome": "ALAN TURING",
+        "gestor": "ANA PAULA SOUZA",
+        "ausencias": [
+            { "data_inicio": "2025-07-05", "data_fim": "2025-07-20", "status": "S" }
+        ],
+        "feriasARequisitar": []
+    },
+    {
+        "id": 7,
+        "nome": "KATHERINE JOHNSON",
+        "gestor": "ANA PAULA SOUZA",
+        "ausencias": [
+            { "data_inicio": "2025-09-10", "data_fim": "2025-09-25", "status": "A" }
+        ],
+        "feriasARequisitar": []
+    },
+    {
+        "id": 8,
+        "nome": "JOHN VON NEUMANN",
+        "gestor": "JOÃO CARLOS LIMA",
+        "ausencias": [
+            { "data_inicio": "2025-04-01", "data_fim": "2025-04-16", "status": "R" }
+        ],
+        "feriasARequisitar": []
+    },
+    {
+        "id": 9,
+        "nome": "DONNA DUBINSKY",
+        "gestor": "JOÃO CARLOS LIMA",
+        "ausencias": [
+            { "data_inicio": "2025-06-10", "data_fim": "2025-06-25", "status": "E" }
+        ],
+        "feriasARequisitar": []
+    },
+    {
+        "id": 10,
+        "nome": "TIM BERNERS-LEE",
+        "gestor": "ANA PAULA SOUZA",
+        "ausencias": [
+            { "data_inicio": "2025-11-10", "data_fim": "2025-11-25", "status": "A" }
+        ],
+        "feriasARequisitar": []
+    }
+]
