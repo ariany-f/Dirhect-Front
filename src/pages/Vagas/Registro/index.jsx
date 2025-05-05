@@ -5,6 +5,7 @@ import BotaoVoltar from '@components/BotaoVoltar'; // Importando o componente Ca
 import Container from '@components/Container'; // Importando o componente Container
 import Botao from '@components/Botao'; // Importando o componente Container
 import { useNavigate } from 'react-router-dom';
+import Frame from '@components/Frame';
 
 const VagasRegistro = () => {
     const [classError, setClassError] = useState([])
@@ -52,7 +53,7 @@ const VagasRegistro = () => {
     };
 
     return (
-        <Container>
+        <Frame gap="16px">
             <BotaoVoltar linkFixo="/vagas" />
             <h3>Registrar Nova Vaga</h3>
             <form onSubmit={handleSubmit}>
@@ -98,7 +99,7 @@ const VagasRegistro = () => {
 
                 <Botao type="submit">Registrar Vaga</Botao>
             </form>
-        </Container>
+        </Frame>
     );
 };
 
