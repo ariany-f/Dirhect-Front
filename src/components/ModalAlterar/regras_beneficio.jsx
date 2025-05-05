@@ -102,17 +102,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     }, [dadoAntigo, alteravel])
 
     const fecharModal = () => {
-        setAlteravel('')
-        setValor('')
-        setEmpresa('')
-        setDesconto('')
-        setDescricao('')
-        setTipoCalculo('')
-        setTipoDesconto('')
-        setId('')
-        setTempoMinimo('')
-        setExxtensivelDependente(false)
-        aoFechar()
+        aoFechar();
     }
 
     const handleChange = (checked) => {
