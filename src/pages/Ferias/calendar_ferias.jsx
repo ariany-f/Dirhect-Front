@@ -271,6 +271,16 @@ const DayBgCell = styled.div`
     height: 100%;
 `;
 
+const MonthSeparator = styled.div`
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #5d0b62;
+    z-index: 3;
+    pointer-events: none;
+`;
+
 // Dados fake de colaboradores e férias
 const colaboradoresFake = [
     {
@@ -574,7 +584,18 @@ const CalendarFerias = ({ colaboradores }) => {
                 </ViewToggleSwitch>
             </ViewToggleBar>
             <CalendarScrollArea ref={scrollRef} style={{ cursor: isDragging ? 'grabbing' : 'auto' }}>
-                <CalendarGrid totalDays={totalDays} dayWidth={dayWidth}>
+                <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative'}}>
+                    {/* Linhas roxas de separação dos meses */}
+                    {monthsArray.map((m, idx) => {
+                        if (idx === 0) return null; // não desenha antes do primeiro mês
+                        const startIdx = differenceInCalendarDays(m.start, startDate);
+                        return (
+                            <MonthSeparator
+                                key={idx}
+                                style={{ left: `calc(${(startIdx / totalDays) * 100}% + 200px)` }}
+                            />
+                        );
+                    })}
                     <TrimestreHeader totalDays={totalDays}>
                         <div></div>
                         {monthsArray.map((m, idx) => {

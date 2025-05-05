@@ -81,7 +81,7 @@ function FeriasListagem() {
     const context = useOutletContext()
     const [modalOpened, setModalOpened] = useState(false)
     const { usuario } = useSessaoUsuarioContext()
-    const [tab, setTab] = useState('lista') // 'lista' ou 'calendario'
+    const [tab, setTab] = useState('calendario') // 'lista' ou 'calendario'
 
     useEffect(() => {
         if(!ferias)
@@ -109,17 +109,17 @@ function FeriasListagem() {
                 )}
             </BotaoGrupo>
             <TabPanel>
-                <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
-                    <FaListUl fill={tab === 'lista' ? 'white' : '#000'} /> Lista
-                </TabButton>
                 <TabButton active={tab === 'calendario'} onClick={() => setTab('calendario')}>
                     <FaRegCalendarAlt fill={tab === 'calendario' ? 'white' : '#000'} /> Calendário
+                </TabButton>
+                <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
+                    <FaListUl fill={tab === 'lista' ? 'white' : '#000'} /> Lista
                 </TabButton>
             </TabPanel>
             {ferias ?
                 <>
-                    {tab === 'lista' && <DataTableFerias ferias={ferias} />}
                     {tab === 'calendario' && <CalendarFerias ausencias={ferias} />}
+                    {tab === 'lista' && <DataTableFerias ferias={ferias} />}
                 </>
             :
             <ContainerSemRegistro>
