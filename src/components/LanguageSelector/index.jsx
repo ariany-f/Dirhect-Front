@@ -57,8 +57,8 @@ function LanguageSelector() {
   const { i18n } = useTranslation();
   
   const languages = [
-    { code: 'en', name: 'English', flag: 'us' },
-    { code: 'pt', name: 'Português', flag: 'br' },
+    { code: 'en', name: 'English', flag: 'https://flagcdn.com/us.svg' },
+    { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/br.svg' },
   ];
   
   const changeLanguage = (code) => {
@@ -71,8 +71,9 @@ function LanguageSelector() {
         <div className="flex align-items-center">
           <img 
             alt={option.name} 
-            src={`https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png`}
-            className={`flag flag-${option.flag}`}
+            src={option.flag}
+            className={`flag flag-${option.code}`}
+            style={{ background: '#fff', border: '1px solid #eee', width: 24, height: 24, objectFit: 'contain', borderRadius: '50%' }}
           />
         </div>
       );
@@ -85,9 +86,11 @@ function LanguageSelector() {
       <div className="flex align-items-center">
         <img 
           alt={option.name} 
-          src={`https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png`}
-          className={`flag flag-${option.flag}`}
+          src={option.flag}
+          className={`flag flag-${option.code}`}
+          style={{ background: '#fff', border: '1px solid #eee', width: 24, height: 24, objectFit: 'contain', borderRadius: '50%' }}
         />
+        <span style={{ marginLeft: 8 }}>{option.name}</span>
       </div>
     );
   };
