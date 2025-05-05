@@ -399,7 +399,7 @@ function ColaboradorBeneficios() {
                         <CardBeneficio key={descricao}>
                             <div style={{display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, justifyContent: 'space-between'}}>
                                 <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-                                    <IconeBeneficio nomeIcone={itens[0].icone ?? descricao} />
+                                    <IconeBeneficio nomeIcone={isset(itens[0]) ? itens[0]?.icone : descricao} />
                                     <Texto weight={600} size="15px">{descricao}</Texto>
                                 </div>
                                 <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4}}>

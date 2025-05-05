@@ -159,8 +159,8 @@ function ElegibilidadeEditarValor() {
                                     style={{ width: '10%' }}
                                     body={(rowData) => (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <IconeBeneficio nomeIcone={rowData.beneficio.dados_beneficio.icone ?? rowData.beneficio.dados_beneficio.descricao}/>
-                                            {rowData.beneficio.dados_beneficio.descricao}
+                                            <IconeBeneficio nomeIcone={rowData?.beneficio?.dados_beneficio?.icone ?? rowData?.beneficio?.dados_beneficio?.descricao}/>
+                                            {rowData?.beneficio?.dados_beneficio?.descricao}
                                         </div>
                                     )}
                                 />

@@ -12,6 +12,7 @@ import Dashboard from '@assets/Dashboard.svg'
 import styled from 'styled-components'
 import IconeBeneficio from "@components/IconeBeneficio"
 import { Real } from '@utils/formats'
+import { FaListUl, FaRegCalendarAlt } from 'react-icons/fa'
 
 const Beneficio = styled.div`
    display: flex;
@@ -92,10 +93,63 @@ const Badge = styled.div`
     }
 `
 
+const TabPanel = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 24px;
+    justify-content: flex-end;
+`;
+
+const TabButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: ${({ active }) => active ? 'linear-gradient(to left, #0c004c, #5d0b62)' : '#f5f5f5'};
+    color: ${({ active }) => active ? '#fff' : '#333'};
+    border: none;
+    border-radius: 8px 8px 0 0;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 22px;
+    cursor: pointer;
+    margin-right: 2px;
+    box-shadow: ${({ active }) => active ? '0 2px 8px #5d0b6240' : 'none'};
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+    border-bottom: ${({ active }) => active ? '2px solid #5d0b62' : '2px solid transparent'};
+    &:hover {
+        background: ${({ active }) => active ? 'linear-gradient(to left, #0c004c, #5d0b62)' : '#ececec'};
+    }
+`;
+
+const Tabela = styled.table`
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+`;
+const Th = styled.th`
+    background: #f5f5f5;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 10px 8px;
+    border-bottom: 1px solid #ececec;
+    text-align: left;
+`;
+const Td = styled.td`
+    font-size: 15px;
+    padding: 10px 8px;
+    border-bottom: 1px solid #f3f3f3;
+`;
+
 function EstruturaConfiguracaoBeneficios(type = 'Filial') {
 
     let { id } = useParams()
     const [configuracoes, setConfiguracoes] = useState(null)
+    const [tab, setTab] = useState('cards')
 
     useEffect(() => {
         if(id && (!configuracoes)) {
@@ -133,64 +187,108 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
 
     return (
         <Frame>
+            <TabPanel>
+                <TabButton active={tab === 'cards'} onClick={() => setTab('cards')}>
+                    <FaRegCalendarAlt fill={tab === 'cards' ? 'white' : '#000'} />
+                </TabButton>
+                <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
+                    <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
+                </TabButton>
+            </TabPanel>
             {configuracoes && configuracoes.length > 0 ? (
-                <Col12>
-                    {configuracoes.map((config) => {
-                        const beneficio = config.item_beneficio;
-                        const dadosBeneficio = beneficio.beneficio.dados_beneficio;
-                        const ben = beneficio.beneficio;
-                        const icone = <IconeBeneficio nomeIcone={dadosBeneficio.icone ?? dadosBeneficio.descricao}/>
-                        
-                        return (
-                            <Col6 key={config.id}>
-                                <Beneficio>
-                                    <Col12Spaced>
-                                        <FrameVertical gap="8px" align="center">
-                                            <CustomImage src={ben.image_operadora} alt={ben.nome_operadora} width={'40px'} height={25} size={80} title={ben.nome_operadora} />
-                                            <Texto weight={600} size="12px">{ben.nome_operadora}</Texto>
-                                        </FrameVertical>
-                                    </Col12Spaced>
-                                    
-                                    <div style={{ marginTop: '16px' }}>
-                                        {icone && 
-                                            <div style={{display: 'flex', fontSize: '12px', gap: '4px', fontWeight: 600}} key={icone.id}>
-                                                {icone}
-                                                <p color="black">{dadosBeneficio.descricao}</p>
-                                            </div>
-                                        }
-                                        <br />
-                                        <Texto size={'12px'} weight={600}>Descrição: </Texto>
-                                        <Texto size={'12px'} >{beneficio.descricao}</Texto>
-                                        <Texto size={'12px'} weight={600}>Tipo Desconto:</Texto>
-                                        <Texto size={'12px'} >{getTipoDesconto(beneficio.tipo_desconto)}</Texto>
-                                        <Col12Spaced style={{ marginTop: '12px' }}>
-                                            <Col6Container>
-                                                <Texto color="green" weight={400}>
-                                                    {Real.format(beneficio.valor)}
-                                                </Texto>
-                                                <Texto weight={600} size="10px">
-                                                    {getTipoCalculo(beneficio.tipo_calculo)}
-                                                </Texto>
-                                            </Col6Container>
-                                            <Col6Container>
-                                                <Texto color="red" weight={400}>
-                                                    {Real.format(beneficio.valor_desconto)}
-                                                </Texto>
-                                                <Texto weight={600} size="10px">Colaborador</Texto>
-                                            </Col6Container>
-                                            <Col6Container>
-                                                <Texto color="var(--primaria)" weight={400}>
-                                                    {Real.format(beneficio.valor_empresa)}
-                                                </Texto>
-                                                <Texto weight={600} size="10px">Empresa</Texto>
-                                            </Col6Container>
+                tab === 'cards' ? (
+                    <Col12>
+                        {configuracoes.map((config) => {
+                            const beneficio = config.item_beneficio;
+                            const dadosBeneficio = beneficio.beneficio.dados_beneficio;
+                            const ben = beneficio.beneficio;
+                            const icone = <IconeBeneficio nomeIcone={dadosBeneficio?.icone ?? dadosBeneficio?.descricao ?? ''}/>
+                            
+                            return (
+                                <Col6 key={config.id}>
+                                    <Beneficio>
+                                        <Col12Spaced>
+                                            <FrameVertical gap="8px" align="center">
+                                                <CustomImage src={ben.image_operadora} alt={ben.nome_operadora} width={'40px'} height={25} size={80} title={ben.nome_operadora} />
+                                                <Texto weight={600} size="12px">{ben.nome_operadora}</Texto>
+                                            </FrameVertical>
                                         </Col12Spaced>
-                                    </div>
-                                </Beneficio>
-                            </Col6>
-                        );
-                    })}
-                </Col12>
+                                        
+                                        <div style={{ marginTop: '16px' }}>
+                                            {icone && 
+                                                <div style={{display: 'flex', fontSize: '12px', gap: '4px', fontWeight: 600}} key={icone.id}>
+                                                    {icone}
+                                                    <p color="black">{dadosBeneficio?.descricao}</p>
+                                                </div>
+                                            }
+                                            <br />
+                                            <Texto size={'12px'} weight={600}>Descrição: </Texto>
+                                            <Texto size={'12px'} >{beneficio?.descricao}</Texto>
+                                            <Texto size={'12px'} weight={600}>Tipo Desconto:</Texto>
+                                            <Texto size={'12px'} >{getTipoDesconto(beneficio?.tipo_desconto)}</Texto>
+                                            <Col12Spaced style={{ marginTop: '12px' }}>
+                                                <Col6Container>
+                                                    <Texto color="green" weight={400}>
+                                                        {Real.format(beneficio.valor)}
+                                                    </Texto>
+                                                    <Texto weight={600} size="10px">
+                                                        {getTipoCalculo(beneficio.tipo_calculo)}
+                                                    </Texto>
+                                                </Col6Container>
+                                                <Col6Container>
+                                                    <Texto color="red" weight={400}>
+                                                        {Real.format(beneficio.valor_desconto)}
+                                                    </Texto>
+                                                    <Texto weight={600} size="10px">Colaborador</Texto>
+                                                </Col6Container>
+                                                <Col6Container>
+                                                    <Texto color="var(--primaria)" weight={400}>
+                                                        {Real.format(beneficio.valor_empresa)}
+                                                    </Texto>
+                                                    <Texto weight={600} size="10px">Empresa</Texto>
+                                                </Col6Container>
+                                            </Col12Spaced>
+                                        </div>
+                                    </Beneficio>
+                                </Col6>
+                            );
+                        })}
+                    </Col12>
+                ) : (
+                    <Tabela>
+                        <thead>
+                            <tr>
+                                <Th>Nome</Th>
+                                <Th>Operadora</Th>
+                                <Th>Tipo Desconto</Th>
+                                <Th>Valor</Th>
+                                <Th>Valor Desconto</Th>
+                                <Th>Valor Empresa</Th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {configuracoes.map((config) => {
+                                const beneficio = config.item_beneficio;
+                                const ben = beneficio.beneficio;
+                                return (
+                                    <tr key={config.id}>
+                                        <Td>{ben.dados_beneficio?.descricao}</Td>
+                                        <Td>
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                                <CustomImage src={ben.image_operadora} alt={ben.nome_operadora} width={'40px'} height={25} size={80} title={ben.nome_operadora} />
+                                                <Texto weight={600} size="12px">{ben.nome_operadora}</Texto>
+                                            </div>
+                                        </Td>
+                                        <Td>{getTipoDesconto(beneficio?.tipo_desconto)}</Td>
+                                        <Td>{Real.format(beneficio.valor)}</Td>
+                                        <Td>{Real.format(beneficio.valor_desconto)}</Td>
+                                        <Td>{Real.format(beneficio.valor_empresa)}</Td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </Tabela>
+                )
             ) : (
                 <Frame align="center">
                     <MainContainer align="center">
