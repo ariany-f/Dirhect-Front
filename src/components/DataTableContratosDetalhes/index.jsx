@@ -21,6 +21,7 @@ import ModalAdicionarElegibilidadeItemContrato from '../ModalAdicionarElegibilid
 import { Real } from '@utils/formats'
 import { useTranslation } from 'react-i18next';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { confirmDialog } from 'primereact/confirmdialog';
 
 const Col12 = styled.div`
     display: flex;
@@ -129,24 +130,33 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     // Função para deletar item de configuração do benefício
     const deletarItemBeneficio = (item) => {
         if (item.delete_validation?.can_delete === false) return;
-        http.delete(`contrato_beneficio_item/${item.id}/?format=json`)
-            .then(() => {
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Configuração excluída com sucesso',
-                    life: 3000
-                });
-                if (onUpdate) onUpdate();
-            })
-            .catch(() => {
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Não foi possível excluir a configuração',
-                    life: 3000
-                });
-            });
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir esta configuração?',
+            header: 'Confirmação',
+            icon: 'pi pi-info-circle',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
+            accept: () => {
+                http.delete(`contrato_beneficio_item/${item.id}/?format=json`)
+                    .then(() => {
+                        toast.current.show({
+                            severity: 'success',
+                            summary: 'Sucesso',
+                            detail: 'Configuração excluída com sucesso',
+                            life: 3000
+                        });
+                        if (onUpdate) onUpdate();
+                    })
+                    .catch(() => {
+                        toast.current.show({
+                            severity: 'error',
+                            summary: 'Erro',
+                            detail: 'Não foi possível excluir a configuração',
+                            life: 3000
+                        });
+                    });
+            }
+        });
     };
 
     const representativeOptionsTemplate = (rowData) => {
@@ -186,24 +196,33 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     // Função para deletar benefício do contrato
     const deletarBeneficioContrato = (beneficio) => {
         if (beneficio.delete_validation?.can_delete === false) return;
-        http.delete(`contrato_beneficio/${beneficio.id}/?format=json`)
-            .then(() => {
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Benefício desvinculado do contrato com sucesso',
-                    life: 3000
-                });
-                if (onUpdate) onUpdate();
-            })
-            .catch(() => {
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Não foi possível desvincular o benefício',
-                    life: 3000
-                });
-            });
+        confirmDialog({
+            message: 'Tem certeza que deseja desvincular este benefício do contrato?',
+            header: 'Confirmação',
+            icon: 'pi pi-info-circle',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
+            accept: () => {
+                http.delete(`contrato_beneficio/${beneficio.id}/?format=json`)
+                    .then(() => {
+                        toast.current.show({
+                            severity: 'success',
+                            summary: 'Sucesso',
+                            detail: 'Benefício desvinculado do contrato com sucesso',
+                            life: 3000
+                        });
+                        if (onUpdate) onUpdate();
+                    })
+                    .catch(() => {
+                        toast.current.show({
+                            severity: 'error',
+                            summary: 'Erro',
+                            detail: 'Não foi possível desvincular o benefício',
+                            life: 3000
+                        });
+                    });
+            }
+        });
     };
 
     const representativeBeneficiosTemplate = (rowData) => {
