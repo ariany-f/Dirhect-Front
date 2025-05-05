@@ -351,13 +351,16 @@ function DataTableContratos({
                     data-pr-tooltip="Excluir Contrato" 
                     size={16} 
                     onClick={(e) => {
+                        if (rowData.delete_validation?.can_delete === false) return;
                         e.stopPropagation();
                         excluirContrato(rowData.id);
                     }}
                     style={{
-                        cursor: 'pointer',
-                        color: 'var(--error)',
+                        cursor: rowData.delete_validation?.can_delete === false ? 'not-allowed' : 'pointer',
+                        color: rowData.delete_validation?.can_delete === false ? '#ccc' : 'var(--error)',
+                        opacity: rowData.delete_validation?.can_delete === false ? 0.5 : 1
                     }}
+                    disabled={rowData.delete_validation?.can_delete === false}
                 />
             </div>
         );

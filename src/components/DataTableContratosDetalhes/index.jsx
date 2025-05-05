@@ -20,6 +20,7 @@ import { Tooltip } from 'primereact/tooltip';
 import ModalAdicionarElegibilidadeItemContrato from '../ModalAdicionarElegibilidadeItemContrato';
 import { Real } from '@utils/formats'
 import { useTranslation } from 'react-i18next';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 const Col12 = styled.div`
     display: flex;
@@ -125,6 +126,29 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
         )
     }
     
+    // Função para deletar item de configuração do benefício
+    const deletarItemBeneficio = (item) => {
+        if (item.delete_validation?.can_delete === false) return;
+        http.delete(`contrato_beneficio_item/${item.id}/?format=json`)
+            .then(() => {
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Configuração excluída com sucesso',
+                    life: 3000
+                });
+                if (onUpdate) onUpdate();
+            })
+            .catch(() => {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível excluir a configuração',
+                    life: 3000
+                });
+            });
+    };
+
     const representativeOptionsTemplate = (rowData) => {
         return (
             <div style={{display: 'flex', gap: '20px'}}>
@@ -139,15 +163,53 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                     setSendData(rowData)
                     setModalOpened(true)
                 }} />
+                <Tooltip target=".delete-item" mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line
+                    className="delete-item"
+                    size={16}
+                    title="Excluir configuração"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        deletarItemBeneficio(rowData);
+                    }}
+                    style={{
+                        cursor: rowData.delete_validation?.can_delete === false ? 'not-allowed' : 'pointer',
+                        color: rowData.delete_validation?.can_delete === false ? '#ccc' : 'var(--error)',
+                        opacity: rowData.delete_validation?.can_delete === false ? 0.5 : 1
+                    }}
+                    disabled={rowData.delete_validation?.can_delete === false}
+                />
             </div>
         )
     }
 
+    // Função para deletar benefício do contrato
+    const deletarBeneficioContrato = (beneficio) => {
+        if (beneficio.delete_validation?.can_delete === false) return;
+        http.delete(`contrato_beneficio/${beneficio.id}/?format=json`)
+            .then(() => {
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Benefício desvinculado do contrato com sucesso',
+                    life: 3000
+                });
+                if (onUpdate) onUpdate();
+            })
+            .catch(() => {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível desvincular o benefício',
+                    life: 3000
+                });
+            });
+    };
+
     const representativeBeneficiosTemplate = (rowData) => {
         const isActive = selectedBeneficio == rowData;
-        
         return (
-            <div key={rowData?.dados_beneficio?.id}>
+            <div key={rowData?.dados_beneficio?.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                 <BadgeGeral 
                     severity={isActive ? 'info' : ''} 
                     weight={500} 
@@ -162,6 +224,20 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                             </div>
                         </div>
                     }  
+                />
+                <RiDeleteBin6Line
+                    size={18}
+                    title="Excluir benefício do contrato"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        deletarBeneficioContrato(rowData);
+                    }}
+                    style={{
+                        cursor: rowData.delete_validation?.can_delete === false ? 'not-allowed' : 'pointer',
+                        color: rowData.delete_validation?.can_delete === false ? '#ccc' : 'var(--error)',
+                        opacity: rowData.delete_validation?.can_delete === false ? 0.5 : 1
+                    }}
+                    disabled={rowData.delete_validation?.can_delete === false}
                 />
             </div>
         );

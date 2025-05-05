@@ -132,6 +132,8 @@ function ColaboradorDetalhes() {
     const [filial, setFilial] = useState(null)
     const [funcao, setFuncao] = useState(null)
     const [secao, setSecao] = useState(null)
+    const [departamento, setDepartamento] = useState(null)
+    const [centroCusto, setCentroCusto] = useState(null)
     const navegar = useNavigate()
     const toast = useRef(null)
 
@@ -175,9 +177,25 @@ function ColaboradorDetalhes() {
                     })
                     .catch(erro => console.log(erro))
             }
+            if((!departamento) && colaborador.departamento)
+            {
+                http.get(`departamento/${colaborador.departamento}/?format=json`)
+                    .then(response => {
+                        setDepartamento(response);
+                    })
+                    .catch(erro => console.log(erro))
+            }
+            if((!centroCusto) && colaborador.centro_custo)
+            {
+                http.get(`centro-custo/${colaborador.centro_custo}/?format=json`)
+                    .then(response => {
+                        setCentroCusto(response);
+                    })
+                    .catch(erro => console.log(erro))
+            }
         }
         
-    }, [colaborador, funcao, filial, secao])
+    }, [colaborador, funcao, filial, secao, departamento])
 
     const desativarColaborador = () => {
         confirmDialog({
@@ -351,9 +369,23 @@ function ColaboradorDetalhes() {
                             </Frame>
                             
                             <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Departamento</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Tag severity="info" value={departamento?.nome ?? 'Não definida'}></Tag>
+                                </div>
+                            </Frame>
+                            
+                            <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Função</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
                                     <Tag severity="info" value={funcao?.nome ?? 'Não definida'}></Tag>
+                                </div>
+                            </Frame>
+
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Centro de Custo</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Tag severity="info" value={centroCusto?.nome ?? 'Não definida'}></Tag>
                                 </div>
                             </Frame>
                      </div>
