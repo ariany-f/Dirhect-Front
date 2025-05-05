@@ -32,12 +32,12 @@ const Col6 = styled.div`
 `;
 
 const VariaveisContainer = styled.div`
-  margin-top: 16px;
+  margin-top: 4px;
   border: 1px solid #ddd;
   padding: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 4px;
   background-color: #f9f9f9;
 `;
 
@@ -169,7 +169,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
   return (
     opened &&
     <Overlay>
-      <DialogEstilizado open={opened}>
+      <DialogEstilizado $width="90vw" $minWidth="70vw" open={opened}>
         <Frame>
           <Titulo>
             <button className="close" onClick={aoFechar}>
@@ -211,7 +211,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
                   <Editor
                     value={editorContent}
                     onTextChange={(e) => setEditorContent(e.htmlValue)}
-                    style={{ height: '320px' }}
+                    style={{ height: '240px' }}
                   />
                   <VariaveisContainer>
                     {variaveis.map((variavel, index) => (
