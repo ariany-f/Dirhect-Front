@@ -36,6 +36,8 @@ const ElegibilidadeLista = () => {
     const context = useOutletContext()
     const toast = useRef(null)
     const [loading, setLoading] = useState(true)
+    const [atualizado, setAtualizado] = useState(false)
+    const [dadosCarregados, setDadosCarregados] = useState(false)
 
     const [filiais, setFiliais] = useState([])
     const [departamentos, setDepartamentos] = useState([])
@@ -45,7 +47,6 @@ const ElegibilidadeLista = () => {
     const [centros_custo, setCentrosCusto] = useState([])
     const [sindicatos, setSindicatos] = useState([])
     const [horarios, setHorarios] = useState([])
-    const [atualizado, setAtualizado] = useState(false)
     const [abasDisponiveis, setAbasDisponiveis] = useState([])
 
     const fetchData = (endpoint, setter) => {
@@ -54,6 +55,7 @@ const ElegibilidadeLista = () => {
             .catch((err) => { console.log(err); setLoading(false); })
     }
 
+    // Primeiro useEffect para carregar os dados iniciais
     useEffect(() => {
         fetchData('filial', setFiliais);
         fetchData('departamento', setDepartamentos);
@@ -65,13 +67,22 @@ const ElegibilidadeLista = () => {
         fetchData('funcao', setFuncoes);
     }, [])
 
+    // Segundo useEffect para verificar se todos os dados foram carregados
     useEffect(() => {
         const todasAsListasCarregadas = [
             filiais, departamentos, secoes, cargos,
             funcoes, centros_custo, sindicatos, horarios
-        ].every(lista => Array.isArray(lista));
+        ].every(lista => Array.isArray(lista) && lista.length > 0);
 
-        if (context && context.length > 0 && todasAsListasCarregadas && !atualizado) {
+        if (todasAsListasCarregadas && !dadosCarregados) {
+            setDadosCarregados(true)
+            setLoading(false)
+        }
+    }, [filiais, departamentos, secoes, cargos, funcoes, centros_custo, sindicatos, horarios, dadosCarregados])
+
+    // Terceiro useEffect para processar os dados de elegibilidade
+    useEffect(() => {
+        if (context && context.length > 0 && dadosCarregados && !atualizado) {
             const adicionarElegibilidade = (lista, setLista, nomeEntidade) => {
                 if (!lista || lista.length === 0) return false
                 
@@ -86,11 +97,9 @@ const ElegibilidadeLista = () => {
                 })
                 
                 setLista(listaAtualizada)
-                // Retorna true se houver pelo menos uma elegibilidade na lista
                 return listaAtualizada.some(item => item.elegibilidade && item.elegibilidade.length > 0)
             }
 
-            // Objeto para mapear as abas e suas elegibilidades
             const abasComElegibilidade = {
                 filiais: adicionarElegibilidade(filiais, setFiliais, 'Filial'),
                 departamentos: adicionarElegibilidade(departamentos, setDepartamentos, 'Departamento'),
@@ -102,19 +111,21 @@ const ElegibilidadeLista = () => {
                 horarios: adicionarElegibilidade(horarios, setHorarios, 'Horario')
             }
 
-            // Atualiza as abas disponíveis
             setAbasDisponiveis(Object.entries(abasComElegibilidade)
                 .filter(([_, temElegibilidade]) => temElegibilidade)
                 .map(([key]) => key))
 
             setAtualizado(true)
-            setLoading(false)
         }
-        // Sempre fecha o loading quando todas as listas forem carregadas
-        if (todasAsListasCarregadas) {
-            setLoading(false)
+    }, [context, dadosCarregados, atualizado])
+
+    // Resetar os estados quando o componente for desmontado
+    useEffect(() => {
+        return () => {
+            setAtualizado(false)
+            setDadosCarregados(false)
         }
-    }, [context, filiais, departamentos, secoes, cargos, funcoes, centros_custo, sindicatos, horarios])
+    }, [])
 
     const renderizarAba = (nome, componente) => {
         if (!abasDisponiveis.includes(nome)) return null;

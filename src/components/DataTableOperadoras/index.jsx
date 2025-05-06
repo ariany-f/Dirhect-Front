@@ -70,7 +70,7 @@ const StatusTag = styled.span`
     `}
 `;
 
-function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onAddClick, onEditClick, onDeleteClick }) {
+function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onAddClick, onEditClick, onDeleteClick, onUpdate }) {
     const[selectedOperadora, setSelectedOperadora] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [operadorasStatus, setOperadorasStatus] = useState({});
@@ -113,30 +113,39 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
         onSelectionChange(e.value);
     };
 
-    const atualizarStatus = async (id, novoStatus) => {
+    const atualizarStatus = async (id) => {
         try {
-            // Atualiza o estado local imediatamente para feedback instantâneo
-            setOperadorasStatus(prev => ({
-                ...prev,
-                [id]: novoStatus
-            }));
+            const operadora = operadoras.find(op => op.id === id);
+            const novoStatus = !operadora.ativo;
 
-            // Chamada à API
-            await http.put(`operadora/${id}/`, {
-                ativo: novoStatus ? true : false
+            // Chamada à API com o novo status
+            const response = await http.put(`operadora/${id}/`, {
+                ativo: novoStatus
             });
+
+            // Atualiza o estado da operadora no array usando a resposta
+            const operadorasAtualizadas = operadoras.map(op => 
+                op.id === id ? response : op
+            );
+            onSelectionChange(operadorasAtualizadas);
+
+            // Recarrega os dados
+            if (onUpdate) {
+                onUpdate();
+            }
 
             toast.current.show({
                 severity: 'success',
                 summary: 'Sucesso',
-                detail: `Operadora ${novoStatus ? 'ativada' : 'desativada'} com sucesso`,
+                detail: `Operadora ${response.ativo ? 'ativada' : 'desativada'} com sucesso`,
                 life: 3000
             });
         } catch (error) {
             // Reverte o estado em caso de erro
+            const operadora = operadoras.find(op => op.id === id);
             setOperadorasStatus(prev => ({
                 ...prev,
-                [id]: !novoStatus
+                [id]: operadora.ativo
             }));
 
             toast.current.show({
@@ -159,6 +168,8 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
     };
 
     const representativeActionsTemplate = (rowData) => {
+        const statusAtual = operadorasStatus[rowData.id] ?? rowData.ativo;
+        
         return (
             <div style={{ 
                 display: 'flex', 
@@ -166,13 +177,13 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                 alignItems: 'center',
                 justifyContent: 'flex-end'
             }}>
-                <StatusTag $status={rowData.ativo === true}>
-                    {rowData.ativo === true ? "Ativo" : "Inativo"}
+                <StatusTag $status={statusAtual}>
+                    {statusAtual ? "Ativo" : "Inativo"}
                 </StatusTag>
                 <SwitchInput
-                    checked={operadorasStatus[rowData.id]}
-                    onChange={(e) => {
-                        atualizarStatus(rowData.id, e.value);
+                    checked={statusAtual}
+                    onChange={() => {
+                        atualizarStatus(rowData.id);
                     }}
                     style={{ width: '36px' }}
                 />

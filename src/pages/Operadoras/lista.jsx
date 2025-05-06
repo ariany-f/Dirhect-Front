@@ -293,6 +293,7 @@ function OperadorasListagem() {
                             onEditClick={editarOperadora}
                             onDeleteClick={deletarOperadora}
                             onReload={reloadOperadoras}
+                            onUpdate={reloadOperadoras}
                         />
                     </Col6Expandable>
                     {selectedOperadora && beneficios ? 
