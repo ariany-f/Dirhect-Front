@@ -25,6 +25,8 @@ import { FaTrash, FaUserTimes, FaUmbrella, FaDownload } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
 import { formatCPF } from '@utils/formats';
+import http from '@http';
+import { Dropdown } from 'primereact/dropdown';
 
 function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
@@ -32,11 +34,24 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
     const [modalImportarPlanilhaOpened, setModalImportarPlanilhaOpened] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [filiais, setFiliais] = useState([]);
+    
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
+    });
+
     const navegar = useNavigate()
     const {usuario} = useSessaoUsuarioContext()
+
+    useEffect(() => {
+        http.get('filial/?format=json')
+            .then(response => {
+                setFiliais(response);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar filiais:', error);
+            });
+    }, []);
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
@@ -75,11 +90,11 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         )
     }
     
-    const representativeDepartamentoTemplate = (rowData) => {
-        
+    const representativeFilialTemplate = (rowData) => {
+        const filial = filiais.find(f => f.id === rowData.filial);
         return (
-            <Texto weight={500}>{rowData?.departamento}</Texto>
-        )
+            <Texto weight={500}>{filial ? filial.nome : '---'}</Texto>
+        );
     }
     
     const representativeAdmissaoTemplate = (rowData) => {
@@ -195,6 +210,20 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         return 'Total de Colaboradores: ' + totalRecords;
     };
 
+    // Template para filtro de filial
+    const filialFilterTemplate = (options) => (
+        <Dropdown
+            value={options.value}
+            options={filiais}
+            onChange={e => options.filterApplyCallback(e.value)}
+            optionLabel="nome"
+            optionValue="id"
+            placeholder="Filial"
+            showClear
+            style={{ minWidth: '12rem' }}
+        />
+    );
+
     return (
         <>
             <BotaoGrupo align={showSearch ? 'space-between' : 'end'} wrap>
@@ -226,6 +255,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 lazy
                 rows={rows} 
                 totalRecords={totalRecords} 
+                GlobalFilterFields={['funcionario_pessoa_fisica.nome', 'chapa', 'filial']}
                 first={first} 
                 onPage={onPage} 
                 onSort={handleSort}
@@ -243,7 +273,17 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             >
                 <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '10%' }}></Column>
                 <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
-                <Column body={representativeDepartamentoTemplate} field="departamento" header="Departamento" sortable style={{ width: '15%' }}></Column>
+                <Column 
+                    body={representativeFilialTemplate} 
+                    field="filial" 
+                    header="Filial" 
+                    sortable 
+                    style={{ width: '15%' }} 
+                    filter 
+                    filterField="filial" 
+                    filterElement={filialFilterTemplate} 
+                    showFilterMenu={false} 
+                />
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Data de Nascimento" sortable style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>

@@ -35,7 +35,7 @@ const ContainerSemRegistro = styled.div`
 function ColaboradoresCadastrados() {
     
     const [loading, setLoading] = useState(false)
-    const [colaboradores, setColaboradores] = useState([])
+    const [colaboradores, setColaboradores] = useState(null)
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
@@ -100,7 +100,7 @@ function ColaboradoresCadastrados() {
             <Loading opened={loading} />
             
             {
-                colaboradores.length > 0 ?
+                colaboradores ?
                 <DataTableColaboradores 
                     colaboradores={colaboradores} 
                     paginator={true} 
