@@ -10,6 +10,7 @@ import { GrAddCircle } from 'react-icons/gr'
 import Management from '@assets/Management.svg'
 import { Link } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
+import ModalAdicionarHorario from '@components/ModalAdicionarHorario'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -91,6 +92,22 @@ function HorariosLista() {
         loadData(1, pageSize, search)
     }
 
+    const adicionarHorario = (dadosParaAPI) => {
+        setLoading(true);
+        http.post('horario/', dadosParaAPI)
+            .then(response => {
+                if (response.id) {
+                    setModalOpened(false);
+                }
+            })
+            .catch(erro => {
+                // Tratar erro se necessário
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
     return (
         <>
         <ConteudoFrame>
@@ -123,6 +140,7 @@ function HorariosLista() {
                         <Botao estilo={'black'} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
+                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um horário</Botao>
             </BotaoGrupo>
             
             {horarios && horarios.length > 0 ?
@@ -146,6 +164,7 @@ function HorariosLista() {
                 </ContainerSemRegistro>
             }
         </ConteudoFrame>
+        <ModalAdicionarHorario aoSalvar={adicionarHorario} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>
     )
 }
