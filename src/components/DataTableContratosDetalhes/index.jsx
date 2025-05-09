@@ -1,7 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MdSettings } from 'react-icons/md'
+import { MdSettings, MdSettingsSuggest } from 'react-icons/md'
 import './DataTable.css'
 import BadgeGeral from '@components/BadgeGeral';
 import BotaoGrupo from '@components/BotaoGrupo';
@@ -160,13 +160,29 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     };
 
     const representativeOptionsTemplate = (rowData) => {
+        console.log(rowData)
         return (
             <div style={{display: 'flex', gap: '20px'}}>
                 <Tooltip target=".settings" mouseTrack mouseTrackRight={10} />
-                <MdSettings className="settings" data-pr-tooltip="Configurar Elegibilidade" size={16} onClick={() => {
-                    setSelectedItemBeneficio(rowData)
-                    setModalElegibilidadeOpened(true)
-                }} />
+                {
+                    rowData.regra_elegibilidade && rowData.regra_elegibilidade.length > 0 ?
+                    <MdSettingsSuggest 
+                        className="settings" 
+                        data-pr-tooltip="Configurar Elegibilidade" 
+                        size={16} 
+                        fill="var(--info)"
+                    />
+                    : <MdSettings 
+                        className="settings" 
+                        data-pr-tooltip="Configurar Elegibilidade" 
+                        size={16} 
+                        onClick={() => {
+                            setSelectedItemBeneficio(rowData)
+                            setModalElegibilidadeOpened(true)
+                        }}
+                    />
+                }
+                
                 <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
                 <FaPen className="edit" data-pr-tooltip="Editar Item" size={16} onClick={() => {
                     setSelectedItemBeneficio(rowData)
