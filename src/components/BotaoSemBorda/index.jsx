@@ -6,6 +6,7 @@ const Container = styled.div`
     font-family: var(--secundaria);
     align-items: center;
     font-size: 12px;
+    cursor: pointer;
     font-weight: 700;
     gap: 8px;
     & svg {
@@ -16,9 +17,9 @@ const Container = styled.div`
     }
 `
 
-function BotaoSemBorda({ children, color = 'var(--primaria)'}) {
+function BotaoSemBorda({ children, color = 'var(--primaria)', aoClicar=() => {}}) {
     return (
-        <Container $color={color}>
+        <Container $color={color} onClick={aoClicar}>
             {children}
         </Container>
     )

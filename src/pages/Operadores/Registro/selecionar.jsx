@@ -6,6 +6,7 @@ import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import Texto from "@components/Texto"
 import CampoTexto from "@components/CampoTexto"
+import BotaoSemBorda from '@components/BotaoSemBorda'
 import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import styles from './Registro.module.css'
@@ -18,6 +19,7 @@ import { Column } from 'primereact/column'
 import styled from 'styled-components';
 import DottedLine from '@components/DottedLine';
 import { useOperadorContext } from '../../../contexts/Operador';
+import ModalOperadores from '@components/ModalOperadores';
 import { ArmazenadorToken } from '@utils';
 import './DataTableStyle.css'
 
@@ -48,6 +50,7 @@ function OperadorRegistroSelecionar() {
 
     let { id } = useParams()
     const navegar = useNavigate()
+    const [modalOperador, setModalOperador] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState('')
     const [colaboradores, setColaboradores] = useState([])
     const [selectedColaborador, setSelectedColaborador] = useState(null);
@@ -75,15 +78,25 @@ function OperadorRegistroSelecionar() {
             .catch(erro => console.log(erro))
     }, [])
 
-    const adicionarColaborador = () => {
-        setEmail(selectedColaborador.funcionario_pessoa_fisica.email)
-        setFirstName(selectedColaborador.funcionario_pessoa_fisica.nome.split(' ')[0])
-        if (selectedColaborador.funcionario_pessoa_fisica.nome.split(' ').length > 1) {
-            setLastName(selectedColaborador.funcionario_pessoa_fisica.nome.split(' ')[1])
+    const adicionarColaborador = (email = null, firstName = null, lastName = null, password = null) => {
+        if(modalOperador) {
+            setEmail(email)
+            setFirstName(firstName)
+            setLastName(lastName)
+            setTenantId(ArmazenadorToken.UserCompanyPublicId)
+            setUsername((firstName.replace(/\s+/g, '.') + '.' + lastName.replace(/\s+/g, '.')).toLowerCase())
+            setPassword(password)
         }
-        setTenantId(ArmazenadorToken.UserCompanyPublicId)
-        setUsername(selectedColaborador.funcionario_pessoa_fisica.nome.replace(/\s+/g, '.').toLowerCase())
-        setPassword('123456')
+        else {
+            setEmail(selectedColaborador.funcionario_pessoa_fisica.email)
+            setFirstName(selectedColaborador.funcionario_pessoa_fisica.nome.split(' ')[0])
+            if (selectedColaborador.funcionario_pessoa_fisica.nome.split(' ').length > 1) {
+                setLastName(selectedColaborador.funcionario_pessoa_fisica.nome.split(' ')[1])
+            }
+            setTenantId(ArmazenadorToken.UserCompanyPublicId)
+            setUsername(selectedColaborador.funcionario_pessoa_fisica.nome.replace(/\s+/g, '.').toLowerCase())
+            setPassword('123456')
+        }
         navegar('/operador/registro/permissoes')
     }
     
@@ -109,7 +122,13 @@ function OperadorRegistroSelecionar() {
                             </SubTitulo>
                         </Titulo>
                     </BotaoGrupo>
-                    <Botao aoClicar={() => navegar('/colaborador/registro')} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar um novo colaborador</Botao>
+                    <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'end' }}>
+                        <Botao aoClicar={() => navegar('/colaborador/registro')} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Adicionar um novo colaborador</Botao>
+                        <BotaoSemBorda aoClicar={() => setModalOperador(true)}>
+                            <GrAddCircle stroke="var(--primaria)" /> 
+                            Não é colaborador?
+                        </BotaoSemBorda>
+                    </div>
                 </BotaoGrupo>
             </ConteudoFrame>
             
@@ -132,6 +151,7 @@ function OperadorRegistroSelecionar() {
                     <Botao aoClicar={adicionarColaborador} estilo="vermilion" size="medium" filled>Continuar</Botao>
                 </LadoALado>
             </ContainerButton>
+            <ModalOperadores opened={modalOperador} aoFechar={() => setModalOperador(false)} aoSalvar={adicionarColaborador} />
         </Frame>
     )
 }
