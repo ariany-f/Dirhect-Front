@@ -235,9 +235,12 @@ function MeusDadosSistema() {
                     <SubTitulo>Integrações</SubTitulo>
                     {loading ? <Skeleton width={200} height={25} /> : (
                         <>
-                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.zapier} onChange={e => handleIntegracaoChange('zapier', e.target.checked)} /> Zapier/Make</CheckboxLabel>
                             <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.rm} onChange={e => handleIntegracaoChange('rm', e.target.checked)} /> RM</CheckboxLabel>
                             <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.sap} onChange={e => handleIntegracaoChange('sap', e.target.checked)} /> SAP</CheckboxLabel>
+                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.sap} onChange={e => handleIntegracaoChange('sap', e.target.checked)} /> SAP - SuccessFactors</CheckboxLabel>
+                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.lg} onChange={e => handleIntegracaoChange('lg', e.target.checked)} /> LG</CheckboxLabel>
+                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.protheus} onChange={e => handleIntegracaoChange('protheus', e.target.checked)} /> Protheus</CheckboxLabel>
+                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.datasul} onChange={e => handleIntegracaoChange('datasul', e.target.checked)} /> DataSul</CheckboxLabel>
                         </>
                     )}
                 </Col6>
