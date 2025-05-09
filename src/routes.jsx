@@ -143,6 +143,7 @@ import HorarioDetalhes from '@pages/Estrutura/horario/detalhes'
 import CentrosCustoDetalhes from '@pages/Estrutura/centro_custo/detalhes'
 import SindicatoDetalhes from '@pages/Estrutura/sindicato/detalhes'
 import MobileScrollToTop from '@components/MobileScrollToTop'
+import MeusDadosSistema from './pages/MeusDados/sistema'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -392,6 +393,7 @@ function AppRouter() {
                     <Route index element={<MeusDadosDadosGerais />} />
                     <Route path="endereco" element={<MeusDadosEndereco />} />
                     <Route path="dados-faturamento" element={<MeusDadosDadosFaturamento />} />
+                    <Route path="sistema" element={<MeusDadosSistema />} />
                 </Route>
               </Route>
               <Route path="*" element={<NaoEncontrada />}></Route>

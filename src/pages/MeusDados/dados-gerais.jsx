@@ -9,11 +9,14 @@ import { Skeleton } from 'primereact/skeleton'
 import styles from './MeusDados.module.css'
 import { Link } from 'react-router-dom'
 import { RiEditBoxFill } from 'react-icons/ri'
-import { ArmazenadorToken } from './../../utils'
+import { ArmazenadorToken } from '@utils'
 import { Toast } from 'primereact/toast'
 import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
 import ModalAlterarEmail from '@components/ModalAlterar/email'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
+import CampoTexto from '@components/CampoTexto'
+import Botao from '@components/Botao'
+import BotaoGrupo from '@components/BotaoGrupo'
 
 function MeusDadosDadosGerais() {
 
@@ -22,6 +25,10 @@ function MeusDadosDadosGerais() {
     const [modalTelefoneOpened, setModalTelefoneOpened] = useState(false)
     const [modalEmailOpened, setModalEmailOpened] = useState(false)
     const toast = useRef(null)
+    const [senhaAtual, setSenhaAtual] = useState('');
+    const [novaSenha, setNovaSenha] = useState('');
+    const [confirmarSenha, setConfirmarSenha] = useState('');
+    const [alterandoSenha, setAlterandoSenha] = useState(false);
     
     const {
         usuario,
@@ -30,31 +37,27 @@ function MeusDadosDadosGerais() {
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
-
-        /**
-         * Dados necessários para exibição no painel do usuário
-         */
-        if(!Object.keys(userProfile).length)
+        if(usuario && !Object.keys(userProfile).length)
         {
-            // http.get('api/auth/me')
-            // .then(response => {
-            //     if(response.success)
-            //     {
-            //         setUserProfile(response.data.user)
-            //         retornarCompanySession()
-            //         .then((response) => {
-            //             if(response.success)
-            //             {
-            //                 setEmpresaSelecionada(response.data)
-            //             }
-            //         })
-            //     }
-            // })
-            // .catch(erro => {
-            //     console.error(erro)
-            // })
+            setUserProfile(usuario)
         }
-    }, [userProfile])
+        // /**
+        //  * Dados necessários para exibição no painel do usuário
+        //  */
+        // if(!Object.keys(userProfile).length)
+        // {
+        //     http.get(`usuario/${ArmazenadorToken.UserPublicId}`)
+        //     .then(response => {
+        //         if(response.detail != 'Não encontrado')
+        //         {
+        //             setUserProfile(response)
+        //         }
+        //     })
+        //     .catch(erro => {
+        //         console.error(erro)
+        //     })
+        // }
+    }, [userProfile, usuario])
 
     function editarTelefone(telefone) {
         let contact_info = {}
@@ -95,6 +98,27 @@ function MeusDadosDadosGerais() {
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
     }
 
+    const handleAlterarSenha = () => {
+        setAlterandoSenha(true);
+        if (!senhaAtual || !novaSenha || !confirmarSenha) {
+            toast.current.show({ severity: 'warn', summary: 'Atenção', detail: 'Preencha todos os campos.', life: 3000 });
+            setAlterandoSenha(false);
+            return;
+        }
+        if (novaSenha !== confirmarSenha) {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'As senhas não coincidem.', life: 3000 });
+            setAlterandoSenha(false);
+            return;
+        }
+        setTimeout(() => {
+            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Senha alterada com sucesso!', life: 3000 });
+            setSenhaAtual('');
+            setNovaSenha('');
+            setConfirmarSenha('');
+            setAlterandoSenha(false);
+        }, 1000);
+    };
+
     return (
         <>
         <Toast ref={toast} />
@@ -105,23 +129,11 @@ function MeusDadosDadosGerais() {
                 <Texto weight="800">{ArmazenadorToken.UserName}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
-            <Texto>Nome fantasia</Texto>
-            {empresaSelecionada ?
-                (empresaSelecionada.trade_name ?
-                    <Texto weight="800">{empresaSelecionada.trade_name}</Texto>
-                    : '--')
-                : <Skeleton variant="rectangular" width={200} height={25} />
-            }
-            {empresaSelecionada ?
-                <>
-                    <Texto>CNPJ</Texto>
-                    {empresaSelecionada.cnpj ?
-                        <Texto weight="800">{formataCNPJ(empresaSelecionada.cnpj)}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                </>
-                : <Skeleton variant="rectangular" width={200} height={25} />
-            }
+            <Texto>Senha</Texto>
+            <BotaoSemBorda>
+                <RiEditBoxFill size={18} />
+                <Link to="/usuario/sistema" className={styles.link}>Alterar</Link>
+            </BotaoSemBorda>
         </div>
         <Titulo><h6>Informações de contato</h6></Titulo>
         <div className={styles.card_dashboard}>
@@ -164,7 +176,6 @@ function MeusDadosDadosGerais() {
         </div>
         <ModalAlterarTelefone dadoAntigo={(userProfile && userProfile.phones && userProfile.phones.length) ? ('(' + userProfile.phones[0].phone_code + ') ' + userProfile.phones[0].phone_number) : ''} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
         <ModalAlterarEmail dadoAntigo={userProfile.email ?? ''} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
-        
         </>
     )
 }
