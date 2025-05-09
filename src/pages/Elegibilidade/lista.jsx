@@ -147,7 +147,7 @@ const ElegibilidadeLista = () => {
             <div style={{ position: 'absolute', top: 2, right: 32, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <SwitchInput checked={mostrarTodas} onChange={setMostrarTodas} />
                 <span style={{ whiteSpace: 'nowrap' }}>
-                    Mostrar todas as abas
+                    Visualizar todos os registros
                 </span>
             </div>
             <Frame>
