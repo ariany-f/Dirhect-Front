@@ -60,7 +60,7 @@ function OperadorRegistroPermissoes () {
             }
         )
         submeterOperador().then(response => {
-           if(response.success)
+           if(response)
             {
                 navegar('/operador/registro/sucesso')
             }
@@ -76,7 +76,7 @@ function OperadorRegistroPermissoes () {
         <Frame>
             <Texto weight={500} size="12px">Nome do operador</Texto>
             <Titulo>
-                <h3>{operador.name}</h3>
+                <h3>{operador.first_name} {operador.last_name}</h3>
             </Titulo>
             <DottedLine />
             <Titulo>

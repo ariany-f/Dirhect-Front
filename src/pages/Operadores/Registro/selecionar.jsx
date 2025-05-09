@@ -18,6 +18,7 @@ import { Column } from 'primereact/column'
 import styled from 'styled-components';
 import DottedLine from '@components/DottedLine';
 import { useOperadorContext } from '../../../contexts/Operador';
+import { ArmazenadorToken } from '@utils';
 import './DataTableStyle.css'
 
 const ContainerButton = styled.div`
@@ -58,24 +59,31 @@ function OperadorRegistroSelecionar() {
     
     const { 
         operador,
-        setName,
-        setPublicId
+        setEmail,
+        setFirstName,
+        setLastName,
+        setTenantId,
+        setUsername,
+        setPassword
     } = useOperadorContext()
 
     useEffect(() => {
-        // http.get('api/collaborator/index')
-        //     .then(response => {
-        //         if(response.success)
-        //         {
-        //             setColaboradores(response.data)
-        //         }
-        //     })
-        //     .catch(erro => console.log(erro))
+        http.get('funcionario/?format=json')
+            .then(response => {
+                setColaboradores(response)
+            })
+            .catch(erro => console.log(erro))
     }, [])
 
     const adicionarColaborador = () => {
-        setPublicId(selectedColaborador.public_id)
-        setName(selectedColaborador.user_name)
+        setEmail(selectedColaborador.funcionario_pessoa_fisica.email)
+        setFirstName(selectedColaborador.funcionario_pessoa_fisica.nome.split(' ')[0])
+        if (selectedColaborador.funcionario_pessoa_fisica.nome.split(' ').length > 1) {
+            setLastName(selectedColaborador.funcionario_pessoa_fisica.nome.split(' ')[1])
+        }
+        setTenantId(ArmazenadorToken.UserCompanyPublicId)
+        setUsername(selectedColaborador.funcionario_pessoa_fisica.nome.replace(/\s+/g, '.').toLowerCase())
+        setPassword('123456')
         navegar('/operador/registro/permissoes')
     }
     
@@ -112,10 +120,10 @@ function OperadorRegistroSelecionar() {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                 </span>
             </div>
-            <DataTable value={colaboradores} filters={filters} globalFilterFields={['name']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'radiobutton'} selection={selectedColaborador} onSelectionChange={(e) => setSelectedColaborador(e.value)} tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={colaboradores} filters={filters} globalFilterFields={['nome']} emptyMessage="Não foram encontrados colaboradores" selectionMode={rowClick ? null : 'radiobutton'} selection={selectedColaborador} onSelectionChange={(e) => setSelectedColaborador(e.value)} paginator rows={10} tableStyle={{ minWidth: '68vw' }}>
                 <Column selectionMode="single" headerStyle={{ width: '3rem' }}></Column>
-                <Column field="name" header="Nome Completo" style={{ width: '100%' }}></Column>
-                <Column field="email" header="E-mail corporativo" style={{ width: '100%' }}></Column>
+                <Column field="funcionario_pessoa_fisica.nome" header="Nome Completo" style={{ width: '100%' }}></Column>
+                <Column field="funcionario_pessoa_fisica.email" header="E-mail" style={{ width: '100%' }}></Column>
             </DataTable>
             <ContainerButton>
                 <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>

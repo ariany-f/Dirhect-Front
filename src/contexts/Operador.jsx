@@ -3,16 +3,24 @@ import { createContext, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const OperadorInicial = {
-    collaborator_public_id: '',
-    name: '',
+    email: '',
+    first_name: '',
+    last_name: '',
+    tenant_id: '',
+    username: '',
+    password: '',
     roles: {}
 }
 
 export const OperadorContext = createContext({
     operador: OperadorInicial,
     setRoles: () => null,
-    setPublicId: () => null,
-    setName: () => null,
+    setEmail: () => null,
+    setFirstName: () => null,
+    setLastName: () => null,
+    setTenantId: () => null,
+    setUsername: () => null,
+    setPassword: () => null,
     erros: {},
     submeterOperador: () => null
 })
@@ -36,7 +44,7 @@ export const OperadorProvider = ({ children }) => {
         })
     }   
     
-    const setPublicId = (collaborator_public_id) => {
+    const setEmail = (collaborator_public_id) => {
         setOperador(estadoAnterior => {
             return {
                 ...estadoAnterior,
@@ -45,31 +53,70 @@ export const OperadorProvider = ({ children }) => {
         })
     }
     
-    const setName = (name) => {
+    const setFirstName = (first_name) => {
         setOperador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                name
+                first_name
+            }
+        })
+    }
+
+    const setLastName = (last_name) => {
+        setOperador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                last_name
+            }
+        })
+    }
+
+    const setTenantId = (tenant_id) => {
+        setOperador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                tenant_id
+            }
+        })
+    }
+
+    const setUsername = (username) => {
+        setOperador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                username
+            }
+        })
+    }
+
+    const setPassword = (password) => {
+        setOperador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                password
             }
         })
     }
 
     const submeterOperador = () => {
-        
-        return http.post('api/dashboard/operator', operador)
+        return http.post('usuario/', operador)
         .then((response) => {
             return response
         })
         .catch(erro => {
-            return erro.response.data
+            return erro.response
         })
     }
 
     const contexto = {
         operador,
         setRoles,
-        setPublicId,
-        setName,
+        setEmail,
+        setFirstName,
+        setLastName,
+        setTenantId,
+        setUsername,
+        setPassword,
         submeterOperador
     }
 
