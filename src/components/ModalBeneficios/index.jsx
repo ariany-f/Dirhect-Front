@@ -246,7 +246,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
                                 {usuario?.tipo !== 'global' && (
                                     <Col6>
                                         <div style={{display: 'flex', alignItems: 'center', gap: 16, marginTop: 8}}>
-                                            <span>Múltiplos</span>
+                                            <span>Multipla Escolha</span>
                                             <SwitchInput checked={multiplos} onChange={() => setMultiplos(!multiplos)} style={{ width: 36 }} />
                                         </div>
                                         <div style={{display: 'flex', alignItems: 'center', gap: 16, marginTop: 8}}>

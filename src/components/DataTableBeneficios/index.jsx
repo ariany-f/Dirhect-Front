@@ -358,7 +358,7 @@ function DataTableBeneficios({
             >
                 <Column sortable body={representativeDescriptionTemplate} field="descricao" header="Nome" style={{ width: '20%' }}/>
                 <Column sortable body={representativeStatusTemplate} header="Tipo Benefício	" style={{ width: '40%' }}/>
-                {usuario?.tipo !== 'global' && <Column body={renderMultiplos} field="multiplos" header="Múltiplos" style={{ width: '10%' }}/>} 
+                {usuario?.tipo !== 'global' && <Column body={renderMultiplos} field="multiplos" header="Múltipla Escolha" style={{ width: '10%' }}/>} 
                 {usuario?.tipo !== 'global' && <Column body={renderObrigatoriedade} field="obrigatoriedade" header="Obrigatório" style={{ width: '10%' }}/>} 
                 <Column body={representativeActionsTemplate} header="" style={{ width: '20%'}}/>
             </DataTable>
