@@ -69,7 +69,7 @@ const Item = styled.div`
 `;
 
 function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, operadora = [], beneficiosContrato = [] }) {
-    
+    console.log(beneficiosContrato)
     const [classError, setClassError] = useState([])
     const [observacao, setObservacao] = useState('');
     const [beneficios, setBeneficios] = useState([]);
@@ -82,6 +82,7 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
     const navegar = useNavigate()
 
     useEffect(() => {
+        console.log(operadora)
         if(opened && beneficios.length === 0) {
             http.get('/beneficio/?format=json')
                 .then(response => {
@@ -91,14 +92,16 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
                     const idsVinculadosOperadora = operadora.beneficios_vinculados?.map(v => v.beneficio.id) || [];
                     
                     // Extrai os IDs dos benefícios já no contrato
-                    const idsBeneficiosContrato = beneficiosContrato.map(b => b.beneficio.id);
+                    const idsBeneficiosContrato = beneficiosContrato.map(b => 
+                        typeof b.dados_beneficio === 'object' ? b.dados_beneficio.id : b.dados_beneficio
+                    );
 
                     // Filtra os benefícios que:
                     // 1. Estão vinculados à operadora
                     // 2. Ainda não estão no contrato
                     const disponiveis = response.filter(item =>
-                        idsVinculadosOperadora.includes(item.id) && 
-                        !idsBeneficiosContrato.includes(item.id)
+                        idsVinculadosOperadora.map(String).includes(String(item.id)) &&
+                        !idsBeneficiosContrato.map(String).includes(String(item.id))
                     );
 
                     // Mapeia para o formato do dropdown
