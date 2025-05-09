@@ -40,10 +40,15 @@ function MeusDadosEndereco() {
     const { usuario } = useSessaoUsuarioContext();
 
     useEffect(() => {
-        setLoading(true);
-        if (usuario && usuario.companies && usuario.companies.length > 0) {
-            const selecionada = usuario.companies.find(c => String(c.id_tenant) === String(ArmazenadorToken.UserCompanyPublicId)) || usuario.companies[0];
-
+        if (
+            usuario &&
+            usuario.companies &&
+            usuario.companies.length > 0 &&
+            !endereco // só seta se ainda não tiver endereço
+        ) {
+            const selecionada = usuario.companies.find(
+                c => String(c.id_tenant) === String(ArmazenadorToken.UserCompanyPublicId)
+            ) || usuario.companies[0];
             const pj = selecionada.pessoaJuridica;
             setEndereco({
                 cep: pj.cep || '',
@@ -51,15 +56,43 @@ function MeusDadosEndereco() {
                 bairro: pj.bairro || '',
                 numero: pj.numero_logradouro || '',
                 complemento: pj.complemento || '',
-                cidade: '', // Pode buscar cidade pelo id_municipio se desejar
-                estado: '', // Pode buscar estado pelo id_municipio se desejar
+                cidade: '',
+                estado: '',
             });
+            setLoading(false);
         }
-        setLoading(false);
-    }, [usuario]);
+    }, [usuario, endereco]);
 
     const handleChange = (campo, valor) => {
         setEndereco(prev => ({ ...prev, [campo]: valor }));
+    };
+
+    const setCep = (valor) => {
+        setEndereco(prev => ({ ...prev, cep: valor }));
+    };
+
+    const setLogradouro = (valor) => {
+        setEndereco(prev => ({ ...prev, logradouro: valor }));
+    };
+
+    const setBairro = (valor) => {
+        setEndereco(prev => ({ ...prev, bairro: valor }));
+    };
+
+    const setNumero = (valor) => {
+        setEndereco(prev => ({ ...prev, numero: valor }));
+    };
+
+    const setComplemento = (valor) => {
+        setEndereco(prev => ({ ...prev, complemento: valor }));
+    };
+
+    const setCidade = (valor) => {
+        setEndereco(prev => ({ ...prev, cidade: valor }));
+    };
+
+    const setEstado = (valor) => {
+        setEndereco(prev => ({ ...prev, estado: valor }));
     };
 
     const handleSalvar = () => {
@@ -77,37 +110,37 @@ function MeusDadosEndereco() {
             <Col12>
                 <Col6>
                     <Texto>CEP</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.cep} setValor={v => handleChange('cep', v)} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto patternMask={['99999-999']} valor={endereco?.cep} setValor={setCep} />}
                 </Col6>
                 <Col6>
                     <Texto>Logradouro</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.logradouro} setValor={v => handleChange('logradouro', v)} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.logradouro} setValor={setLogradouro} />}
                 </Col6>
             </Col12>
             <Col12>
                 <Col6>
                     <Texto>Bairro</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.bairro} setValor={v => handleChange('bairro', v)} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.bairro} setValor={setBairro} />}
                 </Col6>
                 <Col6>
                     <Texto>Número</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.numero} setValor={v => handleChange('numero', v)} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.numero} setValor={setNumero} />}
                 </Col6>
             </Col12>
             <Col12>
                 <Col6>
                     <Texto>Complemento</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.complemento} setValor={v => handleChange('complemento', v)} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.complemento} setValor={setComplemento} />}
                 </Col6>
                 <Col6>
                     <Texto>Cidade</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.cidade} setValor={v => handleChange('cidade', v)} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.cidade} setValor={setCidade} />}
                 </Col6>
             </Col12>
             <Col12>
                 <Col6>
                     <Texto>Estado</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.estado} setValor={v => handleChange('estado', v)} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.estado} setValor={setEstado} />}
                 </Col6>
             </Col12>
             <ContainerButton>
