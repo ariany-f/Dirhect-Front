@@ -170,6 +170,10 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                         className="settings" 
                         data-pr-tooltip="Configurar Elegibilidade" 
                         size={18} 
+                        onClick={() => {
+                            setSelectedItemBeneficio(rowData)
+                            setModalElegibilidadeOpened(true)
+                        }}
                         fill="var(--info)"
                     />
                     : <MdSettings 
