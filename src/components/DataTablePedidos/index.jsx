@@ -128,7 +128,7 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
                     </ColumnGroup>
                 }
             >
-                <Column body={representativeTipoTemplate} field="tipo" header="Tipo Benefício" style={{ width: '35%' }}></Column>
+                <Column body={representativeTipoTemplate} field="tipo" header="=Benefício" style={{ width: '35%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>
