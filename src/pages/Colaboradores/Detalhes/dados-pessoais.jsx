@@ -105,20 +105,6 @@ function ColaboradorDadosPessoais() {
                         <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.naturalidade}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
-                    <Texto>Email</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.email ?
-                        <>
-                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.email}</Texto>
-                            <BotaoSemBorda>
-                                <RiEditBoxFill size={18} />
-                                <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
-                            </BotaoSemBorda>
-                        </>
-                        : <BotaoSemBorda>
-                            <RiEditBoxFill size={18} />
-                            <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Adicionar</Link>
-                        </BotaoSemBorda>
-                    }
                     <Texto>Estado Civil</Texto>
                     {colaborador?.funcionario_pessoa_fisica?.estado_civil ?
                         <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.estado_civil}</Texto>
@@ -139,6 +125,34 @@ function ColaboradorDadosPessoais() {
                     {colaborador?.funcionario_pessoa_fisica?.data_emissao_ident ?
                         <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_emissao_ident).toLocaleDateString('pt-BR')}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    <Texto>Email</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.email ?
+                        <>
+                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.email}</Texto>
+                            <BotaoSemBorda>
+                                <RiEditBoxFill size={18} />
+                                <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
+                            </BotaoSemBorda>
+                        </>
+                        : <BotaoSemBorda>
+                            <RiEditBoxFill size={18} />
+                            <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Adicionar</Link>
+                        </BotaoSemBorda>
+                    }
+                    <Texto>Telefone</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.telefone1 ?
+                        <>
+                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.telefone1}</Texto>
+                            <BotaoSemBorda>
+                                <RiEditBoxFill size={18} />
+                                <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Alterar</Link>
+                            </BotaoSemBorda>
+                        </>
+                        : <BotaoSemBorda>
+                            <RiEditBoxFill size={18} />
+                            <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Adicionar</Link>
+                        </BotaoSemBorda>
                     }
                 </Col3>
                 <Col3>
