@@ -24,6 +24,8 @@ import { TabPanel, TabView } from 'primereact/tabview'
 import { useState, useEffect, useRef } from 'react'
 import { BiChevronRight } from 'react-icons/bi'
 import { Real } from '@utils/formats'
+import { InputSwitch } from 'primereact/inputswitch'
+import SwitchInput from '@components/SwitchInput'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -38,6 +40,7 @@ const ElegibilidadeLista = () => {
     const [loading, setLoading] = useState(true)
     const [atualizado, setAtualizado] = useState(false)
     const [dadosCarregados, setDadosCarregados] = useState(false)
+    const [mostrarTodas, setMostrarTodas] = useState(false)
 
     const [filiais, setFiliais] = useState([])
     const [departamentos, setDepartamentos] = useState([])
@@ -128,7 +131,7 @@ const ElegibilidadeLista = () => {
     }, [])
 
     const renderizarAba = (nome, componente) => {
-        if (!abasDisponiveis.includes(nome)) return null;
+        if (!mostrarTodas && !abasDisponiveis.includes(nome)) return null;
         return (
             <TabPanel header={nome.charAt(0).toUpperCase() + nome.slice(1).replace('_', ' ')}>
                 {componente}
@@ -137,10 +140,16 @@ const ElegibilidadeLista = () => {
     };
 
     return (
-        <ConteudoFrame>
+        <ConteudoFrame style={{ position: 'relative' }}>
             <Toast ref={toast} />
             <Loading opened={loading} />
             <ConfirmDialog />
+            <div style={{ position: 'absolute', top: 2, right: 32, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <SwitchInput checked={mostrarTodas} onChange={setMostrarTodas} />
+                <span style={{ whiteSpace: 'nowrap' }}>
+                    Mostrar todas as abas
+                </span>
+            </div>
             <Frame>
                 <Container gap="32px">
                     <TabView>
