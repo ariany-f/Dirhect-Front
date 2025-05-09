@@ -37,6 +37,12 @@ function DataTableOperadores({ operadores }) {
         navegar(`/operador/detalhes/${value.id}`)
     }
     
+    const representativeFullNameTemplate = (rowData) => {
+        return (
+           rowData.first_name + ' ' + rowData.last_name
+        )
+    }
+
     const representativeNameTemplate = (rowData) => {
         return (
            rowData.username
@@ -64,7 +70,8 @@ function DataTableOperadores({ operadores }) {
                 </BotaoGrupo>
             </BotaoGrupo>
             <DataTable value={operadores} filters={filters} globalFilterFields={['username', 'email']}  emptyMessage="Não foram encontrados operadores" selection={selectedOperator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="username" body={representativeNameTemplate} header="Nome Completo" style={{ width: '35%' }}></Column>
+                <Column field="username" body={representativeNameTemplate} header="Usuário" style={{ width: '35%' }}></Column>
+                <Column field="name" body={representativeFullNameTemplate} header="Nome" style={{ width: '35%' }}></Column>
                 <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column>
                 {/* <Column field="cpf" body={representativeDocumentTemplate} header="CPF" style={{ width: '20%' }}></Column> */}
                 
