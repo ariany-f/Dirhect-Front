@@ -169,7 +169,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                     <MdSettingsSuggest 
                         className="settings" 
                         data-pr-tooltip="Configurar Elegibilidade" 
-                        size={16} 
+                        size={18} 
                         fill="var(--info)"
                     />
                     : <MdSettings 
@@ -180,6 +180,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                             setSelectedItemBeneficio(rowData)
                             setModalElegibilidadeOpened(true)
                         }}
+                        fill="var(--error)"
                     />
                 }
                 
