@@ -35,6 +35,7 @@ const ContainerButton = styled.div`
 function MeusDadosEndereco() {
     const [loading, setLoading] = useState(false);
     const [endereco, setEndereco] = useState(null);
+    const [classError, setClassError] = useState([])
     const toast = useRef(null);
 
     const { usuario } = useSessaoUsuarioContext();
@@ -63,9 +64,9 @@ function MeusDadosEndereco() {
         }
     }, [usuario, endereco]);
 
-    const handleChange = (campo, valor) => {
-        setEndereco(prev => ({ ...prev, [campo]: valor }));
-    };
+    // const handleChange = (campo, valor) => {
+    //     setEndereco(prev => ({ ...prev, [campo]: valor }));
+    // };
 
     const setCep = (valor) => {
         setEndereco(prev => ({ ...prev, cep: valor }));
@@ -110,37 +111,37 @@ function MeusDadosEndereco() {
             <Col12>
                 <Col6>
                     <Texto>CEP</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto patternMask={['99999-999']} valor={endereco?.cep} setValor={setCep} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto camposVazios={classError} type="text" patternMask={['99999-999']} valor={endereco?.cep} setValor={setCep} />}
                 </Col6>
                 <Col6>
                     <Texto>Logradouro</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.logradouro} setValor={setLogradouro} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto camposVazios={classError} type="text" valor={endereco?.logradouro} setValor={setLogradouro} />}
                 </Col6>
             </Col12>
             <Col12>
                 <Col6>
                     <Texto>Bairro</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.bairro} setValor={setBairro} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto camposVazios={classError} type="text" valor={endereco?.bairro} setValor={setBairro} />}
                 </Col6>
                 <Col6>
                     <Texto>Número</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.numero} setValor={setNumero} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto camposVazios={classError} type="text" valor={endereco?.numero} setValor={setNumero} />}
                 </Col6>
             </Col12>
             <Col12>
                 <Col6>
                     <Texto>Complemento</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.complemento} setValor={setComplemento} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto camposVazios={classError} type="text" valor={endereco?.complemento} setValor={setComplemento} />}
                 </Col6>
                 <Col6>
                     <Texto>Cidade</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.cidade} setValor={setCidade} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto camposVazios={classError} type="text" valor={endereco?.cidade} setValor={setCidade} />}
                 </Col6>
             </Col12>
             <Col12>
                 <Col6>
                     <Texto>Estado</Texto>
-                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto valor={endereco?.estado} setValor={setEstado} />}
+                    {loading ? <Skeleton width={200} height={25} /> : <CampoTexto camposVazios={classError} type="text" valor={endereco?.estado} setValor={setEstado} />}
                 </Col6>
             </Col12>
             <ContainerButton>
