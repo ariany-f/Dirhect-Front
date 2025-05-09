@@ -57,37 +57,29 @@ function ColaboradorDadosPessoais() {
 
     function editarEmail(email) {
       
-        solicitarCodigoLogin()
-        .then((response) => {
-            if(response.success)
+        let obj = {}
+        obj['email'] = email
+        http.put(`usuario/${id}/`, obj)
+        .then(response => {
+            if(response)
             {
-                let obj = {}
-                obj['email'] = email
-                obj['code'] = response.data.code
-                http.post(`api/collaborator/update/${id}`, obj)
-                .then(response => {
-                   if(response.success)
-                    {
-                        toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
-                        setModalTelefoneOpened(false)
-                    }
-                })
-                .catch(erro => console.log(erro))
+                toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
+                setModalEmailOpened(false)
             }
         })
+        .catch(erro => console.log(erro))
     }
 
     function editarTelefone(telefone) {
-       
         let obj = {}
         const phoneCode = telefone.substring(0, 2);
         const phoneNumber = telefone.substring(2).trim();
         obj['phone_code'] = phoneCode
         obj['phone_number'] = phoneNumber
       
-        http.post(`api/collaborator/update/${id}`, obj)
+        http.put(`usuario/${id}/`, obj)
         .then(response => {
-           if(response.success)
+           if(response)
             {
                 toast.current.show({ severity: 'info', summary: 'Sucesso', detail: response.message, life: 3000 });
                 setModalTelefoneOpened(false)
@@ -112,6 +104,20 @@ function ColaboradorDadosPessoais() {
                     {colaborador?.funcionario_pessoa_fisica?.naturalidade ?
                         <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.naturalidade}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
+                    }
+                    <Texto>Email</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.email ?
+                        <>
+                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.email}</Texto>
+                            <BotaoSemBorda>
+                                <RiEditBoxFill size={18} />
+                                <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
+                            </BotaoSemBorda>
+                        </>
+                        : <BotaoSemBorda>
+                            <RiEditBoxFill size={18} />
+                            <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Adicionar</Link>
+                        </BotaoSemBorda>
                     }
                     <Texto>Estado Civil</Texto>
                     {colaborador?.funcionario_pessoa_fisica?.estado_civil ?
