@@ -144,7 +144,7 @@ const ElegibilidadeLista = () => {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <ConfirmDialog />
-            <div style={{ position: 'absolute', top: 2, right: 32, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ position: 'absolute', top: 2, right: 32, zIndex: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <SwitchInput checked={mostrarTodas} onChange={setMostrarTodas} />
                 <span style={{ whiteSpace: 'nowrap' }}>
                     Visualizar todos os registros
