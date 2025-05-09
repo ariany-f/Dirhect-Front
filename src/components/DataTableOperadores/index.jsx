@@ -7,12 +7,15 @@ import CampoTexto from '@components/CampoTexto';
 import Botao from '@components/Botao';
 import BotaoGrupo from '@components/BotaoGrupo';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { GrAddCircle } from 'react-icons/gr';
 import styles from '@pages/Operadores/Operadores.module.css'
 import { useTranslation } from 'react-i18next';
+import { Toast } from 'primereact/toast';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
-function DataTableOperadores({ operadores }) {
+function DataTableOperadores({ operadores, onDelete }) {
 
     const[selectedOperator, setSelectedOperator] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -21,6 +24,7 @@ function DataTableOperadores({ operadores }) {
     })
     const navegar = useNavigate()
     const { t } = useTranslation('common');
+    const toast = useRef(null);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -55,8 +59,27 @@ function DataTableOperadores({ operadores }) {
         )
     }
 
+    const representativeActionsTemplate = (rowData) => {
+        return (
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end' }}>
+                <RiDeleteBin6Line 
+                    className="delete" 
+                    data-pr-tooltip="Excluir Operador" 
+                    size={18} 
+                    onClick={e => {
+                        e.stopPropagation();
+                        if (onDelete) onDelete(rowData.id, toast, confirmDialog);
+                    }}
+                    style={{ cursor: 'pointer', color: 'var(--erro)' }}
+                />
+            </div>
+        );
+    };
+
     return (
         <>
+            <ConfirmDialog />
+            <Toast ref={toast} />
             <BotaoGrupo align="space-between">
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
@@ -73,8 +96,7 @@ function DataTableOperadores({ operadores }) {
                 <Column field="username" body={representativeNameTemplate} header="Usuário" style={{ width: '35%' }}></Column>
                 <Column field="name" body={representativeFullNameTemplate} header="Nome" style={{ width: '35%' }}></Column>
                 <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column>
-                {/* <Column field="cpf" body={representativeDocumentTemplate} header="CPF" style={{ width: '20%' }}></Column> */}
-                
+                <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}/>
             </DataTable>
         </>
     )
