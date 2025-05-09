@@ -209,7 +209,7 @@ function Menu({ opened = false, aoFechar }){
                         <li onClick={() => FecharMenu()}>
                             <Link className="link" to="/usuario">
                                 <div className="group">
-                                    {t('me')}
+                                    {t('settings')}
                                     <IoMdSettings size={20} className="icon"/>
                                 </div>
                             </Link>
