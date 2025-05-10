@@ -18,9 +18,12 @@ const ConteudoFrame = styled.div`
 function Operador() {
     
     const [operadores, setOperadores] = useState([])
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
 
-    const carregarOperadores = () => {
-        http.get('usuario/?format=json')
+    const carregarOperadores = (sort = '', order = '') => {
+        const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '';
+        http.get(`usuario/?format=json${orderParam}`)
             .then(response => {
                 setOperadores(response)
             })
@@ -29,7 +32,7 @@ function Operador() {
 
     useEffect(() => {
         if(!operadores.length) {
-            carregarOperadores();
+            carregarOperadores(sortField, sortOrder);
         }
     }, [])
 
@@ -62,9 +65,15 @@ function Operador() {
         });
     }
 
+    const onSort = ({ field, order }) => {
+        setSortField(field);
+        setSortOrder(order);
+        carregarOperadores(field, order);
+    };
+
     return (
         <ConteudoFrame>
-            <DataTableOperadores operadores={operadores} onDelete={excluirOperador} />
+            <DataTableOperadores operadores={operadores} onDelete={excluirOperador} sortField={sortField} sortOrder={sortOrder} onSort={onSort} />
         </ConteudoFrame>
     )
 }

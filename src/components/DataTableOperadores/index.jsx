@@ -15,7 +15,7 @@ import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
-function DataTableOperadores({ operadores, onDelete }) {
+function DataTableOperadores({ operadores, onDelete, sortField, sortOrder, onSort }) {
 
     const[selectedOperator, setSelectedOperator] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -76,6 +76,15 @@ function DataTableOperadores({ operadores, onDelete }) {
         );
     };
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
     return (
         <>
             <ConfirmDialog />
@@ -92,10 +101,25 @@ function DataTableOperadores({ operadores, onDelete }) {
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
-            <DataTable value={operadores} filters={filters} globalFilterFields={['username', 'email']}  emptyMessage="Não foram encontrados operadores" selection={selectedOperator} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="username" body={representativeNameTemplate} header="Usuário" style={{ width: '35%' }}></Column>
-                <Column field="name" body={representativeFullNameTemplate} header="Nome" style={{ width: '35%' }}></Column>
-                <Column field="email" body={representativeEmailTemplate} header="E-mail" style={{ width: '35%' }}></Column>
+            <DataTable 
+                value={operadores} 
+                filters={filters} 
+                globalFilterFields={['username', 'email']}  
+                emptyMessage="Não foram encontrados operadores" 
+                selection={selectedOperator} 
+                onSelectionChange={(e) => verDetalhes(e.value)} 
+                selectionMode="single" 
+                paginator 
+                rows={10}  
+                tableStyle={{ minWidth: '68vw' }}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
+            >
+                <Column field="username" body={representativeNameTemplate} header="Usuário" sortable style={{ width: '35%' }}></Column>
+                <Column field="name" body={representativeFullNameTemplate} header="Nome" sortField="first_name" sortable style={{ width: '35%' }}></Column>
+                <Column field="email" body={representativeEmailTemplate} header="E-mail" sortable style={{ width: '35%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}/>
             </DataTable>
         </>
