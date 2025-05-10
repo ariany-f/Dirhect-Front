@@ -52,7 +52,10 @@ function DataTableBeneficios({
     first, 
     onPage,
     onSearch, 
-    onBeneficioDeleted
+    onBeneficioDeleted,
+    sortField,
+    sortOrder,
+    onSort
 }) {
     const navegar = useNavigate();
     const toast = useRef(null);
@@ -325,6 +328,15 @@ function DataTableBeneficios({
             onChange={() => atualizarCampo(rowData.id, 'obrigatoriedade', !rowData.obrigatoriedade)} style={{ width: 36 }} />
     );
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                sortField: event.sortField,
+                sortOrder: event.sortOrder
+            });
+        }
+    };
+
     return (
         <>
             <ConfirmDialog />
@@ -359,12 +371,16 @@ function DataTableBeneficios({
                 selectionMode="single"
                 tableStyle={{ minWidth: '65vw' }}
                 lazy
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
             >
                 <Column sortable body={representativeDescriptionTemplate} field="descricao" header="Nome" style={{ width: '20%' }}/>
-                <Column sortable body={representativeStatusTemplate} header="Tipo Benefício" style={{ width: '40%' }}/>
-                {usuario?.tipo !== 'global' && <Column body={renderMultiplosItens} field="multiplos_itens" header="Múltiplos Itens" style={{ width: '10%' }}/>} 
-                {usuario?.tipo !== 'global' && <Column body={renderMultiplasOperadoras} field="multiplos_operadoras" header="Múltiplas Operadoras" style={{ width: '10%' }}/>} 
-                {usuario?.tipo !== 'global' && <Column body={renderObrigatoriedade} field="obrigatoriedade" header="Obrigatório" style={{ width: '10%' }}/>} 
+                <Column sortable body={representativeStatusTemplate} field="tipo" header="Tipo Benefício" style={{ width: '20%' }}/>
+                {usuario?.tipo !== 'global' && <Column body={renderMultiplosItens} field="multiplos_itens" sortable header="Múltiplos Itens" style={{ width: '15%' }}/>}
+                {usuario?.tipo !== 'global' && <Column body={renderMultiplasOperadoras} field="multiplos_operadoras" sortable header="Múltiplas Operadoras" style={{ width: '15%' }}/>}
+                {usuario?.tipo !== 'global' && <Column body={renderObrigatoriedade} field="obrigatoriedade" header="Obrigatório" style={{ width: '10%' }}/>}
                 <Column body={representativeActionsTemplate} header="" style={{ width: '20%'}}/>
             </DataTable>
 

@@ -33,6 +33,8 @@ function Beneficios() {
     })
     const [totalRecords, setTotalRecords] = useState(0)
     const [searchTerm, setSearchTerm] = useState('')
+    const [sortField, setSortField] = useState('')
+    const [sortOrder, setSortOrder] = useState('')
     const toast = useRef(null)
     const timeoutRef = useRef(null)
     const { usuario } = useSessaoUsuarioContext()
@@ -41,6 +43,7 @@ function Beneficios() {
         setLoading(true)
         let url = `beneficio/?format=json&page=${lazyParams.page}&page_size=${lazyParams.rows}`;
         if (searchTerm) url += `&search=${searchTerm}`;
+        if (sortField && sortOrder) url += `&ordering=${sortOrder === 'desc' ? '-' : ''}${sortField}`;
         if (usuario?.tipo !== 'global') url += `&ativo=true`;
         http.get(url)
             .then(response => {
@@ -62,7 +65,7 @@ function Beneficios() {
 
     useEffect(() => {
         loadBeneficios()
-    }, [lazyParams, searchTerm])
+    }, [lazyParams, searchTerm, sortField, sortOrder])
 
     const onPage = (event) => {
         setLazyParams(prevState => ({
@@ -87,6 +90,11 @@ function Beneficios() {
             }))
         }, 500)
     }
+
+    const onSort = ({ sortField, sortOrder }) => {
+        setSortField(sortField);
+        setSortOrder(sortOrder === 1 ? 'asc' : 'desc');
+    };
 
     const adicionarBeneficio = (beneficio) => {
         if(beneficio.tipo == '' || beneficio.descricao == '') {
@@ -134,6 +142,9 @@ function Beneficios() {
                     onPage={onPage}
                     onSearch={onSearch}
                     onBeneficioDeleted={loadBeneficios}
+                    sortField={sortField}
+                    sortOrder={sortOrder}
+                    onSort={onSort}
                 />
                 <ModalBeneficios aoSalvar={adicionarBeneficio} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
             </ConteudoFrame>
