@@ -619,6 +619,11 @@ function ColaboradorBeneficios() {
                                                                                     itemTemplate={option => statusTemplate(option, { option: { ...option, obrigatoriedade: item.obrigatoriedade } }, false, true, false)}
                                                                                     disabled={getStatusContrato(item.contratoInfo?.status) === 'Indisponível'}
                                                                                 />
+                                                                                {(item.status === 'sim' || item.status === 'nao') && (
+                                                                                    <div style={{ fontSize: 11, color: 'var(--neutro-400)', marginTop: 2, textAlign: 'center' }}>
+                                                                                        {item.item.created_at ? `Selecionado em: ${new Date(item.item.created_at).toLocaleDateString('pt-BR')} ${new Date(item.item.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}` : ''}
+                                                                                    </div>
+                                                                                )}
                                                                             </div>
                                                                         </TopRow>
                                                                         {expandedItems[descricao] === item.id && (
