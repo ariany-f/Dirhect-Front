@@ -30,19 +30,30 @@ const ContratosLista = () => {
         context.setPage(newPage)
         context.setPageSize(newPageSize)
         
-        context.loadData(newPage, newPageSize, context.searchTerm)
+        context.loadData(newPage, newPageSize, context.searchTerm, getSortParam())
     }
 
     const onSearch = (search) => {
         context.setSearchTerm(search)
         context.setPage(1)
         context.setFirst(0)
-        context.loadData(1, context.pageSize, search)
-    }
+        context.loadData(1, context.pageSize, search, getSortParam());
+    };
+
+    const getSortParam = () => {
+        if (!context.sortField) return '';
+        return `${context.sortOrder === 'desc' ? '-' : ''}${context.sortField}`;
+    };
 
     const onUpdate = () => {
         context.loadData(context.page, context.pageSize, context.searchTerm)
     }
+
+    const onSort = ({ field, order }) => {
+        context.setSortField(field);
+        context.setSortOrder(order);
+        context.loadData(context.page, context.pageSize, context.searchTerm, `${order === 'desc' ? '-' : ''}${field}`);
+    };
 
     return (
         <ConteudoFrame>
@@ -56,6 +67,9 @@ const ContratosLista = () => {
                 onPage={onPage}
                 onSearch={onSearch}
                 onUpdate={onUpdate}
+                onSort={onSort}
+                sortField={context.sortField}
+                sortOrder={context.sortOrder}
             />
         </ConteudoFrame>
     );

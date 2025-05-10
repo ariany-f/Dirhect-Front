@@ -46,7 +46,10 @@ function DataTableContratos({
     first,
     onPage,
     onSearch,
-    onUpdate
+    onUpdate,
+    onSort, 
+    sortField, 
+    sortOrder
 }) {
     const [selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -166,13 +169,13 @@ function DataTableContratos({
         return 'Não definida'
     }
 
-    const representativeFornecedorTemplate = (rowData) => {
-        return <div key={rowData.id}>
-            <Texto weight={700} width={'100%'}>
-                {rowData?.dados_operadora?.nome}
-            </Texto>
-        </div>
-    }
+    // const representativeFornecedorTemplate = (rowData) => {
+    //     return <div key={rowData.id}>
+    //         <Texto weight={700} width={'100%'}>
+    //             {rowData?.dados_operadora?.nome}
+    //         </Texto>
+    //     </div>
+    // }
 
     function representativSituacaoTemplate(rowData) {
         const status = rowData.status;
@@ -213,7 +216,7 @@ function DataTableContratos({
     const representativeNomeTemplate = (rowData) => {
         if(rowData?.dados_operadora) {
             return (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <CustomImage 
                         src={rowData?.dados_operadora?.imagem_url} 
                         alt={rowData?.dados_operadora?.nome} 
@@ -222,7 +225,10 @@ function DataTableContratos({
                         size={90} 
                         title={rowData?.dados_operadora?.nome} 
                     />
-                </>
+                    <Texto weight={700} width={'100%'}>
+                        {rowData?.dados_operadora?.nome}
+                    </Texto>
+                </div>
             )
         }
         return '';
@@ -366,6 +372,15 @@ function DataTableContratos({
         );
     };
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
     return (
         <>
             <div className="flex justify-content-end">
@@ -396,17 +411,20 @@ function DataTableContratos({
                 onSelectionChange={(e) => verDetalhes(e.value)} 
                 selectionMode="single" 
                 paginator={paginator}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
                 lazy
                 rows={rows}
                 totalRecords={totalRecords}
                 first={first}
                 onPage={onPage}
+                onSort={handleSort}
+                removableSort 
                 tableStyle={{ minWidth: '68vw' }}
             >
-                <Column body={representativeNomeTemplate} header="Operadora" style={{ width: '8%' }}></Column>
-                <Column body={representativeFornecedorTemplate} field="operadora" style={{ width: '15%' }}></Column>
-                <Column field="num_contrato_origem" header="Número Contrato" style={{ width: '10%' }}></Column>
-                <Column field="observacao" header="Observação" style={{ width: '12%' }}></Column>
+                <Column body={representativeNomeTemplate} header="Operadora" field="dados_operadora.nome" sortField="operadora" sortable style={{ width: '20%' }}></Column>
+                <Column field="observacao" sortable sortField="observacao" header="Observação" style={{ width: '12%' }}></Column>
+                <Column field="num_contrato_origem" sortField="num_contrato_origem" sortable header="Número Contrato" style={{ width: '10%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>

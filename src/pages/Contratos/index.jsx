@@ -23,10 +23,14 @@ const Contratos = () => {
     const [totalPages, setTotalPages] = useState(0)
     const [first, setFirst] = useState(0)
     const [searchTerm, setSearchTerm] = useState('')
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
 
-    const loadData = (currentPage, currentPageSize, search = '') => {
-        setLoading(true)
-        http.get(`contrato/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
+
+    const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
+        setLoading(true)  
+        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
+        http.get(`contrato/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setContratos(response.results)
                 setTotalRecords(response.count)
@@ -52,10 +56,14 @@ const Contratos = () => {
         totalPages,
         first,
         searchTerm,
+        sortField,
+        sortOrder,
         setPage,
         setPageSize,
         setFirst,
         setSearchTerm,
+        setSortField,
+        setSortOrder,
         loadData,
         push: (newContrato) => {
             setContratos(prevContratos => {
