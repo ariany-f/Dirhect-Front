@@ -12,6 +12,8 @@ function Dependentes() {
     const [pessoasfisicas, setPessoasFisicas] = useState(null)
     const [funcionarios, setFuncionarios] = useState(null)
     const [dep_pess, setDepPess] = useState(null)
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
 
     const {
         usuario
@@ -23,38 +25,49 @@ function Dependentes() {
             setLoading(true)
             if(usuario.tipo == 'funcionario')
             {
-                http.get(`dependente/?format=json&id_funcionario=${usuario.public_id}`)
-                .then(response => {
-                   setDependentes(response)
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
-                .finally(function() {
-                    setLoading(false)
-                })
+                carregarDependentes(usuario.public_id, sortField, sortOrder)
             }
             else
             {
-                http.get('dependente/?format=json')
-                .then(response => {
-                    setDependentes(response)
-                })
-                .catch(erro => {
-                    setLoading(false)
-                })
-                .finally(function() {
-                    setLoading(false)
-                })
+                carregarDependentes(null, sortField, sortOrder)
             }
         }
-        
     }, [dependentes])
+
+    const carregarDependentes = (idFuncionario = null, sort = '', order = '') => {
+        let url = 'dependente/?format=json';
+        if (idFuncionario) {
+            url += `&id_funcionario=${idFuncionario}`;
+        }
+        if (sort && order) {
+            url += `&ordering=${order === 'desc' ? '-' : ''}${sort}`;
+        }
+        http.get(url)
+            .then(response => {
+                setDependentes(response.results || response)
+            })
+            .catch(erro => {
+                setLoading(false)
+            })
+            .finally(function() {
+                setLoading(false)
+            })
+    }
+
+    const onSort = ({ field, order }) => {
+        setSortField(field);
+        setSortOrder(order);
+        if(usuario.tipo == 'funcionario') {
+            carregarDependentes(usuario.public_id, field, order);
+        } else {
+            carregarDependentes(null, field, order);
+        }
+    };
 
     return (
         <DependentesProvider>
             <Loading opened={loading} />
-            <Outlet context={dependentes} />
+            <Outlet context={{ dependentes, sortField, sortOrder, onSort }} />
         </DependentesProvider>
     )
 }

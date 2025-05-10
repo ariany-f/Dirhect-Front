@@ -1,5 +1,5 @@
 import http from '@http'
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import { GrAddCircle } from 'react-icons/gr'
@@ -38,13 +38,16 @@ const ContainerSemRegistro = styled.div`
 
 function DependentesListagem() {
 
-    const [dependentes, setDependentes] = useState(null)
     const context = useOutletContext()
+    const dependentes = context?.dependentes;
+    const sortField = context?.sortField;
+    const sortOrder = context?.sortOrder;
+    const onSort = context?.onSort;
     
     useEffect(() => {
         if(context && (!dependentes))
         {
-            setDependentes(context)
+            // setDependentes(context)
         }
     }, [dependentes, context])
 
@@ -53,7 +56,7 @@ function DependentesListagem() {
         <ConteudoFrame>
             {
                 dependentes ?
-                    <DataTableDependentes dependentes={dependentes} />
+                    <DataTableDependentes dependentes={dependentes} sortField={sortField} sortOrder={sortOrder} onSort={onSort} />
                 :
                 <ContainerSemRegistro>
                 <section className={styles.container}>

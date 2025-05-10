@@ -16,7 +16,7 @@ import ModalAdicionarDependente from '@components/ModalAdicionarDependente';
 import { DependenteProvider } from '@contexts/Dependente';
 import { useTranslation } from 'react-i18next';
 
-function DataTableDependentes({ dependentes, search = true }) {
+function DataTableDependentes({ dependentes, search = true, sortField, sortOrder, onSort }) {
 
     const[selectedDependente, setSelectedDependente] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
@@ -26,28 +26,6 @@ function DataTableDependentes({ dependentes, search = true }) {
     })
     const navegar = useNavigate()
     const { t } = useTranslation('common');
-
-    // const [dependentesComFuncionario, setDependentesComFuncionario] = useState([]);
-
-    // useEffect(() => {
-    //     if (dependentes && dependentes.length > 0) {
-    //         Promise.all(
-    //             dependentes.map(dep =>
-    //                 http.get(`funcionario/${dep.id_funcionario}/?format=json`)
-    //                     .then(response => ({
-    //                         ...dep,
-    //                         funcionario: response
-    //                     }))
-    //                     .catch(error => {
-    //                         console.log(`Erro ao buscar funcionario ${dep.id_funcionario}:`, error);
-    //                         return dep; // mantém o dependente original
-    //                     })
-    //             )
-    //         ).then(resultado => {
-    //             setDependentesComFuncionario(resultado);
-    //         });
-    //     }
-    // }, [dependentes]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -154,6 +132,15 @@ function DataTableDependentes({ dependentes, search = true }) {
         )
     }
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
     return (
         <>
         
@@ -172,11 +159,26 @@ function DataTableDependentes({ dependentes, search = true }) {
                 </BotaoGrupo>
             </BotaoGrupo>
             
-            <DataTable value={dependentes} filters={filters} globalFilterFields={['nome_depend', 'cpf']}  emptyMessage="Não foram encontrados dependentes" selection={selectedDependente} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}>
-                {search &&  <Column body={representativeFuncNomeTemplate} header="Funcionário" style={{ width: '30%' }}></Column>}
-                <Column body={representativeNomeTemplate} header="Nome Completo" style={{ width: '30%' }}></Column>
-                <Column body={representativeParentescoTemplate} header="Grau de Parentesco" style={{ width: '20%' }}></Column>
-                <Column body={representativeNascimentoTemplate} header="Nascimento" style={{ width: '15%' }}></Column>
+            <DataTable 
+                value={dependentes} 
+                filters={filters} 
+                globalFilterFields={['nome_depend', 'cpf']}  
+                emptyMessage="Não foram encontrados dependentes" 
+                selection={selectedDependente} 
+                onSelectionChange={(e) => verDetalhes(e.value)} 
+                selectionMode="single" 
+                paginator 
+                rows={10}  
+                tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
+            >
+                {search &&  <Column body={representativeFuncNomeTemplate} sortField="id_funcionario_id" header="Funcionário" sortable field="funcionario_pessoa_fisica__nome" style={{ width: '30%' }}></Column>}
+                <Column body={representativeNomeTemplate} header="Nome Completo" sortable field="nome_depend" style={{ width: '30%' }}></Column>
+                <Column body={representativeParentescoTemplate} header="Grau de Parentesco" sortable field="grau_parentesco" style={{ width: '20%' }}></Column>
+                <Column body={representativeNascimentoTemplate} header="Nascimento" sortable field="dtnascimento" style={{ width: '15%' }}></Column>
                 <Column body={representativeIdadeTemplate} header="Idade" style={{ width: '25%' }}></Column>
             </DataTable>
             <DependenteProvider>

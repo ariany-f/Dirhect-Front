@@ -16,53 +16,65 @@ function ColaboradorDependentes() {
     const [pessoasfisicas, setPessoasFisicas] = useState(null)
     const [funcionarios, setFuncionarios] = useState(null)
     const [dep_pess, setDepPess] = useState(null)
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
 
     useEffect(() => {
-        if(!dependentes)
-        {
-            setLoading(true)
-            http.get(`dependente/?format=json&id_funcionario=${id}`)
-                .then(response => {
-                    setDependentes(response)
-                })
-                .catch(erro => {
-                    
-                })
-                .finally(function() {
-                    setLoading(false)
-                })
+        if(!dep_pess) {
+            carregarDependentes(sortField, sortOrder);
         }
         if(!pessoasfisicas) {
-            
-            http.get('pessoa_fisica/?format=json')
-                .then(response => {
-                    setPessoasFisicas(response)
-                })
-                .catch(erro => {
-                    
-                })
-                .finally(function() {
-                    setLoading(false)
-                })
+            carregarPessoasFisicas();
         }
-        
         if (pessoasfisicas && dependentes && !dep_pess) {
-    
             const processados = dependentes.map(item => {
                 const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
-        
                 return { 
                     ...item, 
-                    dados_pessoa_fisica: pessoa || null, // Adiciona `pessoa_fisica`
-                    funcionario: item.id_funcionario || null // Adiciona `funcionario`
+                    dados_pessoa_fisica: pessoa || null,
+                    funcionario: item.id_funcionario || null
                 };
             });
-    
-            setDepPess(processados); // Atualiza o estado com os dados processados
+            setDepPess(processados);
             setLoading(false)
-        }        
-        
-    }, [dependentes, pessoasfisicas, dep_pess])
+        }
+    }, [dependentes, pessoasfisicas, dep_pess, sortField, sortOrder])
+
+    const carregarDependentes = (sort = '', order = '') => {
+        setLoading(true);
+        let url = `dependente/?format=json&id_funcionario=${id}`;
+        if (sort && order) {
+            url += `&ordering=${order === 'desc' ? '-' : ''}${sort}`;
+        }
+        http.get(url)
+            .then(response => {
+                setDependentes(response)
+            })
+            .catch(erro => {})
+            .finally(function() {
+                setLoading(false)
+            })
+    };
+
+    const carregarPessoasFisicas = () => {
+        setLoading(true);
+        http.get('pessoa_fisica/?format=json')
+            .then(response => {
+                setPessoasFisicas(response)
+            })
+            .catch(erro => {})
+            .finally(function() {
+                setLoading(false)
+            })
+    };
+
+    const onSort = ({ field, order }) => {
+        setSortField(field);
+        setSortOrder(order);
+        setDepPess(null);
+        setDependentes(null);
+        carregarDependentes(field, order);
+    };
 
     return (
         <>
@@ -72,7 +84,7 @@ function ColaboradorDependentes() {
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
-            <DataTableDependentes search={false} dependentes={dep_pess}/>
+            <DataTableDependentes search={false} dependentes={dep_pess} sortField={sortField} sortOrder={sortOrder} onSort={onSort}/>
         </>
     )
 }
