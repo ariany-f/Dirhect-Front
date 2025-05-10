@@ -13,7 +13,7 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
-function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate }) {
+function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
 
     const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -178,6 +178,15 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
         );
     };
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -201,14 +210,18 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 totalRecords={totalRecords} 
                 first={first} 
                 onPage={onPage}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="nome" header="Filial" style={{ width: '25%' }}></Column>
-                <Column field="cidade" header="Cidade" style={{ width: '15%' }}></Column>
-                <Column body={representativeCNPJTemplate} header="CNPJ" style={{ width: '25%' }}></Column>
+                <Column field="nome" header="Filial" sortable style={{ width: '25%' }}></Column>
+                <Column field="cidade" header="Cidade" sortable style={{ width: '15%' }}></Column>
+                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: '25%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
             <ModalEditarFilial aoSalvar={editarFilial} filial={selectedFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
