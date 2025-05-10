@@ -48,10 +48,13 @@ function SindicatosLista() {
     const [totalPages, setTotalPages] = useState(0)
     const [first, setFirst] = useState(0)
     const [searchTerm, setSearchTerm] = useState('')
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
 
-    const loadData = (currentPage, currentPageSize, search = '') => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '', order = '') => {
         setLoading(true)
-        http.get(`sindicato/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
+        const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '';
+        http.get(`sindicato/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setSindicatos(response.results)
                 setTotalRecords(response.count)
@@ -71,7 +74,7 @@ function SindicatosLista() {
     }
 
     useEffect(() => {
-        loadData(page, pageSize, searchTerm)
+        loadData(page, pageSize, searchTerm, sortField, sortOrder)
     }, [modalOpened])
 
     const onPage = (event) => {
@@ -82,15 +85,21 @@ function SindicatosLista() {
         setPage(newPage)
         setPageSize(newPageSize)
         
-        loadData(newPage, newPageSize, searchTerm)
+        loadData(newPage, newPageSize, searchTerm, sortField, sortOrder)
     }
 
     const onSearch = (search) => {
         setSearchTerm(search)
         setPage(1)
         setFirst(0)
-        loadData(1, pageSize, search)
+        loadData(1, pageSize, search, sortField, sortOrder)
     }
+
+    const onSort = ({ field, order }) => {
+        setSortField(field);
+        setSortOrder(order);
+        loadData(page, pageSize, searchTerm, field, order);
+    };
 
     const removerMascaraCNPJ = (cnpj) => {
         return cnpj.replace(/[^\d]/g, '');
@@ -174,6 +183,9 @@ function SindicatosLista() {
                     first={first}
                     onPage={onPage}
                     onSearch={onSearch}
+                    sortField={sortField}
+                    sortOrder={sortOrder}
+                    onSort={onSort}
                 />
                 :
                 <ContainerSemRegistro>

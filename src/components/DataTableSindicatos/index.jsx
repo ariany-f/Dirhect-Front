@@ -34,7 +34,10 @@ function DataTableSindicatos({
     onSearch, 
     selected = null, 
     setSelected = () => {},
-    onUpdate
+    onUpdate,
+    sortField,
+    sortOrder,
+    onSort
 }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedSindicatos, setSelectedSindicatos] = useState([]);
@@ -155,6 +158,15 @@ function DataTableSindicatos({
         );
     };
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -185,13 +197,17 @@ function DataTableSindicatos({
                 totalRecords={totalRecords} 
                 first={first} 
                 onPage={onPage}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="descricao" header="Nome" style={{ width: '40%' }}></Column>
-                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" style={{ width: '40%' }}></Column>
+                <Column field="descricao" header="Nome" sortable style={{ width: '40%' }}></Column>
+                <Column body={representativeCNPJTemplate} field="cnpj" header="CNPJ" sortable style={{ width: '40%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
