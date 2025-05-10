@@ -207,7 +207,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     };
 
     const totalColaboradoresTemplate = () => {
-        return 'Total de Colaboradores: ' + totalRecords;
+        return 'Total de Colaboradores: ' + (totalRecords ?? 0);
     };
 
     // Template para filtro de filial
