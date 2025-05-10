@@ -229,7 +229,8 @@ function ColaboradorBeneficios() {
                                 id: item.id,
                                 descricao: beneficio.descricao,
                                 icone: beneficio.icone,
-                                multiplos: beneficio.multiplos,
+                                multiplos_itens: beneficio.multiplos_itens,
+                                multiplos_operadoras: beneficio.multiplos_operadoras,
                                 obrigatoriedade: beneficio.obrigatoriedade,
                                 status: 'pendente',
                                 operadora: contrato.contrato_beneficio?.dados_operadora,
@@ -263,27 +264,50 @@ function ColaboradorBeneficios() {
         return acc;
     }, {});
 
-    const handleStatusChange = (itemId, novoStatus, grupoDescricao, multiplos) => {
+    const handleStatusChange = (itemId, novoStatus, grupoDescricao, multiplos_itens, multiplos_operadoras, operadoraId) => {
         setBeneficios(beneficios => {
-            if (!multiplos && novoStatus === 'sim') {
-                // Só um pode ser sim
-                return beneficios.map(b =>
-                    b.descricao === grupoDescricao
-                        ? { ...b, status: b.id === itemId ? 'sim' : 'nao' }
-                        : b
-                )
+            const grupo = beneficios.filter(b => b.descricao === grupoDescricao);
+            const itemAtual = grupo.find(b => b.id === itemId);
+            if (!itemAtual) return beneficios;
+
+            // Caso multiplos_operadoras seja true
+            if (multiplos_operadoras) {
+                if (!multiplos_itens && novoStatus === 'sim') {
+                    // Só pode um plano "sim" por operadora, outros da mesma operadora ficam "não", outros operadoras permanecem como estão
+                    return beneficios.map(b => {
+                        if (b.descricao === grupoDescricao && b.operadora?.id === operadoraId) {
+                            if (b.id === itemId) return { ...b, status: 'sim' };
+                            return { ...b, status: 'nao' };
+                        }
+                        return b;
+                    });
+                }
+                // Se multiplos_itens for true, pode marcar vários normalmente
+                return beneficios.map(b => b.id === itemId ? { ...b, status: novoStatus } : b);
             }
-            // Multiplos: cada um pode ser sim/nao/pendente
-            return beneficios.map(b =>
-                b.id === itemId ? { ...b, status: novoStatus } : b
-            )
-        })
+
+            // Caso multiplos_operadoras seja false
+            if (!multiplos_itens && novoStatus === 'sim') {
+                // Só pode um plano "sim" para o benefício, independente da operadora
+                return beneficios.map(b => b.descricao === grupoDescricao ? { ...b, status: b.id === itemId ? 'sim' : 'nao' } : b);
+            }
+            if (multiplos_itens && novoStatus === 'sim') {
+                // Só pode marcar "sim" para itens da mesma operadora
+                const operadoraSelecionada = itemAtual.operadora?.id;
+                const outrosSim = grupo.filter(b => b.status === 'sim' && b.operadora?.id !== operadoraSelecionada);
+                if (outrosSim.length > 0) {
+                    return beneficios;
+                }
+            }
+            // Multiplos_itens true, multiplos_operadoras false: pode marcar vários, mas só da mesma operadora
+            return beneficios.map(b => b.id === itemId ? { ...b, status: novoStatus } : b);
+        });
         toast.current.show({ 
             severity: 'success', 
             summary: 'Sucesso', 
             detail: 'Status alterado com sucesso', 
             life: 2000 
-        })
+        });
     }
 
     const getTipoCalculo = (tipo) => {
@@ -408,12 +432,12 @@ function ColaboradorBeneficios() {
                                     ) : (
                                         <StatusTag $tipo="AGUARDANDO">BENEFÍCIO OPCIONAL</StatusTag>
                                     )}
-                                    {!itens[0].multiplos && (
+                                    {!itens[0].multiplos_itens && (
                                         <Texto size="10px" color="var(--warning-500)">
                                             Você só pode selecionar um dos itens abaixo
                                         </Texto>
                                     )}
-                                    {itens[0].multiplos && (
+                                    {itens[0].multiplos_itens && (
                                         <Texto size="10px">
                                             Pode selecionar mais de um deste grupo
                                         </Texto>
@@ -477,7 +501,7 @@ function ColaboradorBeneficios() {
                                                                                  <CustomDropdown
                                                                                     value={item.status}
                                                                                     options={statusOptions}
-                                                                                    onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos)}
+                                                                                    onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos_itens, item.multiplos_operadoras, item.operadora?.id)}
                                                                                     style={{width: 30, height: 25, minWidth: 20, minHeight: 30, padding: 0, background: 'transparent', border: 'none', boxShadow: 'none'}}
                                                                                     panelStyle={{fontSize: 12, minWidth: 80}}
                                                                                     appendTo={document.body}
