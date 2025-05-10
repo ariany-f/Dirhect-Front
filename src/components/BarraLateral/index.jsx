@@ -8,7 +8,7 @@ import { BiBusSchool, BiCart, BiDrink, BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
-import logo from '/imagens/logo.png'
+import logo from '@imagens/logo.png'
 import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { FaBuilding, FaBusAlt, FaUmbrellaBeach } from "react-icons/fa"

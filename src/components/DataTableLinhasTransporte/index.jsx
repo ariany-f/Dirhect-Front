@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { RiBusFill } from 'react-icons/ri';
 import './DataTable.css';
 import { Real } from '@utils/formats'
+import noImage from '@imagens/operadora_sem_imagem.png'
 
 const ContainerDividido = styled.div`
     display: flex;
