@@ -27,7 +27,7 @@ const NumeroColaboradores = styled.p`
     line-height: 20px; /* 142.857% */
 `
 
-function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 10, totalRecords, totalPages, first, onPage, onSearch, selected = null, setSelected = () => { }, onUpdate }) {
+function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 10, totalRecords, totalPages, first, onPage, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
    
     const[selectedCargo, setSelectedCargo] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -139,6 +139,15 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
         );
     };
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -162,14 +171,18 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                 totalRecords={totalRecords}
                 first={first}
                 onPage={onPage}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="id" header="Id" style={{ width: '10%' }}></Column>
-                <Column field="nome" header="Nome" style={{ width: '30%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '30%' }}></Column>
+                <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
+                <Column field="nome" header="Nome" sortable style={{ width: '30%' }}></Column>
+                <Column field="descricao" header="Descrição" sortable style={{ width: '30%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
