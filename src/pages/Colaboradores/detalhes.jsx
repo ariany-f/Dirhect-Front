@@ -24,6 +24,7 @@ import { RiFileCopy2Line, RiGasStationFill, RiShoppingCartFill } from 'react-ico
 import { MdOutlineFastfood } from 'react-icons/md';
 import { IoCopyOutline } from 'react-icons/io5';
 import styled from 'styled-components';
+import { BiFemale, BiMale } from 'react-icons/bi';
 
 const Col12 = styled.div`
     display: flex;
@@ -321,8 +322,11 @@ function ColaboradorDetalhes() {
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Nome Social</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.nome_social}</Texto>
-                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}} />
+                                    {colaborador?.funcionario_pessoa_fisica?.sexo == 'M' ? <BiMale size={20}/> : <BiFemale size={20}/>}
+                                    <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                        <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.nome_social}</Texto>
+                                        <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}} />
+                                    </div>
                                 </div>
                             </Frame>
                         
@@ -339,17 +343,6 @@ function ColaboradorDetalhes() {
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
                                     <Texto size={'14px'}>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
                                     <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}} />
-                                </div>
-                            </Frame>
-                            <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Sexo</Texto>
-                                <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.sexo}</Texto>
-                            </Frame>
-                            <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Telefone</Texto>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.telefone1}</Texto>
-                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.telefone1)}} />
                                 </div>
                             </Frame>
                             
