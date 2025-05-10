@@ -302,6 +302,20 @@ function ColaboradorBeneficios() {
             // Multiplos_itens true, multiplos_operadoras false: pode marcar vários, mas só da mesma operadora
             return beneficios.map(b => b.id === itemId ? { ...b, status: novoStatus } : b);
         });
+        // Disparar POST para contrato_beneficio_item_funcionario
+        const statusApi = novoStatus === 'sim' ? 'A' : 'I';
+        http.post('contrato_beneficio_item_funcionario/', {
+            funcionario: id,
+            beneficio_selecionado: itemId,
+            status: statusApi
+        }).catch(erro => {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao atualizar benefício',
+                life: 3000
+            });
+        });
         toast.current.show({ 
             severity: 'success', 
             summary: 'Sucesso', 
