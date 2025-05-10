@@ -218,6 +218,15 @@ function ColaboradorBeneficios() {
     const carregarBeneficios = async () => {
         try {
             setLoading(true)
+            // Buscar vínculos do colaborador
+            const vinculos = await http.get(`contrato_beneficio_item_funcionario/?funcionario=${id}`);
+            // Mapear status dos itens vinculados
+            const statusMap = {};
+            if (Array.isArray(vinculos)) {
+                vinculos.forEach(v => {
+                    statusMap[v.beneficio_selecionado] = v.status === 'A' ? 'sim' : v.status === 'I' ? 'nao' : 'pendente';
+                });
+            }
             const response = await http.get(`beneficios_possiveis/${id}/?format=json`)
             if (response && response.beneficios) {
                 // Para cada item/plano, cria um registro único
@@ -225,6 +234,7 @@ function ColaboradorBeneficios() {
                 response.beneficios.forEach(beneficio => {
                     beneficio.contratos.forEach(contrato => {
                         contrato.itens.forEach(item => {
+                            let status = statusMap[item.id] || 'pendente';
                             lista.push({
                                 id: item.id,
                                 descricao: beneficio.descricao,
@@ -232,7 +242,7 @@ function ColaboradorBeneficios() {
                                 multiplos_itens: beneficio.multiplos_itens,
                                 multiplos_operadoras: beneficio.multiplos_operadoras,
                                 obrigatoriedade: beneficio.obrigatoriedade,
-                                status: 'pendente',
+                                status,
                                 operadora: contrato.contrato_beneficio?.dados_operadora,
                                 plano: item.descricao,
                                 contratoInfo: contrato.contrato_beneficio,
@@ -274,6 +284,42 @@ function ColaboradorBeneficios() {
             if (multiplos_operadoras) {
                 if (!multiplos_itens && novoStatus === 'sim') {
                     // Só pode um plano "sim" por operadora, outros da mesma operadora ficam "não", outros operadoras permanecem como estão
+                    // Disparar POST para todos os que ficarem "não"
+                    grupo.forEach(b => {
+                        if (b.operadora?.id === operadoraId && b.id !== itemId) {
+                            http.post('contrato_beneficio_item_funcionario/', {
+                                funcionario: id,
+                                beneficio_selecionado: b.id,
+                                status: 'I'
+                            }).catch(erro => {
+                                toast.current.show({
+                                    severity: 'error',
+                                    summary: 'Erro',
+                                    detail: 'Erro ao atualizar benefício',
+                                    life: 3000
+                                });
+                            });
+                        }
+                    });
+                    // POST do sim
+                    http.post('contrato_beneficio_item_funcionario/', {
+                        funcionario: id,
+                        beneficio_selecionado: itemId,
+                        status: 'A'
+                    }).catch(erro => {
+                        toast.current.show({
+                            severity: 'error',
+                            summary: 'Erro',
+                            detail: 'Erro ao atualizar benefício',
+                            life: 3000
+                        });
+                    });
+                    toast.current.show({ 
+                        severity: 'success', 
+                        summary: 'Sucesso', 
+                        detail: 'Status alterado com sucesso', 
+                        life: 2000 
+                    });
                     return beneficios.map(b => {
                         if (b.descricao === grupoDescricao && b.operadora?.id === operadoraId) {
                             if (b.id === itemId) return { ...b, status: 'sim' };
@@ -283,12 +329,64 @@ function ColaboradorBeneficios() {
                     });
                 }
                 // Se multiplos_itens for true, pode marcar vários normalmente
+                http.post('contrato_beneficio_item_funcionario/', {
+                    funcionario: id,
+                    beneficio_selecionado: itemId,
+                    status: novoStatus === 'sim' ? 'A' : 'I'
+                }).catch(erro => {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Erro ao atualizar benefício',
+                        life: 3000
+                    });
+                });
+                toast.current.show({ 
+                    severity: 'success', 
+                    summary: 'Sucesso', 
+                    detail: 'Status alterado com sucesso', 
+                    life: 2000 
+                });
                 return beneficios.map(b => b.id === itemId ? { ...b, status: novoStatus } : b);
             }
 
             // Caso multiplos_operadoras seja false
             if (!multiplos_itens && novoStatus === 'sim') {
                 // Só pode um plano "sim" para o benefício, independente da operadora
+                grupo.forEach(b => {
+                    if (b.id !== itemId) {
+                        http.post('contrato_beneficio_item_funcionario/', {
+                            funcionario: id,
+                            beneficio_selecionado: b.id,
+                            status: 'I'
+                        }).catch(erro => {
+                            toast.current.show({
+                                severity: 'error',
+                                summary: 'Erro',
+                                detail: 'Erro ao atualizar benefício',
+                                life: 3000
+                            });
+                        });
+                    }
+                });
+                http.post('contrato_beneficio_item_funcionario/', {
+                    funcionario: id,
+                    beneficio_selecionado: itemId,
+                    status: 'A'
+                }).catch(erro => {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Erro ao atualizar benefício',
+                        life: 3000
+                    });
+                });
+                toast.current.show({ 
+                    severity: 'success', 
+                    summary: 'Sucesso', 
+                    detail: 'Status alterado com sucesso', 
+                    life: 2000 
+                });
                 return beneficios.map(b => b.descricao === grupoDescricao ? { ...b, status: b.id === itemId ? 'sim' : 'nao' } : b);
             }
             if (multiplos_itens && novoStatus === 'sim') {
@@ -300,27 +398,25 @@ function ColaboradorBeneficios() {
                 }
             }
             // Multiplos_itens true, multiplos_operadoras false: pode marcar vários, mas só da mesma operadora
-            return beneficios.map(b => b.id === itemId ? { ...b, status: novoStatus } : b);
-        });
-        // Disparar POST para contrato_beneficio_item_funcionario
-        const statusApi = novoStatus === 'sim' ? 'A' : 'I';
-        http.post('contrato_beneficio_item_funcionario/', {
-            funcionario: id,
-            beneficio_selecionado: itemId,
-            status: statusApi
-        }).catch(erro => {
-            toast.current.show({
-                severity: 'error',
-                summary: 'Erro',
-                detail: 'Erro ao atualizar benefício',
-                life: 3000
+            http.post('contrato_beneficio_item_funcionario/', {
+                funcionario: id,
+                beneficio_selecionado: itemId,
+                status: novoStatus === 'sim' ? 'A' : 'I'
+            }).catch(erro => {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao atualizar benefício',
+                    life: 3000
+                });
             });
-        });
-        toast.current.show({ 
-            severity: 'success', 
-            summary: 'Sucesso', 
-            detail: 'Status alterado com sucesso', 
-            life: 2000 
+            toast.current.show({ 
+                severity: 'success', 
+                summary: 'Sucesso', 
+                detail: 'Status alterado com sucesso', 
+                life: 2000 
+            });
+            return beneficios.map(b => b.id === itemId ? { ...b, status: novoStatus } : b);
         });
     }
 
