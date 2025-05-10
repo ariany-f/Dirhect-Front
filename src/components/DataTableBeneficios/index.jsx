@@ -312,9 +312,13 @@ function DataTableBeneficios({
     };
 
     // Colunas dinâmicas para multiplos e obrigatoriedade
-    const renderMultiplos = (rowData) => (
-        <SwitchInput checked={rowData.multiplos} disabled={usuario?.tipo === 'global'}
-            onChange={() => atualizarCampo(rowData.id, 'multiplos', !rowData.multiplos)} style={{ width: 36 }} />
+    const renderMultiplosItens = (rowData) => (
+        <SwitchInput checked={rowData.multiplos_itens} disabled={usuario?.tipo === 'global'}
+            onChange={() => atualizarCampo(rowData.id, 'multiplos_itens', !rowData.multiplos_itens)} style={{ width: 36 }} />
+    );
+    const renderMultiplasOperadoras = (rowData) => (
+        <SwitchInput checked={rowData.multiplos_operadoras} disabled={usuario?.tipo === 'global'}
+            onChange={() => atualizarCampo(rowData.id, 'multiplos_operadoras', !rowData.multiplos_operadoras)} style={{ width: 36 }} />
     );
     const renderObrigatoriedade = (rowData) => (
         <SwitchInput checked={rowData.obrigatoriedade} disabled={usuario?.tipo === 'global'}
@@ -357,8 +361,9 @@ function DataTableBeneficios({
                 lazy
             >
                 <Column sortable body={representativeDescriptionTemplate} field="descricao" header="Nome" style={{ width: '20%' }}/>
-                <Column sortable body={representativeStatusTemplate} header="Tipo Benefício	" style={{ width: '40%' }}/>
-                {usuario?.tipo !== 'global' && <Column body={renderMultiplos} field="multiplos" header="Múltipla Escolha" style={{ width: '10%' }}/>} 
+                <Column sortable body={representativeStatusTemplate} header="Tipo Benefício" style={{ width: '40%' }}/>
+                {usuario?.tipo !== 'global' && <Column body={renderMultiplosItens} field="multiplos_itens" header="Múltiplos Itens" style={{ width: '10%' }}/>} 
+                {usuario?.tipo !== 'global' && <Column body={renderMultiplasOperadoras} field="multiplos_operadoras" header="Múltiplas Operadoras" style={{ width: '10%' }}/>} 
                 {usuario?.tipo !== 'global' && <Column body={renderObrigatoriedade} field="obrigatoriedade" header="Obrigatório" style={{ width: '10%' }}/>} 
                 <Column body={representativeActionsTemplate} header="" style={{ width: '20%'}}/>
             </DataTable>
