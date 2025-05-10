@@ -100,7 +100,7 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
     );
     return (
         <OverlayRight $opened={open}>
-            <DialogEstilizadoRight open={open} $opened={open}>
+            <DialogEstilizadoRight $width="40vw" open={open} $opened={open}>
                 <button className="close" onClick={onClose} formMethod="dialog">
                     <RiCloseFill size={20} className="fechar" />
                 </button>
@@ -118,6 +118,29 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
                                 <CustomImage src={operadora.imagem_url} alt={operadora.nome} width={50} height={40} />
                             )}
                             <span>{operadora?.nome || '---'}</span>
+                             {/* Badge de status do vínculo do colaborador */}
+                             {item.status === 'sim' && (
+                                <span style={{
+                                    background: 'rgba(0, 200, 83, 0.1)',
+                                    color: 'var(--success)',
+                                    fontWeight: 600,
+                                    fontSize: 12,
+                                    borderRadius: 8,
+                                    padding: '2px 10px',
+                                    marginLeft: 8
+                                }}>ATIVO PARA O COLABORADOR</span>
+                            )}
+                            {item.status === 'nao' && (
+                                <span style={{
+                                    background: 'rgba(229, 115, 115, 0.1)',
+                                    color: 'var(--error)',
+                                    fontWeight: 600,
+                                    fontSize: 12,
+                                    borderRadius: 8,
+                                    padding: '2px 10px',
+                                    marginLeft: 8
+                                }}>INATIVO PARA O COLABORADOR</span>
+                            )}
                         </div>
                     </div>
                     {/* Contrato */}

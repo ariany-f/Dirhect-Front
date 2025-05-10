@@ -118,7 +118,7 @@ export const OverlayRight = styled.div`
 
 export const DialogEstilizadoRight = styled.dialog`
     display: flex;
-    width: 70vw;
+    width: ${props => props.$width || '70vw'};
     flex-direction: column;
     justify-content: space-between;
     align-items: ${props => props.$align || 'center'};
@@ -126,7 +126,9 @@ export const DialogEstilizadoRight = styled.dialog`
     border: none;
     z-index: 10;
     top: 3vh;
-    left: ${props => props.$opened ? '29vw' : '100vw'};
+    left: ${({ $opened, $width }) => $opened 
+        ? `calc(100vw - ${$width || '70vw'})` 
+        : '100vw'};
     height: 94vh;
     padding: 24px;
     transition: left 0.3s ease-in-out;

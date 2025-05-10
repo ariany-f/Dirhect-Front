@@ -202,6 +202,7 @@ function ColaboradorBeneficios() {
     const toast = useRef(null)
     const [expandedItems, setExpandedItems] = useState({})
     const [modalInfo, setModalInfo] = useState({ open: false, item: null });
+    const [vinculos, setVinculos] = useState([]);
 
     const statusOptions = [
         { label: 'Pendente', value: 'pendente', icon: <FaClock /> },
@@ -219,11 +220,12 @@ function ColaboradorBeneficios() {
         try {
             setLoading(true)
             // Buscar vínculos do colaborador
-            const vinculos = await http.get(`contrato_beneficio_item_funcionario/?funcionario=${id}`);
+            const vinculosResp = await http.get(`contrato_beneficio_item_funcionario/?funcionario=${id}`);
+            setVinculos(Array.isArray(vinculosResp) ? vinculosResp : []);
             // Mapear status dos itens vinculados
             const statusMap = {};
-            if (Array.isArray(vinculos)) {
-                vinculos.forEach(v => {
+            if (Array.isArray(vinculosResp)) {
+                vinculosResp.forEach(v => {
                     statusMap[v.beneficio_selecionado] = v.status === 'A' ? 'sim' : v.status === 'I' ? 'nao' : 'pendente';
                 });
             }
@@ -682,7 +684,7 @@ function ColaboradorBeneficios() {
                 </Frame>
             )}
         </Frame>
-        <ModalInfoElegibilidade open={modalInfo.open} item={modalInfo.item} onClose={() => setModalInfo({ open: false, item: null })} />
+        <ModalInfoElegibilidade open={modalInfo.open} item={modalInfo.item} onClose={() => setModalInfo({ open: false, item: null })} vinculos={vinculos} />
         </>
     )
 }
