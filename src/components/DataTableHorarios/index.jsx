@@ -38,7 +38,10 @@ function DataTableHorarios({
     onSearch, 
     selected = null, 
     setSelected = () => {},
-    onUpdate
+    onUpdate,
+    sortField,
+    sortOrder,
+    onSort
 }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedHorarios, setSelectedHorarios] = useState([]);
@@ -147,6 +150,15 @@ function DataTableHorarios({
         );
     };
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -177,14 +189,18 @@ function DataTableHorarios({
                 totalRecords={totalRecords} 
                 first={first} 
                 onPage={onPage}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
                 tableStyle={{ minWidth: '68vw' }}
             >
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="codigo" header="Código" style={{ width: '15%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '65%' }}></Column>
-                <Column field="jornada" header="Jornada" style={{ width: '10%' }}></Column>
+                <Column field="codigo" header="Código" sortable style={{ width: '15%' }}></Column>
+                <Column field="descricao" header="Descrição" sortable style={{ width: '65%' }}></Column>
+                <Column field="jornada" header="Jornada" sortable style={{ width: '10%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
