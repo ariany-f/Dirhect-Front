@@ -205,8 +205,8 @@ function ColaboradorBeneficios() {
 
     const statusOptions = [
         { label: 'Pendente', value: 'pendente', icon: <FaClock /> },
-        { label: 'Sim', value: 'sim', icon: <FaCheck /> },
-        { label: 'Não', value: 'nao', icon: <FaTimes /> }
+        { label: 'Sim', value: 'sim', icon: <FaCheck stroke="var(--green-600)" /> },
+        { label: 'Não', value: 'nao', icon: <FaTimes stroke="var(--error)" /> }
     ]
 
     useEffect(() => {
@@ -478,14 +478,14 @@ function ColaboradorBeneficios() {
         if (context && context.option && context.option.obrigatoriedade) obrigatorio = true;
 
         let color = '';
-        if (option.value === 'sim') color = 'var(--success)';
+        if (option.value === 'sim') color = 'var(--green-600)';
         else if (option.value === 'nao') color = 'var(--error)';
         else if (option.value === 'pendente' && obrigatorio) color = 'var(--error)';
         else color = 'var(--warning)';
 
         let icon = null;
-        if (option.value === 'sim') icon = <FaCheck size={14} style={{ color, fontSize: 20 }} />;
-        else if (option.value === 'nao') icon = <FaTimes size={14} style={{ color, fontSize: 20 }} />;
+        if (option.value === 'sim') icon = <FaCheck size={18} fill="var(--green-600)" style={{ color, fontSize: 20 }} />;
+        else if (option.value === 'nao') icon = <FaTimes size={18} fill="var(--error)" style={{ color, fontSize: 20 }} />;
         else icon = <FaClock size={14} style={{ color, fontSize: 20 }} />;
 
         return (
