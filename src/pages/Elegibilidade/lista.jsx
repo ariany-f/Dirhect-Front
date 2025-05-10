@@ -41,6 +41,7 @@ const ElegibilidadeLista = () => {
     const [atualizado, setAtualizado] = useState(false)
     const [dadosCarregados, setDadosCarregados] = useState(false)
     const [mostrarTodas, setMostrarTodas] = useState(false)
+    const [activeIndex, setActiveIndex] = useState(0)
 
     const [filiais, setFiliais] = useState([])
     const [departamentos, setDepartamentos] = useState([])
@@ -85,10 +86,9 @@ const ElegibilidadeLista = () => {
 
     // Terceiro useEffect para processar os dados de elegibilidade
     useEffect(() => {
-        if (context && context.length > 0 && dadosCarregados && !atualizado) {
+        if (context && context.length > 0 && dadosCarregados) {
             const adicionarElegibilidade = (lista, setLista, nomeEntidade) => {
                 if (!lista || lista.length === 0) return false
-                
                 const listaAtualizada = lista.map(item => {
                     const correspondente = context.filter(
                         el => el.content_type_name === nomeEntidade && el.entidade_id_origem === item.id_origem
@@ -98,11 +98,9 @@ const ElegibilidadeLista = () => {
                         elegibilidade: correspondente || null
                     }
                 })
-                
                 setLista(listaAtualizada)
                 return listaAtualizada.some(item => item.elegibilidade && item.elegibilidade.length > 0)
             }
-
             const abasComElegibilidade = {
                 filiais: adicionarElegibilidade(filiais, setFiliais, 'Filial'),
                 departamentos: adicionarElegibilidade(departamentos, setDepartamentos, 'Departamento'),
@@ -113,22 +111,11 @@ const ElegibilidadeLista = () => {
                 sindicatos: adicionarElegibilidade(sindicatos, setSindicatos, 'Sindicato'),
                 horarios: adicionarElegibilidade(horarios, setHorarios, 'Horario')
             }
-
             setAbasDisponiveis(Object.entries(abasComElegibilidade)
                 .filter(([_, temElegibilidade]) => temElegibilidade)
                 .map(([key]) => key))
-
-            setAtualizado(true)
         }
-    }, [context, dadosCarregados, atualizado])
-
-    // Resetar os estados quando o componente for desmontado
-    useEffect(() => {
-        return () => {
-            setAtualizado(false)
-            setDadosCarregados(false)
-        }
-    }, [])
+    }, [context, dadosCarregados])
 
     const renderizarAba = (nome, componente) => {
         if (!mostrarTodas && !abasDisponiveis.includes(nome)) return null;
@@ -138,6 +125,14 @@ const ElegibilidadeLista = () => {
             </TabPanel>
         );
     };
+
+    useEffect(() => {
+        if (!mostrarTodas && abasDisponiveis.length > 0) {
+            if (activeIndex >= abasDisponiveis.length) {
+                setActiveIndex(0);
+            }
+        }
+    }, [mostrarTodas, abasDisponiveis, activeIndex])
 
     return (
         <ConteudoFrame style={{ position: 'relative' }}>
@@ -152,7 +147,7 @@ const ElegibilidadeLista = () => {
             </div>
             <Frame>
                 <Container gap="32px">
-                    <TabView>
+                    <TabView activeIndex={activeIndex} onTabChange={e => setActiveIndex(e.index)}>
                         {renderizarAba('filiais', <DataTableFiliaisElegibilidade filiais={filiais} showSearch={false} />)}
                         {renderizarAba('departamentos', <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false} />)}
                         {renderizarAba('secoes', <DataTableSecoesElegibilidade secoes={secoes} showSearch={false} />)}

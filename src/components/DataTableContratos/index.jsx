@@ -21,7 +21,7 @@ import { Tooltip } from 'primereact/tooltip';
 import SwitchInput from '@components/SwitchInput';
 import styled from 'styled-components';
 import styles from "@pages/Contratos/Contratos.module.css"
-import { FaPencil } from 'react-icons/fa6';
+import { FaPen } from 'react-icons/fa';
 
 const StatusTag = styled.span`
     padding: 4px 8px;
@@ -338,7 +338,7 @@ function DataTableContratos({
                     />
                 </div>
                 <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                <FaPencil
+                <FaPen
                     className="edit"
                     data-pr-tooltip="Editar Contrato"
                     size={16}

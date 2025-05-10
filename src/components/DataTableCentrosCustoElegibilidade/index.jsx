@@ -137,7 +137,7 @@ function DataTableCentrosCustoElegibilidade({ centros_custo = [], showSearch = t
                 tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
-                <Column body={<MdOutlineKeyboardArrowRight/>} style={{ width: '5%' }}></Column>
+                <Column body={<MdOutlineKeyboardArrowRight size={24}/>} style={{ width: '5%' }}></Column>
             </DataTable>
         </>
     )

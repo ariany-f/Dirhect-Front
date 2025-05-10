@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import SwitchInput from '@components/SwitchInput';
 import { Toast } from 'primereact/toast';
 import http from '@http';
-import { FaPencil } from 'react-icons/fa6';
+import { FaPen } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -188,7 +188,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
                     style={{ width: '36px' }}
                 />
                 <Tooltip target={`.edit-operadora-${rowData.id}`} mouseTrack mouseTrackLeft={10} />
-                <FaPencil
+                <FaPen
                     className={`edit edit-operadora-${rowData.id}`}
                     data-pr-tooltip="Editar Operadora"
                     size={16}

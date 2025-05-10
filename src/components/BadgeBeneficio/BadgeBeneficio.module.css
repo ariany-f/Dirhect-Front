@@ -4,6 +4,8 @@
     border-radius: 8px;
     display: flex;
     gap: 8px;
+    justify-content: center;
+    align-items: center;
     & p {
         color: var(--neutro-600);
         font-weight: 700;

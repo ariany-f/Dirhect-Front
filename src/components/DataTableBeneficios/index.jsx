@@ -18,7 +18,7 @@ import { FaMapPin, FaTrash } from 'react-icons/fa';
 import tiposBeneficio from '@json/tipos_beneficio.json';
 import { Tooltip } from 'primereact/tooltip';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { FaPencil } from 'react-icons/fa6';
+import { FaPen } from 'react-icons/fa';
 import SwitchInput from '@components/SwitchInput';
 import { Tag } from 'primereact/tag';
 import styled from 'styled-components';
@@ -259,7 +259,7 @@ function DataTableBeneficios({
                     gap: '8px'
                 }}>
                     <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-                    <FaPencil
+                    <FaPen
                         className="edit"
                         data-pr-tooltip="Editar Benefício"
                         size={14}

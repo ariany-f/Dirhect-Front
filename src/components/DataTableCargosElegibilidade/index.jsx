@@ -125,7 +125,7 @@ function DataTableCargosElegibilidade({ cargos = [], showSearch = true, paginati
             <DataTable value={cargos} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados cargos" selection={selected ? selectedCargos : selectedCargo} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
-                <Column style={{ width: '5%' }} body={<MdOutlineKeyboardArrowRight/>}></Column>
+                <Column style={{ width: '5%' }} body={<MdOutlineKeyboardArrowRight size={24}/>}></Column>
             </DataTable>
         </>
     )

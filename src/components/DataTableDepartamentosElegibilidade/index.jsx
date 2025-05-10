@@ -140,7 +140,7 @@ function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = 
             <DataTable value={departamentos} filters={filters} globalFilterFields={['id', 'filial.nome']} emptyMessage="Não foram encontrados departamentos" selection={selected ? selectedDepartamentos : selectedDepartamento} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate}  style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
-                <Column body={<MdOutlineKeyboardArrowRight/>} style={{ width: '5%' }}></Column>
+                <Column body={<MdOutlineKeyboardArrowRight size={24}/>} style={{ width: '5%' }}></Column>
             </DataTable>
         </>
     )
