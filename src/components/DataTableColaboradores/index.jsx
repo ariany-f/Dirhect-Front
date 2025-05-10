@@ -28,7 +28,7 @@ import { formatCPF } from '@utils/formats';
 import http from '@http';
 import { Dropdown } from 'primereact/dropdown';
 
-function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort }) {
+function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort, sortField, sortOrder }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
@@ -263,6 +263,8 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 tableStyle={{ minWidth: '68vw' }}
                 showGridlines
                 stripedRows
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
                 footerColumnGroup={
                     <ColumnGroup>
                         <Row>
@@ -272,7 +274,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 }
             >
                 <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
+                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
                 <Column 
                     body={representativeFilialTemplate} 
                     field="filial" 
@@ -280,13 +282,14 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     sortable 
                     style={{ width: '15%' }} 
                     filter 
+                    sortField="filial__nome" 
                     filterField="filial" 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Data de Nascimento" sortable style={{ width: '15%' }}></Column>
-                <Column body={representativSituacaoTemplate} field="situacao" header="Situação" sortable style={{ width: '15%' }}></Column>
+                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" style={{ width: '15%' }}></Column>
+                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Data de Nascimento" style={{ width: '15%' }}></Column>
+                <Column body={representativSituacaoTemplate} field="situacao" header="Situação" style={{ width: '15%' }}></Column>
                 <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>
             </DataTable>
             <ModalDemissao opened={modalOpened} aoFechar={() => setModalOpened(false)}/>

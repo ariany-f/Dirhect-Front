@@ -47,7 +47,7 @@ function ColaboradoresCadastrados() {
 
     const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
         setLoading(true);
-        const orderParam = sort ? `&ordering=${sort}` : '';
+        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
         http.get(`funcionario/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setColaboradores(response.results);
@@ -111,6 +111,8 @@ function ColaboradoresCadastrados() {
                     onPage={onPage}
                     onSearch={onSearch}
                     onSort={onSort}
+                    sortField={sortField}
+                    sortOrder={sortOrder}
                 />
                 :
                 <ContainerSemRegistro>
