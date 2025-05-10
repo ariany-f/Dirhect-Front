@@ -542,16 +542,34 @@ function ColaboradorBeneficios() {
                                     ) : (
                                         <StatusTag $tipo="AGUARDANDO">BENEFÍCIO OPCIONAL</StatusTag>
                                     )}
-                                    {!itens[0].multiplos_itens && (
-                                        <Texto size="10px" color="var(--warning-500)">
-                                            Você só pode selecionar um dos itens abaixo
-                                        </Texto>
-                                    )}
-                                    {itens[0].multiplos_itens && (
-                                        <Texto size="10px">
-                                            Pode selecionar mais de um deste grupo
-                                        </Texto>
-                                    )}
+                                    {(() => {
+                                        if (itens[0].multiplos_itens && itens[0].multiplos_operadoras) {
+                                            return (
+                                                <Texto size="13px">
+                                                    Você pode selecionar múltiplos itens
+                                                </Texto>
+                                            );
+                                        } else if (!itens[0].multiplos_itens && itens[0].multiplos_operadoras) {
+                                            return (
+                                                <Texto size="13px" color="var(--warning-500)">
+                                                    Você só pode selecionar um item de cada operadora
+                                                </Texto>
+                                            );
+                                        } else if (!itens[0].multiplos_itens && !itens[0].multiplos_operadoras) {
+                                            return (
+                                                <Texto size="13px" color="var(--warning-500)">
+                                                    Você só pode selecionar um dos itens abaixo
+                                                </Texto>
+                                            );
+                                        } else if (itens[0].multiplos_itens && !itens[0].multiplos_operadoras) {
+                                            return (
+                                                <Texto size="13px">
+                                                    Você pode selecionar múltiplos itens porém somente de uma operadora
+                                                </Texto>
+                                            );
+                                        }
+                                        return null;
+                                    })()}
                                 </div>
                             </div>
                             <ItensGrid>
