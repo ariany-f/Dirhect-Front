@@ -49,10 +49,13 @@ function CentrosCustoLista() {
     const [totalPages, setTotalPages] = useState(0)
     const [first, setFirst] = useState(0)
     const [searchTerm, setSearchTerm] = useState('')
+    const [sortField, setSortField] = useState('')
+    const [sortOrder, setSortOrder] = useState('')
 
-    const loadData = (currentPage, currentPageSize, search = '') => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '', order = '') => {
         setLoading(true)
-        http.get(`centro_custo/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}`)
+        const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '';
+        http.get(`centro_custo/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setCentrosCusto(response.results)
                 setTotalRecords(response.count)
@@ -72,7 +75,7 @@ function CentrosCustoLista() {
     }
 
     useEffect(() => {
-        loadData(page, pageSize, searchTerm)
+        loadData(page, pageSize, searchTerm, sortField, sortOrder)
     }, [modalOpened])
 
     const onPage = (event) => {
@@ -83,15 +86,21 @@ function CentrosCustoLista() {
         setPage(newPage)
         setPageSize(newPageSize)
         
-        loadData(newPage, newPageSize, searchTerm)
+        loadData(newPage, newPageSize, searchTerm, sortField, sortOrder)
     }
 
     const onSearch = (search) => {
         setSearchTerm(search)
         setPage(1)
         setFirst(0)
-        loadData(1, pageSize, search)
+        loadData(1, pageSize, search, sortField, sortOrder)
     }
+
+    const onSort = ({ field, order }) => {
+        setSortField(field);
+        setSortOrder(order);
+        loadData(page, pageSize, searchTerm, field, order);
+    };
 
     const adicionarCentroCusto = (nome, cc_pai) => {
         setLoading(true)
@@ -170,6 +179,9 @@ function CentrosCustoLista() {
                     first={first}
                     onPage={onPage}
                     onSearch={onSearch}
+                    sortField={sortField}
+                    sortOrder={sortOrder}
+                    onSort={onSort}
                 />
                 :
                 <ContainerSemRegistro>
