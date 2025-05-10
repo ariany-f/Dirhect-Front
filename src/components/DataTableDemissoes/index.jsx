@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Real } from '@utils/formats'
 
-function DataTableDemissao({ demissoes, colaborador = null }) {
+function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder, onSort }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -64,7 +64,16 @@ function DataTableDemissao({ demissoes, colaborador = null }) {
             <Texto weight={600}>{rowData?.chapa}</Texto>
         )
     }
-    
+
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
     return (
         <>
             {!colaborador &&
@@ -73,15 +82,20 @@ function DataTableDemissao({ demissoes, colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
                 </span>
             </div>}
-            <DataTable value={demissoes} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas demissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
+            <DataTable value={demissoes} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas demissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
+            >
                 {!colaborador &&
-                    <Column body={representativeChapaTemplate} header="Matrícula" style={{ width: '10%' }}></Column>
+                    <Column body={representativeChapaTemplate} header="Matrícula" sortable field="chapa" style={{ width: '10%' }}></Column>
                 }
                 {!colaborador &&
-                    <Column body={representativeColaboradorTemplate} header="Colaborador" style={{ width: '30%' }}></Column>
+                    <Column body={representativeColaboradorTemplate} header="Colaborador"  field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" sortable style={{ width: '30%' }}></Column>
                 }
-                <Column body={representativeDataDemissaoTemplate} field="data" header="Data Demissão" style={{ width: '30%' }}></Column>
-                <Column body={representativeTipoDemissaoTemplate} field="tipo" header="Tipo Demissão" style={{ width: '30%' }}></Column>
+                <Column body={representativeDataDemissaoTemplate} field="dt_demissao" header="Data Demissão" sortable style={{ width: '30%' }}></Column>
+                <Column body={representativeTipoDemissaoTemplate} field="tipo_demissao" header="Tipo Demissão" sortable style={{ width: '30%' }}></Column>
             </DataTable>
         </>
     )

@@ -23,6 +23,8 @@ const Demissoes = () => {
 
     const location = useLocation();
     const [demissoes, setDemissoes] = useState(null)
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
    
     const { 
         vagas
@@ -31,17 +33,32 @@ const Demissoes = () => {
     useEffect(() => {
         if(!demissoes)
         {
-            http.get(`funcionario/?format=json&situacao=D`)
+            carregarDemissoes(sortField, sortOrder);
+        }
+    }, [demissoes, sortField, sortOrder])
+
+    const carregarDemissoes = (sort = '', order = '') => {
+        let url = 'funcionario/?format=json&situacao=D';
+        if (sort && order) {
+            url += `&ordering=${order === 'desc' ? '-' : ''}${sort}`;
+        }
+        http.get(url)
             .then(response => {
                 setDemissoes(response);
             })
             .catch(erro => console.log(erro))
-        }
-    }, [demissoes])
+    }
+
+    const onSort = ({ field, order }) => {
+        setSortField(field);
+        setSortOrder(order);
+        setDemissoes(null);
+        carregarDemissoes(field, order);
+    };
 
     return (
         <ConteudoFrame>
-            <DataTableDemissao demissoes={demissoes} />
+            <DataTableDemissao demissoes={demissoes} sortField={sortField} sortOrder={sortOrder} onSort={onSort} />
         </ConteudoFrame>
     );
 };
