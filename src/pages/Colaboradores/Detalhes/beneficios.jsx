@@ -174,6 +174,7 @@ const StatusIcon = styled.div`
     justify-content: end;
     width: 100%;
     height: 100%;
+    padding: 11px 0;
     gap: 4px;
 `;
 
