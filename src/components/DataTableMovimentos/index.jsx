@@ -81,17 +81,18 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
         }
     
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <ProgressBar 
-                    value={progresso} 
-                    color={severity}
-                />
-                <div style={{ fontSize: '12px', color: 'var(--neutro-500)', textAlign: 'right' }}>
-                    {concluidos}/{total} concluídos
-                </div>
-            </div>
+            <ProgressBar 
+                value={progresso} 
+                color={severity}
+            />
         );
     };
+
+    const representativeConcluidoTemplate = (rowData) => {
+        const concluidos = rowData.detalhes?.filter(d => d.status === 'Concluído' || d.status === 'Concluido').length || 0;
+        const total = rowData.detalhes?.length || 0;
+        return <>{concluidos}/{total}</>
+    }
     
     return (
         <>
@@ -105,6 +106,7 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '25%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '15%' }}></Column>
                 <Column field="data" header="Data do Movimento" style={{ width: '15%' }}></Column>
+                <Column body={representativeConcluidoTemplate} field="total_colaboradores" header="Concluídos" style={{ width: '15%' }}></Column>
                 <Column body={representativeProgressTemplate} field="detalhes" header="Progresso" style={{ width: '25%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Movimento" style={{ width: '15%' }}></Column>
             </DataTable>
