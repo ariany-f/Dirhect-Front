@@ -17,6 +17,7 @@ import { FaChevronDown, FaCheck, FaTimes, FaClock, FaInfoCircle } from 'react-ic
 import ModalInfoElegibilidade from '@components/ModalInfoElegibilidade'
 import { Dropdown } from "primereact/dropdown"
 import { IoInformationCircleOutline } from "react-icons/io5"
+import SwitchInput from "@components/SwitchInput"
 
 const StatusTag = styled.div`
     padding: 4px 8px;
@@ -170,10 +171,23 @@ const ContratoItensBox = styled.div`
 const StatusIcon = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: end;
     width: 100%;
     height: 100%;
     gap: 4px;
+`;
+
+const EditarPlanosSwitch = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    padding: 0 12px;
+    
+    span {
+        font-size: 13px;
+        color: var(--neutro-600);
+    }
 `;
 
 const CustomDropdown = styled(Dropdown)`
@@ -232,6 +246,7 @@ function ColaboradorBeneficios() {
     const [expandedItems, setExpandedItems] = useState({})
     const [modalInfo, setModalInfo] = useState({ open: false, item: null });
     const [vinculos, setVinculos] = useState([]);
+    const [editarPlanos, setEditarPlanos] = useState({});
 
     const statusOptions = [
         { label: 'Pendente', value: 'pendente', icon: <FaClock /> },
@@ -284,6 +299,32 @@ function ColaboradorBeneficios() {
                     })
                 })
                 setBeneficios(lista)
+
+                // Inicializa editarPlanos para operadoras com todos os itens pendentes
+                const operadorasPendentes = {};
+                lista.forEach(item => {
+                    const operadoraId = item.operadora?.id;
+                    if (operadoraId) {
+                        if (!operadorasPendentes[operadoraId]) {
+                            operadorasPendentes[operadoraId] = {
+                                total: 0,
+                                pendentes: 0
+                            };
+                        }
+                        operadorasPendentes[operadoraId].total++;
+                        if (item.status === 'pendente') {
+                            operadorasPendentes[operadoraId].pendentes++;
+                        }
+                    }
+                });
+
+                const initialEditarPlanos = {};
+                Object.entries(operadorasPendentes).forEach(([operadoraId, counts]) => {
+                    if (counts.pendentes === counts.total) {
+                        initialEditarPlanos[operadoraId] = true;
+                    }
+                });
+                setEditarPlanos(initialEditarPlanos);
             }
         } catch (erro) {
             console.error(erro)
@@ -543,6 +584,13 @@ function ColaboradorBeneficios() {
         return d.toLocaleDateString('pt-BR');
     };
 
+    const toggleEditarPlanos = (operadoraId) => {
+        setEditarPlanos(prev => ({
+            ...prev,
+            [operadoraId]: !prev[operadoraId]
+        }));
+    };
+
     return (
         <>
         <Toast ref={toast} />
@@ -612,6 +660,8 @@ function ColaboradorBeneficios() {
                                 }, {})).map(([contratoId, itensContrato], idxContrato, arrContratos) => {
                                     const contrato = itensContrato[0]?.contratoInfo;
                                     const operadora = contrato?.dados_operadora;
+                                    const temPlanoSelecionado = itensContrato.some(item => item.status === 'sim');
+                                    
                                     return (
                                         <div key={contratoId} style={{width: '100%'}}>
                                             {contrato && (
@@ -628,9 +678,14 @@ function ColaboradorBeneficios() {
                                                                 {getStatusContrato(contrato.status)}
                                                             </StatusContratoTag>
                                                         )}
-                                                        <div style={{marginLeft: 'auto'}}>
-                                                           
-                                                        </div>
+                                                        <EditarPlanosSwitch>
+                                                            <span>Editar</span>
+                                                            <SwitchInput
+                                                                checked={editarPlanos[operadora?.id] || false}
+                                                                onChange={() => toggleEditarPlanos(operadora?.id)}
+                                                                style={{ width: '36px' }}
+                                                            />
+                                                        </EditarPlanosSwitch>
                                                     </div>
                                                     {contrato.cnpj && (
                                                         <span><b>CNPJ:</b> {contrato.cnpj}</span>
@@ -659,17 +714,29 @@ function ColaboradorBeneficios() {
                                                                                 >
                                                                                     <IoInformationCircleOutline />
                                                                                 </button>
-                                                                                 <CustomDropdown
-                                                                                    value={item.status}
-                                                                                    options={statusOptions}
-                                                                                    onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos_itens, item.multiplos_operadoras, item.operadora?.id)}
-                                                                                    style={{width: 30, height: 25, minWidth: 20, minHeight: 30, padding: 0, background: 'transparent', border: 'none', boxShadow: 'none'}}
-                                                                                    panelStyle={{fontSize: 12, minWidth: 80}}
-                                                                                    appendTo={document.body}
-                                                                                    valueTemplate={(_, props) => statusTemplate(statusOptions.find(opt => opt.value === item.status), { value: item }, true, false, true)}
-                                                                                    itemTemplate={option => statusTemplate(option, { option: { ...option, obrigatoriedade: item.obrigatoriedade } }, false, true, false)}
-                                                                                    disabled={getStatusContrato(item.contratoInfo?.status) === 'Indisponível'}
-                                                                                />
+                                                                                 {editarPlanos[operadora?.id] ? (
+                                                                                    <CustomDropdown
+                                                                                        value={item.status}
+                                                                                        options={statusOptions}
+                                                                                        onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos_itens, item.multiplos_operadoras, item.operadora?.id)}
+                                                                                        style={{width: 30, height: 25, minWidth: 20, minHeight: 30, padding: 0, background: 'transparent', border: 'none', boxShadow: 'none'}}
+                                                                                        panelStyle={{fontSize: 12, minWidth: 80}}
+                                                                                        appendTo={document.body}
+                                                                                        valueTemplate={(_, props) => statusTemplate(statusOptions.find(opt => opt.value === item.status), { value: item }, true, false, true)}
+                                                                                        itemTemplate={option => statusTemplate(option, { option: { ...option, obrigatoriedade: item.obrigatoriedade } }, false, true, false)}
+                                                                                        disabled={getStatusContrato(item.contratoInfo?.status) === 'Indisponível'}
+                                                                                    />
+                                                                                ) : (
+                                                                                    <StatusIcon>
+                                                                                        {item.status === 'sim' ? (
+                                                                                            <FaCheck size={18} fill="var(--green-600)" style={{ color: 'var(--green-600)', fontSize: 20 }} />
+                                                                                        ) : item.status === 'nao' ? (
+                                                                                            <FaTimes size={18} fill="var(--error)" style={{ color: 'var(--error)', fontSize: 20 }} />
+                                                                                        ) : (
+                                                                                            <FaClock size={14} style={{ color: 'var(--warning)', fontSize: 20 }} />
+                                                                                        )}
+                                                                                    </StatusIcon>
+                                                                                )}
                                                                                 {(item.status === 'sim' || item.status === 'nao') && (
                                                                                     <div style={{ fontSize: 11, color: 'var(--neutro-400)', marginTop: 2, textAlign: 'center' }}>
                                                                                         {item.item.created_at ? `Selecionado em: ${new Date(item.item.created_at).toLocaleDateString('pt-BR')} ${new Date(item.item.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}` : ''}
