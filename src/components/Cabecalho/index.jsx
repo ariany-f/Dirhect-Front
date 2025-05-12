@@ -308,11 +308,6 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
           label: 'Operadoras', 
           url: '/operadoras',
           icon: <FaBuilding size={16} />
-        }, 
-        { 
-          label: 'Linhas de Transporte', 
-          url: '/linhas-transporte',
-          icon: <FaBusAlt size={16} />
         }
       ]
     },
@@ -325,9 +320,9 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
           icon: <RiOrganizationChart size={18}/>
         },
         { 
-          label: 'Elegibilidade', 
-          url: '/elegibilidade',
-          icon: <LuSparkles size={16} className="icon" />
+          label: 'Linhas de Transporte', 
+          url: '/linhas-transporte',
+          icon: <FaBusAlt size={16} />
         }
       ]
     }
