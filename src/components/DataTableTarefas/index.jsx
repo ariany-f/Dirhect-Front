@@ -6,7 +6,7 @@ import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import styles from '@pages/tarefas/Pedidos.module.css'
+import styles from '@pages/Tarefas/Pedidos.module.css'
 import { Tag } from 'primereact/tag';
 import { ProgressBar } from 'primereact/progressbar';
 import { Real } from '@utils/formats'
