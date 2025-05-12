@@ -28,6 +28,8 @@ import styles from '@pages/Beneficios/Beneficios.module.css';
 import { useTranslation } from 'react-i18next';
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 import { Checkbox } from 'primereact/checkbox';
+import { InputText } from 'primereact/inputtext';
+import { FaSearch } from 'react-icons/fa';
 
 const StatusTag = styled.span`
     padding: 4px 8px;
@@ -42,6 +44,35 @@ const StatusTag = styled.span`
         background-color: rgba(229, 115, 115, 0.1);
         color: var(--error);
     `}
+`;
+
+const SearchContainer = styled.div`
+    position: relative;
+    width: 320px;
+    
+    .p-inputtext {
+        width: 100%;
+        padding-left: 36px;
+        background: var(--neutro-50);
+        border: 1px solid var(--neutro-200);
+        border-radius: 8px;
+        height: 40px;
+        font-size: 14px;
+        
+        &:focus {
+            box-shadow: 0 0 0 2px var(--primaria-100);
+            border-color: var(--primaria);
+        }
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--neutro-400);
+        font-size: 14px;
+    }
 `;
 
 function DataTableBeneficios({ 
@@ -65,6 +96,7 @@ function DataTableBeneficios({
     const [beneficioParaEditar, setBeneficioParaEditar] = useState(null);
     const { t } = useTranslation('common');
     const { usuario } = useSessaoUsuarioContext();
+    const searchTimeout = useRef(null);
 
     // Atualiza o estado dos status quando os benefícios mudam
     useEffect(() => {
@@ -90,7 +122,14 @@ function DataTableBeneficios({
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
-        onSearch(value);
+        
+        if (searchTimeout.current) {
+            clearTimeout(searchTimeout.current);
+        }
+        
+        searchTimeout.current = setTimeout(() => {
+            onSearch(value);
+        }, 300);
     };
 
     const excluirBeneficio = (beneficioId) => {

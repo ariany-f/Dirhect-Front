@@ -42,9 +42,10 @@ function Beneficios() {
     const loadBeneficios = () => {
         setLoading(true)
         let url = `beneficio/?format=json&page=${lazyParams.page}&page_size=${lazyParams.rows}`;
-        if (searchTerm) url += `&search=${searchTerm}`;
+        if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
         if (sortField && sortOrder) url += `&ordering=${sortOrder === 'desc' ? '-' : ''}${sortField}`;
         if (usuario?.tipo !== 'global') url += `&ativo=true`;
+        
         http.get(url)
             .then(response => {
                 setBeneficios(response.results)
@@ -77,18 +78,12 @@ function Beneficios() {
     }
 
     const onSearch = (value) => {
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current)
-        }
-
-        timeoutRef.current = setTimeout(() => {
-            setSearchTerm(value)
-            setLazyParams(prevState => ({
-                ...prevState,
-                first: 0,
-                page: 1
-            }))
-        }, 500)
+        setSearchTerm(value)
+        setLazyParams(prevState => ({
+            ...prevState,
+            first: 0,
+            page: 1
+        }))
     }
 
     const onSort = ({ sortField, sortOrder }) => {
