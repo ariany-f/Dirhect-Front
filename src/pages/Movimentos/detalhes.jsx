@@ -56,8 +56,8 @@ function DetalhesMovimentos() {
 
         switch(movimento?.status)
         {
-            case 'Aprovado':
-                status = <Tag severity={'success'} value="Aprovado"></Tag>;
+            case 'Concluído':
+                status = <Tag severity={'success'} value="Concluído"></Tag>;
                 break;
             case 'Aguardando':
                 status = <Tag severity={'danger'} value="Aguardando"></Tag>;
