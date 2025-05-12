@@ -74,7 +74,7 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
     
         // Define a cor com base no progresso
         let severity = "rgb(139, 174, 44)"; // Verde para 100%
-        if (progresso <= 30) {
+        if (progresso <= 0) {
             severity = "rgb(212, 84, 114)"; // Vermelho para <= 30%
         } else if (progresso <= 99) {
             severity = "rgb(255, 146, 42)"; // Laranja para <= 99%
