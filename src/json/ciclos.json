@@ -7,7 +7,7 @@
             "year": 2024,
             "month": 12
         },
-        "status": "Aberta",
+        "status": "Fechada",
         "total_colaboradores": 4,
         "detalhes": [
             { 
@@ -32,7 +32,7 @@
             "year": 2024,
             "month": 12
         }, 
-        "status": "Aberta",
+        "status": "Fechada",
         "total_colaboradores": 6,
         "detalhes": [
             { 
@@ -81,7 +81,7 @@
             "year": 2025,
             "month": 1
         }, 
-        "status": "Aberta",
+        "status": "Fechada",
         "total_colaboradores": 4,
         "detalhes": [
             { 
@@ -118,7 +118,7 @@
             "year": 2025,
             "month": 1
         }, 
-        "status": "Aberta",
+        "status": "Fechada",
         "total_colaboradores": 5,
         "detalhes": [
             { 
@@ -192,7 +192,7 @@
             "year": 2025,
             "month": 2
         },
-        "status": "Aberta",
+        "status": "Fechada",
         "total_colaboradores": 4,
         "detalhes": [
             { 
@@ -229,7 +229,7 @@
             "year": 2025,
             "month": 3
         },
-        "status": "Aberta",
+        "status": "Fechada",
         "total_colaboradores": 5,
         "detalhes": [
             { 
@@ -272,7 +272,7 @@
             "year": 2025,
             "month": 3
         },
-        "status": "Aberta",
+        "status": "Fechada",
         "total_colaboradores": 6,
         "detalhes": [
             { 
@@ -437,7 +437,7 @@
             "year": 2025,
             "month": 6
         },
-        "status": "Aberta",
+        "status": "Fechada",
         "total_colaboradores": 6,
         "detalhes": [
             { 
