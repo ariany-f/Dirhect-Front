@@ -34,7 +34,7 @@ function DataTableEventosCiclos({ eventos, colaborador = null }) {
 
     const representativeEmpresaTemplate = (rowData) => {
         if(!rowData.empresa) {
-            return <></>
+            return <p style={{ fontSize: '12px', color: 'var(--primaria)' }}>Real.format(0)</p>
         }
         return (
             <p style={{ fontSize: '12px', color: 'var(--primaria)' }}>{Real.format(rowData.empresa)}</p>
