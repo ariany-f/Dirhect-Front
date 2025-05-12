@@ -9,23 +9,7 @@ import { useEffect, useState } from 'react';
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import ciclosData from '@json/ciclos.json';
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 24px;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-`;
-
-const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const Content = styled.div`
+const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -55,11 +39,9 @@ function Ciclos() {
     }, []);
 
     return (
-        <Container>
-            <Content>
-                <Outlet context={{ ciclos: dadosCiclos, tipoUsuario: usuario.tipo }} />
-            </Content>
-        </Container>
+        <ConteudoFrame>
+            <Outlet context={{ ciclos: dadosCiclos, tipoUsuario: usuario.tipo }} />
+        </ConteudoFrame>
     );
 }
 
