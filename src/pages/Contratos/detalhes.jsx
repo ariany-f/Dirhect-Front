@@ -100,7 +100,7 @@ function DetalhesContratos() {
                             <FrameVertical gap="10px">
                                 <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={contrato?.dados_operadora?.id}>
                                     <CustomImage src={contrato?.dados_operadora?.imagem_url} alt={contrato?.dados_operadora?.nome} width={90} height={45} title={contrato?.dados_operadora?.nome} />
-                                    <b>{contrato?.num_contrato_origem ? `#${contrato?.num_contrato_origem} -` : ``} {contrato?.dados_operadora?.nome}</b>
+                                    <b>{contrato?.dados_operadora?.nome} {contrato?.num_contrato_origem ? `- #${contrato?.num_contrato_origem}` : ``}</b>
                                     {
                                         contrato?.status == 'A' ?
                                         <Tag severity="success" value="Ativo"></Tag> :
@@ -109,11 +109,18 @@ function DetalhesContratos() {
                                 </ContainerHorizontal>
                             </FrameVertical>
                             {contrato?.dt_inicio && contrato?.dt_fim && 
+                                <div>
+                                <FrameVertical gap="10px" padding={"0px 0px 0px 5px"}>
+                                    <ContainerHorizontal gap="10px">
+                                        <Texto size={"12px"}>{contrato?.observacao}</Texto>
+                                    </ContainerHorizontal>
+                                </FrameVertical>
                                 <FrameVertical gap="10px" padding={"0px 0px 0px 5px"}>
                                     <ContainerHorizontal gap="10px">
                                         <Texto size={"12px"}>De {new Date(contrato?.dt_inicio).toLocaleDateString('pt-BR')} a {new Date(contrato?.dt_fim).toLocaleDateString('pt-BR')}</Texto>
                                     </ContainerHorizontal>
                                 </FrameVertical>
+                                </div>
                             }
                         </Frame>
                         <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="black" color="black"/> {t('add')} Benefício ao Contrato</Botao>
