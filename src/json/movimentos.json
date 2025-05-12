@@ -45,7 +45,7 @@
                 "funcionario": "Maria Souza", 
                 "movimento": "Inclusão", 
                 "plano": "Plano B",
-                "tipo": "Dependente",
+                "tipo": "Funcionário",
                 "empresa": 200, 
                 "valor": 5500
             },
@@ -115,7 +115,7 @@
                 "funcionario": "Juliana Mendes", 
                 "movimento": "Inclusão", 
                 "plano": "Plano A",
-                "tipo": "Dependente",
+                "tipo": "Funcionário",
                 "empresa": 200, 
                 "valor": 5700 
             }
@@ -133,7 +133,7 @@
                 "funcionario": "Juliana Mendes", 
                 "movimento": "Inclusão", 
                 "plano": "Plano A",
-                "tipo": "Dependente",
+                "tipo": "Funcionário",
                 "empresa": 550, 
                 "valor": 5700 
             },
@@ -157,7 +157,7 @@
                 "funcionario": "Maria Souza", 
                 "movimento": "Inclusão", 
                 "plano": "Plano A",
-                "tipo": "Dependente",
+                "tipo": "Funcionário",
                 "empresa": 900, 
                 "valor": 5500 
             }
