@@ -3,12 +3,16 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import './DataTable.css'
 import Texto from '@components/Texto';
+import { GrAddCircle } from 'react-icons/gr'
+import Botao from '@components/Botao'
+import BotaoGrupo from '@components/BotaoGrupo'
 import { useNavigate } from 'react-router-dom';
 import CampoTexto from '@components/CampoTexto';
 import { useEffect, useState } from 'react';
 import ModalFerias from '../ModalFerias';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
+import styles from '@pages/Ausencias/Contratos.module.css'
 
 function formatarDataBr(data) {
     const [ano, mes, dia] = data.split('-');
@@ -78,18 +82,29 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
     
     return (
         <>
-         {!colaborador &&
-          <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por colaborador" />
-                </span>
-            </div>}
+            <BotaoGrupo align="space-between" wrap>
+                {!colaborador && (
+                    <>
+                        <div className="flex justify-content-end">
+                            <span className="p-input-icon-left">
+                                <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por colaborador" />
+                            </span>
+                        </div>
+                        <BotaoGrupo align="end" gap="8px">
+                            <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" stroke="white" color="white"/> Registrar Ausência</Botao>
+                        </BotaoGrupo>
+                    </>
+                )
+                }
+            </BotaoGrupo>
             <DataTable value={ausencias} filters={filters} globalFilterFields={['funcionario']} emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario" header="Colaborador" style={{ width: '30%' }}></Column>}
                 <Column body={representativSituacaoTemplate} field="ausencia_nome" header="Ausência" style={{ width: '15%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '15%' }}></Column>
             </DataTable>
+            <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+
         </>
     )
 }

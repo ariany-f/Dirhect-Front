@@ -61,14 +61,7 @@ function AusenciasListagem() {
      }, [ausencias, context])
     
     return (
-        <ConteudoFrame>
-            {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
-            <BotaoGrupo align="end">
-                <BotaoGrupo align="center">
-                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Registrar Ausência</Botao>
-                </BotaoGrupo>
-            </BotaoGrupo>}
-          
+        <ConteudoFrame>          
             <DataTableAusencias ausencias={ausencias} />
           
             <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
