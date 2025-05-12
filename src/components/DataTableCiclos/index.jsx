@@ -28,8 +28,7 @@ function DataTableCiclos() {
         if (tipoUsuario === 'equipeBeneficios') {
             setTiposLancamento([
                 { label: 'Todos', value: null },
-                { label: 'Benefícios', value: 'Benefícios' },
-                { label: 'Descontos', value: 'Descontos' }
+                { label: 'Benefícios', value: 'Benefícios' }
             ]);
             // Filtra os dados para mostrar apenas benefícios e descontos
             const filtrados = Array.isArray(ciclos) ? ciclos.filter(ciclo => 
