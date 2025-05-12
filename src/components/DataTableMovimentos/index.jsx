@@ -45,10 +45,10 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
                 status = <Tag severity={'success'} value="Concluído"></Tag>;
                 break;
             case 'Aguardando':
-                status = <Tag severity={'warning'} value="Aguardando"></Tag>;
+                status = <Tag severity={'danger'} value="Aguardando"></Tag>;
                 break;
             case 'Em andamento':
-                status = <Tag severity={'info'} value="Em andamento"></Tag>;
+                status = <Tag severity={'warning'} value="Em andamento"></Tag>;
                 break;
         }
         return (
