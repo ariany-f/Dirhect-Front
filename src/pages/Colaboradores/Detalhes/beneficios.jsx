@@ -100,11 +100,11 @@ const ColItem = styled.div`
         box-shadow: 0 0 6px 2px ${props => {
             switch (props.$status) {
                 case 'sim':
-                    return 'rgba(0, 200, 83, 0.4)';
+                    return 'rgba(0, 200, 83, 0.35)';
                 case 'nao':
-                    return 'rgba(229, 115, 115, 0.4)';
+                    return 'rgba(229, 115, 115, 0.35)';
                 case 'pendente':
-                    return 'rgba(255, 245, 106, 0.4)';
+                    return 'rgba(255, 245, 106, 0.35)';
                 default:
                     return 'transparent';
             }
