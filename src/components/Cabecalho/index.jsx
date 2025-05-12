@@ -155,7 +155,7 @@ const HeaderBottom = styled.div`
 const RightItems = styled.nav`
   display: flex;
   align-items: center;
-  gap: 48px;
+  gap: 36px;
   flex-wrap: wrap;
 
   @media screen and (max-width: 1024px) {
@@ -371,7 +371,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
               </MegaMenuWrapper>
             )}
             
-            {usuario.tipo !== "candidato" && isDesktop && (
+            {/* {usuario.tipo !== "candidato" && isDesktop && (
               <Frame alinhamento="center">
                 <Link 
                   to="/marketplace"
@@ -390,7 +390,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
                   </Texto>
                 </Link>
               </Frame>
-            )}
+            )} */}
           </div>
           
           <div className={styles.divisor}>
