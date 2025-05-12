@@ -62,6 +62,23 @@ function DataTableMovimentosDetalhes({ movimentos }) {
             <Frame alinhamento="start">{status}</Frame>
         )
     }
+
+    const representativTipoTemplate = (rowData) => {
+        let tipo = rowData?.tipo;
+        
+        switch(rowData?.tipo)
+        {
+            case 'Dependente':
+                tipo = <Tag severity={'info'} value="Dependente"></Tag>;
+                break;
+            case 'Funcionário':
+                tipo = <Tag severity={'green-600'} value="Funcionário"></Tag>;
+                break;
+        }
+        return (
+            <Frame alinhamento="start">{tipo}</Frame>
+        )
+    }
     
     return (
         <>
@@ -72,7 +89,7 @@ function DataTableMovimentosDetalhes({ movimentos }) {
             </div>
             <DataTable value={movimentos} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados movimentos" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="funcionario" header="Beneficiário" style={{ width: '35%' }}></Column>
-                <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
+                <Column body={representativTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column field="plano" header="Plano" style={{ width: '35%' }}></Column>
                 <Column body={representativeDescontoTemplate} field="valor" header="Desconto" style={{width: '35%'}}></Column>
                 <Column body={representativeEmpresaTemplate} field="empresa" header="Empresa" style={{width: '35%'}}></Column>
