@@ -60,7 +60,10 @@ function DetalhesMovimentos() {
                 status = <Tag severity={'success'} value="Aprovado"></Tag>;
                 break;
             case 'Aguardando':
-                status = <Tag severity={'warning'} value="Aguardando"></Tag>;
+                status = <Tag severity={'danger'} value="Aguardando"></Tag>;
+                break;
+            case 'Em andamento':
+                status = <Tag severity={'warning'} value="Em andamento"></Tag>;
                 break;
         }
         return <Frame alinhamento="center">{status}</Frame>
