@@ -11,7 +11,7 @@ import { Link, useLocation } from "react-router-dom"
 import logo from '@imagens/logo.png'
 import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
-import { FaBuilding, FaBusAlt, FaUmbrellaBeach } from "react-icons/fa"
+import { FaBuilding, FaBusAlt, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
 import { FaUserGroup } from "react-icons/fa6"
 import { FaBars } from "react-icons/fa"
 import { BreadCrumb } from "primereact/breadcrumb"
@@ -251,7 +251,7 @@ function BarraLateral() {
                         "id": 8,
                         "url": "/demissoes",
                         "pageTitulo": "Demissões",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "icone": <FaUserTimes size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
                     {
@@ -319,7 +319,7 @@ function BarraLateral() {
                         "id": 5,
                         "url": "/demissoes",
                         "pageTitulo": "Demissões",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "icone": <FaUserTimes size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
                     {
@@ -378,7 +378,7 @@ function BarraLateral() {
                         "id": 7,
                         "url": "/demissoes",
                         "pageTitulo": "Demissões",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "icone": <FaUserTimes size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
                     {
@@ -445,7 +445,7 @@ function BarraLateral() {
                         "id": 7,
                         "url": "/demissoes",
                         "pageTitulo": "Demissões",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
+                        "icone": <FaUserTimes size={20} className="icon" />,
                         "itemTitulo": "Demissões"
                     },
                     {

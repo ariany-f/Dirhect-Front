@@ -21,7 +21,7 @@ import ModalDemissao from '../ModalDemissao';
 import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
 import ModalFerias from '../ModalFerias';
 import { Tag } from 'primereact/tag';
-import { FaTrash, FaUserTimes, FaUmbrella, FaDownload } from 'react-icons/fa';
+import { FaTrash, FaUserTimes, FaUmbrella, FaDownload, FaUmbrellaBeach } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
 import { formatCPF } from '@utils/formats';
@@ -180,7 +180,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 />
 
                 <Tooltip target=".ferias" mouseTrack mouseTrackLeft={10} />
-                <FaUmbrella 
+                <FaUmbrellaBeach 
                     className="ferias" 
                     data-pr-tooltip="Solicitação de Férias" 
                     size={16} 
@@ -287,7 +287,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data de Admissão" style={{ width: '15%' }}></Column>
+                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data Admissão" style={{ width: '15%' }}></Column>
                 <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Data de Nascimento" style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" style={{ width: '15%' }}></Column>
                 <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>

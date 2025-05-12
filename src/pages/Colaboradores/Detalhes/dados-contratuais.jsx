@@ -111,7 +111,7 @@ function ColaboradorDadosContratuais() {
                 <div className={styles.card_dashboard}>
                     <Col12>
                         <Col3>
-                            <Texto>Data de Admissão</Texto>
+                            <Texto>Data Admissão</Texto>
                             {colaborador?.dt_admissao ?
                                 <Texto weight="800">{new Date(colaborador?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
