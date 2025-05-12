@@ -449,13 +449,6 @@ function BarraLateral() {
                         "itemTitulo": "Demissões"
                     },
                     {
-                        "id": 9,
-                        "url": "/ciclos",
-                        "pageTitulo": "Lançtos de Folha",
-                        "icone": <HiMiniNewspaper size={20} fill="white"/>,
-                        "itemTitulo": "Lançtos de Folha"
-                    },
-                    {
                         "id": 11,
                         "url": "/contratos",
                         "pageTitulo": "Contratos",
@@ -482,6 +475,13 @@ function BarraLateral() {
                         "pageTitulo": "Movimentação",
                         "icone": <MdAllInbox size={20} fill="white" />,
                         "itemTitulo": "Movimentação"
+                    },
+                    {
+                        "id": 9,
+                        "url": "/ciclos",
+                        "pageTitulo": "Lançtos de Folha",
+                        "icone": <HiMiniNewspaper size={20} fill="white"/>,
+                        "itemTitulo": "Lançtos de Folha"
                     }
                 ]
             default:
