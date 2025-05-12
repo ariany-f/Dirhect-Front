@@ -41,8 +41,8 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
         
         switch(rowData?.status)
         {
-            case 'Aprovado':
-                status = <Tag severity={'success'} value="Aprovado"></Tag>;
+            case 'Concluído':
+                status = <Tag severity={'success'} value="Concluído"></Tag>;
                 break;
             case 'Aguardando':
                 status = <Tag severity={'warning'} value="Aguardando"></Tag>;

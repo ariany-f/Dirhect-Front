@@ -105,7 +105,7 @@
         "tipo": "Seguro de Vida", 
         "data": "31/01/2025", 
         "data_referencia": "12/2024", 
-        "status": "Aprovado",
+        "status": "Concluído",
         "detalhes": [
             { 
                 "funcionario": "Maria Souza", 
@@ -477,7 +477,7 @@
          "tipo": "Seguro Saúde", 
         "data": "31/03/2025", 
         "data_referencia": "02/2025", 
-        "status": "Aprovado",
+        "status": "Concluído",
         "detalhes": [
             { 
                 "funcionario": "Carlos Oliveira", 
