@@ -52,7 +52,7 @@ function DataTableMovimentosDetalhes({ movimentos }) {
         switch(rowData?.movimento)
         {
             case 'Inclusão':
-                status = <Tag severity={'success'} value="Inclusão"></Tag>;
+                status = <Tag severity={'info'} value="Inclusão"></Tag>;
                 break;
             case 'Cancelamento':
                 status = <Tag severity={'danger'} value="Cancelamento"></Tag>;
@@ -79,6 +79,27 @@ function DataTableMovimentosDetalhes({ movimentos }) {
             <Frame alinhamento="start">{tipo}</Frame>
         )
     }
+
+    const representativStatusMovimentoTemplate = (rowData) => {
+        let status = rowData?.status;
+        
+        switch(rowData?.status)
+        {
+            case 'Concluído':
+            case 'Concluido':
+                status = <Tag severity={'success'} value="Concluído"></Tag>;
+                break;
+            case 'Aguardando':
+                status = <Tag severity={'warning'} value="Aguardando"></Tag>;
+                break;
+            default:
+                status = <Tag severity={'info'} value={rowData?.status}></Tag>;
+                break;
+        }
+        return (
+            <Frame alinhamento="start">{status}</Frame>
+        )
+    }
     
     return (
         <>
@@ -91,8 +112,7 @@ function DataTableMovimentosDetalhes({ movimentos }) {
                 <Column field="funcionario" header="Beneficiário" style={{ width: '35%' }}></Column>
                 <Column body={representativTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
                 <Column field="plano" header="Plano" style={{ width: '35%' }}></Column>
-                <Column body={representativeDescontoTemplate} field="valor" header="Desconto" style={{width: '35%'}}></Column>
-                <Column body={representativeEmpresaTemplate} field="empresa" header="Empresa" style={{width: '35%'}}></Column>
+                <Column body={representativStatusMovimentoTemplate} field="status" header="Status" style={{width: '35%'}}></Column>
                 <Column body={representativStatusTemplate} field="movimento" header="Movimento" style={{width: '35%'}}></Column>
             </DataTable>
         </>

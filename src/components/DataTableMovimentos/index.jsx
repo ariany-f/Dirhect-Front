@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { Tag } from 'primereact/tag';
 import { RiDownload2Line, RiUpload2Line } from 'react-icons/ri';
 import { Real } from '@utils/formats'
+import { ProgressBar } from 'primereact/progressbar';
 
 function DataTableMovimentos({ movimentos, colaborador = null }) {
 
@@ -63,6 +64,31 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
         </div>
     }
 
+    const representativeProgressTemplate = (rowData) => {
+        const total = rowData.detalhes?.length || 0;
+        const concluidos = rowData.detalhes?.filter(d => d.status === 'Concluído' || d.status === 'Concluido').length || 0;
+        const progresso = total > 0 ? Math.round((concluidos / total) * 100) : 0;
+    
+        // Define a cor com base no progresso
+        let severity = "rgb(139, 174, 44)"; // Verde para 100%
+        if (progresso <= 30) {
+            severity = "rgb(212, 84, 114)"; // Vermelho para <= 30%
+        } else if (progresso <= 99) {
+            severity = "rgb(255, 146, 42)"; // Laranja para <= 99%
+        }
+    
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <ProgressBar 
+                    value={progresso} 
+                    color={severity}
+                />
+                <div style={{ fontSize: '12px', color: 'var(--neutro-500)', textAlign: 'right' }}>
+                    {concluidos}/{total} concluídos
+                </div>
+            </div>
+        );
+    };
     
     return (
         <>
@@ -76,6 +102,7 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '25%' }}></Column>
                 <Column field="data_referencia" header="Referência" style={{ width: '15%' }}></Column>
                 <Column field="data" header="Data do Movimento" style={{ width: '15%' }}></Column>
+                <Column body={representativeProgressTemplate} field="detalhes" header="Progresso" style={{ width: '25%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Movimento" style={{ width: '15%' }}></Column>
             </DataTable>
         </>
