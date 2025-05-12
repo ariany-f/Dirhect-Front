@@ -39,37 +39,43 @@
                 "funcionario": "Maria Souza", 
                 "rubrica": "Plano de Saúde", 
                 "referencia": "Familiar", 
-                "valor": -350
+                "valor": -350,
+                "empresa": 245
             },
             { 
                 "funcionario": "Maria Souza", 
                 "rubrica": "Vale Alimentação", 
                 "referencia": "Mensal", 
-                "valor": -200
+                "valor": -200,
+                "empresa": 140
             },
             { 
                 "funcionario": "Juliana Mendes", 
                 "rubrica": "Plano Odontológico", 
                 "referencia": "Individual", 
-                "valor": -150
+                "valor": -150,
+                "empresa": 105
             },
             { 
                 "funcionario": "Juliana Mendes", 
                 "rubrica": "Vale Refeição", 
                 "referencia": "Mensal", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "Carlos Oliveira", 
                 "rubrica": "Seguro de Vida", 
                 "referencia": "Familiar", 
-                "valor": -250
+                "valor": -250,
+                "empresa": 175
             },
             { 
                 "funcionario": "Carlos Oliveira", 
                 "rubrica": "Vale Transporte", 
                 "referencia": "Mensal", 
-                "valor": -180
+                "valor": -180,
+                "empresa": 126
             }
         ]
     },
@@ -125,31 +131,36 @@
                 "funcionario": "Pedro Santos", 
                 "rubrica": "Plano de Saúde", 
                 "referencia": "Individual", 
-                "valor": -250
+                "valor": -250,
+                "empresa": 175
             },
             { 
                 "funcionario": "Pedro Santos", 
                 "rubrica": "Vale Alimentação", 
                 "referencia": "Mensal", 
-                "valor": -200
+                "valor": -200,
+                "empresa": 140
             },
             { 
                 "funcionario": "Ana Lima", 
                 "rubrica": "Plano Odontológico", 
                 "referencia": "Familiar", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "Ana Lima", 
                 "rubrica": "Vale Refeição", 
                 "referencia": "Mensal", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "João Silva", 
                 "rubrica": "Seguro de Vida", 
                 "referencia": "Individual", 
-                "valor": -150
+                "valor": -150,
+                "empresa": 105
             }
         ]
     },
@@ -199,25 +210,29 @@
                 "funcionario": "Juliana Mendes", 
                 "rubrica": "Plano de Saúde", 
                 "referencia": "Familiar", 
-                "valor": -350
+                "valor": -350,
+                "empresa": 245
             },
             { 
                 "funcionario": "Juliana Mendes", 
                 "rubrica": "Vale Alimentação", 
                 "referencia": "Mensal", 
-                "valor": -200
+                "valor": -200,
+                "empresa": 140
             },
             { 
                 "funcionario": "Carlos Oliveira", 
                 "rubrica": "Plano Odontológico", 
                 "referencia": "Individual", 
-                "valor": -150
+                "valor": -150,
+                "empresa": 105
             },
             { 
                 "funcionario": "Carlos Oliveira", 
                 "rubrica": "Vale Refeição", 
                 "referencia": "Mensal", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             }
         ]
     },
@@ -279,37 +294,43 @@
                 "funcionario": "Pedro Santos", 
                 "rubrica": "Plano de Saúde", 
                 "referencia": "Familiar", 
-                "valor": -350
+                "valor": -350,
+                "empresa": 245
             },
             { 
                 "funcionario": "Pedro Santos", 
                 "rubrica": "Vale Alimentação", 
                 "referencia": "Mensal", 
-                "valor": -200
+                "valor": -200,
+                "empresa": 140
             },
             { 
                 "funcionario": "Maria Souza", 
                 "rubrica": "Plano Odontológico", 
                 "referencia": "Familiar", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "Maria Souza", 
                 "rubrica": "Vale Refeição", 
                 "referencia": "Mensal", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "Ana Lima", 
                 "rubrica": "Seguro de Vida", 
                 "referencia": "Individual", 
-                "valor": -150
+                "valor": -150,
+                "empresa": 105
             },
             { 
                 "funcionario": "Ana Lima", 
                 "rubrica": "Vale Transporte", 
                 "referencia": "Mensal", 
-                "valor": -180
+                "valor": -180,
+                "empresa": 126
             }
         ]
     },
@@ -321,50 +342,57 @@
             "year": 2025,
             "month": 4
         },
-        "status": "Aberta",
+        "status": "Fechada",
         "total_colaboradores": 7,
         "detalhes": [
             { 
                 "funcionario": "João Silva", 
                 "rubrica": "Plano de Saúde", 
                 "referencia": "Familiar", 
-                "valor": -350
+                "valor": -350,
+                "empresa": 245
             },
             { 
                 "funcionario": "João Silva", 
                 "rubrica": "Vale Alimentação", 
                 "referencia": "Mensal", 
-                "valor": -200
+                "valor": -200,
+                "empresa": 140
             },
             { 
                 "funcionario": "Maria Souza", 
                 "rubrica": "Plano Odontológico", 
                 "referencia": "Familiar", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "Maria Souza", 
                 "rubrica": "Vale Refeição", 
                 "referencia": "Mensal", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "Pedro Santos", 
                 "rubrica": "Seguro de Vida", 
                 "referencia": "Individual", 
-                "valor": -150
+                "valor": -150,
+                "empresa": 105
             },
             { 
                 "funcionario": "Ana Lima", 
                 "rubrica": "Vale Transporte", 
                 "referencia": "Mensal", 
-                "valor": -180
+                "valor": -180,
+                "empresa": 126
             },
             { 
                 "funcionario": "Carlos Oliveira", 
                 "rubrica": "Plano de Saúde", 
                 "referencia": "Individual", 
-                "valor": -250
+                "valor": -250,
+                "empresa": 175
             }
         ]
     },
@@ -383,49 +411,57 @@
                 "funcionario": "Juliana Mendes", 
                 "rubrica": "Plano de Saúde", 
                 "referencia": "Familiar", 
-                "valor": -350
+                "valor": -350,
+                "empresa": 245
             },
             { 
                 "funcionario": "Juliana Mendes", 
                 "rubrica": "Vale Alimentação", 
                 "referencia": "Mensal", 
-                "valor": -200
+                "valor": -200,
+                "empresa": 140
             },
             { 
                 "funcionario": "Carlos Oliveira", 
                 "rubrica": "Plano Odontológico", 
                 "referencia": "Familiar", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "Carlos Oliveira", 
                 "rubrica": "Vale Refeição", 
                 "referencia": "Mensal", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "João Silva", 
                 "rubrica": "Seguro de Vida", 
                 "referencia": "Individual", 
-                "valor": -150
+                "valor": -150,
+                "empresa": 105
             },
             { 
                 "funcionario": "Maria Souza", 
                 "rubrica": "Vale Transporte", 
                 "referencia": "Mensal", 
-                "valor": -180
+                "valor": -180,
+                "empresa": 126
             },
             { 
                 "funcionario": "Pedro Santos", 
                 "rubrica": "Plano de Saúde", 
                 "referencia": "Individual", 
-                "valor": -250
+                "valor": -250,
+                "empresa": 175
             },
             { 
                 "funcionario": "Ana Lima", 
                 "rubrica": "Vale Alimentação", 
                 "referencia": "Mensal", 
-                "valor": -200
+                "valor": -200,
+                "empresa": 140
             }
         ]
     },
@@ -437,44 +473,50 @@
             "year": 2025,
             "month": 6
         },
-        "status": "Fechada",
+        "status": "Aberta",
         "total_colaboradores": 6,
         "detalhes": [
             { 
                 "funcionario": "Pedro Santos", 
                 "rubrica": "Plano de Saúde", 
                 "referencia": "Familiar", 
-                "valor": -350
+                "valor": -350,
+                "empresa": 245
             },
             { 
                 "funcionario": "Pedro Santos", 
                 "rubrica": "Vale Alimentação", 
                 "referencia": "Mensal", 
-                "valor": -200
+                "valor": -200,
+                "empresa": 140
             },
             { 
                 "funcionario": "Ana Lima", 
                 "rubrica": "Plano Odontológico", 
                 "referencia": "Familiar", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "Ana Lima", 
                 "rubrica": "Vale Refeição", 
                 "referencia": "Mensal", 
-                "valor": -300
+                "valor": -300,
+                "empresa": 210
             },
             { 
                 "funcionario": "Juliana Mendes", 
                 "rubrica": "Seguro de Vida", 
                 "referencia": "Individual", 
-                "valor": -150
+                "valor": -150,
+                "empresa": 105
             },
             { 
                 "funcionario": "Carlos Oliveira", 
                 "rubrica": "Vale Transporte", 
                 "referencia": "Mensal", 
-                "valor": -180
+                "valor": -180,
+                "empresa": 126
             }
         ]
     }

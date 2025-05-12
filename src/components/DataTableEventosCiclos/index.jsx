@@ -31,6 +31,12 @@ function DataTableEventosCiclos({ eventos, colaborador = null }) {
             Real.format(rowData.valor)
         )
     }
+
+    const representativeEmpresaTemplate = (rowData) => {
+        return (
+            <p style={{ fontSize: '12px', color: 'var(--primaria)' }}>{Real.format(rowData.empresa)}</p>
+        )
+    }
     
     return (
         <>
@@ -45,7 +51,8 @@ function DataTableEventosCiclos({ eventos, colaborador = null }) {
                 }
                 <Column field="rubrica" header="Rubrica" style={{ width: '35%' }}></Column>
                 <Column field="referencia" header="Referência" style={{ width: '35%' }}></Column>
-                <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
+                <Column body={representativeValorTemplate} field="valor" header="Desconto" style={{ width: '35%' }}></Column>
+                <Column body={representativeEmpresaTemplate} field="empresa" header="Empresa" style={{ width: '35%' }}></Column>
             </DataTable>
         </>
     )
