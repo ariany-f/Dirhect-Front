@@ -32,8 +32,14 @@ function DataTableCiclos() {
             ]);
             // Filtra os dados para mostrar apenas benefícios e descontos
             const filtrados = Array.isArray(ciclos) ? ciclos.filter(ciclo => 
-                ciclo.tipo === 'Benefícios' || ciclo.tipo === 'Descontos'
-            ) : [];
+                ciclo.tipo === 'Benefícios'
+            ).sort((a, b) => {
+                // Ordena por ano decrescente e mês decrescente
+                if (b.data_referencia.year !== a.data_referencia.year) {
+                    return b.data_referencia.year - a.data_referencia.year;
+                }
+                return b.data_referencia.month - a.data_referencia.month;
+            }) : [];
             setDadosFiltrados(filtrados);
         } else {
             setTiposLancamento([
@@ -43,7 +49,14 @@ function DataTableCiclos() {
                 { label: 'Benefícios', value: 'Benefícios' },
                 { label: 'Descontos', value: 'Descontos' }
             ]);
-            setDadosFiltrados(Array.isArray(ciclos) ? ciclos : []);
+            const filtrados = Array.isArray(ciclos) ? ciclos.sort((a, b) => {
+                // Ordena por ano decrescente e mês decrescente
+                if (b.data_referencia.year !== a.data_referencia.year) {
+                    return b.data_referencia.year - a.data_referencia.year;
+                }
+                return b.data_referencia.month - a.data_referencia.month;
+            }) : [];
+            setDadosFiltrados(filtrados);
         }
     }, [tipoUsuario, ciclos]);
 
@@ -139,6 +152,9 @@ function DataTableCiclos() {
                 paginator 
                 rows={10}  
                 tableStyle={{ minWidth: '68vw' }}
+                sortMode="single"
+                sortField="data_referencia.year"
+                sortOrder={-1}
             >
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }} filterField="tipo" filter={tipoUsuario === 'equipeBeneficios'} filterElement={tipoFilterTemplate}></Column>
                 <Column body={representativeMonthTemplate} field="data_referencia.month" header="Mês Referência" style={{ width: '35%' }}></Column>
