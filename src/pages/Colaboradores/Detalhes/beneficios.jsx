@@ -16,6 +16,7 @@ import { useParams } from "react-router-dom"
 import { FaChevronDown, FaCheck, FaTimes, FaClock, FaInfoCircle } from 'react-icons/fa'
 import ModalInfoElegibilidade from '@components/ModalInfoElegibilidade'
 import { Dropdown } from "primereact/dropdown"
+import { IoInformationCircleOutline } from "react-icons/io5"
 
 const StatusTag = styled.div`
     padding: 4px 8px;
@@ -81,6 +82,34 @@ const ColItem = styled.div`
     flex-direction: column;
     background: var(--neutro-50);
     justify-content: flex-start;
+    box-shadow: 0 0 4px 1px ${props => {
+        switch (props.$status) {
+            case 'sim':
+                return 'rgba(0, 200, 83, 0.2)';
+            case 'nao':
+                return 'rgba(229, 115, 115, 0.2)';
+            case 'pendente':
+                return 'rgba(255, 195, 106, 0.2)';
+            default:
+                return 'transparent';
+        }
+    }};
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+    &:hover {
+        box-shadow: 0 0 6px 2px ${props => {
+            switch (props.$status) {
+                case 'sim':
+                    return 'rgba(0, 200, 83, 0.3)';
+                case 'nao':
+                    return 'rgba(229, 115, 115, 0.3)';
+                case 'pendente':
+                    return 'rgba(255, 195, 106, 0.3)';
+                default:
+                    return 'transparent';
+            }
+        }};
+    }
 `;
 
 const TopRow = styled.div`
@@ -608,8 +637,10 @@ function ColaboradorBeneficios() {
                                                     )}
                                                     <ContratoItensBox>
                                                         <ContratoItensGrid>
-                                                            {itensContrato.map((item, idx) => (
-                                                                <ColItem key={item.id}>
+                                                            {itensContrato.map((item, idx) => {
+                                                                console.log('Item status:', item.status, 'Item ID:', item.id);
+                                                                return (
+                                                                <ColItem key={item.id} $status={item.status}>
                                                                     {/* Custom Accordion-like behavior */}
                                                                     <div style={{width: '100%', padding: '12px'}}>
                                                                         <TopRow>
@@ -626,7 +657,7 @@ function ColaboradorBeneficios() {
                                                                                     title="Mais informações"
                                                                                     onClick={() => setModalInfo({ open: true, item })}
                                                                                 >
-                                                                                    <FaInfoCircle />
+                                                                                    <IoInformationCircleOutline />
                                                                                 </button>
                                                                                  <CustomDropdown
                                                                                     value={item.status}
@@ -658,7 +689,8 @@ function ColaboradorBeneficios() {
                                                                         )}
                                                                     </div>
                                                                 </ColItem>
-                                                            ))}
+                                                            );
+                                                            })}
                                                         </ContratoItensGrid>
                                                     </ContratoItensBox>
                                                 </InfoContrato>
