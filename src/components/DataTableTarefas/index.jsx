@@ -6,17 +6,25 @@ import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import styles from '@pages/tarefas/Pedidos.module.css'
 import { Tag } from 'primereact/tag';
 import { ProgressBar } from 'primereact/progressbar';
 import { Real } from '@utils/formats'
+import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
+import ModalTarefas from '@components/ModalTarefas'
+import Botao from '@components/Botao'
+import BotaoGrupo from '@components/BotaoGrupo'
+import { GrAddCircle } from 'react-icons/gr'
 
 function DataTableTarefas({ tarefas, colaborador = null }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
+    const [modalOpened, setModalOpened] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    const {usuario} = useSessaoUsuarioContext()
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
@@ -105,12 +113,22 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     
     return (
         <>
-            {!colaborador &&
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
-                </span>
-            </div>}
+            <BotaoGrupo align={'space-between'} wrap>
+                {!colaborador && (
+                    <>
+                        <div className="flex justify-content-end">
+                            <span className="p-input-icon-left">
+                                <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+                            </span>
+                        </div>
+                        <BotaoGrupo align="end" gap="8px">
+                            {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
+                                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" stroke="white" color="white"/> Registrar Tarefa</Botao>
+                            }
+                        </BotaoGrupo>
+                    </>
+                )}
+            </BotaoGrupo>
             <DataTable value={tarefas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados tarefas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '30%' }}></Column>
                 <Column body={representativeRecorrenciaTemplate} field="tipo_recorrencia" header="Recorrência" style={{width: '15%'}}></Column>
@@ -119,6 +137,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 <Column body={representativeProgressTemplate} field="feito" header="Progresso" style={{ width: '45%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '25%' }}></Column>
             </DataTable>
+            <ModalTarefas opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </>
     )
 }
