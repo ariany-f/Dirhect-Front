@@ -47,6 +47,9 @@ function DataTableMovimentos({ movimentos, colaborador = null }) {
             case 'Aguardando':
                 status = <Tag severity={'warning'} value="Aguardando"></Tag>;
                 break;
+            case 'Em andamento':
+                status = <Tag severity={'info'} value="Em andamento"></Tag>;
+                break;
         }
         return (
             <Frame alinhamento="center">{status}</Frame>
