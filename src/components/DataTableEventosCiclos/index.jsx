@@ -27,6 +27,9 @@ function DataTableEventosCiclos({ eventos, colaborador = null }) {
     };
 
     const representativeValorTemplate = (rowData) => {
+        if(!rowData.valor) {
+            return <p style={{ fontSize: '12px', color: 'var(--error)' }}>{Real.format(0)}</p>
+        }
         return (
             <p style={{ fontSize: '12px', color: 'var(--error)' }}>{Real.format(rowData.valor)}</p>
         )

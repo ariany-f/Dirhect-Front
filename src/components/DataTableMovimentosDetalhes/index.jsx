@@ -28,19 +28,19 @@ function DataTableMovimentosDetalhes({ movimentos }) {
         setGlobalFilterValue(value);
     };
 
-    const representativeValorTemplate = (rowData) => {
+    const representativeDescontoTemplate = (rowData) => {
+        if(!rowData.valor) {
+            return <p style={{ fontSize: '12px', color: 'var(--primaria)' }}>{Real.format(0)}</p>
+        }
         return (
             Real.format(rowData.valor)
         )
     }
 
-    const representativeDescontoTemplate = (rowData) => {
-        return (
-            Real.format(rowData.desconto)
-        )
-    }
-
     const representativeEmpresaTemplate = (rowData) => {
+        if(!rowData.empresa) {
+            return <p style={{ fontSize: '12px', color: 'var(--primaria)' }}>{Real.format(0)}</p>
+        }
         return (
             Real.format(rowData.empresa)
         )
@@ -71,7 +71,11 @@ function DataTableMovimentosDetalhes({ movimentos }) {
                 </span>
             </div>
             <DataTable value={movimentos} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados movimentos" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
+                <Column field="funcionario" header="Beneficiário" style={{ width: '35%' }}></Column>
+                <Column field="tipo" header="Tipo" style={{ width: '35%' }}></Column>
+                <Column field="plano" header="Plano" style={{ width: '35%' }}></Column>
+                <Column body={representativeDescontoTemplate} field="valor" header="Desconto" style={{width: '35%'}}></Column>
+                <Column body={representativeEmpresaTemplate} field="empresa" header="Empresa" style={{width: '35%'}}></Column>
                 <Column body={representativStatusTemplate} field="movimento" header="Movimento" style={{width: '35%'}}></Column>
             </DataTable>
         </>

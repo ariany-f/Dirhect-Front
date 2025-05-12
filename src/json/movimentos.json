@@ -10,38 +10,26 @@
             { 
                 "funcionario": "João Silva", 
                 "movimento": "Inclusão", 
+                "plano": "Plano A",
+                "tipo": "Funcionário",
                 "empresa": 200, 
                 "valor": 5000 
             },
             { 
-                "funcionario": "João Silva", 
-                "movimento": "Inclusão", 
-                "empresa": 200, 
-                "valor": 1100
-            },
-            { 
                 "funcionario": "Maria Souza", 
                 "movimento": "Cancelamento", 
+                "plano": "Plano B",
+                "tipo": "Dependente",
                 "empresa": 200, 
                 "valor": 5500 
             },
             { 
-                "funcionario": "Maria Souza", 
-                "movimento": "Inclusão", 
-                "empresa": "-", 
-                "valor": 1000
-            },
-            { 
                 "funcionario": "Ana Lima", 
                 "movimento": "Inclusão", 
+                "plano": "Plano B",
+                "tipo": "Dependente",
                 "empresa": 200, 
                 "valor": 5300
-            },
-            { 
-                "funcionario": "Ana Lima", 
-                "movimento": "Cancelamento", 
-                "empresa": 50, 
-                "valor": 1250 
             }
         ]
     },
@@ -56,20 +44,18 @@
             { 
                 "funcionario": "Maria Souza", 
                 "movimento": "Inclusão", 
+                "plano": "Plano B",
+                "tipo": "Dependente",
                 "empresa": 200, 
                 "valor": 5500
             },
             { 
                 "funcionario": "Juliana Mendes", 
                 "movimento": "Cancelamento", 
+                "plano": "Plano B",
+                "tipo": "Funcionário",
                 "empresa": 200, 
                 "valor": 5700
-            },
-            { 
-                "funcionario": "Juliana Mendes", 
-                "movimento": "Cancelamento", 
-                "empresa": 320, 
-                "valor": 2500 
             }
         ]
     },
@@ -84,6 +70,8 @@
             { 
                 "funcionario": "Pedro Santos", 
                 "movimento": "Inclusão", 
+                "plano": "Plano A",
+                "tipo": "Funcionário",
                 "empresa": 200, 
                 "valor": 4900
             }
@@ -100,6 +88,8 @@
             { 
                 "funcionario": "Pedro Santos", 
                 "movimento": "Inclusão", 
+                "plano": "Plano A",
+                "tipo": "Funcionário",
                 "empresa": 200, 
                 "valor": 4900
             }
@@ -116,12 +106,16 @@
             { 
                 "funcionario": "Carlos Oliveira", 
                 "movimento": "Inclusão", 
+                "plano": "Plano A",
+                "tipo": "Funcionário",
                 "empresa": 200, 
                 "valor": 4800
             },
             { 
                 "funcionario": "Juliana Mendes", 
                 "movimento": "Inclusão", 
+                "plano": "Plano A",
+                "tipo": "Dependente",
                 "empresa": 200, 
                 "valor": 5700 
             }
@@ -138,38 +132,34 @@
             { 
                 "funcionario": "Juliana Mendes", 
                 "movimento": "Inclusão", 
+                "plano": "Plano A",
+                "tipo": "Dependente",
                 "empresa": 550, 
                 "valor": 5700 
             },
             { 
-                "funcionario": "Juliana Mendes", 
-                "movimento": "Inclusão",
-                "empresa": 400, 
-                "valor": 500 
-            },
-            { 
                 "funcionario": "Carlos Oliveira", 
                 "movimento": "Inclusão", 
+                "plano": "Plano C",
+                "tipo": "Funcionário",
                 "empresa": 650, 
                 "valor": 4800 
             },
             { 
                 "funcionario": "Pedro Santos", 
                 "movimento": "Inclusão", 
+                "plano": "Plano A",
+                "tipo": "Funcionário",
                 "empresa": 700, 
                 "valor": 4900 
             },
             { 
                 "funcionario": "Maria Souza", 
                 "movimento": "Inclusão", 
+                "plano": "Plano A",
+                "tipo": "Dependente",
                 "empresa": 900, 
                 "valor": 5500 
-            },
-            { 
-                "funcionario": "Maria Souza", 
-                "movimento": "Inclusão", 
-                "empresa": 400, 
-                "valor": 1000 
             }
         ]
     }
