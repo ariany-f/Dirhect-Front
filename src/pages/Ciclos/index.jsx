@@ -1,35 +1,66 @@
-import Botao from '@components/Botao'
-import BotaoGrupo from '@components/BotaoGrupo'
-import Titulo from '@components/Titulo'
-import BotaoVoltar from '@components/BotaoVoltar'
-import { GrAddCircle } from 'react-icons/gr'
-import styled from "styled-components"
-import { Link, Outlet, useLocation } from "react-router-dom"
-import { FaDownload } from 'react-icons/fa'
-import { useState, useEffect } from 'react'
-import ciclos from "@json/ciclos.json"
-import React, { createContext, useContext } from 'react';
-import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import DataTableCiclo from '@components/DataTableCiclos'
+import Botao from '@components/Botao';
+import BotaoGrupo from '@components/BotaoGrupo';
+import Titulo from '@components/Titulo';
+import BotaoVoltar from '@components/BotaoVoltar';
+import styled from 'styled-components';
+import { Outlet, useNavigate } from 'react-router-dom';
+import DataTableCiclos from '@components/DataTableCiclos';
+import { useEffect, useState } from 'react';
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
+import ciclosData from '@json/ciclos.json';
 
-const ConteudoFrame = styled.div`
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+`;
+
+const Header = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const Content = styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
     width: 100%;
-`
+`;
 
-const Ciclos = () => {
+function Ciclos() {
+    const {
+        usuario,
+        setCompanies,
+        setSessionCompany,
+        setCompanyDomain,
+        usuarioEstaLogado
+    } = useSessaoUsuarioContext()
 
-    const location = useLocation();
+    const [dadosCiclos, setDadosCiclos] = useState([]);
+    const navegar = useNavigate();
 
-    // const [ciclos, setCiclos] = useState([])
+    useEffect(() => {
+        console.log('Dados carregados do JSON:', ciclosData); // Debug
+        if (Array.isArray(ciclosData)) {
+            setDadosCiclos(ciclosData);
+        } else {
+            console.error('Os dados do ciclos.json não são um array:', ciclosData);
+            setDadosCiclos([]);
+        }
+    }, []);
 
     return (
-        <ConteudoFrame>
-            <Outlet context={ciclos} />
-        </ConteudoFrame>
+        <Container>
+            <Content>
+                <Outlet context={{ ciclos: dadosCiclos, tipoUsuario: usuario.tipo }} />
+            </Content>
+        </Container>
     );
-};
+}
 
 export default Ciclos; 

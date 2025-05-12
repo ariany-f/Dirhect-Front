@@ -21,130 +21,172 @@
                 "rubrica": "Hora Extra", 
                 "referencia": "10h", 
                 "valor": 500
-            },
-            { 
-                "funcionario": "Maria Souza", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 5500 
-            },
-            { 
-                "funcionario": "Maria Souza", 
-                "rubrica": "Bonificação", 
-                "referencia": "-", 
-                "valor": 1000
-            },
-            { 
-                "funcionario": "Ana Lima", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 5300
-            },
-            { 
-                "funcionario": "Ana Lima", 
-                "rubrica": "Hora Extra", 
-                "referencia": "5h", 
-                "valor": 250 
             }
         ]
     },
     { 
         "id": 2, 
-        "tipo": "Folha de Pagamento", 
+        "tipo": "Benefícios", 
         "data": "31/01/2025", 
         "data_referencia":  {
             "year": 2024,
             "month": 12
         }, 
-        "status": "Fechada",
-        "total_colaboradores": 2,
+        "status": "Aberta",
+        "total_colaboradores": 6,
         "detalhes": [
             { 
                 "funcionario": "Maria Souza", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 5500
+                "rubrica": "Plano de Saúde", 
+                "referencia": "Familiar", 
+                "valor": -350
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Vale Alimentação", 
+                "referencia": "Mensal", 
+                "valor": -200
             },
             { 
                 "funcionario": "Juliana Mendes", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 5700
+                "rubrica": "Plano Odontológico", 
+                "referencia": "Individual", 
+                "valor": -150
             },
             { 
                 "funcionario": "Juliana Mendes", 
-                "rubrica": "Desconto INSS", 
-                "referencia": "-", 
-                "valor": -500 
+                "rubrica": "Vale Refeição", 
+                "referencia": "Mensal", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "rubrica": "Seguro de Vida", 
+                "referencia": "Familiar", 
+                "valor": -250
+            },
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "rubrica": "Vale Transporte", 
+                "referencia": "Mensal", 
+                "valor": -180
             }
         ]
     },
     { 
         "id": 3, 
-        "tipo": "Adiantamento", 
+        "tipo": "Descontos", 
         "data": "28/02/2025", 
         "data_referencia": {
             "year": 2025,
             "month": 1
         }, 
         "status": "Aberta",
-        "total_colaboradores": 1,
+        "total_colaboradores": 4,
         "detalhes": [
             { 
                 "funcionario": "Pedro Santos", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 4900
+                "rubrica": "INSS", 
+                "referencia": "Mensal", 
+                "valor": -500
+            },
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "IRRF", 
+                "referencia": "Mensal", 
+                "valor": -750
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "INSS", 
+                "referencia": "Mensal", 
+                "valor": -550
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "IRRF", 
+                "referencia": "Mensal", 
+                "valor": -800
             }
         ]
     },
     {
-         "id": 4, 
-        "tipo": "Folha de Pagamento", 
+        "id": 4, 
+        "tipo": "Benefícios", 
         "data": "28/02/2025", 
         "data_referencia": {
             "year": 2025,
             "month": 1
         }, 
         "status": "Aberta",
-        "total_colaboradores": 1,
+        "total_colaboradores": 5,
         "detalhes": [
             { 
                 "funcionario": "Pedro Santos", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 4900
+                "rubrica": "Plano de Saúde", 
+                "referencia": "Individual", 
+                "valor": -250
+            },
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Vale Alimentação", 
+                "referencia": "Mensal", 
+                "valor": -200
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Plano Odontológico", 
+                "referencia": "Familiar", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Vale Refeição", 
+                "referencia": "Mensal", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "João Silva", 
+                "rubrica": "Seguro de Vida", 
+                "referencia": "Individual", 
+                "valor": -150
             }
         ]
     },
     {
-         "id": 5, 
-        "tipo": "Adiantamento", 
+        "id": 5, 
+        "tipo": "Descontos", 
         "data": "31/03/2025", 
         "data_referencia": {
             "year": 2025,
             "month": 2
         },
         "status": "Fechada",
-        "total_colaboradores": 2,
+        "total_colaboradores": 3,
         "detalhes": [
             { 
                 "funcionario": "Carlos Oliveira", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 4800
+                "rubrica": "INSS", 
+                "referencia": "Mensal", 
+                "valor": -480
             },
             { 
                 "funcionario": "Juliana Mendes", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 5700 
+                "rubrica": "INSS", 
+                "referencia": "Mensal", 
+                "valor": -520
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "rubrica": "IRRF", 
+                "referencia": "Mensal", 
+                "valor": -700
             }
         ]
     },
     {
-         "id": 6, 
-        "tipo": "Folha de Pagamento", 
+        "id": 6, 
+        "tipo": "Benefícios", 
         "data": "31/03/2025", 
         "data_referencia": {
             "year": 2025,
@@ -155,39 +197,284 @@
         "detalhes": [
             { 
                 "funcionario": "Juliana Mendes", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 5700 
+                "rubrica": "Plano de Saúde", 
+                "referencia": "Familiar", 
+                "valor": -350
             },
             { 
                 "funcionario": "Juliana Mendes", 
-                "rubrica": "Desconto INSS", 
-                "referencia": "-", 
-                "valor": -500 
+                "rubrica": "Vale Alimentação", 
+                "referencia": "Mensal", 
+                "valor": -200
             },
             { 
                 "funcionario": "Carlos Oliveira", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 4800 
+                "rubrica": "Plano Odontológico", 
+                "referencia": "Individual", 
+                "valor": -150
+            },
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "rubrica": "Vale Refeição", 
+                "referencia": "Mensal", 
+                "valor": -300
+            }
+        ]
+    },
+    {
+        "id": 7, 
+        "tipo": "Descontos", 
+        "data": "30/04/2025", 
+        "data_referencia": {
+            "year": 2025,
+            "month": 3
+        },
+        "status": "Aberta",
+        "total_colaboradores": 5,
+        "detalhes": [
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "INSS", 
+                "referencia": "Mensal", 
+                "valor": -500
             },
             { 
                 "funcionario": "Pedro Santos", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-                "valor": 4900 
+                "rubrica": "IRRF", 
+                "referencia": "Mensal", 
+                "valor": -750
             },
             { 
                 "funcionario": "Maria Souza", 
-                "rubrica": "Salário", 
-                "referencia": "160h", 
-            "valor": 5500 
+                "rubrica": "INSS", 
+                "referencia": "Mensal", 
+                "valor": -550
             },
             { 
                 "funcionario": "Maria Souza", 
-                "rubrica": "Bonificação", 
-                "referencia": "-", 
-            "valor": 1000 
+                "rubrica": "IRRF", 
+                "referencia": "Mensal", 
+                "valor": -800
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "INSS", 
+                "referencia": "Mensal", 
+                "valor": -480
+            }
+        ]
+    },
+    {
+        "id": 8, 
+        "tipo": "Benefícios", 
+        "data": "30/04/2025", 
+        "data_referencia": {
+            "year": 2025,
+            "month": 3
+        },
+        "status": "Aberta",
+        "total_colaboradores": 6,
+        "detalhes": [
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Plano de Saúde", 
+                "referencia": "Familiar", 
+                "valor": -350
+            },
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Vale Alimentação", 
+                "referencia": "Mensal", 
+                "valor": -200
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Plano Odontológico", 
+                "referencia": "Familiar", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Vale Refeição", 
+                "referencia": "Mensal", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Seguro de Vida", 
+                "referencia": "Individual", 
+                "valor": -150
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Vale Transporte", 
+                "referencia": "Mensal", 
+                "valor": -180
+            }
+        ]
+    },
+    {
+        "id": 9, 
+        "tipo": "Benefícios", 
+        "data": "31/05/2025", 
+        "data_referencia": {
+            "year": 2025,
+            "month": 4
+        },
+        "status": "Aberta",
+        "total_colaboradores": 7,
+        "detalhes": [
+            { 
+                "funcionario": "João Silva", 
+                "rubrica": "Plano de Saúde", 
+                "referencia": "Familiar", 
+                "valor": -350
+            },
+            { 
+                "funcionario": "João Silva", 
+                "rubrica": "Vale Alimentação", 
+                "referencia": "Mensal", 
+                "valor": -200
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Plano Odontológico", 
+                "referencia": "Familiar", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Vale Refeição", 
+                "referencia": "Mensal", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Seguro de Vida", 
+                "referencia": "Individual", 
+                "valor": -150
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Vale Transporte", 
+                "referencia": "Mensal", 
+                "valor": -180
+            },
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "rubrica": "Plano de Saúde", 
+                "referencia": "Individual", 
+                "valor": -250
+            }
+        ]
+    },
+    {
+        "id": 10, 
+        "tipo": "Benefícios", 
+        "data": "30/06/2025", 
+        "data_referencia": {
+            "year": 2025,
+            "month": 5
+        },
+        "status": "Aberta",
+        "total_colaboradores": 8,
+        "detalhes": [
+            { 
+                "funcionario": "Juliana Mendes", 
+                "rubrica": "Plano de Saúde", 
+                "referencia": "Familiar", 
+                "valor": -350
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "rubrica": "Vale Alimentação", 
+                "referencia": "Mensal", 
+                "valor": -200
+            },
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "rubrica": "Plano Odontológico", 
+                "referencia": "Familiar", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "rubrica": "Vale Refeição", 
+                "referencia": "Mensal", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "João Silva", 
+                "rubrica": "Seguro de Vida", 
+                "referencia": "Individual", 
+                "valor": -150
+            },
+            { 
+                "funcionario": "Maria Souza", 
+                "rubrica": "Vale Transporte", 
+                "referencia": "Mensal", 
+                "valor": -180
+            },
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Plano de Saúde", 
+                "referencia": "Individual", 
+                "valor": -250
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Vale Alimentação", 
+                "referencia": "Mensal", 
+                "valor": -200
+            }
+        ]
+    },
+    {
+        "id": 11, 
+        "tipo": "Benefícios", 
+        "data": "31/07/2025", 
+        "data_referencia": {
+            "year": 2025,
+            "month": 6
+        },
+        "status": "Aberta",
+        "total_colaboradores": 6,
+        "detalhes": [
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Plano de Saúde", 
+                "referencia": "Familiar", 
+                "valor": -350
+            },
+            { 
+                "funcionario": "Pedro Santos", 
+                "rubrica": "Vale Alimentação", 
+                "referencia": "Mensal", 
+                "valor": -200
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Plano Odontológico", 
+                "referencia": "Familiar", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "Ana Lima", 
+                "rubrica": "Vale Refeição", 
+                "referencia": "Mensal", 
+                "valor": -300
+            },
+            { 
+                "funcionario": "Juliana Mendes", 
+                "rubrica": "Seguro de Vida", 
+                "referencia": "Individual", 
+                "valor": -150
+            },
+            { 
+                "funcionario": "Carlos Oliveira", 
+                "rubrica": "Vale Transporte", 
+                "referencia": "Mensal", 
+                "valor": -180
             }
         ]
     }
