@@ -227,7 +227,7 @@ function MeusDadosSistema() {
             <Col12>
                 <Col6>
                     <SubTitulo>Identidade Visual</SubTitulo>
-                    <Texto>Logo</Texto>
+                    <Texto>Logo e Símbolo</Texto>
                     <ImageUploadContainer style={{ flexDirection: 'row', gap: 32 }}>
                         {/* Logo */}
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
