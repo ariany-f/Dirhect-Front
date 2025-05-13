@@ -306,7 +306,9 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '15%' }}></Column>
                 <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" style={{ width: '15%' }}></Column>
-                <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>
+                {usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' && 
+                    <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>
+                }
             </DataTable>
             <ModalDemissao opened={modalOpened} aoFechar={() => setModalOpened(false)}/>
             <ModalFerias opened={modalFeriasOpened} aoFechar={() => setModalFeriasOpened(false)}/>
