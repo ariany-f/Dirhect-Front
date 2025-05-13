@@ -388,7 +388,7 @@ function ColaboradorBeneficios() {
                                 "selecionado": false,
                                 "descricao": b.plano
                             })
-                        } else if( b.id === itemId && b.operadora?.id !== operadoraId) {
+                        } else if( b.id !== itemId && b.operadora?.id !== operadoraId) {
                             obj.push({
                                 "id": b.id,
                                 "selecionado": b.status === 'sim' ? true : false,
