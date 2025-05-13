@@ -423,11 +423,18 @@ function ColaboradorBeneficios() {
                         return b;
                     });
                 }
+
+                let obj = [];
+                obj.push({
+                    "id": itemId,
+                    "selecionado": true,
+                    "descricao": itemAtual.plano
+                })
                 // Se multiplos_itens for true, pode marcar vários normalmente
                 http.post('contrato_beneficio_item_funcionario/', {
                     funcionario: id,
-                    beneficio_selecionado: itemId,
-                    status: novoStatus === 'sim' ? 'A' : 'I'
+                    beneficio_selecionado: obj,
+                    tipo_beneficio: itemAtual.beneficioId
                 }).catch(erro => {
                     toast.current.show({
                         severity: 'error',
@@ -491,6 +498,7 @@ function ColaboradorBeneficios() {
                     return beneficios;
                 }
             }
+
             // Multiplos_itens true, multiplos_operadoras false: pode marcar vários, mas só da mesma operadora
             let obj = [];
             obj.push({
@@ -721,7 +729,6 @@ function ColaboradorBeneficios() {
                                                     <ContratoItensBox>
                                                         <ContratoItensGrid>
                                                             {itensContrato.map((item, idx) => {
-                                                                console.log('Item status:', item.status, 'Item ID:', item.id);
                                                                 return (
                                                                 <ColItem key={item.id} $status={item.status}>
                                                                     {/* Custom Accordion-like behavior */}
