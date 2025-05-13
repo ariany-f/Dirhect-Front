@@ -253,7 +253,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
                                             <SwitchInput checked={multiplos} onChange={() => setMultiplos(!multiplos)} style={{ width: 36 }} />
                                         </div>
                                         <div style={{display: 'flex', alignItems: 'center', gap: 16, marginTop: 8}}>
-                                            <span>Multipla Escolha por Operadora</span>
+                                            <span>Multiplas Operadoras</span>
                                             <SwitchInput checked={multiplosOperadoras} onChange={() => setMultiplosOperadoras(!multiplosOperadoras)} style={{ width: 36 }} />
                                         </div>
                                         <div style={{display: 'flex', alignItems: 'center', gap: 16, marginTop: 8}}>
