@@ -365,33 +365,33 @@ function ColaboradorBeneficios() {
             const grupo = beneficios.filter(b => b.descricao === grupoDescricao);
             const itemAtual = grupo.find(b => b.id === itemId);
             if (!itemAtual) return beneficios;
-
+            
             // Caso multiplos_operadoras seja true
             if (multiplos_operadoras) {
                 if (!multiplos_itens && novoStatus === 'sim') {
+                    let obj = [];
                     // Só pode um plano "sim" por operadora, outros da mesma operadora ficam "não", outros operadoras permanecem como estão
                     // Disparar POST para todos os que ficarem "não"
                     grupo.forEach(b => {
                         if (b.operadora?.id === operadoraId && b.id !== itemId) {
-                            http.post('contrato_beneficio_item_funcionario/', {
-                                funcionario: id,
-                                beneficio_selecionado: b.id,
-                                status: 'I'
-                            }).catch(erro => {
-                                toast.current.show({
-                                    severity: 'error',
-                                    summary: 'Erro',
-                                    detail: 'Erro ao atualizar benefício',
-                                    life: 3000
-                                });
-                            });
+                            obj.push({
+                                "id": b.id,
+                                "selecionado": false,
+                                "descricao": b.plano
+                            })
                         }
                     });
+
+                    obj.push({
+                        "id": itemId,
+                        "selecionado": true,
+                        "descricao": itemAtual.plano
+                    })
                     // POST do sim
                     http.post('contrato_beneficio_item_funcionario/', {
                         funcionario: id,
-                        beneficio_selecionado: itemId,
-                        status: 'A'
+                        beneficio_selecionado: obj,
+                        tipo_beneficio: itemAtual.beneficioId
                     }).catch(erro => {
                         toast.current.show({
                             severity: 'error',
@@ -438,27 +438,26 @@ function ColaboradorBeneficios() {
 
             // Caso multiplos_operadoras seja false
             if (!multiplos_itens && novoStatus === 'sim') {
+                let obj = [];
                 // Só pode um plano "sim" para o benefício, independente da operadora
                 grupo.forEach(b => {
                     if (b.id !== itemId) {
-                        http.post('contrato_beneficio_item_funcionario/', {
-                            funcionario: id,
-                            beneficio_selecionado: b.id,
-                            status: 'I'
-                        }).catch(erro => {
-                            toast.current.show({
-                                severity: 'error',
-                                summary: 'Erro',
-                                detail: 'Erro ao atualizar benefício',
-                                life: 3000
-                            });
-                        });
+                        obj.push({
+                            "id": b.id,
+                            "selecionado": false,
+                            "descricao": b.plano
+                        })
                     }
                 });
+                obj.push({
+                    "id": itemId,
+                    "selecionado": true,
+                    "descricao": itemAtual.plano
+                })
                 http.post('contrato_beneficio_item_funcionario/', {
                     funcionario: id,
-                    beneficio_selecionado: itemId,
-                    status: 'A'
+                    beneficio_selecionado: obj,
+                    tipo_beneficio: itemAtual.beneficioId
                 }).catch(erro => {
                     toast.current.show({
                         severity: 'error',
@@ -484,10 +483,16 @@ function ColaboradorBeneficios() {
                 }
             }
             // Multiplos_itens true, multiplos_operadoras false: pode marcar vários, mas só da mesma operadora
+            let obj = [];
+            obj.push({
+                "id": itemId,
+                "selecionado": true,
+                "descricao": itemAtual.plano
+            })
             http.post('contrato_beneficio_item_funcionario/', {
                 funcionario: id,
-                beneficio_selecionado: itemId,
-                status: novoStatus === 'sim' ? 'A' : 'I'
+                beneficio_selecionado: obj,
+                tipo_beneficio: itemAtual.beneficioId
             }).catch(erro => {
                 toast.current.show({
                     severity: 'error',
@@ -732,7 +737,7 @@ function ColaboradorBeneficios() {
                                                                                     <CustomDropdown
                                                                                         value={item.status}
                                                                                         options={statusOptions}
-                                                                                        onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos_itens, item.multiplos_operadoras, item.operadora?.id_operadora)}
+                                                                                        onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos_itens, item.multiplos_operadoras, item.operadora?.id)}
                                                                                         style={{width: 30, height: 25, minWidth: 20, minHeight: 30, padding: 0, background: 'transparent', border: 'none', boxShadow: 'none'}}
                                                                                         panelStyle={{fontSize: 12, minWidth: 80}}
                                                                                         appendTo={document.body}
