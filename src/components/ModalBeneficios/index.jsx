@@ -13,6 +13,7 @@ import styles from './ModalAdicionarDepartamento.module.css';
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 import SwitchInput from '@components/SwitchInput';
+import http from '@http';
 
 // Estilos
 const Col12 = styled.div`
@@ -50,12 +51,20 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
     const [obrigatoriedade, setObrigatoriedade] = useState(false);
 
     useEffect(() => {
-        // Configura os tipos para o dropdown a partir do JSON importado
-        setDropdownTipos(tiposBeneficio.map(item => ({
-            name: item.nome,
-            code: item.code
-        })));
-
+        if (opened) {
+            // Buscar tipos de benefício da API
+            http.get('tipo_beneficio/?format=json').then(resp => {
+                if (resp && Array.isArray(resp.results)) {
+                    setDropdownTipos(
+                        resp.results.map(item => ({
+                            id: item.id,
+                            code: item.chave,
+                            name: item.descricao
+                        }))
+                    );
+                }
+            });
+        }
         // Configura as opções de ícones baseado no JSON
         const iconesFormatados = Object.keys(icones_beneficios)
             .filter(key => key !== 'default')
@@ -66,7 +75,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
             }));
         
         setOpcoesIcones(iconesFormatados);
-    }, []);
+    }, [opened]);
 
     // Efeito para preencher os campos quando estiver editando
     useEffect(() => {
@@ -74,7 +83,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
             setDescricao(beneficio.descricao || '');
             
             // Encontra e seleciona o tipo correto
-            const tipo = dropdownTipos.find(t => t.code === beneficio.tipo);
+            const tipo = dropdownTipos.find(t => t.id === beneficio.tipo || t.code === beneficio.tipo);
             setTipoSelecionado(tipo || null);
             
             // Encontra e seleciona o ícone correto
@@ -112,7 +121,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
         }
 
         const dadosParaAPI = {
-            tipo: tipoSelecionado.code,
+            tipo: tipoSelecionado.id,
             descricao: descricao.trim(),
             icone: iconeSelecionado.code,
             multiplos: usuario?.tipo !== 'global' ? multiplos : undefined,
