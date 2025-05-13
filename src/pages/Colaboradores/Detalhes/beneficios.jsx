@@ -267,21 +267,30 @@ function ColaboradorBeneficios() {
             // Buscar vínculos do colaborador
             const vinculosResp = await http.get(`contrato_beneficio_item_funcionario/?funcionario_id=${id}&status=A`);
             setVinculos(Array.isArray(vinculosResp) ? vinculosResp : []);
-            // Mapear status dos itens vinculados
-            const statusMap = {};
+
+            // Cria um Map para lookup rápido: id do item => selecionado
+            const selecionadosMap = new Map();
             if (Array.isArray(vinculosResp)) {
                 vinculosResp.forEach(v => {
-                    statusMap[v.beneficio_selecionado] = v.status === 'A' ? 'sim' : v.status === 'I' ? 'nao' : 'pendente';
+                    if (Array.isArray(v.beneficio_selecionado)) {
+                        v.beneficio_selecionado.forEach(sel => {
+                            selecionadosMap.set(sel.id, sel.selecionado);
+                        });
+                    }
                 });
             }
+
             const response = await http.get(`catalogo_beneficios/${id}/?format=json`)
             if (response && Array.isArray(response)) {
-                // Para cada item/plano, cria um registro único
                 const lista = [];
                 response.forEach(grupo => {
                     grupo.forEach(item => {
                         const beneficio = item.beneficio;
-                        let status = statusMap[item.id] || 'pendente';
+                        // Busca o status no Map
+                        let status = 'pendente';
+                        if (selecionadosMap.has(item.id)) {
+                            status = selecionadosMap.get(item.id) ? 'sim' : 'nao';
+                        }
                         lista.push({
                             id: item.id,
                             descricao: beneficio.dados_beneficio.descricao,
