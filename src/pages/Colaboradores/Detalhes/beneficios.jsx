@@ -268,13 +268,16 @@ function ColaboradorBeneficios() {
             const vinculosResp = await http.get(`contrato_beneficio_item_funcionario/?funcionario_id=${id}&status=A`);
             setVinculos(Array.isArray(vinculosResp) ? vinculosResp : []);
 
-            // Cria um Map para lookup rápido: id do item => selecionado
+            // Cria um Map: id do item => { selecionado, created_at }
             const selecionadosMap = new Map();
             if (Array.isArray(vinculosResp)) {
                 vinculosResp.forEach(v => {
                     if (Array.isArray(v.beneficio_selecionado)) {
                         v.beneficio_selecionado.forEach(sel => {
-                            selecionadosMap.set(sel.id, sel.selecionado);
+                            selecionadosMap.set(sel.id, {
+                                selecionado: sel.selecionado,
+                                created_at: v.created_at
+                            });
                         });
                     }
                 });
@@ -286,10 +289,13 @@ function ColaboradorBeneficios() {
                 response.forEach(grupo => {
                     grupo.forEach(item => {
                         const beneficio = item.beneficio;
-                        // Busca o status no Map
+                        // Busca o status e a data no Map
                         let status = 'pendente';
+                        let selecionadoEm = null;
                         if (selecionadosMap.has(item.id)) {
-                            status = selecionadosMap.get(item.id) ? 'sim' : 'nao';
+                            const info = selecionadosMap.get(item.id);
+                            status = info.selecionado ? 'sim' : 'nao';
+                            selecionadoEm = info.selecionado ? info.created_at : null;
                         }
                         lista.push({
                             id: item.id,
@@ -299,6 +305,7 @@ function ColaboradorBeneficios() {
                             multiplos_operadoras: beneficio.dados_beneficio.multiplos_operadoras,
                             obrigatoriedade: beneficio.dados_beneficio.obrigatoriedade,
                             status,
+                            selecionadoEm,
                             operadora: {
                                 id: beneficio.id_operadora,
                                 nome_operadora: beneficio.nome_operadora,
@@ -780,7 +787,7 @@ function ColaboradorBeneficios() {
                                                                                 )}
                                                                                 {(item.status === 'sim' || item.status === 'nao') && (
                                                                                     <div style={{ fontSize: 11, color: 'var(--neutro-400)', marginTop: 2, textAlign: 'center' }}>
-                                                                                        {item.item.created_at ? `Selecionado em: ${new Date(item.item.created_at).toLocaleDateString('pt-BR')} ${new Date(item.item.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}` : ''}
+                                                                                        {item.selecionadoEm ? `Selecionado em: ${new Date(item.selecionadoEm).toLocaleDateString('pt-BR')} ${new Date(item.selecionadoEm).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}` : ''}
                                                                                     </div>
                                                                                 )}
                                                                             </div>
