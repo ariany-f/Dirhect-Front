@@ -313,10 +313,15 @@ function ColaboradorBeneficios() {
                             },
                             plano: item.descricao,
                             contratoInfo: {
-                                id: item.contrato_beneficio,
+                                id: item.contrato_id,
+                                descricao: item.descricao,
+                                num_contrato_origem: item.num_contrato_origem,
                                 status: 'A'
                             },
+                            regra_elegibilidade: item.regra_elegibilidade,
                             item: {
+                                beneficio: beneficio,
+                                icone: beneficio.dados_beneficio.icone,
                                 valor: parseFloat(item.valor),
                                 valor_desconto: parseFloat(item.valor_desconto),
                                 valor_empresa: parseFloat(item.valor_empresa),

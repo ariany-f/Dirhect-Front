@@ -79,11 +79,12 @@ const statusTemplate = (option, context, showChevron = false, showText = false, 
 };
 
 const ModalInfoElegibilidade = ({ open, item, onClose }) => {
+   
     if (!open || !item) return null;
     const contrato = item.contratoInfo;
     const beneficio = item.item?.beneficio;
-    const operadora = contrato?.dados_operadora;
-    const regras = item.item?.regra_elegibilidade || [];
+    const operadora = item?.operadora;
+    const regras = item?.regra_elegibilidade || [];
     // Monta os nodes para o Tree
     const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
     const regrasTreeNodes = regras.flatMap((regra, idx) =>
@@ -114,10 +115,10 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
                 }}>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
-                            {operadora?.imagem_url && (
-                                <CustomImage src={operadora.imagem_url} alt={operadora.nome} width={50} height={40} />
+                            {operadora?.image_operadora && (
+                                <CustomImage src={operadora.image_operadora} alt={operadora.nome} width={50} height={40} />
                             )}
-                            <span>{operadora?.nome || '---'}</span>
+                            <span>{operadora?.nome_operadora || '---'}</span>
                              {/* Badge de status do vínculo do colaborador */}
                              {item.status === 'sim' && (
                                 <span style={{
