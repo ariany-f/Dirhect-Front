@@ -35,7 +35,8 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const [modalImportarPlanilhaOpened, setModalImportarPlanilhaOpened] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filiais, setFiliais] = useState([]);
-    
+    const [funcoes, setFuncoes] = useState([]);
+
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
@@ -50,6 +51,13 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             })
             .catch(error => {
                 console.error('Erro ao carregar filiais:', error);
+            });
+        http.get('funcao/?format=json')
+            .then(response => {
+                setFuncoes(response);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar funções:', error);
             });
     }, []);
 
@@ -95,6 +103,13 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         return (
             <Texto weight={500}>{filial ? filial.nome : '---'}</Texto>
         );
+    }
+
+    const representativeFuncaoTemplate = (rowData) => {
+        const funcao = funcoes.find(f => f.id === rowData.id_funcao);
+        return (
+            <Texto weight={500}>{funcao ? funcao.nome : '---'}</Texto>
+        )
     }
     
     const representativeAdmissaoTemplate = (rowData) => {
@@ -287,8 +302,9 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Data Admissão" style={{ width: '15%' }}></Column>
-                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Data de Nascimento" style={{ width: '15%' }}></Column>
+                <Column body={representativeFuncaoTemplate} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '15%' }}></Column>
+                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '15%' }}></Column>
+                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '15%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" style={{ width: '15%' }}></Column>
                 <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>
             </DataTable>
