@@ -46,6 +46,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
     const [descricao, setDescricao] = useState('');
     const [opcoesIcones, setOpcoesIcones] = useState([]);
     const [multiplos, setMultiplos] = useState(false);
+    const [multiplosOperadoras, setMultiplosOperadoras] = useState(false);
     const [obrigatoriedade, setObrigatoriedade] = useState(false);
 
     useEffect(() => {
@@ -86,6 +87,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
                 });
             }
             setMultiplos(!!beneficio.multiplos);
+            setMultiplosOperadoras(!!beneficio.multiplos_operadoras);
             setObrigatoriedade(!!beneficio.obrigatoriedade);
         } else if (!opened) {
             // Limpa os campos quando fecha o modal
@@ -114,6 +116,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
             descricao: descricao.trim(),
             icone: iconeSelecionado.code,
             multiplos: usuario?.tipo !== 'global' ? multiplos : undefined,
+            multiplos_operadoras: usuario?.tipo !== 'global' ? multiplosOperadoras : undefined,
             obrigatoriedade: usuario?.tipo !== 'global' ? obrigatoriedade : undefined
         };
         
@@ -248,6 +251,10 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
                                         <div style={{display: 'flex', alignItems: 'center', gap: 16, marginTop: 8}}>
                                             <span>Multipla Escolha</span>
                                             <SwitchInput checked={multiplos} onChange={() => setMultiplos(!multiplos)} style={{ width: 36 }} />
+                                        </div>
+                                        <div style={{display: 'flex', alignItems: 'center', gap: 16, marginTop: 8}}>
+                                            <span>Multipla Escolha por Operadora</span>
+                                            <SwitchInput checked={multiplosOperadoras} onChange={() => setMultiplosOperadoras(!multiplosOperadoras)} style={{ width: 36 }} />
                                         </div>
                                         <div style={{display: 'flex', alignItems: 'center', gap: 16, marginTop: 8}}>
                                             <span>Obrigatório</span>
