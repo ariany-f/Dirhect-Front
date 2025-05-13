@@ -265,7 +265,7 @@ function ColaboradorBeneficios() {
         try {
             setLoading(true)
             // Buscar vínculos do colaborador
-            const vinculosResp = await http.get(`contrato_beneficio_item_funcionario/?funcionario=${id}`);
+            const vinculosResp = await http.get(`contrato_beneficio_item_funcionario/?funcionario_id=${id}&status=A`);
             setVinculos(Array.isArray(vinculosResp) ? vinculosResp : []);
             // Mapear status dos itens vinculados
             const statusMap = {};
@@ -274,28 +274,41 @@ function ColaboradorBeneficios() {
                     statusMap[v.beneficio_selecionado] = v.status === 'A' ? 'sim' : v.status === 'I' ? 'nao' : 'pendente';
                 });
             }
-            const response = await http.get(`beneficios_possiveis/${id}/?format=json`)
-            if (response && response.beneficios) {
+            const response = await http.get(`catalogo_beneficios/${id}/?format=json`)
+            if (response && Array.isArray(response)) {
                 // Para cada item/plano, cria um registro único
                 const lista = [];
-                response.beneficios.forEach(beneficio => {
-                    beneficio.contratos.forEach(contrato => {
-                        contrato.itens.forEach(item => {
-                            let status = statusMap[item.id] || 'pendente';
-                            lista.push({
-                                id: item.id,
-                                descricao: beneficio.descricao,
-                                icone: beneficio.icone,
-                                multiplos_itens: beneficio.multiplos_itens,
-                                multiplos_operadoras: beneficio.multiplos_operadoras,
-                                obrigatoriedade: beneficio.obrigatoriedade,
-                                status,
-                                operadora: contrato.contrato_beneficio?.dados_operadora,
-                                plano: item.descricao,
-                                contratoInfo: contrato.contrato_beneficio,
-                                item,
-                                beneficioId: beneficio.id
-                            })
+                response.forEach(grupo => {
+                    grupo.forEach(item => {
+                        const beneficio = item.beneficio;
+                        let status = statusMap[item.id] || 'pendente';
+                        lista.push({
+                            id: item.id,
+                            descricao: beneficio.dados_beneficio.descricao,
+                            icone: beneficio.dados_beneficio.icone,
+                            multiplos_itens: beneficio.dados_beneficio.multiplos_itens,
+                            multiplos_operadoras: beneficio.dados_beneficio.multiplos_operadoras,
+                            obrigatoriedade: beneficio.dados_beneficio.obrigatoriedade,
+                            status,
+                            operadora: {
+                                id: beneficio.id_operadora,
+                                nome_operadora: beneficio.nome_operadora,
+                                image_operadora: beneficio.image_operadora
+                            },
+                            plano: item.descricao,
+                            contratoInfo: {
+                                id: item.contrato_beneficio,
+                                status: 'A'
+                            },
+                            item: {
+                                valor: parseFloat(item.valor),
+                                valor_desconto: parseFloat(item.valor_desconto),
+                                valor_empresa: parseFloat(item.valor_empresa),
+                                tipo_calculo: item.tipo_calculo,
+                                tipo_desconto: item.tipo_desconto,
+                                created_at: item.created_at
+                            },
+                            beneficioId: beneficio.dados_beneficio.id
                         })
                     })
                 })
@@ -660,7 +673,7 @@ function ColaboradorBeneficios() {
                                     return acc;
                                 }, {})).map(([contratoId, itensContrato], idxContrato, arrContratos) => {
                                     const contrato = itensContrato[0]?.contratoInfo;
-                                    const operadora = contrato?.dados_operadora;
+                                    const operadora = itensContrato[0]?.operadora;
                                     const temPlanoSelecionado = itensContrato.some(item => item.status === 'sim');
                                     
                                     return (
@@ -668,11 +681,11 @@ function ColaboradorBeneficios() {
                                             {contrato && (
                                                 <InfoContrato inativo={getStatusContrato(contrato.status) === 'Indisponível' ? 'true' : undefined}>
                                                     <div style={{display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2, width: '100%'}}>
-                                                        {operadora?.imagem_url && (
-                                                            <img src={operadora.imagem_url} alt={operadora.nome} style={{width: 32, height: 20, objectFit: 'contain', borderRadius: 4, background: '#fff', border: '1px solid var(--neutro-200)'}} />
+                                                        {operadora?.image_operadora && (
+                                                            <img src={operadora.image_operadora} alt={operadora.nome_operadora} style={{width: 32, height: 20, objectFit: 'contain', borderRadius: 4, background: '#fff', border: '1px solid var(--neutro-200)'}} />
                                                         )}
                                                         <span style={{fontWeight: 600, fontSize: 13}}>
-                                                            {operadora?.nome}
+                                                            {operadora?.nome_operadora}
                                                         </span>
                                                         {contrato.status && (
                                                             <StatusContratoTag status={getStatusContrato(contrato.status)}>
@@ -682,14 +695,14 @@ function ColaboradorBeneficios() {
                                                         <EditarPlanosSwitch>
                                                             <span>Editar</span>
                                                             <SwitchInput
-                                                                checked={editarPlanos[operadora?.id] || false}
-                                                                onChange={() => toggleEditarPlanos(operadora?.id)}
+                                                                checked={editarPlanos[operadora?.id_operadora] || false}
+                                                                onChange={() => toggleEditarPlanos(operadora?.id_operadora)}
                                                                 style={{ width: '36px' }}
                                                             />
                                                         </EditarPlanosSwitch>
                                                     </div>
-                                                    {contrato.cnpj && (
-                                                        <span><b>CNPJ:</b> {contrato.cnpj}</span>
+                                                    {contrato.num_contrato_origem && (
+                                                        <span><b>Contrato:</b> {contrato.num_contrato_origem}</span>
                                                     )}
                                                     <ContratoItensBox>
                                                         <ContratoItensGrid>
@@ -715,11 +728,11 @@ function ColaboradorBeneficios() {
                                                                                 >
                                                                                     <IoInformationCircleOutline />
                                                                                 </button>
-                                                                                 {editarPlanos[operadora?.id] ? (
+                                                                                 {editarPlanos[operadora?.id_operadora] ? (
                                                                                     <CustomDropdown
                                                                                         value={item.status}
                                                                                         options={statusOptions}
-                                                                                        onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos_itens, item.multiplos_operadoras, item.operadora?.id)}
+                                                                                        onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos_itens, item.multiplos_operadoras, item.operadora?.id_operadora)}
                                                                                         style={{width: 30, height: 25, minWidth: 20, minHeight: 30, padding: 0, background: 'transparent', border: 'none', boxShadow: 'none'}}
                                                                                         panelStyle={{fontSize: 12, minWidth: 80}}
                                                                                         appendTo={document.body}
