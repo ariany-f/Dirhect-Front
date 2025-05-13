@@ -100,6 +100,8 @@ function MeusDadosSistema() {
     const [sistema, setSistema] = useState({
         logo: null,
         logoPreview: '',
+        symbol: null,
+        symbolPreview: '',
         corPrincipal: '#1A237E',
         colaboradorPodeEditar: true,
         integracoes: {
@@ -114,12 +116,26 @@ function MeusDadosSistema() {
     });
     const toast = useRef(null);
     const fileInputRef = useRef(null);
+    const symbolInputRef = useRef(null);
 
     const { usuario } = useSessaoUsuarioContext();
 
     useEffect(() => {
+        // Se já existe logo e símbolo no storage/token, mostra como preview inicial
+        if (usuario && usuario.company_logo) {
+            setSistema(prev => ({
+                ...prev,
+                logoPreview: usuario.company_logo
+            }));
+        }
+        if (usuario && usuario.company_symbol) {
+            setSistema(prev => ({
+                ...prev,
+                symbolPreview: usuario.company_symbol
+            }));
+        }
         setLoading(false);
-    }, []);
+    }, [usuario]);
 
     const handleChange = (campo, valor) => {
         setSistema(prev => ({ ...prev, [campo]: valor }));
@@ -140,9 +156,25 @@ function MeusDadosSistema() {
         }
     };
 
+    const handleSymbolChange = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setSistema(prev => ({ ...prev, symbol: file, symbolPreview: event.target.result }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleRemoveLogo = () => {
         setSistema(prev => ({ ...prev, logo: null, logoPreview: '' }));
         if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    const handleRemoveSymbol = () => {
+        setSistema(prev => ({ ...prev, symbol: null, symbolPreview: '' }));
+        if (symbolInputRef.current) symbolInputRef.current.value = '';
     };
 
     const handleSalvar = () => {
@@ -196,32 +228,63 @@ function MeusDadosSistema() {
                 <Col6>
                     <SubTitulo>Identidade Visual</SubTitulo>
                     <Texto>Logo</Texto>
-                    <ImageUploadContainer>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleLogoChange}
-                            ref={fileInputRef}
-                            style={{ display: 'none' }}
-                            id="sistema-logo-upload"
-                        />
-                        <UploadArea htmlFor="sistema-logo-upload" $hasImage={!!sistema.logoPreview}>
-                            {sistema.logoPreview ? (
-                                <UploadPreview src={sistema.logoPreview} alt="Preview da logo" />
-                            ) : (
-                                <UploadIcon>
-                                    <RiUpload2Fill size={'28px'} />
-                                    <UploadText>Clique para adicionar uma logo</UploadText>
-                                    <UploadText>(PNG, JPG, até 2MB)</UploadText>
-                                </UploadIcon>
+                    <ImageUploadContainer style={{ flexDirection: 'row', gap: 32 }}>
+                        {/* Logo */}
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleLogoChange}
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                id="sistema-logo-upload"
+                            />
+                            <UploadArea htmlFor="sistema-logo-upload" $hasImage={!!sistema.logoPreview}>
+                                {sistema.logoPreview ? (
+                                    <UploadPreview src={sistema.logoPreview} alt="Preview da logo" />
+                                ) : (
+                                    <UploadIcon>
+                                        <RiUpload2Fill size={'28px'} />
+                                        <UploadText>Clique para adicionar uma logo</UploadText>
+                                        <UploadText>(PNG, JPG, até 2MB)</UploadText>
+                                    </UploadIcon>
+                                )}
+                            </UploadArea>
+                            {sistema.logoPreview && (
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <Botao aoClicar={() => fileInputRef.current.click()} estilo="neutro" size="small">Alterar Logo</Botao>
+                                    <Botao aoClicar={handleRemoveLogo} estilo="erro" size="small">Remover Logo</Botao>
+                                </div>
                             )}
-                        </UploadArea>
-                        {sistema.logoPreview && (
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <Botao aoClicar={() => fileInputRef.current.click()} estilo="neutro" size="small">Alterar Logo</Botao>
-                                <Botao aoClicar={handleRemoveLogo} estilo="erro" size="small">Remover Logo</Botao>
-                            </div>
-                        )}
+                        </div>
+                        {/* Símbolo */}
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleSymbolChange}
+                                ref={symbolInputRef}
+                                style={{ display: 'none' }}
+                                id="sistema-symbol-upload"
+                            />
+                            <UploadArea htmlFor="sistema-symbol-upload" $hasImage={!!sistema.symbolPreview}>
+                                {sistema.symbolPreview ? (
+                                    <UploadPreview src={sistema.symbolPreview} alt="Preview do símbolo" />
+                                ) : (
+                                    <UploadIcon>
+                                        <RiUpload2Fill size={'28px'} />
+                                        <UploadText>Clique para adicionar um símbolo</UploadText>
+                                        <UploadText>(PNG, JPG, até 2MB)</UploadText>
+                                    </UploadIcon>
+                                )}
+                            </UploadArea>
+                            {sistema.symbolPreview && (
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <Botao aoClicar={() => symbolInputRef.current.click()} estilo="neutro" size="small">Alterar Símbolo</Botao>
+                                    <Botao aoClicar={handleRemoveSymbol} estilo="erro" size="small">Remover Símbolo</Botao>
+                                </div>
+                            )}
+                        </div>
                     </ImageUploadContainer>
                     <Texto>Cor principal</Texto>
                     {loading ? <Skeleton width={80} height={30} /> : (
