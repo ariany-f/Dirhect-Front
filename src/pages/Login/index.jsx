@@ -88,7 +88,9 @@ function Login() {
                     perfilEncontrado.public_id,
                     perfilEncontrado.tipo,
                     ArmazenadorToken.UserCompanyPublicId ?? '1',
-                    ArmazenadorToken.UserCompanyDomain ?? 'geral'
+                    ArmazenadorToken.UserCompanyDomain ?? 'geral',
+                    ArmazenadorToken.UserCompanySymbol ?? '',
+                    ArmazenadorToken.UserCompanyLogo ?? ''
                 )
     
                 if(perfilEncontrado.tipo != 'funcionario')

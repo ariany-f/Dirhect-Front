@@ -44,6 +44,8 @@ function Autenticado() {
         setCompanies,
         setSessionCompany,
         setCompanyDomain,
+        setCompanySymbol,
+        setCompanyLogo,
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
 
@@ -52,8 +54,8 @@ function Autenticado() {
     const [tenants, setTenants] = useState(null)
     const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? ArmazenadorToken.UserCompanyPublicId ?? '')
     const [empresa, setEmpresa] = useState('')
-    
-    
+    const [simbolo, setSimbolo] = useState(ArmazenadorToken.UserCompanySymbol ?? '')
+    const [logo, setLogo] = useState(ArmazenadorToken.UserCompanyLogo ?? '')
     const [modalOpened, setModalOpened] = useState(false)
     const [menuOpened, setMenuOpened] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -135,6 +137,8 @@ function Autenticado() {
                 setEmpresa(comp[0].tenant.nome)
                 setSessionCompany(comp[0].id_tenant)
                 setCompanyDomain(comp[0].domain)
+                setCompanyLogo(comp[0].tenant.logo)
+                setCompanySymbol(comp[0].tenant.simbolo)
             }
         }
 
@@ -185,7 +189,7 @@ function Autenticado() {
                 <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
                     {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/pedidos/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/pedidos/editar-valor/colaboradores' &&     
                         <>
-                            <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa.toUpperCase()} />
+                            <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa.toUpperCase()} simbolo={simbolo} logo={logo} />
                         </>
                     }
                     <MarginContainer>

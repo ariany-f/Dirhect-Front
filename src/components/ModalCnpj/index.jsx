@@ -79,6 +79,8 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         setCompanies,
         setSessionCompany,
         setCompanyDomain,
+        setCompanySymbol,
+        setCompanyLogo
     } = useSessaoUsuarioContext()
 
     const [tenants, setTenants] = useState(null)
@@ -174,10 +176,14 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         if(comp.length > 0 && comp[0].id_tenant)
         {
             setCompanyDomain(comp[0].domain)
+            setCompanySymbol(comp[0].tenant.simbolo)
+            setCompanyLogo(comp[0].tenant.logo)
 
             ArmazenadorToken.definirCompany(
                 selected,
-                comp[0].domain.split('.')[0]
+                comp[0].domain.split('.')[0],
+                comp[0].tenant.simbolo,
+                comp[0].tenant.logo
             )
         }
 
@@ -200,6 +206,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
     }
 
+    console.log(empresas)
     return(
         <>
             {opened &&
@@ -219,9 +226,11 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                                             $active={selected === empresa.id_tenant}
                                             onClick={id => handleSelectChange(empresa.id_tenant)}>
                                             <div className={styles.cardEmpresa}>
-                                                {(selected === empresa.id_tenant) ?
-                                                    <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
-                                                    : <RiBuildingLine className={styles.buildingIcon} size={20} />
+                                                {empresa.tenant.simbolo ?
+                                                    <img src={empresa.tenant.simbolo} alt={empresa.tenant.nome} width="50px" height="50px" style={{ padding: '10px' }}/>
+                                                    : (selected === empresa.id_tenant) ?
+                                                        <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
+                                                        : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                                 }
                                                 <div className={styles.DadosEmpresa}>
                                                     <h6>{empresa.tenant.nome.toUpperCase()}</h6>

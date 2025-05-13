@@ -56,6 +56,8 @@ function SelecionarEmpresa() {
         usuario,
         setSessionCompany,
         setCompanyDomain,
+        setCompanySymbol,
+        setCompanyLogo,
         setCompanies,
     } = useSessaoUsuarioContext()
 
@@ -151,14 +153,18 @@ function SelecionarEmpresa() {
             setSessionCompany(selected)
 
             var comp = empresas.filter(company => company.id_tenant == selected);
-
+           
             if(comp.length > 0 && comp[0].id_tenant)
             {
                 setCompanyDomain(comp[0].domain)
+                setCompanySymbol(comp[0].tenant.simbolo)
+                setCompanyLogo(comp[0].tenant.logo)
                 
                 ArmazenadorToken.definirCompany(
                     selected,
-                    comp[0].domain.split('.')[0]
+                    comp[0].domain.split('.')[0],
+                    comp[0].tenant.simbolo,
+                    comp[0].tenant.logo
                 )
             }
 
@@ -188,7 +194,9 @@ function SelecionarEmpresa() {
                                     $active={selected === empresa.id_tenant}
                                     onClick={id_tenant => handleSelectChange(empresa.id_tenant)}>
                                     <div className={styles.cardEmpresa}>
-                                        {(selected === empresa.id_tenant) ?
+                                        {empresa.tenant.simbolo ? 
+                                                <img src={empresa.tenant.simbolo} alt={empresa.tenant.nome} width={50} height={50} style={{ padding: '10px' }} className={styles.logoEmpresa} />
+                                            : (selected === empresa.id_tenant) ?
                                             <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                             : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                         }

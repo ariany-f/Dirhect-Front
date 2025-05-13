@@ -22,6 +22,8 @@ const usuarioInicial = {
     public_id: '',
     company_public_id: '',
     company_domain: '',
+    company_logo: '',
+    company_symbol: '',
     remember: false,
     companies: null,
     code: [],
@@ -47,6 +49,8 @@ export const SessaoUsuarioContext = createContext({
     setDocument: () => null,
     setSessionCompany: () => null,
     setCompanyDomain: () => null,
+    setCompanyLogo: () => null,
+    setCompanySymbol: () => null,
     setEmail: () => null,
     setName: () => null,
     setPassword: () => null,
@@ -90,6 +94,8 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const publicIdSalvo = sessionStorage.getItem('public_id');
         const tipoSalvo = sessionStorage.getItem('tipo');
         const domainSalvo = sessionStorage.getItem('domain');
+        const simboloSalvo = sessionStorage.getItem('simbolo');
+        const logoSalvo = sessionStorage.getItem('logo');
         const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
         
         usuarioSalvo = {
@@ -100,7 +106,9 @@ export const SessaoUsuarioProvider = ({ children }) => {
             public_id: publicIdSalvo ?? '',
             company_domain: domainSalvo ?? '',
             company_public_id: companyPublicIdSalvo ?? '',
-            companies: []
+            companies: [],
+            company_symbol: simboloSalvo ?? '',
+            company_logo: logoSalvo ?? ''
         }
 
         return usuarioSalvo ? usuarioSalvo : usuarioInicial;
@@ -229,6 +237,25 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
+
+    const setCompanyLogo = (company_logo) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                company_logo
+            }
+        })
+    }
+
+    const setCompanySymbol = (company_symbol) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                company_symbol
+            }
+        })
+    }
+
     const setTipo = (tipo) => {
         setUsuario(estadoAnterior => {
             return {
@@ -448,6 +475,8 @@ export const SessaoUsuarioProvider = ({ children }) => {
         setName,
         setSessionCompany,
         setCompanyDomain,
+        setCompanyLogo,
+        setCompanySymbol,
         setCpf,
         setUserPublicId,
         setRecuperacaoToken,

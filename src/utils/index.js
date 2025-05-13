@@ -4,6 +4,8 @@ const USER_NAME = 'name'
 const USER_EMAIL = 'email'
 const USER_CPF = 'cpf'
 const COMPANY_DOMAIN = 'company_domain'
+const COMPANY_SYMBOL = 'company_symbol'
+const COMPANY_LOGO = 'company_logo'
 const COMPANY_PUBLIC_ID = 'company_public_id'
 const USER_PUBLIC_ID = 'public_id'
 const USER_TYPE = 'tipo'
@@ -21,11 +23,13 @@ export class ArmazenadorToken {
             throw new Error('Falha ao armazenar dados de autenticação')
         }
     }
-    static definirCompany(company_public_id, company_domain) {
+    static definirCompany(company_public_id, company_domain, company_symbol, company_logo) {
         sessionStorage.setItem(COMPANY_PUBLIC_ID, company_public_id)
         sessionStorage.setItem(COMPANY_DOMAIN, company_domain)
+        sessionStorage.setItem(COMPANY_SYMBOL, company_symbol)
+        sessionStorage.setItem(COMPANY_LOGO, company_logo)
     }
-    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain) {
+    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo) {
         if (!email) {
             throw new Error('Email é obrigatório')
         }
@@ -37,6 +41,8 @@ export class ArmazenadorToken {
             sessionStorage.setItem(USER_PUBLIC_ID, public_id || '')
             sessionStorage.setItem(COMPANY_DOMAIN, company_domain || '')
             sessionStorage.setItem(COMPANY_PUBLIC_ID, company_public_id || '')
+            sessionStorage.setItem(COMPANY_SYMBOL, company_symbol || '')
+            sessionStorage.setItem(COMPANY_LOGO, company_logo || '')
         } catch (error) {
             console.error('Erro ao armazenar dados do usuário:', error)
             throw new Error('Falha ao armazenar dados do usuário')
@@ -81,5 +87,11 @@ export class ArmazenadorToken {
     }
     static get UserCompanyDomain() {
         return sessionStorage.getItem(COMPANY_DOMAIN)
+    }
+    static get UserCompanySymbol() {
+        return sessionStorage.getItem(COMPANY_SYMBOL)
+    }
+    static get UserCompanyLogo() {
+        return sessionStorage.getItem(COMPANY_LOGO)
     }
 }

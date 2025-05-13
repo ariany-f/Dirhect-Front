@@ -228,7 +228,7 @@ const MarketplaceButton = styled(Frame)`
     }
 `;
 
-const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) => {
+const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, simbolo, logo }) => {
   const location = useLocation();
   const [menuAberto, setMenuAberto] = useState(false);
   const { usuario } = useSessaoUsuarioContext();
@@ -396,7 +396,14 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null }) 
           <div className={styles.divisor}>
             {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
               <ItemEmpresa onClick={aoClicar}>
-                {nomeEmpresa}
+                {simbolo && simbolo !== null && simbolo !== 'null' ? 
+                  <>
+                    <img src={simbolo} alt={nomeEmpresa} style={{ width: '20px', height: '20px' }} />
+                    {nomeEmpresa}
+                  </> : logo && logo !== null && logo !== 'null' ? 
+                    <>
+                      <img src={logo} alt={nomeEmpresa} style={{ width: '65px' }} />
+                    </> : nomeEmpresa}
                 <BsArrowLeftRight />
               </ItemEmpresa>
             )}

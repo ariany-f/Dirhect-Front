@@ -22,6 +22,8 @@ function Ciclos() {
         setCompanies,
         setSessionCompany,
         setCompanyDomain,
+        setCompanySymbol,
+        setCompanyLogo,
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
 
