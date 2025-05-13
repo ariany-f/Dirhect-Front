@@ -15,7 +15,6 @@ import IconeBeneficio from '@components/IconeBeneficio';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { Toast } from 'primereact/toast';
 import { FaMapPin, FaTrash } from 'react-icons/fa';
-import tiposBeneficio from '@json/tipos_beneficio.json';
 import { Tooltip } from 'primereact/tooltip';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { FaPen } from 'react-icons/fa';
@@ -97,6 +96,7 @@ function DataTableBeneficios({
     const { t } = useTranslation('common');
     const { usuario } = useSessaoUsuarioContext();
     const searchTimeout = useRef(null);
+    const [tipos, setTipos] = useState({});
 
     // Atualiza o estado dos status quando os benefícios mudam
     useEffect(() => {
@@ -110,12 +110,20 @@ function DataTableBeneficios({
         }
     }, [beneficios]);
 
-    // Cria um objeto de mapeamento de tipos a partir do JSON importado
-    const tipos = tiposBeneficio.reduce((acc, tipo) => {
-        acc[tipo.code] = tipo.nome;
-        return acc;
-    }, {});
-    
+    useEffect(() => {
+        // Buscar tipos de benefício do endpoint
+        http.get('tipo_beneficio/?format=json').then(resp => {
+            console.log(resp)
+            if (resp) {
+                const tiposMap = resp.reduce((acc, tipo) => {
+                    acc[tipo.chave] = tipo.descricao;
+                    return acc;
+                }, {});
+                setTipos(tiposMap);
+            }
+        });
+    }, []);
+
     function verDetalhes(value) {
         // navegar(`/beneficio/detalhes/${value.id}`);
     }
@@ -255,6 +263,7 @@ function DataTableBeneficios({
     };
 
     const representativeStatusTemplate = (rowData) => {
+        console.log(tipos)
         return tipos[rowData.tipo] || rowData.tipo;
     };
 

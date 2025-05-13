@@ -8,7 +8,6 @@ import Titulo from "@components/Titulo";
 import DropdownItens from "@components/DropdownItens";
 import IconeBeneficio from '@components/IconeBeneficio';
 import icones_beneficios from '@json/icones_beneficio.json';
-import tiposBeneficio from '@json/tipos_beneficio.json';
 import styles from './ModalAdicionarDepartamento.module.css';
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
@@ -54,9 +53,9 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
         if (opened) {
             // Buscar tipos de benefício da API
             http.get('tipo_beneficio/?format=json').then(resp => {
-                if (resp && Array.isArray(resp.results)) {
+                if (resp && Array.isArray(resp)) {
                     setDropdownTipos(
-                        resp.results.map(item => ({
+                        resp.map(item => ({
                             id: item.id,
                             code: item.chave,
                             name: item.descricao
