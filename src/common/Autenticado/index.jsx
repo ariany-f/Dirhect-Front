@@ -170,6 +170,8 @@ function Autenticado() {
             if(comp.length > 0 && comp[0].id_tenant)
             {
                 setEmpresa(comp[0].tenant.nome)
+                setSimbolo(comp[0].tenant.simbolo)
+                setLogo(comp[0].tenant.logo)
                 setSelected(id)
             }
         }
