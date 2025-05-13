@@ -120,7 +120,7 @@ function ModalBeneficios({ opened = false, aoFechar, aoSalvar, beneficio = null 
         }
 
         const dadosParaAPI = {
-            tipo: tipoSelecionado.id,
+            tipo: tipoSelecionado.code,
             descricao: descricao.trim(),
             icone: iconeSelecionado.code,
             multiplos: usuario?.tipo !== 'global' ? multiplos : undefined,
