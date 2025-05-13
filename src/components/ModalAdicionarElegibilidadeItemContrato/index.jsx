@@ -20,9 +20,10 @@ import { MdArrowRight } from "react-icons/md"
 import { FaArrowRight } from "react-icons/fa"
 import { Toast } from "primereact/toast"
 import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles'
+import SwitchInput from '@components/SwitchInput'
 
 // Componente de Item Arrastável com novos estilos
-const DraggableItem = ({ grupo, index, moveItem, removerGrupo }) => {
+const DraggableItem = ({ grupo, index, moveItem, removerGrupo, toggleNegarGrupo }) => {
     const ref = useRef(null);
     
     const [{ isDragging }, drag] = useDrag({
@@ -91,6 +92,14 @@ const DraggableItem = ({ grupo, index, moveItem, removerGrupo }) => {
                     }}>
                     <RiDraggable />
                     {grupo.tipo}
+                    <div style={{ display: 'flex', alignItems: 'center', marginLeft: 16 }}>
+                        <SwitchInput
+                            checked={!!grupo.negar}
+                            onChange={() => toggleNegarGrupo(grupo.id)}
+                            color="var(--error)"
+                        />
+                        <span style={{ marginLeft: 8, fontSize: 13 }}>Desconsiderar</span>
+                    </div>
                     </span>
                     <button 
                         onClick={() => removerGrupo(grupo.id)}
@@ -114,15 +123,17 @@ const DraggableItem = ({ grupo, index, moveItem, removerGrupo }) => {
                     flexWrap: 'wrap', 
                     gap: '8px'
                 }}>
-                     {grupo.opcoes.map((opcao, i) => {
-                        const textoLimitado = opcao.length > 50 
-                            ? `${opcao.substring(0, 47)}...` 
-                            : opcao;
+                    {grupo.data.map((opcao, i) => {
+                        const textoLimitado = opcao.textoCompleto.length > 50 
+                            ? `${opcao.textoCompleto.substring(0, 47)}...` 
+                            : opcao.textoCompleto;
                        
                         return (
-                            <span 
-                                key={i} 
+                            <div 
+                                key={opcao.id} 
                                 style={{
+                                    display: 'flex', 
+                                    alignItems: 'center',
                                     backgroundColor: '#f5f5f5',
                                     padding: '4px 12px',
                                     borderRadius: '16px',
@@ -131,12 +142,13 @@ const DraggableItem = ({ grupo, index, moveItem, removerGrupo }) => {
                                     maxWidth: '200px',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap'
+                                    whiteSpace: 'nowrap',
+                                    marginRight: 8,
+                                    marginBottom: 8
                                 }}
-                                title={opcao} // Mostra o texto completo no hover
                             >
-                                {textoLimitado}
-                            </span>
+                                <span title={opcao.textoCompleto}>{textoLimitado}</span>
+                            </div>
                         );
                     })}
                 </div>
@@ -239,69 +251,45 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     // Adicione este useEffect no componente ModalAdicionarElegibilidadeItemContrato
     useEffect(() => {
         if (opened && item?.regra_elegibilidade) {
-            carregarGruposExistentes(item.regra_elegibilidade);
+            setGruposAdicionados([]);
+            // Para cada regra, monta o grupo
+            item.regra_elegibilidade.forEach(async (regra) => {
+                const [tipoChave, dados] = Object.entries(regra)[0];
+                // Busca as opções na API correspondente
+                const response = await http.get(`${tipoChave}/?format=json`);
+                // Junta id_delegar e id_negar para buscar todos os itens
+                const todosIds = [...(dados.id_delegar || []), ...(dados.id_negar || [])];
+                const opcoes = response.filter(opt => todosIds.includes(opt.id)).map(opt => ({
+                    id: opt.id,
+                    name: opt.nome || opt.descricao || opt.name,
+                    textoCompleto: opt.nome || opt.descricao || opt.name
+                }));
+                // Define negar true se todos os ids estão em id_negar
+                const negar = (dados.id_negar && dados.id_negar.length > 0 && (!dados.id_delegar || dados.id_delegar.length === 0 || (dados.id_delegar.length === 1 && dados.id_delegar[0] === 0)));
+                setGruposAdicionados(grupos => [
+                    ...grupos,
+                    {
+                        id: `${tipoChave}-${Date.now()}`,
+                        data: opcoes,
+                        tipo: {
+                            'departamento': 'Departamento',
+                            'centro_custo': 'Centro de Custo',
+                            'filial': 'Filial',
+                            'secao': 'Seção',
+                            'cargo': 'Cargo',
+                            'funcao': 'Função',
+                            'sindicato': 'Sindicato',
+                            'horario': 'Horário'
+                        }[tipoChave] || tipoChave,
+                        opcoes: opcoes.map(o => o.textoCompleto),
+                        negar
+                    }
+                ]);
+            });
         } else if (!opened) {
-            // Limpa os grupos quando o modal fecha
             setGruposAdicionados([]);
         }
     }, [opened, item]);
-
-    // Função para carregar os grupos existentes
-    const carregarGruposExistentes = async (regras) => {
-        if (!regras || regras.length === 0) return;
-    
-        const novosGrupos = [];
-        
-        const tiposMapeados = {
-            filial: 'Filial',
-            departamento: 'Departamento',
-            secao: 'Seção',
-            centro_custo: 'Centro de Custo',
-            cargo: 'Cargo',
-            funcao: 'Função',
-            sindicato: 'Sindicato',
-            horario: 'Horário'
-        };
-    
-        for (const regra of regras) {
-            for (const [tipoNoObjeto, tipoNome] of Object.entries(tiposMapeados)) {
-                if (regra[tipoNoObjeto] && Array.isArray(regra[tipoNoObjeto].id)) {
-                    try {
-                        const endpoint = tipoNoObjeto.endsWith('s') ? 
-                            tipoNoObjeto.substring(0, tipoNoObjeto.length - 1) : 
-                            tipoNoObjeto;
-                        
-                        const response = await http.get(`${endpoint}/?format=json`);
-                        
-                        const itensFiltrados = response.filter(item => 
-                            regra[tipoNoObjeto].id.includes(item.id)
-                        );
-    
-                        if (itensFiltrados.length > 0) {
-                            const opcoesFormatadas = itensFiltrados.map(item => ({
-                                id: item.id,
-                                name: item.nome || item.descricao || item.name,
-                                textoCompleto: item.nome || item.descricao || item.name
-                            }));
-    
-                            novosGrupos.push({
-                                id: `${tipoNome}-${Date.now()}`,
-                                data: opcoesFormatadas,
-                                tipo: tipoNome,
-                                opcoes: opcoesFormatadas.map(o => o.textoCompleto),
-                                indexOriginal: regra[tipoNoObjeto].index || 0
-                            });
-                        }
-                    } catch (erro) {
-                        console.error(`Erro ao carregar ${tipoNoObjeto}:`, erro);
-                    }
-                }
-            }
-        }
-    
-        novosGrupos.sort((a, b) => a.indexOriginal - b.indexOriginal);
-        setGruposAdicionados(novosGrupos);
-    };
 
     const adicionarGrupo = () => {
         if (!tipoSelecionado || (!tipoSelecionado.name) || opcoesSelecionadas.length === 0) {
@@ -316,14 +304,16 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         
         // Verifica se já existe um grupo deste tipo
         const grupoExistenteIndex = gruposAdicionados.findIndex(g => g.tipo === tipoSelecionado.name);
+        const opcoesComNegar = opcoesSelecionadas.map(o => ({ ...o }));
         
         if (grupoExistenteIndex >= 0) {
             // Atualiza grupo existente
             const novosGrupos = [...gruposAdicionados];
             novosGrupos[grupoExistenteIndex] = {
                 ...novosGrupos[grupoExistenteIndex],
-                data: opcoesSelecionadas,
-                opcoes: opcoesSelecionadas.map(o => o.textoCompleto)
+                data: opcoesComNegar,
+                opcoes: opcoesComNegar.map(o => o.textoCompleto),
+                negar: false
             };
             
             setGruposAdicionados(novosGrupos);
@@ -331,9 +321,10 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
             // Cria novo grupo
             const novoGrupo = {
                 id: `${tipoSelecionado.name}-${Date.now()}`,
-                data: opcoesSelecionadas,
+                data: opcoesComNegar,
                 tipo: tipoSelecionado.name,
-                opcoes: opcoesSelecionadas.map(o => o.textoCompleto)
+                opcoes: opcoesComNegar.map(o => o.textoCompleto),
+                negar: false
             };
             
             setGruposAdicionados([...gruposAdicionados, novoGrupo]);
@@ -352,18 +343,20 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                 name: item.nome || item.descricao || item.name,
                 textoCompleto: item.nome || item.descricao || item.name
             }));
-            
-            setOpcoesDisponiveis(opcoesFormatadas);
+            // Adiciona a opção 'Todos' no início, se ainda não existe
+            const opcoesComTodos = [
+                // { id: 0, name: 'Todos', textoCompleto: 'Todos' },
+                ...opcoesFormatadas.filter(item => item.id !== 0)
+            ];
+            setOpcoesDisponiveis(opcoesComTodos);
 
             // Encontra o grupo existente do tipo selecionado usando o nome do tipo passado
             const grupoExistente = gruposAdicionados.find(g => g.tipo === tipoObj.name);
-            
             if (grupoExistente && grupoExistente.data) {
                 // Seleciona os itens baseado nos IDs do grupo existente
-                const itensSelecionados = opcoesFormatadas.filter(opcao => 
+                const itensSelecionados = opcoesComTodos.filter(opcao => 
                     grupoExistente.data.some(itemGrupo => itemGrupo.id === opcao.id)
                 );
-                
                 setOpcoesSelecionadas(itensSelecionados);
             } else {
                 setOpcoesSelecionadas([]); // Limpa seleções apenas se não houver grupo existente
@@ -415,6 +408,16 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         setGruposAdicionados(gruposAdicionados.filter(grupo => grupo.id !== id));
     };
       
+    const toggleNegarGrupo = (grupoId) => {
+        setGruposAdicionados(grupos =>
+            grupos.map(grupo =>
+                grupo.id === grupoId
+                    ? { ...grupo, negar: !grupo.negar }
+                    : grupo
+            )
+        );
+    };
+
     const salvarGrupos = () => {
         if (gruposAdicionados.length === 0) {
             toast.current.show({
@@ -425,8 +428,18 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
             });
             return;
         }
-        
-        aoSalvar(gruposAdicionados);
+        console.log('GRUPOS ADICIONADOS:', gruposAdicionados);
+        const regra_elegibilidade = gruposAdicionados.map(grupo => {
+            const id_delegar = grupo.negar ? [] : grupo.data.map(o => o.id);
+            const id_negar = grupo.negar ? grupo.data.map(o => o.id) : [];
+            return {
+                tipo: grupo.tipo,
+                id_delegar: (id_negar.length > 0 && id_delegar.length === 0) ? [0] : id_delegar,
+                id_negar
+            };
+        });
+        console.log('REGRA ELEGIBILIDADE:', regra_elegibilidade);
+        aoSalvar(regra_elegibilidade);
     };
 
     return (
@@ -506,6 +519,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                                 index={index}
                                                 moveItem={moveItem}
                                                 removerGrupo={removerGrupo}
+                                                toggleNegarGrupo={toggleNegarGrupo}
                                             />
                                         ))
                                     ) : (

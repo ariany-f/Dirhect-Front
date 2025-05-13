@@ -11,14 +11,19 @@ const SwitchContainer = styled.div`
         }
         &.p-inputswitch-checked {
             & span {
-            background: var(--primaria)!important;
+            background: ${props => props.$type ? props.$type : 'var(--primaria)'}!important;
             }
         }
     }
+
+    & .p-inputswitch.p-highlight .p-inputswitch-slider {
+        background: ${props => props.$type ? props.$type : 'var(--primaria)'}!important;
+    }
 `
-function SwitchInput({checked = false, onChange = null}){
+function SwitchInput({checked = false, onChange = null, color = 'var(--primaria)'}){
+    console.log(color)
     return (
-        <SwitchContainer>
+        <SwitchContainer $type={color}>
             <InputSwitch checked={checked} onChange={(e) => onChange(e.value)} />
         </SwitchContainer>
     )

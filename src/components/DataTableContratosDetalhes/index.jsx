@@ -377,8 +377,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             };
     
             dados.forEach((item, index) => {
-                if (!item.data || item.data.length === 0) return; // Ignora se não tiver dados
-    
+                // item.tipo, item.id_delegar, item.id_negar
                 const campo = {
                     'Filial': 'filial',
                     'Departamento': 'departamento',
@@ -391,13 +390,12 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 }[item.tipo];
     
                 if (campo) {
-                    // Cria um novo objeto para cada regra
                     const novaRegra = {};
                     novaRegra[campo] = {
                         index: index,
-                        id: item.data.map(d => d.id)
+                        id_delegar: item.id_delegar,
+                        id_negar: item.id_negar
                     };
-                    
                     resultado.regra_elegibilidade.push(novaRegra);
                 }
             });
