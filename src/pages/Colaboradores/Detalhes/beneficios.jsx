@@ -443,6 +443,17 @@ function ColaboradorBeneficios() {
                 }
 
                 let obj = [];
+                
+                grupo.forEach(b => {
+                    if (b.id !== itemId) {
+                        obj.push({
+                            "id": b.id,
+                            "selecionado": b.status === 'sim' ? true : false,
+                            "descricao": b.plano
+                        })
+                    }
+                });
+
                 obj.push({
                     "id": itemId,
                     "selecionado": true,
@@ -519,6 +530,16 @@ function ColaboradorBeneficios() {
 
             // Multiplos_itens true, multiplos_operadoras false: pode marcar vários, mas só da mesma operadora
             let obj = [];
+            
+            grupo.forEach(b => {
+                if (b.id !== itemId) {
+                    obj.push({
+                        "id": b.id,
+                        "selecionado": b.status === 'sim' ? true : false,
+                        "descricao": b.plano
+                    })
+                }
+            });
             obj.push({
                 "id": itemId,
                 "selecionado": true,
