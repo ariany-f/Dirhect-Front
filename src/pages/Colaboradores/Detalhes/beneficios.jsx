@@ -382,7 +382,7 @@ function ColaboradorBeneficios() {
                     // Só pode um plano "sim" por operadora, outros da mesma operadora ficam "não", outros operadoras permanecem como estão
                     // Disparar POST para todos os que ficarem "não"
                     grupo.forEach(b => {
-                        if (b.operadora?.id === operadoraId && b.id !== itemId) {
+                        if (b.id !== itemId) {
                             obj.push({
                                 "id": b.id,
                                 "selecionado": false,
