@@ -57,8 +57,8 @@ const UploadArea = styled.label`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 120px;
-    height: 120px;
+    width: ${props => props.$width || '120px'};
+    height: ${props => props.$height || '120px'};
     border: 2px dashed var(--primaria);
     border-radius: 8px;
     cursor: pointer;
@@ -239,7 +239,7 @@ function MeusDadosSistema() {
                                 style={{ display: 'none' }}
                                 id="sistema-logo-upload"
                             />
-                            <UploadArea htmlFor="sistema-logo-upload" $hasImage={!!sistema.logoPreview}>
+                            <UploadArea htmlFor="sistema-logo-upload" $hasImage={!!sistema.logoPreview} $width="180px" $height="80px">
                                 {sistema.logoPreview ? (
                                     <UploadPreview src={sistema.logoPreview} alt="Preview da logo" />
                                 ) : (
