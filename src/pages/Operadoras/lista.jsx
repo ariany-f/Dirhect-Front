@@ -168,6 +168,7 @@ function OperadorasListagem() {
     const salvarEdicaoOperadora = async (operadora) => {
         const formData = new FormData();
         formData.append('nome', operadora.nome);
+        formData.append('ativo', operadora.ativo);
         if (operadora.imagem) formData.append('imagem', operadora.imagem);
         const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
         const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
