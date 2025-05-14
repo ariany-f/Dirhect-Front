@@ -94,21 +94,27 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const representativeChapaTemplate = (rowData) => {
         
         return (
-            <Texto weight={600}>{rowData?.chapa}</Texto>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+                <Texto weight={600}>{rowData?.chapa}</Texto>
+            </div>
         )
     }
     
     const representativeFilialTemplate = (rowData) => {
         const filial = filiais.find(f => f.id === rowData.filial);
         return (
-            <Texto weight={500}>{filial ? filial.nome : '---'}</Texto>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+                <Texto weight={500}>{filial ? filial.nome : '---'}</Texto>
+            </div>
         );
     }
 
     const representativeFuncaoTemplate = (rowData) => {
         const funcao = funcoes.find(f => f.id === rowData.id_funcao);
         return (
-            <Texto weight={500}>{funcao ? funcao.nome : '---'}</Texto>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+                <Texto weight={500}>{funcao ? funcao.nome : '---'}</Texto>
+            </div>
         )
     }
     
@@ -289,22 +295,22 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 }
             >
                 <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header="Nome Completo" sortable style={{ width: '30%' }}></Column>
+                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header="Nome Completo" sortable style={{ width: '25%' }}></Column>
                 <Column 
                     body={representativeFilialTemplate} 
                     field="filial" 
                     header="Filial" 
                     sortable 
-                    style={{ width: '15%' }} 
+                    style={{ width: '10%' }} 
                     filter 
                     sortField="filial__nome" 
                     filterField="filial" 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeFuncaoTemplate} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '15%' }}></Column>
-                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '15%' }}></Column>
-                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '15%' }}></Column>
+                <Column body={representativeFuncaoTemplate} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '25%' }}></Column>
+                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '10%' }}></Column>
+                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" style={{ width: '15%' }}></Column>
                 {usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' && 
                     <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>
