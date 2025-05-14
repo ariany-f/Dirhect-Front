@@ -298,6 +298,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 contrato_beneficio: parseInt(selectedBeneficio.id),
                 extensivel_depentende: extensivo_dependentes ?  true : false,
                 parametro_aplicacao: "I",
+                regra_elegibilidade: selectedItemBeneficio.regra_elegibilidade ?? [],
                 numero_decimal: true,
                 valor: converterParaNumero(valor),
                 valor_empresa: converterParaNumero(empresa),

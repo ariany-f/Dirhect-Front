@@ -442,6 +442,12 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         aoSalvar(regra_elegibilidade);
     };
 
+    const limparRegras = () => {
+        setGruposAdicionados([]);
+        setTipoSelecionado(null);
+        setOpcoesSelecionadas([]);
+    };
+
     return (
         <OverlayRight $opened={opened}>
             <Toast ref={toast} />
@@ -512,16 +518,18 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                             <DndProvider backend={HTML5Backend}>
                                 <ContainerGrupos>
                                     {gruposAdicionados.length > 0 ? (
-                                        gruposAdicionados.map((grupo, index) => (
-                                            <DraggableItem
-                                                key={grupo.id}
-                                                grupo={grupo}
-                                                index={index}
-                                                moveItem={moveItem}
-                                                removerGrupo={removerGrupo}
-                                                toggleNegarGrupo={toggleNegarGrupo}
-                                            />
-                                        ))
+                                        <>
+                                            {gruposAdicionados.map((grupo, index) => (
+                                                <DraggableItem
+                                                    key={grupo.id}
+                                                    grupo={grupo}
+                                                    index={index}
+                                                    moveItem={moveItem}
+                                                    removerGrupo={removerGrupo}
+                                                    toggleNegarGrupo={toggleNegarGrupo}
+                                                />
+                                            ))}
+                                        </>
                                     ) : (
                                         <div style={{
                                             textAlign: 'center',
@@ -540,14 +548,21 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                 <div style={{width: '100%'}}>
                     <BotaoGrupo align="end" gap="12px">
                         <Botao 
-                            size="medium" 
+                            size="small" 
                             estilo="neutro"
                             aoClicar={aoFechar}
                         >
                             Descartar Alterações
                         </Botao>
+                          <Botao 
+                            aoClicar={limparRegras}
+                            estilo="neutro"
+                            size="small"
+                            >
+                                Limpar Regras
+                            </Botao>
                         <Botao 
-                            size="medium" 
+                            size="small" 
                             aoClicar={salvarGrupos}
                         >
                             Salvar
