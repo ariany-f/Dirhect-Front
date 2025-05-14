@@ -92,7 +92,7 @@ const DraggableItem = ({ grupo, index, moveItem, removerGrupo, toggleNegarGrupo 
                         gap: '8px'
                     }}>
                     <RiDraggable />
-                    {grupo.tipo}
+                    <span style={{marginRight: 6, color: '#888'}}>{index + 1}.</span> {grupo.tipo}
                     <div style={{ display: 'flex', alignItems: 'center', marginLeft: 16 }}>
                         <SwitchInput
                             checked={!!grupo.negar}
@@ -296,7 +296,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                 let endpoint = tipoChave;
                 
                 if (modelInfo?.model?.startsWith('integracao.')) {
-                    endpoint = `tabela_dominio/${tipoChave.replace(/_/g, '-')}`;
+                    endpoint = `tabela_dominio/${tipoChave.replace(/_/g, '_')}`;
                 }
                 
                 const response = await http.get(`${endpoint}/?format=json`);
