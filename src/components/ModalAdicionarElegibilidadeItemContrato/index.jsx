@@ -235,18 +235,32 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     const [opcoesSelecionadas, setOpcoesSelecionadas] = useState([]);
     const [carregando, setCarregando] = useState(false);
     const [gruposAdicionados, setGruposAdicionados] = useState([]);
+    const [modelosValidos, setModelosValidos] = useState({});
     const toast = useRef(null);
     
-    const tipos = [
-        {code: 'filial', name: 'Filial'},
-        {code: 'departamento', name: 'Departamento'},
-        {code: 'secao', name: 'Seção'},
-        {code: 'centro_custo', name: 'Centro de Custo'},
-        {code: 'cargo', name: 'Cargo'},
-        {code: 'funcao', name: 'Função'},
-        {code: 'sindicato', name: 'Sindicato'},
-        {code: 'horario', name: 'Horário'}
-    ];
+    useEffect(() => {
+        const carregarModelosValidos = async () => {
+            try {
+                const response = await http.get('modelos_validos/?format=json');
+                setModelosValidos(response);
+            } catch (error) {
+                console.error('Erro ao carregar modelos válidos:', error);
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao carregar modelos válidos',
+                    life: 3000
+                });
+            }
+        };
+        carregarModelosValidos();
+    }, []);
+
+    // Converter modelos válidos para o formato do dropdown
+    const tipos = Object.entries(modelosValidos).map(([code, data]) => ({
+        code,
+        name: code.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+    }));
 
     // Adicione este useEffect no componente ModalAdicionarElegibilidadeItemContrato
     useEffect(() => {
@@ -256,13 +270,25 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
             item.regra_elegibilidade.forEach(async (regra) => {
                 const [tipoChave, dados] = Object.entries(regra)[0];
                 // Busca as opções na API correspondente
-                const response = await http.get(`${tipoChave}/?format=json`);
+                const modelInfo = modelosValidos[tipoChave];
+                let endpoint = tipoChave;
+                
+                if (modelInfo?.model?.startsWith('integracao.')) {
+                    endpoint = `tabela_dominio/${tipoChave.replace(/_/g, '-')}`;
+                }
+                
+                const response = await http.get(`${endpoint}/?format=json`);
                 // Junta id_delegar e id_negar para buscar todos os itens
                 const todosIds = [...(dados.id_delegar || []), ...(dados.id_negar || [])];
-                const opcoes = response.filter(opt => todosIds.includes(opt.id)).map(opt => ({
+                const fieldDesc = modelInfo?.field_desc || 'nome';
+                
+                // Trata a resposta da tabela_dominio
+                const registros = response.registros || response;
+                
+                const opcoes = registros.filter(opt => todosIds.includes(opt.id)).map(opt => ({
                     id: opt.id,
-                    name: opt.nome || opt.descricao || opt.name,
-                    textoCompleto: opt.nome || opt.descricao || opt.name
+                    name: opt[fieldDesc] || opt.nome || opt.descricao || opt.name,
+                    textoCompleto: opt[fieldDesc] || opt.nome || opt.descricao || opt.name
                 }));
                 // Define negar true se todos os ids estão em id_negar
                 const negar = (dados.id_negar && dados.id_negar.length > 0 && (!dados.id_delegar || dados.id_delegar.length === 0 || (dados.id_delegar.length === 1 && dados.id_delegar[0] === 0)));
@@ -271,16 +297,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                     {
                         id: `${tipoChave}-${Date.now()}`,
                         data: opcoes,
-                        tipo: {
-                            'departamento': 'Departamento',
-                            'centro_custo': 'Centro de Custo',
-                            'filial': 'Filial',
-                            'secao': 'Seção',
-                            'cargo': 'Cargo',
-                            'funcao': 'Função',
-                            'sindicato': 'Sindicato',
-                            'horario': 'Horário'
-                        }[tipoChave] || tipoChave,
+                        tipo: tipos.find(t => t.code === tipoChave)?.name || tipoChave,
                         opcoes: opcoes.map(o => o.textoCompleto),
                         negar
                     }
@@ -289,7 +306,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         } else if (!opened) {
             setGruposAdicionados([]);
         }
-    }, [opened, item]);
+    }, [opened, item, modelosValidos]);
 
     const adicionarGrupo = () => {
         if (!tipoSelecionado || (!tipoSelecionado.name) || opcoesSelecionadas.length === 0) {
@@ -337,24 +354,31 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     const buscarOpcoes = async (tipoCode, tipoObj) => {
         setCarregando(true);
         try {
-            const response = await http.get(`${tipoCode.toLowerCase()}/?format=json`);
-            const opcoesFormatadas = response.map(item => ({
+            const modelInfo = modelosValidos[tipoCode];
+            let endpoint = tipoCode;
+            
+            if (modelInfo?.model?.startsWith('integracao.')) {
+                endpoint = `tabela_dominio/${tipoCode.replace(/_/g, '-')}`;
+            }
+            
+            const response = await http.get(`${endpoint}/?format=json`);
+            const fieldDesc = modelInfo?.field_desc || 'nome';
+            
+            // Trata a resposta da tabela_dominio
+            const registros = response.registros || response;
+            
+            const opcoesFormatadas = registros.map(item => ({
                 id: item.id,
-                name: item.nome || item.descricao || item.name,
-                textoCompleto: item.nome || item.descricao || item.name
+                name: item[fieldDesc] || item.nome || item.descricao || item.name,
+                textoCompleto: item[fieldDesc] || item.nome || item.descricao || item.name
             }));
-            // Adiciona a opção 'Todos' no início, se ainda não existe
-            const opcoesComTodos = [
-                // { id: 0, name: 'Todos', textoCompleto: 'Todos' },
-                ...opcoesFormatadas.filter(item => item.id !== 0)
-            ];
-            setOpcoesDisponiveis(opcoesComTodos);
+            setOpcoesDisponiveis(opcoesFormatadas);
 
             // Encontra o grupo existente do tipo selecionado usando o nome do tipo passado
             const grupoExistente = gruposAdicionados.find(g => g.tipo === tipoObj.name);
             if (grupoExistente && grupoExistente.data) {
                 // Seleciona os itens baseado nos IDs do grupo existente
-                const itensSelecionados = opcoesComTodos.filter(opcao => 
+                const itensSelecionados = opcoesFormatadas.filter(opcao => 
                     grupoExistente.data.some(itemGrupo => itemGrupo.id === opcao.id)
                 );
                 setOpcoesSelecionadas(itensSelecionados);
@@ -375,8 +399,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     };
 
     const getTipoNome = (code) => {
-        const tipo = tipos.find(t => t.code === code);
-        return tipo ? tipo.name : code;
+        return code.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     };
 
     const handleTipoChange = async (tipo) => {
