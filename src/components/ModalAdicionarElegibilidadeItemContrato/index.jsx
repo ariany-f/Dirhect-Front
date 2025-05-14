@@ -452,7 +452,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                             <RiCloseFill size={20} className="fechar" />  
                         </button>
                         <BotaoGrupo align="space-between">
-                            <h6>Grupos Elegíveis a {item.descricao ? item.descricao : 'este item de Contrato'}</h6>
+                            <h6>Grupos Elegíveis a {item?.descricao ? item?.descricao : 'este item de Contrato'}</h6>
                         </BotaoGrupo>
                     </Titulo>
                     <Col12>

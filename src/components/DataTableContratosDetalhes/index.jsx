@@ -160,7 +160,6 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     };
 
     const representativeOptionsTemplate = (rowData) => {
-        console.log(rowData)
         return (
             <div style={{display: 'flex', gap: '20px'}}>
                 <Tooltip target=".settings" mouseTrack mouseTrackRight={10} />
