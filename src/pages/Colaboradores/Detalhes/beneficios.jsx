@@ -756,8 +756,8 @@ function ColaboradorBeneficios() {
                                                         <EditarPlanosSwitch>
                                                             <span>Editar</span>
                                                             <SwitchInput
-                                                                checked={editarPlanos[operadora?.id_operadora] || false}
-                                                                onChange={() => toggleEditarPlanos(operadora?.id_operadora)}
+                                                                checked={editarPlanos[operadora?.id] || false}
+                                                                onChange={() => toggleEditarPlanos(operadora?.id)}
                                                                 style={{ width: '36px' }}
                                                             />
                                                         </EditarPlanosSwitch>
@@ -788,7 +788,7 @@ function ColaboradorBeneficios() {
                                                                                 >
                                                                                     <IoInformationCircleOutline />
                                                                                 </button>
-                                                                                 {editarPlanos[operadora?.id_operadora] ? (
+                                                                                 {editarPlanos[operadora?.id] ? (
                                                                                     <CustomDropdown
                                                                                         value={item.status}
                                                                                         options={statusOptions}
