@@ -27,7 +27,7 @@ function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucess
     
     useEffect(() => {
         if(opened && beneficios.length === 0) {
-            http.get('/beneficio/?format=json')
+            http.get('/beneficio/?format=json&ativo=true')
                 .then(response => {
                     setBeneficios(response);
                    // Extrair apenas os IDs dos benefícios já associados à operadora
