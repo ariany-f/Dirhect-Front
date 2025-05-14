@@ -296,7 +296,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                 let endpoint = tipoChave;
                 
                 if (modelInfo?.model?.startsWith('integracao.')) {
-                    endpoint = `tabela_dominio/${tipoChave.replace(/_/g, '_')}`;
+                    endpoint = `tabela_dominio/${tipoChave.replace(/_/g, '-')}`;
                 }
                 
                 const response = await http.get(`${endpoint}/?format=json`);
