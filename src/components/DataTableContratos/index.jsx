@@ -448,8 +448,8 @@ function DataTableContratos({
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>
-                <Column body={representativeRegraElegibilidadeTemplate} header="Itens com Regra" style={{ width: '10%', textAlign: 'center' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '20%', textAlign: 'center' }}></Column>
+                <Column body={representativeRegraElegibilidadeTemplate} header="Itens com Regras" style={{ width: '15%', textAlign: 'center' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '15%', textAlign: 'center' }}></Column>
             </DataTable>
             
             <ModalContratos 
