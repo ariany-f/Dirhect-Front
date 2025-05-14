@@ -234,6 +234,26 @@ function DataTableContratos({
         return '';
     }
 
+    const representativeRegraElegibilidadeTemplate = (rowData) => {
+        if (!rowData.beneficios || rowData.beneficios.length === 0) return '0/0';
+        let totalItens = 0;
+        let itensComRegra = 0;
+        rowData.beneficios.forEach(beneficio => {
+            if (beneficio.itens && beneficio.itens.length > 0) {
+                totalItens += beneficio.itens.length;
+                itensComRegra += beneficio.itens.filter(item => Array.isArray(item.regra_elegibilidade) && item.regra_elegibilidade.length > 0).length;
+            }
+        });
+        const texto = `${itensComRegra}/${totalItens}`;
+        return (
+            <>
+            
+            <Tooltip target=".setting" mouseTrack mouseTrackLeft={10} />
+            <span className="setting" data-pr-tooltip="Elegibilidades Configuradas" style={{ cursor: 'help' }}>{texto}</span>
+            </>
+        );
+    };
+
     const salvarContrato = (operadora, observacao, dt_inicio, dt_fim, num_contrato_origem) => {
         if(operadora == '' || dt_inicio == '' || num_contrato_origem == '') {
             toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Preencha todos os campos obrigatórios', life: 3000 });
@@ -428,6 +448,7 @@ function DataTableContratos({
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>
+                <Column body={representativeRegraElegibilidadeTemplate} header="Itens com Regra" style={{ width: '10%', textAlign: 'center' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '20%', textAlign: 'center' }}></Column>
             </DataTable>
             
