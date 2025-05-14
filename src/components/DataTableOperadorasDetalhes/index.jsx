@@ -26,21 +26,13 @@ import { Real } from '@utils/formats'
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { Tooltip } from 'primereact/tooltip';
+import http from '@http';
 
 const TableHeader = styled.div`
     display: flex;
     padding: 0px;
     flex-direction: column;
 `;
-
-const tipos = {
-    'C': 'Cultura',
-    'E': 'Educação',
-    'H': 'Home & Office',
-    'M': 'Mobilidade',
-    'P': 'P(rograma) de A(limentação) do T(rabalhador)',
-    'S': 'Saúde e Bem Estar'
-}
 
 function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBeneficio, operadora = null }) {
     const[selectedBeneficio, setSelectedBeneficio] = useState(0)
@@ -49,6 +41,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    const [tipos, setTipos] = useState({});
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
@@ -56,6 +49,22 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
         setSelectedBeneficio(0)
         setSendData({})
     }, [beneficios])
+
+    useEffect(() => {
+        const carregarTipos = async () => {
+            try {
+                const response = await http.get('tipo_beneficio/?format=json');
+                const tiposMap = {};
+                response.forEach(tipo => {
+                    tiposMap[tipo.chave] = tipo.descricao;
+                });
+                setTipos(tiposMap);
+            } catch (error) {
+                console.error('Erro ao carregar tipos de benefícios:', error);
+            }
+        };
+        carregarTipos();
+    }, []);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -78,15 +87,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
     }
 
     const representativeTipoTemplate = (rowData) => {
-        const tipos = {
-            'C': 'Cultura',
-            'E': 'Educação',
-            'H': 'Home & Office',
-            'M': 'Mobilidade',
-            'P': 'Programa de Alimentação do Trabalhador',
-            'S': 'Saúde e Bem Estar'
-        }
-        return <Tag value={tipos[rowData.beneficio.tipo]} severity="info" />
+        return <Tag value={tipos[rowData.beneficio.tipo] || rowData.beneficio.tipo} severity="info" />
     }
 
     const representativeActionsTemplate = (rowData) => {

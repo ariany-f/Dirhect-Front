@@ -538,8 +538,20 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                     </Col12>
                 </Frame>
                 <div style={{width: '100%'}}>
-                    <BotaoGrupo align="end">
-                        <Botao size="medium" aoClicar={salvarGrupos}>Salvar</Botao>
+                    <BotaoGrupo align="end" gap="12px">
+                        <Botao 
+                            size="medium" 
+                            estilo="neutro"
+                            aoClicar={aoFechar}
+                        >
+                            Descartar Alterações
+                        </Botao>
+                        <Botao 
+                            size="medium" 
+                            aoClicar={salvarGrupos}
+                        >
+                            Salvar
+                        </Botao>
                     </BotaoGrupo>
                 </div>
             </DialogEstilizadoRight>
