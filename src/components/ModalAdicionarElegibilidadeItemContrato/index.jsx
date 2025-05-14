@@ -13,7 +13,7 @@ import styles from './ModalAdicionarElegibilidadeItemContrato.module.css'
 import { ArmazenadorToken } from "@utils"
 import { DndProvider, useDrag, useDrop } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
-import { RiCloseFill, RiDraggable } from "react-icons/ri"
+import { RiCloseFill, RiDraggable, RiOrganizationChart } from "react-icons/ri"
 import { TfiSave } from "react-icons/tfi";
 import { GrAddCircle } from "react-icons/gr"
 import { MdArrowRight } from "react-icons/md"
@@ -21,6 +21,7 @@ import { FaArrowRight } from "react-icons/fa"
 import { Toast } from "primereact/toast"
 import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles'
 import SwitchInput from '@components/SwitchInput'
+import { TbTableOptions  } from "react-icons/tb"
 
 // Componente de Item Arrastável com novos estilos
 const DraggableItem = ({ grupo, index, moveItem, removerGrupo, toggleNegarGrupo }) => {
@@ -259,8 +260,29 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     // Converter modelos válidos para o formato do dropdown
     const tipos = Object.entries(modelosValidos).map(([code, data]) => ({
         code,
-        name: code.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+        name: code.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+        model: data.model
     }));
+
+    // Template para o dropdown
+    const tipoTemplate = (option, props) => {
+        // Se for o valor selecionado e não houver valor, mostra o placeholder
+        if (!option || !option.model) {
+            if (props && props.placeholder) {
+                return <span style={{ color: '#bdbdbd' }}>{props.placeholder}</span>;
+            }
+            return <span>{option?.name || ''}</span>;
+        }
+        const icon = option.model.startsWith('specific.') || option.model.startsWith('shared.')
+            ? <RiOrganizationChart size={18} style={{ marginRight: '8px' }} />
+            : <TbTableOptions size={18} style={{ marginRight: '8px' }} />;
+        return (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                {icon}
+                {option.name}
+            </div>
+        );
+    };
 
     // Adicione este useEffect no componente ModalAdicionarElegibilidadeItemContrato
     useEffect(() => {
@@ -494,6 +516,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                     label="Tipo de Grupo" 
                                     name="tipo"
                                     placeholder="Selecione o grupo"
+                                    optionTemplate={tipoTemplate}
                                 />
                                 
                                 {tipoSelecionado && (

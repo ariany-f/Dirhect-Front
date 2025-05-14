@@ -27,3 +27,30 @@
     font-weight: 400;
     line-height: 18px; /* 150% */
 }
+
+.p-dropdown-panel {
+  z-index: 9999 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  border: 1px solid var(--neutro-300) !important;
+  overflow: visible !important;
+  margin-top: 4px !important;
+  padding: 0 !important;
+}
+
+.p-dropdown-items {
+  padding: 8px 0 !important;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.p-dropdown-item {
+  padding: 10px 18px !important;
+  border-radius: 6px !important;
+  margin: 0 4px;
+}
+
+.p-dropdown-item.p-highlight {
+  background: var(--primaria-100) !important;
+  color: var(--primaria) !important;
+}

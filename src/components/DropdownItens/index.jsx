@@ -18,7 +18,8 @@ const Select = styled(Dropdown)`
     margin-top: 2px;
     font-size: 14px;
     width: ${ props => props.$width ?  props.$width : 'inherit' };
-    
+    height: ${ props => props.$height ?  props.$height : '48px' };
+
     &.error {
         outline: 1px solid var(--error);
     }
@@ -80,6 +81,8 @@ function DropdownItens({
     options = [], 
     placeholder, 
     name, 
+    width,
+    height,
     label, 
     filter = false,
     camposVazios = [],
@@ -127,6 +130,8 @@ function DropdownItens({
                 {
                     filter ?  
                         <Select 
+                            $width={width}
+                            $height={height}
                             filter
                             id={name}
                             placeholder={placeholder} 
@@ -140,6 +145,8 @@ function DropdownItens({
                         />
                     :
                     <Select 
+                        $width={width}
+                        $height={height}
                         id={name}
                         placeholder={placeholder} 
                         options={options} 
