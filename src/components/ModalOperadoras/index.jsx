@@ -64,6 +64,7 @@ const UploadText = styled.span`
 
 function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
     const [nome, setNome] = useState('');
+    const [ativo, setAtivo] = useState(true);
     const [imagem, setImagem] = useState(null);
     const [previewImagem, setPreviewImagem] = useState('');
     const [isUploading, setIsUploading] = useState(false);
@@ -75,11 +76,13 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
     useEffect(() => {
         if (opened && operadora) {
             setNome(operadora.nome || '');
+            setAtivo(operadora.ativo || true);
             setImagem(null);
             setBase64Image('');
             setPreviewImagem(operadora.imagem_url || '');
         } else if (opened) {
             setNome('');
+            setAtivo(true);
             setImagem(null);
             setBase64Image('');
             setPreviewImagem('');
@@ -123,7 +126,8 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
             await aoSalvar({
                 nome: nome,
                 imagem: imagem,
-                base64Image: base64Image
+                base64Image: base64Image,
+                ativo: ativo
             });
            
         } catch (error) {

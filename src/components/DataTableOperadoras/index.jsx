@@ -169,7 +169,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
 
     const representativeActionsTemplate = (rowData) => {
         const statusAtual = operadorasStatus[rowData.id] ?? rowData.ativo;
-        
+
         return (
             <div style={{ 
                 display: 'flex', 
