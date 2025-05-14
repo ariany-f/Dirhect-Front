@@ -377,17 +377,18 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             };
     
             dados.forEach((item, index) => {
+                // Função para converter o nome do tipo para o formato correto
+                const converterNomeCampo = (nome) => {
+                    return nome
+                        .toLowerCase()
+                        .replace(/\s+de\s+/g, ' ') // Remove "de" entre palavras
+                        .replace(/\s+/g, '_') // Substitui espaços por underscore
+                        .normalize('NFD') // Remove acentos
+                        .replace(/[\u0300-\u036f]/g, '');
+                };
+
                 // item.tipo, item.id_delegar, item.id_negar
-                const campo = {
-                    'Filial': 'filial',
-                    'Departamento': 'departamento',
-                    'Seção': 'secao',
-                    'Centro de Custo': 'centro_custo',
-                    'Cargo': 'cargo',
-                    'Função': 'funcao',
-                    'Sindicato': 'sindicato',
-                    'Horário': 'horario'
-                }[item.tipo];
+                const campo = converterNomeCampo(item.tipo);
     
                 if (campo) {
                     const novaRegra = {};
