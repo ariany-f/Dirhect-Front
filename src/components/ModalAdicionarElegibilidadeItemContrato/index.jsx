@@ -442,15 +442,15 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     };
 
     const salvarGrupos = () => {
-        if (gruposAdicionados.length === 0) {
-            toast.current.show({
-                severity: 'error',
-                summary: 'Erro',
-                detail: 'Adicione pelo menos um grupo antes de salvar',
-                life: 3000
-            });
-            return;
-        }
+        // if (gruposAdicionados.length === 0) {
+        //     toast.current.show({
+        //         severity: 'error',
+        //         summary: 'Erro',
+        //         detail: 'Adicione pelo menos um grupo antes de salvar',
+        //         life: 3000
+        //     });
+        //     return;
+        // }
         console.log('GRUPOS ADICIONADOS:', gruposAdicionados);
         const regra_elegibilidade = gruposAdicionados.map(grupo => {
             const id_delegar = grupo.negar ? [] : grupo.data.map(o => o.id);
