@@ -203,9 +203,9 @@ function ColaboradorDetalhes() {
 
     function representativSituacaoTemplate() {
         let situacao = colaborador?.tipo_situacao_descricao;
-        let cor = colaborador?.tipo_situacao_cor;
+        let cor = colaborador?.tipo_situacao_cor_tag;
         
-        situacao = <Tag style={{backgroundColor: cor}} value={situacao}></Tag>;
+        situacao = <Tag severity={null} style={{backgroundColor: cor}} value={situacao}></Tag>;
         return situacao
     }
 
