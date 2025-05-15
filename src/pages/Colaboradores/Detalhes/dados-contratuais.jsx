@@ -15,6 +15,7 @@ import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
 import ModalAlterarEmail from '@components/ModalAlterar/email'
 import styled from "styled-components"
 import { Real } from '@utils/formats'
+import { Tag } from "primereact/tag"
 
 const Col12 = styled.div`
     display: flex;
@@ -38,6 +39,9 @@ function ColaboradorDadosContratuais() {
 
     let { id } = useParams()
     const [colaborador, setColaborador] = useState(null)
+    const [secao, setSecao] = useState(null)
+    const [departamento, setDepartamento] = useState(null)
+    const [centroCusto, setCentroCusto] = useState(null)
     const context = useOutletContext()
     const [modalTelefoneOpened, setModalTelefoneOpened] = useState(false)
     const [modalEmailOpened, setModalEmailOpened] = useState(false)
@@ -53,8 +57,33 @@ function ColaboradorDadosContratuais() {
         {
             setColaborador(context);
             console.log(context)
+        } else if(colaborador) {
+            if((!secao) && colaborador.id_secao)
+            {
+                http.get(`secao/${colaborador.id_secao}/?format=json`)
+                    .then(response => {
+                        setSecao(response);
+                    })
+                    .catch(erro => console.log(erro))
+            }
+            if((!departamento) && colaborador.departamento)
+            {
+                http.get(`departamento/${colaborador.departamento}/?format=json`)
+                    .then(response => {
+                        setDepartamento(response);
+                    })
+                    .catch(erro => console.log(erro))
+            }
+            if((!centroCusto) && colaborador.centro_custo)
+            {
+                http.get(`centro-custo/${colaborador.centro_custo}/?format=json`)
+                    .then(response => {
+                        setCentroCusto(response);
+                    })
+                    .catch(erro => console.log(erro))
+            }
         }
-    }, [colaborador, context])
+    }, [colaborador, context, secao, departamento, centroCusto])
 
     function editarEmail(email) {
       
@@ -148,6 +177,31 @@ function ColaboradorDadosContratuais() {
                         </Col3>
                     </Col12>
                 </div>  
+            </Col6>
+            <Col6>    
+                <Titulo><h6>Informações de Localização</h6></Titulo>   
+                <div className={styles.card_dashboard}>
+                    <Frame gap="2px" alinhamento="start">
+                        <Texto size={'14px'} weight={600}>Seção</Texto>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                            <Tag severity="info" value={secao?.nome ?? 'Não definida'}></Tag>
+                        </div>
+                    </Frame>
+                    
+                    <Frame gap="2px" alinhamento="start">
+                        <Texto size={'14px'} weight={600}>Departamento</Texto>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                            <Tag severity="info" value={departamento?.nome ?? 'Não definida'}></Tag>
+                        </div>
+                    </Frame>
+
+                    <Frame gap="2px" alinhamento="start">
+                        <Texto size={'14px'} weight={600}>Centro de Custo</Texto>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                            <Tag severity="info" value={centroCusto?.nome ?? 'Não definida'}></Tag>
+                        </div>
+                    </Frame>
+                </div>
             </Col6>
         </Col12>
         <ModalAlterarTelefone dadoAntigo={((colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica?.telefone1) ? (colaborador?.funcionario_pessoa_fisica?.telefone1) : '')} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />

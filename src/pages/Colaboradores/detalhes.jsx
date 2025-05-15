@@ -13,6 +13,7 @@ import Container from "@components/Container"
 import styles from './Colaboradores.module.css'
 import { Skeleton } from 'primereact/skeleton'
 import { FaCopy, FaTrash } from 'react-icons/fa'
+import { IoMdFemale, IoMdMale } from "react-icons/io";
 import { Toast } from 'primereact/toast'
 import http from '@http'
 import { useEffect, useRef, useState } from 'react'
@@ -133,6 +134,8 @@ function ColaboradorDetalhes() {
     const [filial, setFilial] = useState(null)
     const [funcao, setFuncao] = useState(null)
     const [secao, setSecao] = useState(null)
+    const [tipoFuncionario, setTipoFuncionario] = useState(null)
+    const [tipoSituacao, setTipoSituacao] = useState(null)
     const [departamento, setDepartamento] = useState(null)
     const [centroCusto, setCentroCusto] = useState(null)
     const navegar = useNavigate()
@@ -151,6 +154,8 @@ function ColaboradorDetalhes() {
             http.get(`funcionario/${id}/?format=json`)
                 .then(response => {
                     setColaborador(response);
+                    setTipoFuncionario(response.tipo_funcionario_descricao);
+                    setTipoSituacao(response.tipo_situacao_descricao);
                 })
                 .catch(erro => console.log(erro))
         } else {
@@ -170,33 +175,9 @@ function ColaboradorDetalhes() {
                     })
                     .catch(erro => console.log(erro))
             }
-            if((!secao) && colaborador.id_secao)
-            {
-                http.get(`secao/${colaborador.id_secao}/?format=json`)
-                    .then(response => {
-                        setSecao(response);
-                    })
-                    .catch(erro => console.log(erro))
-            }
-            if((!departamento) && colaborador.departamento)
-            {
-                http.get(`departamento/${colaborador.departamento}/?format=json`)
-                    .then(response => {
-                        setDepartamento(response);
-                    })
-                    .catch(erro => console.log(erro))
-            }
-            if((!centroCusto) && colaborador.centro_custo)
-            {
-                http.get(`centro-custo/${colaborador.centro_custo}/?format=json`)
-                    .then(response => {
-                        setCentroCusto(response);
-                    })
-                    .catch(erro => console.log(erro))
-            }
         }
         
-    }, [colaborador, funcao, filial, secao, departamento])
+    }, [colaborador, funcao, filial])
 
     const desativarColaborador = () => {
         confirmDialog({
@@ -221,26 +202,10 @@ function ColaboradorDetalhes() {
     }
 
     function representativSituacaoTemplate() {
-        let situacao = colaborador?.situacao;
+        let situacao = colaborador?.tipo_situacao_descricao;
+        let cor = colaborador?.tipo_situacao_cor;
         
-        switch(colaborador?.situacao)
-        {
-            case 'A':
-                situacao = <Tag severity="success" value="Ativo"></Tag>;
-                break;
-            case 'F':
-                situacao = <Tag severity="primary" value="Férias"></Tag>;
-                break;
-            case 'P':
-                situacao = <Tag severity="danger" value="Previdência"></Tag>;
-                break;
-            case 'I':
-                situacao = <Tag severity="warning" value="Invalidez"></Tag>;
-                break;
-            case 'D':
-                situacao = <Tag severity="warning" value="Demitido"></Tag>;
-                break;
-        }
+        situacao = <Tag style={{backgroundColor: cor}} value={situacao}></Tag>;
         return situacao
     }
 
@@ -252,6 +217,24 @@ function ColaboradorDetalhes() {
     function copiarTexto(texto) {
         navigator.clipboard.writeText(texto);
         toast.current.show({ severity: 'info', summary: '', detail: 'Texto copiado para a área de transferência.', life: 2000 });
+    }
+
+    function representativeGeneroTemplate() {
+        let genero = colaborador?.genero_descricao ?? colaborador?.funcionario_pessoa_fisica?.sexo;
+        switch(genero)
+        {
+            case 'Masculino':
+            case 'M':
+                genero = <IoMdMale size={16} fill='var(--info)'/>;
+                break;
+            case 'Feminino':
+            case 'F':
+                genero = <IoMdFemale size={16} fill='var(--error)'/>;
+                break;
+            default:
+                genero = '';
+        }
+        return genero
     }
 
     return (
@@ -322,7 +305,8 @@ function ColaboradorDetalhes() {
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Nome Social</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    {colaborador?.funcionario_pessoa_fisica?.sexo == 'M' ? <BiMale size={20}/> : <BiFemale size={20}/>}
+                                    {/* {colaborador?.funcionario_pessoa_fisica?.sexo == 'M' ? <BiMale size={20}/> : <BiFemale size={20}/>} */}
+                                    {representativeGeneroTemplate()}
                                     <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
                                         <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.nome_social}</Texto>
                                         <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}} />
@@ -355,30 +339,16 @@ function ColaboradorDetalhes() {
                             </Frame>
                             
                             <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Seção</Texto>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={secao?.nome ?? 'Não definida'}></Tag>
-                                </div>
-                            </Frame>
-                            
-                            <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Departamento</Texto>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={departamento?.nome ?? 'Não definida'}></Tag>
-                                </div>
-                            </Frame>
-                            
-                            <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Função</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
                                     <Tag severity="info" value={funcao?.nome ?? 'Não definida'}></Tag>
                                 </div>
                             </Frame>
-
+                            
                             <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Centro de Custo</Texto>
+                                <Texto size={'14px'} weight={600}>Tipo de Funcionário</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={centroCusto?.nome ?? 'Não definida'}></Tag>
+                                    <Tag severity="info" value={tipoFuncionario ?? 'Não definida'}></Tag>
                                 </div>
                             </Frame>
                      </div>

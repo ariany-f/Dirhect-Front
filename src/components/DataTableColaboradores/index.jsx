@@ -3,19 +3,15 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
-import { MdOutlineKeyboardArrowRight, MdTag } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import styles from '@pages/Colaboradores/Colaboradores.module.css'
-import BadgeGeral from '@components/BadgeGeral';
 import BotaoGrupo from '@components/BotaoGrupo';
 import Botao from '@components/Botao';
 import BotaoSemBorda from '@components/BotaoSemBorda';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { ContextMenu } from 'primereact/contextmenu';
-import { IoEllipsisVertical } from 'react-icons/io5';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import ModalDemissao from '../ModalDemissao';
 import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
@@ -24,7 +20,6 @@ import { Tag } from 'primereact/tag';
 import { FaTrash, FaUserTimes, FaUmbrella, FaDownload, FaUmbrellaBeach } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
-import { formatCPF } from '@utils/formats';
 import http from '@http';
 import { Dropdown } from 'primereact/dropdown';
 
@@ -111,9 +106,13 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
 
     const representativeFuncaoTemplate = (rowData) => {
         const funcao = funcoes.find(f => f.id === rowData.id_funcao);
+        
         return (
-            <div style={{display: 'flex', alignItems: 'center'}}>
+            <div key={rowData.id}>
                 <Texto weight={500}>{funcao ? funcao.nome : '---'}</Texto>
+                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                    Tipo:&nbsp;<p style={{fontWeight: '400', color: 'var(--neutro-500)'}}>{rowData?.tipo_funcionario_descricao}</p>
+                </div>
             </div>
         )
     }
@@ -151,31 +150,17 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     }
 
     const representativSituacaoTemplate = (rowData) => {
-        let situacao = rowData?.situacao;
-        switch(rowData?.situacao)
-        {
-            case 'A':
-                situacao = <Tag severity="success" value="Ativo"></Tag>;
-                break;
-            case 'F':
-                situacao = <Tag severity="primary" value="Férias"></Tag>;
-                break;
-            case 'P':
-                situacao = <Tag severity="danger" value="Previdência"></Tag>;
-                break;
-            case 'I':
-                situacao = <Tag severity="warning" value="Invalidez"></Tag>;
-                break;
-            case 'D':
-                situacao = <Tag severity="warning" value="Demitido"></Tag>;
-                break;
-        }
-        return (
+       
+        let situacao = rowData?.tipo_situacao_descricao;
+        let cor = rowData?.tipo_situacao_cor;
+        
+        situacao = (
             <>
-                <Texto weight={600}>{situacao}</Texto>
-                <small>{rowData?.dependentes.length} dependente(s)</small>
+            <Texto weight={600}><Tag style={{backgroundColor: cor}} value={situacao}></Tag></Texto>
+            <small>{rowData?.dependentes.length} dependente(s)</small>
             </>
-        )
+        );
+        return situacao
     }
 
     const representativeActionsTemplate = (rowData) => {
