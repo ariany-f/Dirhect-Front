@@ -15,19 +15,21 @@ import { useDepartamentoContext } from "@contexts/Departamento"
 import IconeBeneficio from '@components/IconeBeneficio';
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { useTranslation } from "react-i18next"
-
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 function ModalOperadoraBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, beneficiosOperadora = [] }) {
-    console.log(beneficiosOperadora);
     
     const [classError, setClassError] = useState([]);
     const [beneficios, setBeneficios] = useState([]);
     const [dropdownBeneficios, setDropdownBeneficios] = useState([]);
     const [beneficio, setBeneficio] = useState(null);
     const { t } = useTranslation('common');
+    const { usuario } = useSessaoUsuarioContext()
     
     useEffect(() => {
         if(opened && beneficios.length === 0) {
-            http.get('/beneficio/?format=json&ativo=true')
+            let url = '/beneficio/?format=json';
+            if (usuario?.tipo !== 'global') url += `&ativo=true`;
+            http.get(url)
                 .then(response => {
                     setBeneficios(response);
                    // Extrair apenas os IDs dos benefícios já associados à operadora
