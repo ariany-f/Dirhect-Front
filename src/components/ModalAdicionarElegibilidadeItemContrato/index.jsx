@@ -296,7 +296,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                 let endpoint = tipoChave;
                 
                 if (modelInfo?.model?.startsWith('integracao.')) {
-                    endpoint = `tabela_dominio/${tipoChave.replace(/_/g, '-')}`;
+                    endpoint = `tabela_dominio/${tipoChave.replace(/_/g, '_')}`;
                 }
                 
                 const response = await http.get(`${endpoint}/?format=json`);
@@ -380,7 +380,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
             let endpoint = tipoCode;
             
             if (modelInfo?.model?.startsWith('integracao.')) {
-                endpoint = `tabela_dominio/${tipoCode.replace(/_/g, '-')}`;
+                endpoint = `tabela_dominio/${tipoCode.replace(/_/g, '_')}`;
             }
             
             const response = await http.get(`${endpoint}/?format=json`);
