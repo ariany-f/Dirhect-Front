@@ -406,7 +406,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     
         const dadosTransformados = transformarDados(data);
     
-        http.put(`contrato_beneficio_item/${selectedItemBeneficio.id}/?format=json`, dadosTransformados)
+        http.put(`contrato_beneficio_item/${selectedItemBeneficio.id}/?format=json`, {dadosTransformados})
         .then(response => {
             // Atualiza o item selecionado com os novos dados
             const updatedItem = {
