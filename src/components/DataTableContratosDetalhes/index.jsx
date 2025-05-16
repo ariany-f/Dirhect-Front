@@ -416,14 +416,14 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             return resultado;
         };
     
-        const regras_elegibilidade = transformarDados(data);
+        const regra_elegibilidade = transformarDados(data);
     
-        http.put(`contrato_beneficio_item/${selectedItemBeneficio.id}/?format=json`, {regras_elegibilidade})
+        http.put(`contrato_beneficio_item/${selectedItemBeneficio.id}/?format=json`, {regra_elegibilidade})
         .then(response => {
             // Atualiza o item selecionado com os novos dados
             const updatedItem = {
                 ...selectedItemBeneficio,
-                regra_elegibilidade: regras_elegibilidade.regra_elegibilidade
+                regra_elegibilidade: regra_elegibilidade
             };
             
             // Atualiza o item na lista de itens selecionados
