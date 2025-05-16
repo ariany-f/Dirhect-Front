@@ -7,8 +7,11 @@ const Grupo = styled.div`
     justify-content: ${ props => props.$align ? props.$align : 'center'};
     align-items: ${ props => props.$verticalalign ? props.$verticalalign : 'center'};
     @media screen and (max-width: 760px) {
-        flex-wrap: wrap;
+        flex-wrap: ${props => props.$tabs ? 'nowrap' : 'wrap'};
         gap: 12px;
+        overflow-x: ${props => props.$tabs ? 'scroll' : 'hidden'};
+        width: ${props => props.$tabs ? '100%' : 'initial'};
+        max-width: ${props => props.$tabs ? '100%' : 'initial'};
         
         ${props => props.$align === 'space-between' && `
             justify-content: flex-start;
@@ -25,9 +28,9 @@ const Grupo = styled.div`
     }
 `;
 
-function BotaoGrupo({ children, align = 'start', verticalalign = 'center', gap = '16px', wrap = false }) {
+function BotaoGrupo({ children, tabs = false, align = 'start', verticalalign = 'center', gap = '16px', wrap = false }) {
     return (
-        <Grupo $wrap={wrap} $verticalalign={verticalalign} $align={align} $gap={gap}>
+        <Grupo $wrap={wrap} $tabs={tabs} $verticalalign={verticalalign} $align={align} $gap={gap}>
             {children}
         </Grupo>
     )

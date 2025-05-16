@@ -358,7 +358,7 @@ function ColaboradorDetalhes() {
                     }
                     {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                     <Col8Vertical>
-                    <BotaoGrupo gap="8px">
+                    <BotaoGrupo tabs gap="8px">
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Benefícios</Botao>
                         </Link>

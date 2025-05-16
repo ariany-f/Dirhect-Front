@@ -289,7 +289,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
         if (opened && item?.regra_elegibilidade) {
             setGruposAdicionados([]);
             // Para cada regra, monta o grupo
-            item.regra_elegibilidade.forEach(async (regra) => {
+            item?.regra_elegibilidade.forEach(async (regra) => {
                 const [tipoChave, dados] = Object.entries(regra)[0];
                 // Busca as opções na API correspondente
                 const modelInfo = modelosValidos[tipoChave];

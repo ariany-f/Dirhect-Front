@@ -141,7 +141,7 @@ function SecoesLista() {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <BotaoGrupo align="space-between">
-                <BotaoGrupo>
+                <BotaoGrupo tabs>
                     <Link to="/estrutura">
                         <Botao estilo={''} size="small" tab>Filiais</Botao>
                     </Link>

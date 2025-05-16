@@ -133,7 +133,7 @@ function FiliaisLista() {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <BotaoGrupo align="space-between">
-                <BotaoGrupo>
+                <BotaoGrupo tabs>
                     <Link to="/estrutura">
                         <Botao estilo={'black'} size="small" tab>Filiais</Botao>
                     </Link>
