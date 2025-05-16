@@ -677,11 +677,12 @@ function ColaboradorBeneficios() {
                     ))}
                 </div>
             ) : Object.keys(grupos).length > 0 ? (
-                <div style={{
+                <div className="beneficios-container" style={{
                     width: '100%',
                     maxHeight: 'calc(100vh - 270px)', // 270px para considerar algum padding/topo
                     overflowY: 'auto',
-                    paddingRight: 8
+                    paddingRight: 8,
+                    position: 'relative' // Adicione isso
                 }}>
                     {Object.entries(grupos).map(([descricao, itens]) => (
                         <CardBeneficio key={descricao}>
@@ -842,6 +843,16 @@ function ColaboradorBeneficios() {
                             </ItensGrid>
                         </CardBeneficio>
                     ))}
+                     <div style={{
+                        position: 'sticky',
+                        bottom: 0,
+                        left: 0,
+                        right: 8, // Compensa o paddingRight
+                        height: '30px',
+                        borderRadius: '0px 0px 12px 12px',
+                        background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 100%)',
+                        pointerEvents: 'none'
+                    }}/>
                 </div>
             ) : (
                 <Frame align="center" padding="10vh 0px">
