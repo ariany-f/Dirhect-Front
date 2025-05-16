@@ -679,13 +679,13 @@ function ColaboradorBeneficios() {
             ) : Object.keys(grupos).length > 0 ? (
                 <div className="beneficios-container" style={{
                     width: '100%',
-                    maxHeight: 'calc(100vh - 280px)', // 270px para considerar algum padding/topo
+                    maxHeight: 'calc(100vh - 290px)', // 270px para considerar algum padding/topo
                     overflowY: 'auto',
                     paddingRight: 8,
                     position: 'relative' // Adicione isso
                 }}>
                     {Object.entries(grupos).map(([descricao, itens], idx, arr) => (
-                        <CardBeneficio key={descricao} $marginBottom={idx === arr.length - 1 ? '0px' : '8px'}>
+                        <CardBeneficio key={descricao} $marginBottom={idx === arr.length - 1 ? '0px' : '12px'}>
                             <div style={{display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'space-between'}}>
                                 <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
                                     <IconeBeneficio nomeIcone={itens[0]?.icone ?? descricao} />
