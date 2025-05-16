@@ -264,6 +264,17 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                         </div>
                     }  
                 />
+                <div style={{display: 'flex', gap: '10px'}}>
+                 <MdSettings 
+                        className="settings" 
+                        data-pr-tooltip="Configurar Elegibilidade" 
+                        size={16} 
+                        onClick={() => {
+                            setSelectedItemBeneficio(rowData)
+                            setModalElegibilidadeOpened(true)
+                        }}
+                        fill="var(--error)"
+                    />
                 <RiDeleteBin6Line
                     size={18}
                     title="Excluir benefício do contrato"
@@ -277,7 +288,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                         opacity: rowData.delete_validation?.can_delete === false ? 0.5 : 1
                     }}
                     disabled={rowData.delete_validation?.can_delete === false}
-                />
+                /></div>
             </div>
         );
     };
