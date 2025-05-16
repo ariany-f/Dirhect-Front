@@ -679,7 +679,7 @@ function ColaboradorBeneficios() {
             ) : Object.keys(grupos).length > 0 ? (
                 <div className="beneficios-container" style={{
                     width: '100%',
-                    maxHeight: 'calc(100vh - 300px)', // 270px para considerar algum padding/topo
+                    maxHeight: 'calc(100vh - 280px)', // 270px para considerar algum padding/topo
                     overflowY: 'auto',
                     paddingRight: 8,
                     position: 'relative' // Adicione isso
