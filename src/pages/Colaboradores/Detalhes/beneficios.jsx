@@ -60,7 +60,7 @@ const CardBeneficio = styled.div`
     background: #fff;
     border-radius: 16px;
     border: 1px solid var(--neutro-200);
-    margin-bottom: 24px;
+    margin-bottom: ${(props) => props.$marginBottom ? props.$marginBottom : '0px'};
     padding: 24px 12px 24px 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     width: inherit;
@@ -684,9 +684,9 @@ function ColaboradorBeneficios() {
                     paddingRight: 8,
                     position: 'relative' // Adicione isso
                 }}>
-                    {Object.entries(grupos).map(([descricao, itens]) => (
-                        <CardBeneficio key={descricao}>
-                            <div style={{display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, justifyContent: 'space-between'}}>
+                    {Object.entries(grupos).map(([descricao, itens], idx, arr) => (
+                        <CardBeneficio key={descricao} $marginBottom={idx === arr.length - 1 ? '0px' : '8px'}>
+                            <div style={{display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'space-between'}}>
                                 <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
                                     <IconeBeneficio nomeIcone={itens[0]?.icone ?? descricao} />
                                     <Texto weight={600} size="15px">{descricao}</Texto>
@@ -849,6 +849,7 @@ function ColaboradorBeneficios() {
                         left: 0,
                         right: 8, // Compensa o paddingRight
                         height: '30px',
+                        marginBottom: '-8px',
                         borderRadius: '0px 0px 12px 12px',
                         background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 100%)',
                         pointerEvents: 'none'
