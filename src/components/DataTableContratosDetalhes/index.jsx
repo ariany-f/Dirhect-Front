@@ -268,7 +268,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                     <Tooltip target=".settings" mouseTrack mouseTrackRight={10} />
                  <MdSettings 
                         className="settings" 
-                        data-pr-tooltip="Configurar Elegibilidade por herança" 
+                        data-pr-tooltip="Configurar Elegibilidade de todos os itens" 
                         size={16} 
                         onClick={() => {
                             setSelectedItemBeneficio(rowData)
@@ -416,14 +416,14 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             return resultado;
         };
     
-        const regra_elegibilidade = transformarDados(data);
+        const dadosTransformados = transformarDados(data);
     
-        http.put(`contrato_beneficio_item/${selectedItemBeneficio.id}/?format=json`, {regra_elegibilidade})
+        http.put(`contrato_beneficio_item/${selectedItemBeneficio.id}/?format=json`, dadosTransformados)
         .then(response => {
             // Atualiza o item selecionado com os novos dados
             const updatedItem = {
                 ...selectedItemBeneficio,
-                regra_elegibilidade: regra_elegibilidade
+                regra_elegibilidade: dadosTransformados.regra_elegibilidade
             };
             
             // Atualiza o item na lista de itens selecionados
