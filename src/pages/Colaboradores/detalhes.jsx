@@ -64,6 +64,7 @@ const Col12Vertical = styled.div`
     @media screen and (max-width: 768px) {
         flex-direction: column;
         margin-top: 16px;
+        flex-direction: column-reverse;
     }
 `;
 
