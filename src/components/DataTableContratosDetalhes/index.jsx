@@ -268,7 +268,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                     <Tooltip target=".settings" mouseTrack mouseTrackRight={10} />
                  <MdSettings 
                         className="settings" 
-                        data-pr-tooltip="Configurar Elegibilidade do Benefício" 
+                        data-pr-tooltip="Configurar Elegibilidade de todos os itens" 
                         size={16} 
                         onClick={() => {
                             setSelectedItemBeneficio(rowData)
