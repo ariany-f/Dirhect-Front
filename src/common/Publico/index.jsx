@@ -41,19 +41,17 @@ function Publico() {
         <>
             <EstilosGlobais />
             <MainSectionPublico>
-                <RightContainer>
-                <MainContainer>
+                    {isMobile ? 
                         <Outlet />
-                    <RodapePublico />
-                </MainContainer>
-                </RightContainer>
-
-                {isMobile ? (
-                    <></>
-                ) : (
-                    <BannerMini />
-                )}
-                
+                    : <>
+                        <RightContainer>
+                            <MainContainer>
+                                <Outlet />
+                            </MainContainer>
+                        </RightContainer>
+                        <BannerMini />
+                    </>
+                    }
                 <Analytics />
                 <SpeedInsights />
             </MainSectionPublico>

@@ -2,7 +2,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import PrimeiroAcesso from '@pages/PrimeiroAcesso'
 import SenhaDeAcesso from '@pages/PrimeiroAcesso/senha-acesso'
 import Login from '@pages/Login'
+import LoginMobile from '@pages/Login/mobile'
 import SelecionarEmpresa from '@pages/Login/selecionar-empresa'
+import SelecionarEmpresaMobile from '@pages/Login/selecionar-empresa-mobile'
 import EsqueciASenha from '@pages/EsqueciASenha'
 import Seguranca from '@pages/EsqueciASenha/seguranca'
 import RedefinirSenha from '@pages/EsqueciASenha/redefinir'
@@ -178,8 +180,16 @@ function AppRouter() {
                 <Route path="senha-acesso/" element={<SenhaDeAcesso />} />
               </Route>
               <Route path="/login" element={<Publico/>}>
-                <Route index element={<Login />} />
-                <Route path="selecionar-empresa" element={<SelecionarEmpresa />} />
+                {isDesktop ? 
+                  <Route index element={<Login />} /> 
+                  :
+                   <Route index element={<LoginMobile />} />
+                }
+                {isDesktop ?
+                  <Route path="selecionar-empresa" element={<SelecionarEmpresa />} />
+                  :
+                  <Route path="selecionar-empresa" element={<SelecionarEmpresaMobile />} />
+                }
               </Route>
               <Route path="/esqueci-a-senha" element={<Publico/>}>
                 <Route index element={<EsqueciASenha />} />
