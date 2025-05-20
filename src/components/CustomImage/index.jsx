@@ -31,7 +31,7 @@ const CustomImage = ({ src, title, width = 90, height=45, size = 50, borderRadiu
           textTransform: "uppercase",
         }}
       >
-        {getInitials(title)}
+        {title && getInitials(title)}
       </div>
     );
   }

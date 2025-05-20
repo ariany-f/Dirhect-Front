@@ -13,6 +13,7 @@ import { Toast } from 'primereact/toast'
 import { ArmazenadorToken } from "@utils"
 import Loading from "@components/Loading"
 import { useTranslation } from "react-i18next"
+import CustomImage from "@components/CustomImage"
 
 const Wrapper = styled.div`
     display: flex;
@@ -195,13 +196,15 @@ function SelecionarEmpresa() {
                                     onClick={id_tenant => handleSelectChange(empresa.id_tenant)}>
                                     <div className={styles.cardEmpresa}>
                                         {empresa.tenant.simbolo ? 
-                                                <img src={empresa.tenant.simbolo} alt={empresa.tenant.nome} width={50} height={50} style={{ padding: '10px' }} className={styles.logoEmpresa} />
-                                            : (selected === empresa.id_tenant) ?
+                                            <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant.nome} width={50} height={50} borderRadius={16} />
+                                        : (selected === empresa.id_tenant) ?
                                             <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
-                                            : <RiBuildingLine className={styles.buildingIcon} size={20} />
+                                        : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                         }
                                         <div className={styles.DadosEmpresa}>
-                                            <h6>{empresa.tenant.nome.toUpperCase()}</h6>
+                                            <h6 style={{ fontSize: empresa.tenant.nome.length > 22 ? 13 : undefined }}>
+                                                {empresa.tenant.nome.toUpperCase()}
+                                            </h6>
                                             <div>{formataCNPJ(empresa.pessoaJuridica.cnpj)}</div>
                                         </div>
                                     </div>

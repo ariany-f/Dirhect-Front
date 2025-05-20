@@ -13,6 +13,7 @@ import { FaBuilding, FaBusAlt } from "react-icons/fa";
 import { LuSparkles } from "react-icons/lu";
 import LanguageSelector from "../LanguageSelector";
 import { useTranslation } from 'react-i18next';
+import CustomImage from '@components/CustomImage';
 
 
 // MegaMenu Container
@@ -398,12 +399,14 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
               <ItemEmpresa onClick={aoClicar}>
                 {simbolo && simbolo !== null && simbolo !== 'null' ? 
                   <>
-                    <img src={simbolo} alt={nomeEmpresa} style={{ width: '20px', height: '20px' }} />
+                    <CustomImage src={simbolo} title={nomeEmpresa} width={20} height={20} borderRadius={6} />
                     {nomeEmpresa}
-                  </> : logo && logo !== null && logo !== 'null' ? 
-                    <>
-                      <img src={logo} alt={nomeEmpresa} style={{ width: '65px' }} />
-                    </> : nomeEmpresa}
+                  </>
+                : logo && logo !== null && logo !== 'null' ? 
+                  <>
+                    <CustomImage src={logo} title={nomeEmpresa} width={65} height={20} borderRadius={6} />
+                  </>
+                : nomeEmpresa}
                 <BsArrowLeftRight />
               </ItemEmpresa>
             )}

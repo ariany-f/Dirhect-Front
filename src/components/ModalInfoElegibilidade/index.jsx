@@ -116,7 +116,7 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                         <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
                             {operadora?.image_operadora && (
-                                <CustomImage src={operadora.image_operadora} alt={operadora.nome} width={50} height={40} />
+                                <CustomImage src={operadora.image_operadora} alt={operadora.nome_operadora} title={operadora.nome_operadora} width={50} height={40} />
                             )}
                             <span>{operadora?.nome_operadora || '---'}</span>
                              {/* Badge de status do vínculo do colaborador */}
