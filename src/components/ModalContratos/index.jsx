@@ -194,7 +194,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                             name="num_contrato"
                                             value={numContrato}
                                             control={control}
-                                            setValue={setNumContrato}
+                                            onChange={e => setNumContrato(e.target.value)}
                                             type="text"
                                             label="Número do Contrato*"
                                             placeholder="Digite o número do contrato"
