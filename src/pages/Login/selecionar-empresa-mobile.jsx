@@ -205,8 +205,10 @@ function SelecionarEmpresaMobile() {
                                             : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                             }
                                             <div className={styles.DadosEmpresa}>
-                                                <h6>{empresa.tenant.nome.toUpperCase()}</h6>
-                                                <div>{formataCNPJ(empresa.pessoaJuridica.cnpj)}</div>
+                                                <h6 style={{ fontSize: empresa.tenant.nome.length > 22 ? 10 : undefined }}>
+                                                    {empresa.tenant.nome.toUpperCase()}
+                                                </h6>
+                                                <div style={{ fontSize: 12 }}>{formataCNPJ(empresa.pessoaJuridica.cnpj)}</div>
                                             </div>
                                         </div>
                                         <RadioButton

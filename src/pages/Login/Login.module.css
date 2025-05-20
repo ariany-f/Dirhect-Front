@@ -17,6 +17,17 @@
     flex-direction: column;
     line-height: 24px; /* 150% */
     text-align: left;
+    max-width: 300px;
+}
+
+@media (max-width: 600px) {
+  .DadosEmpresa {
+    max-width: 140px;
+    line-height: 16px; /* 150% */
+  }
+  .DadosEmpresa h6 {
+    font-size: 14px;
+  }
 }
 .buildingIcon {
     box-sizing: initial;
