@@ -10,115 +10,109 @@ import styles from './Login.module.css'
 import CheckboxContainer from "@components/CheckboxContainer"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { useEffect, useRef, useState } from "react"
-import { Toast } from 'primereact/toast'
+import { toast } from 'react-toastify'
 import Loading from "@components/Loading"
 import { ArmazenadorToken } from "@utils"
 import loginData from '@json/login.json'; // Importando o JSON
 import { useTranslation } from "react-i18next"
+import Input from "@components/Input"
+import { useForm } from "react-hook-form"
+import http from "@http";
+import imagem from '@imagens/bg-mobile.jpg';
+import { SuccessIcon, ErrorIcon } from '@components/ToastIcons';
 
 function Login() {
-    const [classError, setClassError] = useState([])
     const [loading, setLoading] = useState(false)
     const navegar = useNavigate()
-    const toast = useRef(null)
-    const [logins, setLogins] = useState([])
     const { t } = useTranslation('common');
-    const { 
+    const {
         usuario,
         setRemember,
         usuarioEstaLogado,
         setUsuarioEstaLogado,
         setCpf,
+        setEmail,
         setTipo,
         setPassword,
         setUserPublicId,
         setName,
     } = useSessaoUsuarioContext()
 
+    const { control, handleSubmit, formState: { errors } } = useForm();
+
+    function handleLogin() {
+        const data = {
+            username: import.meta.env.VITE_API_USER,
+            password: import.meta.env.VITE_API_PASS
+        }
+        const expiration = new Date();
+        expiration.setMinutes(expiration.getMinutes() + 15);
+        http.post(`/app-login/`, data)
+        .then(response => {
+            ArmazenadorToken.definirToken(response.access, null, null, null);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+
     useEffect(() =>{
-        if(usuarioEstaLogado)
-        {
-            setUsuarioEstaLogado(false)
+        ArmazenadorToken.removerToken();
+        ArmazenadorToken.removerCompany();
+        handleLogin();
+        if(usuarioEstaLogado) {
+            setUsuarioEstaLogado(false);
         }
-        
-        if ((logins.length < loginData.perfis.length)) {
-            setLogins((estadoAnterior) => {
-                const novosLogins = loginData.perfis.map((item) => ({
-                    name: item.name,
-                    code: item.cpf
-                }));
-                return [...estadoAnterior, ...novosLogins];
+    }, [])
+
+    const onSubmit = (data) => {
+        if(!data.email || !data.password) {
+            toast.info('Preencha usuário e senha!');
+            return;
+        }
+        setLoading(true);
+        data.app_token = ArmazenadorToken.AccessToken;
+        http.post('/token/', data)
+            .then(response => {
+                if(response.access) {
+                    const expiration = new Date();
+                    expiration.setMinutes(expiration.getMinutes() + 15);
+                    ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
+                    setUsuarioEstaLogado(true);
+                    ArmazenadorToken.definirUsuario(
+                        response.user.first_name + ' ' + response.user.last_name,
+                        response.user.email,
+                        response.user.cpf ?? '',
+                        response.user.id,
+                        'equipeBeneficios',
+                        '', '', '', ''
+                    );
+                    // Navegação conforme tipo de usuário
+                    if(response.user.tipo !== 'funcionario') {
+                        if(response.user.tipo !== 'candidato') {
+                            navegar('/login/selecionar-empresa');
+                        } else {
+                            navegar(`/admissao/registro/${response.user.id}`);
+                        }
+                    } else {
+                        navegar(`/colaborador/detalhes/${response.user.public_id}`);
+                    }
+                    toast.success('Login realizado com sucesso!', { icon: SuccessIcon });
+                } else {
+                    toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            })
+            .catch(error => {
+                console.log(error);
+                toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
             });
-        }
-        else
-        {
-            if(logins.length > 0)
-            {
-                setCpf(logins[0])
-            }
-        }
-
-    }, [logins])
-
-    const AlreadyAccessed = () => {
-        if((!usuario.cpf) || (!usuario.password))
-        {
-            toast.current.show({ severity: 'info', detail: 'Preencha usuário e senha!', life: 3000 });
-        }
-        else
-        {
-            const perfilEncontrado = loginData.perfis.find(perfil => 
-                perfil.cpf === usuario.cpf.code && perfil.senha === usuario.password
-            );
-    
-            if (perfilEncontrado) {
-                // Atualizando o contexto com o tipo de usuário
-                setUsuarioEstaLogado(true);
-                setCpf(usuario.cpf);
-                setPassword(usuario.password);
-                setUserPublicId(perfilEncontrado.public_id);
-                setTipo(perfilEncontrado.tipo);
-                setName(perfilEncontrado.name);
-    
-                 // Adicionando o tipo de usuário ao objeto usuario
-                ArmazenadorToken.definirUsuario(
-                    perfilEncontrado.name,
-                    perfilEncontrado.email,
-                    perfilEncontrado.cpf,
-                    perfilEncontrado.public_id,
-                    perfilEncontrado.tipo,
-                    ArmazenadorToken.UserCompanyPublicId ?? '1',
-                    ArmazenadorToken.UserCompanyDomain ?? 'geral',
-                    ArmazenadorToken.UserCompanySymbol ?? '',
-                    ArmazenadorToken.UserCompanyLogo ?? ''
-                )
-    
-                if(perfilEncontrado.tipo != 'funcionario')
-                {
-                    if(perfilEncontrado.tipo != 'candidato')
-                    {
-                        navegar('/login/selecionar-empresa');
-                    }
-                    else
-                    {
-                        navegar(`/admissao/registro/${perfilEncontrado.id}`)
-                    }
-                }
-                else
-                {
-                    navegar(`/colaborador/detalhes/${perfilEncontrado.public_id}`)
-                }
-            } else {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Usuário ou senha não encontrados', life: 3000 });
-                // Lógica para usuário não encontrado (opcional)
-                console.error("Usuário não encontrado");
-            }
-        }
     }
 
     return (
         <>
-            <Toast ref={toast} />
             <Loading opened={loading} />
             <Titulo align="center">
                 <h2>{t('welcome')}</h2>
@@ -126,10 +120,43 @@ function Login() {
                     {t('choose_profile')}
                 </SubTitulo>
             </Titulo>
-            <form>
-                <Frame gap="20px">
-                    <DropdownItens camposVazios={classError} valor={usuario.cpf} setValor={setCpf} options={logins} label={t('user')} name="cpf" placeholder="Usuário"/>
-                    <CampoTexto camposVazios={classError} onEnter={evento => AlreadyAccessed()} name="password" valor={usuario.password} setValor={setPassword} type="password" label={t('password')} placeholder="Digite sua senha" />
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Frame gap="20px" alinhamento="start">
+                    <Input
+                        control={control}
+                        type="email"
+                        id="email"
+                        name="email"
+                        label="E-mail"
+                        defaultValue={usuario.email}
+                        icon="pi pi-envelope"
+                        required
+                        rules={{
+                            required: 'E-mail é obrigatório',
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: 'Por favor, insira um e-mail válido'
+                            }
+                        }}
+                    />
+                    <Input
+                        control={control}
+                        type="password"
+                        id="password"
+                        name="password"
+                        label={t('password')}
+                        icon="pi pi-lock"
+                        toggleMask={true}
+                        required
+                        showPasswordFeedback={false}
+                        rules={{
+                            required: 'Senha é obrigatória',
+                            minLength: {
+                                value: 6,
+                                message: 'A senha deve ter pelo menos 6 caracteres'
+                            }
+                        }}
+                    />
                     <div className={styles.containerBottom}>
                         <CheckboxContainer name="remember" valor={usuario.remember} setValor={setRemember} label={t('remember_me')} />
                         <Link className={styles.link} to="/esqueci-a-senha">
@@ -137,8 +164,8 @@ function Login() {
                         </Link>
                     </div>
                 </Frame>
+                <Botao type="submit" estilo="vermilion" size="medium" filled style={{ marginTop: '20px', width: '100%' }}>{t('confirm')}</Botao>
             </form>
-            <Botao aoClicar={evento => AlreadyAccessed()} estilo="vermilion" size="medium" filled>{t('confirm')}</Botao>
         </>
     )
 }

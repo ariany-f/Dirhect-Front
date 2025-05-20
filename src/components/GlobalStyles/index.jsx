@@ -404,6 +404,58 @@ template {
 .p-scrollpanel-wrapper {
     z-index:0;
 }
+.p-inputtext, .p-icon-field {
+  width: 100% !important;
+  height: 46px !important;
+}
+.w-full {
+  width: 100% !important;
+}
+.p-icon-field > .p-input-icon {
+  margin-top: -0.5rem!important;
+}
+.text-left {
+  text-align: left!important;
+}
+  
+.Toastify__toast {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  box-shadow: 0 4px 24px 0 rgba(25, 42, 78, 0.10);
+  min-width: 300px;
+  max-width: 400px;
+  padding: 18px 28px;
+  background: #fff !important;
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  border: none !important;
+  border-radius: 14px;
+}
+@media (min-width: 1024px) {
+  .Toastify__toast {
+    min-width: 400px;
+    max-width: 520px;
+    font-size: 1.1rem;
+    padding: 26px 40px;
+  }
+}
+.Toastify__toast--error {
+  background: #fff !important;
+}
+.Toastify__toast--success {
+  background: #fff !important;
+}
+.Toastify__close-button {
+  color: #222 !important;
+  opacity: 1 !important;
+}
+.Toastify__progress-bar {
+  background: var(--primaria) !important;
+  box-shadow: none !important;
+  height: 4px !important;
+  border-radius: 0 0 6px 6px;
+}
 `
 
 
