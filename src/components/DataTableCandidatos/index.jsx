@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
+// import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -45,7 +45,7 @@ function DataTableCandidatos({ candidatos }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar candidato" />
                 </span>
             </div>
-            <DataTable value={candidatos} filters={filters} globalFilterFields={['nome', 'email']}  emptyMessage="Não foram encontrados candidatos" selection={selectedCandidato} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={candidatos} filters={filters} globalFilterFields={['nome', 'email']} stripedRows emptyMessage="Não foram encontrados candidatos" selection={selectedCandidato} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="nome" header="Nome" style={{ width: '15%' }}></Column>
                 <Column field="email" header="E-mail" style={{ width: '25%' }}></Column>
                 <Column field="telefone" header="Telefone" style={{ width: '15%' }}></Column>

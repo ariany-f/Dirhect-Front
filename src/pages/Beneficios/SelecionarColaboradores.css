@@ -1,4 +1,4 @@
-.p-selectable-row {
+/* .p-selectable-row {
     border: 1px solid var(--neutro-200);
     border-radius: 8px;
 }
@@ -43,4 +43,4 @@
     &::after {
         content: '';
     }
-}
+} */

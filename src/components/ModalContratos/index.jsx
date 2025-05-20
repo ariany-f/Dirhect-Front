@@ -5,6 +5,7 @@ import Titulo from "@components/Titulo"
 import Texto from "@components/Texto"
 import CustomImage from "@components/CustomImage"
 import DropdownItens from "@components/DropdownItens"
+import Input from "@components/Input"
 import { RiCloseFill } from 'react-icons/ri'
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
@@ -12,13 +13,14 @@ import http from "@http"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { useForm } from "react-hook-form"
 
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 16px;
-    padding: 16px;
+    padding: 12px 0;
     width: 100%;
 `
 
@@ -43,6 +45,7 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
     const [data_inicio, setDataInicio] = useState('');
     const [data_fim, setDataFim] = useState('');
     const [numContrato, setNumContrato] = useState('');
+    const { control } = useForm();
 
     const navegar = useNavigate();
 
@@ -187,11 +190,11 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
                                         /> 
                                     </Col6>
                                     <Col6>
-                                        <CampoTexto
-                                            camposVazios={classError.includes('num_contrato') ? ['num_contrato'] : []}
+                                        <Input
                                             name="num_contrato"
-                                            valor={numContrato}
-                                            setValor={setNumContrato}
+                                            value={numContrato}
+                                            control={control}
+                                            setValue={setNumContrato}
                                             type="text"
                                             label="Número do Contrato*"
                                             placeholder="Digite o número do contrato"

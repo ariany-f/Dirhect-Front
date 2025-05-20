@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BadgeBeneficio from '@components/BadgeBeneficio'
 import { FaBan } from 'react-icons/fa';
-import './DataTable.css'
+// import './DataTable.css'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
 
 const NumeroColaboradores = styled.p`
@@ -137,7 +137,7 @@ function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = 
                     </span>
                 </div>
             }
-            <DataTable value={departamentos} filters={filters} globalFilterFields={['id', 'filial.nome']} emptyMessage="Não foram encontrados departamentos" selection={selected ? selectedDepartamentos : selectedDepartamento} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={departamentos} filters={filters} globalFilterFields={['id', 'filial.nome']} stripedRows emptyMessage="Não foram encontrados departamentos" selection={selected ? selectedDepartamentos : selectedDepartamento} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate}  style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
                 <Column body={<MdOutlineKeyboardArrowRight size={24}/>} style={{ width: '5%' }}></Column>

@@ -1,6 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import './DataTable.css';
+// import './DataTable.css';
 import QuestionCard from '@components/QuestionCard';
 import BadgeGeral from '@components/BadgeGeral';
 import CampoTexto from '@components/CampoTexto';
@@ -49,7 +49,7 @@ const SearchContainer = styled.div`
     position: relative;
     width: 320px;
     
-    .p-inputtext {
+    & .p-inputtext {
         width: 100%;
         padding-left: 36px;
         background: var(--neutro-50);
@@ -64,7 +64,7 @@ const SearchContainer = styled.div`
         }
     }
     
-    .search-icon {
+    & .search-icon {
         position: absolute;
         left: 12px;
         top: 50%;
@@ -408,6 +408,7 @@ function DataTableBeneficios({
                 </BotaoGrupo>
             </BotaoGrupo>
             <DataTable 
+                stripedRows
                 value={beneficios} 
                 emptyMessage="Não foram encontrados benefícios" 
                 paginator={paginator}

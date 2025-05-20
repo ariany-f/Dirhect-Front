@@ -3,7 +3,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import http from '@http'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
+// import './DataTable.css'
 import { Toast } from 'primereact/toast'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
@@ -156,7 +156,7 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
                     </span>
                 </div>
             }
-            <DataTable value={filiais} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage="Não foram encontradas filiais" selection={selected ? selectedFiliais : selectedFilial} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={filiais} filters={filters} globalFilterFields={['nome','cnpj']} stripedRows emptyMessage="Não foram encontradas filiais" selection={selected ? selectedFiliais : selectedFilial} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
                 <Column body={<MdOutlineKeyboardArrowRight size={24}/>} style={{ width: '5%' }}></Column>

@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight, MdPlaylistAddCheck, MdPlaylistRemove } from 'react-icons/md'
-import './DataTable.css'
+// import './DataTable.css'
 import Frame from '@components/Frame';
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';

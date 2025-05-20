@@ -744,7 +744,7 @@ function ColaboradorBeneficios() {
                                                 <InfoContrato inativo={getStatusContrato(contrato.status) === 'Indisponível' ? 'true' : undefined}>
                                                     <div style={{display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2, width: '100%'}}>
                                                         {operadora?.image_operadora && (
-                                                            <img src={operadora.image_operadora} alt={operadora.nome_operadora} style={{width: 32, height: 20, objectFit: 'contain', borderRadius: 4, background: '#fff', border: '1px solid var(--neutro-200)'}} />
+                                                            <CustomImage src={operadora?.image_operadora} title={operadora?.nome_operadora} width={32} height={20} borderRadius={4} />
                                                         )}
                                                         <span style={{fontWeight: 600, fontSize: 13}}>
                                                             {operadora?.nome_operadora}

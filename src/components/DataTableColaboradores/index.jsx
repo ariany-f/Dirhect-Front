@@ -3,8 +3,9 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
-import './DataTable.css'
+// import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
+import Input from '@components/Input';
 import Texto from '@components/Texto';
 import styles from '@pages/Colaboradores/Colaboradores.module.css'
 import BotaoGrupo from '@components/BotaoGrupo';
@@ -22,6 +23,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import { Dropdown } from 'primereact/dropdown';
+import { useForm } from 'react-hook-form';
 
 function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort, sortField, sortOrder }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
@@ -229,6 +231,8 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             style={{ minWidth: '12rem' }}
         />
     );
+    
+    const { control, handleSubmit, formState: { errors } } = useForm();
 
     return (
         <>
@@ -236,9 +240,8 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 {showSearch && (
                     <>
                     <div className="flex justify-content-end">
-                        <span className="p-input-icon-left">
-                            <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
-                        </span>
+                        <Input icon="pi pi-search" value={globalFilterValue} name="globalFilterValue" control={control} onChange={(e) => onGlobalFilterChange(e.target.value)} placeholder="Buscar colaborador" type="search" showClear />
+                        {/* <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" /> */}
                     </div>
                     <BotaoGrupo align="end" gap="8px">
                         <BotaoSemBorda color="var(--primaria)">
@@ -261,7 +264,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 lazy
                 rows={rows} 
                 totalRecords={totalRecords} 
-                GlobalFilterFields={['funcionario_pessoa_fisica.nome', 'chapa', 'filial']}
+                globalfilterfields={['funcionario_pessoa_fisica.nome', 'chapa', 'filial']}
                 first={first} 
                 onPage={onPage} 
                 onSort={handleSort}
@@ -271,16 +274,16 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 stripedRows
                 sortField={sortField}
                 sortOrder={sortOrder === 'desc' ? -1 : 1}
-                footerColumnGroup={
-                    <ColumnGroup>
-                        <Row>
-                            <Column footer={totalColaboradoresTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                        </Row>
-                    </ColumnGroup>
-                }
+                // footerColumnGroup={
+                //     <ColumnGroup>
+                //         <Row>
+                //             <Column footer={totalColaboradoresTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                //         </Row>
+                //     </ColumnGroup>
+                // }
             >
                 <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header="Nome Completo" sortable style={{ width: '25%' }}></Column>
+                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header="Nome Completo" sortable style={{ width: '20%' }}></Column>
                 <Column 
                     body={representativeFilialTemplate} 
                     field="filial" 

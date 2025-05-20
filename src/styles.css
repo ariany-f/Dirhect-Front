@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@layer tailwind-base, primereact, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+@layer primereact {
+  @layer components {
+    @import "primereact/resources/primereact.min.css";  
+  }
+}
+    
+/* 
+<div class="bg-white bg-gray-50 text-gray-800 text-blue-700 bg-blue-50 hover:bg-[#edf0fa] hover:text-[var(--primaria)]"></div>
+*/
+    
+

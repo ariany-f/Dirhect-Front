@@ -4,7 +4,6 @@ import Texto from '@components/Texto'
 import Botao from '@components/Botao'
 import BadgeGeral from '@components/BadgeGeral'
 import styles from './Marketplace.module.css'
-// import './Marketplace.css'
 import { Link, Outlet, useLocation, useOutlet, useOutletContext } from "react-router-dom"
 import { BsArrowRight } from 'react-icons/bs';
 import { TbTag } from 'react-icons/tb';

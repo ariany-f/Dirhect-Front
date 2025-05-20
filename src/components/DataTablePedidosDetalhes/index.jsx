@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
+// import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -51,7 +51,7 @@ function DataTablePedidosDetalhes({ pedidos }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
                 </span>
             </div>
-            <DataTable value={pedidos} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados pedidos" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={pedidos} filters={filters} globalFilterFields={['funcionario']} stripedRows emptyMessage="Não foram encontrados pedidos" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="funcionario" header="Colaborador" style={{ width: '35%' }}></Column>
                 <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '35%' }}></Column>
                 <Column body={representativeDescontoTemplate} field="desconto" header="Desconto" style={{ width: '35%' }}></Column>

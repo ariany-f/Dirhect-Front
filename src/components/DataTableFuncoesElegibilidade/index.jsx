@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BadgeBeneficio from '@components/BadgeBeneficio'
 import Texto from '@components/Texto';
-import './DataTable.css'
+// import './DataTable.css'
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -155,7 +155,7 @@ function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagina
                     </span>
                 </div>
             }
-            <DataTable value={funcoes} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados funcoes" selection={selected ? selectedFuncaos : selectedFuncao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={funcoes} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} stripedRows emptyMessage="Não foram encontrados funcoes" selection={selected ? selectedFuncaos : selectedFuncao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
                 <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight size={24}/>}></Column>

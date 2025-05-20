@@ -9,7 +9,6 @@ import Titulo from "@components/Titulo"
 import './SelecionarFiliais.css'
 import { Toast } from 'primereact/toast'
 import styled from 'styled-components'
-import 'primereact/resources/themes/lara-light-cyan/theme.css';
 import ContainerHorizontal from '@components/ContainerHorizontal'
 import { FaPencilAlt, FaUser } from 'react-icons/fa'
 import { HiArrowLeft, HiArrowRight, HiUserGroup } from 'react-icons/hi'

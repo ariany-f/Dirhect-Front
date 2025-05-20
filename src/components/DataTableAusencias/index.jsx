@@ -1,7 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import './DataTable.css'
+// import './DataTable.css'
 import Texto from '@components/Texto';
 import { GrAddCircle } from 'react-icons/gr'
 import Botao from '@components/Botao'
@@ -97,7 +97,7 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
                 )
                 }
             </BotaoGrupo>
-            <DataTable value={ausencias} filters={filters} globalFilterFields={['funcionario']} emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
+            <DataTable value={ausencias} filters={filters} globalFilterFields={['funcionario']} stripedRows emptyMessage="Não foram encontradas ausências registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario" header="Colaborador" style={{ width: '30%' }}></Column>}
                 <Column body={representativSituacaoTemplate} field="ausencia_nome" header="Ausência" style={{ width: '15%' }}></Column>
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '15%' }}></Column>

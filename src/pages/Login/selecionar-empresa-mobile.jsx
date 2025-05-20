@@ -15,6 +15,7 @@ import Loading from "@components/Loading"
 import { useTranslation } from "react-i18next"
 import RightContainer from "@components/RightContainer"
 import MainContainer from "@components/MainContainer"
+import CustomImage from "@components/CustomImage"
 
 const Wrapper = styled.div`
     display: flex;
@@ -198,13 +199,21 @@ function SelecionarEmpresaMobile() {
                                         onClick={id_tenant => handleSelectChange(empresa.id_tenant)}>
                                         <div className={styles.cardEmpresa}>
                                             {empresa.tenant.simbolo ? 
-                                                    <img src={empresa.tenant.simbolo} alt={empresa.tenant.nome} width={50} height={50} style={{ padding: '10px' }} className={styles.logoEmpresa} />
+                                                <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant.nome} width={50} height={50} borderRadius="10px" style={{ padding: '10px' }} className={styles.logoEmpresa} />
                                                 : (selected === empresa.id_tenant) ?
                                                 <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                                 : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                             }
                                             <div className={styles.DadosEmpresa}>
-                                                <h6>{empresa.tenant.nome.toUpperCase()}</h6>
+                                                <h6
+                                                    className={
+                                                        empresa.tenant.nome.length > 20
+                                                            ? styles.nomeEmpresa + ' ' + styles.pequena
+                                                            : styles.nomeEmpresa
+                                                    }
+                                                >
+                                                    {empresa.tenant.nome.toUpperCase()}
+                                                </h6>
                                                 <div>{formataCNPJ(empresa.pessoaJuridica.cnpj)}</div>
                                             </div>
                                         </div>

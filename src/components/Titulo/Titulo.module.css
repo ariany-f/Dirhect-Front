@@ -1,10 +1,13 @@
 * {
     font-family: var(--fonte-secundaria);
     color: var(--black);
+}
+p {
     margin: 0;
 }
 h1, h2, h3, h4, h5, h6 {
     font-weight: 800;
+    margin: 0;
 }
 h1 {
     font-size: 40px;

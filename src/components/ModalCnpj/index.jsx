@@ -14,6 +14,7 @@ import { CiCirclePlus } from "react-icons/ci"
 import { ArmazenadorToken } from "@utils"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import { useTranslation } from "react-i18next"
+import CustomImage from "@components/CustomImage"
 
 const AdicionarCnpjBotao = styled.div`
     font-size: 14px;
@@ -206,7 +207,6 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
     }
 
-    console.log(empresas)
     return(
         <>
             {opened &&
@@ -227,7 +227,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                                             onClick={id => handleSelectChange(empresa.id_tenant)}>
                                             <div className={styles.cardEmpresa}>
                                                 {empresa.tenant.simbolo ?
-                                                    <img src={empresa.tenant.simbolo} alt={empresa.tenant.nome} width="50px" height="50px" style={{ padding: '10px' }}/>
+                                                    <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant.nome} width={50} height={50} borderRadius="10px" style={{ padding: '10px' }}/>
                                                     : (selected === empresa.id_tenant) ?
                                                         <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                                         : <RiBuildingLine className={styles.buildingIcon} size={20} />

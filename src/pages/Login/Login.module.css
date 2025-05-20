@@ -5,6 +5,8 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 .cardEmpresa {
     display: flex;
@@ -28,3 +30,31 @@
     fill: var(--primaria);
     border-color: var(--primaria);
 }
+.nomeEmpresa {
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;      /* Limita a 2 linhas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px; /* ajuste conforme necessário */
+    transition: font-size 0.2s;
+    white-space: normal; /* Permite quebra de linha */
+}
+
+.nomeEmpresa.pequena {
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+    .nomeEmpresa {
+      font-size: 14px;
+      max-width: 140px;
+      -webkit-line-clamp: 2;
+    }
+    .nomeEmpresa.pequena {
+      font-size: 10px;
+    }
+  }

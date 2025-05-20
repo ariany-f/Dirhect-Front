@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
+// import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -69,10 +69,10 @@ function DataTableAdmissao({ vagas }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
                 </span>
             </div>
-            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="vaga" header="Titulo" style={{ width: '35%' }}></Column>
-                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '35%' }}></Column>
-                <Column body={representativeStatusTemplate} header="Status" style={{ width: '35%' }}></Column>
+            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']} stripedRows emptyMessage="Não foram encontradas admissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}>
+                <Column field="vaga" header="Titulo" style={{ width: '25%' }}></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
+                <Column body={representativeStatusTemplate} header="Status" style={{ width: '30%' }}></Column>
                 <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '35%' }}></Column>
                 
             </DataTable>

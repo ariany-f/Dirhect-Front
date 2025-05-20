@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import './DataTable.css'
+// import './DataTable.css'
 import CampoArquivo from '@components/CampoArquivo';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';

@@ -5,7 +5,7 @@ import { Column } from 'primereact/column';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import './DataTable.css'
+// import './DataTable.css'
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';

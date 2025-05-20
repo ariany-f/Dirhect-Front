@@ -1,7 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import './DataTable.css'
+// import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import BotaoGrupo from '@components/BotaoGrupo';
 import Botao from '@components/Botao';

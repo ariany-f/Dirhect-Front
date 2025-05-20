@@ -8,7 +8,7 @@ import BadgeBeneficio from '@components/BadgeBeneficio'
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FaBan } from 'react-icons/fa';
-import './DataTable.css'
+// import './DataTable.css'
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
 
 const NumeroColaboradores = styled.p`
@@ -125,6 +125,7 @@ function DataTableCentrosCustoElegibilidade({ centros_custo = [], showSearch = t
                 </div>
             }
             <DataTable 
+                stripedRows
                 value={centros_custo} 
                 filters={filters} 
                 globalFilterFields={['id']}  

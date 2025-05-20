@@ -8,6 +8,8 @@ import Titulo from "@components/Titulo";
 import styles from './ModalOperadoras.module.css';
 import { Toast } from "primereact/toast";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import Input from "@components/Input";
+import { useForm } from "react-hook-form";
 
 const ImageUploadContainer = styled.div`
     display: flex;
@@ -71,7 +73,7 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
     const fileInputRef = useRef(null);
     const [base64Image, setBase64Image] = useState('');
     const toast = useRef(null);
-
+    const { control } = useForm();
     // Preencher campos ao abrir para edição
     useEffect(() => {
         if (opened && operadora) {
@@ -152,13 +154,14 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
                             </Titulo>
                         </Frame>
                         <br/>
-                        <Frame padding="24px">
-                            <CampoTexto
+                        <Frame padding="5px 0">
+                            <Input
                                 name="nome"
-                                valor={nome}
-                                setValor={setNome}
+                                value={nome}
                                 type="text"
-                                label="Nome da Operadora*"
+                                label="Nome*"
+                                control={control}
+                                onChange={e => setNome(e.target.value)}
                                 placeholder="Digite o nome da operadora"
                             />
                             
@@ -191,7 +194,7 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
                                 </UploadArea>
                                 
                                 {previewImagem && (
-                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                    <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                         <Botao 
                                             aoClicar={() => fileInputRef.current.click()}
                                             estilo="neutro" 

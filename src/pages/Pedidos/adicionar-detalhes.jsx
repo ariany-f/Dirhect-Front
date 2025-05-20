@@ -13,7 +13,6 @@ import styled from 'styled-components'
 import { Stepper } from 'primereact/stepper';
 import { StepperPanel } from 'primereact/stepperpanel';
 import { Button } from 'primereact/button';
-import 'primereact/resources/themes/lara-light-cyan/theme.css';
 import ContainerHorizontal from '@components/ContainerHorizontal'
 import BotaoSemBorda from '@components/BotaoSemBorda'
 import { FaPencilAlt, FaUser } from 'react-icons/fa'

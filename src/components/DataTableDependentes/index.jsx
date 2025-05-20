@@ -1,7 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import './DataTable.css'
+// import './DataTable.css'
 import Texto from '@components/Texto';
 import Botao from '@components/Botao';
 import BotaoGrupo from '@components/BotaoGrupo';
@@ -160,6 +160,7 @@ function DataTableDependentes({ dependentes, search = true, sortField, sortOrder
             </BotaoGrupo>
             
             <DataTable 
+                stripedRows
                 value={dependentes} 
                 filters={filters} 
                 globalFilterFields={['nome_depend', 'cpf']}  

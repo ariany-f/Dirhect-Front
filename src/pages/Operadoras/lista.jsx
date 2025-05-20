@@ -6,6 +6,7 @@ import Management from '@assets/Management.svg'
 import { GrAddCircle } from 'react-icons/gr'
 import Botao from '@components/Botao'
 import { Toast } from 'primereact/toast'
+import { ArmazenadorToken } from "@utils"
 import http from "@http"
 import axios from 'axios';
 import BotaoGrupo from '@components/BotaoGrupo'
@@ -102,6 +103,7 @@ function OperadorasListagem() {
         const response = await axios.post(`${baseUrl}operadora/`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${ArmazenadorToken.AccessToken}`
             },
         });
         if(response?.data.id)
@@ -177,6 +179,7 @@ function OperadorasListagem() {
         const response = await axios.put(`${baseUrl}operadora/${operadoraEditando.id}/`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${ArmazenadorToken.AccessToken}`
             },
         });
         if(response?.data.id) {
@@ -203,8 +206,13 @@ function OperadorasListagem() {
         const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
         const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
         const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
-        const response = await axios.get(`${baseUrl}operadora/`);
-        if (response?.data) setOperadoras(response.data);
+        await http.get(`operadora/`)
+        .then(response => {
+            if (response) setOperadoras(response);
+        })
+        .catch(error => {
+            console.error('Erro ao carregar operadoras:', error);
+        });
     };
 
     // Função para deletar operadora com confirmação
