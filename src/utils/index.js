@@ -1,5 +1,7 @@
 const ACCESS_TOKEN = 'token_access'
 const EXPIRATION = 'expires_at'
+const REFRESH_TOKEN = 'refresh_token'
+const PERMISSIONS = 'permissions'
 const USER_NAME = 'name'
 const USER_EMAIL = 'email'
 const USER_CPF = 'cpf'
@@ -11,13 +13,21 @@ const USER_PUBLIC_ID = 'public_id'
 const USER_TYPE = 'tipo'
 
 export class ArmazenadorToken {
-    static definirToken(accessToken, expiration) {
-        if (!accessToken || !expiration) {
-            throw new Error('Token de acesso e expiração são obrigatórios')
+    static definirToken(accessToken, expiration = null, refreshToken = null, permissions = null) {
+        if (!accessToken) {
+            throw new Error('Token de acesso é obrigatório')
         }
         try {
             sessionStorage.setItem(ACCESS_TOKEN, accessToken)
-            sessionStorage.setItem(EXPIRATION, expiration)
+            if(expiration) {
+                sessionStorage.setItem(EXPIRATION, expiration)
+            }
+            if(refreshToken) {
+                sessionStorage.setItem(REFRESH_TOKEN, refreshToken)
+            }
+            if(permissions) {
+                sessionStorage.setItem(PERMISSIONS, permissions)
+            }
         } catch (error) {
             console.error('Erro ao armazenar token:', error)
             throw new Error('Falha ao armazenar dados de autenticação')
@@ -48,10 +58,17 @@ export class ArmazenadorToken {
             throw new Error('Falha ao armazenar dados do usuário')
         }
     }
+    static removerCompany() {
+        sessionStorage.removeItem(COMPANY_PUBLIC_ID)
+        sessionStorage.removeItem(COMPANY_DOMAIN)
+        sessionStorage.removeItem(COMPANY_SYMBOL)
+        sessionStorage.removeItem(COMPANY_LOGO)
+    }
     static removerToken() {
         
         sessionStorage.removeItem(ACCESS_TOKEN)
         sessionStorage.removeItem(EXPIRATION)
+        sessionStorage.removeItem(REFRESH_TOKEN)
         sessionStorage.removeItem(USER_NAME)
         sessionStorage.removeItem(USER_EMAIL)
         sessionStorage.removeItem(USER_CPF)
@@ -69,6 +86,9 @@ export class ArmazenadorToken {
     }
     static get ExpirationToken() {
         return sessionStorage.getItem(EXPIRATION)
+    }
+    static get RefreshToken() {
+        return sessionStorage.getItem(REFRESH_TOKEN)
     }
     static get UserName() {
         return sessionStorage.getItem(USER_NAME)
