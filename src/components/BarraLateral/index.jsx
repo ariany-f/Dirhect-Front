@@ -155,6 +155,7 @@ function BarraLateral({ $sidebarOpened }) {
         // Se já existe no ArmazenadorToken, usa ele
         if (ArmazenadorToken.UserGroups && Array.isArray(ArmazenadorToken.UserGroups) && ArmazenadorToken.UserGroups.length > 0) {
             setGrupos(ArmazenadorToken.UserGroups);
+           
         } else {
             http.get(`permissao_grupo/?format=json&name=${usuario.tipo}`)
                 .then(response => {

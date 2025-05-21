@@ -15,10 +15,10 @@ const USER_GROUPS = 'groups'
 
 export class ArmazenadorToken {
     static definirGrupos(groups) {
-        sessionStorage.setItem(USER_GROUPS, groups)
+        sessionStorage.setItem(USER_GROUPS, JSON.stringify(groups))
     }
     static get UserGroups() {
-        return sessionStorage.getItem(USER_GROUPS)
+        return JSON.parse(sessionStorage.getItem(USER_GROUPS))
     }
     static definirToken(accessToken, expiration = null, refreshToken = null, permissions = null) {
         if (!accessToken) {
@@ -134,12 +134,15 @@ export class ArmazenadorToken {
                 try {
                     groups = JSON.parse(groupsRaw);
                 } catch {
-                    // Se não for JSON, pode ser um array já
+                    // Se não for JSON, pode ser um objeto já
                 }
             }
-            console.log(groups)
-            if (!Array.isArray(groups)) return false;
-            for (const group of groups) {
+            // Se for objeto único, transforma em array
+            if (!Array.isArray(groups)) {
+                groups = [groups];
+            }
+           
+            for (const group of groups) { 
                 if (group.permissions && Array.isArray(group.permissions)) {
                     if (group.permissions.some(p => p.codename === codename)) {
                         return true;

@@ -372,7 +372,7 @@ function ColaboradorDetalhes() {
                         {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/saldo`}>
                             <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/saldo` ? 'black':''} size="small" tab>Saldo em benefícios</Botao>
                         </Link> */}
-                        {ArmazenadorToken.hasPermission('view_dependentes') &&
+                        {ArmazenadorToken.hasPermission('view_dependente') &&
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}/dependentes`}>
                             <Botao 
                                 estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
