@@ -26,6 +26,7 @@ import { MdOutlineFastfood } from 'react-icons/md';
 import { IoCopyOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 import { BiFemale, BiMale } from 'react-icons/bi';
+import { ArmazenadorToken } from '@utils';
 
 const Col12 = styled.div`
     display: flex;
