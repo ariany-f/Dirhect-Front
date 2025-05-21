@@ -84,7 +84,7 @@ function OperadorRegistroSelecionar() {
             setFirstName(firstName)
             setLastName(lastName)
             setTenantId(ArmazenadorToken.UserCompanyPublicId)
-            setUsername((firstName.replace(/\s+/g, '.') + '.' + lastName.replace(/\s+/g, '.')).toLowerCase())
+            setUsername('colaborador.' + ArmazenadorToken.UserCompanyPublicId + '.' + (firstName.replace(/\s+/g, '.') + '.' + lastName.replace(/\s+/g, '.')).toLowerCase())
             setPassword(password)
         }
         else {
@@ -94,7 +94,7 @@ function OperadorRegistroSelecionar() {
                 setLastName(selectedColaborador.funcionario_pessoa_fisica.nome.split(' ')[1])
             }
             setTenantId(ArmazenadorToken.UserCompanyPublicId)
-            setUsername(selectedColaborador.funcionario_pessoa_fisica.nome.replace(/\s+/g, '.').toLowerCase())
+            setUsername('colaborador.' + ArmazenadorToken.UserCompanyPublicId + '.' + selectedColaborador.funcionario_pessoa_fisica.nome.replace(/\s+/g, '.').toLowerCase())
             setPassword('123456')
         }
         navegar('/operador/registro/permissoes')

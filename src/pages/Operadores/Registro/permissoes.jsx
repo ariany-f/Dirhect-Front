@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import styles from './Registro.module.css'
 import { useState, useEffect } from 'react';
 import http from '@http';
+import Input from '@components/Input';
+import { useForm } from 'react-hook-form';
 
 const ContainerButton = styled.div`
     display: flex;
@@ -43,6 +45,7 @@ function OperadorRegistroPermissoes () {
     const { 
         operador,
         setGroups,
+        setEmail,
         submeterOperador
     } = useOperadorContext()
 
@@ -50,21 +53,22 @@ function OperadorRegistroPermissoes () {
     const [checkedAll, setCheckedAll] = useState(false)
     const [selectedRole, setSelectedRole] = useState(null)
     const [grupos, setGrupos] = useState([]);
+    const { control, handleSubmit, formState: { errors } } = useForm();
 
-    const adicionarOperador = () => {
-        if(checkedAll)
-        {
+    const adicionarOperador = (data) => {
+        if(!operador.email) {
+            setEmail(data.email)
+            operador.email = data.email
+        }
+        if(checkedAll) {
             setGroups(['global'])
             operador.groups = ['global']
-        }
-        else
-        {
+        } else {
             setGroups([selectedRole])
             operador.groups = [selectedRole]
         }
         submeterOperador().then(response => {
-        if(response)
-            {
+            if(response) {
                 navegar('/operador/registro/sucesso')
             }
         })
@@ -82,12 +86,36 @@ function OperadorRegistroPermissoes () {
     }, []);
 
     return (
+        <form onSubmit={handleSubmit(adicionarOperador)}>
         <Frame>
             <Texto weight={500} size="12px">Nome do operador</Texto>
             <Titulo>
                 <h3>{operador.first_name} {operador.last_name}</h3>
             </Titulo>
             <DottedLine />
+            
+            {!operador.email && (
+                <div style={{ marginBottom: 16 }}>
+                    <Input
+                        control={control}
+                        type="email"
+                        id="email"
+                        name="email"
+                        label="E-mail do operador"
+                        defaultValue={operador.email}
+                        required
+                        rules={{
+                            required: 'E-mail é obrigatório',
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: 'Por favor, insira um e-mail válido'
+                            }
+                        }}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                    />
+                </div>
+            )}
             <Titulo>
                 <h6>Permissões</h6>
                 <SubTitulo>
@@ -121,9 +149,10 @@ function OperadorRegistroPermissoes () {
             </div>
             <ContainerButton>
                 <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                <Botao aoClicar={adicionarOperador} estilo="vermilion" size="medium" filled>Adicionar operador</Botao>
+                <Botao type="submit" estilo="vermilion" size="medium" filled>Adicionar operador</Botao>
             </ContainerButton>
         </Frame>
+        </form>
     )
 }
 export default OperadorRegistroPermissoes
