@@ -337,44 +337,44 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           {isDesktop ? <h6>{titulo}</h6> : <>&nbsp;</>}
         </div>
         <RightItems>
-          <div className={styles.divisor}>
             {isDesktop && (
-              <MegaMenuWrapper 
-                ref={menuRef}
-                onMouseEnter={() => setMenuAberto(true)}
-                onMouseLeave={() => setMenuAberto(false)}
-              >
-                <MenuTrigger onClick={() => setMenuAberto(!menuAberto)}>
-                  <Texto weight="600" size={'14px'} color="black">
-                    {t('options')}
-                  </Texto>
-                  <ChevronIcon $isOpen={menuAberto} size={16} />
-                </MenuTrigger>
-                
-                <MegaMenuPanel $isOpen={menuAberto}>
-                  <MenuGrid>
-                    {menuItems.map((column, index) => (
-                      <MenuColumn key={index}>
-                        {column.items.map((item, itemIndex) => (
-                          <MenuItem 
-                            key={itemIndex} 
-                            to={item.url}
-                            onClick={() => setMenuAberto(false)}
-                            $isActive={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}
-                          >
-                            {item.icon}
-                            <Texto weight="500" size={'14px'} color="black">
-                              {item.label}
-                            </Texto>
-                          </MenuItem>
-                        ))}
-                      </MenuColumn>
-                    ))}
-                  </MenuGrid>
-                </MegaMenuPanel>
-              </MegaMenuWrapper>
+              <div className={styles.divisor}>
+                <MegaMenuWrapper 
+                  ref={menuRef}
+                  onMouseEnter={() => setMenuAberto(true)}
+                  onMouseLeave={() => setMenuAberto(false)}
+                >
+                  <MenuTrigger onClick={() => setMenuAberto(!menuAberto)}>
+                    <Texto weight="600" size={'14px'} color="black">
+                      {t('options')}
+                    </Texto>
+                    <ChevronIcon $isOpen={menuAberto} size={16} />
+                  </MenuTrigger>
+                  
+                  <MegaMenuPanel $isOpen={menuAberto}>
+                    <MenuGrid>
+                      {menuItems.map((column, index) => (
+                        <MenuColumn key={index}>
+                          {column.items.map((item, itemIndex) => (
+                            <MenuItem 
+                              key={itemIndex} 
+                              to={item.url}
+                              onClick={() => setMenuAberto(false)}
+                              $isActive={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}
+                            >
+                              {item.icon}
+                              <Texto weight="500" size={'14px'} color="black">
+                                {item.label}
+                              </Texto>
+                            </MenuItem>
+                          ))}
+                        </MenuColumn>
+                      ))}
+                    </MenuGrid>
+                  </MegaMenuPanel>
+                </MegaMenuWrapper>
+              </div>
             )}
-          </div>
           
           <div className={styles.divisor}>
             {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
