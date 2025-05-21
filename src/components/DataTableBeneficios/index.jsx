@@ -263,7 +263,6 @@ function DataTableBeneficios({
     };
 
     const representativeStatusTemplate = (rowData) => {
-        console.log(tipos)
         return tipos[rowData.tipo] || rowData.tipo;
     };
 

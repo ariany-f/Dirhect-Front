@@ -97,7 +97,6 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const simboloSalvo = sessionStorage.getItem('simbolo');
         const logoSalvo = sessionStorage.getItem('logo');
         const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
-        console.log(tipoSalvo);
         usuarioSalvo = {
             cpf: cpfSalvo ?? '',
             email: emailSalvo ?? '',

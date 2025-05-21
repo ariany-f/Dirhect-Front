@@ -386,10 +386,6 @@ function BarraLateral({ $sidebarOpened }) {
         setBarraLateralOpened(false)
     }
 
-    // DEBUG: logs para depuração
-    console.log('grupos:', grupos);
-    console.log('usuario.tipo:', usuario.tipo);
-
     // Fallback: se grupos não carregou ainda, renderiza só os menus alwaysVisible
     if (!grupos || grupos.length === 0) {
         return (

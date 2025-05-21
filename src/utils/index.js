@@ -137,6 +137,7 @@ export class ArmazenadorToken {
                     // Se não for JSON, pode ser um array já
                 }
             }
+            console.log(groups)
             if (!Array.isArray(groups)) return false;
             for (const group of groups) {
                 if (group.permissions && Array.isArray(group.permissions)) {
