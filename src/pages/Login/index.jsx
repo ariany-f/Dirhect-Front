@@ -119,7 +119,11 @@ function Login() {
                 }
             });
         } catch (error) {
-            toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
+            if(error.response.status === 401) {
+                toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
+            } else {
+                toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
+            }
         } finally {
             setLoading(false);
         }
