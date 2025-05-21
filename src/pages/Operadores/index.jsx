@@ -23,7 +23,7 @@ function Operador() {
 
     const carregarOperadores = (sort = '', order = '') => {
         const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '';
-        http.get(`usuario/?format=json${orderParam}`)
+        http.get(`usuario/?format=json${orderParam}&email__isnull=False`)
             .then(response => {
                 setOperadores(response)
             })
