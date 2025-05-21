@@ -23,6 +23,7 @@ import { SuccessIcon, ErrorIcon } from '@components/ToastIcons';
 
 function Login() {
     const [loading, setLoading] = useState(false)
+    const [ready, setReady] = useState(false)
     const navegar = useNavigate()
     const { t } = useTranslation('common');
     const {
@@ -40,7 +41,7 @@ function Login() {
 
     const { control, handleSubmit, formState: { errors } } = useForm();
 
-    function handleLogin() {
+    async function handleLogin() {
         const data = {
             username: import.meta.env.VITE_API_USER,
             password: import.meta.env.VITE_API_PASS
@@ -50,6 +51,7 @@ function Login() {
         http.post(`/app-login/`, data)
         .then(response => {
             ArmazenadorToken.definirToken(response.access, null, null, null);
+            return response;
         })
         .catch(error => {
             console.log(error);
@@ -57,21 +59,29 @@ function Login() {
     }
 
     useEffect(() =>{
-        ArmazenadorToken.removerToken();
-        ArmazenadorToken.removerCompany();
-        handleLogin();
-        if(usuarioEstaLogado) {
-            setUsuarioEstaLogado(false);
+        async function init() {
+            ArmazenadorToken.removerToken();
+            ArmazenadorToken.removerCompany();
+            if(usuarioEstaLogado) {
+                await handleLogin();
+                setUsuarioEstaLogado(false);
+            }
+            setReady(true);
         }
+        init();
     }, [])
 
     const onSubmit = (data) => {
+        data.app_token = ArmazenadorToken.AccessToken;
+        if(!data.app_token) {
+            handleLogin();
+            return;
+        }
         if(!data.email || !data.password) {
             toast.info('Preencha usuário e senha!');
             return;
         }
         setLoading(true);
-        data.app_token = ArmazenadorToken.AccessToken;
         http.post('/token/', data)
             .then(response => {
                 if(response.access) {
@@ -109,6 +119,10 @@ function Login() {
                 console.log(error);
                 toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
             });
+    }
+
+    if (!ready) {
+        return <Loading opened={true} />;
     }
 
     return (
