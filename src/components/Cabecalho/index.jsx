@@ -114,7 +114,7 @@ const HeaderEstilizado = styled.header`
   align-items: center;
   position: fixed;
   height: fit-content;
-  padding: 2vh 4vw 2vh 5vw;
+  padding: 2vh 4vw 2vh 4vw;
   width: inherit;
   z-index: 7;
   background-color: var(--white);
