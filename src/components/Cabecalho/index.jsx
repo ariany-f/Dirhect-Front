@@ -371,27 +371,6 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                 </MegaMenuPanel>
               </MegaMenuWrapper>
             )}
-            
-            {/* {usuario.tipo !== "candidato" && isDesktop && (
-              <Frame alinhamento="center">
-                <Link 
-                  to="/marketplace"
-                  className={styles.link}
-                  style={{
-                    border: '1px solid var(--neutro-200)',
-                    cursor: 'pointer',
-                    borderRadius: '8px',
-                    padding: '8px',
-                    boxSizing: 'initial'
-                  }}
-                >
-                  <Texto weight="600" size={'14px'} color="black">
-                    <MdShoppingCart size={18} />
-                    &nbsp;Marketplace
-                  </Texto>
-                </Link>
-              </Frame>
-            )} */}
           </div>
           
           <div className={styles.divisor}>
