@@ -21,7 +21,6 @@ const SwitchContainer = styled.div`
     }
 `
 function SwitchInput({checked = false, onChange = null, color = 'var(--primaria)'}){
-    console.log(color)
     return (
         <SwitchContainer $type={color}>
             <InputSwitch checked={checked} onChange={(e) => onChange(e.value)} />
