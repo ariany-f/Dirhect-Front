@@ -63,7 +63,6 @@ function Login() {
             ArmazenadorToken.removerToken();
             ArmazenadorToken.removerCompany();
             if(usuarioEstaLogado) {
-                await handleLogin();
                 setUsuarioEstaLogado(false);
             }
             setReady(true);
@@ -71,12 +70,9 @@ function Login() {
         init();
     }, [])
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
+        await handleLogin();
         data.app_token = ArmazenadorToken.AccessToken;
-        if(!data.app_token) {
-            handleLogin();
-            return;
-        }
         if(!data.email || !data.password) {
             toast.info('Preencha usuário e senha!');
             return;
