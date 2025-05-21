@@ -2,16 +2,6 @@ import styled from 'styled-components'
 import styles from './MainContainer.module.css'
 
 const DivContainer = styled.div`
-    // align-self: auto;
-    // flex-shrink: 1;
-    // flex-grow: 1;
-    // flex-basis: auto;
-    // margin: 0 auto;
-    // flex-wrap: initial;
-    // justify-content: center;
-    // align-items: stretch;
-    // max-width: min(100%, 428px);
-
     justify-content: ${ props => props.$align ? props.$align : 'center' };
     align-items: ${ props => props.$align == 'center' ? props.$align : 'initial' };
     text-align: ${ props => props.$align ? props.$align : 'center' };
@@ -20,6 +10,19 @@ const DivContainer = styled.div`
     width: -webkit-fill-available;
     height: 100%;
     max-height: 100vh;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: white;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 5px;
+    }
 `
 
 function MainContainer({ children, align, padding = '0 10vw', aoClicar = null }) {

@@ -42,7 +42,7 @@ const ListaEstilizada = styled.ul`
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 
-        &::-webkit-scrollbar {
+    &::-webkit-scrollbar {
         width: 6px;
     }
 
