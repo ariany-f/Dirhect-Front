@@ -9,12 +9,12 @@ const OperadorInicial = {
     tenant_id: '',
     username: '',
     password: '',
-    roles: {}
+    groups: {}
 }
 
 export const OperadorContext = createContext({
     operador: OperadorInicial,
-    setRoles: () => null,
+    setGroups: () => null,
     setEmail: () => null,
     setFirstName: () => null,
     setLastName: () => null,
@@ -35,11 +35,11 @@ export const OperadorProvider = ({ children }) => {
 
     const [operador, setOperador] = useState(OperadorInicial)
 
-    const setRoles = (roles) => {
+    const setGroups = (groups) => {
         setOperador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                roles
+                groups
             }
         })
     }   
@@ -110,7 +110,7 @@ export const OperadorProvider = ({ children }) => {
 
     const contexto = {
         operador,
-        setRoles,
+        setGroups,
         setEmail,
         setFirstName,
         setLastName,

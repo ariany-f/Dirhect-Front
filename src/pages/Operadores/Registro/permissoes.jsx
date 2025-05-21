@@ -10,7 +10,8 @@ import DottedLine from '@components/DottedLine';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import styles from './Registro.module.css'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import http from '@http';
 
 const ContainerButton = styled.div`
     display: flex;
@@ -41,26 +42,28 @@ const CardLine = styled.div`
 function OperadorRegistroPermissoes () {
     const { 
         operador,
-        setRoles,
+        setGroups,
         submeterOperador
     } = useOperadorContext()
 
     const navegar = useNavigate()
     const [checkedAll, setCheckedAll] = useState(false)
-    const [selectedRole, setSelectedRole] = useState('read')
+    const [selectedRole, setSelectedRole] = useState(null)
+    const [grupos, setGrupos] = useState([]);
 
     const adicionarOperador = () => {
-        setRoles(
-            {
-                "status": true,
-                "all": checkedAll,
-                "read": (selectedRole === 'read'),
-                "financial": (selectedRole === 'financial'),
-                "human_Resources": (selectedRole === 'human_Resources'),
-            }
-        )
+        if(checkedAll)
+        {
+            setGroups(['global'])
+            operador.groups = ['global']
+        }
+        else
+        {
+            setGroups([selectedRole])
+            operador.groups = [selectedRole]
+        }
         submeterOperador().then(response => {
-           if(response)
+        if(response)
             {
                 navegar('/operador/registro/sucesso')
             }
@@ -71,6 +74,12 @@ function OperadorRegistroPermissoes () {
     {
         setSelectedRole(valor)
     }
+
+    useEffect(() => {
+        http.get('permissao_grupo/')
+            .then(response => setGrupos(response))
+            .catch(error => console.log('Erro ao buscar grupos:', error));
+    }, []);
 
     return (
         <Frame>
@@ -96,33 +105,19 @@ function OperadorRegistroPermissoes () {
             </div>
             
             <div className={styles.card_dashboard}>
-                <CardLine>
-                    <Titulo>
-                        <b>Visualização</b>
-                        <SubTitulo>O colaborador apenas pode visualizar a plataforma.</SubTitulo>
-                    </Titulo>
-                    {!checkedAll &&
-                        <RadioButton name="role_option" top="0" value={'read'} checked={selectedRole === 'read'} onSelected={() => handleChange('read')}/>
-                    }
-                </CardLine>
-                <CardLine>
-                    <Titulo>
-                        <b>Financeiro</b>
-                        <SubTitulo>Controle do saldo, adição de crédito da conta e extrato da conta.</SubTitulo>
-                    </Titulo>
-                    {!checkedAll &&
-                        <RadioButton name="role_option" top="0" value={'financial'} checked={selectedRole === 'financial'} onSelected={() => handleChange('financial')}/>
-                    }
-                </CardLine>
-                <CardLine>
-                    <Titulo>
-                        <b>Recursos Humanos (RH)</b>
-                        <SubTitulo>Controle de colaboradores, e gerenciamento de cartões.</SubTitulo>
-                    </Titulo>
-                    {!checkedAll &&
-                        <RadioButton name="role_option" top="0" value={'human_Resources'} checked={selectedRole === 'human_Resources'} onSelected={() => handleChange('human_Resources')}/>
-                    }
-                </CardLine>
+                
+                {grupos.map(grupo => (
+                    <CardLine key={grupo.id}>
+                        <Titulo>
+                            <b>{grupo.name}</b>
+                            <SubTitulo>O colaborador tem acesso a conta.</SubTitulo>
+                        </Titulo>
+                        {!checkedAll &&
+                            <RadioButton name="role_option" top="0" value={grupo.name} checked={selectedRole === grupo.name} onSelected={() => handleChange(grupo.name)}/>
+                        }
+                    </CardLine>
+                ))}
+                
             </div>
             <ContainerButton>
                 <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
