@@ -71,12 +71,13 @@ function Login() {
     }, [])
 
     const onSubmit = async (data) => {
+        if(!data.email || !data.password) {
+            toast.info('Preencha usuário e senha!');
+            return;
+        }
         await handleLogin().then(response => {
             data.app_token = ArmazenadorToken.AccessToken;
-            if(!data.email || !data.password) {
-                toast.info('Preencha usuário e senha!');
-                return;
-            }
+            
             setLoading(true);
             http.post('/token/', data)
                 .then(response => {
