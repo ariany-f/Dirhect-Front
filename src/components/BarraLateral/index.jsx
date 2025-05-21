@@ -138,10 +138,11 @@ const StyledLink = styled(Link)`
     overflow: hidden;
 `
 
-function BarraLateral() {
+function BarraLateral({ $sidebarOpened }) {
+   
     const location = useLocation()
     
-    const [barraLateralOpened, setBarraLateralOpened] = useState(window.innerWidth > 760)
+    const [barraLateralOpened, setBarraLateralOpened] = useState(window.innerWidth > 760 && $sidebarOpened)
     const [image, setImage] = useState(false)
     const [breadCrumbItems, setBreadCrumbItems] = useState([])
     const ref = useRef(null)
@@ -152,6 +153,7 @@ function BarraLateral() {
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
+       
         const handleTouchMove = (e) => {
             if (barraLateralOpened && window.innerWidth <= 760) {
                 const navElement = document.querySelector('nav')
@@ -168,7 +170,7 @@ function BarraLateral() {
         return () => {
             document.removeEventListener('touchmove', handleTouchMove)
         }
-    }, [barraLateralOpened])
+    }, [barraLateralOpened, $sidebarOpened])
 
     useEffect(() => {
         const handleResize = () => {
@@ -506,6 +508,7 @@ function BarraLateral() {
 
     function toggleBarraLateral() {
         setBarraLateralOpened(!barraLateralOpened)
+        
     }
 
     const fecharMenu = () => {
@@ -514,8 +517,8 @@ function BarraLateral() {
 
     return (
         <>
-            <Overlay $opened={barraLateralOpened} onClick={fecharMenu} />
-            <BarraLateralEstilizada $opened={barraLateralOpened}>
+            {/* <Overlay $opened={$sidebarOpened} onClick={fecharMenu} /> */}
+            <BarraLateralEstilizada $opened={$sidebarOpened}>
                 {image && <Logo src={logo} ref={ref} alt="Logo" />}
                 
                 <div style={{
@@ -556,20 +559,6 @@ function BarraLateral() {
                 borderRadius: '4px', 
                 zIndex: '8'
             }}>
-                <Botao 
-                    aoClicar={toggleBarraLateral} 
-                    tab={true} 
-                    estilo={"neutro"} 
-                    outStyle={{
-                        marginRight: '1vw', 
-                        marginLeft: barraLateralOpened ? 'calc(246px + 1vw)' : '1vw', 
-                        backdropFilter: 'blur(30px) saturate(2)', 
-                        WebkitBackdropFilter: 'blur(30px) saturate(2)', 
-                        transition: '.5s cubic-bezier(.36,-0.01,0,.77)'
-                    }} 
-                >
-                    <FaBars />
-                </Botao>
             </div>
         </>
     )

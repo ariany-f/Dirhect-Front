@@ -62,10 +62,11 @@ function Autenticado() {
     const [menuOpened, setMenuOpened] = useState(false)
     const [loading, setLoading] = useState(false)
 
+    const [sidebarOpened, setSidebarOpened] = useState(true)
+
     const location = useLocation()
 
-    useEffect(() => {
-        
+    useEffect(() => {        
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {
              // Buscar clientes
@@ -144,7 +145,7 @@ function Autenticado() {
             }
         }
 
-    }, [empresas, tenants, modalOpened])
+    }, [empresas, tenants, modalOpened, sidebarOpened])
 
     function toggleMenu(){
         setMenuOpened(!menuOpened)
@@ -154,6 +155,11 @@ function Autenticado() {
         if(menuOpened)
         {
             setMenuOpened(false)
+        }
+
+        if(sidebarOpened)
+        {
+            setSidebarOpened(false)
         }
     }
     
@@ -185,17 +191,11 @@ function Autenticado() {
         {usuarioEstaLogado ?
             <>
             <EstilosGlobais />
-            <MainSection>
+            <MainSection aoClicar={fechaMenu}>
                 <Loading opened={loading} />
-                {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/pedidos/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/pedidos/editar-valor/colaboradores' &&                       
-                    <BarraLateral />
-                }
+                <BarraLateral $sidebarOpened={sidebarOpened}/>
                 <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
-                    {location.pathname !== '/beneficio/editar-valor/departamentos' && location.pathname !== '/pedidos/editar-valor/departamentos' && location.pathname !== '/beneficio/editar-valor/colaboradores' && location.pathname !== '/pedidos/editar-valor/colaboradores' &&     
-                        <>
-                            <Cabecalho setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa.toUpperCase()} simbolo={simbolo} logo={logo} />
-                        </>
-                    }
+                    <Cabecalho sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa.toUpperCase()} simbolo={simbolo} logo={logo} />
                     <MarginContainer>
                         <Outlet key={empresa} />
                     </MarginContainer>

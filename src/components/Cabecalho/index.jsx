@@ -9,7 +9,7 @@ import { MdOutlineKeyboardArrowDown, MdShoppingCart } from 'react-icons/md';
 import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
-import { FaBuilding, FaBusAlt } from "react-icons/fa";
+import { FaBars, FaBuilding, FaBusAlt } from "react-icons/fa";
 import { LuSparkles } from "react-icons/lu";
 import LanguageSelector from "../LanguageSelector";
 import { useTranslation } from 'react-i18next';
@@ -229,7 +229,7 @@ const MarketplaceButton = styled(Frame)`
     }
 `;
 
-const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, simbolo, logo }) => {
+const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, simbolo, logo, sidebarOpened, setSidebarOpened }) => {
   const location = useLocation();
   const [menuAberto, setMenuAberto] = useState(false);
   const { usuario } = useSessaoUsuarioContext();
@@ -332,6 +332,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
   return (
     <HeaderEstilizado>
       <HeaderTop>
+        <FaBars style={{ cursor: 'pointer' }} size={24} onClick={() => setSidebarOpened(!sidebarOpened)} />
         {isDesktop ? <h6>{titulo}</h6> : <>&nbsp;</>}
         <RightItems>
           <div className={styles.divisor}>
