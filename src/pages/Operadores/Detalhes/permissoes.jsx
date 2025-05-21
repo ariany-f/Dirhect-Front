@@ -94,7 +94,7 @@ function OperadorPermissoes() {
                 {permissoes.length === 0 && (
                     <Texto>Nenhuma permissão encontrada para este usuário.</Texto>
                 )}
-                {permissoes.map(perm => {
+                {permissoes.filter(perm => perm.app_label === 'specific' || perm.app_label === 'shared').map(perm => {
                     const PREFIXES = ['Can view', 'Can change', 'Can add', 'Can delete'];
                     const prefix = PREFIXES.find(p => perm.name.startsWith(p));
                     let resto = '';
