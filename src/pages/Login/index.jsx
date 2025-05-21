@@ -51,6 +51,10 @@ function Login() {
         http.post(`/app-login/`, data)
         .then(response => {
             ArmazenadorToken.definirToken(response.access, null, null, null);
+        })
+        .then(response => {
+            console.log('Salvou o access_token',response);
+            
             return response;
         })
         .catch(error => {
