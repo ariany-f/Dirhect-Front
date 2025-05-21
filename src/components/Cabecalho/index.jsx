@@ -14,7 +14,7 @@ import { LuSparkles } from "react-icons/lu";
 import LanguageSelector from "../LanguageSelector";
 import { useTranslation } from 'react-i18next';
 import CustomImage from '@components/CustomImage';
-
+import { ArmazenadorToken } from '@utils';
 
 // MegaMenu Container
 const MegaMenuWrapper = styled.div`
@@ -377,7 +377,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
             )}
           
           <div className={styles.divisor}>
-            {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
+            {ArmazenadorToken.hasPermission('view_clienttenant') && (
               <ItemEmpresa onClick={aoClicar}>
                 {simbolo && simbolo !== null && simbolo !== 'null' ? 
                   <>

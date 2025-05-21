@@ -11,6 +11,7 @@ import { FaBuilding, FaBusAlt } from "react-icons/fa"
 import { LuSparkles } from "react-icons/lu"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import http from "@http"
 
 const DialogEstilizado = styled.dialog`
     display: inline-flex;
@@ -167,11 +168,16 @@ function Menu({ opened = false, aoFechar }){
 
     function Sair() {
         if(opened) {
-            aoFechar()
-            ArmazenadorToken.removerToken()
+            const data = {  
+                refresh: ArmazenadorToken.RefreshToken
+            }
+            http.post(`token/blacklist/`, data).then(() => {
+                ArmazenadorToken.removerToken()
+            }).finally(() => {
+                aoFechar()
+                navegar('/login')
+            })
         }
-        
-        navegar('/login')
     }
 
     const FecharMenu = () => {

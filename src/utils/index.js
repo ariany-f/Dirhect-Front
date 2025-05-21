@@ -74,6 +74,8 @@ export class ArmazenadorToken {
     static removerToken() {
         sessionStorage.removeItem(ACCESS_TOKEN)
         sessionStorage.removeItem(EXPIRATION)
+        sessionStorage.removeItem(PERMISSIONS)
+        sessionStorage.removeItem(USER_GROUPS)
         sessionStorage.removeItem(REFRESH_TOKEN)
         sessionStorage.removeItem(USER_NAME)
         sessionStorage.removeItem(USER_EMAIL)
@@ -122,5 +124,30 @@ export class ArmazenadorToken {
     }
     static get UserCompanyLogo() {
         return sessionStorage.getItem(COMPANY_LOGO)
+    }
+    static hasPermission(codename) {
+        try {
+            const groupsRaw = sessionStorage.getItem(USER_GROUPS);
+            if (!groupsRaw) return false;
+            let groups = groupsRaw;
+            if (typeof groupsRaw === 'string') {
+                try {
+                    groups = JSON.parse(groupsRaw);
+                } catch {
+                    // Se não for JSON, pode ser um array já
+                }
+            }
+            if (!Array.isArray(groups)) return false;
+            for (const group of groups) {
+                if (group.permissions && Array.isArray(group.permissions)) {
+                    if (group.permissions.some(p => p.codename === codename)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } catch (e) {
+            return false;
+        }
     }
 }
