@@ -14,6 +14,7 @@ import { useState, useEffect } from 'react';
 import http from '@http';
 import Input from '@components/Input';
 import { useForm } from 'react-hook-form';
+import { ArmazenadorToken } from '@utils';
 
 const ContainerButton = styled.div`
     display: flex;
@@ -80,9 +81,14 @@ function OperadorRegistroPermissoes () {
     }
 
     useEffect(() => {
-        http.get('permissao_grupo/')
-            .then(response => setGrupos(response))
-            .catch(error => console.log('Erro ao buscar grupos:', error));
+        if(ArmazenadorToken.UserGroups) {
+            setGrupos(ArmazenadorToken.UserGroups)
+        }
+        else {
+            http.get('permissao_grupo/')
+                .then(response => setGrupos(response))
+                .catch(error => console.log('Erro ao buscar grupos:', error));
+        }
     }, []);
 
     return (
