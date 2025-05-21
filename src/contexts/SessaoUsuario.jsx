@@ -14,20 +14,20 @@ addLocale('pt', ptCommon);
 addLocale('en', enCommon);
 
 const usuarioInicial = {
-    name: '',
-    email: '',
+    name: sessionStorage.getItem('name') ?? '',
+    email: sessionStorage.getItem('email') ?? '',
     password: '',
-    cpf: '',
+    cpf: sessionStorage.getItem('cpf') ?? '',
     document: '',
-    public_id: '',
-    company_public_id: '',
-    company_domain: '',
-    company_logo: '',
-    company_symbol: '',
+    public_id: sessionStorage.getItem('public_id') ?? '',
+    company_public_id: sessionStorage.getItem('company_public_id') ?? '',
+    company_domain: sessionStorage.getItem('company_domain') ??     '',
+    company_logo: sessionStorage.getItem('company_logo') ?? '',
+    company_symbol: sessionStorage.getItem('company_symbol') ?? '',
     remember: false,
     companies: null,
     code: [],
-    tipo: ''
+    tipo: sessionStorage.getItem('tipo') ?? ''
 }
 
 const recuperacaoSenhaInicial = {
@@ -97,7 +97,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const simboloSalvo = sessionStorage.getItem('simbolo');
         const logoSalvo = sessionStorage.getItem('logo');
         const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
-        
+        console.log(tipoSalvo);
         usuarioSalvo = {
             cpf: cpfSalvo ?? '',
             email: emailSalvo ?? '',

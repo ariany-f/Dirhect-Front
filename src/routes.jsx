@@ -165,256 +165,248 @@ function AppRouter() {
     };
   }, []);
 
-  if ( 1==0) {
-    return (
-      <MobileBlocker />
-    );
-  }
-  else
-  {
-    return (
-      <BrowserRouter>
-        <MobileScrollToTop />
-        <ToastContainer />
-        <SessaoUsuarioProvider>
-          <Routes>
-              <Route path="/primeiro-acesso" element={<PrimeiroAcessoCommon/>}>
-                <Route index element={<PrimeiroAcesso />} />
-                <Route path="senha-acesso/" element={<SenhaDeAcesso />} />
+  return (
+    <BrowserRouter>
+      <MobileScrollToTop />
+      <ToastContainer />
+      <SessaoUsuarioProvider>
+        <Routes>
+            <Route path="/primeiro-acesso" element={<PrimeiroAcessoCommon/>}>
+              <Route index element={<PrimeiroAcesso />} />
+              <Route path="senha-acesso/" element={<SenhaDeAcesso />} />
+            </Route>
+            <Route path="/login" element={<Publico/>}>
+              {isDesktop ? 
+                <Route index element={<Login />} /> 
+                :
+                  <Route index element={<LoginMobile />} />
+              }
+              {isDesktop ?
+                <Route path="selecionar-empresa" element={<SelecionarEmpresa />} />
+                :
+                <Route path="selecionar-empresa" element={<SelecionarEmpresaMobile />} />
+              }
+            </Route>
+            <Route path="/esqueci-a-senha" element={<Publico/>}>
+              <Route index element={<EsqueciASenha />} />
+              <Route path="seguranca" element={<Seguranca />} />
+              <Route path="redefinir" element={<RedefinirSenha />} />
+              <Route path="check-inbox" element={<RedefinirSenhaCheckInbox />} />
+              <Route path="sucesso" element={<RedefinirSenhaSucesso />} />
+            </Route>
+
+            <Route path="/" element={<Autenticado/>}>
+              <Route index element={<Dashboard />} />
+              <Route path="colaborador" element={<Colaboradores />} >
+                  <Route index element={<ColaboradoresCadastrados />} />
+                  <Route path="aguardando-cadastro" element={<ColaboradoresAguardando />} />
+                  <Route path="desativados" element={<ColaboradoresDesativados />} />
               </Route>
-              <Route path="/login" element={<Publico/>}>
-                {isDesktop ? 
-                  <Route index element={<Login />} /> 
-                  :
-                   <Route index element={<LoginMobile />} />
-                }
-                {isDesktop ?
-                  <Route path="selecionar-empresa" element={<SelecionarEmpresa />} />
-                  :
-                  <Route path="selecionar-empresa" element={<SelecionarEmpresaMobile />} />
-                }
+              <Route path="colaborador/detalhes/:id" element={<ColaboradorDetalhes />} >
+                  <Route index element={<ColaboradorBeneficios />} />
+                  <Route path="dados-contratuais" element={<ColaboradorDadosContratuais />} />
+                  <Route path="dados-pessoais" element={<ColaboradorDadosPessoais />} />
+                  <Route path="cartoes" element={<ColaboradorCartoes />} />
+                  <Route path="saldo" element={<ColaboradorSaldo />} />
+                  <Route path="dependentes" element={<ColaboradorDependentes />} />
+                  <Route path="dependentes/:codigo" element={<ColaboradorDependentesDetalhes />} />
+                  <Route path="ferias" element={<ColabroadorFerias />} />
+                  <Route path="ausencias" element={<ColaboradorAusencias />} />
+                  <Route path="esocial" element={<ColabroadorESocial />} />
+                  <Route path="demissoes" element={<ColabroadorDemissoes />} />
+                  <Route path="ciclos" element={<ColabroadorCiclos />} />
+                  <Route path="pedidos" element={<ColaboradorPedidos />} />
+                  <Route path="movimentos" element={<ColaboradorMovimentos />} />
+                  <Route path="carteiras" element={<ColaboradorCarteiras />} />
               </Route>
-              <Route path="/esqueci-a-senha" element={<Publico/>}>
-                <Route index element={<EsqueciASenha />} />
-                <Route path="seguranca" element={<Seguranca />} />
-                <Route path="redefinir" element={<RedefinirSenha />} />
-                <Route path="check-inbox" element={<RedefinirSenhaCheckInbox />} />
-                <Route path="sucesso" element={<RedefinirSenhaSucesso />} />
+              <Route path="colaborador/registro" element={<ColaboradorRegistro />} >
+                    <Route index element={<ColaboradorDadosIniciais />} />
+                    <Route path="envio-cartao" element={<ColaboradorEnvioCartao />} />
+                    <Route path="bandeira-cartao" element={<ColaboradorBandeiraCartao />} />
+                    <Route path="sucesso" element={<ColaboradorRegistroSucesso />} />
+              </Route>
+              <Route path="operador" element={<Operador/>} />
+              <Route path="operador/registro" element={<OperadorRegistro />} >
+                    <Route index element={<OperadorRegistroSelecionar />} />
+                    <Route path="permissoes" element={<OperadorRegistroPermissoes />} />
+                    <Route path="sucesso" element={<OperadorRegistroSucesso />} />
+              </Route>
+              <Route path="operador/detalhes/:id" element={<OperadorDetalhes />} >
+                  <Route index element={<OperadorDados />} />
+                  <Route path="permissoes" element={<OperadorPermissoes />} />
+              </Route>
+              <Route path="extrato" element={<ExtratoCommon />} >
+                <Route index element={<Extrato />} />
+                <Route path="adicionar-saldo" element={<ExtratoAdicionarSaldo />} />
+                <Route path="adicionar-saldo/pagamento/:id" element={<ExtratoPagamento />} />
+              </Route>
+            
+              <Route path="estrutura" element={<Departamentos />} >
+                <Route index element={<FiliaisLista />} />
+                <Route path="departamentos" element={<DepartamentoLista />} />
+                <Route path="cargos" element={<CargosLista />} />
+                <Route path="funcoes" element={<FuncoesLista />} />
+                <Route path="secoes" element={<SecoesLista />} />
+                <Route path="sindicatos" element={<SindicatosLista />} />
+                <Route path="centros-custo" element={<CentrosCustoLista />} />
+                <Route path="horarios" element={<HorariosLista />} />
+                <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
+                <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
+                <Route path="adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
+                <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} >
+                    <Route index element={<EstruturaConfiguracaoBeneficios type="Departamento" />} />
+                    <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                </Route>
+                <Route path="filial/detalhes/:id" element={<FilialDetalhes />} >
+                    <Route index element={<EstruturaConfiguracaoBeneficios type="Filial" />} />
+                    <Route  path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                </Route>
+                <Route path="cargo/detalhes/:id" element={<CargoDetalhes />} >
+                    <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                    <Route index element={<EstruturaConfiguracaoBeneficios type="Cargo" />} />
+                </Route>
+                <Route path="funcao/detalhes/:id" element={<FuncaoDetalhes />} >
+                    <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                    <Route index element={<EstruturaConfiguracaoBeneficios type="Funcao" />} />
+                </Route>
+                <Route path="centro_custo/detalhes/:id" element={<CentrosCustoDetalhes />} >
+                    <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                    <Route index element={<EstruturaConfiguracaoBeneficios type="CentroCusto" />} />
+                </Route>
+                <Route path="secao/detalhes/:id" element={<SecaoDetalhes />} >
+                    <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                    <Route index element={<EstruturaConfiguracaoBeneficios type="Secao" />} />
+                </Route>
+                <Route path="horario/detalhes/:id" element={<HorarioDetalhes />} >
+                    <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                    <Route index element={<EstruturaConfiguracaoBeneficios type="Horario" />} />
+                </Route>
+                <Route path="sindicato/detalhes/:id" element={<SindicatoDetalhes />} >
+                    <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                    <Route index element={<EstruturaConfiguracaoBeneficios type="Sindicato" />} />
+                </Route>
+              </Route>
+            
+              <Route path="linhas-transporte" element={<LinhasTransporte/>}>
+                <Route index element={<ListaLinhasTransporte />} />
+              </Route>
+            
+            <Route path="dependentes" element={<Dependentes/>}>
+              <Route index element={<DependentesListagem />} />
+            </Route>
+            
+            <Route path="operadoras" element={<Operadoras/>}>
+              <Route index element={<OperadorasListagem />} />
+              <Route path="detalhes/:id" element={<DetalhesOperadoras />} />
+            </Route>
+            
+            <Route path="contratos" element={<Contratos/>}>
+              <Route index element={<ContratosListagem />} />
+              <Route path="detalhes/:id" element={<DetalhesContratos />} />
+            </Route>
+
+            <Route path="marketplace" element={<Marketplace/>}>
+              <Route index element={<MarketplaceLista />} />
+            </Route>
+
+            <Route path="ausencias" element={<AusenciasListagem/>} />
+            
+            <Route path="ferias" element={<FeriasListagem />} />
+            {/* <Route path="ferias" element={<Ferias/>}>
+              <Route index element={<FeriasListagem />} />
+              <Route path="all" element={<FeriasAusenciasListagem />} />
+              <Route path="ausencias" element={<AusenciasListagem />} />
+              <Route path="solicitar" element={<ValidarAdmissoes />} />
+            </Route> */}
+
+              <Route path="vagas" element={<Vagas />} >
+                <Route index element={<VagasAbertas />} />
+                <Route path="canceladas" element={<VagasCanceladas />} />
+              </Route>
+              <Route path="vagas/detalhes/:id" element={<DetalhesVaga />} />
+              <Route path="vagas/registro" element={<VagasRegistro />} />
+
+              <Route path="/demissoes" element={<Demissoes />} />
+
+              <Route path="ciclos" element={<Ciclos />} >
+                <Route index element={<CiclosLista />} />
+                <Route path="detalhes/:id" element={<DetalhesCiclos />} />
+                <Route path=":id" element={<MeusCiclos />} />
+                <Route path=":colaborador/detalhes/:id" element={<DetalhesMeusCiclos />} />
               </Route>
 
-              <Route path="/" element={<Autenticado/>}>
-                <Route index element={<Dashboard />} />
-                <Route path="colaborador" element={<Colaboradores />} >
-                    <Route index element={<ColaboradoresCadastrados />} />
-                    <Route path="aguardando-cadastro" element={<ColaboradoresAguardando />} />
-                    <Route path="desativados" element={<ColaboradoresDesativados />} />
-                </Route>
-                <Route path="colaborador/detalhes/:id" element={<ColaboradorDetalhes />} >
-                    <Route index element={<ColaboradorBeneficios />} />
-                    <Route path="dados-contratuais" element={<ColaboradorDadosContratuais />} />
-                    <Route path="dados-pessoais" element={<ColaboradorDadosPessoais />} />
-                    <Route path="cartoes" element={<ColaboradorCartoes />} />
-                    <Route path="saldo" element={<ColaboradorSaldo />} />
-                    <Route path="dependentes" element={<ColaboradorDependentes />} />
-                    <Route path="dependentes/:codigo" element={<ColaboradorDependentesDetalhes />} />
-                    <Route path="ferias" element={<ColabroadorFerias />} />
-                    <Route path="ausencias" element={<ColaboradorAusencias />} />
-                    <Route path="esocial" element={<ColabroadorESocial />} />
-                    <Route path="demissoes" element={<ColabroadorDemissoes />} />
-                    <Route path="ciclos" element={<ColabroadorCiclos />} />
-                    <Route path="pedidos" element={<ColaboradorPedidos />} />
-                    <Route path="movimentos" element={<ColaboradorMovimentos />} />
-                    <Route path="carteiras" element={<ColaboradorCarteiras />} />
-                </Route>
-                <Route path="colaborador/registro" element={<ColaboradorRegistro />} >
-                      <Route index element={<ColaboradorDadosIniciais />} />
-                      <Route path="envio-cartao" element={<ColaboradorEnvioCartao />} />
-                      <Route path="bandeira-cartao" element={<ColaboradorBandeiraCartao />} />
-                      <Route path="sucesso" element={<ColaboradorRegistroSucesso />} />
-                </Route>
-                <Route path="operador" element={<Operador/>} />
-                <Route path="operador/registro" element={<OperadorRegistro />} >
-                      <Route index element={<OperadorRegistroSelecionar />} />
-                      <Route path="permissoes" element={<OperadorRegistroPermissoes />} />
-                      <Route path="sucesso" element={<OperadorRegistroSucesso />} />
-                </Route>
-                <Route path="operador/detalhes/:id" element={<OperadorDetalhes />} >
-                    <Route index element={<OperadorDados />} />
-                    <Route path="permissoes" element={<OperadorPermissoes />} />
-                </Route>
-                <Route path="extrato" element={<ExtratoCommon />} >
-                  <Route index element={<Extrato />} />
-                  <Route path="adicionar-saldo" element={<ExtratoAdicionarSaldo />} />
-                  <Route path="adicionar-saldo/pagamento/:id" element={<ExtratoPagamento />} />
-                </Route>
-              
-                <Route path="estrutura" element={<Departamentos />} >
-                  <Route index element={<FiliaisLista />} />
-                  <Route path="departamentos" element={<DepartamentoLista />} />
-                  <Route path="cargos" element={<CargosLista />} />
-                  <Route path="funcoes" element={<FuncoesLista />} />
-                  <Route path="secoes" element={<SecoesLista />} />
-                  <Route path="sindicatos" element={<SindicatosLista />} />
-                  <Route path="centros-custo" element={<CentrosCustoLista />} />
-                  <Route path="horarios" element={<HorariosLista />} />
-                  <Route path="colaboradores-sem-departamento" element={<DepartamentoColaboradores />} />
-                  <Route path=":id/adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
-                  <Route path="adicionar-colaboradores" element={<DepartamentoAdicionarColaboradores />} />
-                  <Route path="departamento/detalhes/:id" element={<DepartamentoDetalhes />} >
-                      <Route index element={<EstruturaConfiguracaoBeneficios type="Departamento" />} />
-                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
-                  </Route>
-                  <Route path="filial/detalhes/:id" element={<FilialDetalhes />} >
-                      <Route index element={<EstruturaConfiguracaoBeneficios type="Filial" />} />
-                      <Route  path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
-                  </Route>
-                  <Route path="cargo/detalhes/:id" element={<CargoDetalhes />} >
-                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
-                      <Route index element={<EstruturaConfiguracaoBeneficios type="Cargo" />} />
-                  </Route>
-                  <Route path="funcao/detalhes/:id" element={<FuncaoDetalhes />} >
-                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
-                      <Route index element={<EstruturaConfiguracaoBeneficios type="Funcao" />} />
-                  </Route>
-                  <Route path="centro_custo/detalhes/:id" element={<CentrosCustoDetalhes />} >
-                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
-                      <Route index element={<EstruturaConfiguracaoBeneficios type="CentroCusto" />} />
-                  </Route>
-                  <Route path="secao/detalhes/:id" element={<SecaoDetalhes />} >
-                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
-                      <Route index element={<EstruturaConfiguracaoBeneficios type="Secao" />} />
-                  </Route>
-                  <Route path="horario/detalhes/:id" element={<HorarioDetalhes />} >
-                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
-                      <Route index element={<EstruturaConfiguracaoBeneficios type="Horario" />} />
-                  </Route>
-                  <Route path="sindicato/detalhes/:id" element={<SindicatoDetalhes />} >
-                      <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
-                      <Route index element={<EstruturaConfiguracaoBeneficios type="Sindicato" />} />
-                  </Route>
-                </Route>
-              
-                <Route path="linhas-transporte" element={<LinhasTransporte/>}>
-                  <Route index element={<ListaLinhasTransporte />} />
-                </Route>
-              
-              <Route path="dependentes" element={<Dependentes/>}>
-                <Route index element={<DependentesListagem />} />
-              </Route>
-              
-              <Route path="operadoras" element={<Operadoras/>}>
-                <Route index element={<OperadorasListagem />} />
-                <Route path="detalhes/:id" element={<DetalhesOperadoras />} />
-              </Route>
-              
-              <Route path="contratos" element={<Contratos/>}>
-                <Route index element={<ContratosListagem />} />
-                <Route path="detalhes/:id" element={<DetalhesContratos />} />
+              <Route path="pedidos" element={<Pedidos />} >
+                <Route index element={<PedidosLista />} />
+                <Route path="detalhes/:id" element={<DetalhesPedidos />} />
+                <Route path="adicionar-detalhes" element={<PedidoAdicionarDetalhes />} />
+                <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
+                <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
+                <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
+                <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
               </Route>
 
-              <Route path="marketplace" element={<Marketplace/>}>
-                <Route index element={<MarketplaceLista />} />
+              <Route path="tarefas" element={<Tarefas />} >
+                <Route index element={<TarefasLista />} />
+                <Route path="detalhes/:id" element={<DetalhesTarefas />} />
               </Route>
 
-              <Route path="ausencias" element={<AusenciasListagem/>} />
-              
-              <Route path="ferias" element={<FeriasListagem />} />
-              {/* <Route path="ferias" element={<Ferias/>}>
-                <Route index element={<FeriasListagem />} />
-                <Route path="all" element={<FeriasAusenciasListagem />} />
-                <Route path="ausencias" element={<AusenciasListagem />} />
-                <Route path="solicitar" element={<ValidarAdmissoes />} />
+              <Route path="movimentos" element={<Movimentos />} >
+                <Route index element={<MovimentosLista />} />
+                <Route path="detalhes/:id" element={<DetalhesMovimentos />} />
+              </Route>
+
+              <Route path="admissao" element={<Admissoes />} />
+              <Route path="admissao/validar" element={<ValidarAdmissoes />} />
+              <Route path="admissao/detalhes/:id/:candidato" element={<DetalhesAdmissao />} />
+              <Route path="admissao/registro/:id" element={<CandidatoRegistro />} />
+            
+              <Route path="elegibilidade" element={<Elegibilidade />} >
+                <Route index element={<ElegibilidadeLista />} />
+                <Route path="detalhes/:id" element={<DetalhesElegibilidade />} />
+                <Route path="configurar" element={<ElegibilidadeConfigurar />} />
+                <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
+                <Route path="selecao-filiais" element={<ElegibilidadeSelecionarFiliais />} />
+                <Route path="selecao-departamentos" element={<ElegibilidadeSelecionarDepartamentos />} />
+                <Route path="editar-valor/:tipo" element={<ElegibilidadeEditarValor />} />
+              </Route>
+
+              {/* <Route path="/elegibilidade" element={<Cartoes />} >
+                <Route index element={<CartoesLista />} />
+              </Route>
+              <Route path="/elegibilidade/detalhes/:id" element={<CartaoDetalhes />} />
+              <Route path="/elegibilidade/solicitar-segunda-via" element={<CartaoSolicitarSegundaViaCommon />} >
+                <Route path=":id" element={<CartaoSolicitarSegundaVia/>} />
+                <Route path=":id/endereco" element={<CartaoSolicitarSegundaViaEndereco />} />
+                <Route path=":id/sucesso" element={<CartaoSolicitarSegundaViaSucesso />} />
+                <Route path=":id/entrega/acompanhar" element={<CartaoSolicitarSegundaViaAcompanhar />} />
               </Route> */}
-
-                <Route path="vagas" element={<Vagas />} >
-                  <Route index element={<VagasAbertas />} />
-                  <Route path="canceladas" element={<VagasCanceladas />} />
-                </Route>
-                <Route path="vagas/detalhes/:id" element={<DetalhesVaga />} />
-                <Route path="vagas/registro" element={<VagasRegistro />} />
-
-                <Route path="/demissoes" element={<Demissoes />} />
-
-                <Route path="ciclos" element={<Ciclos />} >
-                  <Route index element={<CiclosLista />} />
-                  <Route path="detalhes/:id" element={<DetalhesCiclos />} />
-                  <Route path=":id" element={<MeusCiclos />} />
-                  <Route path=":colaborador/detalhes/:id" element={<DetalhesMeusCiclos />} />
-                </Route>
-
-                <Route path="pedidos" element={<Pedidos />} >
-                  <Route index element={<PedidosLista />} />
-                  <Route path="detalhes/:id" element={<DetalhesPedidos />} />
-                  <Route path="adicionar-detalhes" element={<PedidoAdicionarDetalhes />} />
-                  <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
-                  <Route path="selecao-colaboradores" element={<PremiacaoSelecionarColaboradores />} />
-                  <Route path="selecao-departamentos" element={<PremiacaoSelecionarDepartamentos />} />
-                  <Route path="editar-valor/:tipo" element={<PremiacaoEditarValor />} />
-                </Route>
-
-                <Route path="tarefas" element={<Tarefas />} >
-                  <Route index element={<TarefasLista />} />
-                  <Route path="detalhes/:id" element={<DetalhesTarefas />} />
-                </Route>
-
-                <Route path="movimentos" element={<Movimentos />} >
-                  <Route index element={<MovimentosLista />} />
-                  <Route path="detalhes/:id" element={<DetalhesMovimentos />} />
-                </Route>
-
-                <Route path="admissao" element={<Admissoes />} />
-                <Route path="admissao/validar" element={<ValidarAdmissoes />} />
-                <Route path="admissao/detalhes/:id/:candidato" element={<DetalhesAdmissao />} />
-                <Route path="admissao/registro/:id" element={<CandidatoRegistro />} />
               
-                <Route path="elegibilidade" element={<Elegibilidade />} >
-                  <Route index element={<ElegibilidadeLista />} />
-                  <Route path="detalhes/:id" element={<DetalhesElegibilidade />} />
-                  <Route path="configurar" element={<ElegibilidadeConfigurar />} />
-                  <Route path="como-funciona" element={<PremiacaoComoFunciona />} />
-                  <Route path="selecao-filiais" element={<ElegibilidadeSelecionarFiliais />} />
-                  <Route path="selecao-departamentos" element={<ElegibilidadeSelecionarDepartamentos />} />
-                  <Route path="editar-valor/:tipo" element={<ElegibilidadeEditarValor />} />
-                </Route>
-
-                {/* <Route path="/elegibilidade" element={<Cartoes />} >
-                  <Route index element={<CartoesLista />} />
-                </Route>
-                <Route path="/elegibilidade/detalhes/:id" element={<CartaoDetalhes />} />
-                <Route path="/elegibilidade/solicitar-segunda-via" element={<CartaoSolicitarSegundaViaCommon />} >
-                  <Route path=":id" element={<CartaoSolicitarSegundaVia/>} />
-                  <Route path=":id/endereco" element={<CartaoSolicitarSegundaViaEndereco />} />
-                  <Route path=":id/sucesso" element={<CartaoSolicitarSegundaViaSucesso />} />
-                  <Route path=":id/entrega/acompanhar" element={<CartaoSolicitarSegundaViaAcompanhar />} />
-                </Route> */}
-                
-                <Route path="/beneficio" element={<RecargaBeneficios/>}>
-                  <Route index element={<Beneficios />} />
-                  <Route path="onde-usar" element={<BeneficioOndeUsar />} />
-                  <Route path="selecao-colaboradores" element={<BeneficioSelecionarColaboradores />} />
-                  <Route path="selecao-departamentos" element={<BeneficioSelecionarDepartamentos />} />
-                  <Route path="editar-valor/:tipo" element={<BeneficioEditarValor />} />
-                  <Route path="selecao-forma-pagamento/:id" element={<BeneficioSelecionarFormaPagamento />} />
-                  <Route path="pagamento/:id" element={<BeneficioPagamento />} />
-                </Route>
-                
-                <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
-                <Route path="adicionar-celular/:id" element={<AdicionarCelular />} />
-                <Route path="adicionar-email/:id" element={<AdicionarEmail />} />
-
-                <Route path="usuario" element={<MeusDados />} >
-                    <Route index element={<MeusDadosDadosGerais />} />
-                    <Route path="endereco" element={<MeusDadosEndereco />} />
-                    <Route path="dados-faturamento" element={<MeusDadosDadosFaturamento />} />
-                    <Route path="sistema" element={<MeusDadosSistema />} />
-                </Route>
+              <Route path="/beneficio" element={<RecargaBeneficios/>}>
+                <Route index element={<Beneficios />} />
+                <Route path="onde-usar" element={<BeneficioOndeUsar />} />
+                <Route path="selecao-colaboradores" element={<BeneficioSelecionarColaboradores />} />
+                <Route path="selecao-departamentos" element={<BeneficioSelecionarDepartamentos />} />
+                <Route path="editar-valor/:tipo" element={<BeneficioEditarValor />} />
+                <Route path="selecao-forma-pagamento/:id" element={<BeneficioSelecionarFormaPagamento />} />
+                <Route path="pagamento/:id" element={<BeneficioPagamento />} />
               </Route>
-              <Route path="*" element={<NaoEncontrada />}></Route>
-            </Routes>
-          </SessaoUsuarioProvider>
-      </BrowserRouter>
-    )
-  }
+              
+              <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
+              <Route path="adicionar-celular/:id" element={<AdicionarCelular />} />
+              <Route path="adicionar-email/:id" element={<AdicionarEmail />} />
+
+              <Route path="usuario" element={<MeusDados />} >
+                  <Route index element={<MeusDadosDadosGerais />} />
+                  <Route path="endereco" element={<MeusDadosEndereco />} />
+                  <Route path="dados-faturamento" element={<MeusDadosDadosFaturamento />} />
+                  <Route path="sistema" element={<MeusDadosSistema />} />
+              </Route>
+            </Route>
+            <Route path="*" element={<NaoEncontrada />}></Route>
+          </Routes>
+        </SessaoUsuarioProvider>
+    </BrowserRouter>
+  )
 }
 
 export default AppRouter

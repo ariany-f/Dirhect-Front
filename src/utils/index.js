@@ -65,7 +65,6 @@ export class ArmazenadorToken {
         sessionStorage.removeItem(COMPANY_LOGO)
     }
     static removerToken() {
-        
         sessionStorage.removeItem(ACCESS_TOKEN)
         sessionStorage.removeItem(EXPIRATION)
         sessionStorage.removeItem(REFRESH_TOKEN)
@@ -98,6 +97,9 @@ export class ArmazenadorToken {
     }
     static get UserCpf() {
         return sessionStorage.getItem(USER_CPF)
+    }
+    static get UserTipo() {
+        return sessionStorage.getItem(USER_TYPE)
     }
     static get UserPublicId() {
         return sessionStorage.getItem(USER_PUBLIC_ID)

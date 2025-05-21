@@ -34,7 +34,6 @@ function Login() {
         setCpf,
         setEmail,
         setTipo,
-        setPassword,
         setUserPublicId,
         setName,
     } = useSessaoUsuarioContext()
@@ -66,6 +65,7 @@ function Login() {
             if(usuarioEstaLogado) {
                 setUsuarioEstaLogado(false);
             }
+            await handleLogin();
             setReady(true);
         }
         init();
@@ -78,39 +78,46 @@ function Login() {
         }
         setLoading(true);
         try {
-            await handleLogin();
             data.app_token = ArmazenadorToken.AccessToken;
             
-            const response = await http.post('/token/', data);
-            if(response.access) {
-                const expiration = new Date();
-                expiration.setMinutes(expiration.getMinutes() + 15);
-                ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
-                setUsuarioEstaLogado(true);
-                ArmazenadorToken.definirUsuario(
-                    response.user.first_name + ' ' + response.user.last_name,
-                    response.user.email,
-                    response.user.cpf ?? '',
-                    response.user.id,
-                    'equipeBeneficios',
-                    '', '', '', ''
-                );
+            http.post('/token/', data).then(response => {
+                if(response.access) {
+                    const expiration = new Date();
+                    expiration.setMinutes(expiration.getMinutes() + 15);
+
+                    ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
+                    
+                    ArmazenadorToken.definirUsuario(
+                        response.user.first_name + ' ' + response.user.last_name,
+                        response.user.email,
+                        response.user.cpf ?? '',
+                        response.user.id,
+                        'equipeBeneficios',
+                        '', '', '', ''
+                    );
+                    setEmail(response.user.email);
+                    setCpf(response.user.cpf ?? '');
+                    setTipo('equipeBeneficios');
+                    setUserPublicId(response.user.id);
+                    setName(response.user.first_name + ' ' + response.user.last_name);
+                    setUsuarioEstaLogado(true);
+                } else {
+                    toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
+                }
+            }).then(response => {
+                console.log(usuario);
                 // Navegação conforme tipo de usuário
-                if(response.user.tipo !== 'funcionario') {
-                    if(response.user.tipo !== 'candidato') {
+                if(usuario.tipo !== 'funcionario') {
+                    if(usuario.tipo !== 'candidato') {
                         navegar('/login/selecionar-empresa');
                     } else {
-                        navegar(`/admissao/registro/${response.user.id}`);
+                        navegar(`/admissao/registro/${usuario.id}`);
                     }
                 } else {
-                    navegar(`/colaborador/detalhes/${response.user.public_id}`);
+                    navegar(`/colaborador/detalhes/${usuario.public_id}`);
                 }
-                toast.success('Login realizado com sucesso!', { icon: SuccessIcon });
-            } else {
-                toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
-            }
+            });
         } catch (error) {
-            console.log(error);
             toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
         } finally {
             setLoading(false);

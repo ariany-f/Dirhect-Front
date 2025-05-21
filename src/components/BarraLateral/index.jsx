@@ -186,6 +186,7 @@ function BarraLateral() {
     }, [logo])
 
     useEffect(() => {
+        console.log(usuario);
         const pathSegments = location.pathname.split('/').filter(Boolean)
         const newBreadCrumbItems = pathSegments.map((segment, index) => ({
             label: segment.charAt(0).toUpperCase() + segment.slice(1),
