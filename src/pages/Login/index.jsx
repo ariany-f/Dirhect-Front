@@ -77,6 +77,7 @@ function Login() {
         }
         setLoading(true);
         await handleLogin().then(response => {
+            console.log('Salvou o access_token',response);
             data.app_token = ArmazenadorToken.AccessToken;
             
             http.post('/token/', data)
