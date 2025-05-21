@@ -101,6 +101,7 @@ function OperadorRegistroPermissoes () {
                         type="email"
                         id="email"
                         name="email"
+                        icon="pi pi-envelope"
                         label="E-mail do operador"
                         defaultValue={operador.email}
                         required
