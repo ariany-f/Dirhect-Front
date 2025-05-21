@@ -75,10 +75,10 @@ function Login() {
             toast.info('Preencha usuário e senha!');
             return;
         }
+        setLoading(true);
         await handleLogin().then(response => {
             data.app_token = ArmazenadorToken.AccessToken;
             
-            setLoading(true);
             http.post('/token/', data)
                 .then(response => {
                     if(response.access) {
@@ -109,13 +109,12 @@ function Login() {
                         toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
                     }
                 })
-                .finally(() => {
-                    setLoading(false);
-                })
                 .catch(error => {
                     console.log(error);
                     toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
                 });
+        }).finally(() => {
+            setLoading(false);
         });
     }
 
