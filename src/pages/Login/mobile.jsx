@@ -39,32 +39,33 @@ function LoginMobile() {
 
     const { control, handleSubmit, formState: { errors } } = useForm();
 
-    function handleLogin() {
+    async function handleLogin() {
         const data = {
             username: import.meta.env.VITE_API_USER,
             password: import.meta.env.VITE_API_PASS
         }
-
         const expiration = new Date();
         expiration.setMinutes(expiration.getMinutes() + 15);
-        
-        http.post(`/app-login/`, data)
-        .then(response => {
+        try {
+            const response = await http.post(`/app-login/`, data);
             ArmazenadorToken.definirToken(response.access, null, null, null);
-        })
-        .catch(error => {
+            return response;
+        } catch (error) {
             console.log(error);
-        });
+            throw error;
+        }
     }
 
     useEffect(() => {
-        ArmazenadorToken.removerToken();
-        ArmazenadorToken.removerCompany();
-        handleLogin();
-        
-        if(usuarioEstaLogado) {
-            setUsuarioEstaLogado(false);
+        async function init() {
+            ArmazenadorToken.removerToken();
+            ArmazenadorToken.removerCompany();
+            if(usuarioEstaLogado) {
+                setUsuarioEstaLogado(false);
+            }
+            await handleLogin();
         }
+        init();
     }, []);
 
     const onSubmit = (data) => {
@@ -72,18 +73,22 @@ function LoginMobile() {
             toast.info('Preencha usuário e senha!');
             return;
         }
-
         setLoading(true);
-        
-        data.app_token = ArmazenadorToken.AccessToken;
-        http.post('/token/', data)
+        handleLogin()
+            .then(() => {
+                data.app_token = ArmazenadorToken.AccessToken;
+                return http.post('/token/', data);
+            })
             .then(response => {
                 if(response.access) {
                     const expiration = new Date();
                     expiration.setMinutes(expiration.getMinutes() + 15);
-
                     ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
-                    setUsuarioEstaLogado(true);
+                    setEmail(response.user.email);
+                    setCpf(response.user.cpf ?? '');
+                    setTipo('equipeBeneficios');
+                    setUserPublicId(response.user.id);
+                    setName(response.user.first_name + ' ' + response.user.last_name);
                     ArmazenadorToken.definirUsuario(
                         response.user.first_name + ' ' + response.user.last_name,
                         response.user.email,
@@ -92,18 +97,31 @@ function LoginMobile() {
                         'equipeBeneficios',
                         '', '', '', ''
                     );
-                    toast.success('Login realizado com sucesso!', { icon: SuccessIcon });
+                    setUsuarioEstaLogado(true);
+                } else {
+                    toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
+                }
+            }).then(response => {
+                // Navegação conforme tipo de usuário
+                if(usuario.tipo !== 'funcionario') {
+                    if(usuario.tipo !== 'candidato') {
+                        navegar('/login/selecionar-empresa');
+                    } else {
+                        navegar(`/admissao/registro/${usuario.id}`);
+                    }
+                } else {
+                    navegar(`/colaborador/detalhes/${usuario.public_id}`);
                 }
             })
-            .then(() => {
-                navegar('/login/selecionar-empresa');
+            .catch(error => {
+                if(error?.detail) {
+                    toast.error(error.detail, { icon: ErrorIcon });
+                } else {
+                    toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
+                }
             })
             .finally(() => {
                 setLoading(false);
-            })
-            .catch(error => {
-                console.log(error);
-                toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
             });
     };
 

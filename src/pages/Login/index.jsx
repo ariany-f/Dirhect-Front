@@ -117,13 +117,15 @@ function Login() {
                 } else {
                     navegar(`/colaborador/detalhes/${usuario.public_id}`);
                 }
+            }).catch(error => {
+                if(error?.detail) {
+                    toast.error(error.detail, { icon: ErrorIcon });
+                } else {
+                    toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
+                }
             });
         } catch (error) {
-            if(error.response.status === 401) {
-                toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
-            } else {
-                toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
-            }
+            toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
         } finally {
             setLoading(false);
         }
