@@ -25,7 +25,7 @@ function DataTableCiclos() {
 
     useEffect(() => {
         // Filtra os tipos de lançamento baseado no tipo de usuário
-        if (tipoUsuario === 'equipeBeneficios') {
+        if (tipoUsuario === 'grupo_rh') {
             setTiposLancamento([
                 { label: 'Todos', value: null },
                 { label: 'Benefícios', value: 'Benefícios' }
@@ -156,7 +156,7 @@ function DataTableCiclos() {
                 sortField="data_referencia.year"
                 sortOrder={-1}
             >
-                <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }} filterField="tipo" filter={tipoUsuario === 'equipeBeneficios'} filterElement={tipoFilterTemplate}></Column>
+                <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '35%' }} filterField="tipo" filter={tipoUsuario === 'grupo_rh'} filterElement={tipoFilterTemplate}></Column>
                 <Column body={representativeMonthTemplate} field="data_referencia.month" header="Mês Referência" style={{ width: '35%' }}></Column>
                 <Column field="data" header="Data de Pagamento" style={{ width: '35%' }}></Column>
                 <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '35%' }}></Column>

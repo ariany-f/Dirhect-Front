@@ -48,7 +48,7 @@
       ]
     },
     {
-      "tipo": "equipeBeneficios",
+      "tipo": "grupo_rh",
       "email": "beneficios@example.com",
       "senha": "123",
       "cpf": "111.222.333-44",

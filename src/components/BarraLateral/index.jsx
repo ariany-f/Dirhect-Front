@@ -22,24 +22,37 @@ import { GoTasklist } from "react-icons/go"
 import { IoBusiness } from "react-icons/io5"
 import { PiHandshake } from "react-icons/pi"
 import { Ripple } from 'primereact/ripple'
+import { ArmazenadorToken } from "@utils"
+import http from "@http"
 
 const ListaEstilizada = styled.ul`
     list-style: none;
     padding: 0;
     margin: 0;
     width: 246px;
-    @media screen and (max-width: 760px) {
-        width: 100%;
-        height: calc(100vh - 200px);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
-        position: relative;
-        transform: translate3d(0, 0, 0);
-        -webkit-transform: translate3d(0, 0, 0);
-        will-change: transform;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
+       
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    position: relative;
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+        &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 3px;
     }
 `
 
@@ -70,8 +83,7 @@ const BarraLateralEstilizada = styled.aside`
 `
 
 const NavEstilizada = styled.nav`
-    @media screen and (max-width: 760px) {
-        width: 100%;
+   
         height: calc(100vh - 150px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
@@ -98,23 +110,6 @@ const NavEstilizada = styled.nav`
             background: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
         }
-    }
-`
-
-const Overlay = styled.div`
-    display: none;
-    
-    @media screen and (max-width: 760px) {
-        display: ${props => (!!props.$opened) ? 'block' : 'none'};
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1099;
-        backdrop-filter: blur(2px);
-    }
 `
 
 const NavTitulo = styled.p`
@@ -147,11 +142,24 @@ function BarraLateral({ $sidebarOpened }) {
     const [breadCrumbItems, setBreadCrumbItems] = useState([])
     const ref = useRef(null)
 
+    const [grupos, setGrupos] = useState([]);
+
     const {
         usuario,
         setCompanies,
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
+
+    
+    useEffect(() =>{
+        // Buscar grupos de permissões ao montar
+        http.get(`permissao_grupo/?format=json&name=${usuario.tipo}`)
+            .then(response => {
+                setGrupos(response)
+                ArmazenadorToken.definirGrupos(response)
+            })
+            .catch(error => console.log('Erro ao buscar grupos:', error));
+    }, [])
 
     useEffect(() => {
 
@@ -188,314 +196,182 @@ function BarraLateral({ $sidebarOpened }) {
         setBreadCrumbItems(newBreadCrumbItems)
     }, [location])
 
-    const itensMenu = () => {
-        switch (usuario.tipo) {
-            case 'cliente':
-                return [
-                    {
-                        "id": 1,
-                        "url": "/",
-                        "pageTitulo": "Home",
-                        "icone": <AiFillHome size={20} className="icon" />,
-                        "itemTitulo": "Home"
-                    },
-                    {
-                        "id": 2,
-                        "url": "/vagas",
-                        "pageTitulo": "Vagas",
-                        "icone": <RiFilePaperFill size={20} className="icon" />,
-                        "itemTitulo": "Vagas"
-                    },
-                    {
-                        "id": 3,
-                        "url": "/admissao",
-                        "pageTitulo": "Admissões",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
-                        "itemTitulo": "Admissões"
-                    },
-                    {
-                        "id": 4,
-                        "url": "/colaborador",
-                        "pageTitulo": "Colaboradores",
-                        "icone": <BiSolidDashboard size={20} className="icon" />,
-                        "itemTitulo": "Colaboradores"
-                    },
-                    {
-                        "id": 5,
-                        "url": "/dependentes",
-                        "pageTitulo": "Dependentes",
-                        "icone": <FaUserGroup size={20} className="icon" />,
-                        "itemTitulo": "Dependentes"
-                    },
-                    {
-                        "id": 6,
-                        "url": "/ferias",
-                        "pageTitulo": "Férias",
-                        "icone": <FaUmbrellaBeach size={20} fill="white"/>,
-                        "itemTitulo": "Férias"
-                    },
-                    {
-                        "id": 7,
-                        "url": "/ausencias",
-                        "pageTitulo": "Ausências",
-                        "icone": <BsHourglassSplit size={20} className="icon" />,
-                        "itemTitulo": "Ausências"
-                    },
-                    {
-                        "id": 8,
-                        "url": "/demissoes",
-                        "pageTitulo": "Demissões",
-                        "icone": <FaUserTimes size={20} className="icon" />,
-                        "itemTitulo": "Demissões"
-                    },
-                    {
-                        "id": 9,
-                        "url": "/ciclos",
-                        "pageTitulo": "Lançtos de Folha",
-                        "icone": <HiMiniNewspaper size={20} fill="white"/>,
-                        "itemTitulo": "Lançtos de Folha"
-                    },
-                    {
-                        "id": 10,
-                        "url": "/tarefas",
-                        "pageTitulo": "Tarefas",
-                        "icone": <GoTasklist size={20} fill="white" />,
-                        "itemTitulo": "Tarefas"
-                    },
-                ]
-            case 'candidato':
-                return [
-                    {
-                        "id": 1,
-                        "url": "/admissao/registro/1",
-                        "pageTitulo": "Minha Admissão",
-                        "icone": <RiFileListFill size={20} className="icon" />,
-                        "itemTitulo": "Minha Admissão"
-                    }
-                ]
-            case 'funcionario':
-                return [
-                    {
-                        "id": 1,
-                        "url": "/colaborador/detalhes/109",
-                        "pageTitulo": "Meu Cadastro",
-                        "icone": <RiFilePaperFill size={20} className="icon" />,
-                        "itemTitulo": "Meu Cadastro"
-                    },
-                    {
-                        "id": 1,
-                        "url": "/admissao/registro/109",
-                        "pageTitulo": "Minha Admissão",
-                        "icone": <RiFileListFill size={20} className="icon" />,
-                        "itemTitulo": "Minha Admissão"
-                    },
-                    {
-                        "id": 2,
-                        "url": "/dependentes",
-                        "pageTitulo": "Dependentes",
-                        "icone": <FaUserGroup size={20} className="icon" />,
-                        "itemTitulo": "Dependentes"
-                    },  {
-                        "id": 3,
-                        "url": "/ferias",
-                        "pageTitulo": "Férias",
-                        "icone": <FaUmbrellaBeach size={20} fill="white"/>,
-                        "itemTitulo": "Férias"
-                    },
-                    {
-                        "id": 4,
-                        "url": "/ausencias",
-                        "pageTitulo": "Ausências",
-                        "icone": <BsHourglassSplit size={20} className="icon" />,
-                        "itemTitulo": "Ausências"
-                    },
-                    {
-                        "id": 5,
-                        "url": "/demissoes",
-                        "pageTitulo": "Demissões",
-                        "icone": <FaUserTimes size={20} className="icon" />,
-                        "itemTitulo": "Demissões"
-                    },
-                    {
-                        "id": 5,
-                        "url": `/ciclos/${usuario.public_id}`,
-                        "pageTitulo": "Ciclos de Pagamento",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
-                        "itemTitulo": "Ciclos de Pagamento"
-                    }
-                ]
-            case 'equipeFolhaPagamento':
-                return [
-                    {
-                        "id": 1,
-                        "url": "/",
-                        "pageTitulo": "Home",
-                        "icone": <AiFillHome size={20} className="icon" />,
-                        "itemTitulo": "Home"
-                    },
-                    {
-                        "id": 2,
-                        "url": "/admissao",
-                        "pageTitulo": "Admissões",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
-                        "itemTitulo": "Admissões"
-                    },
-                    {
-                        "id": 3,
-                        "url": "/colaborador",
-                        "pageTitulo": "Colaboradores",
-                        "icone": <BiSolidDashboard size={20} className="icon" />,
-                        "itemTitulo": "Colaboradores"
-                    },
-                    {
-                        "id": 4,
-                        "url": "/dependentes",
-                        "pageTitulo": "Dependentes",
-                        "icone": <FaUserGroup size={20} className="icon" />,
-                        "itemTitulo": "Dependentes"
-                    },
-                    {
-                        "id": 5,
-                        "url": "/ferias",
-                        "pageTitulo": "Férias",
-                        "icone": <FaUmbrellaBeach size={20} fill="white"/>,
-                        "itemTitulo": "Férias"
-                    },
-                    {
-                        "id": 6,
-                        "url": "/ausencias",
-                        "pageTitulo": "Ausências",
-                        "icone": <BsHourglassSplit size={20} className="icon" />,
-                        "itemTitulo": "Ausências"
-                    },
-                    {
-                        "id": 7,
-                        "url": "/demissoes",
-                        "pageTitulo": "Demissões",
-                        "icone": <FaUserTimes size={20} className="icon" />,
-                        "itemTitulo": "Demissões"
-                    },
-                    {
-                        "id": 8,
-                        "url": "/ciclos",
-                        "pageTitulo": "Lançtos de Folha",
-                        "icone": <HiMiniNewspaper size={20} fill="white" />,
-                        "itemTitulo": "Lançtos de Folha"
-                    },
-                    {
-                        "id": 9,
-                        "url": "/tarefas",
-                        "pageTitulo": "Tarefas",
-                        "icone": <GoTasklist size={20} fill="white" />,
-                        "itemTitulo": "Tarefas"
-                    },
-                ]
-            case 'equipeBeneficios':
-            case 'global':
-                return [
-                    {
-                        "id": 1,
-                        "url": "/",
-                        "pageTitulo": "Home",
-                        "icone": <AiFillHome size={20} className="icon" />,
-                        "itemTitulo": "Home"
-                    },
-                    {
-                        "id": 2,
-                        "url": "/admissao",
-                        "pageTitulo": "Admissões",
-                        "icone": <RiUser3Fill size={20} className="icon" />,
-                        "itemTitulo": "Admissões"
-                    },
-                    {
-                        "id": 3,
-                        "url": "/colaborador",
-                        "pageTitulo": "Colaboradores",
-                        "icone": <BiSolidDashboard size={20} className="icon" />,
-                        "itemTitulo": "Colaboradores"
-                    },
-                    {
-                        "id": 4,
-                        "url": "/dependentes",
-                        "pageTitulo": "Dependentes",
-                        "icone": <FaUserGroup size={20} className="icon" />,
-                        "itemTitulo": "Dependentes"
-                    },
-                    {
-                        "id": 5,
-                        "url": "/ferias",
-                        "pageTitulo": "Férias",
-                        "icone": <FaUmbrellaBeach size={20} fill="white"/>,
-                        "itemTitulo": "Férias"
-                    },
-                    {
-                        "id": 6,
-                        "url": "/ausencias",
-                        "pageTitulo": "Ausências",
-                        "icone": <BsHourglassSplit size={20} className="icon" />,
-                        "itemTitulo": "Ausências"
-                    },
-                    {
-                        "id": 7,
-                        "url": "/demissoes",
-                        "pageTitulo": "Demissões",
-                        "icone": <FaUserTimes size={20} className="icon" />,
-                        "itemTitulo": "Demissões"
-                    },
-                    {
-                        "id": 11,
-                        "url": "/contratos",
-                        "pageTitulo": "Contratos",
-                        "icone": <RiFileListFill size={20} className="icon" />,
-                        "itemTitulo": "Contratos"
-                    },
-                    {
-                        "id": 12,
-                        "url": "/elegibilidade",
-                        "pageTitulo": "Elegibilidade",
-                        "icone": <LuSparkles size={20} className="icon" stroke="white"/>,
-                        "itemTitulo": "Elegibilidade"
-                    },
-                    {
-                        "id": 13,
-                        "url": "/pedidos",
-                        "pageTitulo": "Pedidos",
-                        "icone": <HiMiniShoppingBag size={20} fill="white" />,
-                        "itemTitulo": "Pedidos"
-                    },
-                    {
-                        "id": 14,
-                        "url": "/movimentos",
-                        "pageTitulo": "Movimentação",
-                        "icone": <MdAllInbox size={20} fill="white" />,
-                        "itemTitulo": "Movimentação"
-                    },
-                    {
-                        "id": 9,
-                        "url": "/ciclos",
-                        "pageTitulo": "Lançtos de Folha",
-                        "icone": <HiMiniNewspaper size={20} fill="white"/>,
-                        "itemTitulo": "Lançtos de Folha"
-                    }
-                ]
-            default:
-                return []
-        }
-    }
-    
-    const home = [
-        'adicionar-cnpj',
-        'adicionar-email',
-        'adicionar-celular'
-    ]
-    
-    const titulos = {
-        'equipeFolhaPagamento': 'Folha de Pagamento',
-        'equipeBeneficios': 'Benefícios',
-        'funcionario': 'Colaborador',
-        'candidato': 'Candidato',
-        'cliente': 'Cliente'
-    }
+    // Mapeamento de permissões para menus
+    const permissionMap = {
+        'view_funcionario': ['Colaboradores', 'Demissões'],
+        'view_dependente': ['Dependentes'],
+        'view_ferias': ['Férias'],
+        'view_ausencia': ['Ausências'],
+        'view_contrato': ['Contratos'],
+        'view_contratobeneficioitem': ['Elegibilidade'],
+    };
+
+    // Menus sempre visíveis
+    const alwaysVisible = [
+        {
+            id: 1,
+            url: '/',
+            pageTitulo: 'Home',
+            icone: <AiFillHome size={20} className="icon" />,
+            itemTitulo: 'Home',
+        },
+        {
+            id: 2,
+            url: '/vagas',
+            pageTitulo: 'Vagas',
+            icone: <RiFilePaperFill size={20} className="icon" />,
+            itemTitulo: 'Vagas',
+        },
+        {
+            id: 3,
+            url: '/admissao',
+            pageTitulo: 'Admissões',
+            icone: <RiUser3Fill size={20} className="icon" />,
+            itemTitulo: 'Admissões',
+        },
+        {
+            id: 4,
+            url: '/pedidos',
+            pageTitulo: 'Pedidos',
+            icone: <HiMiniShoppingBag size={20} fill="white" />, 
+            itemTitulo: 'Pedidos',
+        },
+        {
+            id: 5,
+            url: '/movimentos',
+            pageTitulo: 'Movimentação',
+            icone: <MdAllInbox size={20} fill="white" />, 
+            itemTitulo: 'Movimentação',
+        },
+        {
+            id: 6,
+            url: '/ciclos',
+            pageTitulo: 'Lançtos de Folha',
+            icone: <HiMiniNewspaper size={20} fill="white"/>,
+            itemTitulo: 'Lançtos de Folha',
+        },
+        {
+            id: 7,
+            url: '/tarefas',
+            pageTitulo: 'Tarefas',
+            icone: <GoTasklist size={20} fill="white" />, 
+            itemTitulo: 'Tarefas',
+        },
+        {
+            id: 8,
+            url: '/admissao/registro/1',
+            pageTitulo: 'Minha Admissão',
+            icone: <RiFileListFill size={20} className="icon" />,
+            itemTitulo: 'Minha Admissão',
+        },
+        {
+            id: 9,
+            url: '/colaborador/detalhes/109',
+            pageTitulo: 'Meu Cadastro',
+            icone: <RiFilePaperFill size={20} className="icon" />,
+            itemTitulo: 'Meu Cadastro',
+        },
+        {
+            id: 10,
+            url: '/ciclos/1',
+            pageTitulo: 'Ciclos de Pagamento',
+            icone: <RiUser3Fill size={20} className="icon" />,
+            itemTitulo: 'Ciclos de Pagamento',
+        },
+    ];
+
+    // Buscar permissões do grupo do usuário logado diretamente
+    const grupo = grupos.find(g => g.name === usuario.tipo);
+    const userPermissions = grupo ? grupo.permissions.map(p => p.codename) : [];
+
+    // Menus condicionais por permissão
+    const conditionalMenus = [
+        {
+            id: 11,
+            url: '/colaborador',
+            pageTitulo: 'Colaboradores',
+            icone: <BiSolidDashboard size={20} className="icon" />,
+            itemTitulo: 'Colaboradores',
+            permission: 'view_funcionario',
+        },
+        {
+            id: 12,
+            url: '/dependentes',
+            pageTitulo: 'Dependentes',
+            icone: <FaUserGroup size={20} className="icon" />,
+            itemTitulo: 'Dependentes',
+            permission: 'view_dependente',
+        },
+        {
+            id: 13,
+            url: '/ferias',
+            pageTitulo: 'Férias',
+            icone: <FaUmbrellaBeach size={20} fill="white"/>,
+            itemTitulo: 'Férias',
+            permission: 'view_ferias',
+        },
+        {
+            id: 14,
+            url: '/ausencias',
+            pageTitulo: 'Ausências',
+            icone: <BsHourglassSplit size={20} className="icon" />,
+            itemTitulo: 'Ausências',
+            permission: 'view_ausencia',
+        },
+        {
+            id: 15,
+            url: '/demissoes',
+            pageTitulo: 'Demissões',
+            icone: <FaUserTimes size={20} className="icon" />,
+            itemTitulo: 'Demissões',
+            permission: 'view_funcionario',
+        },
+        {
+            id: 16,
+            url: '/contratos',
+            pageTitulo: 'Contratos',
+            icone: <RiFileListFill size={20} className="icon" />,
+            itemTitulo: 'Contratos',
+            permission: 'view_contrato',
+        },
+        {
+            id: 17,
+            url: '/elegibilidade',
+            pageTitulo: 'Elegibilidade',
+            icone: <LuSparkles size={20} className="icon" stroke="white"/>,
+            itemTitulo: 'Elegibilidade',
+            permission: 'view_contratobeneficioitem',
+        },
+    ];
+
+    // Filtrar menus condicionais pelas permissões do usuário
+    const filteredConditionalMenus = conditionalMenus.filter(menu => userPermissions.includes(menu.permission));
+
+    // Juntar menus sempre visíveis e condicionais
+    const menus = [...alwaysVisible, ...filteredConditionalMenus];
+
+    // Ordem desejada conforme imagem
+    const ordemDesejada = [
+      'Home',
+      'Admissões',
+      'Colaboradores',
+      'Dependentes',
+      'Férias',
+      'Ausências',
+      'Demissões',
+      'Contratos',
+      'Elegibilidade',
+      'Pedidos',
+      'Movimentação',
+      'Lançtos de Folha'
+    ];
+
+    const menusOrdenados = [
+      ...ordemDesejada
+        .map(titulo => menus.find(menu => menu.itemTitulo === titulo))
+        .filter(Boolean),
+      ...menus.filter(menu => !ordemDesejada.includes(menu.itemTitulo))
+    ];
 
     function toggleBarraLateral() {
         setBarraLateralOpened(!barraLateralOpened)
@@ -504,6 +380,44 @@ function BarraLateral({ $sidebarOpened }) {
 
     const fecharMenu = () => {
         setBarraLateralOpened(false)
+    }
+
+    // DEBUG: logs para depuração
+    console.log('grupos:', grupos);
+    console.log('usuario.tipo:', usuario.tipo);
+
+    // Fallback: se grupos não carregou ainda, renderiza só os menus alwaysVisible
+    if (!grupos || grupos.length === 0) {
+        return (
+            <BarraLateralEstilizada $opened={$sidebarOpened}>
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    width: '100%',
+                    overflow: 'hidden'
+                }}>
+                    <NavEstilizada>
+                        <NavTitulo>{usuario.tipo}</NavTitulo>
+                        <ListaEstilizada>
+                            {alwaysVisible.map((item) => (
+                                <StyledLink 
+                                    key={item.id} 
+                                    className="link p-ripple" 
+                                    to={item.url}
+                                    onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
+                                    <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                        {item.icone}
+                                        {item.itemTitulo}
+                                    </ItemNavegacao>
+                                    <Ripple />
+                                </StyledLink>
+                            ))}
+                        </ListaEstilizada>
+                    </NavEstilizada>
+                </div>
+            </BarraLateralEstilizada>
+        );
     }
 
     return (
@@ -520,9 +434,9 @@ function BarraLateral({ $sidebarOpened }) {
                     overflow: 'hidden'
                 }}>
                     <NavEstilizada>
-                        <NavTitulo>{titulos[usuario.tipo]}</NavTitulo>
+                        <NavTitulo>{usuario.tipo}</NavTitulo>
                         <ListaEstilizada>
-                            {itensMenu().map((item) => (
+                            {menusOrdenados.map((item) => (
                                 <StyledLink 
                                     key={item.id} 
                                     className="link p-ripple" 

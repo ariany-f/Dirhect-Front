@@ -86,7 +86,7 @@ function LoginMobile() {
                     ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
                     setEmail(response.user.email);
                     setCpf(response.user.cpf ?? '');
-                    setTipo('equipeBeneficios');
+                    setTipo(response.groups[0]);
                     setUserPublicId(response.user.id);
                     setName(response.user.first_name + ' ' + response.user.last_name);
                     ArmazenadorToken.definirUsuario(
@@ -94,7 +94,7 @@ function LoginMobile() {
                         response.user.email,
                         response.user.cpf ?? '',
                         response.user.id,
-                        'equipeBeneficios',
+                        response.groups[0],
                         '', '', '', ''
                     );
                     setUsuarioEstaLogado(true);

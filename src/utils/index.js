@@ -11,8 +11,15 @@ const COMPANY_LOGO = 'company_logo'
 const COMPANY_PUBLIC_ID = 'company_public_id'
 const USER_PUBLIC_ID = 'public_id'
 const USER_TYPE = 'tipo'
+const USER_GROUPS = 'groups'
 
 export class ArmazenadorToken {
+    static definirGrupos(groups) {
+        sessionStorage.setItem(USER_GROUPS, groups)
+    }
+    static get UserGroups() {
+        return sessionStorage.getItem(USER_GROUPS)
+    }
     static definirToken(accessToken, expiration = null, refreshToken = null, permissions = null) {
         if (!accessToken) {
             throw new Error('Token de acesso é obrigatório')
