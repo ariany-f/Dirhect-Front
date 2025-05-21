@@ -71,50 +71,51 @@ function Login() {
     }, [])
 
     const onSubmit = async (data) => {
-        await handleLogin();
-        data.app_token = ArmazenadorToken.AccessToken;
-        if(!data.email || !data.password) {
-            toast.info('Preencha usuário e senha!');
-            return;
-        }
-        setLoading(true);
-        http.post('/token/', data)
-            .then(response => {
-                if(response.access) {
-                    const expiration = new Date();
-                    expiration.setMinutes(expiration.getMinutes() + 15);
-                    ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
-                    setUsuarioEstaLogado(true);
-                    ArmazenadorToken.definirUsuario(
-                        response.user.first_name + ' ' + response.user.last_name,
-                        response.user.email,
-                        response.user.cpf ?? '',
-                        response.user.id,
-                        'equipeBeneficios',
-                        '', '', '', ''
-                    );
-                    // Navegação conforme tipo de usuário
-                    if(response.user.tipo !== 'funcionario') {
-                        if(response.user.tipo !== 'candidato') {
-                            navegar('/login/selecionar-empresa');
+        await handleLogin().then(response => {
+            data.app_token = ArmazenadorToken.AccessToken;
+            if(!data.email || !data.password) {
+                toast.info('Preencha usuário e senha!');
+                return;
+            }
+            setLoading(true);
+            http.post('/token/', data)
+                .then(response => {
+                    if(response.access) {
+                        const expiration = new Date();
+                        expiration.setMinutes(expiration.getMinutes() + 15);
+                        ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
+                        setUsuarioEstaLogado(true);
+                        ArmazenadorToken.definirUsuario(
+                            response.user.first_name + ' ' + response.user.last_name,
+                            response.user.email,
+                            response.user.cpf ?? '',
+                            response.user.id,
+                            'equipeBeneficios',
+                            '', '', '', ''
+                        );
+                        // Navegação conforme tipo de usuário
+                        if(response.user.tipo !== 'funcionario') {
+                            if(response.user.tipo !== 'candidato') {
+                                navegar('/login/selecionar-empresa');
+                            } else {
+                                navegar(`/admissao/registro/${response.user.id}`);
+                            }
                         } else {
-                            navegar(`/admissao/registro/${response.user.id}`);
+                            navegar(`/colaborador/detalhes/${response.user.public_id}`);
                         }
+                        toast.success('Login realizado com sucesso!', { icon: SuccessIcon });
                     } else {
-                        navegar(`/colaborador/detalhes/${response.user.public_id}`);
+                        toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
                     }
-                    toast.success('Login realizado com sucesso!', { icon: SuccessIcon });
-                } else {
-                    toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            })
-            .catch(error => {
-                console.log(error);
-                toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
-            });
+                })
+                .finally(() => {
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.log(error);
+                    toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
+                });
+        });
     }
 
     if (!ready) {
