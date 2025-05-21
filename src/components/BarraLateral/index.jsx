@@ -142,10 +142,11 @@ function BarraLateral({ $sidebarOpened }) {
    
     const location = useLocation()
     
-    const [barraLateralOpened, setBarraLateralOpened] = useState(window.innerWidth > 760 && $sidebarOpened)
+    const [barraLateralOpened, setBarraLateralOpened] = useState($sidebarOpened)
     const [image, setImage] = useState(false)
     const [breadCrumbItems, setBreadCrumbItems] = useState([])
     const ref = useRef(null)
+
     const {
         usuario,
         setCompanies,
@@ -153,9 +154,9 @@ function BarraLateral({ $sidebarOpened }) {
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
-       
+
         const handleTouchMove = (e) => {
-            if (barraLateralOpened && window.innerWidth <= 760) {
+            if ($sidebarOpened && window.innerWidth <= 760) {
                 const navElement = document.querySelector('nav')
                 if (navElement && !navElement.contains(e.target)) {
                     e.preventDefault()
@@ -170,16 +171,7 @@ function BarraLateral({ $sidebarOpened }) {
         return () => {
             document.removeEventListener('touchmove', handleTouchMove)
         }
-    }, [barraLateralOpened, $sidebarOpened])
-
-    useEffect(() => {
-        const handleResize = () => {
-            setBarraLateralOpened(window.innerWidth > 760)
-        }
-
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
-    }, [])
+    }, [$sidebarOpened])
 
     useEffect(() => {
         if(logo) {
@@ -188,7 +180,6 @@ function BarraLateral({ $sidebarOpened }) {
     }, [logo])
 
     useEffect(() => {
-        console.log(usuario);
         const pathSegments = location.pathname.split('/').filter(Boolean)
         const newBreadCrumbItems = pathSegments.map((segment, index) => ({
             label: segment.charAt(0).toUpperCase() + segment.slice(1),

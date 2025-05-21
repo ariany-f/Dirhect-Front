@@ -61,10 +61,18 @@ function Autenticado() {
     const [modalOpened, setModalOpened] = useState(false)
     const [menuOpened, setMenuOpened] = useState(false)
     const [loading, setLoading] = useState(false)
-
-    const [sidebarOpened, setSidebarOpened] = useState(true)
+    const [sidebarOpened, setSidebarOpened] = useState(window.innerWidth > 760)
 
     const location = useLocation()
+
+    useEffect(() => {
+        const handleResize = () => {
+            setSidebarOpened(window.innerWidth > 760)
+        }
+
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     useEffect(() => {        
         if((!tenants) && ((!empresas) || empresas.length == 0))
@@ -157,11 +165,12 @@ function Autenticado() {
             setMenuOpened(false)
         }
 
-        if(sidebarOpened)
+        if(sidebarOpened && window.innerWidth <= 760)
         {
             setSidebarOpened(false)
         }
     }
+
     
     const selectCompany = () => {
         setModalOpened(true)
