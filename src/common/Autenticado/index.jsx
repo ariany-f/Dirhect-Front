@@ -14,6 +14,7 @@ import { ArmazenadorToken } from "@utils"
 import styled from "styled-components"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import BottomMenu from '@components/BottomMenu'
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -30,6 +31,7 @@ const MarginContainer = styled.div`
 
 function Autenticado() {   
     
+    const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
     const query = useQuery();
 
     useEffect(() => {
@@ -197,6 +199,7 @@ function Autenticado() {
                     <MarginContainer>
                         <Outlet key={empresa} />
                     </MarginContainer>
+                    {!isDesktop && <BottomMenu />}
                 </MainContainer>
                 <Analytics />
                 <SpeedInsights />

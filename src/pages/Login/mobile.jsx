@@ -82,7 +82,7 @@ function LoginMobile() {
             .then(response => {
                 if(response.access) {
                     const expiration = new Date();
-                    expiration.setMinutes(expiration.getMinutes() + 15);
+                    expiration.setMinutes(expiration.getMinutes() + 5);
                     ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
                     setEmail(response.user.email);
                     setCpf(response.user.cpf ?? '');
