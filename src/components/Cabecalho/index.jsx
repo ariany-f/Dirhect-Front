@@ -332,8 +332,10 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
   return (
     <HeaderEstilizado>
       <HeaderTop>
-        <FaBars style={{ cursor: 'pointer' }} size={24} onClick={() => setSidebarOpened(!sidebarOpened)} />
-        {isDesktop ? <h6>{titulo}</h6> : <>&nbsp;</>}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <FaBars style={{ cursor: 'pointer' }} size={24} onClick={() => setSidebarOpened(!sidebarOpened)} />
+          {isDesktop ? <h6>{titulo}</h6> : <>&nbsp;</>}
+        </div>
         <RightItems>
           <div className={styles.divisor}>
             {isDesktop && (
