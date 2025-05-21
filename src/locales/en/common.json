@@ -29,5 +29,9 @@
     "order_total_value": "Order total value",
     "colaborators_to_receive": "Colaborators to receive",
     "hirings": "Hirings",
-    "terminations": "Terminations"
+    "terminations": "Terminations",
+    "Can view": "Can view",
+    "Can add": "Can add",
+    "Can change": "Can change",
+    "Can delete": "Can delete"
 }

@@ -29,5 +29,9 @@
     "order_total_value": "Valor Total",
     "colaborators_to_receive": "Colaboradores a receber",
     "hirings": "Admissões",
-    "terminations": "Demissões"
+    "terminations": "Demissões",
+    "Can view": "Pode visualizar",
+    "Can add": "Pode adicionar",
+    "Can change": "Pode alterar",
+    "Can delete": "Pode deletar"
 }

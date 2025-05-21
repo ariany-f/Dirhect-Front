@@ -33,7 +33,7 @@ function OperadorDetalhes() {
                 <BotaoVoltar linkFixo="/operador" />
                     {operador ? 
                         <Titulo>
-                            <h3>{operador?.username}</h3>
+                            <h3>{operador?.first_name} {operador?.last_name}</h3>
                         </Titulo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
                     }
