@@ -261,7 +261,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 lazy
                 rows={rows} 
                 totalRecords={totalRecords} 
-                GlobalFilterFields={['funcionario_pessoa_fisica.nome', 'chapa', 'filial']}
+                globalfilterfields={['funcionario_pessoa_fisica.nome', 'chapa', 'filial']}
                 first={first} 
                 onPage={onPage} 
                 onSort={handleSort}

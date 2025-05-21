@@ -86,7 +86,13 @@ function Login() {
                     expiration.setMinutes(expiration.getMinutes() + 15);
 
                     ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
-                    
+                   
+                    setEmail(response.user.email);
+                    setCpf(response.user.cpf ?? '');
+                    setTipo('equipeBeneficios');
+                    setUserPublicId(response.user.id);
+                    setName(response.user.first_name + ' ' + response.user.last_name);
+                     
                     ArmazenadorToken.definirUsuario(
                         response.user.first_name + ' ' + response.user.last_name,
                         response.user.email,
@@ -95,17 +101,12 @@ function Login() {
                         'equipeBeneficios',
                         '', '', '', ''
                     );
-                    setEmail(response.user.email);
-                    setCpf(response.user.cpf ?? '');
-                    setTipo('equipeBeneficios');
-                    setUserPublicId(response.user.id);
-                    setName(response.user.first_name + ' ' + response.user.last_name);
+
                     setUsuarioEstaLogado(true);
                 } else {
                     toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
                 }
             }).then(response => {
-                console.log(usuario);
                 // Navegação conforme tipo de usuário
                 if(usuario.tipo !== 'funcionario') {
                     if(usuario.tipo !== 'candidato') {
