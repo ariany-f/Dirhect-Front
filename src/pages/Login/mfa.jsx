@@ -98,6 +98,27 @@ function Mfa() {
                     outline: 0 none;
                     border-bottom-color: var(--primary-color);
                 }
+
+                @media screen and (max-width: 768px) {
+                    .custom-otp-input {
+                        width: 35px;
+                        font-size: 28px;
+                    }
+                }
+
+                @media screen and (max-width: 480px) {
+                    .custom-otp-input {
+                        width: 30px;
+                        font-size: 24px;
+                    }
+                }
+
+                @media screen and (max-width: 360px) {
+                    .custom-otp-input {
+                        width: 25px;
+                        font-size: 20px;
+                    }
+                }
             `}
             </style>
             {mfaEnabled ? 
