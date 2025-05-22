@@ -19,7 +19,6 @@ const Campo = styled(InputText)`
     align-items: center;
     align-self: stretch;
     font-weight: 600;
-    margin-top: 10px;
     width: ${ props => props.$width ?  props.$width : 'inherit' };
 
     &:disabled {
@@ -36,7 +35,7 @@ const Campo = styled(InputText)`
 
     ~ .icon {
         box-sizing: initial;
-        top: 30%;
+        top: 20%;
         cursor: pointer;
         position: absolute;
         fill: var(--neutro-600);
