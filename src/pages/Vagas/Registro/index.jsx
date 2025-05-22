@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
 import CampoTexto from '@components/CampoTexto'; // Importando o componente CampoTexto
 import BotaoVoltar from '@components/BotaoVoltar'; // Importando o componente CampoTexto
@@ -6,9 +6,32 @@ import Container from '@components/Container'; // Importando o componente Contai
 import Botao from '@components/Botao'; // Importando o componente Container
 import { useNavigate } from 'react-router-dom';
 import Frame from '@components/Frame';
+import DropdownItens from '@components/DropdownItens';
+import http from '@http';
+import styled from 'styled-components';
+
+const Col12 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 10px;
+`
+
+const Col6 = styled.div`
+    padding: 15px 0px;
+    flex: 1 1 calc(50% - 10px);
+`
 
 const VagasRegistro = () => {
     const [classError, setClassError] = useState([])
+    const [filiais, setFiliais] = useState([]);
+    const [centros_custo, setCentrosCusto] = useState([]);
+    const [departamentos, setDepartamentos] = useState([]);
+    const [secoes, setSecoes] = useState([]);
+    const [cargos, setCargos] = useState([]);
+    const [horarios, setHorarios] = useState([]);
+    const [funcoes, setFuncoes] = useState([]);
+    const [sindicatos, setSindicatos] = useState([]);
       
     const { 
         vagas,
@@ -22,7 +45,57 @@ const VagasRegistro = () => {
     const [dataAbertura, setDataAbertura] = useState('');
     const [dataEncerramento, setDataEncerramento] = useState('');
     const [salario, setSalario] = useState('');
-    const [selectedDate, setSelectedDate] = useState(1)
+    const [selectedDate, setSelectedDate] = useState(1);
+    const [filial, setFilial] = useState(null);
+    const [centroCusto, setCentroCusto] = useState(null);
+    const [departamento, setDepartamento] = useState(null);
+    const [secao, setSecao] = useState(null);
+    const [cargo, setCargo] = useState(null);
+    const [horario, setHorario] = useState(null);
+    const [funcao, setFuncao] = useState(null);
+    const [sindicato, setSindicato] = useState(null);
+
+    useEffect(() => {
+        http.get('filial/?format=json')
+            .then(response => {
+                setFiliais(response)
+            })
+
+        http.get('departamento/?format=json')
+            .then(response => {
+                setDepartamentos(response)
+            })
+
+        http.get('secao/?format=json')
+            .then(response => {
+                setSecoes(response)
+            })
+
+        http.get('cargo/?format=json')
+            .then(response => {
+                setCargos(response)
+            })
+
+        http.get('centro_custo/?format=json')
+            .then(response => {
+                setCentrosCusto(response)
+            })
+
+        http.get('sindicato/?format=json')
+            .then(response => {
+                setSindicatos(response)
+            })
+            
+        http.get('horario/?format=json')
+            .then(response => {
+                setHorarios(response)
+            })
+
+        http.get('funcao/?format=json')
+            .then(response => {
+                setFuncoes(response)
+            })
+    }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -37,6 +110,14 @@ const VagasRegistro = () => {
             dataAbertura,
             dataEncerramento,
             salario: parseFloat(salario), // Convertendo para número
+            filial: filial?.code,
+            centroCusto: centroCusto?.code,
+            departamento: departamento?.code,
+            secao: secao?.code,
+            cargo: cargo?.code,
+            horario: horario?.code,
+            funcao: funcao?.code,
+            sindicato: sindicato?.code
         };
 
         // Atualizando o estado com a nova vaga
@@ -48,12 +129,20 @@ const VagasRegistro = () => {
         setDataAbertura('');
         setDataEncerramento('');
         setSalario('');
+        setFilial(null);
+        setCentroCusto(null);
+        setDepartamento(null);
+        setSecao(null);
+        setCargo(null);
+        setHorario(null);
+        setFuncao(null);
+        setSindicato(null);
 
         navegar('/vagas')
     };
 
     return (
-        <Frame gap="16px">
+        <Frame gap="10px">
             <BotaoVoltar linkFixo="/vagas" />
             <h3>Registrar Nova Vaga</h3>
             <form onSubmit={handleSubmit}>
@@ -79,7 +168,7 @@ const VagasRegistro = () => {
                     type="date" 
                     valor={dataAbertura} 
                     setValor={setDataAbertura}
-                    label="Data de Encerramento"  />
+                    label="Data de Abertura"  />
 
                 <CampoTexto 
                     type="date" 
@@ -96,6 +185,117 @@ const VagasRegistro = () => {
                     type="number" 
                     label="Salário" 
                     placeholder="Digite o salário" />
+
+                <div style={{textAlign: 'left'}}>
+                    <h6>Estrutura Organizacional</h6>
+                    <Col12>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="filial" 
+                                valor={filial}
+                                setValor={setFilial} 
+                                options={filiais.map(filial => ({
+                                    name: filial.nome,
+                                    code: filial.id
+                                }))} 
+                                placeholder="Filial" />
+                        </Col6>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="centro_custo" 
+                                valor={centroCusto}
+                                setValor={setCentroCusto} 
+                                options={centros_custo.map(cc => ({
+                                    name: cc.nome,
+                                    code: cc.id
+                                }))} 
+                                placeholder="Centro de Custo" />
+                        </Col6>
+                    </Col12>
+
+                    <Col12>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="departamento" 
+                                valor={departamento}
+                                setValor={setDepartamento} 
+                                options={departamentos.map(dep => ({
+                                    name: dep.nome,
+                                    code: dep.id
+                                }))} 
+                                placeholder="Departamento" />
+                        </Col6>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="secao" 
+                                valor={secao}
+                                setValor={setSecao} 
+                                options={secoes.map(sec => ({
+                                    name: sec.nome,
+                                    code: sec.id
+                                }))} 
+                                placeholder="Seção" />
+                        </Col6>
+                    </Col12>
+
+                    <Col12>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="cargo" 
+                                valor={cargo}
+                                setValor={setCargo} 
+                                options={cargos.map(cargo => ({
+                                    name: cargo.nome,
+                                    code: cargo.id
+                                }))} 
+                                placeholder="Cargo" />
+                        </Col6>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="horario" 
+                                valor={horario}
+                                setValor={setHorario} 
+                                options={horarios.map(horario => ({
+                                    name: `${horario.codigo} - ${horario.descricao}`,
+                                    code: horario.id
+                                }))} 
+                                placeholder="Horário" />
+                        </Col6>
+                    </Col12>
+
+                    <Col12>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="funcao" 
+                                valor={funcao}
+                                setValor={setFuncao} 
+                                options={funcoes.map(funcao => ({
+                                    name: funcao.nome,
+                                    code: funcao.id
+                                }))} 
+                                placeholder="Função" />
+                        </Col6>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="sindicato" 
+                                valor={sindicato}
+                                setValor={setSindicato} 
+                                options={sindicatos.map(sindicato => ({
+                                    name: `${sindicato.codigo} - ${sindicato.descricao}`,
+                                    code: sindicato.id
+                                }))} 
+                                placeholder="Sindicato" />
+                        </Col6>
+                    </Col12>
+                </div>
 
                 <Botao type="submit">Registrar Vaga</Botao>
             </form>

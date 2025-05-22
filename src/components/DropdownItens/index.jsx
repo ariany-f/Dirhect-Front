@@ -18,7 +18,7 @@ const Select = styled(Dropdown)`
     margin-top: 2px;
     font-size: 14px;
     width: ${ props => props.$width ?  props.$width : 'inherit' };
-    height: ${ props => props.$height ?  props.$height : '56px' };
+    height: ${ props => props.$height ?  props.$height : '46px' };
 
     & span {
         display: flex;

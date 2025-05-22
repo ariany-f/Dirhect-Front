@@ -169,7 +169,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
   return (
     opened &&
     <Overlay>
-      <DialogEstilizado $width="90vw" $minWidth="70vw" open={opened}>
+      <DialogEstilizado $width="95vw" $minWidth="80vw" open={opened}>
         <Frame>
           <Titulo>
             <button className="close" onClick={aoFechar}>
