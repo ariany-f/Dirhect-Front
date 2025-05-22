@@ -22,7 +22,16 @@ function Mfa() {
 
     const [teste, setTeste] = useState(false);
 
-    const customInput = ({events, props}) => <input {...events} {...props} type="text" className="custom-otp-input" />;
+    const customInput = ({events, props}) => (
+        <input 
+            {...events} 
+            {...props} 
+            type="tel" 
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="custom-otp-input" 
+        />
+    );
 
     function base64_decode(str) {      
         return decodeURIComponent(escape(window.atob( str )))
@@ -72,7 +81,7 @@ function Mfa() {
     }
 
     return (
-        <div className="flex flex-column align-items-center justify-content-center min-h-screen p-4">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '0 20px' }}>
             <style scoped>
             {`
                 .custom-otp-input {
