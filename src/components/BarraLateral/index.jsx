@@ -29,8 +29,7 @@ const ListaEstilizada = styled.ul`
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 246px;
-       
+    width: 245px;
     height: calc(100vh - 200px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -73,7 +72,6 @@ const BarraLateralEstilizada = styled.aside`
     @media screen and (max-width: 760px) {
         position: fixed;
         z-index: 1100;
-        width: 85%;
         max-width: 320px;
         margin-left: ${props => (!!props.$opened) ? '0' : '-100%'};
         box-shadow: ${props => (!!props.$opened) ? '0 0 15px rgba(0,0,0,0.3)' : 'none'};
