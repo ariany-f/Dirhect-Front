@@ -108,7 +108,7 @@ function Mfa() {
 
                 @media screen and (max-width: 480px) {
                     .custom-otp-input {
-                        width: 30px;
+                        width: 50px;
                         font-size: 24px;
                     }
                 }
