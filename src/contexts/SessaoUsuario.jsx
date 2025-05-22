@@ -27,6 +27,7 @@ const usuarioInicial = {
     remember: false,
     companies: null,
     code: [],
+    mfa_required: false,
     tipo: sessionStorage.getItem('tipo') ?? ''
 }
 
@@ -45,6 +46,7 @@ export const SessaoUsuarioContext = createContext({
     setCompanies: () => null,
     setRemember: () => null,
     setUserPublicId: () => null,
+    setMfaRequired: () => null,
     setCpf: () => null,
     setDocument: () => null,
     setSessionCompany: () => null,
@@ -97,9 +99,11 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const simboloSalvo = sessionStorage.getItem('simbolo');
         const logoSalvo = sessionStorage.getItem('logo');
         const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
+        const mfaRequiredSalvo = sessionStorage.getItem('mfa_required');
         usuarioSalvo = {
             cpf: cpfSalvo ?? '',
             email: emailSalvo ?? '',
+            mfa_required: mfaRequiredSalvo ?? false,
             tipo: tipoSalvo ?? '',
             name: nameSalvo ?? '',
             public_id: publicIdSalvo ?? '',
@@ -137,6 +141,14 @@ export const SessaoUsuarioProvider = ({ children }) => {
             return {
                 ...estadoAnterior,
                 cpf
+            }
+        })
+    }
+    const setMfaRequired = (mfa_required) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                mfa_required
             }
         })
     }
@@ -478,6 +490,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         setCompanySymbol,
         setCpf,
         setUserPublicId,
+        setMfaRequired,
         setRecuperacaoToken,
         setRecuperacaoPassword,
         setRecuperacaoConfirmPassword,

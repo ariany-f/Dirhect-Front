@@ -3,6 +3,7 @@ import PrimeiroAcesso from '@pages/PrimeiroAcesso'
 import SenhaDeAcesso from '@pages/PrimeiroAcesso/senha-acesso'
 import Login from '@pages/Login'
 import LoginMobile from '@pages/Login/mobile'
+import Mfa from '@pages/Login/mfa'
 import SelecionarEmpresa from '@pages/Login/selecionar-empresa'
 import SelecionarEmpresaMobile from '@pages/Login/selecionar-empresa-mobile'
 import EsqueciASenha from '@pages/EsqueciASenha'
@@ -181,6 +182,7 @@ function AppRouter() {
                 :
                   <Route index element={<LoginMobile />} />
               }
+              <Route path="mfa" element={<Mfa />} />
               {isDesktop ?
                 <Route path="selecionar-empresa" element={<SelecionarEmpresa />} />
                 :

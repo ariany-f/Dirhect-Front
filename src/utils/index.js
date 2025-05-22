@@ -10,6 +10,7 @@ const COMPANY_SYMBOL = 'company_symbol'
 const COMPANY_LOGO = 'company_logo'
 const COMPANY_PUBLIC_ID = 'company_public_id'
 const USER_PUBLIC_ID = 'public_id'
+const MFA_REQUIRED = 'mfa_required'
 const USER_TYPE = 'tipo'
 const USER_GROUPS = 'groups'
 
@@ -46,7 +47,7 @@ export class ArmazenadorToken {
         sessionStorage.setItem(COMPANY_SYMBOL, company_symbol)
         sessionStorage.setItem(COMPANY_LOGO, company_logo)
     }
-    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo) {
+    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo, mfa_required) {
         if (!email) {
             throw new Error('Email é obrigatório')
         }
@@ -60,6 +61,7 @@ export class ArmazenadorToken {
             sessionStorage.setItem(COMPANY_PUBLIC_ID, company_public_id || '')
             sessionStorage.setItem(COMPANY_SYMBOL, company_symbol || '')
             sessionStorage.setItem(COMPANY_LOGO, company_logo || '')
+            sessionStorage.setItem(MFA_REQUIRED, mfa_required || false)
         } catch (error) {
             console.error('Erro ao armazenar dados do usuário:', error)
             throw new Error('Falha ao armazenar dados do usuário')
@@ -73,6 +75,7 @@ export class ArmazenadorToken {
     }
     static removerToken() {
         sessionStorage.removeItem(ACCESS_TOKEN)
+        sessionStorage.removeItem(MFA_REQUIRED)
         sessionStorage.removeItem(EXPIRATION)
         sessionStorage.removeItem(PERMISSIONS)
         sessionStorage.removeItem(USER_GROUPS)
@@ -97,6 +100,9 @@ export class ArmazenadorToken {
     }
     static get RefreshToken() {
         return sessionStorage.getItem(REFRESH_TOKEN)
+    }
+    static get MfaRequired() {
+        return sessionStorage.getItem(MFA_REQUIRED)
     }
     static get UserName() {
         return sessionStorage.getItem(USER_NAME)

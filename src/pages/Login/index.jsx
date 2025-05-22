@@ -33,6 +33,7 @@ function Login() {
         setUsuarioEstaLogado,
         setCpf,
         setEmail,
+        setMfaRequired,
         setTipo,
         setUserPublicId,
         setName,
@@ -50,7 +51,7 @@ function Login() {
         try {
             const response = await http.post(`/app-login/`, data);
             ArmazenadorToken.definirToken(response.access, null, null, null);
-            console.log('Salvou o access_token', response);
+            
             return response;
         } catch (error) {
             console.log(error);
@@ -85,8 +86,14 @@ function Login() {
                     const expiration = new Date();
                     expiration.setMinutes(expiration.getMinutes() + 5);
 
-                    ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
-                   
+                    ArmazenadorToken.definirToken(
+                        response.access, 
+                        expiration, 
+                        response.refresh, 
+                        response.permissions
+                    );
+                    
+                    setMfaRequired(response.mfa_required);
                     setEmail(response.user.email);
                     setCpf(response.user.cpf ?? '');
                     setTipo(response.groups[0]);
@@ -99,7 +106,11 @@ function Login() {
                         response.user.cpf ?? '',
                         response.user.id,
                         response.groups[0],
-                        '', '', '', ''
+                        '', 
+                        '', 
+                        '', 
+                        '', 
+                        response.mfa_required
                     );
 
                     setUsuarioEstaLogado(true);
@@ -107,15 +118,20 @@ function Login() {
                     toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
                 }
             }).then(response => {
-                // Navegação conforme tipo de usuário
-                if(usuario.tipo !== 'funcionario') {
-                    if(usuario.tipo !== 'candidato') {
-                        navegar('/login/selecionar-empresa');
-                    } else {
-                        navegar(`/admissao/registro/${usuario.id}`);
-                    }
+                console.log('response', usuario);
+                if(usuario.mfa_required) {
+                    navegar('/login/mfa');
                 } else {
-                    navegar(`/colaborador/detalhes/${usuario.public_id}`);
+                    // Navegação conforme tipo de usuário
+                    if(usuario.tipo !== 'funcionario') {
+                        if(usuario.tipo !== 'candidato') {
+                            navegar('/login/selecionar-empresa');
+                        } else {
+                            navegar(`/admissao/registro/${usuario.id}`);
+                        }
+                    } else {
+                        navegar(`/colaborador/detalhes/${usuario.public_id}`);
+                    }
                 }
             }).catch(error => {
                 if(error?.detail) {
