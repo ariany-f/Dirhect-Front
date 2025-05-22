@@ -64,11 +64,11 @@ const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    gap: 10px;
 `
 
 const Col6 = styled.div`
-    padding: 10px;
-    flex: 1 1 50%;
+    flex: 1 1 calc(50% - 10px);
 `
 const CardSelecao = styled.div`
     border: 1px solid var(--neutro-200);
@@ -640,7 +640,7 @@ const CandidatoRegistro = () => {
                     </Frame>
                 </StepperPanel>
                 <StepperPanel header="Dados Pessoais">
-                        <Container padding={'30px 0 0 0'}>
+                        <Container padding={'30px 0 0 0'} gap="10px">
                             <Col12>
                                 <Col6>
                                     <CampoTexto 
