@@ -71,7 +71,7 @@ function SelecionarEmpresa() {
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
-    useEffect(() => {
+    useEffect(() => {        
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {
             setLoading(true)

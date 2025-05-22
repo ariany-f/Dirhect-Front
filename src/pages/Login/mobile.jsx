@@ -35,6 +35,7 @@ function LoginMobile() {
         setPassword,
         setUserPublicId,
         setName,
+        setMfaRequired,
     } = useSessaoUsuarioContext();
 
     const { control, handleSubmit, formState: { errors } } = useForm();
@@ -68,61 +69,80 @@ function LoginMobile() {
         init();
     }, []);
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         if(!data.email || !data.password) {
             toast.info('Preencha usuário e senha!');
             return;
         }
         setLoading(true);
-        handleLogin()
-            .then(() => {
-                data.app_token = ArmazenadorToken.AccessToken;
-                return http.post('/token/', data);
-            })
-            .then(response => {
-                if(response.access) {
-                    const expiration = new Date();
-                    expiration.setMinutes(expiration.getMinutes() + 5);
-                    ArmazenadorToken.definirToken(response.access, expiration, response.refresh, response.permissions);
-                    setEmail(response.user.email);
-                    setCpf(response.user.cpf ?? '');
-                    setTipo(response.groups[0]);
-                    setUserPublicId(response.user.id);
-                    setName(response.user.first_name + ' ' + response.user.last_name);
-                    ArmazenadorToken.definirUsuario(
-                        response.user.first_name + ' ' + response.user.last_name,
-                        response.user.email,
-                        response.user.cpf ?? '',
-                        response.user.id,
-                        response.groups[0],
-                        '', '', '', ''
-                    );
-                    setUsuarioEstaLogado(true);
+        try {
+            await handleLogin();
+            data.app_token = ArmazenadorToken.AccessToken;
+            
+            const response = await http.post('/token/', data);
+            
+            if(response.access) {
+                const expiration = new Date();
+                expiration.setMinutes(expiration.getMinutes() + 5);
+
+                ArmazenadorToken.definirToken(
+                    response.access, 
+                    expiration, 
+                    response.refresh, 
+                    response.permissions
+                );
+                
+                setMfaRequired(response.mfa_required);
+                setEmail(response.user.email);
+                setCpf(response.user.cpf ?? '');
+                setTipo(response.groups[0]);
+                setUserPublicId(response.user.id);
+                setName(response.user.first_name + ' ' + response.user.last_name);
+                 
+                ArmazenadorToken.definirUsuario(
+                    response.user.first_name + ' ' + response.user.last_name,
+                    response.user.email,
+                    response.user.cpf ?? '',
+                    response.user.id,
+                    response.groups[0],
+                    '', 
+                    '', 
+                    '', 
+                    '', 
+                    response.mfa_required
+                );
+
+                setUsuarioEstaLogado(true);
+
+                // Aguarda o estado ser atualizado
+                await new Promise(resolve => setTimeout(resolve, 0));
+
+                if(response.mfa_required) {
+                    navegar('/login/mfa');
                 } else {
-                    toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
-                }
-            }).then(response => {
-                // Navegação conforme tipo de usuário
-                if(usuario.tipo !== 'funcionario') {
-                    if(usuario.tipo !== 'candidato') {
-                        navegar('/login/selecionar-empresa');
+                    // Navegação conforme tipo de usuário
+                    if(response.groups[0] !== 'funcionario') {
+                        if(response.groups[0] !== 'candidato') {
+                            navegar('/login/selecionar-empresa');
+                        } else {
+                            navegar(`/admissao/registro/${response.user.id}`);
+                        }
                     } else {
-                        navegar(`/admissao/registro/${usuario.id}`);
+                        navegar(`/colaborador/detalhes/${response.user.id}`);
                     }
-                } else {
-                    navegar(`/colaborador/detalhes/${usuario.public_id}`);
                 }
-            })
-            .catch(error => {
-                if(error?.detail) {
-                    toast.error(error.detail, { icon: ErrorIcon });
-                } else {
-                    toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+            } else {
+                toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
+            }
+        } catch (error) {
+            if(error?.detail) {
+                toast.error(error.detail, { icon: ErrorIcon });
+            } else {
+                toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

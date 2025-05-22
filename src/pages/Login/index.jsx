@@ -81,67 +81,67 @@ function Login() {
         try {
             data.app_token = ArmazenadorToken.AccessToken;
             
-            http.post('/token/', data).then(response => {
-                if(response.access) {
-                    const expiration = new Date();
-                    expiration.setMinutes(expiration.getMinutes() + 5);
+            const response = await http.post('/token/', data);
+            
+            if(response.access) {
+                const expiration = new Date();
+                expiration.setMinutes(expiration.getMinutes() + 5);
 
-                    ArmazenadorToken.definirToken(
-                        response.access, 
-                        expiration, 
-                        response.refresh, 
-                        response.permissions
-                    );
-                    
-                    setMfaRequired(response.mfa_required);
-                    setEmail(response.user.email);
-                    setCpf(response.user.cpf ?? '');
-                    setTipo(response.groups[0]);
-                    setUserPublicId(response.user.id);
-                    setName(response.user.first_name + ' ' + response.user.last_name);
-                     
-                    ArmazenadorToken.definirUsuario(
-                        response.user.first_name + ' ' + response.user.last_name,
-                        response.user.email,
-                        response.user.cpf ?? '',
-                        response.user.id,
-                        response.groups[0],
-                        '', 
-                        '', 
-                        '', 
-                        '', 
-                        response.mfa_required
-                    );
+                ArmazenadorToken.definirToken(
+                    response.access, 
+                    expiration, 
+                    response.refresh, 
+                    response.permissions
+                );
+                
+                setMfaRequired(response.mfa_required);
+                setEmail(response.user.email);
+                setCpf(response.user.cpf ?? '');
+                setTipo(response.groups[0]);
+                setUserPublicId(response.user.id);
+                setName(response.user.first_name + ' ' + response.user.last_name);
+                 
+                ArmazenadorToken.definirUsuario(
+                    response.user.first_name + ' ' + response.user.last_name,
+                    response.user.email,
+                    response.user.cpf ?? '',
+                    response.user.id,
+                    response.groups[0],
+                    '', 
+                    '', 
+                    '', 
+                    '', 
+                    response.mfa_required
+                );
 
-                    setUsuarioEstaLogado(true);
-                } else {
-                    toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
-                }
-            }).then(response => {
-                console.log('response', usuario);
-                if(usuario.mfa_required) {
+                setUsuarioEstaLogado(true);
+
+                // Aguarda o estado ser atualizado
+                await new Promise(resolve => setTimeout(resolve, 0));
+
+                if(response.mfa_required) {
                     navegar('/login/mfa');
                 } else {
                     // Navegação conforme tipo de usuário
-                    if(usuario.tipo !== 'funcionario') {
-                        if(usuario.tipo !== 'candidato') {
+                    if(response.groups[0] !== 'funcionario') {
+                        if(response.groups[0] !== 'candidato') {
                             navegar('/login/selecionar-empresa');
                         } else {
-                            navegar(`/admissao/registro/${usuario.id}`);
+                            navegar(`/admissao/registro/${response.user.id}`);
                         }
                     } else {
-                        navegar(`/colaborador/detalhes/${usuario.public_id}`);
+                        navegar(`/colaborador/detalhes/${response.user.id}`);
                     }
                 }
-            }).catch(error => {
-                if(error?.detail) {
-                    toast.error(error.detail, { icon: ErrorIcon });
-                } else {
-                    toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
-                }
-            });
+            } else {
+                toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
+            }
         } catch (error) {
-            toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
+            if(error?.detail) {
+                toast.error(error.detail, { icon: ErrorIcon });
+            } else {
+                toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
+            }
         } finally {
             setLoading(false);
         }
@@ -211,3 +211,4 @@ function Login() {
 }
 
 export default Login
+
