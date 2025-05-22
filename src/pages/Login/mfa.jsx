@@ -66,6 +66,7 @@ function Mfa() {
         .then(response => {
             toast.success('Token verificado com sucesso!');
             console.log(response);
+            navegar('/login/selecionar-empresa');
         })
         .catch(error => {
             if(error.error)
@@ -75,8 +76,6 @@ function Mfa() {
             else {
                 toast.error('Erro ao verificar Token!');
             }
-        }).finally(() => {
-            navegar('/login/selecionar-empresa');
         });
     }
 
