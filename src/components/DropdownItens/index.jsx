@@ -20,6 +20,11 @@ const Select = styled(Dropdown)`
     width: ${ props => props.$width ?  props.$width : 'inherit' };
     height: ${ props => props.$height ?  props.$height : '56px' };
 
+    & span {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+    }
     &.error {
         outline: 1px solid var(--error);
     }
