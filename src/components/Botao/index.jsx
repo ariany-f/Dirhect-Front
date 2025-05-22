@@ -13,7 +13,7 @@ const BotaoEstilizado = styled.button`
     font-weight: 600;
     font-family: var(--fonte-primaria);
     font-size: ${ props => props.$fontSize ? props.$fontSize : '16px'};
-    width: ${ props => props.$size ? props.$size : '100%'};
+    width: ${ props => props.$size ? (props.$size === 'small' ? '100px' : props.$size === 'medium' ? '200px' : '100%') : '100%'};
     line-height: 150%; /* 24px */
     justify-content: center;
     align-items: center;

@@ -831,7 +831,7 @@ const CandidatoRegistro = () => {
                         </Frame>
                 </StepperPanel>
                 <StepperPanel header="Vaga">
-                        <Container padding={'30px 0 0 0'}>
+                        <Container padding={'30px 0 30px 0'}>
                             <Col12>
                                 <Col6>
                                     <DropdownItens 
