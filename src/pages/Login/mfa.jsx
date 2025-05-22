@@ -55,7 +55,7 @@ function Mfa() {
     function handleVerifyOtp() {
         http.post('/mfa/validate/', { token: otpCode })
         .then(response => {
-            toast.success('Código OTP verificado com sucesso!');
+            toast.success('Token verificado com sucesso!');
             console.log(response);
         })
         .catch(error => {
@@ -64,7 +64,7 @@ function Mfa() {
                 toast.error(error.error);
             }
             else {
-                toast.error('Erro ao verificar código OTP!');
+                toast.error('Erro ao verificar Token!');
             }
         }).finally(() => {
             navegar('/login/selecionar-empresa');
