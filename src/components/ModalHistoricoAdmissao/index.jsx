@@ -72,7 +72,7 @@ function ModalHistoricoAdmissao({ opened = false, aoFechar, candidato }) {
         {
             data: '2024-03-16 12:00',
             titulo: 'LGPD Aceita',
-            descricao: 'Candidato aceitou o LGPD',
+            descricao: 'Candidato aceitou compartilhar seus dados com a empresa',
             status: 'success'
         },
         {
