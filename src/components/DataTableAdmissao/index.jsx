@@ -205,7 +205,11 @@ function DataTableAdmissao({ vagas }) {
                     className="details"
                     data-pr-tooltip="Ver Detalhes"
                     size={16}
-                    onClick={(e) => handleDetalhes(e, rowData)}
+                    onClick={(e) => verDetalhes(rowData)}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)',
+                    }}
                 />
             </div>
         );

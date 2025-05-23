@@ -917,7 +917,9 @@ const CandidatoRegistro = () => {
                             </ScrollPanel>
                         </Container>
                         <Frame padding="30px" estilo="spaced">
-                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                            <BotaoGrupo>
+                                <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                            </BotaoGrupo>
                             <BotaoGrupo>
                                 <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
                                 <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
@@ -1065,7 +1067,9 @@ const CandidatoRegistro = () => {
                         </Col12>
                     </Container>
                     <Frame padding="30px" estilo="spaced">
-                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        <BotaoGrupo>
+                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        </BotaoGrupo>
                         <BotaoGrupo>
                             <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
                             <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
@@ -1236,7 +1240,9 @@ const CandidatoRegistro = () => {
                         </Col12>
                     </Container>
                     <Frame padding="30px" estilo="spaced">
-                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        <BotaoGrupo>
+                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        </BotaoGrupo>
                         <BotaoGrupo>
                             <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
                             <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
@@ -1332,9 +1338,9 @@ const CandidatoRegistro = () => {
                         </Frame>
                     </ScrollPanel>
                     <Frame padding="30px" estilo="spaced">
-                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}>
-                            <HiArrowLeft/> Voltar
-                        </Botao>
+                        <BotaoGrupo>
+                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        </BotaoGrupo>
                         <BotaoGrupo>
                             <Botao iconPos="right" aoClicar={() => true}>
                                 <FaSave fill="white"/> Salvar
@@ -1383,7 +1389,9 @@ const CandidatoRegistro = () => {
                         </Frame>
                     </ScrollPanel>
                     <Frame padding="30px" estilo="spaced">
-                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        <BotaoGrupo>
+                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        </BotaoGrupo>
                         <BotaoGrupo>
                             <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
                             <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
@@ -1474,7 +1482,9 @@ const CandidatoRegistro = () => {
                         </Frame>
                     </ScrollPanel>
                     <Frame padding="30px" estilo="spaced">
-                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        <BotaoGrupo>
+                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        </BotaoGrupo>
                         <BotaoGrupo>
                             <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
                             <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
@@ -1494,7 +1504,9 @@ const CandidatoRegistro = () => {
                       </ScrollPanel>
                     
                     <Frame padding="30px" estilo="spaced">
-                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        <BotaoGrupo>
+                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        </BotaoGrupo>
                         <BotaoGrupo>
                             <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Aceitar e Salvar</Botao>
                         </BotaoGrupo>
