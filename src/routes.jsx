@@ -363,6 +363,7 @@ function AppRouter() {
               <Route path="admissao/validar" element={<ValidarAdmissoes />} />
               <Route path="admissao/detalhes/:id/:candidato" element={<DetalhesAdmissao />} />
               <Route path="admissao/registro/:id" element={<CandidatoRegistro />} />
+              <Route path="admissao/registro/:id/:self" element={<CandidatoRegistro />} />
             
               <Route path="elegibilidade" element={<Elegibilidade />} >
                 <Route index element={<ElegibilidadeLista />} />

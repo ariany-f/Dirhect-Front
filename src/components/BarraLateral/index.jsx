@@ -262,7 +262,7 @@ function BarraLateral({ $sidebarOpened }) {
         },
         {
             id: 8,
-            url: '/admissao/registro/1',
+            url: '/admissao/registro/1/true',
             pageTitulo: 'Minha Admissão',
             icone: <RiFileListFill size={20} className="icon" />,
             itemTitulo: 'Minha Admissão',

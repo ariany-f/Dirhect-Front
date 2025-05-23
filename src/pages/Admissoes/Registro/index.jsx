@@ -28,38 +28,6 @@ const ConteudoFrame = styled.div`
     width: 100%;
 `
 
-const ContainerButton = styled.div`
-    display: flex;
-    width: 100%;
-    padding: 20px;
-    justify-content: space-between;
-    & button {
-        width: initial;
-    }
-`
-
-const LadoALado = styled.div`
-    display: flex;
-    gap: 24px;
-    & span {
-        display: flex;
-        align-items: center;
-    }
-`
-
-const CardText = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 10px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    border:  ${ props => props.$border ?  props.$border : 'none'};
-    background: ${ props => props.$background ?  props.$background : 'var(--neutro-100)'};
-`
-
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -79,10 +47,6 @@ const CardSelecao = styled.div`
     flex-direction: column;
     justify-content: space-between;
 `
-
-const ArquivoBotao = styled(Botao)`
-    margin-top: 10px;
-`;
 
 const AdicionarBotao = styled.div`
     font-size: 14px;
@@ -112,7 +76,7 @@ const ArquivoHeader = styled(ContainerHorizontal)`
 
 const CandidatoRegistro = () => {
 
-    let { id } = useParams()
+    let { id, self = false } = useParams()
     const [candidato, setCandidato] = useState(null)
     const [classError, setClassError] = useState([])
     const stepperRef = useRef(null);
@@ -614,7 +578,7 @@ const CandidatoRegistro = () => {
             <form onSubmit={handleSubmit}>
             <Stepper headerPosition="top" ref={stepperRef} style={{ flexBasis: '50rem' }}>
                 <StepperPanel header="Documentos Pessoais">
-                    <ScrollPanel style={{ width: '100%', height: '400px'}}>
+                    <ScrollPanel style={{ width: '100%', height: '380px'}}>
                         <Col12>
                         {arquivos.map((arquivo) => (
                             <Col6>
@@ -641,6 +605,8 @@ const CandidatoRegistro = () => {
                 </StepperPanel>
                 <StepperPanel header="Dados Pessoais">
                         <Container padding={'30px 0 0 0'} gap="10px">
+
+                            <ScrollPanel style={{ width: '100%', height: '380px'}}>
                             <Col12>
                                 <Col6>
                                     <CampoTexto 
@@ -821,6 +787,7 @@ const CandidatoRegistro = () => {
                                     </Col6>
                                 </Col12>
                             </Frame>
+                            </ScrollPanel>
                         </Container>
                         <Frame padding="30px" estilo="spaced">
                             <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
@@ -830,123 +797,125 @@ const CandidatoRegistro = () => {
                             </BotaoGrupo>
                         </Frame>
                 </StepperPanel>
-                <StepperPanel header="Vaga">
-                        <Container padding={'30px 0 30px 0'}>
-                            <Col12>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
-                                        valor={candidato?.vaga?.filial} 
-                                        setValor={setFilial} 
-                                        options={filiais.map(filial => ({
-                                            name: filial.nome,
-                                            code: filial.id
-                                        }))} 
-                                        name="filial" 
-                                        placeholder="Filial" />
-                                </Col6>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
-                                        name="centro_custo" 
-                                        valor={candidato?.vaga?.centroCusto}
-                                        setValor={setCentroCusto} 
-                                        options={centros_custo.map(cc => ({
-                                            name: cc.nome,
-                                            code: cc.id
-                                        }))} 
-                                        placeholder="Centro de Custo" />
-                                </Col6>
-                            </Col12>
-                            <Col12>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
-                                        name="departamento" 
-                                        valor={candidato?.vaga?.departamento}
-                                        setValor={setDepartamento} 
-                                        options={departamentos.map(dep => ({
-                                            name: dep.nome,
-                                            code: dep.id
-                                        }))} 
-                                        placeholder="Departamento" />
-                                </Col6>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
-                                        name="secao" 
-                                        valor={candidato?.vaga?.secao}
-                                        setValor={setSecao} 
-                                        options={secoes.map(sec => ({
-                                            name: sec.nome,
-                                            code: sec.id
-                                        }))} 
-                                        placeholder="Seção" />
-                                </Col6>
-                            </Col12>
-                            <Col12>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
-                                        name="cargo" 
-                                        valor={candidato?.vaga?.cargo}
-                                        setValor={setCargo} 
-                                        options={cargos.map(cargo => ({
-                                            name: cargo.nome,
-                                            code: cargo.id
-                                        }))} 
-                                        placeholder="Cargo" />
-                                </Col6>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
-                                        name="horario" 
-                                        valor={candidato?.vaga?.horario}
-                                        setValor={setHorario} 
-                                        options={horarios.map(horario => ({
-                                            name: `${horario.codigo} - ${horario.descricao}`,
-                                            code: horario.id
-                                        }))} 
-                                        placeholder="Horário" />
-                                </Col6>
-                            </Col12>
-                            <Col12>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
-                                        name="funcao" 
-                                        valor={candidato?.vaga?.funcao}
-                                        setValor={setFuncao} 
-                                        options={funcoes.map(funcao => ({
-                                            name: funcao.nome,
-                                            code: funcao.id
-                                        }))} 
-                                        placeholder="Função" />
-                                </Col6>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
-                                        name="sindicato" 
-                                        valor={candidato?.vaga?.sindicato}
-                                        setValor={setSindicato} 
-                                        options={sindicatos.map(sindicato => ({
-                                            name: `${sindicato.codigo} - ${sindicato.descricao}`,
-                                            code: sindicato.id
-                                        }))} 
-                                        placeholder="Sindicato" />
-                                </Col6>
-                            </Col12>
-                        </Container>
-                        <Frame padding="30px" estilo="spaced">
-                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                            <BotaoGrupo>
-                                <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
-                                <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
-                            </BotaoGrupo>
-                        </Frame>
-                </StepperPanel>
+                {!self && (
+                  <StepperPanel header="Vaga">
+                    <Container padding={'30px 0 30px 0'}>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    valor={candidato?.vaga?.filial} 
+                                    setValor={setFilial} 
+                                    options={filiais.map(filial => ({
+                                        name: filial.nome,
+                                        code: filial.id
+                                    }))} 
+                                    name="filial" 
+                                    placeholder="Filial" />
+                            </Col6>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="centro_custo" 
+                                    valor={candidato?.vaga?.centroCusto}
+                                    setValor={setCentroCusto} 
+                                    options={centros_custo.map(cc => ({
+                                        name: cc.nome,
+                                        code: cc.id
+                                    }))} 
+                                    placeholder="Centro de Custo" />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="departamento" 
+                                    valor={candidato?.vaga?.departamento}
+                                    setValor={setDepartamento} 
+                                    options={departamentos.map(dep => ({
+                                        name: dep.nome,
+                                        code: dep.id
+                                    }))} 
+                                    placeholder="Departamento" />
+                            </Col6>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="secao" 
+                                    valor={candidato?.vaga?.secao}
+                                    setValor={setSecao} 
+                                    options={secoes.map(sec => ({
+                                        name: sec.nome,
+                                        code: sec.id
+                                    }))} 
+                                    placeholder="Seção" />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="cargo" 
+                                    valor={candidato?.vaga?.cargo}
+                                    setValor={setCargo} 
+                                    options={cargos.map(cargo => ({
+                                        name: cargo.nome,
+                                        code: cargo.id
+                                    }))} 
+                                    placeholder="Cargo" />
+                            </Col6>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="horario" 
+                                    valor={candidato?.vaga?.horario}
+                                    setValor={setHorario} 
+                                    options={horarios.map(horario => ({
+                                        name: `${horario.codigo} - ${horario.descricao}`,
+                                        code: horario.id
+                                    }))} 
+                                    placeholder="Horário" />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="funcao" 
+                                    valor={candidato?.vaga?.funcao}
+                                    setValor={setFuncao} 
+                                    options={funcoes.map(funcao => ({
+                                        name: funcao.nome,
+                                        code: funcao.id
+                                    }))} 
+                                    placeholder="Função" />
+                            </Col6>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="sindicato" 
+                                    valor={candidato?.vaga?.sindicato}
+                                    setValor={setSindicato} 
+                                    options={sindicatos.map(sindicato => ({
+                                        name: `${sindicato.codigo} - ${sindicato.descricao}`,
+                                        code: sindicato.id
+                                    }))} 
+                                    placeholder="Sindicato" />
+                            </Col6>
+                        </Col12>
+                    </Container>
+                    <Frame padding="30px" estilo="spaced">
+                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        <BotaoGrupo>
+                            <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
+                            <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
+                        </BotaoGrupo>
+                    </Frame>
+                  </StepperPanel>
+                )}
                 <StepperPanel header="Educação">
-                    <ScrollPanel style={{ width: '100%', height: '400px'}}>
+                    <ScrollPanel style={{ width: '100%', height: '380px'}}>
                         {educacao.map((educacao) => (
                             <ArquivoContainer
                                 key={educacao.id}
@@ -1047,7 +1016,7 @@ const CandidatoRegistro = () => {
                     </Frame>
                 </StepperPanel>
                 <StepperPanel header="Habilidades">
-                    <ScrollPanel style={{ width: '100%', height: '400px'}}>
+                    <ScrollPanel style={{ width: '100%', height: '380px'}}>
                         {habilidades.map((habilidade) => (
                             <ArquivoContainer key={habilidade.id}>
                                 <ArquivoHeader>
@@ -1092,7 +1061,7 @@ const CandidatoRegistro = () => {
                     </Frame>
                 </StepperPanel>
                 <StepperPanel header="Experiência Profissional">
-                    <ScrollPanel style={{ width: '100%', height: '400px'}}>
+                    <ScrollPanel style={{ width: '100%', height: '380px'}}>
                         {experiencia.map((experiencia) => (
                             <ArquivoContainer
                                 key={experiencia.id}
@@ -1178,18 +1147,31 @@ const CandidatoRegistro = () => {
                         <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
                         <BotaoGrupo>
                             <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
+                            <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
                         </BotaoGrupo>
                     </Frame>
                 </StepperPanel>
+                {self && (
+                  <StepperPanel header="LGPD">
+                    <ScrollPanel style={{ width: '100%', height: '380px',  textAlign: 'center'}}>
+                            <h4>Termo de Consentimento LGPD</h4>
+                            <p style={{textAlign: 'justify', marginTop: '20px'}}>
+                              Declaro, para os devidos fins, que li e estou ciente de que, ao me candidatar a uma vaga nesta empresa, meus dados pessoais, incluindo, mas não se limitando a nome, CPF, endereço, telefone, e-mail, dados profissionais, acadêmicos, documentos, exames médicos e demais informações fornecidas, serão coletados, tratados e armazenados pela empresa exclusivamente para fins de recrutamento, seleção, análise de perfil, eventual contratação e cumprimento de obrigações legais e regulatórias.<br/><br/>
+                              Estou ciente de que meus dados poderão ser compartilhados com prestadores de serviço, parceiros e órgãos públicos, sempre observando a finalidade descrita acima e em conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 – LGPD).<br/><br/>
+                              Tenho ciência de que poderei, a qualquer momento, solicitar informações sobre o tratamento dos meus dados, bem como requerer a atualização, correção ou exclusão destes, conforme previsto na legislação vigente, por meio dos canais de contato disponibilizados pela empresa.<br/><br/>
+                              Ao prosseguir, declaro que li, compreendi e concordo com o tratamento dos meus dados pessoais para os fins acima descritos.
+                            </p>
+                      </ScrollPanel>
+                    
+                    <Frame padding="30px" estilo="spaced">
+                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        <BotaoGrupo>
+                            <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Aceitar e Salvar</Botao>
+                        </BotaoGrupo>
+                    </Frame>
+                  </StepperPanel>
+                )}
             </Stepper>
-            
-
-{/* 
-                            <Frame alinhamento="end">
-                                <ArquivoBotao  aoClicar={setCandidato} type="submit" style={{ marginTop: '20px' }}>
-                                    Salvar dados
-                                </ArquivoBotao>
-                            </Frame> */}
             </form>
         </ConteudoFrame>
     );
