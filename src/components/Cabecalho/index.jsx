@@ -286,7 +286,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 20, "url": "tarefas", "pageTitulo": "Tarefas" },
     { "id": 21, "url": "marketplace", "pageTitulo": "Marketplace" },
     { "id": 22, "url": "operadoras", "pageTitulo": "Operadoras" },
-    { "id": 23, "url": "tipos-beneficio", "pageTitulo": "Tipos de Benefício" }
+    { "id": 23, "url": "tipos-beneficio", "pageTitulo": "Tipos de Benefício" },
+    { "id": 24, "url": "vagas", "pageTitulo": "Vagas" }
   ];
 
   const titulo = titulos.find(item => 
