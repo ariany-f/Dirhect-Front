@@ -94,7 +94,7 @@ function Login() {
                     response.permissions
                 );
                 
-                setMfaRequired(response.mfa_required);
+                setMfaRequired(response.user.mfa_required);
                 setEmail(response.user.email);
                 setCpf(response.user.cpf ?? '');
                 setTipo(response.groups[0]);
@@ -111,7 +111,7 @@ function Login() {
                     '', 
                     '', 
                     '', 
-                    response.mfa_required
+                    response.user.mfa_required
                 );
 
                 setUsuarioEstaLogado(true);
@@ -119,7 +119,7 @@ function Login() {
                 // Aguarda o estado ser atualizado
                 await new Promise(resolve => setTimeout(resolve, 0));
 
-                if(response.mfa_required) {
+                if(response.user.mfa_required) {
                     navegar('/login/mfa');
                 } else {
                     // Navegação conforme tipo de usuário
