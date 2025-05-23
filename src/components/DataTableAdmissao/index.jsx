@@ -10,6 +10,10 @@ import { Real } from '@utils/formats'
 import { FaHistory } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import ModalHistoricoAdmissao from '@components/ModalHistoricoAdmissao';
+import ModalDadosCandidato from '@components/ModalDadosCandidato';
+import { RiUser3Line } from 'react-icons/ri';
+import { CgDetailsMore } from "react-icons/cg";
+
 
 function DataTableAdmissao({ vagas }) {
     const[selectedVaga, setSelectedVaga] = useState(0)
@@ -19,6 +23,7 @@ function DataTableAdmissao({ vagas }) {
     })
     const [showHistorico, setShowHistorico] = useState(false);
     const [selectedCandidato, setSelectedCandidato] = useState(null);
+    const [showDadosCandidato, setShowDadosCandidato] = useState(false);
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
@@ -39,6 +44,12 @@ function DataTableAdmissao({ vagas }) {
         e.stopPropagation();
         setSelectedCandidato(rowData);
         setShowHistorico(true);
+    };
+
+    const handleDadosCandidato = (e, rowData) => {
+        e.stopPropagation();
+        setSelectedCandidato(rowData);
+        setShowDadosCandidato(true);
     };
 
     const representativeCandidatoTemplate = (rowData) => {
@@ -75,6 +86,17 @@ function DataTableAdmissao({ vagas }) {
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ display: 'flex', gap: '8px' }}>
+                <Tooltip target=".dados-candidato" mouseTrack mouseTrackLeft={10} />
+                <RiUser3Line
+                    className="dados-candidato"
+                    data-pr-tooltip="Ver Dados do Candidato"
+                    size={18}
+                    onClick={(e) => handleDadosCandidato(e, rowData)}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)',
+                    }}
+                />
                 <Tooltip target=".history" mouseTrack mouseTrackLeft={10} />
                 <FaHistory
                     className="history"
@@ -85,6 +107,13 @@ function DataTableAdmissao({ vagas }) {
                         cursor: 'pointer',
                         color: 'var(--primaria)',
                     }}
+                />
+                <Tooltip target=".details" mouseTrack mouseTrackLeft={10} />
+                <CgDetailsMore
+                    className="details"
+                    data-pr-tooltip="Ver Detalhes"
+                    size={16}
+                    onClick={(e) => handleDetalhes(e, rowData)}
                 />
             </div>
         );
@@ -98,16 +127,21 @@ function DataTableAdmissao({ vagas }) {
                 </span>
             </div>
             <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="vaga" header="Titulo" style={{ width: '30%' }}></Column>
-                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '25%' }}></Column>
+                <Column field="vaga" header="Titulo" style={{ width: '18%' }}></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '25%' }}></Column>
                 <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '15%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '5%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
             </DataTable>
 
             <ModalHistoricoAdmissao 
                 opened={showHistorico}
                 aoFechar={() => setShowHistorico(false)}
+                candidato={selectedCandidato}
+            />
+            <ModalDadosCandidato
+                opened={showDadosCandidato}
+                aoFechar={() => setShowDadosCandidato(false)}
                 candidato={selectedCandidato}
             />
         </>

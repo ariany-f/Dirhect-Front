@@ -70,6 +70,12 @@ function ModalHistoricoAdmissao({ opened = false, aoFechar, candidato }) {
             status: 'success'
         },
         {
+            data: '2024-03-16 12:00',
+            titulo: 'LGPD Aceita',
+            descricao: 'Candidato aceitou o LGPD',
+            status: 'success'
+        },
+        {
             data: '2024-03-17 09:00',
             titulo: 'Agendamento de exame médico',
             descricao: 'Exame médico agendado para 25/03/2024',
