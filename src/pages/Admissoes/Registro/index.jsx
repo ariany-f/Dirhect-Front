@@ -164,6 +164,23 @@ const CandidatoRegistro = () => {
     const [funcoes, setFuncoes] = useState([]);
     const [sindicatos, setSindicatos] = useState([]);
 
+    const [listaPericulosidades, setListaPericulosidades] = useState([
+        { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
+        { code: 'MP', name: 'Atividades com Máquinas e Equipamentos Pesados' },
+        { code: 'HA', name: 'Trabalho em Altura' },
+        { code: 'RA', name: 'Exposição a Radiação' },
+        { code: 'TE', name: 'Trabalho com Energia Elétrica' },
+        { code: 'CE', name: 'Exposição ao Calor Excessivo' },
+        { code: 'PE', name: 'Atividades com Produtos Explosivos' },
+        { code: 'CA', name: 'Trabalho em Ambientes Confinedos' },
+        { code: 'SA', name: 'Atividades Subaquáticas' },
+        { code: 'RAU', name: 'Exposição a Ruídos Altos' },
+        { code: 'PB', name: 'Perigos Biológicos' },
+        { code: 'TE', name: 'Exposição a Temperaturas Extremas' },
+        { code: 'DA', name: 'Trabalho em Áreas de Desastres ou Emergências' },
+        { code: 'MC', name: 'Manipulação de Materiais Cortantes' },
+        { code: 'SC', name: 'Exposição a Substâncias Cancerígenas' }
+    ]);
 
     const setDataNascimento = (dataNascimento) => {
         setCandidato(estadoAnterior => {
@@ -902,6 +919,29 @@ const CandidatoRegistro = () => {
                                         code: sindicato.id
                                     }))} 
                                     placeholder="Sindicato" />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="periculosidade"
+                                    valor={candidato?.vaga?.periculosidade || candidato?.periculosidade}
+                                    setValor={valor => setCandidatoVaga('periculosidade', valor)}
+                                    options={listaPericulosidades}
+                                    placeholder="Periculosidade" />
+                            </Col6>
+                            <Col6>
+                                <div style={{ marginTop: '-15px'}} >
+                                <CampoTexto
+                                    camposVazios={classError}
+                                    name="salario"
+                                    valor={candidato?.vaga?.salario || candidato?.salario || ''}
+                                    setValor={valor => setCandidatoVaga('salario', valor)}
+                                    type="number"
+                                    label="Salário"
+                                    placeholder="Digite o salário" />
+                                </div>
                             </Col6>
                         </Col12>
                     </Container>
