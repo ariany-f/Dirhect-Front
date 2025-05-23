@@ -183,6 +183,14 @@ const CandidatoRegistro = () => {
         { code: 'SC', name: 'Exposição a Substâncias Cancerígenas' }
     ]);
 
+    const [listaInsalubridades, setListaInsalubridades] = useState([
+        { code: '30%', name: '30%' },
+        { code: '40%', name: '40%' },
+        { code: '50%', name: '50%' },
+        { code: '60%', name: '60%' },
+        { code: '70%', name: '70%' },   
+    ]);
+
     const setDataNascimento = (dataNascimento) => {
         setCandidato(estadoAnterior => {
             return {
@@ -1034,7 +1042,16 @@ const CandidatoRegistro = () => {
                                     placeholder="Periculosidade" />
                             </Col6>
                             <Col6>
-                                <div style={{ marginTop: '-15px'}} >
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="insalubridade"
+                                    valor={candidato?.vaga?.insalubridade || candidato?.insalubridade}
+                                    setValor={valor => setCandidatoVaga('insalubridade', valor)}
+                                    options={listaInsalubridades}
+                                    placeholder="Insalubridade" />
+                            </Col6>
+                            <Col6>
+                                <div style={{ marginTop: '5px'}} >
                                 <CampoTexto
                                     camposVazios={classError}
                                     name="salario"
@@ -1192,7 +1209,18 @@ const CandidatoRegistro = () => {
                                 />
                             </Col6>
                             <Col6>
-                                <div style={{ marginTop: '-15px'}} >
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="insalubridade"
+                                    valor={candidato?.vaga?.insalubridade || candidato?.insalubridade}
+                                    setValor={valor => setCandidatoVaga('insalubridade', valor)}
+                                    options={listaInsalubridades}
+                                    placeholder="Insalubridade"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                            <Col6>
+                                <div style={{ marginTop: '5px'}} >
                                 <CampoTexto
                                     camposVazios={classError}
                                     name="salario"

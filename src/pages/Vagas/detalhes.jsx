@@ -161,6 +161,8 @@ function DetalhesVaga() {
                                     <Texto weight="800">{vaga?.inclusao_para || '--'}</Texto>
                                 </>
                             )}
+                            <Texto>Periculosidade</Texto>
+                            <Texto weight="800">{vaga?.periculosidade || '--'}</Texto>
                         </Col6>
                         <Col6>
                             <Texto>Filial</Texto>
