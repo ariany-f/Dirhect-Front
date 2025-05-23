@@ -1,6 +1,7 @@
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import { GrAddCircle } from 'react-icons/gr'
+import BotaoSemBorda from '@components/BotaoSemBorda'
 import styled from "styled-components"
 import styles from './Vagas.module.css'; // Importando o módulo CSS
 import { Link, Outlet, useLocation } from "react-router-dom"
@@ -42,9 +43,11 @@ const Vagas = () => {
                     <Link to="/vagas/registro">
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white"/> Cadastrar Vaga</Botao>
                     </Link>
-                    <Link to="/vagas/configuracoes">
-                        <Botao estilo="vermilion" size="small" tab><CiSettings className={styles.icon} fill="white"/> Configurações de Emails</Botao>
-                    </Link>
+                    
+                    <BotaoSemBorda color="var(--primaria)">
+                        <CiSettings size={16}/> <Link to={'/vagas/configuracoes'} className={styles.link}>Configurações de Emails</Link>
+                    </BotaoSemBorda>
+        
                 </BotaoGrupo>
             </BotaoGrupo>
             <Outlet context={vagas.vagas} />

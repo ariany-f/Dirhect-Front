@@ -402,7 +402,7 @@ function DataTableBeneficios({
                     <BotaoSemBorda color="var(--primaria)">
                         <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
                     </BotaoSemBorda>
-                    <BotaoSemBorda>
+                    <BotaoSemBorda color="var(--primaria)">
                         <CiSettings size={16}/> <Link to={'/tipos-beneficio'} className={styles.link}>Tipos de Benefício</Link>
                     </BotaoSemBorda>
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
