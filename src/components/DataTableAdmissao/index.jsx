@@ -14,11 +14,11 @@ import ModalDadosCandidato from '@components/ModalDadosCandidato';
 import { RiUser3Line } from 'react-icons/ri';
 import { CgDetailsMore } from "react-icons/cg";
 import { Tag } from 'primereact/tag';
+import ModalExameMedico from '@components/ModalExameMedico';
 
 
 function DataTableAdmissao({ vagas }) {
 
-    console.log(vagas)
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -27,6 +27,8 @@ function DataTableAdmissao({ vagas }) {
     const [showHistorico, setShowHistorico] = useState(false);
     const [selectedCandidato, setSelectedCandidato] = useState(null);
     const [showDadosCandidato, setShowDadosCandidato] = useState(false);
+    const [modalExameAberto, setModalExameAberto] = useState(false);
+    const [candidatoExame, setCandidatoExame] = useState(null);
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
@@ -70,6 +72,7 @@ function DataTableAdmissao({ vagas }) {
                     fontWeight: 600,
                     fontSize: 13,
                     borderRadius: 8,
+
                     padding: '4px 12px',
                 }}
             />
@@ -109,6 +112,36 @@ function DataTableAdmissao({ vagas }) {
             <span style={{ fontWeight: 600 }}>
                 {valor !== undefined && valor !== null ? `${valor}%` : '--'}
             </span>
+        );
+    };
+
+    const representativeExameTemplate = (rowData) => {
+        if (rowData.candidato.dataExameMedico) {
+            return (
+                <span style={{ fontWeight: 500 }}>
+                    {new Date(rowData.candidato.dataExameMedico).toLocaleDateString('pt-BR')}
+                </span>
+            );
+        }
+        return (
+            <button
+                style={{
+                    background: 'var(--primaria)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: 6,
+                    padding: '4px 12px',
+                    cursor: 'pointer',
+                    fontWeight: 600
+                }}
+                onClick={e => {
+                    e.stopPropagation();
+                    setCandidatoExame(rowData);
+                    setModalExameAberto(true);
+                }}
+            >
+                Agendar
+            </button>
         );
     };
 
@@ -161,6 +194,7 @@ function DataTableAdmissao({ vagas }) {
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '25%' }}></Column>
                 <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '15%' }}></Column>
                 <Column body={representativeAdiantamentoTemplate} header="Adiantamento (%)" style={{ width: '12%' }} />
+                <Column body={representativeExameTemplate} header="Exame Médico" style={{ width: '14%' }} />
                 <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '15%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
             </DataTable>
@@ -174,6 +208,14 @@ function DataTableAdmissao({ vagas }) {
                 opened={showDadosCandidato}
                 aoFechar={() => setShowDadosCandidato(false)}
                 candidato={selectedCandidato}
+            />
+            <ModalExameMedico
+                opened={modalExameAberto}
+                aoFechar={() => setModalExameAberto(false)}
+                aoAgendar={({ medico, data }) => {
+                    // Aqui você pode atualizar o candidato na lista, se desejar
+                    setModalExameAberto(false);
+                }}
             />
         </>
     )

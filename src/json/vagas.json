@@ -68,7 +68,7 @@
                 "telefone": "(11) 98497-9026",
                 "statusDePreenchimento": "Preenchido",
                 "statusDeCandidato": "Aprovado",
-                "statusLgpd": true,
+                "statusLgpd": false,
                 "endereco": {
                     "cep": "",
                     "street": "",
@@ -104,6 +104,7 @@
                 "cpf": "",
                 "dataNascimento": "1988-02-15",
                 "dataExameMedico": "2025-03-10",
+
                 "dataInicio": "2025-04-02",
                 "telefone": "",
                 "statusDePreenchimento": "Rejeitado",
@@ -155,7 +156,7 @@
                 "email": "ana.costa@example.com",
                 "cpf": "",
                 "dataNascimento": "1988-02-15",
-                "dataExameMedico": "2025-03-10",
+                "dataExameMedico": null,
                 "dataInicio": "2025-04-02",
                 "telefone": "",
                 "statusDePreenchimento": "Em Análise",
