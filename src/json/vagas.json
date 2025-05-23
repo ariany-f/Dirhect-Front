@@ -104,9 +104,8 @@
                 "email": "carlos.pereira@example.com",
                 "cpf": "",
                 "dataNascimento": "1988-02-15",
-                "dataExameMedico": "2025-03-10",
-
-                "dataInicio": "2025-04-02",
+                "dataExameMedico": null,
+                "dataInicio": null,
                 "telefone": "",
                 "statusDePreenchimento": "Rejeitado",
                 "statusDeCandidato": "Rejeitado",

@@ -39,11 +39,19 @@ function DataTableCandidatos({ candidatos }) {
     }
 
     const representativeDataInicioTemplate = (rowData) => {
-        return new Date(rowData.dataInicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        if (rowData.dataInicio) {
+            return new Date(rowData.dataInicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        } else {
+            return '-----'
+        }
     }
 
     const representativeDataExameMedicoTemplate = (rowData) => {
-        return new Date(rowData.dataExameMedico).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        if (rowData.dataExameMedico) {
+            return new Date(rowData.dataExameMedico).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        } else {
+            return '-----'
+        }
     }
 
     const representativeStatusPreenchimentoTemplate = (rowData) => {
