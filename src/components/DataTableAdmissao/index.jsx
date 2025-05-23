@@ -7,7 +7,7 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Real } from '@utils/formats'
-import { FaHistory } from 'react-icons/fa';
+import { FaCalendarAlt, FaHistory } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import ModalHistoricoAdmissao from '@components/ModalHistoricoAdmissao';
 import ModalDadosCandidato from '@components/ModalDadosCandidato';
@@ -130,9 +130,10 @@ function DataTableAdmissao({ vagas }) {
                     color: 'white',
                     border: 'none',
                     borderRadius: 6,
+                    fontSize: 11,
                     padding: '4px 12px',
                     cursor: 'pointer',
-                    fontWeight: 600
+                    fontWeight: 500
                 }}
                 onClick={e => {
                     e.stopPropagation();
@@ -140,6 +141,7 @@ function DataTableAdmissao({ vagas }) {
                     setModalExameAberto(true);
                 }}
             >
+                <FaCalendarAlt fill="white" />
                 Agendar
             </button>
         );
