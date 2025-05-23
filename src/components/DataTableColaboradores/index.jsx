@@ -31,6 +31,8 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filiais, setFiliais] = useState([]);
     const [funcoes, setFuncoes] = useState([]);
+    const [key, setKey] = useState(0); // Chave para forçar re-renderização
+    const [dadosCarregados, setDadosCarregados] = useState(false);
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -40,6 +42,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const {usuario} = useSessaoUsuarioContext()
 
     useEffect(() => {
+        // Carregar filiais
         http.get('filial/?format=json')
             .then(response => {
                 setFiliais(response);
@@ -47,14 +50,17 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             .catch(error => {
                 console.error('Erro ao carregar filiais:', error);
             });
+
+        // Carregar funções
         http.get('funcao/?format=json')
             .then(response => {
                 setFuncoes(response);
+                setKey(prev => prev + 1); // Força re-renderização
             })
             .catch(error => {
                 console.error('Erro ao carregar funções:', error);
             });
-    }, []);
+    }, []); // Executar apenas uma vez quando o componente montar
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
@@ -96,7 +102,14 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     }
     
     const representativeFilialTemplate = (rowData) => {
-        const filial = filiais.find(f => f.id === rowData.filial);
+        console.log('Filial data:', rowData);
+        console.log('Filiais disponíveis:', filiais);
+        
+        // Converter para número se necessário
+        const filialId = Number(rowData.filial);
+        const filial = filiais.find(f => Number(f.id) === filialId);
+        
+        console.log('Filial encontrada:', filial);
         return (
             <div style={{display: 'flex', alignItems: 'center'}}>
                 <Texto weight={500}>{filial ? filial.nome : '---'}</Texto>
@@ -105,7 +118,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     }
 
     const representativeFuncaoTemplate = (rowData) => {
-        const funcao = funcoes.find(f => f.id === rowData.id_funcao);
+        const funcao = funcoes.find(f => String(f.id) === String(rowData.id_funcao));
         
         return (
             <div key={rowData.id}>
@@ -252,6 +265,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 )}
             </BotaoGrupo>
             <DataTable 
+                key={key}
                 selection={selectedCollaborator} 
                 onSelectionChange={(e) => verDetalhes(e.value)}
                 selectionMode="single"
@@ -293,7 +307,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeFuncaoTemplate} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '25%' }}></Column>
+                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '25%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '10%' }}></Column>
                 <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} field="situacao" header="Situação" style={{ width: '15%' }}></Column>
