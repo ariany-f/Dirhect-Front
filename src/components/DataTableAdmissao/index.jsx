@@ -16,6 +16,7 @@ import { RiUser3Line } from 'react-icons/ri';
 import { CgDetailsMore } from "react-icons/cg";
 import { Tag } from 'primereact/tag';
 import ModalExameMedico from '@components/ModalExameMedico';
+import { ProgressBar } from 'primereact/progressbar';
 
 
 function DataTableAdmissao({ vagas }) {
@@ -97,26 +98,36 @@ function DataTableAdmissao({ vagas }) {
     };
     
     const representativeStatusTemplate = (rowData) => {
-        let status = "Preenchido"; 
-        let pendencias = "";
-        if(rowData.candidato.arquivos)
-        {
+        let pendentes = 0;
+        let total = 0;
+        // Arquivos
+        if (rowData.candidato.arquivos) {
+            total += rowData.candidato.arquivos.length;
             for (let arquivo of rowData.candidato.arquivos) {
-                // Se o status do arquivo não for "Anexado", muda o status
                 if (arquivo.status !== "Anexado") {
-                    pendencias += `Pendente anexo de: ${arquivo.nome}<br />`;
-                }
-            }
-
-            for (let [chave, dado] of Object.entries(rowData.candidato)) {
-                // Verifica se o dado está vazio ("" ou null ou undefined)
-                if (dado === "" || dado === null || dado === undefined) {
-                    pendencias += `Pendente preenchimento de: ${chave}<br />`;  // Exibe o nome do campo
+                    pendentes++;
                 }
             }
         }
-
-        return <p style={{fontWeight: '400'}} dangerouslySetInnerHTML={{ __html: pendencias || status }}></p>
+        // Campos obrigatórios (exemplo: nome, cpf, dataNascimento, email, telefone)
+        const obrigatorios = [
+            'nome', 'cpf', 'dataNascimento', 'email', 'telefone'
+        ];
+        for (let campo of obrigatorios) {
+            total++;
+            const valor = rowData.candidato[campo];
+            if (valor === "" || valor === null || valor === undefined) {
+                pendentes++;
+            }
+        }
+        const preenchidos = total - pendentes;
+        const percent = total > 0 ? Math.round((preenchidos / total) * 100) : 0;
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <ProgressBar value={percent} style={{ height: 12, width: 80 }} showValue={false} />
+                <span style={{ minWidth: 48, fontWeight: 400 }}>{`${pendentes}/${total}`}</span>
+            </div>
+        );
     }
     
     const representativeDevolucaoTemplate = (rowData) => {
@@ -210,7 +221,7 @@ function DataTableAdmissao({ vagas }) {
             <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
                 <Column field="vaga" header="Titulo" style={{ width: '18%' }}></Column>
-                <Column body={representativeStatusTemplate} header="Status" style={{ width: '25%' }}></Column>
+                <Column body={representativeStatusTemplate} header="Status Preenchimento" style={{ width: '25%' }}></Column>
                 <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '15%' }}></Column>
                 <Column body={representativeAdiantamentoTemplate} header="Adiantamento (%)" style={{ width: '12%' }} />
                 <Column body={representativeExameTemplate} header="Exame Médico" style={{ width: '14%' }} />
