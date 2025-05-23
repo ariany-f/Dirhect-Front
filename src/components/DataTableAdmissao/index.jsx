@@ -13,6 +13,7 @@ import ModalHistoricoAdmissao from '@components/ModalHistoricoAdmissao';
 import ModalDadosCandidato from '@components/ModalDadosCandidato';
 import { RiUser3Line } from 'react-icons/ri';
 import { CgDetailsMore } from "react-icons/cg";
+import { Tag } from 'primereact/tag';
 
 
 function DataTableAdmissao({ vagas }) {
@@ -55,6 +56,23 @@ function DataTableAdmissao({ vagas }) {
     const representativeCandidatoTemplate = (rowData) => {
         return <p style={{fontWeight: '400'}}>{rowData.candidato.nome}</p>
     }
+
+    const representativeLgpdTemplate = (rowData) => {
+        const aceito = rowData.candidato.statusLgpd;
+        return (
+            <Tag
+                value={aceito ? 'Aceito' : 'Não aceito'}
+                style={{
+                    backgroundColor: aceito ? 'var(--green-500)' : 'var(--neutro-400)',
+                    color: 'white',
+                    fontWeight: 600,
+                    fontSize: 13,
+                    borderRadius: 8,
+                    padding: '4px 12px',
+                }}
+            />
+        );
+    };
     
     const representativeStatusTemplate = (rowData) => {
         let status = "Preenchido"; 
@@ -131,6 +149,7 @@ function DataTableAdmissao({ vagas }) {
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '25%' }}></Column>
                 <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '15%' }}></Column>
+                <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '15%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
             </DataTable>
 

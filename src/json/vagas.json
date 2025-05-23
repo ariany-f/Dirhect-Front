@@ -20,6 +20,7 @@
                 "telefone": "",
                 "statusDePreenchimento": "Em Análise",
                 "statusDeCandidato": "Aprovado",
+                "statusLgpd": true,
                 "endereco": {
                     "cep": "",
                     "street": "",
@@ -65,6 +66,7 @@
                 "telefone": "(11) 98497-9026",
                 "statusDePreenchimento": "Preenchido",
                 "statusDeCandidato": "Aprovado",
+                "statusLgpd": true,
                 "endereco": {
                     "cep": "",
                     "street": "",
@@ -104,6 +106,7 @@
                 "telefone": "",
                 "statusDePreenchimento": "Rejeitado",
                 "statusDeCandidato": "Rejeitado",
+                "statusLgpd": true,
                 "endereco": {
                     "cep": "",
                     "street": "",
@@ -153,6 +156,7 @@
                 "telefone": "",
                 "statusDePreenchimento": "Em Análise",
                 "statusDeCandidato": "Aprovado",
+                "statusLgpd": true,
                 "endereco": {
                     "cep": "",
                     "street": "",
@@ -192,6 +196,7 @@
                 "telefone": "",
                 "statusDePreenchimento": "Preenchido",
                 "statusDeCandidato": "Aprovado",
+                "statusLgpd": true,
                 "endereco": {
                     "cep": "",
                     "street": "",
