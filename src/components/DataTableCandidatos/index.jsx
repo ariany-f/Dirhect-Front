@@ -148,7 +148,11 @@ function DataTableCandidatos({ candidatos }) {
     );
 
     const emailTemplate = (rowData) => (
-        <span style={{ fontSize: 13 }}>{rowData.email}</span>
+        <span style={{ fontSize: 13 }}>{rowData.email || '-----'}</span>
+    );
+
+    const telefoneTemplate = (rowData) => (
+        <span style={{ fontSize: 13 }}>{rowData.telefone || '-----'}</span>
     );
 
     const actionTemplate = (rowData) => (
@@ -188,7 +192,7 @@ function DataTableCandidatos({ candidatos }) {
             <DataTable value={listaCandidatos} filters={filters} globalFilterFields={['nome', 'email']}  emptyMessage="Não foram encontrados candidatos" selection={selectedCandidato} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeCandidatoTemplate} field="nome" header="Nome" style={{ width: '18%' }}></Column>
                 <Column body={emailTemplate} field="email" header="E-mail" style={{ width: '18%' }}></Column>
-                <Column field="telefone" header="Telefone" style={{ width: '13%' }}></Column>
+                <Column body={telefoneTemplate} field="telefone" header="Telefone" style={{ width: '13%' }}></Column>
                 <Column body={deficienciaTemplate} field="deficiencia" header="PCD" style={{ width: '10%' }} />
                 {/* <Column field="cpf" header="CPF" style={{ width: '15%' }}></Column> */}
                 <Column body={representativeDatasTemplate} field="dataExameMedico" header="Datas" style={{ width: '15%' }}></Column>
