@@ -6,6 +6,7 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Real } from '@utils/formats'
+import { FaUserAlt } from 'react-icons/fa';
 
 function DataTableVagas({ vagas }) {
 
@@ -44,7 +45,7 @@ function DataTableVagas({ vagas }) {
     }
     
     const representativeNumeroColaboradoresTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.candidatos.length ?? 0}</p>
+        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData.candidatos.length ?? 0}</p>
     }
 
     return (
@@ -56,11 +57,11 @@ function DataTableVagas({ vagas }) {
             </div>
             <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas vagas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column field="titulo" header="Titulo" style={{ width: '35%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
-                <Column body={representativeAberturaTemplate} header="Data Abertura" style={{ width: '35%' }}></Column>
-                <Column body={representativeEncerramentoTemplate} header="Data Encerramento" style={{ width: '35%' }}></Column>
-                <Column body={representativeNumeroColaboradoresTemplate} header="Número de Candidatos" style={{ width: '35%' }}></Column>
-                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '35%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '45%' }}></Column>
+                <Column body={representativeAberturaTemplate} header="Abertura" style={{ width: '25%' }}></Column>
+                <Column body={representativeEncerramentoTemplate} header="Encerramento" style={{ width: '25%' }}></Column>
+                <Column body={representativeNumeroColaboradoresTemplate} header="Candidatos" style={{ width: '10%' }}></Column>
+                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '15%' }}></Column>
                 
             </DataTable>
         </>
