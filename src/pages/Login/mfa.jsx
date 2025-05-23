@@ -156,11 +156,12 @@ function Mfa() {
                 )
             : (
                 <div>
+                    {mfaSecret?.qr_code && 
                     <img 
                         src={`data:image/png;base64,${mfaSecret.qr_code}`} 
                         alt="QR Code"
                         width="100%"
-                    />
+                    />}
                     <Botao aoClicar={() => setMfaSecret(null)}>Prosseguir</Botao>
                 </div>
             )}
