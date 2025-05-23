@@ -7,14 +7,18 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Real } from '@utils/formats'
+import { FaHistory } from 'react-icons/fa';
+import { Tooltip } from 'primereact/tooltip';
+import ModalHistoricoAdmissao from '@components/ModalHistoricoAdmissao';
 
 function DataTableAdmissao({ vagas }) {
-
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    const [showHistorico, setShowHistorico] = useState(false);
+    const [selectedCandidato, setSelectedCandidato] = useState(null);
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
@@ -30,6 +34,12 @@ function DataTableAdmissao({ vagas }) {
     {
         navegar(`/admissao/registro/${value.candidato.id}`)
     }
+
+    const handleHistorico = (e, rowData) => {
+        e.stopPropagation();
+        setSelectedCandidato(rowData);
+        setShowHistorico(true);
+    };
 
     const representativeCandidatoTemplate = (rowData) => {
         return <p style={{fontWeight: '400'}}>{rowData.candidato.nome}</p>
@@ -62,6 +72,24 @@ function DataTableAdmissao({ vagas }) {
         return <p style={{fontWeight: '400'}}>{new Date(rowData.candidato.dataDevolucao).toLocaleDateString("pt-BR")}</p>
     }
 
+    const representativeActionsTemplate = (rowData) => {
+        return (
+            <div style={{ display: 'flex', gap: '8px' }}>
+                <Tooltip target=".history" mouseTrack mouseTrackLeft={10} />
+                <FaHistory
+                    className="history"
+                    data-pr-tooltip="Ver Histórico"
+                    size={16}
+                    onClick={(e) => handleHistorico(e, rowData)}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)',
+                    }}
+                />
+            </div>
+        );
+    };
+
     return (
         <>
             <div className="flex justify-content-end">
@@ -70,12 +98,18 @@ function DataTableAdmissao({ vagas }) {
                 </span>
             </div>
             <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="vaga" header="Titulo" style={{ width: '35%' }}></Column>
-                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '35%' }}></Column>
-                <Column body={representativeStatusTemplate} header="Status" style={{ width: '35%' }}></Column>
-                <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '35%' }}></Column>
-                
+                <Column field="vaga" header="Titulo" style={{ width: '30%' }}></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '25%' }}></Column>
+                <Column body={representativeStatusTemplate} header="Status" style={{ width: '25%' }}></Column>
+                <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '15%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '5%' }}></Column>
             </DataTable>
+
+            <ModalHistoricoAdmissao 
+                opened={showHistorico}
+                aoFechar={() => setShowHistorico(false)}
+                candidato={selectedCandidato}
+            />
         </>
     )
 }
