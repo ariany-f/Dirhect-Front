@@ -4,10 +4,10 @@ import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Real } from '@utils/formats'
-import { FaCalendarAlt, FaHistory } from 'react-icons/fa';
+import { FaCalendarAlt, FaHistory, FaExternalLinkAlt } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import ModalHistoricoAdmissao from '@components/ModalHistoricoAdmissao';
 import ModalDadosCandidato from '@components/ModalDadosCandidato';
@@ -137,7 +137,7 @@ function DataTableAdmissao({ vagas }) {
     const representativeAdiantamentoTemplate = (rowData) => {
         const valor = rowData.adiantamento_percentual;
         return (
-            <span style={{ fontWeight: 600 }}>
+            <span style={{ fontWeight: 500 }}>
                 {valor !== undefined && valor !== null ? `${valor}%` : '--'}
             </span>
         );
@@ -211,6 +211,17 @@ function DataTableAdmissao({ vagas }) {
         );
     };
 
+    const vagaTemplate = (rowData) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>{rowData.vaga}</span>
+            {rowData.id && (
+                <Link to={`/vagas/detalhes/${rowData.id}`} rel="noopener noreferrer" style={{ color: 'var(--primaria)' }}>
+                    <FaExternalLinkAlt size={13} title="Ver detalhes da vaga" />
+                </Link>
+            )}
+        </div>
+    );
+
     return (
         <>
             <div className="flex justify-content-end">
@@ -218,9 +229,9 @@ function DataTableAdmissao({ vagas }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
                 </span>
             </div>
-            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
-                <Column field="vaga" header="Titulo" style={{ width: '18%' }}></Column>
+                <Column body={vagaTemplate} field="vaga" header="Vaga" style={{ width: '18%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status Preenchimento" style={{ width: '25%' }}></Column>
                 <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '15%' }}></Column>
                 <Column body={representativeAdiantamentoTemplate} header="Adiantamento (%)" style={{ width: '12%' }} />
