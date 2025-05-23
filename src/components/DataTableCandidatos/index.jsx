@@ -189,7 +189,7 @@ function DataTableCandidatos({ candidatos }) {
                 <Column body={representativeCandidatoTemplate} field="nome" header="Nome" style={{ width: '18%' }}></Column>
                 <Column body={emailTemplate} field="email" header="E-mail" style={{ width: '18%' }}></Column>
                 <Column field="telefone" header="Telefone" style={{ width: '13%' }}></Column>
-                <Column body={deficienciaTemplate} field="deficiencia" header="Deficiência" style={{ width: '10%' }} />
+                <Column body={deficienciaTemplate} field="deficiencia" header="PCD" style={{ width: '10%' }} />
                 {/* <Column field="cpf" header="CPF" style={{ width: '15%' }}></Column> */}
                 <Column body={representativeDatasTemplate} field="dataExameMedico" header="Datas" style={{ width: '15%' }}></Column>
                 {/* <Column body={representativeDataExameMedicoTemplate} field="dataExameMedico" header="Exame Médico" style={{ width: '10%' }}></Column>
