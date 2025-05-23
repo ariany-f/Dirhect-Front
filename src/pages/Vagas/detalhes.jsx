@@ -20,12 +20,25 @@ import { addLocale } from 'primereact/api'
 import ModalEncaminharVaga from '@components/ModalEncaminharVaga'
 import { Real } from '@utils/formats'
 import { Tag } from 'primereact/tag'
+import DataTableDocumentos from '@components/DataTableDocumentos'
+import ModalDocumentoRequerido from '@components/ModalDocumentoRequerido'
+import { GrAdd, GrAddCircle } from 'react-icons/gr'
 
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
     width: 100%;
+`
+
+const Col12 = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+`
+
+const Col6 = styled.div`
+    flex: 1 1 calc(50% - 10px);
 `
 
 function DetalhesVaga() {
@@ -35,6 +48,9 @@ function DetalhesVaga() {
     const [vaga, setVaga] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
+    const [documentos, setDocumentos] = useState([]);
+    const [modalDocumentoAberto, setModalDocumentoAberto] = useState(false);
+    const [documentoEditando, setDocumentoEditando] = useState(null);
 
     const { 
         vagas,
@@ -114,28 +130,93 @@ function DetalhesVaga() {
                     : <Skeleton variant="rectangular" width={300} height={40} />
                     }
                 <div className={styles.card_dashboard}>
-                    <Texto>Titulo</Texto>
-                    {vaga?.titulo ?
-                        <Texto weight="800">{vaga?.titulo}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Descrição</Texto>
-                    {vaga ?
-                        (vaga?.descricao ?
-                            <Texto weight="800">{vaga?.descricao}</Texto>
-                            : '--')
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
-                    <Texto>Salário</Texto>
-                    {vaga?.salario ?
-                        <Texto weight="800">{Real.format(vaga?.salario)}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
+                    <Col12>
+                        <Col6>
+                            <Texto>Titulo</Texto>
+                            {vaga?.titulo ?
+                                <Texto weight="800">{vaga?.titulo}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                            <Texto>Descrição</Texto>
+                            {vaga ?
+                                (vaga?.descricao ?
+                                    <Texto weight="800">{vaga?.descricao}</Texto>
+                                    : '--')
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                            <Texto>Salário</Texto>
+                            {vaga?.salario ?
+                                <Texto weight="800">{Real.format(vaga?.salario)}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                        </Col6>
+                        <Col6>
+                            <Texto>Departamento</Texto>
+                            {vaga?.departamento ?
+                                <Texto weight="800">{vaga?.departamento}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }   
+                            <Texto>Secao</Texto>
+                            {vaga?.secao ?
+                                <Texto weight="800">{vaga?.secao}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }   
+                            <Texto>Cargo</Texto>
+                            {vaga?.cargo ?
+                                <Texto weight="800">{vaga?.cargo}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                        </Col6>
+                        <Col6>
+                            <Texto>Horario</Texto>
+                            {vaga?.horario ?
+                                <Texto weight="800">{vaga?.horario}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                            <Texto>Funcao</Texto>
+                            {vaga?.funcao ?
+                                <Texto weight="800">{vaga?.funcao}</Texto>
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }
+                            <Texto>Sindicato</Texto>
+                            {vaga?.sindicato ?  
+                                <Texto weight="800">{vaga?.sindicato}</Texto>   
+                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            }  
+                        </Col6>
+                    </Col12>
+                    
                 </div>
                 <Titulo>
                     <h5>Candidatos</h5>
                 </Titulo>
                 <DataTableCandidatos candidatos={vaga?.candidatos} />
+                <Titulo>
+                    <h5>Documentos Requeridos</h5>
+                </Titulo>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+                    <Botao size="small" aoClicar={() => { setDocumentoEditando(null); setModalDocumentoAberto(true); }}>
+                        <GrAddCircle stroke="white" /> Adicionar documento requerido
+                    </Botao>
+                </div>
+                <DataTableDocumentos
+                    documentos={documentos}
+                    onEdit={doc => { setDocumentoEditando(doc); setModalDocumentoAberto(true); }}
+                    onDelete={doc => setDocumentos(documentos.filter(d => d !== doc))}
+                />
+                <ModalDocumentoRequerido
+                    opened={modalDocumentoAberto}
+                    documento={documentoEditando}
+                    aoFechar={() => setModalDocumentoAberto(false)}
+                    aoSalvar={doc => {
+                        if (documentoEditando) {
+                            setDocumentos(documentos.map(d => d === documentoEditando ? doc : d));
+                        } else {
+                            setDocumentos([...documentos, doc]);
+                        }
+                        setModalDocumentoAberto(false);
+                    }}
+                />
             </Container>
             <ModalEncaminharVaga opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </Frame>
