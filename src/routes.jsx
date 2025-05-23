@@ -149,6 +149,7 @@ import MobileScrollToTop from '@components/MobileScrollToTop'
 import MeusDadosSistema from './pages/MeusDados/sistema'
 import { Toast } from 'primereact/toast'
 import { ToastContainer } from 'react-toastify'
+import ConfiguracoesVagas from './pages/Vagas/configuracoes'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -325,6 +326,7 @@ function AppRouter() {
                 <Route index element={<VagasAbertas />} />
                 <Route path="canceladas" element={<VagasCanceladas />} />
               </Route>
+              <Route path="vagas/configuracoes" element={<ConfiguracoesVagas />} />
               <Route path="vagas/detalhes/:id" element={<DetalhesVaga />} />
               <Route path="vagas/registro" element={<VagasRegistro />} />
 

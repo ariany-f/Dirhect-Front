@@ -8,6 +8,7 @@ import { useState } from 'react'
 import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
 import React, { createContext, useContext } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
+import { CiSettings } from 'react-icons/ci';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -39,6 +40,9 @@ const Vagas = () => {
                 <BotaoGrupo align="center">
                     <Link to="/vagas/registro">
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white"/> Cadastrar Vaga</Botao>
+                    </Link>
+                    <Link to="/vagas/configuracoes">
+                        <Botao estilo="vermilion" size="small" tab><CiSettings className={styles.icon} fill="white"/> Configurações de Emails</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
