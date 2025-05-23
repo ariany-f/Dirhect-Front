@@ -19,6 +19,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import ModalEncaminharVaga from '@components/ModalEncaminharVaga'
 import { Real } from '@utils/formats'
+import { Tag } from 'primereact/tag'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -41,6 +42,7 @@ function DetalhesVaga() {
     } = useVagasContext()
 
     const cancelarVaga = () => {
+        console.log(vaga)
         confirmDialog({
             message: 'Você quer cancelar essa vaga?',
             header: 'Desativar',
@@ -81,7 +83,23 @@ function DetalhesVaga() {
                     {vaga?.titulo ? 
                         <BotaoGrupo align="space-between">
                             <Titulo>
-                                <h3>{vaga?.titulo}</h3>
+                                <h3 style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                    {vaga?.titulo}
+                                    {vaga?.status && (
+                                        <Tag
+                                            value={vaga.status}
+                                            style={{
+                                                backgroundColor: vaga.status === 'Ativa' ? 'var(--green-500)' : 'var(--error)',
+                                                color: 'white',
+                                                fontWeight: 600,
+                                                fontSize: 13,
+                                                borderRadius: 8,
+                                                padding: '4px 12px',
+                                                textTransform: 'capitalize'
+                                            }}
+                                        />
+                                    )}
+                                </h3>
                             </Titulo>
                             <BotaoGrupo align="space-between">
                                 <Botao aoClicar={abrirModal} size="small">

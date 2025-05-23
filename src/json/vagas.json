@@ -9,6 +9,7 @@
         "dataEncerramento": "2023-02-15",
         "salario": 12000,
         "periculosidade": "QC",
+        "status": "Ativa",
         "adiantamento_percentual": 10,
         "candidatos": [
             {
@@ -148,6 +149,7 @@
         "dataEncerramento": "2023-02-20",
         "salario": 10000,
         "periculosidade": "QC",
+        "status": "Ativa",
         "adiantamento_percentual": 10,
         "candidatos": [
             {
@@ -242,6 +244,7 @@
         "dataEncerramento": "2023-01-20",
         "salario": 11000,
         "periculosidade": "QC",
+        "status": "Cancelada",
         "adiantamento_percentual": 10,
         "candidatos": []
       },
@@ -253,6 +256,7 @@
         "dataEncerramento": "2023-01-15",
         "salario": 15000,
         "periculosidade": "QC",
+        "status": "Cancelada",
         "adiantamento_percentual": 10,
         "candidatos": []
       }
