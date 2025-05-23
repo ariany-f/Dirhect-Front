@@ -131,6 +131,14 @@ const StyledLink = styled(Link)`
     overflow: hidden;
 `
 
+function capitalizeTipo(tipo) {
+  if (!tipo) return '';
+  return tipo
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
 function BarraLateral({ $sidebarOpened }) {
    
     const location = useLocation()
@@ -397,7 +405,7 @@ function BarraLateral({ $sidebarOpened }) {
                     overflow: 'hidden'
                 }}>
                     <NavEstilizada>
-                        <NavTitulo>{usuario.tipo}</NavTitulo>
+                        <NavTitulo>{capitalizeTipo(usuario.tipo)}</NavTitulo>
                         <ListaEstilizada>
                             {alwaysVisible.map((item) => (
                                 <StyledLink 
@@ -433,7 +441,7 @@ function BarraLateral({ $sidebarOpened }) {
                     overflow: 'hidden'
                 }}>
                     <NavEstilizada>
-                        <NavTitulo>{usuario.tipo}</NavTitulo>
+                        <NavTitulo>{capitalizeTipo(usuario.tipo)}</NavTitulo>
                         <ListaEstilizada>
                             {menusOrdenados.map((item) => (
                                 <StyledLink 
