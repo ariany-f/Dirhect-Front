@@ -151,9 +151,9 @@ function DetalhesVaga() {
                             }
                         </Col6>
                         <Col6>
-                            <Texto>Departamento</Texto>
-                            {vaga?.departamento ?
-                                <Texto weight="800">{vaga?.departamento}</Texto>
+                            <Texto>Filial</Texto>
+                            {vaga?.filial ?
+                                <Texto weight="800">{vaga?.filial}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }   
                             <Texto>Secao</Texto>

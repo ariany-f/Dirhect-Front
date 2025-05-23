@@ -634,7 +634,9 @@ const CandidatoRegistro = () => {
                                         setValor={setName} 
                                         type="text" 
                                         label="Nome" 
-                                        placeholder="Digite o nome" />
+                                        placeholder="Digite o nome" 
+                                        disabled={!!self}
+                                    />
                                 </Col6>
                                 <Col6>
                                     <CampoTexto 
@@ -664,7 +666,9 @@ const CandidatoRegistro = () => {
                                         setValor={setCpf} 
                                         type="text" 
                                         label="CPF" 
-                                        placeholder="Digite p CPF" />
+                                        placeholder="Digite p CPF" 
+                                        disabled={!!self}
+                                    />
                                 </Col6>
                             </Col12>
                             <Col12>
@@ -1039,6 +1043,166 @@ const CandidatoRegistro = () => {
                                     type="number"
                                     label="Salário"
                                     placeholder="Digite o salário" />
+                                </div>
+                            </Col6>
+                        </Col12>
+                    </Container>
+                    <Frame padding="30px" estilo="spaced">
+                        <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        <BotaoGrupo>
+                            <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
+                            <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
+                        </BotaoGrupo>
+                    </Frame>
+                  </StepperPanel>
+                )}
+                {self && (
+                  <StepperPanel header="Vaga">
+                    <Container padding={'30px 0 30px 0'}>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    valor={candidato?.vaga?.filial} 
+                                    setValor={setFilial} 
+                                    options={filiais.map(filial => ({
+                                        name: filial.nome,
+                                        code: filial.id
+                                    }))} 
+                                    name="filial" 
+                                    placeholder="Filial"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="centro_custo" 
+                                    valor={candidato?.vaga?.centroCusto}
+                                    setValor={setCentroCusto} 
+                                    options={centros_custo.map(cc => ({
+                                        name: cc.nome,
+                                        code: cc.id
+                                    }))} 
+                                    placeholder="Centro de Custo"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="departamento" 
+                                    valor={candidato?.vaga?.departamento}
+                                    setValor={setDepartamento} 
+                                    options={departamentos.map(dep => ({
+                                        name: dep.nome,
+                                        code: dep.id
+                                    }))} 
+                                    placeholder="Departamento"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="secao" 
+                                    valor={candidato?.vaga?.secao}
+                                    setValor={setSecao} 
+                                    options={secoes.map(sec => ({
+                                        name: sec.nome,
+                                        code: sec.id
+                                    }))} 
+                                    placeholder="Seção"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="cargo" 
+                                    valor={candidato?.vaga?.cargo}
+                                    setValor={setCargo} 
+                                    options={cargos.map(cargo => ({
+                                        name: cargo.nome,
+                                        code: cargo.id
+                                    }))} 
+                                    placeholder="Cargo"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="horario" 
+                                    valor={candidato?.vaga?.horario}
+                                    setValor={setHorario} 
+                                    options={horarios.map(horario => ({
+                                        name: `${horario.codigo} - ${horario.descricao}`,
+                                        code: horario.id
+                                    }))} 
+                                    placeholder="Horário"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="funcao" 
+                                    valor={candidato?.vaga?.funcao}
+                                    setValor={setFuncao} 
+                                    options={funcoes.map(funcao => ({
+                                        name: funcao.nome,
+                                        code: funcao.id
+                                    }))} 
+                                    placeholder="Função"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="sindicato" 
+                                    valor={candidato?.vaga?.sindicato}
+                                    setValor={setSindicato} 
+                                    options={sindicatos.map(sindicato => ({
+                                        name: `${sindicato.codigo} - ${sindicato.descricao}`,
+                                        code: sindicato.id
+                                    }))} 
+                                    placeholder="Sindicato"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <DropdownItens 
+                                    camposVazios={classError}
+                                    name="periculosidade"
+                                    valor={candidato?.vaga?.periculosidade || candidato?.periculosidade}
+                                    setValor={valor => setCandidatoVaga('periculosidade', valor)}
+                                    options={listaPericulosidades}
+                                    placeholder="Periculosidade"
+                                    disabled={!!self}
+                                />
+                            </Col6>
+                            <Col6>
+                                <div style={{ marginTop: '-15px'}} >
+                                <CampoTexto
+                                    camposVazios={classError}
+                                    name="salario"
+                                    valor={candidato?.vaga?.salario || candidato?.salario || ''}
+                                    setValor={valor => setCandidatoVaga('salario', valor)}
+                                    type="number"
+                                    label="Salário"
+                                    placeholder="Digite o salário"
+                                    disabled={!!self}
+                                />
                                 </div>
                             </Col6>
                         </Col12>
