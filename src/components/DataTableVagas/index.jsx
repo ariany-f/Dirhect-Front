@@ -48,6 +48,10 @@ function DataTableVagas({ vagas }) {
         return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData.candidatos.length ?? 0}</p>
     }
 
+    const representativeTituloTemplate = (rowData) => {
+        return <p style={{fontWeight: '600'}}>{rowData.titulo}</p>
+    }
+
     return (
         <>
             <div className="flex justify-content-end">
@@ -56,7 +60,7 @@ function DataTableVagas({ vagas }) {
                 </span>
             </div>
             <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas vagas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="titulo" header="Titulo" style={{ width: '35%' }}></Column>
+                <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '35%' }}></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '45%' }}></Column>
                 <Column body={representativeAberturaTemplate} header="Abertura" style={{ width: '25%' }}></Column>
                 <Column body={representativeEncerramentoTemplate} header="Encerramento" style={{ width: '25%' }}></Column>
