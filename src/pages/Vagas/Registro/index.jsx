@@ -9,6 +9,7 @@ import Frame from '@components/Frame';
 import DropdownItens from '@components/DropdownItens';
 import http from '@http';
 import styled from 'styled-components';
+import SwitchInput from '@components/SwitchInput';
 
 const Col12 = styled.div`
     display: flex;
@@ -45,6 +46,10 @@ const VagasRegistro = () => {
     const [dataAbertura, setDataAbertura] = useState('');
     const [dataEncerramento, setDataEncerramento] = useState('');
     const [salario, setSalario] = useState('');
+    const [deficiencia, setDeficiencia] = useState(false);
+    const [qtdVagas, setQtdVagas] = useState('');
+    const [inclusao, setInclusao] = useState(false);
+    const [inclusao_para, setInclusaoPara] = useState('');
     const [selectedDate, setSelectedDate] = useState(1);
     const [filial, setFilial] = useState(null);
     const [centroCusto, setCentroCusto] = useState(null);
@@ -109,6 +114,10 @@ const VagasRegistro = () => {
             descricao,
             dataAbertura,
             dataEncerramento,
+            deficiencia,
+            qtd_vagas: parseInt(qtdVagas),
+            inclusao,
+            inclusao_para,
             salario: parseFloat(salario), // Convertendo para número
             filial: filial?.code,
             centroCusto: centroCusto?.code,
@@ -132,6 +141,10 @@ const VagasRegistro = () => {
         setFilial(null);
         setCentroCusto(null);
         setDepartamento(null);
+        setDeficiencia(false);
+        setQtdVagas('');
+        setInclusao(false);
+        setInclusaoPara('');
         setSecao(null);
         setCargo(null);
         setHorario(null);
@@ -185,6 +198,33 @@ const VagasRegistro = () => {
                     type="number" 
                     label="Salário" 
                     placeholder="Digite o salário" />
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16, margin: '12px 0' }}>
+                    <label style={{ fontWeight: 600 }}>Vaga para pessoa com deficiência?</label>
+                    <SwitchInput checked={deficiencia} onChange={setDeficiencia} />
+                </div>
+                <CampoTexto
+                    name="qtd_vagas"
+                    valor={qtdVagas}
+                    setValor={setQtdVagas}
+                    type="number"
+                    label="Quantidade de Vagas"
+                    placeholder="Digite a quantidade de vagas"
+                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16, margin: '12px 0' }}>
+                    <label style={{ fontWeight: 600 }}>Vaga inclusiva?</label>
+                    <SwitchInput checked={inclusao} onChange={setInclusao} />
+                </div>
+                {inclusao && (
+                    <CampoTexto
+                        name="inclusao_para"
+                        valor={inclusao_para}
+                        setValor={setInclusaoPara}
+                        type="text"
+                        label="Inclusiva para quem?"
+                        placeholder="Ex: PCD, LGBTQIA+, 50+ etc."
+                    />
+                )}
 
                 <div style={{textAlign: 'left'}}>
                     <h6>Estrutura Organizacional</h6>

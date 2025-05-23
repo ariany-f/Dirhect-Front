@@ -133,6 +133,24 @@ function DataTableCandidatos({ candidatos }) {
         </div>
     }
 
+    const deficienciaTemplate = (rowData) => (
+        <Tag
+            value={rowData.deficiencia ? 'Sim' : 'Não'}
+            style={{
+                backgroundColor: rowData.deficiencia ? 'var(--info)' : 'var(--neutro-400)',
+                color: 'white',
+                fontWeight: 600,
+                fontSize: 13,
+                borderRadius: 8,
+                padding: '4px 12px',
+            }}
+        />
+    );
+
+    const emailTemplate = (rowData) => (
+        <span style={{ fontSize: 13 }}>{rowData.email}</span>
+    );
+
     const actionTemplate = (rowData) => (
         <div style={{ display: 'flex', gap: '12px' }}>
             {rowData.statusDeCandidato?.toLowerCase() !== 'aprovado' && (
@@ -168,11 +186,12 @@ function DataTableCandidatos({ candidatos }) {
                 </span>
             </div>
             <DataTable value={listaCandidatos} filters={filters} globalFilterFields={['nome', 'email']}  emptyMessage="Não foram encontrados candidatos" selection={selectedCandidato} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeCandidatoTemplate} field="nome" header="Nome" style={{ width: '20%' }}></Column>
-                <Column field="email" header="E-mail" style={{ width: '20%' }}></Column>
-                <Column field="telefone" header="Telefone" style={{ width: '15%' }}></Column>
+                <Column body={representativeCandidatoTemplate} field="nome" header="Nome" style={{ width: '18%' }}></Column>
+                <Column body={emailTemplate} field="email" header="E-mail" style={{ width: '18%' }}></Column>
+                <Column field="telefone" header="Telefone" style={{ width: '13%' }}></Column>
+                <Column body={deficienciaTemplate} field="deficiencia" header="Deficiência" style={{ width: '10%' }} />
                 {/* <Column field="cpf" header="CPF" style={{ width: '15%' }}></Column> */}
-                <Column body={representativeDatasTemplate} field="dataExameMedico" header="Datas" style={{ width: '20%' }}></Column>
+                <Column body={representativeDatasTemplate} field="dataExameMedico" header="Datas" style={{ width: '15%' }}></Column>
                 {/* <Column body={representativeDataExameMedicoTemplate} field="dataExameMedico" header="Exame Médico" style={{ width: '10%' }}></Column>
                 <Column body={representativeDataInicioTemplate} field="dataInicio" header="Data Início" style={{ width: '10%' }}></Column> */}
                 <Column body={representativeStatusPreenchimentoTemplate} field="statusDePreenchimento" header="Status Preenchimento" style={{ width: '12%' }} />

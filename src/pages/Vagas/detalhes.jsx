@@ -149,6 +149,18 @@ function DetalhesVaga() {
                                 <Texto weight="800">{Real.format(vaga?.salario)}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
+                            <Texto>Deficiência</Texto>
+                            <Texto weight="800">{vaga?.deficiencia ? 'Sim' : 'Não'}</Texto>
+                            <Texto>Quantidade de Vagas</Texto>
+                            <Texto weight="800">{vaga?.qtd_vagas ?? '--'}</Texto>
+                            <Texto>Inclusiva</Texto>
+                            <Texto weight="800">{vaga?.inclusao ? 'Sim' : 'Não'}</Texto>
+                            {vaga?.inclusao && (
+                                <>
+                                    <Texto>Inclusiva para quem?</Texto>
+                                    <Texto weight="800">{vaga?.inclusao_para || '--'}</Texto>
+                                </>
+                            )}
                         </Col6>
                         <Col6>
                             <Texto>Filial</Texto>
