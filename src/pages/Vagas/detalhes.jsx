@@ -178,8 +178,6 @@ function DetalhesVaga() {
                                 <Texto weight="800">{vaga?.cargo}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
-                        </Col6>
-                        <Col6>
                             <Texto>Horario</Texto>
                             {vaga?.horario ?
                                 <Texto weight="800">{vaga?.horario}</Texto>
