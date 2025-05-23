@@ -143,7 +143,7 @@ function DetalhesVaga() {
                             <BotaoGrupo align="space-between">
                                 <Botao aoClicar={abrirModal} size="small">
                                     <FaArrowAltCircleRight fill="white" />
-                                    Encaminhar vaga para novo candidato
+                                    Encaminhar para novo candidato
                                 </Botao>
                                 <BotaoSemBorda $color="var(--primaria)">
                                     <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
