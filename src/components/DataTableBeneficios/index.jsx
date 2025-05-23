@@ -29,6 +29,7 @@ import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 import { Checkbox } from 'primereact/checkbox';
 import { InputText } from 'primereact/inputtext';
 import { FaSearch } from 'react-icons/fa';
+import { CiSettings } from 'react-icons/ci';
 
 const StatusTag = styled.span`
     padding: 4px 8px;
@@ -400,6 +401,9 @@ function DataTableBeneficios({
                 <BotaoGrupo align="end">
                     <BotaoSemBorda color="var(--primaria)">
                         <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
+                    </BotaoSemBorda>
+                    <BotaoSemBorda>
+                        <CiSettings size={16}/> <Link to={'/tipos-beneficio'} className={styles.link}>Tipos de Benefício</Link>
                     </BotaoSemBorda>
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
                         <GrAddCircle className={styles.icon} stroke="white"/> {t('add')} Benefício
