@@ -43,6 +43,8 @@ import PremiacaoSelecionarColaboradores from '@pages/Pedidos/selecao-colaborador
 import PremiacaoSelecionarDepartamentos from '@pages/Pedidos/selecao-departamentos'
 import RecargaBeneficios from '@pages/Beneficios'
 import Beneficios from '@pages/Beneficios/lista'
+import TiposBeneficio from '@pages/TiposBeneficio'
+import TiposBeneficioLista from '@pages/TiposBeneficio/lista'
 import BeneficioOndeUsar from '@pages/Beneficios/onde-usar'
 import BeneficioSelecionarColaboradores from '@pages/Beneficios/selecao-colaboradores'
 import BeneficioSelecionarDepartamentos from '@pages/Beneficios/selecao-departamentos'
@@ -394,6 +396,10 @@ function AppRouter() {
                 <Route path="editar-valor/:tipo" element={<BeneficioEditarValor />} />
                 <Route path="selecao-forma-pagamento/:id" element={<BeneficioSelecionarFormaPagamento />} />
                 <Route path="pagamento/:id" element={<BeneficioPagamento />} />
+              </Route>
+
+              <Route path="/tipos-beneficio" element={<TiposBeneficio/>}>
+                <Route index element={<TiposBeneficioLista />} />
               </Route>
               
               <Route path="adicionar-cnpj" element={<AdicionarCnpj />} />
