@@ -20,6 +20,7 @@ import { ScrollPanel } from 'primereact/scrollpanel';
 import { HiArrowLeft, HiArrowRight } from 'react-icons/hi';
 import { FaTrash, FaSave } from 'react-icons/fa';
 import { CiCirclePlus } from 'react-icons/ci';
+import SwitchInput from '@components/SwitchInput';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -664,6 +665,103 @@ const CandidatoRegistro = () => {
                                         type="text" 
                                         label="CPF" 
                                         placeholder="Digite p CPF" />
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
+                                    <div style={{ marginBottom: 8, fontWeight: 600 }}>Mãe conhecida?</div>
+                                    <SwitchInput
+                                        checked={candidato?.maeConhecida ?? true}
+                                        onChange={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, maeConhecida: valor }))}
+                                    />
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="nomeMae" 
+                                        valor={candidato?.nomeMae ?? ''} 
+                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, nomeMae: valor }))} 
+                                        type="text" 
+                                        label="Nome da Mãe" 
+                                        placeholder="Digite o nome da mãe"
+                                        disabled={candidato?.maeConhecida === false}
+                                    />
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="cpfMae" 
+                                        valor={candidato?.cpfMae ?? ''} 
+                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, cpfMae: valor }))} 
+                                        type="text" 
+                                        label="CPF da Mãe" 
+                                        patternMask={["999.999.999-99"]}
+                                        placeholder="Digite o CPF da mãe"
+                                        disabled={candidato?.maeConhecida === false}
+                                    />
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="dataNascimentoMae" 
+                                        valor={candidato?.dataNascimentoMae ?? ''} 
+                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, dataNascimentoMae: valor }))} 
+                                        type="date" 
+                                        label="Data de Nascimento da Mãe" 
+                                        placeholder="Data de nascimento"
+                                        disabled={candidato?.maeConhecida === false}
+                                    />
+                                </Col6>
+                                <Col6>
+                                    <div style={{ marginBottom: 8, fontWeight: 600 }}>Pai conhecido?</div>
+                                    <SwitchInput
+                                        checked={candidato?.paiConhecido ?? true}
+                                        onChange={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, paiConhecido: valor }))}
+                                    />
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="nomePai" 
+                                        valor={candidato?.nomePai ?? ''} 
+                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, nomePai: valor }))} 
+                                        type="text" 
+                                        label="Nome do Pai" 
+                                        placeholder="Digite o nome do pai"
+                                        disabled={candidato?.paiConhecido === false}
+                                    />
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="cpfPai" 
+                                        valor={candidato?.cpfPai ?? ''} 
+                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, cpfPai: valor }))} 
+                                        type="text" 
+                                        label="CPF do Pai" 
+                                        patternMask={["999.999.999-99"]}
+                                        placeholder="Digite o CPF do pai"
+                                        disabled={candidato?.paiConhecido === false}
+                                    />
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="dataNascimentoPai" 
+                                        valor={candidato?.dataNascimentoPai ?? ''} 
+                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, dataNascimentoPai: valor }))} 
+                                        type="date" 
+                                        label="Data de Nascimento do Pai" 
+                                        placeholder="Data de nascimento"
+                                        disabled={candidato?.paiConhecido === false}
+                                    />
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
+                                    <div style={{ marginBottom: 8, fontWeight: 600 }}>Possui deficiência?</div>
+                                    <SwitchInput
+                                        checked={!!candidato?.possuiDeficiencia}
+                                        onChange={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, possuiDeficiencia: valor }))}
+                                    />
+                                    {candidato?.possuiDeficiencia && (
+                                        <CampoTexto 
+                                            camposVazios={classError}
+                                            name="deficiencia" 
+                                            valor={candidato?.deficiencia ?? ''} 
+                                            setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, deficiencia: valor }))} 
+                                            type="text" 
+                                            label="Qual deficiência?" 
+                                            placeholder="Descreva a deficiência" />
+                                    )}
                                 </Col6>
                             </Col12>
                             <Frame padding="24px 0px">
