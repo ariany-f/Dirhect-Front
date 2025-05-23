@@ -10,7 +10,7 @@ import Texto from '@components/Texto';
 
 const TimelineContainer = styled.div`
     padding: 12px 16px;
-    max-height: 60vh;
+    max-height: 70vh;
     overflow-y: auto;
 `;
 
