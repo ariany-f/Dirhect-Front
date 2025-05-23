@@ -11,11 +11,22 @@ function VagasAbertas() {
     const context = useOutletContext();
 
     useEffect(() => {
-        if((context) && ((!vagas) || vagas.length === 0 || (!Object.keys(vagas).length)))
-        {
-            setVagas(context.abertas)
-        }
-    }, [context])
+        http.get('vagas/?format=json')
+            .then(response => {
+                setVagas(response)
+                // console.log(response)
+            })
+            .catch(error => {   
+                console.log(error)
+            })
+    }, [])
+
+    // useEffect(() => {
+    //     if((context) && ((!vagas) || vagas.length === 0 || (!Object.keys(vagas).length)))
+    //     {
+    //         setVagas(context.abertas)
+    //     }
+    // }, [context])
     
     return (
         <DataTableVagas vagas={vagas} />

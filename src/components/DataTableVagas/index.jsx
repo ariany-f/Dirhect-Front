@@ -38,15 +38,15 @@ function DataTableVagas({ vagas }) {
     };
 
     const representativeAberturaTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.dataAbertura).toLocaleDateString("pt-BR")}</p>
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_abertura).toLocaleDateString("pt-BR")}</p>
     }
     
     const representativeEncerramentoTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.dataEncerramento).toLocaleDateString("pt-BR")}</p>
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_encerramento).toLocaleDateString("pt-BR")}</p>
     }
     
     const representativeNumeroColaboradoresTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData.candidatos.length ?? 0}</p>
+        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData?.candidatos?.length ?? 0}</p>
     }
 
     const representativeTituloTemplate = (rowData) => {
@@ -55,8 +55,8 @@ function DataTableVagas({ vagas }) {
 
     const representativeStatusTemplate = (rowData) => {
         const hoje = new Date();
-        const abertura = new Date(rowData.dataAbertura);
-        const encerramento = new Date(rowData.dataEncerramento);
+        const abertura = new Date(rowData.dt_abertura);
+        const encerramento = new Date(rowData.dt_encerramento);
         let status = 'Ativa';
         let color = 'var(--green-500)';
         if (hoje < abertura) {
