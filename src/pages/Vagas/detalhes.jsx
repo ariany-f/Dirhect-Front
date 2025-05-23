@@ -52,6 +52,29 @@ function DetalhesVaga() {
     const [modalDocumentoAberto, setModalDocumentoAberto] = useState(false);
     const [documentoEditando, setDocumentoEditando] = useState(null);
 
+    const listaPericulosidades = [
+        { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
+        { code: 'MP', name: 'Atividades com Máquinas e Equipamentos Pesados' },
+        { code: 'HA', name: 'Trabalho em Altura' },
+        { code: 'RA', name: 'Exposição a Radiação' },
+        { code: 'TE', name: 'Trabalho com Energia Elétrica' },
+        { code: 'CE', name: 'Exposição ao Calor Excessivo' },
+        { code: 'PE', name: 'Atividades com Produtos Explosivos' },
+        { code: 'CA', name: 'Trabalho em Ambientes Confinados' },
+        { code: 'SA', name: 'Atividades Subaquáticas' },
+        { code: 'RAU', name: 'Exposição a Ruídos Altos' },
+        { code: 'PB', name: 'Perigos Biológicos' },
+        { code: 'TE', name: 'Exposição a Temperaturas Extremas' },
+        { code: 'DA', name: 'Trabalho em Áreas de Desastres ou Emergências' },
+        { code: 'MC', name: 'Manipulação de Materiais Cortantes' },
+        { code: 'SC', name: 'Exposição a Substâncias Cancerígenas' }
+    ];
+
+    function getPericulosidadeName(code) {
+        const item = listaPericulosidades.find(p => p.code === code);
+        return item ? item.name : '--';
+    }
+
     const { 
         vagas,
         setVagas
@@ -149,20 +172,6 @@ function DetalhesVaga() {
                                 <Texto weight="800">{Real.format(vaga?.salario)}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
-                            <Texto>Deficiência</Texto>
-                            <Texto weight="800">{vaga?.deficiencia ? 'Sim' : 'Não'}</Texto>
-                            <Texto>Quantidade de Vagas</Texto>
-                            <Texto weight="800">{vaga?.qtd_vagas ?? '--'}</Texto>
-                            <Texto>Inclusiva</Texto>
-                            <Texto weight="800">{vaga?.inclusao ? 'Sim' : 'Não'}</Texto>
-                            {vaga?.inclusao && (
-                                <>
-                                    <Texto>Inclusiva para quem?</Texto>
-                                    <Texto weight="800">{vaga?.inclusao_para || '--'}</Texto>
-                                </>
-                            )}
-                            <Texto>Periculosidade</Texto>
-                            <Texto weight="800">{vaga?.periculosidade || '--'}</Texto>
                         </Col6>
                         <Col6>
                             <Texto>Filial</Texto>
@@ -180,6 +189,8 @@ function DetalhesVaga() {
                                 <Texto weight="800">{vaga?.cargo}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
+                        </Col6>
+                        <Col6>
                             <Texto>Horario</Texto>
                             {vaga?.horario ?
                                 <Texto weight="800">{vaga?.horario}</Texto>
@@ -195,6 +206,34 @@ function DetalhesVaga() {
                                 <Texto weight="800">{vaga?.sindicato}</Texto>   
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }  
+                        </Col6>
+                    </Col12>
+                    
+                    <Col12>
+                        <Col6>
+                            <br/>
+                            <Texto>Quantidade de Vagas</Texto>
+                            <Texto weight="800">{vaga?.qtd_vagas ?? '--'}</Texto>
+                            <Texto>Vaga para pessoas com deficiência</Texto>
+                            <Texto weight="800">{vaga?.deficiencia ? 'Sim' : 'Não'}</Texto>
+                        </Col6>
+                        <Col6>
+                            <br/>
+                            <Texto>Vaga Inclusiva</Texto>
+                            <Texto weight="800">{vaga?.inclusao ? 'Sim' : 'Não'}</Texto>
+                            {vaga?.inclusao && (
+                                <>
+                                    <Texto>Inclusiva para quem?</Texto>
+                                    <Texto weight="800">{vaga?.inclusao_para || '--'}</Texto>
+                                </>
+                            )}
+                        </Col6>
+                        <Col6>
+                            <br/>
+                            <Texto>Periculosidade</Texto>
+                            <Texto weight="800">{getPericulosidadeName(vaga?.periculosidade)}</Texto>
+                            <Texto>Insalubridade</Texto>
+                            <Texto weight="800">{vaga?.insalubridade}</Texto>
                         </Col6>
                     </Col12>
                     
