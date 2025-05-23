@@ -11,6 +11,7 @@ import { FaCalendarAlt, FaHistory } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import ModalHistoricoAdmissao from '@components/ModalHistoricoAdmissao';
 import ModalDadosCandidato from '@components/ModalDadosCandidato';
+import Texto from '@components/Texto';
 import { RiUser3Line } from 'react-icons/ri';
 import { CgDetailsMore } from "react-icons/cg";
 import { Tag } from 'primereact/tag';
@@ -57,8 +58,24 @@ function DataTableAdmissao({ vagas }) {
         setShowDadosCandidato(true);
     };
 
+    
+    function formataCPF(cpf) {
+        cpf = cpf.replace(/[^\d]/g, "");
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    }
+      
     const representativeCandidatoTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.candidato.nome}</p>
+        const cpf = rowData?.candidato?.cpf ?
+        formataCPF(rowData?.candidato?.cpf)
+        : '---';
+        return <div key={rowData.id}>
+            <Texto weight={700} width={'100%'}>
+                {rowData?.candidato?.nome}
+            </Texto>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
+            </div>
+        </div>
     }
 
     const representativeLgpdTemplate = (rowData) => {
@@ -191,8 +208,8 @@ function DataTableAdmissao({ vagas }) {
                 </span>
             </div>
             <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="vaga" header="Titulo" style={{ width: '18%' }}></Column>
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
+                <Column field="vaga" header="Titulo" style={{ width: '18%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '25%' }}></Column>
                 <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '15%' }}></Column>
                 <Column body={representativeAdiantamentoTemplate} header="Adiantamento (%)" style={{ width: '12%' }} />
