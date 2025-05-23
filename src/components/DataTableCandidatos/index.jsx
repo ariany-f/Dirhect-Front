@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
+import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Real } from '@utils/formats'
@@ -33,6 +34,15 @@ function DataTableCandidatos({ candidatos }) {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+    
+    const representativeDatasTemplate = (rowData) => {
+        return (
+            <div>
+                <b>Exame Médico:</b> <p>{new Date(rowData.dataExameMedico).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
+                <b>Início:</b> <p>{new Date(rowData.dataInicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
+            </div>
+        )
+    }
 
     const representativeDataNascimentoTemplate = (rowData) => {
         return new Date(rowData.dataNascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
@@ -108,6 +118,20 @@ function DataTableCandidatos({ candidatos }) {
             c === rowData ? { ...c, statusDePreenchimento: 'Rejeitado', statusDeCandidato: 'Rejeitado' } : c
         ));
     };
+      
+    const representativeCandidatoTemplate = (rowData) => {
+        const nascimento = rowData?.dataNascimento ?
+        new Date(rowData.dataNascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        : '---';
+        return <div key={rowData.id}>
+            <Texto weight={700} width={'100%'}>
+                {rowData?.nome}
+            </Texto>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                Nascimento:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{nascimento}</p>
+            </div>
+        </div>
+    }
 
     const actionTemplate = (rowData) => (
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -144,13 +168,13 @@ function DataTableCandidatos({ candidatos }) {
                 </span>
             </div>
             <DataTable value={listaCandidatos} filters={filters} globalFilterFields={['nome', 'email']}  emptyMessage="Não foram encontrados candidatos" selection={selectedCandidato} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column field="nome" header="Nome" style={{ width: '13%' }}></Column>
+                <Column body={representativeCandidatoTemplate} field="nome" header="Nome" style={{ width: '20%' }}></Column>
                 <Column field="email" header="E-mail" style={{ width: '20%' }}></Column>
-                <Column field="telefone" header="Telefone" style={{ width: '13%' }}></Column>
+                <Column field="telefone" header="Telefone" style={{ width: '15%' }}></Column>
                 {/* <Column field="cpf" header="CPF" style={{ width: '15%' }}></Column> */}
-                <Column body={representativeDataNascimentoTemplate} field="dataNascimento" header="Nascimento" style={{ width: '10%' }}></Column>
-                <Column body={representativeDataExameMedicoTemplate} field="dataExameMedico" header="Exame Médico" style={{ width: '10%' }}></Column>
-                <Column body={representativeDataInicioTemplate} field="dataInicio" header="Data Início" style={{ width: '10%' }}></Column>
+                <Column body={representativeDatasTemplate} field="dataExameMedico" header="Datas" style={{ width: '20%' }}></Column>
+                {/* <Column body={representativeDataExameMedicoTemplate} field="dataExameMedico" header="Exame Médico" style={{ width: '10%' }}></Column>
+                <Column body={representativeDataInicioTemplate} field="dataInicio" header="Data Início" style={{ width: '10%' }}></Column> */}
                 <Column body={representativeStatusPreenchimentoTemplate} field="statusDePreenchimento" header="Status Preenchimento" style={{ width: '12%' }} />
                 <Column body={representativeStatusCandidatoTemplate} field="statusDeCandidato" header="Status Candidato" style={{ width: '12%' }} />
                 <Column body={actionTemplate} style={{ width: '5%' }} />
