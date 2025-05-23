@@ -17,6 +17,8 @@ import { Tag } from 'primereact/tag';
 
 
 function DataTableAdmissao({ vagas }) {
+
+    console.log(vagas)
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -101,6 +103,15 @@ function DataTableAdmissao({ vagas }) {
         return <p style={{fontWeight: '400'}}>{new Date(rowData.candidato.dataDevolucao).toLocaleDateString("pt-BR")}</p>
     }
 
+    const representativeAdiantamentoTemplate = (rowData) => {
+        const valor = rowData.adiantamento_percentual;
+        return (
+            <span style={{ fontWeight: 600 }}>
+                {valor !== undefined && valor !== null ? `${valor}%` : '--'}
+            </span>
+        );
+    };
+
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -149,6 +160,7 @@ function DataTableAdmissao({ vagas }) {
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '25%' }}></Column>
                 <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '15%' }}></Column>
+                <Column body={representativeAdiantamentoTemplate} header="Adiantamento (%)" style={{ width: '12%' }} />
                 <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '15%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
             </DataTable>

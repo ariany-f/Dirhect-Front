@@ -43,6 +43,7 @@ const Admissoes = () => {
                                 {
                                     vaga: vaga.titulo,
                                     id: vaga.id,
+                                    adiantamento_percentual: vaga.adiantamento_percentual,
                                     candidato: candidato,
                                     status
                                 }

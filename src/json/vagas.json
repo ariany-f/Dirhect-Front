@@ -8,6 +8,7 @@
         "dataAbertura": "2023-01-15",
         "dataEncerramento": "2023-02-15",
         "salario": 12000,
+        "adiantamento_percentual": 10,
         "candidatos": [
             {
                 "id": 1,
@@ -144,6 +145,7 @@
         "dataAbertura": "2023-01-20",
         "dataEncerramento": "2023-02-20",
         "salario": 10000,
+        "adiantamento_percentual": 10,
         "candidatos": [
             {
                 "id": 4,
@@ -236,6 +238,7 @@
         "dataAbertura": "2023-01-10",
         "dataEncerramento": "2023-01-20",
         "salario": 11000,
+        "adiantamento_percentual": 10,
         "candidatos": []
       },
       {
@@ -245,6 +248,7 @@
         "dataAbertura": "2023-01-05",
         "dataEncerramento": "2023-01-15",
         "salario": 15000,
+        "adiantamento_percentual": 10,
         "candidatos": []
       }
     ]

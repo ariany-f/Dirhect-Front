@@ -7,6 +7,7 @@ import { RiCloseFill } from 'react-icons/ri';
 import Botao from '@components/Botao';
 import BotaoGrupo from '@components/BotaoGrupo';
 import Texto from '@components/Texto';
+import { FaRegPaperPlane } from 'react-icons/fa';
 
 const TimelineContainer = styled.div`
     padding: 12px 16px;
@@ -61,7 +62,8 @@ function ModalHistoricoAdmissao({ opened = false, aoFechar, candidato }) {
             data: '2024-03-15 14:30',
             titulo: 'Oferta enviada',
             descricao: 'Email de oferta enviado para o candidato',
-            status: 'success'
+            status: 'success',
+            isEmail: true
         },
         {
             data: '2024-03-16 10:15',
@@ -85,7 +87,8 @@ function ModalHistoricoAdmissao({ opened = false, aoFechar, candidato }) {
             data: '2024-03-20 15:45',
             titulo: 'Email de instruções enviado',
             descricao: 'Email com instruções para o exame médico foi enviado',
-            status: 'success'
+            status: 'success',
+            isEmail: true
         },
         {
             data: '2024-03-25 11:30',
@@ -107,6 +110,11 @@ function ModalHistoricoAdmissao({ opened = false, aoFechar, candidato }) {
         }
     ];
 
+    const handleReenviar = (item) => {
+        alert(`Reenviar: ${item.titulo}`);
+        // Aqui você pode implementar a lógica real de reenvio
+    };
+
     return (
         opened &&
         <Overlay>
@@ -120,19 +128,41 @@ function ModalHistoricoAdmissao({ opened = false, aoFechar, candidato }) {
                     </Titulo>
                 </Frame>
                 <TimelineContainer>
-                    {historico.map((item, index) => (
-                        <TimelineItem key={index} status={item.status}>
-                            <TimelineDate>
-                                {new Date(item.data).toLocaleString('pt-BR')}
-                            </TimelineDate>
-                            <TimelineTitle>
-                                <Texto weight={600}>{item.titulo}</Texto>
-                            </TimelineTitle>
-                            <TimelineDescription>
-                                {item.descricao}
-                            </TimelineDescription>
-                        </TimelineItem>
-                    ))}
+                    {historico.map((item, index) => {
+                        const isEmail = !!item.isEmail;
+                        return (
+                            <TimelineItem key={index} status={item.status}>
+                                <TimelineDate>
+                                    {new Date(item.data).toLocaleString('pt-BR')}
+                                </TimelineDate>
+                                <TimelineTitle style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <Texto weight={600}>{item.titulo}</Texto>
+                                    {isEmail && (
+                                        <button
+                                            style={{
+                                                background: 'var(--primaria)',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: 6,
+                                                padding: '4px 10px',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 4,
+                                                fontSize: 11
+                                            }}
+                                            onClick={() => handleReenviar(item)}
+                                        >
+                                            <FaRegPaperPlane fill="white" size={8} /> Reenviar
+                                        </button>
+                                    )}
+                                </TimelineTitle>
+                                <TimelineDescription>
+                                    {item.descricao}
+                                </TimelineDescription>
+                            </TimelineItem>
+                        );
+                    })}
                 </TimelineContainer>
             </DialogEstilizado>
         </Overlay>
