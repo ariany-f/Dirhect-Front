@@ -307,7 +307,7 @@ function DetalhesVaga() {
                             <Texto>Periculosidade</Texto>
                             <Texto weight="800">{getPericulosidadeName(vaga?.periculosidade)}</Texto>
                             <Texto>Insalubridade</Texto>
-                            <Texto weight="800">{vaga?.insalubridade}</Texto>
+                            <Texto weight="800">{vaga?.insalubridade ? `${vaga.insalubridade}%` : '--'}</Texto>
                         </Col6>
                     </Col12>
                     
