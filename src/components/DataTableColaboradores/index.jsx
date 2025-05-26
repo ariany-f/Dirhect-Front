@@ -41,27 +41,6 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const navegar = useNavigate()
     const {usuario} = useSessaoUsuarioContext()
 
-    useEffect(() => {
-        // Carregar filiais
-        http.get('filial/?format=json')
-            .then(response => {
-                setFiliais(response);
-            })
-            .catch(error => {
-                console.error('Erro ao carregar filiais:', error);
-            });
-
-        // Carregar funções
-        http.get('funcao/?format=json')
-            .then(response => {
-                setFuncoes(response);
-                setKey(prev => prev + 1); // Força re-renderização
-            })
-            .catch(error => {
-                console.error('Erro ao carregar funções:', error);
-            });
-    }, []); // Executar apenas uma vez quando o componente montar
-
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
         onSearch(value);
@@ -102,27 +81,19 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     }
     
     const representativeFilialTemplate = (rowData) => {
-        console.log('Filial data:', rowData);
-        console.log('Filiais disponíveis:', filiais);
         
-        // Converter para número se necessário
-        const filialId = Number(rowData.filial);
-        const filial = filiais.find(f => Number(f.id) === filialId);
-        
-        console.log('Filial encontrada:', filial);
         return (
             <div style={{display: 'flex', alignItems: 'center'}}>
-                <Texto weight={500}>{filial ? filial.nome : '---'}</Texto>
+                <Texto weight={500}>{rowData.filial_nome ? rowData.filial_nome : '---'}</Texto>
             </div>
         );
     }
 
     const representativeFuncaoTemplate = (rowData) => {
-        const funcao = funcoes.find(f => String(f.id) === String(rowData.id_funcao));
         
         return (
             <div key={rowData.id}>
-                <Texto weight={500}>{funcao ? funcao.nome : '---'}</Texto>
+                <Texto weight={500}>{rowData.funcao_nome ? rowData.funcao_nome : '---'}</Texto>
                 <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                     Tipo:&nbsp;<p style={{fontWeight: '400', color: 'var(--neutro-500)'}}>{rowData?.tipo_funcionario_descricao}</p>
                 </div>

@@ -108,10 +108,32 @@ function DetalhesVaga() {
             header: 'Desativar',
             icon: 'pi pi-info-circle',
             accept: () => {
-               
+                http.put(`vagas/${id}/`, {
+                    ...vaga,
+                    status: 'F'
+                })
+                .then(response => {
+                    toast.current.show({ 
+                        severity: 'success', 
+                        summary: 'Sucesso', 
+                        detail: 'Vaga cancelada com sucesso!', 
+                        life: 3000 
+                    });
+                    // Atualiza o estado local da vaga
+                    setVaga(response);
+                })
+                .catch(error => {
+                    console.error('Erro ao cancelar vaga:', error);
+                    toast.current.show({ 
+                        severity: 'error', 
+                        summary: 'Erro', 
+                        detail: 'Erro ao cancelar vaga', 
+                        life: 3000 
+                    });
+                });
             },
             reject: () => {
-
+                // Não faz nada se o usuário rejeitar
             },
         });
     }
