@@ -24,16 +24,17 @@ const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    gap: 10px;
 `
 
 const Col6 = styled.div`
-    padding: 20px;
-    flex: 1 1 50%;
+    padding: 0px;
+    flex: 1 1 calc(50% - 10px);
 `
 
 const Col4 = styled.div`
-    padding: 20px;
-    flex: 1 1 1 33%;
+    padding: 0px;
+    flex: 1 1 calc(33% - 10px);
 `
 
 
