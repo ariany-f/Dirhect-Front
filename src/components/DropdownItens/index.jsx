@@ -24,7 +24,26 @@ const Select = styled(Dropdown)`
         display: flex;
         align-items: center;
         justify-content: start;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: ${ props => props.$width ?  props.$width : 'inherit' };
     }
+
+    & .p-dropdown-label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: ${ props => props.$width ?  props.$width : 'inherit' };
+    }
+
+    & .p-dropdown-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: ${ props => props.$width ?  props.$width : 'inherit' };
+    }
+
     &.error {
         outline: 1px solid var(--error);
     }

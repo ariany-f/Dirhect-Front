@@ -343,7 +343,12 @@ function DetalhesVaga() {
                     }}
                 />
             </Container>
-            <ModalEncaminharVaga aoSalvar={handleSalvarCandidato} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+            <ModalEncaminharVaga 
+                aoSalvar={handleSalvarCandidato} 
+                opened={modalOpened} 
+                aoFechar={() => setModalOpened(false)}
+                periculosidadeInicial={vaga?.periculosidade ? listaPericulosidades.find(p => p.code === vaga.periculosidade) : null}
+            />
         </Frame>
         </>
     )

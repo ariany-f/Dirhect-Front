@@ -54,7 +54,7 @@ const VariavelItem = styled.div`
   }
 `;
 
-function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
+function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidadeInicial }) {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [mensagem, setMensagem] = useState("");
@@ -65,7 +65,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
   const [dataInicio, setDataInicio] = useState("");
   const [centroCusto, setCentroCusto] = useState("");
   const [salario, setSalario] = useState("");
-  const [periculosidade, setPericulosidade] = useState("");
+  const [periculosidade, setPericulosidade] = useState(periculosidadeInicial || "");
   const [dropdownTemplates, setDropdownTemplates] = useState([]);
   const [dataExameMedico, setDataExameMedico] = useState("");
   const [listaPericulosidades, setListaPericulosidades] = useState([
@@ -87,7 +87,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
   ]);
   const [editorContent, setEditorContent] = useState("");
   const [showEditorContent, setShowEditorContent] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState(null); 
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const variaveis = [
     { value: "{{nome}}", label: "Nome Completo" },
@@ -180,6 +180,13 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
     }
   }, [templates]);
 
+  // Atualiza a periculosidade quando a periculosidadeInicial mudar
+  useEffect(() => {
+    if (periculosidadeInicial) {
+      setPericulosidade(periculosidadeInicial);
+    }
+  }, [periculosidadeInicial]);
+
   return (
     opened &&
     <Overlay>
@@ -202,7 +209,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
                     <CampoTexto valor={email} type="text" setValor={setEmail} label="E-mail" />
                     <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem" />
                     <CampoTexto patternMask={['999.999.999-99']} valor={cpf} type="text" setValor={setCpf} label="CPF" />
-                    <DropdownItens valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades" name="periculosidade" placeholder="Periculosidades"/> 
+                    <DropdownItens width="250px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades" name="periculosidade" placeholder="Periculosidades"/> 
                   </Col6>
                   <Col6>
                     <CampoTexto patternMask={['(99) 99999-9999']} valor={telefone} type="text" setValor={setTelefone} label="Telefone" />
