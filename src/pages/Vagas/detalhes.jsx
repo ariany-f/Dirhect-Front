@@ -287,7 +287,7 @@ function DetalhesVaga() {
                         <Col6>
                             <br/>
                             <Texto>Quantidade de Vagas</Texto>
-                            <Texto weight="800">{vaga?.qtd_vagas ?? '--'}</Texto>
+                            <Texto weight="800">{vaga?.qtd_vaga ?? '--'}</Texto>
                             <Texto>Vaga para pessoas com deficiência</Texto>
                             <Texto weight="800">{vaga?.deficiencia ? 'Sim' : 'Não'}</Texto>
                         </Col6>

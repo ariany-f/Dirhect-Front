@@ -297,7 +297,7 @@ const VagasRegistro = () => {
                     </Col6>
                     <Col6>
                         <CampoTexto
-                            name="qtd_vagas"
+                            name="qtd_vaga"
                             valor={qtdVagas}
                             setValor={setQtdVagas}
                             type="number"
