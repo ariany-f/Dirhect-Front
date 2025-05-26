@@ -114,7 +114,6 @@ function DataTableTiposBeneficio({
     useEffect(() => {
         // Buscar tipos de benefício do endpoint
         http.get('tipo_beneficio/?format=json').then(resp => {
-            console.log(resp)
             if (resp) {
                 const tiposMap = resp.reduce((acc, tipo) => {
                     acc[tipo.chave] = tipo.descricao;
@@ -273,7 +272,7 @@ function DataTableTiposBeneficio({
         // Determina qual status usar
         const statusAtual = beneficiosStatus[rowData.id] !== undefined
             ? beneficiosStatus[rowData.id]
-            : (usuario?.tipo === 'global' ? rowData.ativo : rowData.ativo_tenant);
+            : rowData.ativo;
         return (
             <div style={{ 
                 display: 'flex', 
