@@ -209,7 +209,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
                     <CampoTexto valor={email} type="text" setValor={setEmail} label="E-mail" />
                     <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem" />
                     <CampoTexto patternMask={['999.999.999-99']} valor={cpf} type="text" setValor={setCpf} label="CPF" />
-                    <DropdownItens width="250px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades" name="periculosidade" placeholder="Periculosidades"/> 
+                    <DropdownItens width="280px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades" name="periculosidade" placeholder="Periculosidades"/> 
                   </Col6>
                   <Col6>
                     <CampoTexto patternMask={['(99) 99999-9999']} valor={telefone} type="text" setValor={setTelefone} label="Telefone" />
