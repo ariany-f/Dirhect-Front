@@ -142,7 +142,21 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar }) {
 
   const handleSave = () => {
     const content = editorContent;
-    aoSalvar(nome, email, mensagem, content);
+    aoSalvar(
+        nome,
+        email,
+        mensagem,
+        content,
+        cpf,
+        nascimento,
+        telefone,
+        filial,
+        dataInicio,
+        centroCusto,
+        salario,
+        periculosidade,
+        dataExameMedico
+    );
   };
 
   const toggleEditorContent = () => {

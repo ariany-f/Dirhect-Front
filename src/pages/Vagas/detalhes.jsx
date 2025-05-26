@@ -23,6 +23,7 @@ import { Tag } from 'primereact/tag'
 import DataTableDocumentos from '@components/DataTableDocumentos'
 import ModalDocumentoRequerido from '@components/ModalDocumentoRequerido'
 import { GrAdd, GrAddCircle } from 'react-icons/gr'
+import http from '@http'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -75,13 +76,33 @@ function DetalhesVaga() {
         return item ? item.name : '--';
     }
 
+    function getStatusVaga(status) {
+        return status === 'A' ? 'ABERTA' : 'FECHADA';
+    }
+
+    function getStatusColor(status) {
+        return status === 'A' ? 'var(--green-500)' : 'var(--error)';
+    }
+
+    useEffect(() => {
+      
+        http.get(`vagas/${id}/?format=json`)
+            .then(response => {
+                console.log(response)
+                setVaga(response)
+                // setVaga(response.data)
+            })
+            .catch(error => {
+                console.error('Erro ao carregar vaga:', error)
+            })
+    }, [])
+
     const { 
         vagas,
         setVagas
     } = useVagasContext()
 
     const cancelarVaga = () => {
-        console.log(vaga)
         confirmDialog({
             message: 'Você quer cancelar essa vaga?',
             header: 'Desativar',
@@ -99,18 +120,71 @@ function DetalhesVaga() {
         setModalOpened(true)
     }
 
-    useEffect(() => {
-        if(!vaga)
-        {
-            const obj = vagas.vagas;
-            const vg = [...obj.abertas, ...obj.canceladas].find(item => item.id == id);
+    const handleSalvarCandidato = (
+        nome,
+        email,
+        mensagem,
+        content,
+        cpf,
+        nascimento,
+        telefone,
+        filial,
+        dataInicio,
+        centroCusto,
+        salario,
+        periculosidade,
+        dataExameMedico
+    ) => {
+        // Remove caracteres não numéricos do CPF e salário
+        const cpfNumerico = cpf.replace(/\D/g, '');
+        const salarioNumerico = salario.replace(/\D/g, '');
 
-            if(vg) {
-                setVaga(vg)
-            }
+        http.post(`candidato/`, {
+            nome,
+            email,
+            mensagem,
+            content,
+            cpf: cpfNumerico,
+            dt_nascimento: nascimento,
+            telefone,
+            filial,
+            dt_inicio: dataInicio,
+            centroCusto,
+            salario: salarioNumerico,
+            periculosidade: periculosidade?.code,
+            dataExameMedico,
+            vaga_id: id
+        })
+        .then(response => {
+            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Candidato encaminhado com sucesso!', life: 3000 });
+            setModalOpened(false);
+            // Recarrega os dados da vaga
+            http.get(`vagas/${id}/?format=json`)
+                .then(response => {
+                    setVaga(response);
+                })
+                .catch(error => {
+                    console.error('Erro ao recarregar vaga:', error);
+                });
+        })
+        .catch(error => {
+            console.error('Erro ao salvar candidato:', error);
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao encaminhar candidato', life: 3000 });
+        });
+    };
+
+    // useEffect(() => {
+    //     if(!vaga)
+    //     {
+    //         const obj = vagas.vagas;
+    //         const vg = [...obj.abertas, ...obj.canceladas].find(item => item.id == id);
+
+    //         if(vg) {
+    //             setVaga(vg)
+    //         }
           
-        }
-    }, [])
+    //     }
+    // }, [])
     
     return (
         <>
@@ -126,9 +200,9 @@ function DetalhesVaga() {
                                     {vaga?.titulo}
                                     {vaga?.status && (
                                         <Tag
-                                            value={vaga.status}
+                                            value={getStatusVaga(vaga.status)}
                                             style={{
-                                                backgroundColor: vaga.status === 'Ativa' ? 'var(--green-500)' : 'var(--error)',
+                                                backgroundColor: getStatusColor(vaga.status),
                                                 color: 'white',
                                                 fontWeight: 600,
                                                 fontSize: 13,
@@ -269,7 +343,7 @@ function DetalhesVaga() {
                     }}
                 />
             </Container>
-            <ModalEncaminharVaga opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+            <ModalEncaminharVaga aoSalvar={handleSalvarCandidato} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </Frame>
         </>
     )
