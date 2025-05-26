@@ -41,7 +41,6 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
-    const [tipos, setTipos] = useState({});
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
@@ -49,22 +48,6 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
         setSelectedBeneficio(0)
         setSendData({})
     }, [beneficios])
-
-    useEffect(() => {
-        const carregarTipos = async () => {
-            try {
-                const response = await http.get('tipo_beneficio/?format=json');
-                const tiposMap = {};
-                response.forEach(tipo => {
-                    tiposMap[tipo.chave] = tipo.descricao;
-                });
-                setTipos(tiposMap);
-            } catch (error) {
-                console.error('Erro ao carregar tipos de benefícios:', error);
-            }
-        };
-        carregarTipos();
-    }, []);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -87,7 +70,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
     }
 
     const representativeTipoTemplate = (rowData) => {
-        return <Tag value={tipos[rowData.beneficio.tipo] || rowData.beneficio.tipo} severity="info" />
+        return <Tag value={rowData.beneficio.tipo.descricao} severity="info" />
     }
 
     const representativeActionsTemplate = (rowData) => {
@@ -146,7 +129,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
             stripedRows
         >
             <Column body={representativeBeneficioTemplate} field="beneficio.descricao" style={{ width: '45%' }} />
-            <Column body={representativeTipoTemplate} field="beneficio.tipo" style={{ width: '45%' }} />
+            <Column body={representativeTipoTemplate} field="beneficio.tipo.descricao" style={{ width: '45%' }} />
             <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }} />
         </DataTable>
     )
