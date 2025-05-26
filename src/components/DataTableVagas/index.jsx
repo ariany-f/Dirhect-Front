@@ -46,7 +46,7 @@ function DataTableVagas({ vagas }) {
     }
     
     const representativeNumeroColaboradoresTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData?.candidatos?.length ?? 0}</p>
+        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData?.total_candidatos ?? 0}</p>
     }
 
     const representativeTituloTemplate = (rowData) => {
