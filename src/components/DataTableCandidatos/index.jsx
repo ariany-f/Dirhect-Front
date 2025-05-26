@@ -38,27 +38,27 @@ function DataTableCandidatos({ candidatos }) {
     const representativeDatasTemplate = (rowData) => {
         return (
             <div>
-                <b>Exame Médico:</b> <p>{new Date(rowData.dataExameMedico).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
-                <b>Início:</b> <p>{new Date(rowData.dataInicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
+                <b>Exame Médico:</b> <p>{new Date(rowData.dt_exame_medico).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
+                <b>Início:</b> <p>{new Date(rowData.dt_inicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
             </div>
         )
     }
 
     const representativeDataNascimentoTemplate = (rowData) => {
-        return new Date(rowData.dataNascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        return new Date(rowData.dt_nascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
     }
 
     const representativeDataInicioTemplate = (rowData) => {
-        if (rowData.dataInicio) {
-            return new Date(rowData.dataInicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        if (rowData.dt_inicio) {
+            return new Date(rowData.dt_inicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
         } else {
             return '-----'
         }
     }
 
     const representativeDataExameMedicoTemplate = (rowData) => {
-        if (rowData.dataExameMedico) {
-            return new Date(rowData.dataExameMedico).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        if (rowData.dt_exame_medico) {
+            return new Date(rowData.dt_exame_medico).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
         } else {
             return '-----'
         }
@@ -120,8 +120,8 @@ function DataTableCandidatos({ candidatos }) {
     };
       
     const representativeCandidatoTemplate = (rowData) => {
-        const nascimento = rowData?.dataNascimento ?
-        new Date(rowData.dataNascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        const nascimento = rowData?.dt_nascimento ?
+        new Date(rowData.dt_nascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
         : '---';
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
@@ -148,7 +148,7 @@ function DataTableCandidatos({ candidatos }) {
     );
 
     const emailTemplate = (rowData) => (
-        <span style={{ fontSize: 13 }}>{rowData.email || '-----'}</span>
+        <span style={{ fontSize: 12 }}>{rowData.email || '-----'}</span>
     );
 
     const telefoneTemplate = (rowData) => (
@@ -195,11 +195,11 @@ function DataTableCandidatos({ candidatos }) {
                 <Column body={telefoneTemplate} field="telefone" header="Telefone" style={{ width: '13%' }}></Column>
                 <Column body={deficienciaTemplate} field="deficiencia" header="PCD" style={{ width: '10%' }} />
                 {/* <Column field="cpf" header="CPF" style={{ width: '15%' }}></Column> */}
-                <Column body={representativeDatasTemplate} field="dataExameMedico" header="Datas" style={{ width: '15%' }}></Column>
-                {/* <Column body={representativeDataExameMedicoTemplate} field="dataExameMedico" header="Exame Médico" style={{ width: '10%' }}></Column>
-                <Column body={representativeDataInicioTemplate} field="dataInicio" header="Data Início" style={{ width: '10%' }}></Column> */}
+                <Column body={representativeDatasTemplate} field="dt_exame_medico" header="Datas" style={{ width: '15%' }}></Column>
+                {/* <Column body={representativeDataExameMedicoTemplate} field="dt_exame_medico" header="Exame Médico" style={{ width: '10%' }}></Column>
+                <Column body={representativeDataInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column> */}
                 <Column body={representativeStatusPreenchimentoTemplate} field="statusDePreenchimento" header="Status Preenchimento" style={{ width: '12%' }} />
-                <Column body={representativeStatusCandidatoTemplate} field="statusDeCandidato" header="Status Candidato" style={{ width: '12%' }} />
+                {/* <Column body={representativeStatusCandidatoTemplate} field="statusDeCandidato" header="Status Candidato" style={{ width: '12%' }} /> */}
                 <Column body={actionTemplate} style={{ width: '5%' }} />
                 {/* <Column field="statusDeCandidato" header="Status Candidato" style={{ width: '10%' }}></Column> */}
             </DataTable>

@@ -142,7 +142,7 @@ function DetalhesVaga() {
         http.post(`candidato/`, {
             nome,
             email,
-            mensagem,
+            observacao: mensagem,
             content,
             cpf: cpfNumerico,
             dt_nascimento: nascimento,
@@ -152,7 +152,7 @@ function DetalhesVaga() {
             centroCusto,
             salario: salarioNumerico,
             periculosidade: periculosidade?.code,
-            dataExameMedico,
+            dt_exame_medico: dataExameMedico,
             vaga_id: id
         })
         .then(response => {
@@ -319,11 +319,15 @@ function DetalhesVaga() {
                 <Titulo>
                     <h5>Documentos Requeridos</h5>
                 </Titulo>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
-                    <Botao size="small" aoClicar={() => { setDocumentoEditando(null); setModalDocumentoAberto(true); }}>
-                        <GrAddCircle stroke="white" /> Adicionar documento requerido
-                    </Botao>
-                </div>
+                
+                <BotaoGrupo align="space-between">
+                    <div></div>
+                    <BotaoGrupo align="space-between">
+                        <Botao size="small" aoClicar={() => { setDocumentoEditando(null); setModalDocumentoAberto(true); }}>
+                            <GrAddCircle stroke="white" /> Adicionar documento requerido
+                        </Botao>
+                    </BotaoGrupo>
+                </BotaoGrupo>
                 <DataTableDocumentos
                     documentos={documentos}
                     onEdit={doc => { setDocumentoEditando(doc); setModalDocumentoAberto(true); }}
