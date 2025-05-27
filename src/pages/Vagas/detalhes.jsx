@@ -8,7 +8,7 @@ import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
 import { Skeleton } from 'primereact/skeleton'
 import Container from "@components/Container"
-import { FaArrowAltCircleRight, FaTrash } from 'react-icons/fa'
+import { FaArrowAltCircleRight, FaEdit, FaPen, FaTrash } from 'react-icons/fa'
 import BotaoVoltar from "@components/BotaoVoltar"
 import BotaoGrupo from "@components/BotaoGrupo"
 import BotaoSemBorda from "@components/BotaoSemBorda"
@@ -24,6 +24,8 @@ import DataTableDocumentos from '@components/DataTableDocumentos'
 import ModalDocumentoRequerido from '@components/ModalDocumentoRequerido'
 import { GrAdd, GrAddCircle } from 'react-icons/gr'
 import http from '@http'
+import ModalVaga from '@components/ModalVaga'
+import { unformatCurrency } from '@utils/formats'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -52,6 +54,7 @@ function DetalhesVaga() {
     const [documentos, setDocumentos] = useState([]);
     const [modalDocumentoAberto, setModalDocumentoAberto] = useState(false);
     const [documentoEditando, setDocumentoEditando] = useState(null);
+    const [modalEditarAberto, setModalEditarAberto] = useState(false);
 
     const listaPericulosidades = [
         { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
@@ -160,11 +163,9 @@ function DetalhesVaga() {
         // Remove caracteres não numéricos do CPF e salário
         const cpfNumerico = cpf.replace(/\D/g, '');
         const salarioNumerico = salario ? 
-        salario
-            .replace(/\./g, '') // Remove pontos
-            .replace(',', '') // Remove a vírgula
-            .replace(/\D/g, '') // Remove outros caracteres não numéricos
-        : null;
+            Math.floor(Number(unformatCurrency(salario)) / 100)
+            : null;
+
 
         http.post(`candidato/`, {
             nome,
@@ -200,6 +201,27 @@ function DetalhesVaga() {
         });
     };
 
+    const handleEditarVaga = (vagaAtualizada) => {
+        http.put(`vagas/${id}/`, vagaAtualizada)
+            .then(response => {
+                setVaga(response);
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Vaga atualizada com sucesso!',
+                    life: 3000
+                });
+                setModalEditarAberto(false);
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar vaga:', error);
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro ao atualizar vaga',
+                    life: 3000
+                });
+            });
+    };
+
     // useEffect(() => {
     //     if(!vaga)
     //     {
@@ -220,6 +242,7 @@ function DetalhesVaga() {
             <ConfirmDialog />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/vagas" />
+                <ConteudoFrame>
                     {vaga?.titulo ? 
                         <BotaoGrupo align="space-between">
                             <Titulo>
@@ -239,16 +262,18 @@ function DetalhesVaga() {
                                             }}
                                         />
                                     )}
+                                    <FaPen style={{ cursor: 'pointer' }} size={16} onClick={() => setModalEditarAberto(true)} fill="var(--primaria)" />
+
                                 </h3>
                             </Titulo>
                             <BotaoGrupo align="space-between">
+                                <BotaoSemBorda $color="var(--primaria)">
+                                    <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
+                                </BotaoSemBorda>
                                 <Botao aoClicar={abrirModal} size="small">
                                     <FaArrowAltCircleRight fill="white" />
                                     Encaminhar para novo candidato
                                 </Botao>
-                                <BotaoSemBorda $color="var(--primaria)">
-                                    <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
-                                </BotaoSemBorda>
                             </BotaoGrupo>
                      </BotaoGrupo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
@@ -373,13 +398,20 @@ function DetalhesVaga() {
                         setModalDocumentoAberto(false);
                     }}
                 />
-            </Container>
+            </ConteudoFrame>
             <ModalEncaminharVaga 
                 aoSalvar={handleSalvarCandidato} 
                 opened={modalOpened} 
                 aoFechar={() => setModalOpened(false)}
                 periculosidadeInicial={vaga?.periculosidade ? listaPericulosidades.find(p => p.code === vaga.periculosidade) : null}
             />
+            <ModalVaga 
+                opened={modalEditarAberto}
+                aoFechar={() => setModalEditarAberto(false)}
+                vaga={vaga}
+                aoSalvar={handleEditarVaga}
+            />
+        </Container>
         </Frame>
         </>
     )

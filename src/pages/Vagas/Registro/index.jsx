@@ -11,6 +11,7 @@ import http from '@http';
 import styled from 'styled-components';
 import SwitchInput from '@components/SwitchInput';
 import { Toast } from 'primereact/toast';
+import { unformatCurrency } from '@utils/formats';
 
 const Col12 = styled.div`
     display: flex;
@@ -145,11 +146,9 @@ const VagasRegistro = () => {
 
         // Remove caracteres não numéricos e trata a vírgula do salário
         const salarioNumerico = salario ? 
-            salario
-                .replace(/\./g, '') // Remove pontos
-                .replace(',', '') // Remove a vírgula
-                .replace(/\D/g, '') // Remove outros caracteres não numéricos
+            Math.floor(Number(unformatCurrency(salario)) / 100)
             : null;
+
 
         const novaVaga = {
             titulo,

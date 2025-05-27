@@ -16,6 +16,15 @@ export const formatCurrency = (value) => {
 };
 
 /**
+ * Remove a formatação de moeda brasileira
+ * @param {string} value - Valor a ser desformatado
+ * @returns {number} Valor desformatado em Real (ex: 123456)
+ */
+export const unformatCurrency = (value) => {
+    return value.replace(/[^\d]/g, "");
+};
+
+/**
  * Formata um CNPJ
  * @param {string} cnpj - CNPJ a ser formatado (apenas números)
  * @returns {string} CNPJ formatado (ex: 12.345.678/0001-90)
