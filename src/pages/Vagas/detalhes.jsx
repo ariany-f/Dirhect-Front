@@ -8,7 +8,7 @@ import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
 import { Skeleton } from 'primereact/skeleton'
 import Container from "@components/Container"
-import { FaArrowAltCircleRight, FaEdit, FaPen, FaTrash } from 'react-icons/fa'
+import { FaArrowAltCircleRight, FaDoorOpen, FaEdit, FaPen, FaTrash } from 'react-icons/fa'
 import BotaoVoltar from "@components/BotaoVoltar"
 import BotaoGrupo from "@components/BotaoGrupo"
 import BotaoSemBorda from "@components/BotaoSemBorda"
@@ -104,6 +104,42 @@ function DetalhesVaga() {
         vagas,
         setVagas
     } = useVagasContext()
+
+    const reabrirVaga = () => {
+        confirmDialog({
+            message: 'Você quer reabrir essa vaga?',
+            header: 'Reabrir',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                http.put(`vagas/${id}/`, {
+                    ...vaga,
+                    status: 'A'
+                })
+                .then(response => {
+                    toast.current.show({ 
+                        severity: 'success', 
+                        summary: 'Sucesso', 
+                        detail: 'Vaga reaberta com sucesso!', 
+                        life: 3000 
+                    });
+                    // Atualiza o estado local da vaga
+                    setVaga(response);
+                })
+                .catch(error => {
+                    console.error('Erro ao reabrir vaga:', error);
+                    toast.current.show({ 
+                        severity: 'error', 
+                        summary: 'Erro', 
+                        detail: 'Erro ao reabrir vaga', 
+                        life: 3000 
+                    });
+                });
+            },
+            reject: () => {
+                // Não faz nada se o usuário rejeitar
+            },
+        });
+    }
 
     const cancelarVaga = () => {
         confirmDialog({
@@ -286,6 +322,13 @@ function DetalhesVaga() {
                                             <FaArrowAltCircleRight fill="white" />
                                             Encaminhar para novo candidato
                                         </Botao>
+                                    </>
+                                }
+                                {vaga.status == 'F' && 
+                                    <>
+                                        <BotaoSemBorda $color="var(--primaria)">
+                                            <FaDoorOpen /><Link onClick={reabrirVaga}>Reabrir vaga</Link>
+                                        </BotaoSemBorda>
                                     </>
                                 }
                             </BotaoGrupo>
