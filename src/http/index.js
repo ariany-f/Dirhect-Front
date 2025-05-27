@@ -7,7 +7,6 @@ const PROTOCOL = import.meta.env.VITE_MODE === 'development' ? 'http' : 'https';
 const http = axios.create({
     
     headers: {
-        "Origin": import.meta.env.VITE_ORIGIN,
         "Content-Type": "application/json",
         "Accept": "application/json"
     }
