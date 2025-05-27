@@ -160,26 +160,9 @@ function ColaboradorDetalhes() {
                     setTipoSituacao(response.tipo_situacao_descricao);
                 })
                 .catch(erro => console.log(erro))
-        } else {
-            if((!funcao) && colaborador.id_funcao)
-            {
-                http.get(`funcao/${colaborador.id_funcao}/?format=json`)
-                    .then(response => {
-                        setFuncao(response);
-                    })
-                    .catch(erro => console.log(erro))
-            }
-            if((!filial) && colaborador.filial)
-            {
-                http.get(`filial/${colaborador.filial}/?format=json`)
-                    .then(response => {
-                        setFilial(response);
-                    })
-                    .catch(erro => console.log(erro))
-            }
         }
         
-    }, [colaborador, funcao, filial])
+    }, [colaborador])
 
     const desativarColaborador = () => {
         confirmDialog({
@@ -336,14 +319,14 @@ function ColaboradorDetalhes() {
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Filial</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={filial?.nome ?? 'Não definida'}></Tag>
+                                    <Tag severity="info" value={colaborador?.filial_nome ?? 'Não definida'}></Tag>
                                 </div>
                             </Frame>
                             
                             <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Função</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={funcao?.nome ?? 'Não definida'}></Tag>
+                                    <Tag severity="info" value={colaborador?.funcao_nome ?? 'Não definida'}></Tag>
                                 </div>
                             </Frame>
                             
