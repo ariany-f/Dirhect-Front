@@ -144,7 +144,7 @@ function Login() {
                 ArmazenadorToken.definirTempToken(error.temp_token[0]);
 
                 if(error?.mfa_configured && error?.mfa_configured[0] && error?.mfa_configured[0] == 'True') {
-                    navegar('/login/mfa');
+                    navegar('/login/mfa/true');
                 }
                 else {
                     navegar('/login/mfa/generate');

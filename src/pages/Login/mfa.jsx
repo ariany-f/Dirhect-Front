@@ -7,13 +7,14 @@ import Frame from '@components/Frame';
 import BotaoVoltar from '@components/BotaoVoltar';
 import Titulo from '@components/Titulo';
 import SubTitulo from '@components/SubTitulo';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import http from '@http';
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 import { ArmazenadorToken } from '@utils';
 
 function Mfa() {
     const navegar = useNavigate();
+    const { confirmed } = useParams();
     const [otpCode, setOtpCode] = useState('');
     const { control, handleSubmit, formState: { errors } } = useForm();
 
@@ -42,53 +43,122 @@ function Mfa() {
         />
     );
 
-    function handleVerifyOtp() {
-        http.post('/token/', { otp: otpCode })
-        .then(response => {
-
-            toast.success('Token verificado com sucesso!');
-
-            const expiration = new Date();
-            expiration.setMinutes(expiration.getMinutes() + 15);
-
-            ArmazenadorToken.definirToken(
-                response.access,
-                expiration,
-                response.refresh,
-                response.permissions
-            );
-            
-            setEmail(response.user.email);
-            setCpf(response.user.cpf ?? '');
-            setTipo(response.groups[0]);
-            setUserPublicId(response.user.id);
-            setName(response.user.first_name + ' ' + response.user.last_name);
-
-            ArmazenadorToken.definirUsuario(
-                response.user.first_name + ' ' + response.user.last_name,
-                response.user.email,
-                response.user.cpf ?? '',
-                response.user.id,
-                response.groups[0],
-                '', 
-                '', 
-                '', 
-                '', 
-                response.mfa_required
-            );
-            ArmazenadorToken.removerTempToken();   
-            
-            setUsuarioEstaLogado(true);
-            console.log(usuarioEstaLogado);
-            navegar('/login/selecionar-empresa');
-        })
-        .catch(error => {
-            if(error.error) {
-                toast.error(error.error);
-            } else {
+    async function handleMfaValidade() {
+        return new Promise((resolve, reject) => {
+            http.post('/mfa/validate/', { token: otpCode })
+            .then(response => {
+                resolve(response);
+            })
+            .catch(error => {
                 toast.error('Erro ao verificar Token!');
-            }
+                reject(error);
+            });
         });
+    }
+
+    async function handleToken() {
+        return new Promise((resolve, reject) => {
+            http.post('/token/', { otp: otpCode })
+            .then(response => {
+                resolve(response);
+            })
+            .catch(error => {
+                reject(error);
+            });
+        });
+    }
+
+    async function handleVerifyOtp() {
+        if(confirmed === 'true') {
+            await handleToken()
+            .then(response => {
+                toast.success('Token verificado com sucesso!');
+                const expiration = new Date();
+                expiration.setMinutes(expiration.getMinutes() + 15);
+
+                ArmazenadorToken.definirToken(
+                    response.access,
+                    expiration,
+                    response.refresh,
+                    response.permissions
+                );
+                
+                setEmail(response.user.email);
+                setCpf(response.user.cpf ?? '');
+                setTipo(response.groups[0]);
+                setUserPublicId(response.user.id);
+                setName(response.user.first_name + ' ' + response.user.last_name);
+
+                ArmazenadorToken.definirUsuario(
+                    response.user.first_name + ' ' + response.user.last_name,
+                    response.user.email,
+                    response.user.cpf ?? '',
+                    response.user.id,
+                    response.groups[0],
+                    '', 
+                    '', 
+                    '', 
+                    '', 
+                    response.mfa_required
+                );
+                ArmazenadorToken.removerTempToken();   
+                
+                setUsuarioEstaLogado(true);
+                navegar('/login/selecionar-empresa');
+            })
+            .catch(error => {
+                if(error.otp)
+                {
+                    toast.error(error.otp[0]);
+                }else{
+                    toast.error('Erro ao verificar Token!');
+                }
+            });
+        } else {
+            await handleMfaValidade()
+            .then(response => {
+                const expiration = new Date();
+                expiration.setMinutes(expiration.getMinutes() + 15);
+
+                ArmazenadorToken.definirToken(
+                    response.access,
+                    expiration,
+                    response.refresh,
+                    response.permissions
+                );
+                
+                setEmail(response.user.email);
+                setCpf(response.user.cpf ?? '');
+                setTipo(response.groups[0]);
+                setUserPublicId(response.user.id);
+                setName(response.user.first_name + ' ' + response.user.last_name);
+
+                ArmazenadorToken.definirUsuario(
+                    response.user.first_name + ' ' + response.user.last_name,
+                    response.user.email,
+                    response.user.cpf ?? '',
+                    response.user.id,
+                    response.groups[0],
+                    '', 
+                    '', 
+                    '', 
+                    '', 
+                    response.mfa_required
+                );
+                ArmazenadorToken.removerTempToken();   
+                
+                setUsuarioEstaLogado(true);
+                navegar('/login/selecionar-empresa');
+            })
+            .catch(error => {
+                if(error.otp)
+                {
+                    toast.error(error.otp[0]);
+                }else{
+                    toast.error('Erro ao verificar Token!');
+                }
+            });
+        }
     }
 
     return (

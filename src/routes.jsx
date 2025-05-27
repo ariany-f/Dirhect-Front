@@ -186,7 +186,7 @@ function AppRouter() {
                 :
                   <Route index element={<LoginMobile />} />
               }
-              <Route path="mfa" element={<Mfa />} />
+              <Route path="mfa/:confirmed" element={<Mfa />} />
               <Route path="mfa/generate" element={<MfaGenerate />} />
               {isDesktop ?
                 <Route path="selecionar-empresa" element={<SelecionarEmpresa />} />

@@ -46,7 +46,7 @@ function MfaGenerate() {
                             style={{ maxWidth: '300px', width: '100%' }}
                         />
                     }
-                    <Botao aoClicar={() => navegar('/login/mfa')}>Tudo Pronto!</Botao>
+                    <Botao aoClicar={() => navegar('/login/mfa/false')}>Tudo Pronto!</Botao>
                 </Frame>
             </div>
         </div>
