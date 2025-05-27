@@ -29,7 +29,7 @@ const Contratos = () => {
 
     const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
         setLoading(true)  
-        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
+        const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '&ordering=id';
         http.get(`contrato/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setContratos(response.results)

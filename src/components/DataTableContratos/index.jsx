@@ -61,14 +61,11 @@ function DataTableContratos({
 
     useEffect(() => {
         if (contratos?.length > 0) {
-            console.log(contratos)
-            setContratosStatus(
-                contratos.reduce((acc, contrato) => ({
-                    ...acc,
-                    [contrato.id]: contrato.status == 'A'
-                }), {})
-            );
-            console.log(contratosStatus)
+            const statusInicial = {};
+            contratos.forEach(contrato => {
+                statusInicial[contrato.id] = contrato.status === 'A';
+            });
+            setContratosStatus(statusInicial);
         }
     }, [contratos]);
 
@@ -336,6 +333,7 @@ function DataTableContratos({
     }
 
     const representativeActionsTemplate = (rowData) => {
+        const status = rowData.status === 'A';
         return (
             <div style={{ 
                 display: 'flex', 
@@ -348,13 +346,13 @@ function DataTableContratos({
                     alignItems: 'center',
                     gap: '16px'
                 }}>
-                    <StatusTag $status={contratosStatus[rowData.id]}>
-                        {contratosStatus[rowData.id] ? "Ativo" : "Inativo"}
+                    <StatusTag $status={status}>
+                        {status ? "Ativo" : "Inativo"}
                     </StatusTag>
                     <SwitchInput
-                        checked={contratosStatus[rowData.id]}
+                        checked={status}
                         onChange={() => {
-                            atualizarStatus(rowData.id, !contratosStatus[rowData.id]);
+                            atualizarStatus(rowData.id, !status);
                         }}
                         style={{ width: '36px' }}
                     />
