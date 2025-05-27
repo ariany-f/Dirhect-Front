@@ -215,6 +215,7 @@ function BarraLateral({ $sidebarOpened }) {
         'view_ausencia': ['Ausências'],
         'view_contrato': ['Contratos'],
         'view_contratobeneficioitem': ['Elegibilidade'],
+        'view_vaga': ['Vagas'],
     };
 
     // Menus sempre visíveis
@@ -225,13 +226,6 @@ function BarraLateral({ $sidebarOpened }) {
             pageTitulo: 'Home',
             icone: <AiFillHome size={20} className="icon" />,
             itemTitulo: 'Home',
-        },
-        {
-            id: 2,
-            url: '/vagas',
-            pageTitulo: 'Vagas',
-            icone: <RiFilePaperFill size={20} className="icon" />,
-            itemTitulo: 'Vagas',
         },
         {
             id: 3,
@@ -353,6 +347,14 @@ function BarraLateral({ $sidebarOpened }) {
             itemTitulo: 'Elegibilidade',
             permission: 'view_contratobeneficioitem',
         },
+        {
+            id: 18,
+            url: '/vagas',
+            pageTitulo: 'Vagas',
+            icone: <RiFilePaperFill size={20} className="icon" />,
+            itemTitulo: 'Vagas',
+            permission: 'view_vagas',
+        },
     ];
 
     // Filtrar menus condicionais pelas permissões do usuário
@@ -372,6 +374,7 @@ function BarraLateral({ $sidebarOpened }) {
       'Demissões',
       'Contratos',
       'Elegibilidade',
+      'Vagas',
       'Pedidos',
       'Movimentação',
       'Lançtos de Folha'
