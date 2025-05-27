@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
-import http from '@http';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputOtp } from 'primereact/inputotp';
 import Botao from '@components/Botao';
@@ -10,17 +8,28 @@ import BotaoVoltar from '@components/BotaoVoltar';
 import Titulo from '@components/Titulo';
 import SubTitulo from '@components/SubTitulo';
 import { useNavigate } from 'react-router-dom';
-
+import http from '@http';
+import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
+import { ArmazenadorToken } from '@utils';
 
 function Mfa() {
     const navegar = useNavigate();
-    const { usuario } = useSessaoUsuarioContext();
-    const [mfaEnabled, setMfaEnabled] = useState(false);
-    const [mfaSecret, setMfaSecret] = useState('');
     const [otpCode, setOtpCode] = useState('');
     const { control, handleSubmit, formState: { errors } } = useForm();
 
-    const [teste, setTeste] = useState(false);
+    const { 
+        usuario,
+        setRemember,
+        usuarioEstaLogado,
+        setUsuarioEstaLogado,
+        setCpf,
+        setEmail,
+        setTipo,
+        setPassword,
+        setUserPublicId,
+        setName,
+        setMfaRequired,
+    } = useSessaoUsuarioContext();
 
     const customInput = ({events, props}) => (
         <input 
@@ -33,47 +42,50 @@ function Mfa() {
         />
     );
 
-    function base64_decode(str) {      
-        return decodeURIComponent(escape(window.atob( str )))
-    }
-    
-    useEffect(() => {
-        http.get('/mfa/status/').
-        then(response => {
-            if(response.mfa_enabled) {
-                setMfaEnabled(true);
-            }else {
-                handleMfa();
-            }
-        })
-        .catch(error => {
-            toast.error('Erro ao verificar status do MFA!');
-        });
-    }, [usuario]);
-
-    function handleMfa() {
-        http.get('/mfa/generate/')
-        .then(response => {
-            setMfaSecret(response);
-        })
-        .catch(error => {
-            toast.error('Erro ao gerar QR Code!');
-        });
-    }
-
     function handleVerifyOtp() {
-        http.post('/mfa/validate/', { token: otpCode })
+        http.post('/token/', { otp: otpCode })
         .then(response => {
+
             toast.success('Token verificado com sucesso!');
-            console.log(response);
+
+            const expiration = new Date();
+            expiration.setMinutes(expiration.getMinutes() + 15);
+
+            ArmazenadorToken.definirToken(
+                response.access,
+                expiration,
+                response.refresh,
+                response.permissions
+            );
+            
+            setEmail(response.user.email);
+            setCpf(response.user.cpf ?? '');
+            setTipo(response.groups[0]);
+            setUserPublicId(response.user.id);
+            setName(response.user.first_name + ' ' + response.user.last_name);
+
+            ArmazenadorToken.definirUsuario(
+                response.user.first_name + ' ' + response.user.last_name,
+                response.user.email,
+                response.user.cpf ?? '',
+                response.user.id,
+                response.groups[0],
+                '', 
+                '', 
+                '', 
+                '', 
+                response.mfa_required
+            );
+            ArmazenadorToken.removerTempToken();   
+            
+            setUsuarioEstaLogado(true);
+            console.log(usuarioEstaLogado);
             navegar('/login/selecionar-empresa');
         })
         .catch(error => {
-            if(error.error)
-            {
+            if(error.error) {
                 toast.error(error.error);
-            }
-            else {
+            } else {
                 toast.error('Erro ao verificar Token!');
             }
         });
@@ -121,50 +133,27 @@ function Mfa() {
                 }
             `}
             </style>
-            {mfaEnabled ? 
-                mfaSecret?.qr_code ? (
-                    <div>
-                        <img 
-                            src={`data:image/png;base64,${mfaSecret.qr_code}`} 
-                            alt="QR Code"
-                            width="100%"
-                        />
-                        <Botao aoClicar={() => setMfaSecret(null)}>Prosseguir</Botao>
-                    </div>
-                ) : (
-                   <div style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '50px'}}>
-                        <Frame gap="20px">
-                            <BotaoVoltar />
-                            <Titulo>
-                                <h2>Segurança</h2>
-                                <SubTitulo>
-                                    Digite o código OTP para continuar
-                                </SubTitulo>
-                            </Titulo>
-                        </Frame>
-                        <Frame alinhamento="center" gap="20px" alinhamentoLabel="left">
-                            <InputOtp 
-                                length={6} 
-                                value={otpCode} 
-                                onChange={(e) => setOtpCode(e.value)} 
-                                inputTemplate={customInput}
-                                className="w-full"
-                            />
-                            <Botao aoClicar={handleVerifyOtp}>Verificar Código</Botao>
-                        </Frame>
-                    </div> 
-                )
-            : (
-                <div>
-                    {mfaSecret?.qr_code && 
-                    <img 
-                        src={`data:image/png;base64,${mfaSecret.qr_code}`} 
-                        alt="QR Code"
-                        width="100%"
-                    />}
-                    <Botao aoClicar={() => setMfaSecret(null)}>Prosseguir</Botao>
-                </div>
-            )}
+            <div style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '50px'}}>
+                <Frame gap="20px">
+                    <BotaoVoltar />
+                    <Titulo>
+                        <h2>Segurança</h2>
+                        <SubTitulo>
+                            Digite o código OTP para continuar
+                        </SubTitulo>
+                    </Titulo>
+                </Frame>
+                <Frame alinhamento="center" gap="20px" alinhamentoLabel="left">
+                    <InputOtp 
+                        length={6} 
+                        value={otpCode} 
+                        onChange={(e) => setOtpCode(e.value)} 
+                        inputTemplate={customInput}
+                        className="w-full"
+                    />
+                    <Botao aoClicar={handleVerifyOtp}>Verificar Código</Botao>
+                </Frame>
+            </div>
         </div>
     )
 }

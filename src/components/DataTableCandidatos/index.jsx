@@ -200,7 +200,7 @@ function DataTableCandidatos({ candidatos }) {
                 <Column body={representativeDataInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column> */}
                 <Column body={representativeStatusPreenchimentoTemplate} field="statusDePreenchimento" header="Status Preenchimento" style={{ width: '12%' }} />
                 {/* <Column body={representativeStatusCandidatoTemplate} field="statusDeCandidato" header="Status Candidato" style={{ width: '12%' }} /> */}
-                <Column body={actionTemplate} style={{ width: '5%' }} />
+                <Column body={actionTemplate} style={{ width: '10%' }} />
                 {/* <Column field="statusDeCandidato" header="Status Candidato" style={{ width: '10%' }}></Column> */}
             </DataTable>
         </>

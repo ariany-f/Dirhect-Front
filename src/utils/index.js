@@ -1,4 +1,5 @@
 const ACCESS_TOKEN = 'token_access'
+const TEMP_TOKEN = 'temp_token'
 const EXPIRATION = 'expires_at'
 const REFRESH_TOKEN = 'refresh_token'
 const PERMISSIONS = 'permissions'
@@ -20,6 +21,15 @@ export class ArmazenadorToken {
     }
     static get UserGroups() {
         return JSON.parse(sessionStorage.getItem(USER_GROUPS))
+    }
+    static definirTempToken(tempToken) {
+        sessionStorage.setItem(TEMP_TOKEN, tempToken)
+    }
+    static get TempToken() {
+        return sessionStorage.getItem(TEMP_TOKEN)
+    }
+    static removerTempToken() {
+        sessionStorage.removeItem(TEMP_TOKEN)
     }
     static definirToken(accessToken, expiration = null, refreshToken = null, permissions = null) {
         if (!accessToken) {

@@ -92,7 +92,7 @@ function LoginMobile() {
                     response.permissions
                 );
                 
-                setMfaRequired(response.user.mfa_required);
+                setMfaRequired(response.mfa_required);
                 setEmail(response.user.email);
                 setCpf(response.user.cpf ?? '');
                 setTipo(response.groups[0]);
@@ -109,7 +109,7 @@ function LoginMobile() {
                     '', 
                     '', 
                     '', 
-                    response.user.mfa_required
+                    response.mfa_required
                 );
 
                 setUsuarioEstaLogado(true);
@@ -117,7 +117,7 @@ function LoginMobile() {
                 // Aguarda o estado ser atualizado
                 await new Promise(resolve => setTimeout(resolve, 0));
 
-                if(response.user.mfa_required) {
+                if(response.mfa_required) {
                     navegar('/login/mfa');
                 } else {
                     // Navegação conforme tipo de usuário
@@ -135,8 +135,16 @@ function LoginMobile() {
                 toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
             }
         } catch (error) {
-            if(error?.detail) {
-                toast.error(error.detail, { icon: ErrorIcon });
+            if(error?.password) {
+                toast.error(error.password[0], { icon: ErrorIcon });
+            } else if(error?.mfa_required && error?.mfa_required[0] && error?.mfa_required[0] == 'True') {
+                ArmazenadorToken.definirTempToken(error.temp_token[0]);
+
+                if(error?.mfa_configured && error?.mfa_configured[0] && error?.mfa_configured[0] == 'True') {
+                    navegar('/login/mfa');
+                } else {
+                    navegar('/login/mfa/generate');
+                }
             } else {
                 toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
             }

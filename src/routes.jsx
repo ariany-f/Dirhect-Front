@@ -148,10 +148,11 @@ import HorarioDetalhes from '@pages/Estrutura/horario/detalhes'
 import CentrosCustoDetalhes from '@pages/Estrutura/centro_custo/detalhes'
 import SindicatoDetalhes from '@pages/Estrutura/sindicato/detalhes'
 import MobileScrollToTop from '@components/MobileScrollToTop'
-import MeusDadosSistema from './pages/MeusDados/sistema'
+import MeusDadosSistema from '@pages/MeusDados/sistema'
 import { Toast } from 'primereact/toast'
 import { ToastContainer } from 'react-toastify'
-import ConfiguracoesVagas from './pages/Vagas/configuracoes'
+import ConfiguracoesVagas from '@pages/Vagas/configuracoes'
+import MfaGenerate from '@pages/Login/mfa_generate'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -186,6 +187,7 @@ function AppRouter() {
                   <Route index element={<LoginMobile />} />
               }
               <Route path="mfa" element={<Mfa />} />
+              <Route path="mfa/generate" element={<MfaGenerate />} />
               {isDesktop ?
                 <Route path="selecionar-empresa" element={<SelecionarEmpresa />} />
                 :

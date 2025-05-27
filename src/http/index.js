@@ -54,7 +54,13 @@ http.interceptors.request.use(async (config) => {
     }
 
     const token = ArmazenadorToken.AccessToken;
-    if (token) {
+    const tempToken = ArmazenadorToken.TempToken;
+    
+    // Se for uma requisição para /token e não tiver access token mas tiver temp token
+    if ((config.url === '/token/' || config.url === '/mfa/generate/') && tempToken) {
+        config.headers['X-Temp-Token'] = tempToken;
+        config.headers.Authorization = `Bearer ${token}`;
+    } else if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
 

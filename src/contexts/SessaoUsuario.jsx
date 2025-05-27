@@ -117,7 +117,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         return usuarioSalvo ? usuarioSalvo : usuarioInicial;
     });
     const [recuperacaoSenha, setRecuperacaoSenha] = useState(recuperacaoSenhaInicial)
-    // Retornar para validar se existe o access token no Armazeanador Token ao invés do CPF na seção
+    // Retornar para validar se existe o 'access' token no Armazeanador Token ao invés do CPF na seção
     const [usuarioEstaLogado, setUsuarioEstaLogado] = useState(!!usuario.email)
 
     const setRecuperacaoToken = (token) => {
