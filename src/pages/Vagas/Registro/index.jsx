@@ -143,6 +143,14 @@ const VagasRegistro = () => {
             setErroPeriInsa(false);
         }
 
+        // Remove caracteres não numéricos e trata a vírgula do salário
+        const salarioNumerico = salario ? 
+            salario
+                .replace(/\./g, '') // Remove pontos
+                .replace(',', '') // Remove a vírgula
+                .replace(/\D/g, '') // Remove outros caracteres não numéricos
+            : null;
+
         const novaVaga = {
             titulo,
             descricao,
@@ -150,12 +158,12 @@ const VagasRegistro = () => {
             dt_encerramento: dataEncerramento || null,
             deficiencia,
             periculosidade: periculosidade?.code || null,
-            insalubridade: insalubridade || null,
+            insalubridade: insalubridade || 0,
             inclusao,
             inclusao_para: inclusao_para || null,
             qtd_vaga: qtdVagas ? parseInt(qtdVagas) : null,
             status: 'A',
-            salario: salario ? salario.toString() : null
+            salario: salarioNumerico
         };
 
         http.post('/vagas/', novaVaga)

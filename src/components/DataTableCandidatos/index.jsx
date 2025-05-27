@@ -9,8 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Real } from '@utils/formats'
 import { Tag } from 'primereact/tag';
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaTrash } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
+import http from '@http';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 function DataTableCandidatos({ candidatos }) {
 
@@ -107,6 +109,13 @@ function DataTableCandidatos({ candidatos }) {
         );
     };
     
+    const handleExcluir = (rowData) => {
+        http.get(`/vagas_candidatos/${rowData.id}/`)
+        .then(response => {
+            console.log(response);
+        })
+    }
+
     const handleAprovar = (rowData) => {
         setListaCandidatos(listaCandidatos.map(c =>
             c === rowData ? { ...c, statusDePreenchimento: 'Preenchido', statusDeCandidato: 'Aprovado' } : c
@@ -157,6 +166,13 @@ function DataTableCandidatos({ candidatos }) {
 
     const actionTemplate = (rowData) => (
         <div style={{ display: 'flex', gap: '12px' }}>
+            <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+            <RiDeleteBin6Line
+                title="Excluir"
+                data-pr-tooltip="Excluir candidatura"
+                className="delete"
+                onClick={() => handleExcluir(rowData)}
+            />
             {rowData.statusDeCandidato?.toLowerCase() !== 'aprovado' && (
                 <>
                     <Tooltip target=".aprovar" mouseTrack mouseTrackLeft={10} />

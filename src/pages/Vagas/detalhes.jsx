@@ -159,7 +159,12 @@ function DetalhesVaga() {
     ) => {
         // Remove caracteres não numéricos do CPF e salário
         const cpfNumerico = cpf.replace(/\D/g, '');
-        const salarioNumerico = salario.replace(/\D/g, '');
+        const salarioNumerico = salario ? 
+        salario
+            .replace(/\./g, '') // Remove pontos
+            .replace(',', '') // Remove a vírgula
+            .replace(/\D/g, '') // Remove outros caracteres não numéricos
+        : null;
 
         http.post(`candidato/`, {
             nome,
