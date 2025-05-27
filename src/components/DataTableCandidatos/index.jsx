@@ -67,11 +67,12 @@ function DataTableCandidatos({ candidatos }) {
     }
 
     const representativeStatusPreenchimentoTemplate = (rowData) => {
-        const status = rowData.statusDePreenchimento;
+        const status = rowData.statusDePreenchimento ?? '-----';
         let color = 'var(--neutro-400)';
         if (status?.toLowerCase() === 'preenchido') color = 'var(--green-500)';
         else if (status?.toLowerCase() === 'em análise') color = 'var(--primaria)';
         else if (status?.toLowerCase() === 'rejeitado') color = 'var(--error)';
+        else color = 'var(--error)';
         return (
             <Tag
                 value={status}
