@@ -57,8 +57,18 @@ function DataTableVagas({ vagas }) {
         const hoje = new Date();
         const abertura = new Date(rowData.dt_abertura);
         const encerramento = new Date(rowData.dt_encerramento);
-        let status = 'Ativa';
+        let status = rowData.status;
         let color = 'var(--green-500)';
+        switch (status) {
+            case 'A':
+                status = 'ABERTA';
+                color = 'var(--green-500)';
+                break;
+            case 'F':
+                status = 'FECHADA';
+                color = 'var(--error)';
+                break;
+        }
         if (hoje < abertura) {
             status = 'Aguardando';
             color = 'var(--neutro-400)';
