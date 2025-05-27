@@ -12,6 +12,7 @@ import styles from "./ModalEncaminharVaga.module.css";
 import templates from "@json/templates-encaminhar-vaga.json";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { Real } from '@utils/formats'
+import http from '@http'
 // Função para formatar a data
 const formatDate = (date) => {
   if (!date) return "";
@@ -66,6 +67,8 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   const [centroCusto, setCentroCusto] = useState("");
   const [salario, setSalario] = useState("");
   const [periculosidade, setPericulosidade] = useState(periculosidadeInicial || "");
+  const [candidatoId, setCandidatoId] = useState(null);
+  const [ultimoCpfBuscado, setUltimoCpfBuscado] = useState(null);
   const [dropdownTemplates, setDropdownTemplates] = useState([]);
   const [dataExameMedico, setDataExameMedico] = useState("");
   const [listaPericulosidades, setListaPericulosidades] = useState([
@@ -143,6 +146,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   const handleSave = () => {
     const content = editorContent;
     aoSalvar(
+        candidatoId,
         nome,
         email,
         mensagem,
@@ -187,6 +191,53 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
     }
   }, [periculosidadeInicial]);
 
+  const buscarCandidatoPorCPF = async (cpfNumeros) => {
+    // Se o CPF for igual ao último buscado, não faz a busca
+    if (cpfNumeros === ultimoCpfBuscado) {
+      return;
+    }
+
+    try {
+      const response = await http.get(`candidato/?cpf=${cpfNumeros}`);
+      if (response && response.length > 0) {
+        const candidato = response[0];
+        setCandidatoId(candidato.id);
+        setNome(candidato.nome || '');
+        setEmail(candidato.email || '');
+        setTelefone(candidato.telefone || '');
+        setNascimento(candidato.dt_nascimento || '');
+        setFilial(candidato.filial || '');
+        setCentroCusto(candidato.centro_custo || '');
+        if (candidato.periculosidade) {
+          const periculosidadeEncontrada = listaPericulosidades.find(
+            p => p.code === candidato.periculosidade
+          );
+          if (periculosidadeEncontrada) {
+            setPericulosidade(periculosidadeEncontrada);
+          }
+        }
+      } else {
+        setCandidatoId(null);
+      }
+      // Atualiza o último CPF buscado
+      setUltimoCpfBuscado(cpfNumeros);
+    } catch (error) {
+      console.error('Erro ao buscar candidato:', error);
+      setCandidatoId(null);
+      setUltimoCpfBuscado(null);
+    }
+  };
+
+  const handleCpfChange = (value) => {
+    setCpf(value);
+    // Remove todos os caracteres não numéricos do CPF
+    const cpfNumeros = value.replace(/\D/g, '');
+    // Se o CPF tiver 11 dígitos e for diferente do último buscado, faz a busca
+    if (cpfNumeros.length === 11 && cpfNumeros !== ultimoCpfBuscado) {
+      buscarCandidatoPorCPF(cpfNumeros);
+    }
+  };
+
   return (
     opened &&
     <Overlay>
@@ -205,10 +256,16 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
               {!showEditorContent ? (
                 <Col12>
                   <Col6>
+                    <CampoTexto 
+                      patternMask={['999.999.999-99']} 
+                      valor={cpf} 
+                      type="text" 
+                      setValor={handleCpfChange} 
+                      label="CPF" 
+                    />
                     <CampoTexto valor={nome} type="text" setValor={setNome} label="Nome" />
                     <CampoTexto valor={email} type="text" setValor={setEmail} label="E-mail" />
                     <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem" />
-                    <CampoTexto patternMask={['999.999.999-99']} valor={cpf} type="text" setValor={setCpf} label="CPF" />
                     <DropdownItens width="280px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades" name="periculosidade" placeholder="Periculosidades"/> 
                   </Col6>
                   <Col6>

@@ -99,7 +99,7 @@ function ModalConfigurarBeneficios({ opened = false, aoClicar, aoFechar, aoSuces
     const carregarContratos = async () => {
         setCarregandoContratos(true);
         try {
-            const response = await http.get('contrato/?format=json');
+            const response = await http.get('contrato/?format=json&ordering=id');
             setContratos(response.map(contrato => ({
                 id: contrato.id,
                 name: `${contrato.dados_operadora.nome} ${contrato.observacao}`,

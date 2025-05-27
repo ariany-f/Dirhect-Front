@@ -146,6 +146,7 @@ function DetalhesVaga() {
     }
 
     const handleSalvarCandidato = (
+        candidatoId = null,
         nome,
         email,
         mensagem,
@@ -166,8 +167,7 @@ function DetalhesVaga() {
             Math.floor(Number(unformatCurrency(salario)) / 100)
             : null;
 
-
-        http.post(`candidato/`, {
+        const dadosCandidato = {
             nome,
             email,
             observacao: mensagem,
@@ -182,9 +182,17 @@ function DetalhesVaga() {
             periculosidade: periculosidade?.code,
             dt_exame_medico: dataExameMedico,
             vaga_id: id
-        })
+        };
+
+        // Se tiver candidatoId, faz PUT, senão faz POST
+        const method = candidatoId ? 'put' : 'post';
+        const url = candidatoId ? `candidato/${candidatoId}/` : 'candidato/';
+        const successMessage = candidatoId ? 'Candidato atualizado com sucesso!' : 'Candidato encaminhado com sucesso!';
+        const errorMessage = candidatoId ? 'Erro ao atualizar candidato' : 'Erro ao encaminhar candidato';
+
+        http[method](url, dadosCandidato)
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Candidato encaminhado com sucesso!', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: successMessage, life: 3000 });
             setModalOpened(false);
             // Recarrega os dados da vaga
             http.get(`vagas/${id}/?format=json`)
@@ -197,7 +205,7 @@ function DetalhesVaga() {
         })
         .catch(error => {
             console.error('Erro ao salvar candidato:', error);
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao encaminhar candidato', life: 3000 });
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
         });
     };
 
@@ -262,20 +270,24 @@ function DetalhesVaga() {
                                             }}
                                         />
                                     )}
-                                    <FaPen style={{ cursor: 'pointer' }} size={16} onClick={() => setModalEditarAberto(true)} fill="var(--primaria)" />
+                                    {vaga.status == 'A' && (
+                                        <FaPen style={{ cursor: 'pointer' }} size={16} onClick={() => setModalEditarAberto(true)} fill="var(--primaria)" />
+                                    )}
 
                                 </h3>
                             </Titulo>
                             <BotaoGrupo align="space-between">
                                 {vaga.status == 'A' && 
-                                    <BotaoSemBorda $color="var(--primaria)">
-                                        <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
-                                    </BotaoSemBorda>
+                                    <>
+                                        <BotaoSemBorda $color="var(--primaria)">
+                                            <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
+                                        </BotaoSemBorda>
+                                        <Botao aoClicar={abrirModal} size="small">
+                                            <FaArrowAltCircleRight fill="white" />
+                                            Encaminhar para novo candidato
+                                        </Botao>
+                                    </>
                                 }
-                                <Botao aoClicar={abrirModal} size="small">
-                                    <FaArrowAltCircleRight fill="white" />
-                                    Encaminhar para novo candidato
-                                </Botao>
                             </BotaoGrupo>
                      </BotaoGrupo>
                     : <Skeleton variant="rectangular" width={300} height={40} />
