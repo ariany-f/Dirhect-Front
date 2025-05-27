@@ -328,7 +328,7 @@ function AppRouter() {
 
               <Route path="vagas" element={<Vagas />} >
                 <Route index element={<VagasAbertas />} />
-                <Route path="canceladas" element={<VagasCanceladas />} />
+                <Route path="fechadas" element={<VagasCanceladas />} />
               </Route>
               <Route path="vagas/configuracoes" element={<ConfiguracoesVagas />} />
               <Route path="vagas/detalhes/:id" element={<DetalhesVaga />} />

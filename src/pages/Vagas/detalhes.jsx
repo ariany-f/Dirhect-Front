@@ -267,9 +267,11 @@ function DetalhesVaga() {
                                 </h3>
                             </Titulo>
                             <BotaoGrupo align="space-between">
-                                <BotaoSemBorda $color="var(--primaria)">
-                                    <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
-                                </BotaoSemBorda>
+                                {vaga.status == 'A' && 
+                                    <BotaoSemBorda $color="var(--primaria)">
+                                        <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
+                                    </BotaoSemBorda>
+                                }
                                 <Botao aoClicar={abrirModal} size="small">
                                     <FaArrowAltCircleRight fill="white" />
                                     Encaminhar para novo candidato

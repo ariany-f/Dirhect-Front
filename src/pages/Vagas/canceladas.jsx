@@ -11,11 +11,14 @@ function VagasCanceladas() {
     const context = useOutletContext();
 
     useEffect(() => {
-        if((context) && ((!vagas) || vagas.length === 0 || (!Object.keys(vagas).length)))
-        {
-            setVagas(context.canceladas)
-        }
-    }, [context])
+        http.get('vagas/?format=json&status=F')
+            .then(response => {
+                setVagas(response)
+            })
+            .catch(error => {   
+                console.log(error)
+            })
+    }, [])
     
     return (
         <DataTableVagas vagas={vagas} />
