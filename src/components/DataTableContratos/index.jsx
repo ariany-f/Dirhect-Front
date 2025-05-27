@@ -61,12 +61,14 @@ function DataTableContratos({
 
     useEffect(() => {
         if (contratos?.length > 0) {
+            console.log(contratos)
             setContratosStatus(
                 contratos.reduce((acc, contrato) => ({
                     ...acc,
-                    [contrato.id]: contrato.status === 'A'
+                    [contrato.id]: contrato.status == 'A'
                 }), {})
             );
+            console.log(contratosStatus)
         }
     }, [contratos]);
 
