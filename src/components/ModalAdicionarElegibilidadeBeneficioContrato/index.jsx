@@ -25,7 +25,6 @@ import { TbTableOptions  } from "react-icons/tb"
 
 // Componente de Item Arrastável com novos estilos
 const DraggableItem = ({ grupo, index, moveItem, removerGrupo, toggleNegarGrupo }) => {
-   
     const ref = useRef(null);
     
     const [{ isDragging }, drag] = useDrag({
@@ -228,8 +227,8 @@ const ContainerGrupos = styled.div`
     border-radius: 8px;
 `;
 
-function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar, aoSalvar, item }) {
-    console.log('item:', item);
+function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoSalvar, item }) {
+   
     const { usuario } = useSessaoUsuarioContext();
     
     const [tipoSelecionado, setTipoSelecionado] = useState(null);
@@ -239,7 +238,6 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
     const [gruposAdicionados, setGruposAdicionados] = useState([]);
     const [modelosValidos, setModelosValidos] = useState({});
     const toast = useRef(null);
-    const [herdar, setHerdar] = useState(false);
     
     useEffect(() => {
         const carregarModelosValidos = async () => {
@@ -286,7 +284,7 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
         );
     };
 
-    // Adicione este useEffect no componente ModalAdicionarElegibilidadeBeneficioContrato
+    // Adicione este useEffect no componente ModalAdicionarElegibilidadeItemContrato
     useEffect(() => {
         if (opened && item?.regra_elegibilidade) {
             setGruposAdicionados([]);
@@ -331,13 +329,6 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
             setGruposAdicionados([]);
         }
     }, [opened, item, modelosValidos]);
-
-    // Resetar herdar ao abrir/fechar
-    useEffect(() => {
-        if (opened) {
-            setHerdar(item.herdado);
-        }
-    }, [opened]);
 
     const adicionarGrupo = () => {
         if (!tipoSelecionado || (!tipoSelecionado.name) || opcoesSelecionadas.length === 0) {
@@ -473,7 +464,16 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
     };
 
     const salvarGrupos = () => {
-
+        // if (gruposAdicionados.length === 0) {
+        //     toast.current.show({
+        //         severity: 'error',
+        //         summary: 'Erro',
+        //         detail: 'Adicione pelo menos um grupo antes de salvar',
+        //         life: 3000
+        //     });
+        //     return;
+        // }
+        console.log('GRUPOS ADICIONADOS:', gruposAdicionados);
         const regra_elegibilidade = gruposAdicionados.map(grupo => {
             const id_delegar = grupo.negar ? [] : grupo.data.map(o => o.id);
             const id_negar = grupo.negar ? grupo.data.map(o => o.id) : [];
@@ -483,7 +483,8 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                 id_negar
             };
         });
-        aoSalvar({regra_elegibilidade, herdado: herdar});
+        console.log('REGRA ELEGIBILIDADE:', regra_elegibilidade);
+        aoSalvar(regra_elegibilidade);
     };
 
     const limparRegras = () => {
@@ -498,22 +499,16 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
             <DialogEstilizadoRight id="modal-cnpj" open={opened} $opened={opened}>
                 <Frame>
                     <Titulo>
+                        <button className="close" onClick={aoFechar} formMethod="dialog">
+                            <RiCloseFill size={20} className="fechar" />  
+                        </button>
                         <BotaoGrupo align="space-between">
-                            <h6>Grupos Elegíveis a {item?.descricao ? item?.descricao : 'este item de Contrato'}</h6>
+                            <h6>Grupos Elegíveis a {item?.descricao ? item?.descricao : 'este benefício de Contrato'}</h6>
                         </BotaoGrupo>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                            <button className="close" onClick={aoFechar} formMethod="dialog">
-                                <RiCloseFill size={20} className="fechar" />  
-                            </button>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                <span style={{ fontSize: 14, color: '#888' }}>Herdar do Pai</span>
-                                <SwitchInput checked={herdar} onChange={() => setHerdar(!herdar)} color="var(--info)" />
-                            </div>
-                        </div>
                     </Titulo>
                     <Col12>
                         <Col6>
-                            <Wrapper style={herdar ? { opacity: 0.5, pointerEvents: 'none', filter: 'grayscale(1)' } : {}}>
+                            <Wrapper>
                                 <DropdownItens 
                                     valor={tipoSelecionado} 
                                     setValor={handleTipoChange} 
@@ -522,7 +517,6 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                                     name="tipo"
                                     placeholder="Selecione o grupo"
                                     optionTemplate={tipoTemplate}
-                                    disabled={herdar}
                                 />
                                 
                                 {tipoSelecionado && (
@@ -536,7 +530,7 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                                             filter
                                             display="chip"
                                             placeholder={carregando ? "Carregando..." : `Selecione ${tipoSelecionado.name}`}
-                                            disabled={carregando || herdar}
+                                            disabled={carregando}
                                             showSelectAll={true}
                                             panelClassName={styles.dropdownPanel}
                                             filterPlaceholder="Buscar..."
@@ -552,7 +546,7 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                                         estilo="vermillion"
                                         size="small"
                                         filled
-                                        disabled={!tipoSelecionado || opcoesSelecionadas.length === 0 || herdar}
+                                        disabled={!tipoSelecionado || opcoesSelecionadas.length === 0}
                                     >
                                         {tipoSelecionado && tipoSelecionado?.name &&
                                             <>
@@ -567,35 +561,33 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                             </Wrapper>
                         </Col6>
                         <Col6>
-                            <div style={herdar ? { opacity: 0.5, pointerEvents: 'none', filter: 'grayscale(1)' } : {}}>
-                                <DndProvider backend={HTML5Backend}>
-                                    <ContainerGrupos>
-                                        {gruposAdicionados.length > 0 ? (
-                                            <>
-                                                {gruposAdicionados.map((grupo, index) => (
-                                                    <DraggableItem
-                                                        key={grupo.id}
-                                                        grupo={grupo}
-                                                        index={index}
-                                                        moveItem={moveItem}
-                                                        removerGrupo={removerGrupo}
-                                                        toggleNegarGrupo={toggleNegarGrupo}
-                                                    />
-                                                ))}
-                                            </>
-                                        ) : (
-                                            <div style={{
-                                                textAlign: 'center',
-                                                padding: '20px',
-                                                color: '#9e9e9e',
-                                                fontStyle: 'italic'
-                                            }}>
-                                                Nenhum grupo adicionado ainda
-                                            </div>
-                                        )}
-                                    </ContainerGrupos>
-                                </DndProvider>
-                            </div>
+                            <DndProvider backend={HTML5Backend}>
+                                <ContainerGrupos>
+                                    {gruposAdicionados.length > 0 ? (
+                                        <>
+                                            {gruposAdicionados.map((grupo, index) => (
+                                                <DraggableItem
+                                                    key={grupo.id}
+                                                    grupo={grupo}
+                                                    index={index}
+                                                    moveItem={moveItem}
+                                                    removerGrupo={removerGrupo}
+                                                    toggleNegarGrupo={toggleNegarGrupo}
+                                                />
+                                            ))}
+                                        </>
+                                    ) : (
+                                        <div style={{
+                                            textAlign: 'center',
+                                            padding: '20px',
+                                            color: '#9e9e9e',
+                                            fontStyle: 'italic'
+                                        }}>
+                                            Nenhum grupo adicionado ainda
+                                        </div>
+                                    )}
+                                </ContainerGrupos>
+                            </DndProvider>
                         </Col6>
                     </Col12>
                 </Frame>
@@ -605,18 +597,16 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                             size="small" 
                             estilo="neutro"
                             aoClicar={aoFechar}
-                            disabled={herdar}
                         >
                             Descartar Alterações
                         </Botao>
-                        <Botao 
+                          <Botao 
                             aoClicar={limparRegras}
                             estilo="neutro"
                             size="small"
-                            disabled={herdar}
-                        >
-                            Limpar Regras
-                        </Botao>
+                            >
+                                Limpar Regras
+                            </Botao>
                         <Botao 
                             size="small" 
                             aoClicar={salvarGrupos}
@@ -630,4 +620,4 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
     );
 }
 
-export default ModalAdicionarElegibilidadeBeneficioContrato;
+export default ModalAdicionarElegibilidadeItemContrato;

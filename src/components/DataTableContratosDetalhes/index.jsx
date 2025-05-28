@@ -10,14 +10,16 @@ import Botao from '@components/Botao';
 import { useEffect, useRef, useState } from 'react';
 import http from '@http';
 import { Tag } from 'primereact/tag';
-import ModalAlterarRegrasBeneficio from '../ModalAlterar/regras_beneficio';
-import { FaPen} from 'react-icons/fa';
+import ModalAlterarRegrasBeneficio from '@components/ModalAlterar/regras_beneficio';
+import { FaPen, FaSitemap} from 'react-icons/fa';
+import { TbSitemap, TbSitemapOff } from 'react-icons/tb';
 import styled from 'styled-components';
 import { Toast } from 'primereact/toast';
 import { GrAddCircle } from 'react-icons/gr';
 import IconeBeneficio from '@components/IconeBeneficio';
 import { Tooltip } from 'primereact/tooltip';
-import ModalAdicionarElegibilidadeItemContrato from '../ModalAdicionarElegibilidadeItemContrato';
+import ModalAdicionarElegibilidadeItemContrato from '@components/ModalAdicionarElegibilidadeItemContrato';
+import ModalAdicionarElegibilidadeBeneficioContrato from '@components/ModalAdicionarElegibilidadeBeneficioContrato';
 import { Real } from '@utils/formats'
 import { useTranslation } from 'react-i18next';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -53,6 +55,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     const[selectedItemBeneficio, setSelectedItemBeneficio] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalElegibilidadeOpened, setModalElegibilidadeOpened] = useState(false)
+    const [modalElegibilidadeBeneficioOpened, setModalElegibilidadeBeneficioOpened] = useState(false)
     const [sendData, setSendData] = useState({})
     const [selectedItems, setSelectedItems] = useState([])
     const toast = useRef(null)
@@ -162,27 +165,48 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     const representativeOptionsTemplate = (rowData) => {
         return (
             <div style={{display: 'flex', gap: '20px'}}>
+                {rowData.herdado ? (
+                    <>
+                        <Tooltip target=".inheritance" mouseTrack mouseTrackLeft={10} />
+                        <TbSitemap  
+                            className="inheritance" 
+                            data-pr-tooltip="Regra de Elegibilidade Herdada." 
+                            size={16} 
+                            stroke="var(--green-500)"
+                        />
+                    </>
+                ) : (
+                    <>
+                    <Tooltip target=".inheritance" mouseTrack mouseTrackRight={10} />
+                    <TbSitemapOff
+                        className="inheritance" 
+                        data-pr-tooltip="Regra de Elegibilidade sem Herança." 
+                        size={16} 
+                    />
+                    </>
+                )}
+               
                 <Tooltip target=".settings" mouseTrack mouseTrackRight={10} />
                 {
-                    rowData.regra_elegibilidade && rowData.regra_elegibilidade.length > 0 ?
-                    <MdSettingsSuggest 
-                        className="settings" 
-                        data-pr-tooltip="Configurar Elegibilidade" 
-                        size={18} 
-                        onClick={() => {
-                            setSelectedItemBeneficio(rowData)
-                            setModalElegibilidadeOpened(true)
-                        }}
-                        fill="var(--info)"
-                    />
-                    : <MdSettings 
-                        className="settings" 
-                        data-pr-tooltip="Configurar Elegibilidade" 
-                        size={16} 
-                        onClick={() => {
-                            setSelectedItemBeneficio(rowData)
-                            setModalElegibilidadeOpened(true)
-                        }}
+                rowData.regra_elegibilidade && rowData.regra_elegibilidade.length > 0 ?
+                <MdSettingsSuggest 
+                    className="settings" 
+                    data-pr-tooltip="Configurar Elegibilidade" 
+                    size={18} 
+                    onClick={() => {
+                        setSelectedItemBeneficio(rowData)
+                        setModalElegibilidadeOpened(true)
+                    }}
+                    fill="var(--info)"
+                />
+                : <MdSettings 
+                    className="settings" 
+                    data-pr-tooltip="Configurar Elegibilidade" 
+                    size={16} 
+                    onClick={() => {
+                        setSelectedItemBeneficio(rowData)
+                        setModalElegibilidadeOpened(true)
+                    }}
                         fill="var(--error)"
                     />
                 }
@@ -265,17 +289,28 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                     }  
                 />
                 <div style={{display: 'flex', gap: '10px'}}>
-                    <Tooltip target=".settings" mouseTrack mouseTrackRight={10} />
-                 <MdSettings 
+                <Tooltip target=".settings" mouseTrack mouseTrackRight={10} />
+                {rowData.regra_elegibilidade_pai && rowData.regra_elegibilidade_pai.length > 0 ?
+                    <MdSettingsSuggest 
                         className="settings" 
-                        data-pr-tooltip="Configurar Elegibilidade de todos os itens" 
-                        size={16} 
+                        data-pr-tooltip="Configurar Elegibilidade" 
+                        size={18} 
                         onClick={() => {
-                            setSelectedItemBeneficio(rowData)
-                            setModalElegibilidadeOpened(true)
+                            setSelectedBeneficio(rowData)
+                            setModalElegibilidadeBeneficioOpened(true)
                         }}
-                        fill="var(--error)"
+                        fill="var(--info)"
                     />
+                    : <MdSettings 
+                    className="settings" 
+                    data-pr-tooltip="Configurar Elegibilidade de todos os itens" 
+                    size={16} 
+                    onClick={() => {
+                        setSelectedBeneficio(rowData)
+                        setModalElegibilidadeBeneficioOpened(true)
+                    }}
+                    fill="var(--error)"
+                />}
                 <RiDeleteBin6Line
                     size={18}
                     title="Excluir benefício do contrato"
@@ -382,7 +417,70 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
         setSelectedItems(e.value.itens || []);
     };
 
+    function salvarGruposBeneficio(data) {
+        const transformarDados = (dados) => {
+            const resultado = {
+                regra_elegibilidade_pai: []
+            };
+    
+            dados.forEach((item, index) => {
+                // Função para converter o nome do tipo para o formato correto
+                const converterNomeCampo = (nome) => {
+                    return nome
+                        .toLowerCase()
+                        .replace(/\s+de\s+/g, ' ') // Remove "de" entre palavras
+                        .replace(/\s+/g, '_') // Substitui espaços por underscore
+                        .normalize('NFD') // Remove acentos
+                        .replace(/[\u0300-\u036f]/g, '');
+                };
+
+                // item.tipo, item.id_delegar, item.id_negar
+                const campo = converterNomeCampo(item.tipo);
+    
+                if (campo) {
+                    const novaRegra = {};
+                    novaRegra[campo] = {
+                        index: index,
+                        id_delegar: item.id_delegar,
+                        id_negar: item.id_negar
+                    };
+                    resultado.regra_elegibilidade_pai.push(novaRegra);
+                }
+            });
+    
+            return resultado;
+        };
+    
+        const dadosTransformados = transformarDados(data);
+    
+        http.put(`contrato_beneficio/${selectedBeneficio.id}/?format=json`, dadosTransformados)
+        .then(response => {
+            // Atualiza o item selecionado com os novos dados
+            const updatedItem = {
+                ...selectedBeneficio,
+                regra_elegibilidade_pai: dadosTransformados.regra_elegibilidade_pai
+            };
+            
+            // Atualiza o item na lista de itens selecionados
+            // const updatedItems = selectedItems.map(item => 
+            //     item.id === selectedBeneficio.id ? updatedItem : item
+            // );
+            
+            // setSelectedItems(updatedItems);
+            setSelectedBeneficio(updatedItem);
+            
+            toast.current.show({severity:'success', summary: 'Salvo com sucesso', life: 3000});
+        })
+        .catch(erro => {
+            toast.current.show({severity:'error', summary: 'Não foi possível atualizar', detail: 'Erro!', life: 3000});
+        })
+        .finally(() => {
+            setModalElegibilidadeBeneficioOpened(false);
+        });
+    }
+
     function salvarGrupos(data) {
+
         const transformarDados = (dados) => {
             const resultado = {
                 regra_elegibilidade: []
@@ -413,17 +511,19 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 }
             });
     
-            return resultado;
+            return resultado.regra_elegibilidade;
         };
     
-        const dadosTransformados = transformarDados(data);
+        const dadosTransformados = {regra_elegibilidade: transformarDados(data.regra_elegibilidade), herdado: data.herdado};
     
         http.put(`contrato_beneficio_item/${selectedItemBeneficio.id}/?format=json`, dadosTransformados)
         .then(response => {
+            
             // Atualiza o item selecionado com os novos dados
             const updatedItem = {
                 ...selectedItemBeneficio,
-                regra_elegibilidade: dadosTransformados.regra_elegibilidade
+                regra_elegibilidade: dadosTransformados.regra_elegibilidade,
+                herdado: dadosTransformados.herdado
             };
             
             // Atualiza o item na lista de itens selecionados
@@ -443,6 +543,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             setModalElegibilidadeOpened(false);
         });
     }
+
     return (
         <>
             <Toast ref={toast} />
@@ -475,18 +576,19 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                             emptyMessage="Não há configurações cadastradas" 
                             value={selectedItems} 
                         >
-                            <Column body={representativeTemplate} field="descricao" header="Descrição" style={{ width: '25%' }} />
+                            <Column body={representativeTemplate} field="descricao" header="Descrição" style={{ width: '15%' }} />
                             <Column body={representativeExtensivelTemplate} field="extensivel_depentende" header="Extensível Dependente" style={{ width: '10%' }} />
                             <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '12%' }} />
                             <Column body={representativeEmpresaTemplate} field="valor_empresa" header="Empresa" style={{ width: '15%' }} />
                             <Column body={representativeDescontoTemplate} field="valor_desconto" header="Desconto" style={{ width: '15%' }} />
-                            <Column body={representativeOptionsTemplate} header="" style={{ width: '15%' }} />
+                            <Column body={representativeOptionsTemplate} header="" style={{ width: '20%' }} />
                         </DataTable>
                     </Col7>
                 : null
                 }
             </Col12>
             <ModalAdicionarElegibilidadeItemContrato item={selectedItemBeneficio} aoSalvar={salvarGrupos} aoFechar={() => setModalElegibilidadeOpened(false)} opened={modalElegibilidadeOpened} />
+            <ModalAdicionarElegibilidadeBeneficioContrato item={selectedBeneficio} aoSalvar={salvarGruposBeneficio} aoFechar={() => setModalElegibilidadeBeneficioOpened(false)} opened={modalElegibilidadeBeneficioOpened} />
             <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio?.id} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} nomeBeneficio={selectedBeneficio?.dados_beneficio?.descricao} iconeBeneficio={selectedBeneficio?.dados_beneficio?.icone} dadoAntigo={sendData} />
         </>
     )
