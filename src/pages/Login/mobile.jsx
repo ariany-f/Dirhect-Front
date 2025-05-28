@@ -60,6 +60,7 @@ function LoginMobile() {
     useEffect(() => {
         async function init() {
             ArmazenadorToken.removerToken();
+            ArmazenadorToken.removerTempToken();
             ArmazenadorToken.removerCompany();
             if(usuarioEstaLogado) {
                 setUsuarioEstaLogado(false);

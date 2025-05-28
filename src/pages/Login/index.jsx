@@ -62,6 +62,7 @@ function Login() {
     useEffect(() =>{
         async function init() {
             ArmazenadorToken.removerToken();
+            ArmazenadorToken.removerTempToken();
             ArmazenadorToken.removerCompany();
             if(usuarioEstaLogado) {
                 setUsuarioEstaLogado(false);
