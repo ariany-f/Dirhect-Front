@@ -91,9 +91,7 @@ function DetalhesVaga() {
       
         http.get(`vagas/${id}/?format=json`)
             .then(response => {
-                console.log(response)
                 setVaga(response)
-                // setVaga(response.data)
             })
             .catch(error => {
                 console.error('Erro ao carregar vaga:', error)
@@ -424,7 +422,7 @@ function DetalhesVaga() {
                 <Titulo>
                     <h5>Candidatos</h5>
                 </Titulo>
-                <DataTableCandidatos candidatos={vaga?.candidatos} />
+                <DataTableCandidatos vagaId={vaga?.id} candidatos={vaga?.candidatos} />
                 <Titulo>
                     <h5>Documentos Requeridos</h5>
                 </Titulo>

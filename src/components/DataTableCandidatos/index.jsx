@@ -13,9 +13,10 @@ import { FaCheck, FaTimes, FaTrash } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import http from '@http';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { confirmDialog } from 'primereact/confirmdialog';
 
-function DataTableCandidatos({ candidatos }) {
-
+function DataTableCandidatos({ candidatos, vagaId = null }) {
+    
     const[selectedCandidato, setSelectedCandidato] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -111,10 +112,19 @@ function DataTableCandidatos({ candidatos }) {
     };
     
     const handleExcluir = (rowData) => {
-        http.get(`/vagas_candidatos/${rowData.id}/`)
-        .then(response => {
-            console.log(response);
-        })
+        confirmDialog({
+            message: 'Tem certeza que deseja excluir esta candidatura?',
+            header: 'Confirmação',
+            icon: 'pi pi-info-circle',
+            acceptLabel: 'Sim',
+            rejectLabel: 'Não',
+            accept: () => {
+                http.delete(`/candidato/${rowData.id}/candidatura/${vagaId}/`)
+                .then(response => {
+                    setListaCandidatos(listaCandidatos.filter(c => c.id !== rowData.id));
+                })
+            }
+        });
     }
 
     const handleAprovar = (rowData) => {
