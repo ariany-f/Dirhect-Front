@@ -375,9 +375,10 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                         });
                         
                         toast.current.show({severity:'success', summary: 'Atualizado!', detail: 'Sucesso!', life: 3000});
-                        
+                        console.log(onUpdate);
                         // Notifica o componente pai sobre a atualização
                         if (onUpdate) {
+                            console.log('faz isso');
                             onUpdate();
                         }
                     }
@@ -483,8 +484,10 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             };
           
             setSelectedBeneficio(updatedItem);
-            
             toast.current.show({severity:'success', summary: 'Salvo com sucesso', life: 3000});
+            if (onUpdate) {
+                onUpdate();
+            }
         })
         .catch(erro => {
             toast.current.show({severity:'error', summary: 'Não foi possível atualizar', detail: 'Erro!', life: 3000});
@@ -550,6 +553,11 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             setSelectedItemBeneficio(updatedItem);
             
             toast.current.show({severity:'success', summary: 'Salvo com sucesso', life: 3000});
+
+            if(onUpdate)
+            {
+                onUpdate();
+            }
         })
         .catch(erro => {
             toast.current.show({severity:'error', summary: 'Não foi possível atualizar', detail: 'Erro!', life: 3000});
