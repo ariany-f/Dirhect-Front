@@ -609,14 +609,16 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                         >
                             Descartar Alterações
                         </Botao>
-                        <Botao 
-                            aoClicar={limparRegras}
-                            estilo="neutro"
-                            size="small"
-                            disabled={herdar}
-                        >
-                            Limpar Regras
-                        </Botao>
+                        {!herdar &&
+                            <Botao 
+                                aoClicar={limparRegras}
+                                estilo="neutro"
+                                size="small"
+                                disabled={herdar}
+                            >
+                                Limpar Regras
+                            </Botao>
+                        }
                         <Botao 
                             size="small" 
                             aoClicar={salvarGrupos}
