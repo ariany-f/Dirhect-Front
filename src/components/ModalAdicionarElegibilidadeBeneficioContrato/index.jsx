@@ -228,7 +228,7 @@ const ContainerGrupos = styled.div`
 `;
 
 function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoSalvar, item }) {
-   
+    
     const { usuario } = useSessaoUsuarioContext();
     
     const [tipoSelecionado, setTipoSelecionado] = useState(null);
@@ -286,45 +286,47 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
 
     // Adicione este useEffect no componente ModalAdicionarElegibilidadeItemContrato
     useEffect(() => {
-        if (opened && item?.regra_elegibilidade) {
+        if (opened && item?.regra_elegibilidade_pai) {
             setGruposAdicionados([]);
             // Para cada regra, monta o grupo
-            item?.regra_elegibilidade.forEach(async (regra) => {
-                const [tipoChave, dados] = Object.entries(regra)[0];
-                // Busca as opções na API correspondente
-                const modelInfo = modelosValidos[tipoChave];
-                let endpoint = tipoChave;
-                
-                if (modelInfo?.model?.startsWith('integracao.')) {
-                    endpoint = `tabela_dominio/${tipoChave.replace(/_/g, '_')}`;
-                }
-                
-                const response = await http.get(`${endpoint}/?format=json`);
-                // Junta id_delegar e id_negar para buscar todos os itens
-                const todosIds = [...(dados.id_delegar || []), ...(dados.id_negar || [])];
-                const fieldDesc = modelInfo?.field_desc || 'nome';
-                
-                // Trata a resposta da tabela_dominio
-                const registros = response.registros || response;
-                
-                const opcoes = registros.filter(opt => todosIds.includes(opt.id)).map(opt => ({
-                    id: opt.id,
-                    name: opt[fieldDesc] || opt.nome || opt.descricao || opt.name,
-                    textoCompleto: opt[fieldDesc] || opt.nome || opt.descricao || opt.name
-                }));
-                // Define negar true se todos os ids estão em id_negar
-                const negar = (dados.id_negar && dados.id_negar.length > 0 && (!dados.id_delegar || dados.id_delegar.length === 0 || (dados.id_delegar.length === 1 && dados.id_delegar[0] === 0)));
-                setGruposAdicionados(grupos => [
-                    ...grupos,
-                    {
-                        id: `${tipoChave}-${Date.now()}`,
-                        data: opcoes,
-                        tipo: tipos.find(t => t.code === tipoChave)?.name || tipoChave,
-                        opcoes: opcoes.map(o => o.textoCompleto),
-                        negar
+            if(item?.regra_elegibilidade_pai.length > 0) {
+                item?.regra_elegibilidade_pai.forEach(async (regra) => {
+                    const [tipoChave, dados] = Object.entries(regra)[0];
+                    // Busca as opções na API correspondente
+                    const modelInfo = modelosValidos[tipoChave];
+                    let endpoint = tipoChave;
+                    
+                    if (modelInfo?.model?.startsWith('integracao.')) {
+                        endpoint = `tabela_dominio/${tipoChave.replace(/_/g, '_')}`;
                     }
-                ]);
-            });
+                    
+                    const response = await http.get(`${endpoint}/?format=json`);
+                    // Junta id_delegar e id_negar para buscar todos os itens
+                    const todosIds = [...(dados.id_delegar || []), ...(dados.id_negar || [])];
+                    const fieldDesc = modelInfo?.field_desc || 'nome';
+                    
+                    // Trata a resposta da tabela_dominio
+                    const registros = response.registros || response;
+                    
+                    const opcoes = registros.filter(opt => todosIds.includes(opt.id)).map(opt => ({
+                        id: opt.id,
+                        name: opt[fieldDesc] || opt.nome || opt.descricao || opt.name,
+                        textoCompleto: opt[fieldDesc] || opt.nome || opt.descricao || opt.name
+                    }));
+                    // Define negar true se todos os ids estão em id_negar
+                    const negar = (dados.id_negar && dados.id_negar.length > 0 && (!dados.id_delegar || dados.id_delegar.length === 0 || (dados.id_delegar.length === 1 && dados.id_delegar[0] === 0)));
+                    setGruposAdicionados(grupos => [
+                        ...grupos,
+                        {
+                            id: `${tipoChave}-${Date.now()}`,
+                            data: opcoes,
+                            tipo: tipos.find(t => t.code === tipoChave)?.name || tipoChave,
+                            opcoes: opcoes.map(o => o.textoCompleto),
+                            negar
+                        }
+                    ]);
+                });
+            }
         } else if (!opened) {
             setGruposAdicionados([]);
         }
@@ -464,17 +466,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
     };
 
     const salvarGrupos = () => {
-        // if (gruposAdicionados.length === 0) {
-        //     toast.current.show({
-        //         severity: 'error',
-        //         summary: 'Erro',
-        //         detail: 'Adicione pelo menos um grupo antes de salvar',
-        //         life: 3000
-        //     });
-        //     return;
-        // }
-        console.log('GRUPOS ADICIONADOS:', gruposAdicionados);
-        const regra_elegibilidade = gruposAdicionados.map(grupo => {
+        const regra_elegibilidade_pai = gruposAdicionados.map(grupo => {
             const id_delegar = grupo.negar ? [] : grupo.data.map(o => o.id);
             const id_negar = grupo.negar ? grupo.data.map(o => o.id) : [];
             return {
@@ -483,8 +475,7 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                 id_negar
             };
         });
-        console.log('REGRA ELEGIBILIDADE:', regra_elegibilidade);
-        aoSalvar(regra_elegibilidade);
+        aoSalvar(regra_elegibilidade_pai);
     };
 
     const limparRegras = () => {

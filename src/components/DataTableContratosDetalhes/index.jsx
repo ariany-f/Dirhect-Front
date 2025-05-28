@@ -375,10 +375,9 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                         });
                         
                         toast.current.show({severity:'success', summary: 'Atualizado!', detail: 'Sucesso!', life: 3000});
-                        console.log(onUpdate);
+                        
                         // Notifica o componente pai sobre a atualização
                         if (onUpdate) {
-                            console.log('faz isso');
                             onUpdate();
                         }
                     }
