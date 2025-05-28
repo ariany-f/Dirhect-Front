@@ -61,11 +61,11 @@ function DataTableVagas({ vagas }) {
         let color = 'var(--green-500)';
         switch (status) {
             case 'A':
-                status = 'ABERTA';
+                status = 'Aberta';
                 color = 'var(--green-500)';
                 break;
             case 'F':
-                status = 'FECHADA';
+                status = 'Fechada';
                 color = 'var(--error)';
                 break;
         }

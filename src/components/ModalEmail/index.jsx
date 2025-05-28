@@ -53,7 +53,7 @@ function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = fals
   const [editorContent, setEditorContent] = useState("");
 
   const gatilhos = [
-    { name: 'Abertura de Vaga', code: 'ABERTA' },
+    { name: 'Abertura de Vaga', code: 'Aberta' },
     { name: 'Candidatura', code: 'CANDIDATURA' },
     { name: 'Contratação', code: 'CONTRATADO' },
     { name: 'Cancelamento', code: 'CANCELADA' },

@@ -80,7 +80,7 @@ function DetalhesVaga() {
     }
 
     function getStatusVaga(status) {
-        return status === 'A' ? 'ABERTA' : 'FECHADA';
+        return status === 'A' ? 'Aberta' : 'Fechada';
     }
 
     function getStatusColor(status) {

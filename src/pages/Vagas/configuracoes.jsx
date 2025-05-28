@@ -30,7 +30,7 @@ function ConfiguracoesVagas() {
             nome: 'Email de Abertura de Vaga',
             assunto: 'Nova vaga aberta: {cargo}',
             corpo: 'Prezado(a) {nome},\n\nInformamos que uma nova vaga foi aberta para o cargo de {cargo}.\n\nAtenciosamente,\nEquipe de RH',
-            gatilho: 'ABERTA',
+            gatilho: 'Aberta',
         },
         {
             id: 2,
