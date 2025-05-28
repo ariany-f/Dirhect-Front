@@ -506,8 +506,8 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                                 <RiCloseFill size={20} className="fechar" />  
                             </button>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                <span style={{ fontSize: 14, color: '#888' }}>Herdar do Pai</span>
-                                <SwitchInput checked={herdar} onChange={() => setHerdar(!herdar)} color="var(--info)" />
+                                <span style={{ fontSize: 14, color: '#888' }}>Herdar do Benefício</span>
+                                <SwitchInput checked={herdar} onChange={() => setHerdar(!herdar)} color="var(--primaria)" />
                             </div>
                         </div>
                     </Titulo>
