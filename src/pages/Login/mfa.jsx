@@ -45,7 +45,7 @@ function Mfa() {
 
     async function handleMfaValidade() {
         return new Promise((resolve, reject) => {
-            http.post('/mfa/validate/', { token: otpCode })
+            http.post('/mfa/validate/', { otp: otpCode })
             .then(response => {
                 resolve(response);
             })

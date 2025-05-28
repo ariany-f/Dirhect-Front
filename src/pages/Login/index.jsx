@@ -54,6 +54,7 @@ function Login() {
             
             return response;
         } catch (error) {
+            setLoading(false);
             console.log(error);
             throw error;
         }
@@ -67,7 +68,20 @@ function Login() {
             if(usuarioEstaLogado) {
                 setUsuarioEstaLogado(false);
             }
-            await handleLogin();
+            let tentativas = 0;
+            let sucesso = false;
+            while (tentativas < 3 && !sucesso) {
+                try {
+                    await handleLogin();
+                    sucesso = true;
+                } catch (error) {
+                    tentativas++;
+                    if (tentativas >= 3) {
+                        toast.error('Erro ao conectar com o serviço de autenticação. Tente novamente mais tarde.');
+                        break;
+                    }
+                }
+            }
             setReady(true);
         }
         init();
