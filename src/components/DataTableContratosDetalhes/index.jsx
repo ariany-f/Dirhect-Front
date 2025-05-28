@@ -95,7 +95,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             // Seleciona o primeiro benefício por padrão
             if (processed.length > 0) {
                 setSelectedBeneficio(processed[0]);
-                setSelectedItems(processed[0].itens || []);
+                setSelectedItems((processed[0].itens || []).filter(item => item.versao_ativa === true));
             }
         }
     }, [beneficios]);
@@ -356,7 +356,26 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 http.put(`contrato_beneficio_item/${id}/`, data)
                 .then(response => {
                     if(response.id) {
+                        // Atualiza a lista de itens do benefício selecionado
+                        if(response.versao_ativa) {
+                            const updatedItems = selectedItems
+                                .filter(item => item.id !== response.id)
+                                .concat(response);
+                                setSelectedItems(updatedItems);
+                        }
+
+                        const updatedBeneficios = beneficiosProcessados.map(beneficio => {
+                            if (beneficio.id === selectedBeneficio.id) {
+                                return {
+                                    ...beneficio,
+                                    itens: updatedItems
+                                };
+                            }
+                            return beneficio;
+                        });
+                        
                         toast.current.show({severity:'success', summary: 'Atualizado!', detail: 'Sucesso!', life: 3000});
+                        
                         // Notifica o componente pai sobre a atualização
                         if (onUpdate) {
                             onUpdate();
@@ -374,8 +393,10 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 .then(response => {
                     if(response.id) {
                         // Atualiza a lista de itens do benefício selecionado
-                        const updatedItems = [...selectedItems, response];
-                        setSelectedItems(updatedItems);
+                        if(response.versao_ativa) {
+                            const updatedItems = [...selectedItems, response];
+                            setSelectedItems(updatedItems);
+                        }
                         
                         // Atualiza o benefício selecionado
                         const updatedBeneficios = beneficiosProcessados.map(beneficio => {
@@ -410,11 +431,11 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
         if (!e.value || (e.value && e.value.id === selectedBeneficio?.id)) {
             // Impede desselecionar ou selecionar o mesmo
             setSelectedBeneficio(selectedBeneficio);
-            setSelectedItems(selectedBeneficio?.itens || []);
+            setSelectedItems((selectedBeneficio?.itens || []).filter(item => item.versao_ativa === true));
             return;
         }
         setSelectedBeneficio(e.value);
-        setSelectedItems(e.value.itens || []);
+        setSelectedItems((e.value.itens || []).filter(item => item.versao_ativa === true));
     };
 
     function salvarGruposBeneficio(data) {
@@ -460,13 +481,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 ...selectedBeneficio,
                 regra_elegibilidade_pai: dadosTransformados.regra_elegibilidade_pai
             };
-            
-            // Atualiza o item na lista de itens selecionados
-            // const updatedItems = selectedItems.map(item => 
-            //     item.id === selectedBeneficio.id ? updatedItem : item
-            // );
-            
-            // setSelectedItems(updatedItems);
+          
             setSelectedBeneficio(updatedItem);
             
             toast.current.show({severity:'success', summary: 'Salvo com sucesso', life: 3000});
@@ -529,7 +544,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             // Atualiza o item na lista de itens selecionados
             const updatedItems = selectedItems.map(item => 
                 item.id === selectedItemBeneficio.id ? updatedItem : item
-            );
+            ).filter(item => item.versao_ativa === true);
             
             setSelectedItems(updatedItems);
             setSelectedItemBeneficio(updatedItem);

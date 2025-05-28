@@ -229,7 +229,7 @@ const ContainerGrupos = styled.div`
 `;
 
 function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar, aoSalvar, item }) {
-    console.log('item:', item);
+
     const { usuario } = useSessaoUsuarioContext();
     
     const [tipoSelecionado, setTipoSelecionado] = useState(null);
@@ -290,8 +290,10 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
     useEffect(() => {
         if (opened && item?.regra_elegibilidade) {
             setGruposAdicionados([]);
+            console.log(item?.regra_elegibilidade);
             // Para cada regra, monta o grupo
-            item?.regra_elegibilidade.forEach(async (regra) => {
+            if(item?.regra_elegibilidade && item?.regra_elegibilidade.length > 0) {
+                item?.regra_elegibilidade?.forEach(async (regra) => {
                 const [tipoChave, dados] = Object.entries(regra)[0];
                 // Busca as opções na API correspondente
                 const modelInfo = modelosValidos[tipoChave];
@@ -326,7 +328,8 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                         negar
                     }
                 ]);
-            });
+                });
+            }
         } else if (!opened) {
             setGruposAdicionados([]);
         }

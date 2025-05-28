@@ -69,7 +69,7 @@ const Item = styled.div`
 `;
 
 function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, operadora = [], beneficiosContrato = [] }) {
-    console.log(beneficiosContrato)
+   
     const [classError, setClassError] = useState([])
     const [observacao, setObservacao] = useState('');
     const [beneficios, setBeneficios] = useState([]);
@@ -82,7 +82,6 @@ function ModalContratoBeneficios({ opened = false, aoClicar, aoFechar, aoSucesso
     const navegar = useNavigate()
 
     useEffect(() => {
-        console.log(operadora)
         if(opened && beneficios.length === 0) {
             http.get('/beneficio/?format=json')
                 .then(response => {
