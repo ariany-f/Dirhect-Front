@@ -25,7 +25,6 @@ import { TbTableOptions  } from "react-icons/tb"
 
 // Componente de Item Arrastável com novos estilos
 const DraggableItem = ({ grupo, index, moveItem, removerGrupo, toggleNegarGrupo }) => {
-   
     const ref = useRef(null);
     
     const [{ isDragging }, drag] = useDrag({
@@ -228,8 +227,8 @@ const ContainerGrupos = styled.div`
     border-radius: 8px;
 `;
 
-function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar, aoSalvar, item }) {
-
+function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar, aoSalvar, item, heranca }) {
+    console.log(heranca);
     const { usuario } = useSessaoUsuarioContext();
     
     const [tipoSelecionado, setTipoSelecionado] = useState(null);
@@ -290,7 +289,6 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
     useEffect(() => {
         if (opened && item?.regra_elegibilidade) {
             setGruposAdicionados([]);
-            console.log(item?.regra_elegibilidade);
             // Para cada regra, monta o grupo
             if(item?.regra_elegibilidade && item?.regra_elegibilidade.length > 0) {
                 item?.regra_elegibilidade?.forEach(async (regra) => {
@@ -508,10 +506,12 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                             <button className="close" onClick={aoFechar} formMethod="dialog">
                                 <RiCloseFill size={20} className="fechar" />  
                             </button>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                <span style={{ fontSize: 14, color: '#888' }}>Herdar do Benefício</span>
-                                <SwitchInput checked={herdar} onChange={() => setHerdar(!herdar)} color="var(--primaria)" />
-                            </div>
+                            {heranca && heranca.length > 0 &&
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                    <span style={{ fontSize: 14, color: '#888' }}>Herdar do Benefício</span>
+                                    <SwitchInput checked={herdar} onChange={() => setHerdar(!herdar)} color="var(--primaria)" />
+                                </div>
+                            }
                         </div>
                     </Titulo>
                     <Col12>
