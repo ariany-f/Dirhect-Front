@@ -347,6 +347,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 parametro_aplicacao: "I",
                 regra_elegibilidade: selectedItemBeneficio?.regra_elegibilidade ?? [],
                 numero_decimal: true,
+                herdado: selectedItemBeneficio?.herdado ?? false,
                 valor: converterParaNumero(valor),
                 valor_empresa: converterParaNumero(empresa),
                 valor_desconto: converterParaNumero(desconto)
@@ -357,12 +358,11 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 .then(response => {
                     if(response.id) {
                         // Atualiza a lista de itens do benefício selecionado
-                        if(response.versao_ativa) {
-                            const updatedItems = selectedItems
-                                .filter(item => item.id !== response.id)
-                                .concat(response);
-                                setSelectedItems(updatedItems);
-                        }
+                        
+                        const updatedItems = selectedItems
+                            .filter(item => item.id !== response.id)
+                            .concat(response);
+                            setSelectedItems(updatedItems);
 
                         const updatedBeneficios = beneficiosProcessados.map(beneficio => {
                             if (beneficio.id === selectedBeneficio.id) {
