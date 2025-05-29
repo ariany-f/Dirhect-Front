@@ -461,7 +461,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
             <DataTable 
                 value={tarefasFiltradas} 
                 filters={filters} 
-                globalFilterFields={['titulo']}  
+                globalFilterFields={['titulo', 'pessoa', 'data_inicio', 'data_entrega', 'tipo_tarefa', 'client_nome', 'candidato_nome', 'colaborador_nome', 'filial_nome']}  
                 emptyMessage="Não foram encontrados tarefas" 
                 selection={selectedVaga} 
                 onSelectionChange={(e) => verDetalhes(e.value)} 
