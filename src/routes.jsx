@@ -153,6 +153,8 @@ import { Toast } from 'primereact/toast'
 import { ToastContainer } from 'react-toastify'
 import ConfiguracoesVagas from '@pages/Vagas/configuracoes'
 import MfaGenerate from '@pages/Login/mfa_generate'
+import Documentos from './pages/DocumentosRequeridos'
+import DocumentosConfiguracoes from './pages/DocumentosRequeridos/configuracoes'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -333,6 +335,10 @@ function AppRouter() {
               <Route path="vagas/configuracoes" element={<ConfiguracoesVagas />} />
               <Route path="vagas/detalhes/:id" element={<DetalhesVaga />} />
               <Route path="vagas/registro" element={<VagasRegistro />} />
+
+              <Route path="documentos" element={<Documentos />}>
+                <Route path="configuracoes" element={<DocumentosConfiguracoes />} />
+              </Route>
 
               <Route path="/demissoes" element={<Demissoes />} />
 

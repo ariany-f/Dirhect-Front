@@ -20,12 +20,12 @@ import { addLocale } from 'primereact/api'
 import ModalEncaminharVaga from '@components/ModalEncaminharVaga'
 import { Real } from '@utils/formats'
 import { Tag } from 'primereact/tag'
-import DataTableDocumentos from '@components/DataTableDocumentos'
-import ModalDocumentoRequerido from '@components/ModalDocumentoRequerido'
+import DataTableDocumentosVaga from '@components/DataTableDocumentosVaga'
+import ModalDocumentoVaga from '@components/ModalDocumentoVaga'
 import { GrAdd, GrAddCircle } from 'react-icons/gr'
 import http from '@http'
 import ModalVaga from '@components/ModalVaga'
-import documentos from '@json/documentos_requeridos.json'
+// import documentos from '@json/documentos_requeridos.json'
 import { unformatCurrency } from '@utils/formats'
 
 const ConteudoFrame = styled.div`
@@ -52,7 +52,7 @@ function DetalhesVaga() {
     const [vaga, setVaga] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
-    // const [documentos, setDocumentos] = useState([]);
+    const [documentos, setDocumentos] = useState([]);
     const [modalDocumentoAberto, setModalDocumentoAberto] = useState(false);
     const [documentoEditando, setDocumentoEditando] = useState(null);
     const [modalEditarAberto, setModalEditarAberto] = useState(false);
@@ -88,8 +88,18 @@ function DetalhesVaga() {
         return status === 'A' ? 'var(--green-500)' : 'var(--error)';
     }
 
+    // Função para buscar documentos da vaga
+    const fetchDocumentosVaga = () => {
+        http.get(`vagas_documentos/?format=json&vaga=${id}`)
+            .then(response => {
+                setDocumentos(response)
+            })
+            .catch(error => {
+                console.error('Erro ao carregar documentos da vaga:', error)
+            })
+    }
+
     useEffect(() => {
-      
         http.get(`vagas/${id}/?format=json`)
             .then(response => {
                 setVaga(response)
@@ -97,6 +107,8 @@ function DetalhesVaga() {
             .catch(error => {
                 console.error('Erro ao carregar vaga:', error)
             })
+
+        fetchDocumentosVaga();
     }, [])
 
     const { 
@@ -244,6 +256,23 @@ function DetalhesVaga() {
         });
     };
 
+    const handleSalvarDocumentoVaga = (documento_nome, obrigatorio, documento) => {
+        console.log(documento_nome, obrigatorio, documento)
+        http.post('/vagas_documentos/', {
+            documento_nome: documento_nome,
+            obrigatorio: obrigatorio,
+            documento: documento?.id,
+            vaga: id
+        })
+        .then(response => {
+            fetchDocumentosVaga();
+            setModalDocumentoAberto(false);
+        })
+        .catch(error => {   
+            console.error('Erro ao salvar documento da vaga:', error);
+        });
+    }
+
     const handleEditarVaga = (vagaAtualizada) => {
         http.put(`vagas/${id}/`, vagaAtualizada)
             .then(response => {
@@ -265,19 +294,6 @@ function DetalhesVaga() {
             });
     };
 
-    // useEffect(() => {
-    //     if(!vaga)
-    //     {
-    //         const obj = vagas.vagas;
-    //         const vg = [...obj.abertas, ...obj.canceladas].find(item => item.id == id);
-
-    //         if(vg) {
-    //             setVaga(vg)
-    //         }
-          
-    //     }
-    // }, [])
-    
     return (
         <>
         <Frame>
@@ -425,7 +441,7 @@ function DetalhesVaga() {
                 </Titulo>
                 <DataTableCandidatos vagaId={vaga?.id} candidatos={vaga?.candidatos} />
                 <Titulo>
-                    <h5>Documentos Requeridos</h5>
+                    <h5>Documentos Requeridos da Vaga</h5>
                 </Titulo>
                 
                 <BotaoGrupo align="space-between">
@@ -436,23 +452,16 @@ function DetalhesVaga() {
                         </Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>
-                <DataTableDocumentos
+                <DataTableDocumentosVaga
                     documentos={documentos}
                     onEdit={doc => { setDocumentoEditando(doc); setModalDocumentoAberto(true); }}
                     onDelete={doc => setDocumentos(documentos.filter(d => d !== doc))}
                 />
-                <ModalDocumentoRequerido
+                <ModalDocumentoVaga
                     opened={modalDocumentoAberto}
                     documento={documentoEditando}
                     aoFechar={() => setModalDocumentoAberto(false)}
-                    aoSalvar={doc => {
-                        if (documentoEditando) {
-                            setDocumentos(documentos.map(d => d === documentoEditando ? doc : d));
-                        } else {
-                            setDocumentos([...documentos, doc]);
-                        }
-                        setModalDocumentoAberto(false);
-                    }}
+                    aoSalvar={handleSalvarDocumentoVaga}
                 />
             </ConteudoFrame>
             <ModalEncaminharVaga 

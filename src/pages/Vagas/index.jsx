@@ -47,6 +47,10 @@ const Vagas = () => {
                     <BotaoSemBorda color="var(--primaria)">
                         <CiSettings size={16}/> <Link to={'/vagas/configuracoes'} className={styles.link}>Configurações de Emails</Link>
                     </BotaoSemBorda>
+                    
+                    <BotaoSemBorda color="var(--primaria)">
+                        <CiSettings size={16}/> <Link to={'/documentos/configuracoes'} className={styles.link}>Configurações de Documentos</Link>
+                    </BotaoSemBorda>
         
                 </BotaoGrupo>
             </BotaoGrupo>

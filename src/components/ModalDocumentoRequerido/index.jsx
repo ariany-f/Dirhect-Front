@@ -5,56 +5,205 @@ import { Dropdown } from 'primereact/dropdown';
 import SwitchInput from '@components/SwitchInput';
 import Botao from '@components/Botao';
 import { FaSave } from 'react-icons/fa';
+import http from '@http';
+import Frame from "@components/Frame"
+import Titulo from "@components/Titulo"
+import { RiCloseFill } from 'react-icons/ri'
+import styled from "styled-components"
+import styles from './ModalDocumentoRequerido.module.css'
+import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 
-const tiposArquivos = [
-    { label: 'PDF', value: 'PDF' },
-    { label: 'Imagem', value: 'Imagem' },
-    { label: 'Word', value: 'Word' },
-    { label: 'Excel', value: 'Excel' },
-    { label: 'Outros', value: 'Outros' },
-];
+const Col12 = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px;
+    width: 100%;
+`
 
-function ModalDocumentoRequerido({ opened, documento, aoFechar, aoSalvar }) {
+const Col6 = styled.div`
+    flex: 1 1 calc(50% - 8px);
+`
+
+const Col6Centered = styled.div`
+    display: flex;
+    flex: 1 1 calc(50% - 8px);
+    justify-content: start;
+    padding-top: 14px;
+    align-items: center;
+`
+
+function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento = null }) {
+    const [classError, setClassError] = useState([]);
     const [nome, setNome] = useState('');
-    const [tipoArquivo, setTipoArquivo] = useState('PDF');
+    const [extPermitidas, setExtPermitidas] = useState('');
+    const [frenteVerso, setFrenteVerso] = useState(false);
+    const [instrucao, setInstrucao] = useState('');
+    const [descricao, setDescricao] = useState('');
     const [obrigatorio, setObrigatorio] = useState(true);
+    const [documentosRequeridos, setDocumentosRequeridos] = useState([]);
+    const [documentoSelecionado, setDocumentoSelecionado] = useState(null);
 
     useEffect(() => {
-        if (documento) {
+        if (opened) {
+            http.get('/documento_requerido/?format=json')
+                .then(response => {
+                    setDocumentosRequeridos(response);
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar documentos requeridos:', error);
+                });
+        }
+    }, [opened]);
+
+    useEffect(() => {
+        if (documento && opened) {
             setNome(documento.nome || '');
-            setTipoArquivo(documento.tipoArquivo || 'PDF');
+            setExtPermitidas(documento.ext_permitidas || '');
+            setFrenteVerso(!!documento.frente_verso);
+            setInstrucao(documento.instrucao || '');
+            setDescricao(documento.descricao || '');
             setObrigatorio(!!documento.obrigatorio);
-        } else {
+            setDocumentoSelecionado(documento);
+        } else if (!opened) {
             setNome('');
-            setTipoArquivo('PDF');
+            setExtPermitidas('');
+            setFrenteVerso(false);
+            setInstrucao('');
+            setDescricao('');
             setObrigatorio(true);
+            setDocumentoSelecionado(null);
+            setClassError([]);
         }
     }, [documento, opened]);
 
-    const handleSalvar = () => {
-        if (!nome) return;
-        aoSalvar({ nome, tipoArquivo, obrigatorio });
+    const validarESalvar = () => {
+        let errors = [];
+        if (!nome) errors.push('nome');
+        if (!extPermitidas) errors.push('ext_permitidas');
+        if (!instrucao) errors.push('instrucao');
+        
+        if (errors.length > 0) {
+            setClassError(errors);
+            return;
+        }
+
+        aoSalvar({ 
+            nome,
+            ext_permitidas: extPermitidas,
+            frente_verso: frenteVerso,
+            instrucao,
+            descricao,
+            obrigatorio
+        });
+    };
+
+    const handleFrenteVersoChange = (value) => {
+        setFrenteVerso(value);
+    };
+
+    const handleObrigatorioChange = (value) => {
+        setObrigatorio(value);
     };
 
     return (
-        <Dialog header={documento ? 'Editar Documento' : 'Adicionar Documento'} visible={opened} style={{ width: '400px' }} onHide={aoFechar} footer={null} closable>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-                <CampoTexto label="Nome do Documento" valor={nome} setValor={setNome} width="100%" />
-                <div>
-                    <label style={{ fontWeight: 600, marginBottom: 4, display: 'block' }}>Tipo de Arquivo</label>
-                    <Dropdown value={tipoArquivo} options={tiposArquivos} onChange={e => setTipoArquivo(e.value)} placeholder="Selecione o tipo" style={{ width: '100%' }} />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <label style={{ fontWeight: 600 }}>Obrigatório</label>
-                    <SwitchInput checked={obrigatorio} onChange={e => setObrigatorio(e.value)} />
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, marginTop: 12 }}>
-                    <Botao size="small" aoClicar={aoFechar} variante="secundario">Cancelar</Botao>
-                    <Botao size="small" aoClicar={handleSalvar} disabled={!nome}><FaSave fill="white" /> Salvar</Botao>
-                </div>
-            </div>
-        </Dialog>
+        <>
+            {opened && (
+                <Overlay>
+                    <DialogEstilizado open={opened}>
+                        <Frame>
+                            <Titulo>
+                                <button className="close" onClick={aoFechar}>
+                                    <RiCloseFill size={20} className="fechar" />  
+                                </button>
+                                <h6>{documento ? 'Editar Documento' : 'Novo Documento'}</h6>
+                            </Titulo>
+                        </Frame>
+                        
+                        <Frame padding="12px 0px">
+                            <Col12>
+                                <Col12>
+                                    <Col6>
+                                        <CampoTexto
+                                            camposVazios={classError.includes('nome') ? ['nome'] : []}
+                                            name="nome"
+                                            valor={nome}
+                                            setValor={setNome}
+                                            type="text"
+                                            label="Nome*"
+                                            placeholder="Digite o nome do documento"
+                                        />
+                                    </Col6>
+                                    <Col6>
+                                        <CampoTexto
+                                            camposVazios={classError.includes('ext_permitidas') ? ['ext_permitidas'] : []}
+                                            name="ext_permitidas"
+                                            valor={extPermitidas}
+                                            setValor={setExtPermitidas}
+                                            type="text"
+                                            label="Extensões Permitidas*"
+                                            placeholder="Digite as extensões permitidas"
+                                        />
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6>
+                                        <CampoTexto
+                                            camposVazios={classError.includes('instrucao') ? ['instrucao'] : []}
+                                            name="instrucao"
+                                            valor={instrucao}
+                                            setValor={setInstrucao}
+                                            type="text"
+                                            label="Instrução*"
+                                            placeholder="Digite a instrução"
+                                        />
+                                    </Col6>
+                                    <Col6>
+                                        <CampoTexto
+                                            name="descricao"
+                                            valor={descricao}
+                                            setValor={setDescricao}
+                                            type="text"
+                                            label="Descrição"
+                                            placeholder="Digite a descrição"
+                                        />
+                                    </Col6>
+                                </Col12>
+                                <Col12>
+                                    <Col6Centered>
+                                        <label style={{ fontWeight: 600, marginRight: 8 }}>Frente e Verso</label>
+                                        <SwitchInput 
+                                            checked={frenteVerso} 
+                                            onChange={handleFrenteVersoChange}
+                                        />
+                                    </Col6Centered>
+                                    <Col6Centered>
+                                        <label style={{ fontWeight: 600, marginRight: 8 }}>Obrigatório</label>
+                                        <SwitchInput 
+                                            checked={obrigatorio} 
+                                            onChange={handleObrigatorioChange}
+                                        />
+                                    </Col6Centered>
+                                </Col12>
+                            </Col12>
+                        </Frame>
+                        
+                        <div className={styles.containerBottom}>
+                            <Botao 
+                                aoClicar={validarESalvar} 
+                                estilo="vermilion" 
+                                size="medium" 
+                                filled
+                            >
+                                {documento ? 'Atualizar' : 'Confirmar'}
+                            </Botao>
+                        </div>
+                    </DialogEstilizado>
+                </Overlay>
+            )}
+        </>
     );
 }
 
-export default ModalDocumentoRequerido; 
+export default ModalDocumentoRequerido;

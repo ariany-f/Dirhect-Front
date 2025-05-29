@@ -3,7 +3,7 @@ import { Column } from 'primereact/column';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 
-function DataTableDocumentos({ documentos = [], onEdit, onDelete }) {
+function DataTableDocumentosVaga({ documentos = [], onEdit, onDelete }) {
 
     
     const obrigatorioTemplate = (rowData) => (
@@ -36,4 +36,4 @@ function DataTableDocumentos({ documentos = [], onEdit, onDelete }) {
     );
 }
 
-export default DataTableDocumentos;
+export default DataTableDocumentosVaga;
