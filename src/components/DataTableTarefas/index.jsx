@@ -395,7 +395,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         return (
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
                 <p style={{fontWeight: '600', margin: 0, color: cor}}>{dataEntrega.toLocaleDateString('pt-BR')}</p>
-                <span style={{fontSize: 12, fontWeight: 600, color: cor, marginTop: 2}}>{statusPrazo}</span>
+                <span style={{fontSize: 12, fontWeight: 400, marginTop: 2}}>{statusPrazo}</span>
             </div>
         );
     }
