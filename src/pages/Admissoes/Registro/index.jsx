@@ -668,7 +668,7 @@ const CandidatoRegistro = () => {
                 <StepperPanel header="Dados Pessoais">
                     <Container padding={'30px 0 0 0'} gap="10px">
                         <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
-                            <ScrollPanel style={{ width: '100%', height: '390px'}}>
+                            <ScrollPanel style={{ width: '100%', height: '390px', marginBottom: 10 }}>
                                 <Col12 style={{padding:'0 10px'}}>
                                     <Col6>
                                         <CampoTexto 
