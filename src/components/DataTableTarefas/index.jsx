@@ -6,7 +6,7 @@ import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import styles from '@pages/Tarefas/Pedidos.module.css'
+import styles from '@pages/Tarefas/Tarefas.module.css'
 import { Tag } from 'primereact/tag';
 import { ProgressBar } from 'primereact/progressbar';
 import { Real } from '@utils/formats'
@@ -15,6 +15,13 @@ import ModalTarefas from '@components/ModalTarefas'
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import { GrAddCircle } from 'react-icons/gr'
+import { Dropdown } from 'primereact/dropdown';
+import { BiFilter } from 'react-icons/bi';
+import { FaFilterCircleXmark, FaMoneyBill1 } from 'react-icons/fa6';
+import { FaDollarSign, FaMoneyBill, FaPaperPlane, FaRegPaperPlane, FaUmbrellaBeach, FaUserMinus, FaUserPlus } from 'react-icons/fa';
+import { LuNewspaper } from 'react-icons/lu';
+import CustomImage from '@components/CustomImage';
+import { Tooltip } from 'primereact/tooltip';
 
 function DataTableTarefas({ tarefas, colaborador = null }) {
 
@@ -24,17 +31,187 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    const [statusFiltro, setStatusFiltro] = useState(null);
+    const [tipoTarefaFiltro, setTipoTarefaFiltro] = useState(null);
+    const [clienteFiltro, setClienteFiltro] = useState(null);
     const {usuario} = useSessaoUsuarioContext()
     const navegar = useNavigate()
 
+    // Opções dos filtros
+    const statusOptions = [
+        { label: 'Aguardando Início', value: 'Aguardando' },
+        { label: 'Em andamento', value: 'Em andamento' },
+        { label: 'Concluída', value: 'Concluída' },
+    ];
+    const tipoTarefaOptions = [
+        { label: 'Admissão', value: 'admissao' },
+        { label: 'Demissão', value: 'demissao' },
+        { label: 'Férias', value: 'ferias' },
+        { label: 'Envio de Variáveis', value: 'envio_variaveis' },
+        { label: 'Adiantamento', value: 'adiantamento' },
+        { label: 'Encargos', value: 'encargos' },
+        { label: 'Folha Mensal', value: 'folha' },
+    ];
+
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
-
         _filters['global'].value = value;
-
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
+
+    // Filtro aplicado ao array de tarefas
+    const tarefasFiltradas = tarefas.filter(tarefa => {
+        const statusOk = statusFiltro === null || tarefa.status === statusFiltro;
+        const tipoOk = tipoTarefaFiltro === null || tarefa.tipo_tarefa === tipoTarefaFiltro;
+        const clienteOk = clienteFiltro === null || tarefa.client_id === clienteFiltro;
+        return statusOk && tipoOk && clienteOk;
+    });
+
+    // Gerar lista de clientes únicos
+    const clientesUnicos = Array.from(
+        tarefas.reduce((map, t) => {
+            if (!map.has(t.client_id)) {
+                map.set(t.client_id, { label: t.client_nome, value: t.client_id, simbolo: t.client_simbolo });
+            }
+            return map;
+        }, new Map()).values()
+    );
+
+    // Template para opções do status
+    const statusOptionTemplate = (option) => {
+        if (!option.value) return <span>{option.label}</span>;
+        let color = '';
+        switch(option.value) {
+            case 'Aguardando':
+                color = 'var(--error)';
+                break;
+            case 'Em andamento':
+                color = 'var(--info)';
+                break;
+            case 'Concluída':
+                color = 'var(--green-500)';
+                break;
+            default:
+                color = 'var(--neutro-400)';
+        }
+        return (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{
+                    display: 'inline-block',
+                    width: 12,
+                    height: 12,
+                    borderRadius: '50%',
+                    background: color
+                }} />
+                {option.label}
+            </span>
+        );
+    };
+
+    // Template para opções do tipo de tarefa
+    const tipoTarefaOptionTemplate = (option) => {
+        if (!option.value) return <span>{option.label}</span>;
+        let icon = null;
+        switch(option.value) {
+            case 'admissao':
+                icon = <FaUserPlus fill="var(--info)" stroke="white" color="var(--info)" size={16}/>;
+                break;
+            case 'demissao':
+                icon = <FaUserMinus fill="var(--error)" stroke="white" color="var(--error)" size={16}/>;
+                break;
+            case 'ferias':
+                icon = <FaUmbrellaBeach fill="var(--green-500)" stroke="white" color="var(--green-500)" size={16}/>;
+                break;
+            case 'envio_variaveis':
+                icon = <FaUserPlus fill="var(--primaria)" stroke="white" color="var(--primaria)" size={16}/>;
+                break;
+            case 'adiantamento':
+                icon = <FaDollarSign fill="var(--astra-500)" stroke="white" color="var(--astra-500)" size={16}/>;
+                break;
+            case 'encargos':
+                icon = <FaDollarSign fill="var(--green-400)" stroke="white" color="var(--green-400)" size={16}/>;
+                break;
+            case 'folha':
+                icon = <LuNewspaper fill="var(--secundaria)" stroke="white" color="var(--secundaria)" size={16}/>;
+                break;
+            default:
+                icon = null;
+        }
+        return (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                {icon} {option.label}
+            </span>
+        );
+    };
+
+    // Template para opções do cliente
+    const clienteOptionTemplate = (option) => {
+        if (!option.value) return <span>{option.label}</span>;
+        return (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <CustomImage src={option.simbolo} width={20} height={20} />
+                {option.label}
+            </span>
+        );
+    };
+
+    // Header customizado
+    const headerTemplate = (
+        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', padding: 0 }}>
+            <CampoTexto width={'220px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+            <div style={{display: 'flex', gap: 16, alignItems: 'flex-start'}}>
+                <div style={{display: 'flex', gap: 5, alignItems: 'start', flexDirection: 'column'}}>
+                    <Dropdown 
+                        value={statusFiltro} 
+                        options={statusOptions} 
+                        onChange={e => setStatusFiltro(e.value)} 
+                        placeholder="Filtrar por Status" 
+                        style={{ minWidth: 180, minHeight: 40, maxHeight: 40 }}
+                        itemTemplate={statusOptionTemplate}
+                    />
+                </div>
+                <div style={{display: 'flex', gap: 5, alignItems: 'start', flexDirection: 'column'}}>
+                    <Dropdown 
+                        value={tipoTarefaFiltro} 
+                        options={tipoTarefaOptions} 
+                        onChange={e => setTipoTarefaFiltro(e.value)} 
+                        placeholder="Filtrar por Tipo" 
+                        style={{ minWidth: 180, minHeight: 40, maxHeight: 40 }}
+                        itemTemplate={tipoTarefaOptionTemplate}
+                    />
+                </div>
+                <div style={{display: 'flex', gap: 5, alignItems: 'start', flexDirection: 'column'}}>
+                    <Dropdown 
+                        value={clienteFiltro} 
+                        options={clientesUnicos} 
+                        onChange={e => setClienteFiltro(e.value)} 
+                        placeholder="Filtrar por Cliente" 
+                        style={{ minWidth: 180, minHeight: 40, maxHeight: 40 }}
+                        itemTemplate={clienteOptionTemplate}
+                    />
+                </div>
+                <button
+                    style={{ padding: '9px 8px', border: 'none', borderRadius: 8, background: 'transparent', color: 'var(--neutro-800)', cursor: 'pointer'}}
+                    onClick={() => { setStatusFiltro(null); setTipoTarefaFiltro(null); setClienteFiltro(null); }}
+                >
+                    <FaFilterCircleXmark size={18}/>
+                </button>
+                
+                <BotaoGrupo align={'space-between'} wrap>
+                    {!colaborador && (
+                        <>
+                            <BotaoGrupo align="end" gap="8px">
+                                {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
+                                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" stroke="white" color="white"/> Registrar Tarefa</Botao>
+                                }
+                            </BotaoGrupo>
+                        </>
+                    )}
+                </BotaoGrupo>
+            </div>
+        </div>
+    );
 
     function verDetalhes(value)
     {
@@ -43,24 +220,26 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
 
     const representativStatusTemplate = (rowData) => {
         let status = rowData?.status;
+
         switch(rowData?.status)
         {
             case 'Concluída':
                 status = <Tag severity="success" value="Concluída"></Tag>;
                 break;
             case 'Em andamento':
-                status = <Tag severity="warning" value="Em andamento"></Tag>;
+                status = <Tag style={{backgroundColor: 'var(--info)'}} value="Em andamento"></Tag>;
                 break;
             case 'Aguardando':
                 status = <Tag severity="danger" value="Aguardando Início"></Tag>;
                 break;
         }
-        return (
-            <b>{status}</b>
-        )
-    }
 
-    const representativeProgressTemplate = (rowData) => {
+        const valueTemplate = (value) => {
+                return (
+                    <Texto color="var(--white)">{value}%</Texto>
+                );
+            };
+
         var feito = rowData.feito;
         var tarefas = rowData.total_tarefas;
         
@@ -71,16 +250,19 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         if (progresso <= 30) {
             severity = "rgb(212, 84, 114)";
         } else if (progresso <= 99) {
-            severity = "rgb(255, 146, 42)";
+            severity = "var(--info)";
         }
-    
         return (
-            <ProgressBar 
-                value={progresso} 
-                color={severity} 
-            />
-        );
-    };
+            <div style={{width: '100%'}}>
+                <b>{status}</b>
+                <ProgressBar className={styles.progressBar}
+                    value={progresso} 
+                    color={severity} 
+                    displayValueTemplate={valueTemplate}
+                />
+            </div>
+        )
+    }
 
     const representativeRecorrenciaTemplate = (rowData) => {
         if(rowData.recorrencia)
@@ -98,44 +280,200 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
 
     const representativeTipoTemplate = (rowData) => {
         return <div key={rowData.id}>
-            <Texto weight={700} width={'100%'}>
+            <Texto weight={500} width={'100%'}>
                 {rowData.tipo}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                Itens:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.total_tarefas}</p>
+                Itens:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.feito}/{rowData.total_tarefas}</p>
             </div>
+            
         </div>
     }
 
     const representativeConcluidoTemplate = (rowData) => {
         return <>{rowData.feito}/{rowData.total_tarefas}</>
     }
+
+    const tipoTarefaTagTemplate = (rowData) => {
+        let color = 'var(--neutro-400)';
+        let label = '';
+        let icon = '';
+        switch(rowData.tipo_tarefa) {
+            case 'admissao':
+                color = 'var(--info)';
+                label = 'Admissão';
+                icon = <FaUserPlus fill="white" stroke="white" color="white" size={16}/>;
+                break;
+            case 'demissao':
+                color = 'var(--error)';
+                label = 'Demissão';
+                icon = <FaUserMinus fill="white" stroke="white" color="white" size={16}/>;
+                break;
+            case 'ferias':
+                color = 'var(--green-500)';
+                label = 'Férias';
+                icon = <FaUmbrellaBeach fill="white" stroke="white" color="white" size={16}/>
+                break;
+            case 'envio_variaveis':
+                color = 'var(--primaria)';
+                label = 'Envio de Variáveis';
+                icon = <FaUserPlus fill="white" stroke="white" color="white" size={16}/>;
+                break;
+            case 'adiantamento':
+                color = 'var(--astra-500)';
+                label = 'Adiantamento';
+                icon = <FaDollarSign fill="white" stroke="white" color="white" size={16}/>;
+                break;
+            case 'encargos':
+                color = 'var(--green-400)';
+                label = 'Encargos';
+                icon = <FaDollarSign fill="white" stroke="white" color="white" size={16}/>;
+                break;
+            case 'folha':
+                color = 'var(--secundaria)';
+                label = 'Folha Mensal';
+                icon = <LuNewspaper fill="white" stroke="white" color="white" size={16}/>;
+                break;
+            default:
+                label = rowData.tipo_tarefa;
+        }
+        if(icon) {
+            label = <div style={{display: 'flex', alignItems: 'center', gap: 8, color: 'white'}}>{icon} {label}</div>;
+        }
+        return <Tag value={label} style={{ backgroundColor: color, color: 'white', fontWeight: 600, fontSize: 13, borderRadius: 8, padding: '4px 12px' }} />;
+    };
+
+    const dataInicioTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}>{rowData.data_inicio ? new Date(rowData.data_inicio).toLocaleDateString('pt-BR') : '-'}</p>
+    }
+
+    const dataEntregaTemplate = (rowData) => {
+        const dataEntrega = rowData.data_entrega ? new Date(rowData.data_entrega) : null;
+        const dataInicio = rowData.data_inicio ? new Date(rowData.data_inicio) : null;
+        // Se não houver datas, só mostra a data
+        if (!dataEntrega || !dataInicio) {
+            return <p style={{fontWeight: '400'}}>{dataEntrega ? dataEntrega.toLocaleDateString('pt-BR') : '-'}</p>;
+        }
+        // Cálculo de status de prazo
+        const hoje = new Date();
+        const totalDias = Math.ceil((dataEntrega - dataInicio) / (1000 * 60 * 60 * 24));
+        const diasPassados = Math.ceil((hoje - dataInicio) / (1000 * 60 * 60 * 24));
+        const porcentagem = totalDias > 0 ? (diasPassados / totalDias) : 1;
+        let statusPrazo = '';
+        let cor = '';
+        // Se concluída
+        if (rowData.status === 'Concluída') {
+            // Se existir data_conclusao, pode comparar, senão considera dentro do prazo
+            if (rowData.data_conclusao) {
+                const dataConclusao = new Date(rowData.data_conclusao);
+                if (dataConclusao <= dataEntrega) {
+                    statusPrazo = 'Concluída dentro do prazo';
+                    cor = 'var(--green-500)';
+                } else {
+                    statusPrazo = 'Concluída fora do prazo';
+                    cor = 'var(--error)';
+                }
+            } else {
+                statusPrazo = 'Concluída';
+                cor = 'var(--green-500)';
+            }
+        } else {
+            if (hoje > dataEntrega) {
+                statusPrazo = 'Em atraso';
+                cor = 'var(--error-600)';
+            } else if (porcentagem < 0.6) {
+                statusPrazo = 'Dentro do prazo';
+                cor = 'var(--green-500)';
+            } else if (porcentagem < 0.9) {
+                statusPrazo = 'Próxima do vencimento';
+                cor = 'var(--warning)';
+            } else {
+                statusPrazo = 'Próxima do vencimento';
+                cor = 'var(--warning)';
+            }
+        }
+        return (
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+                <p style={{fontWeight: '600', margin: 0, color: cor}}>{dataEntrega.toLocaleDateString('pt-BR')}</p>
+                <span style={{fontSize: 12, fontWeight: 600, color: cor, marginTop: 2}}>{statusPrazo}</span>
+            </div>
+        );
+    }
     
+    function formataCPF(cpf) {
+        cpf = cpf.replace(/[^\d]/g, "");
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    }
+
+    const pessoaTemplate = (rowData) => {
+        let label = '';
+        let cpf = '';
+        if(rowData.tipo_tarefa === 'admissao') {
+            label = rowData.candidato_nome || '-';
+            cpf = rowData.candidato_cpf || '-';
+        } else if(rowData.tipo_tarefa === 'demissao' || rowData.tipo_tarefa === 'ferias') {
+            label = rowData.colaborador_nome || '-';
+            cpf = rowData.colaborador_cpf || '-';
+        } else if(rowData.tipo_tarefa === 'envio_variaveis') {
+            label = rowData.filial_nome || '-';
+            cpf = null;
+        } else if(rowData.tipo_tarefa === 'adiantamento') {
+            label = rowData.colaborador_nome || '-';
+            cpf = rowData.colaborador_cpf || '-';
+        } else if(rowData.tipo_tarefa === 'encargos') {
+            label = rowData.filial_nome || '-';
+            cpf = null;
+        } else if(rowData.tipo_tarefa === 'folha') {
+            label = rowData.colaborador_nome || '-';
+            cpf = rowData.colaborador_cpf || '-';
+        }
+
+        
+            cpf = cpf ? formataCPF(cpf) : '---';
+            return <div key={rowData.id}>
+                <Texto weight={700} width={'100%'}>
+                    {label}
+                </Texto>
+                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                    {cpf ? 'CPF:' : ''}&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
+                </div>
+            </div>
+    };
+
+    // Template para coluna do cliente
+    const clienteTemplate = (rowData) => {
+        return (
+            <>
+                <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
+                <div data-pr-tooltip={rowData.client_nome || '-'} className="cliente">
+                    <CustomImage src={rowData.client_simbolo} width={24} height={24} />
+                </div>
+            </>
+        );
+    };
+
     return (
         <>
-            <BotaoGrupo align={'space-between'} wrap>
-                {!colaborador && (
-                    <>
-                        <div className="flex justify-content-end">
-                            <span className="p-input-icon-left">
-                                <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
-                            </span>
-                        </div>
-                        <BotaoGrupo align="end" gap="8px">
-                            {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
-                                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" stroke="white" color="white"/> Registrar Tarefa</Botao>
-                            }
-                        </BotaoGrupo>
-                    </>
-                )}
-            </BotaoGrupo>
-            <DataTable value={tarefas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontrados tarefas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeTipoTemplate} field="tipo" header="Tipo" style={{ width: '30%' }}></Column>
-                <Column body={representativeRecorrenciaTemplate} field="tipo_recorrencia" header="Recorrência" style={{width: '15%'}}></Column>
-                <Column body={representativeDataTemplate} field="data" header="Data de Entrega" style={{width: '15%'}}></Column>
-                <Column body={representativeConcluidoTemplate} field="feito" header="Concluídos" style={{ width: '10%' }}></Column>
-                <Column body={representativeProgressTemplate} field="feito" header="Progresso" style={{ width: '45%' }}></Column>
-                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '25%' }}></Column>
+            <DataTable 
+                value={tarefasFiltradas} 
+                filters={filters} 
+                globalFilterFields={['titulo']}  
+                emptyMessage="Não foram encontrados tarefas" 
+                selection={selectedVaga} 
+                onSelectionChange={(e) => verDetalhes(e.value)} 
+                selectionMode="single" 
+                paginator 
+                rows={10}  
+                tableStyle={{ minWidth: '68vw' }}
+                header={headerTemplate}
+            >
+                <Column body={tipoTarefaTagTemplate} field="tipo_tarefa" header="Tipo de Tarefa" style={{ width: '18%' }} />
+                <Column body={pessoaTemplate} field="pessoa" header="Referência" style={{ width: '15%' }} />
+                <Column body={dataInicioTemplate} field="data_inicio" header="Data de Início" style={{width: '10%'}} />
+                <Column body={dataEntregaTemplate} field="data_entrega" header="Data de Entrega" style={{width: '10%'}} />
+                <Column body={representativeTipoTemplate} field="tipo" header="Titulo" style={{ width: '11%' }}></Column>
+                <Column body={clienteTemplate} field="client_nome" header="Cliente" style={{ width: '8%' }} />
+                <Column body={representativStatusTemplate} field="status" header="Status" style={{ width: '14%' }}></Column>
             </DataTable>
             <ModalTarefas opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </>

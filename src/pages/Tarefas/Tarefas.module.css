@@ -44,3 +44,10 @@
     stroke: var(--white);
     color: var(--white);
 }
+
+.progressBar {
+    margin-top: 5px;
+    & .p-progressbar-label {
+        color: var(--white)!important;
+    }
+}

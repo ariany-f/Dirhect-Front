@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Image } from "primereact/image";
 
-const CustomImage = ({ src, title, width = 90, height=45, size = 50, borderRadius = '10px' }) => {
+const CustomImage = ({ src, title, width = 90, height=45, size = 50, borderRadius = '10px', classe = '' }) => {
   const [imgError, setImgError] = useState(false);
 
   // Função para pegar as iniciais do título
@@ -30,6 +30,7 @@ const CustomImage = ({ src, title, width = 90, height=45, size = 50, borderRadiu
           fontSize: size / 5,
           textTransform: "uppercase",
         }}
+        className={classe}
       >
         {title && getInitials(title)}
       </div>
@@ -38,6 +39,7 @@ const CustomImage = ({ src, title, width = 90, height=45, size = 50, borderRadiu
 
   return (
     <img
+      className={classe}
       src={src}
       alt={title}
       style={{objectFit: 'contain', maxHeight: '45px'}}

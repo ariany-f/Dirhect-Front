@@ -1,4 +1,4 @@
-import styles from './Pedidos.module.css'
+import styles from './Tarefas.module.css'
 import styled from "styled-components"
 import { Link, Outlet, useLocation, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
