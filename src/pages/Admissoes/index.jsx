@@ -29,6 +29,7 @@ const Admissoes = () => {
     } = useVagasContext()
 
     useEffect(() => {
+        console.log(vagas)
         if((!admissoes) || admissoes.length === 0){
 
             // Função para adicionar candidatos ao objeto admissões
@@ -45,6 +46,7 @@ const Admissoes = () => {
                                     id: vaga.id,
                                     adiantamento_percentual: vaga.adiantamento_percentual,
                                     candidato: candidato,
+                                    documentos_requeridos: vaga.documentos_requeridos,
                                     status
                                 }
                             ]);
@@ -55,7 +57,7 @@ const Admissoes = () => {
 
 
             // Adicionando candidatos das vagas abertas
-            adicionarCandidatos(vagas.vagas.abertas, "Aberta");
+            adicionarCandidatos(vagas, "Aberta");
         }
     }, [])
 

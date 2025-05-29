@@ -81,12 +81,6 @@ const CandidatoRegistro = () => {
     const [candidato, setCandidato] = useState(null)
     const [classError, setClassError] = useState([])
     const stepperRef = useRef(null);
-    const [arquivos, setArquivos] = useState([
-        { id: 1, nome: 'RG', caminho: null },
-        { id: 2, nome: 'Comprovante de Residência', caminho: null },
-        { id: 3, nome: 'Comprovante de Escolaridade', caminho: null },
-        { id: 4, nome: 'Carteira de Vacinação', caminho: null },
-    ]);
     const [educacao, setEducacao] = useState([
         { id: 1, nivel: '', instituicao: '', curso: '', dataInicio: '', dataConclusao: '', isLocked: false },
     ]);
@@ -148,6 +142,7 @@ const CandidatoRegistro = () => {
     const setHorario = (horario) => setCandidatoVaga("horario", horario);
     const setFuncao = (funcao) => setCandidatoVaga("funcao", funcao);
     const setSindicato = (sindicato) => setCandidatoVaga("sindicato", sindicato);
+    const setVaga = (vaga) => setCandidatoVaga("vaga", vaga);
     
 
     const setBankNumber = (bankNumber) => setCandidatoBanco("bankNumber", bankNumber);
@@ -365,7 +360,7 @@ const CandidatoRegistro = () => {
             const base64 = await convertToBase64(file);
     
             // Atualiza a interface com o nome do arquivo antes do upload
-            setArquivos((prev) =>
+            setCandidato((prev) =>
                 prev.map((arquivo) =>
                     arquivo.id === arquivoId ? { ...arquivo, caminho: file.name } : arquivo
                 )
@@ -387,7 +382,7 @@ const CandidatoRegistro = () => {
             });
     
             // Atualiza a lista com o caminho retornado pela API
-            setArquivos((prev) =>
+            setCandidato((prev) =>
                 prev.map((arquivo) =>
                     arquivo.id === arquivoId ? { ...arquivo, caminho: response.data.caminho } : arquivo
                 )
@@ -560,15 +555,14 @@ const CandidatoRegistro = () => {
     } = useVagasContext()
 
     useEffect(() => {
-        console.log(candidato)
         if(id)
         {
             if(!candidato){
-                const obj = vagas.vagas;
+                const obj = vagas;
 
                 // Procurar o candidato nas vagas abertas e canceladas
                 // Percorrer as vagas abertas
-                for (let vaga of obj.abertas) {
+                for (let vaga of obj) {
                     const candidatoEncontrado = vaga.candidatos.find(c => c.id == id);
                     
                     if (candidatoEncontrado) {
@@ -576,28 +570,49 @@ const CandidatoRegistro = () => {
                         setExperiencia(candidatoEncontrado.experiencia);
                         setEducacao(candidatoEncontrado.educacao);
                         setHabilidades(candidatoEncontrado.habilidades);
+                        setVaga(vaga);
                         break;  // Sai do loop assim que encontrar o candidato
-                    }
-                }
-            
-                // Caso o candidato não tenha sido encontrado nas vagas abertas, procurar nas vagas canceladas
-                if (!candidato) {
-                    for (let vaga of obj.canceladas) {
-                        const candidatoEncontrado = vaga.candidatos.find(c => c.id == id);
-            
-                        if (candidatoEncontrado) {
-                            setCandidato(candidatoEncontrado);
-                            setExperiencia(candidatoEncontrado.experiencia);
-                            setEducacao(candidatoEncontrado.educacao);
-                            setHabilidades(candidatoEncontrado.habilidades);
-                            break;  // Sai do loop assim que encontrar o candidato
-                        }
                     }
                 }
             }
         }
     }, [])
 
+    // Função para obter os documentos requeridos da vaga
+    const getDocumentosRequeridos = () => {
+        if (!candidato || !candidato.vaga || !candidato.vaga?.vaga?.documentos_requeridos) return [];
+        return candidato.vaga.vaga.documentos_requeridos;
+    };
+
+    // Função para obter o arquivo já enviado pelo candidato para um documento requerido
+    const getArquivoCandidato = (idRequerido) => {
+        if (!candidato || !candidato.documentos) return null;
+        const doc = candidato.documentos.find(d => d.id_requerido === idRequerido);
+        return doc ? doc.arquivo : null;
+    };
+
+    // Função para atualizar o arquivo do candidato para um documento requerido
+    const handleUploadDocumento = async (idRequerido, file) => {
+        if (!file) return;
+        try {
+            // Converte o arquivo para Base64
+            const base64 = await convertToBase64(file);
+            // Aqui você pode fazer o upload para a API, se necessário
+            // Simulação: salva o nome do arquivo no candidato.documentos
+            setCandidato((prev) => {
+                let docs = prev.documentos ? [...prev.documentos] : [];
+                const idx = docs.findIndex(d => d.id_requerido === idRequerido);
+                if (idx !== -1) {
+                    docs[idx] = { ...docs[idx], arquivo: file.name };
+                } else {
+                    docs.push({ id: docs.length + 1, id_requerido: idRequerido, arquivo: file.name });
+                }
+                return { ...prev, documentos: docs };
+            });
+        } catch (error) {
+            console.error('Erro ao enviar arquivo:', error);
+        }
+    };
 
     return (
         <ConteudoFrame>
@@ -606,23 +621,23 @@ const CandidatoRegistro = () => {
                 <StepperPanel header="Documentos Pessoais">
                     <ScrollPanel style={{ width: '100%', height: '380px'}}>
                         <Col12>
-                        {arquivos.map((arquivo) => (
-                            <Col6>
-                                <div key={arquivo.id}>
-                                    <p>{arquivo.nome}</p>
-                                    <CampoArquivo
-                                        onFileChange={(file) => handleUpload(arquivo.id, file)}
-                                        accept=".pdf, .jpg, .png"
-                                        id={`arquivo-${arquivo.id}`}
-                                        name={`arquivo-${arquivo.id}`}
-                                    />
-                                    {arquivo.caminho && <p>Arquivo selecionado: {arquivo.caminho}</p>}
-                                </div>
-                            </Col6>
-                        ))}</Col12>
+                            {getDocumentosRequeridos().map((doc) => (
+                                <Col6 key={doc.id} style={{ marginTop: 10, marginBottom: 5 }}>
+                                    <div>
+                                        <p>{doc.nome}</p>
+                                        <CampoArquivo
+                                            onFileChange={(file) => handleUploadDocumento(doc.id, file)}
+                                            accept={doc.tipoArquivo ? doc.tipoArquivo.split(',').map(t => '.' + t.trim()).join(',') : '.pdf, .jpg, .png'}
+                                            id={`arquivo-${doc.id}`}
+                                            name={`arquivo-${doc.id}`}
+                                        />
+                                        {getArquivoCandidato(doc.id) && <p>Arquivo selecionado: {getArquivoCandidato(doc.id)}</p>}
+                                    </div>
+                                </Col6>
+                            ))}
+                        </Col12>
                     </ScrollPanel>
                     <Frame padding="30px" estilo="end">
-                        {/* <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao> */}
                         <BotaoGrupo>
                             <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
                             <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>

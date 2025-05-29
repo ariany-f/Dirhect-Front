@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "nome": "CPF",
+        "tipoArquivo": "jpg, png, pdf",
+        "frenteVerso": true,
+        "instrucoes": "Instruções",
+        "obrigatorio": true
+    },
+    {
+        "id": 2,
+        "nome": "RG",
+        "tipoArquivo": "jpg, png, pdf",
+        "frenteVerso": false,
+        "instrucoes": "Instruções",
+        "obrigatorio": true
+    },
+    {
+        "id": 3,
+        "nome": "CNH",
+        "tipoArquivo": "jpg, png, pdf",
+        "frenteVerso": false,
+        "instrucoes": "Instruções",
+        "obrigatorio": false
+    },
+    {
+        "id": 4,
+        "nome": "Comprovante de Endereço",
+        "tipoArquivo": "jpg, png, pdf",
+        "frenteVerso": false,
+        "instrucoes": "Instruções",
+        "obrigatorio": false
+    },
+    {
+        "id": 5,
+        "nome": "Reservista",
+        "tipoArquivo": "jpg, png, pdf",
+        "frenteVerso": false,
+        "instrucoes": "Instruções",
+        "obrigatorio": false
+    },
+    {
+        "id": 6,
+        "nome": "Comprovante de Endereço",
+        "tipoArquivo": "jpg, png, pdf",
+        "frenteVerso": false,
+        "instrucoes": "Instruções",
+        "obrigatorio": false
+    }
+]

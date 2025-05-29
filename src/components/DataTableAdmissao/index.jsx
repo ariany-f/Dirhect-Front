@@ -98,40 +98,29 @@ function DataTableAdmissao({ vagas }) {
     };
     
     const representativeStatusTemplate = (rowData) => {
+        const documentosRequeridos = rowData.documentos_requeridos || [];
+        
+        const documentosCandidato = rowData.candidato.documentos || [];
+        // Filtra apenas obrigatórios
+        const obrigatorios = documentosRequeridos.filter(doc => doc.obrigatorio);
+        const total = obrigatorios.length;
+        let preenchidos = 0;
         let pendentes = 0;
-        let total = 0;
-        // Arquivos
-        if (rowData.candidato.arquivos) {
-            total += rowData.candidato.arquivos.length;
-            for (let arquivo of rowData.candidato.arquivos) {
-                if (arquivo.status !== "Anexado") {
-                    pendentes++;
-                }
-            }
-        }
-        // Campos obrigatórios (exemplo: nome, cpf, dataNascimento, email, telefone)
-        const obrigatorios = [
-            'nome', 'cpf', 'dataNascimento', 'email', 'telefone'
-        ];
-        for (let campo of obrigatorios) {
-            total++;
-            const valor = rowData.candidato[campo];
-            if (valor === "" || valor === null || valor === undefined) {
+        obrigatorios.forEach(req => {
+            const docCandidato = documentosCandidato.find(doc => doc.id_requerido === req.id && doc.arquivo && doc.arquivo.length > 0);
+            if (docCandidato) {
+                preenchidos++;
+            } else {
                 pendentes++;
             }
-        }
-        const preenchidos = total - pendentes;
+        });
         const percent = total > 0 ? Math.round((preenchidos / total) * 100) : 0;
         return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <ProgressBar value={percent} style={{ height: 12, width: 80 }} showValue={false} />
-                <span style={{ minWidth: 48, fontWeight: 400 }}>{`${pendentes}/${total}`}</span>
+                <span style={{ minWidth: 48, fontWeight: 400 }}>{`${preenchidos}/${total}`}</span>
             </div>
         );
-    }
-    
-    const representativeDevolucaoTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.candidato.dataDevolucao).toLocaleDateString("pt-BR")}</p>
     }
 
     const representativeAdiantamentoTemplate = (rowData) => {
@@ -237,7 +226,6 @@ function DataTableAdmissao({ vagas }) {
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
                 <Column body={vagaTemplate} field="vaga" header="Vaga" style={{ width: '18%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status Preenchimento" style={{ width: '25%' }}></Column>
-                <Column body={representativeDevolucaoTemplate} header="Data Devolução" style={{ width: '15%' }}></Column>
                 <Column body={representativeAdiantamentoTemplate} header="Adiantamento (%)" style={{ width: '12%' }} />
                 <Column body={representativeExameTemplate} header="Exame Médico" style={{ width: '14%' }} />
                 <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '15%' }}></Column>

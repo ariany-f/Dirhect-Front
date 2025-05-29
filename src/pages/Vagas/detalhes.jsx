@@ -25,6 +25,7 @@ import ModalDocumentoRequerido from '@components/ModalDocumentoRequerido'
 import { GrAdd, GrAddCircle } from 'react-icons/gr'
 import http from '@http'
 import ModalVaga from '@components/ModalVaga'
+import documentos from '@json/documentos_requeridos.json'
 import { unformatCurrency } from '@utils/formats'
 
 const ConteudoFrame = styled.div`
@@ -51,7 +52,7 @@ function DetalhesVaga() {
     const [vaga, setVaga] = useState(null)
     const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
-    const [documentos, setDocumentos] = useState([]);
+    // const [documentos, setDocumentos] = useState([]);
     const [modalDocumentoAberto, setModalDocumentoAberto] = useState(false);
     const [documentoEditando, setDocumentoEditando] = useState(null);
     const [modalEditarAberto, setModalEditarAberto] = useState(false);

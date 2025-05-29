@@ -4,6 +4,8 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 
 function DataTableDocumentos({ documentos = [], onEdit, onDelete }) {
+
+    
     const obrigatorioTemplate = (rowData) => (
         <Tag value={rowData.obrigatorio ? 'Sim' : 'Não'} style={{ backgroundColor: rowData.obrigatorio ? 'var(--error)' : 'var(--neutro-400)', color: 'white', fontWeight: 600, fontSize: 13, borderRadius: 8, padding: '4px 12px' }} />
     );
@@ -16,12 +18,20 @@ function DataTableDocumentos({ documentos = [], onEdit, onDelete }) {
             <FaTrash style={{ cursor: 'pointer', color: 'var(--error)' }} onClick={() => onDelete(rowData)} />
         </div>
     );
+    const frenteVersoTemplate = (rowData) => (
+        <span style={{ fontWeight: 500 }}>{rowData.frenteVerso ? 'Sim' : 'Não'}</span>
+    );
+    const instrucoesTemplate = (rowData) => (
+        <span style={{ fontWeight: 500 }}>{rowData.instrucoes}</span>
+    );
     return (
         <DataTable value={documentos} emptyMessage="Nenhum documento requerido">
-            <Column field="nome" header="Nome" style={{ width: '30%' }} />
-            <Column body={tipoTemplate} field="tipoArquivo" header="Tipo de Arquivo" style={{ width: '25%' }} />
+            <Column field="nome" header="Nome" style={{ width: '15%' }} />
+            <Column body={tipoTemplate} field="tipoArquivo" header="Extensões Permitidas" style={{ width: '25%' }} />
+            <Column body={frenteVersoTemplate} field="frenteVerso" header="Frente e Verso" style={{ width: '15%' }} />
+            <Column body={instrucoesTemplate} field="instrucoes" header="Instruções" style={{ width: '15%' }} />
             <Column body={obrigatorioTemplate} field="obrigatorio" header="Obrigatório" style={{ width: '15%' }} />
-            <Column body={actionTemplate} header="Ações" style={{ width: '15%' }} />
+            <Column body={actionTemplate} header="" style={{ width: '15%' }} />
         </DataTable>
     );
 }

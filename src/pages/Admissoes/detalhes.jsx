@@ -59,8 +59,7 @@ function DetalhesAdmissao() {
     useEffect(() => {
         if(!vaga)
         {
-            const obj = vagas.vagas;
-            const vg = [...obj.abertas, ...obj.canceladas].find(item => (item.id == id));
+            const vg = vagas.find(item => (item.id == id));
 
             if(vg) {
                 setVaga(vg)

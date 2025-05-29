@@ -1,320 +1,339 @@
-{
-  "vagas": {
-    "abertas": [
-      {
-        "id": 1,
-        "titulo": "Desenvolvedor Frontend",
-        "descricao": "Vaga para desenvolvedor frontend com experiência em React.",
-        "dataAbertura": "2023-01-15",
-        "dataEncerramento": "2025-07-15",
-        "deficiencia": true,
-        "qtd_vagas": 1,
-        "inclusao": true,
-        "inclusao_para": "Pessoas pretas",
-        "salario": 12000,
-        "periculosidade": "QC",
-        "insalubridade": "30%",
-        "status": "Ativa",
-        "adiantamento_percentual": 10,
-        "filial": "FILIAL RJ",
-        "centroCusto": "RECURSOS HUMANOS",
-        "departamento": "FINANCEIRO",
-        "secao": "SEÇÃO 001",
-        "cargo": "ESTAGIÁRIO",
-        "horario": "HORARIO 001 - 12:00",
-        "funcao": "DIRETOR",
-        "sindicato": "SINDICATO 001",
-        "candidatos": [
-            {
-                "id": 1,
-                "nome": "João Silva",
-                "email": "",
-                "cpf": "470.016.728-90",
-                "dataNascimento": "1988-02-15",
-                "dataExameMedico": "2025-03-10",
-                "dataInicio": "2025-04-10",
-                "telefone": "",
-                "deficiencia": true,
-                "statusDePreenchimento": "Em Análise",
-                "statusDeCandidato": "Aprovado",
-                "statusLgpd": true,
-                "endereco": {
-                    "cep": "",
-                    "street": "",
-                    "number": "",
-                    "complement": "",
-                    "district": "",
-                    "city": "",
-                    "state": ""
-                },
-                "educacao": [],
-                "experiencia" : [],
-                "habilidades": [
-                    {
-                        "id": 1,
-                        "nivel": "Avançado",
-                        "descricao": "CSS"
-                    }
-                ],
-                "arquivos": [
+[
+  {
+    "id": 1,
+    "titulo": "Desenvolvedor Frontend",
+    "descricao": "Vaga para desenvolvedor frontend com experiência em React.",
+    "dataAbertura": "2023-01-15",
+    "dataEncerramento": "2025-07-15",
+    "deficiencia": true,
+    "qtd_vagas": 1,
+    "inclusao": true,
+    "inclusao_para": "Pessoas pretas",
+    "salario": 12000,
+    "periculosidade": "QC",
+    "insalubridade": "30%",
+    "status": "Ativa",
+    "adiantamento_percentual": 10,
+    "filial": "FILIAL RJ",
+    "centroCusto": "RECURSOS HUMANOS",
+    "departamento": "FINANCEIRO",
+    "secao": "SEÇÃO 001",
+    "cargo": "ESTAGIÁRIO",
+    "horario": "HORARIO 001 - 12:00",
+    "funcao": "DIRETOR",
+    "sindicato": "SINDICATO 001",
+    "candidatos": [
+        {
+            "id": 1,
+            "nome": "João Silva",
+            "email": "",
+            "cpf": "470.016.728-90",
+            "dataNascimento": "1988-02-15",
+            "dataExameMedico": "2025-03-10",
+            "dataInicio": "2025-04-10",
+            "telefone": "",
+            "deficiencia": true,
+            "statusDePreenchimento": "Em Análise",
+            "statusDeCandidato": "Aprovado",
+            "statusLgpd": true,
+            "endereco": {
+                "cep": "",
+                "street": "",
+                "number": "",
+                "complement": "",
+                "district": "",
+                "city": "",
+                "state": ""
+            },
+            "educacao": [],
+            "experiencia" : [],
+            "habilidades": [
                 {
                     "id": 1,
-                    "nome": "RG",
-                    "caminho": "",
-                    "status": "Pendente"
-                },
-                {
-                    "id": 2,
-                    "nome": "Comprovante de Residência",
-                    "caminho": "/documentos/comprovante_residencia.pdf",
-                    "status": "Anexado"
+                    "nivel": "Avançado",
+                    "descricao": "CSS"
                 }
-                ],
-                "dataDevolucao": "2023-03-01"
-            },
-            {
-                "id": 2,
-                "nome": "Maria Oliveira",
-                "email": "maria.oliveira@example.com",
-                "cpf": "",
-                "dataNascimento": "1988-02-15",
-                "dataExameMedico": "2025-03-10",
-                "dataInicio": "2025-04-02",
-                "telefone": "(11) 98497-9026",
-                "deficiencia": true,
-                "statusDePreenchimento": "Preenchido",
-                "statusDeCandidato": "Aprovado",
-                "statusLgpd": false,
-                "endereco": {
-                    "cep": "",
-                    "street": "",
-                    "number": "",
-                    "complement": "",
-                    "district": "",
-                    "city": "",
-                    "state": ""
-                },
-                "educacao": [],
-                "experiencia" : [],
-                "habilidades": [],
-                "arquivos": [
-                    {
-                        "id": 1,
-                        "nome": "RG",
-                        "caminho": "",
-                        "status": "Anexado"
-                    },
-                    {
-                        "id": 2,
-                        "nome": "Comprovante de Residência",
-                        "caminho": "",
-                        "status": "Anexado"
-                    }
-                ],
-                "dataDevolucao": "2023-03-01"
-            },
-            {
-                "id": 3,
-                "nome": "Carlos Pereira",
-                "email": "carlos.pereira@example.com",
-                "cpf": "",
-                "dataNascimento": "1988-02-15",
-                "dataExameMedico": null,
-                "dataInicio": null,
-                "telefone": "",
-                "statusDePreenchimento": "Rejeitado",
-                "statusDeCandidato": "Rejeitado",
-                "statusLgpd": true,
-                "endereco": {
-                    "cep": "",
-                    "street": "",
-                    "number": "",
-                    "complement": "",
-                    "district": "",
-                    "city": "",
-                    "state": ""
-                },
-                "educacao": [],
-                "experiencia" : [],
-                "habilidades": [],
-                "arquivos": [
-                    {
-                        "id": 1,
-                        "nome": "RG",
-                        "caminho": "",
-                        "status": ""
-                    },
-                    {
-                        "id": 2,
-                        "nome": "Comprovante de Residência",
-                        "caminho": "",
-                        "status": ""
-                    }
-                ],
-                "dataDevolucao": "2023-03-01"
-            }
-        ]
-      },
-      {
-        "id": 2,
-        "titulo": "Analista de Sistemas",
-        "descricao": "Vaga para analista de sistemas com conhecimento em metodologias ágeis.",
-        "dataAbertura": "2023-01-20",
-        "dataEncerramento": "2025-02-20",
-        "salario": 10000,
-        "periculosidade": "QC",
-        "insalubridade": "30%",
-        "status": "Ativa",
-        "adiantamento_percentual": 10,
-        "deficiencia": true,
-        "qtd_vagas": 1,
-        "inclusao": true,
-        "inclusao_para": "Pessoas pretas",
-        "filial": "FILIAL RJ",
-        "centroCusto": "RECURSOS HUMANOS",
-        "departamento": "FINANCEIRO",
-        "secao": "SEÇÃO 001",
-        "cargo": "ESTAGIÁRIO",
-        "horario": "HORARIO 001 - 12:00",
-        "funcao": "DIRETOR",
-        "sindicato": "SINDICATO 001",
-        "candidatos": [
-            {
-                "id": 4,
-                "nome": "Ana Costa",
-                "email": "ana.costa@example.com",
-                "cpf": "",
-                "dataNascimento": "1988-02-15",
-                "dataExameMedico": null,
-                "dataInicio": "2025-04-02",
-                "telefone": "",
-                "deficiencia": true,
-                "statusDePreenchimento": "Em Análise",
-                "statusDeCandidato": "Aprovado",
-                "statusLgpd": true,
-                "endereco": {
-                    "cep": "",
-                    "street": "",
-                    "number": "",
-                    "complement": "",
-                    "district": "",
-                    "city": "",
-                    "state": ""
-                },
-                "educacao": [],
-                "experiencia" : [],
-                "habilidades": [],
-                "arquivos": [
+            ],
+            "documentos": [
                 {
                     "id": 1,
-                    "nome": "RG",
-                    "caminho": "",
-                    "status": "Pendente"
-                },
-                {
-                    "id": 2,
-                    "nome": "Comprovante de Residência",
-                    "caminho": "/documentos/comprovante_residencia.pdf",
-                    "status": "Anexado"
+                    "id_requerido": 5,
+                    "arquivo": "/documentos/comprovante_residencia.pdf"
                 }
-                ],
-                "dataDevolucao": "2023-03-01"
+            ]
+        },
+        {
+            "id": 2,
+            "nome": "Maria Oliveira",
+            "email": "maria.oliveira@example.com",
+            "cpf": "",
+            "dataNascimento": "1988-02-15",
+            "dataExameMedico": "2025-03-10",
+            "dataInicio": "2025-04-02",
+            "telefone": "(11) 98497-9026",
+            "deficiencia": true,
+            "statusDePreenchimento": "Preenchido",
+            "statusDeCandidato": "Aprovado",
+            "statusLgpd": false,
+            "endereco": {
+                "cep": "",
+                "street": "",
+                "number": "",
+                "complement": "",
+                "district": "",
+                "city": "",
+                "state": ""
             },
-            {
-                "id": 5,
-                "nome": "Pedro Santos",
-                "email": "pedro.santos@example.com",
-                "cpf": "",
-                "dataNascimento": "1988-02-15",
-                "dataExameMedico": "2025-03-10",
-                "dataInicio": "2025-04-02",
-                "telefone": "",
-                "deficiencia": true,
-                "statusDePreenchimento": "Preenchido",
-                "statusDeCandidato": "Aprovado",
-                "statusLgpd": true,
-                "endereco": {
-                    "cep": "",
-                    "street": "",
-                    "number": "",
-                    "complement": "",
-                    "district": "",
-                    "city": "",
-                    "state": ""
-                },
-                "educacao": [],
-                "experiencia" : [],
-                "habilidades": [],
-                "arquivos": [
-                    {
-                        "id": 1,
-                        "nome": "RG",
-                        "caminho": "",
-                        "status": "Pendente"
-                    },
-                    {
-                        "id": 2,
-                        "nome": "Comprovante de Residência",
-                        "caminho": "/documentos/comprovante_residencia.pdf",
-                        "status": "Anexado"
-                    }
-                ],
-                "dataDevolucao": "2023-03-01"
-            }
-        ]
-      }
+            "educacao": [],
+            "experiencia" : [],
+            "habilidades": [],
+            "documentos": [
+                {
+                    "id": 1,
+                    "id_requerido": 1,
+                    "arquivo": ""
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "nome": "Carlos Pereira",
+            "email": "carlos.pereira@example.com",
+            "cpf": "",
+            "dataNascimento": "1988-02-15",
+            "dataExameMedico": null,
+            "dataInicio": null,
+            "telefone": "",
+            "statusDePreenchimento": "Rejeitado",
+            "statusDeCandidato": "Rejeitado",
+            "statusLgpd": true,
+            "endereco": {
+                "cep": "",
+                "street": "",
+                "number": "",
+                "complement": "",
+                "district": "",
+                "city": "",
+                "state": ""
+            },
+            "educacao": [],
+            "experiencia" : [],
+            "habilidades": [],
+            "documentos": [
+                {
+                    "id": 1,
+                    "id_requerido": 5,
+                    "arquivo": "/documentos/comprovante_residencia.pdf"
+                }
+            ]
+        }
     ],
-    "canceladas": [
-      {
-        "id": 3,
-        "titulo": "Desenvolvedor Backend",
-        "descricao": "Vaga cancelada para desenvolvedor backend.",
-        "dataAbertura": "2023-01-10",
-        "dataEncerramento": "2025-01-20",
-        "salario": 11000,
-        "periculosidade": "QC",
-        "insalubridade": "30%",
-        "status": "Cancelada",
-        "deficiencia": true,
-        "qtd_vagas": 1,
-        "inclusao": true,
-        "inclusao_para": "Pessoas pretas",
-        "filial": "FILIAL SP",
-        "centroCusto": "RECURSOS HUMANOS",
-        "departamento": "FINANCEIRO",
-        "secao": "SEÇÃO 001",
-        "cargo": "ESTAGIÁRIO",
-        "horario": "HORARIO 001 - 12:00",
-        "funcao": "DIRETOR",
-        "sindicato": "SINDICATO 001",
-        "adiantamento_percentual": 10,
-        "candidatos": []
-      },
-      {
-        "id": 4,
-        "titulo": "Gerente de Projetos",
-        "descricao": "Vaga cancelada para gerente de projetos.",
-        "dataAbertura": "2023-01-05",
-        "dataEncerramento": "2025-01-15",
-        "salario": 15000,
-        "deficiencia": true,
-        "qtd_vagas": 1,
-        "inclusao": true,
-        "inclusao_para": "Pessoas pretas",
-        "filial": "FILIAL SP",
-        "centroCusto": "RECURSOS HUMANOS",
-        "departamento": "FINANCEIRO",
-        "secao": "SEÇÃO 001",
-        "cargo": "ESTAGIÁRIO",
-        "horario": "HORARIO 001 - 12:00",
-        "funcao": "DIRETOR",
-        "sindicato": "SINDICATO 001",
-        "periculosidade": "QC",
-        "insalubridade": "30%",
-        "status": "Cancelada",
-        "adiantamento_percentual": 10,
-        "candidatos": []
-      }
+    "documentos_requeridos": [
+        {
+            "id": 1,
+            "nome": "CPF",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": true,
+            "instrucoes": "Instruções",
+            "obrigatorio": true
+        },
+        {
+            "id": 2,
+            "nome": "RG",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": true
+        },
+        {
+            "id": 3,
+            "nome": "CNH",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": false
+        },
+        {
+            "id": 4,
+            "nome": "Comprovante de Endereço",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": true
+        },
+        {
+            "id": 5,
+            "nome": "Reservista",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": true
+        },
+        {
+            "id": 6,
+            "nome": "Comprovante de Endereço",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": false
+        }
+    ]
+  },
+  {
+    "id": 2,
+    "titulo": "Analista de Sistemas",
+    "descricao": "Vaga para analista de sistemas com conhecimento em metodologias ágeis.",
+    "dataAbertura": "2023-01-20",
+    "dataEncerramento": "2025-02-20",
+    "salario": 10000,
+    "periculosidade": "QC",
+    "insalubridade": "30%",
+    "status": "Ativa",
+    "adiantamento_percentual": 10,
+    "deficiencia": true,
+    "qtd_vagas": 1,
+    "inclusao": true,
+    "inclusao_para": "Pessoas pretas",
+    "filial": "FILIAL RJ",
+    "centroCusto": "RECURSOS HUMANOS",
+    "departamento": "FINANCEIRO",
+    "secao": "SEÇÃO 001",
+    "cargo": "ESTAGIÁRIO",
+    "horario": "HORARIO 001 - 12:00",
+    "funcao": "DIRETOR",
+    "sindicato": "SINDICATO 001",
+    "candidatos": [
+        {
+            "id": 4,
+            "nome": "Ana Costa",
+            "email": "ana.costa@example.com",
+            "cpf": "",
+            "dataNascimento": "1988-02-15",
+            "dataExameMedico": null,
+            "dataInicio": "2025-04-02",
+            "telefone": "",
+            "deficiencia": true,
+            "statusDePreenchimento": "Em Análise",
+            "statusDeCandidato": "Aprovado",
+            "statusLgpd": true,
+            "endereco": {
+                "cep": "",
+                "street": "",
+                "number": "",
+                "complement": "",
+                "district": "",
+                "city": "",
+                "state": ""
+            },
+            "educacao": [],
+            "experiencia" : [],
+            "habilidades": [],
+            "documentos": [
+                {
+                    "id": 1,
+                    "id_requerido": 4,
+                    "arquivo": "/documentos/comprovante_residencia.pdf"
+                },
+                {
+                    "id": 2,
+                    "id_requerido": 5,
+                    "arquivo": "/documentos/comprovante_residencia.pdf"
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "nome": "Pedro Santos",
+            "email": "pedro.santos@example.com",
+            "cpf": "",
+            "dataNascimento": "1988-02-15",
+            "dataExameMedico": "2025-03-10",
+            "dataInicio": "2025-04-02",
+            "telefone": "",
+            "deficiencia": true,
+            "statusDePreenchimento": "Preenchido",
+            "statusDeCandidato": "Aprovado",
+            "statusLgpd": true,
+            "endereco": {
+                "cep": "",
+                "street": "",
+                "number": "",
+                "complement": "",
+                "district": "",
+                "city": "",
+                "state": ""
+            },
+            "educacao": [],
+            "experiencia" : [],
+            "habilidades": [],
+            "documentos": [
+                {
+                    "id": 1,
+                    "id_requerido": 1,
+                    "arquivo": "/documentos/comprovante_residencia.pdf"
+                },
+                {
+                    "id": 2,
+                    "id_requerido": 2,
+                    "arquivo": "/documentos/comprovante_residencia.pdf"
+                },
+                {
+                    "id": 3,
+                    "id_requerido": 3,
+                    "arquivo": "/documentos/comprovante_residencia.pdf"
+                }
+            ]
+        }
+    ],
+    "documentos_requeridos": [
+        {
+            "id": 1,
+            "nome": "CPF",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": true,
+            "instrucoes": "Instruções",
+            "obrigatorio": true
+        },
+        {
+            "id": 2,
+            "nome": "RG",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": true
+        },
+        {
+            "id": 3,
+            "nome": "CNH",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": false
+        },
+        {
+            "id": 4,
+            "nome": "Comprovante de Endereço",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": false
+        },
+        {
+            "id": 5,
+            "nome": "Reservista",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": false
+        },
+        {
+            "id": 6,
+            "nome": "Comprovante de Endereço",
+            "tipoArquivo": "jpg, png, pdf",
+            "frenteVerso": false,
+            "instrucoes": "Instruções",
+            "obrigatorio": false
+        }
     ]
   }
-} 
+] 

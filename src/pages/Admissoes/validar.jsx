@@ -62,6 +62,7 @@ const ValidarAdmissoes = () => {
                                     vaga: vaga.titulo,
                                     id: vaga.id,
                                     candidato: candidato,
+                                    documentos_requeridos: vaga.documentos_requeridos,
                                     status
                                 }
                             ]);
@@ -72,7 +73,7 @@ const ValidarAdmissoes = () => {
 
 
             // Adicionando candidatos das vagas abertas
-            adicionarCandidatos(vagas.vagas.abertas, "Aberta");
+            adicionarCandidatos(vagas, "Aberta");
         }
     }, [])
 

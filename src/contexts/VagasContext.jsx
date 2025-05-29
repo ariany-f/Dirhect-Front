@@ -22,7 +22,7 @@ export const VagasProvider = ({ children }) => {
         if (storedVagas) {
             setVagas(JSON.parse(storedVagas));
         } else {
-            setVagas(vagasData.vagas);
+            setVagas(vagasData);
         }
     }, [vagasData]);
 
