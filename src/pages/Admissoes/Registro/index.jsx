@@ -666,301 +666,314 @@ const CandidatoRegistro = () => {
                     </Frame>
                 </StepperPanel>
                 <StepperPanel header="Dados Pessoais">
-                        <Container padding={'30px 0 0 0'} gap="10px">
-
-                            <ScrollPanel style={{ width: '100%', height: '380px'}}>
-                            <Col12>
-                                <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError}
-                                        name="nome" 
-                                        valor={candidato?.nome ?? ''} 
-                                        setValor={setName} 
-                                        type="text" 
-                                        label="Nome" 
-                                        placeholder="Digite o nome" 
-                                        disabled={!!self}
-                                    />
-                                </Col6>
-                                <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError}
-                                        name="email" 
-                                        valor={candidato?.email ?? ''} 
-                                        setValor={setEmail} 
-                                        type="text" 
-                                        label="E-mail" 
-                                        placeholder="Digite o email" />
-                                </Col6>
-                            </Col12>
-                            <Col12>
-                                <Col6>
-                                    <CampoTexto 
-                                        type="date" 
-                                        valor={candidato?.dataNascimento} 
-                                        setValor={setDataNascimento}
-                                        label="Data de Nascimento"  />
-                                </Col6>
-                                <Col6>
-                                    <CampoTexto 
-                                        camposVazios={classError} 
-                                        patternMask={['999.999.999-99', '99.999.999/9999-99']} 
-                                        name="cpf" 
-                                        valor={candidato?.cpf} 
-                                        setValor={setCpf} 
-                                        type="text" 
-                                        label="CPF" 
-                                        placeholder="Digite p CPF" 
-                                        disabled={!!self}
-                                    />
-                                </Col6>
-                            </Col12>
-                            <Col12>
-                                <Col6>
-                                    <div style={{ marginBottom: 8, fontWeight: 600 }}>Mãe conhecida?</div>
-                                    <SwitchInput
-                                        checked={candidato?.maeConhecida ?? true}
-                                        onChange={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, maeConhecida: valor }))}
-                                    />
-                                    <CampoTexto 
-                                        camposVazios={classError}
-                                        name="nomeMae" 
-                                        valor={candidato?.nomeMae ?? ''} 
-                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, nomeMae: valor }))} 
-                                        type="text" 
-                                        label="Nome da Mãe" 
-                                        placeholder="Digite o nome da mãe"
-                                        disabled={candidato?.maeConhecida === false}
-                                    />
-                                    <CampoTexto 
-                                        camposVazios={classError}
-                                        name="cpfMae" 
-                                        valor={candidato?.cpfMae ?? ''} 
-                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, cpfMae: valor }))} 
-                                        type="text" 
-                                        label="CPF da Mãe" 
-                                        patternMask={["999.999.999-99"]}
-                                        placeholder="Digite o CPF da mãe"
-                                        disabled={candidato?.maeConhecida === false}
-                                    />
-                                    <CampoTexto 
-                                        camposVazios={classError}
-                                        name="dataNascimentoMae" 
-                                        valor={candidato?.dataNascimentoMae ?? ''} 
-                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, dataNascimentoMae: valor }))} 
-                                        type="date" 
-                                        label="Data de Nascimento da Mãe" 
-                                        placeholder="Data de nascimento"
-                                        disabled={candidato?.maeConhecida === false}
-                                    />
-                                </Col6>
-                                <Col6>
-                                    <div style={{ marginBottom: 8, fontWeight: 600 }}>Pai conhecido?</div>
-                                    <SwitchInput
-                                        checked={candidato?.paiConhecido ?? true}
-                                        onChange={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, paiConhecido: valor }))}
-                                    />
-                                    <CampoTexto 
-                                        camposVazios={classError}
-                                        name="nomePai" 
-                                        valor={candidato?.nomePai ?? ''} 
-                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, nomePai: valor }))} 
-                                        type="text" 
-                                        label="Nome do Pai" 
-                                        placeholder="Digite o nome do pai"
-                                        disabled={candidato?.paiConhecido === false}
-                                    />
-                                    <CampoTexto 
-                                        camposVazios={classError}
-                                        name="cpfPai" 
-                                        valor={candidato?.cpfPai ?? ''} 
-                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, cpfPai: valor }))} 
-                                        type="text" 
-                                        label="CPF do Pai" 
-                                        patternMask={["999.999.999-99"]}
-                                        placeholder="Digite o CPF do pai"
-                                        disabled={candidato?.paiConhecido === false}
-                                    />
-                                    <CampoTexto 
-                                        camposVazios={classError}
-                                        name="dataNascimentoPai" 
-                                        valor={candidato?.dataNascimentoPai ?? ''} 
-                                        setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, dataNascimentoPai: valor }))} 
-                                        type="date" 
-                                        label="Data de Nascimento do Pai" 
-                                        placeholder="Data de nascimento"
-                                        disabled={candidato?.paiConhecido === false}
-                                    />
-                                </Col6>
-                            </Col12>
-                            <Col12>
-                                <Col6>
-                                    <div style={{ marginBottom: 8, fontWeight: 600 }}>Possui deficiência?</div>
-                                    <SwitchInput
-                                        checked={!!candidato?.possuiDeficiencia}
-                                        onChange={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, possuiDeficiencia: valor }))}
-                                    />
-                                    {candidato?.possuiDeficiencia && (
+                    <Container padding={'30px 0 0 0'} gap="10px">
+                        <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
+                            <ScrollPanel style={{ width: '100%', height: '390px'}}>
+                                <Col12 style={{padding:'0 10px'}}>
+                                    <Col6>
                                         <CampoTexto 
                                             camposVazios={classError}
-                                            name="deficiencia" 
-                                            valor={candidato?.deficiencia ?? ''} 
-                                            setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, deficiencia: valor }))} 
+                                            name="nome" 
+                                            valor={candidato?.nome ?? ''} 
+                                            setValor={setName} 
                                             type="text" 
-                                            label="Qual deficiência?" 
-                                            placeholder="Descreva a deficiência" />
-                                    )}
-                                </Col6>
-                            </Col12>
-                            <Frame padding="24px 0px">
-                                <Titulo>
-                                    <h5>Dados Bancários</h5>
-                                </Titulo>
-                            
-                                <Col12>
-                                    <Col6>
-                                    <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="bank.number" 
-                                            valor={candidato?.bank?.number} 
-                                            setValor={setBankNumber} 
-                                            type="text" 
-                                            label="Banco" 
-                                            placeholder="Banco" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="bank.account" 
-                                            valor={candidato?.bank?.account} 
-                                            setValor={setBankAccount} 
-                                            type="text" 
-                                            label="Conta Corrente" 
-                                            placeholder="Conta Corrente" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="bank.account.digit" 
-                                            width={'100%'}
-                                            valor={candidato?.bank?.account.digit} 
-                                            setValor={setBankAccountDigit} 
-                                            type="text" 
-                                            label="Digito CC" 
-                                            placeholder="Digito CC" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="bank.agency" 
-                                            valor={candidato?.bank?.agency} 
-                                            setValor={setBankAgency} 
-                                            type="text" 
-                                            label="Agência" 
-                                            placeholder="Digite a agência" />
+                                            label="Nome" 
+                                            placeholder="Digite o nome" 
+                                            disabled={!!self}
+                                        />
                                     </Col6>
                                     <Col6>
                                         <CampoTexto 
                                             camposVazios={classError}
-                                            name="bank.agency.digit" 
-                                            valor={candidato?.bank?.agency.digit} 
-                                            setValor={setBankAgencyDigit} 
+                                            name="email" 
+                                            valor={candidato?.email ?? ''} 
+                                            setValor={setEmail} 
                                             type="text" 
-                                            label="Digito Agência" 
-                                            placeholder="Digite o digito da agência" />
+                                            label="E-mail" 
+                                            placeholder="Digite o email" />
                                     </Col6>
                                 </Col12>
-                            </Frame>
-                            <Frame padding="24px 0px">
-                                <Titulo>
-                                    <h5>Endereço</h5>
-                                </Titulo>
-                            
-                                <Col12>
+                                <Col12 style={{padding:'0 10px'}}>
                                     <Col6>
                                         <CampoTexto 
-                                            camposVazios={classError} 
-                                            patternMask={['99999-999']} 
-                                            name="cep" 
-                                            width={'100%'}
-                                            valor={candidato?.endereco?.cep} 
-                                            setValor={ChangeCep} 
-                                            type="text" 
-                                            label="CEP" 
-                                            placeholder="Digite o CEP" />
+                                            type="date" 
+                                            valor={candidato?.dataNascimento} 
+                                            setValor={setDataNascimento}
+                                            label="Data de Nascimento"  />
                                     </Col6>
                                     <Col6>
                                         <CampoTexto 
                                             camposVazios={classError} 
-                                            name="street" 
-                                            valor={candidato?.endereco?.street} 
-                                            setValor={setStreet} 
+                                            patternMask={['999.999.999-99', '99.999.999/9999-99']} 
+                                            name="cpf" 
+                                            valor={candidato?.cpf} 
+                                            setValor={setCpf} 
                                             type="text" 
-                                            label="Logradouro" 
-                                            placeholder="Digite o logradouro" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="district" 
-                                            width={'100%'}
-                                            valor={candidato?.endereco?.district} 
-                                            setValor={setDistrict} 
-                                            type="text" 
-                                            label="Bairro" 
-                                            placeholder="Digite o Bairro" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="number" 
-                                            valor={candidato?.endereco?.number} 
-                                            setValor={setNumber} 
-                                            type="text" 
-                                            label="Número" 
-                                            placeholder="Digite o número" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            name="complement" 
-                                            valor={candidato?.endereco?.complement} 
-                                            setValor={setComplemento} 
-                                            type="text" 
-                                            label="Complemento (opcional)" 
-                                            placeholder="Digite o complemento" />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto 
-                                            camposVazios={classError} 
-                                            name="city" 
-                                            valor={candidato?.endereco?.city} 
-                                            setValor={setCity} 
-                                            type="text" 
-                                            label="Cidade" 
-                                            placeholder="Digite a cidade" />
-                                    </Col6>
-                                    <Col6>
-                                        <DropdownItens 
-                                            camposVazios={classError} 
-                                            valor={candidato?.endereco?.state} 
-                                            setValor={setState} 
-                                            options={estados} 
-                                            name="state" 
-                                            placeholder="Digite a UF"/>
+                                            label="CPF" 
+                                            placeholder="Digite p CPF" 
+                                            disabled={!!self}
+                                        />
                                     </Col6>
                                 </Col12>
-                            </Frame>
+                                <Col12 style={{padding:'0 10px'}}>
+                                    <Col6>
+                                        <div style={{ marginBottom: 8, fontWeight: 600 }}>Mãe conhecida?</div>
+                                        <SwitchInput
+                                            checked={candidato?.maeConhecida ?? true}
+                                            onChange={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, maeConhecida: valor }))}
+                                        />
+                                        <CampoTexto 
+                                            camposVazios={classError}
+                                            name="nomeMae" 
+                                            valor={candidato?.nomeMae ?? ''} 
+                                            setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, nomeMae: valor }))} 
+                                            type="text" 
+                                            label="Nome da Mãe" 
+                                            placeholder="Digite o nome da mãe"
+                                            disabled={candidato?.maeConhecida === false}
+                                        />
+                                        <CampoTexto 
+                                            camposVazios={classError}
+                                            name="cpfMae" 
+                                            valor={candidato?.cpfMae ?? ''} 
+                                            setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, cpfMae: valor }))} 
+                                            type="text" 
+                                            label="CPF da Mãe" 
+                                            patternMask={["999.999.999-99"]}
+                                            placeholder="Digite o CPF da mãe"
+                                            disabled={candidato?.maeConhecida === false}
+                                        />
+                                        <CampoTexto 
+                                            camposVazios={classError}
+                                            name="dataNascimentoMae" 
+                                            valor={candidato?.dataNascimentoMae ?? ''} 
+                                            setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, dataNascimentoMae: valor }))} 
+                                            type="date" 
+                                            label="Data de Nascimento da Mãe" 
+                                            placeholder="Data de nascimento"
+                                            disabled={candidato?.maeConhecida === false}
+                                        />
+                                    </Col6>
+                                    <Col6>
+                                        <div style={{ marginBottom: 8, fontWeight: 600 }}>Pai conhecido?</div>
+                                        <SwitchInput
+                                            checked={candidato?.paiConhecido ?? true}
+                                            onChange={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, paiConhecido: valor }))}
+                                        />
+                                        <CampoTexto 
+                                            camposVazios={classError}
+                                            name="nomePai" 
+                                            valor={candidato?.nomePai ?? ''} 
+                                            setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, nomePai: valor }))} 
+                                            type="text" 
+                                            label="Nome do Pai" 
+                                            placeholder="Digite o nome do pai"
+                                            disabled={candidato?.paiConhecido === false}
+                                        />
+                                        <CampoTexto 
+                                            camposVazios={classError}
+                                            name="cpfPai" 
+                                            valor={candidato?.cpfPai ?? ''} 
+                                            setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, cpfPai: valor }))} 
+                                            type="text" 
+                                            label="CPF do Pai" 
+                                            patternMask={["999.999.999-99"]}
+                                            placeholder="Digite o CPF do pai"
+                                            disabled={candidato?.paiConhecido === false}
+                                        />
+                                        <CampoTexto 
+                                            camposVazios={classError}
+                                            name="dataNascimentoPai" 
+                                            valor={candidato?.dataNascimentoPai ?? ''} 
+                                            setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, dataNascimentoPai: valor }))} 
+                                            type="date" 
+                                            label="Data de Nascimento do Pai" 
+                                            placeholder="Data de nascimento"
+                                            disabled={candidato?.paiConhecido === false}
+                                        />
+                                    </Col6>
+                                </Col12>
+                                <Col12 style={{padding:'0 10px'}}>
+                                    <Col6>
+                                        <div style={{ marginBottom: 8, fontWeight: 600 }}>Possui deficiência?</div>
+                                        <SwitchInput
+                                            checked={!!candidato?.possuiDeficiencia}
+                                            onChange={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, possuiDeficiencia: valor }))}
+                                        />
+                                        {candidato?.possuiDeficiencia && (
+                                            <CampoTexto 
+                                                camposVazios={classError}
+                                                name="deficiencia" 
+                                                valor={candidato?.deficiencia ?? ''} 
+                                                setValor={valor => setCandidato(estadoAnterior => ({ ...estadoAnterior, deficiencia: valor }))} 
+                                                type="text" 
+                                                label="Qual deficiência?" 
+                                                placeholder="Descreva a deficiência" />
+                                        )}
+                                    </Col6>
+                                </Col12>
+                                <Frame padding="24px 10px">
+                                    <Titulo>
+                                        <h5>Dados Bancários</h5>
+                                    </Titulo>
+                                
+                                    <Col12>
+                                        <Col6>
+                                        <CampoTexto 
+                                                camposVazios={classError} 
+                                                name="bank.number" 
+                                                valor={candidato?.bank?.number} 
+                                                setValor={setBankNumber} 
+                                                type="text" 
+                                                label="Banco" 
+                                                placeholder="Banco" />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto 
+                                                camposVazios={classError} 
+                                                name="bank.account" 
+                                                valor={candidato?.bank?.account} 
+                                                setValor={setBankAccount} 
+                                                type="text" 
+                                                label="Conta Corrente" 
+                                                placeholder="Conta Corrente" />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto 
+                                                camposVazios={classError} 
+                                                name="bank.account.digit" 
+                                                width={'100%'}
+                                                valor={candidato?.bank?.account.digit} 
+                                                setValor={setBankAccountDigit} 
+                                                type="text" 
+                                                label="Digito CC" 
+                                                placeholder="Digito CC" />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto 
+                                                camposVazios={classError} 
+                                                name="bank.agency" 
+                                                valor={candidato?.bank?.agency} 
+                                                setValor={setBankAgency} 
+                                                type="text" 
+                                                label="Agência" 
+                                                placeholder="Digite a agência" />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto 
+                                                camposVazios={classError}
+                                                name="bank.agency.digit" 
+                                                valor={candidato?.bank?.agency.digit} 
+                                                setValor={setBankAgencyDigit} 
+                                                type="text" 
+                                                label="Digito Agência" 
+                                                placeholder="Digite o digito da agência" />
+                                        </Col6>
+                                    </Col12>
+                                </Frame>
+                                <Frame padding="24px 10px">
+                                    <Titulo>
+                                        <h5>Endereço</h5>
+                                    </Titulo>
+                                
+                                    <Col12>
+                                        <Col6>
+                                            <CampoTexto 
+                                                camposVazios={classError} 
+                                                patternMask={['99999-999']} 
+                                                name="cep" 
+                                                width={'100%'}
+                                                valor={candidato?.endereco?.cep} 
+                                                setValor={ChangeCep} 
+                                                type="text" 
+                                                label="CEP" 
+                                                placeholder="Digite o CEP" />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto 
+                                                camposVazios={classError} 
+                                                name="street" 
+                                                valor={candidato?.endereco?.street} 
+                                                setValor={setStreet} 
+                                                type="text" 
+                                                label="Logradouro" 
+                                                placeholder="Digite o logradouro" />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto 
+                                                camposVazios={classError} 
+                                                name="district" 
+                                                width={'100%'}
+                                                valor={candidato?.endereco?.district} 
+                                                setValor={setDistrict} 
+                                                type="text" 
+                                                label="Bairro" 
+                                                placeholder="Digite o Bairro" />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto 
+                                                camposVazios={classError} 
+                                                name="number" 
+                                                valor={candidato?.endereco?.number} 
+                                                setValor={setNumber} 
+                                                type="text" 
+                                                label="Número" 
+                                                placeholder="Digite o número" />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto 
+                                                name="complement" 
+                                                valor={candidato?.endereco?.complement} 
+                                                setValor={setComplemento} 
+                                                type="text" 
+                                                label="Complemento (opcional)" 
+                                                placeholder="Digite o complemento" />
+                                        </Col6>
+                                        <Col6>
+                                            <CampoTexto 
+                                                camposVazios={classError} 
+                                                name="city" 
+                                                valor={candidato?.endereco?.city} 
+                                                setValor={setCity} 
+                                                type="text" 
+                                                label="Cidade" 
+                                                placeholder="Digite a cidade" />
+                                        </Col6>
+                                        <Col6>
+                                            <DropdownItens 
+                                                camposVazios={classError} 
+                                                valor={candidato?.endereco?.state} 
+                                                setValor={setState} 
+                                                options={estados} 
+                                                name="state" 
+                                                placeholder="Digite a UF"/>
+                                        </Col6>
+                                    </Col12>
+                                </Frame>
+                                <div style={{
+                                    position: 'sticky',
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    height: '40px',
+                                    marginBottom: '-8px',
+                                    borderRadius: '0px 0px 12px 12px',
+                                    background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.2) 100%)',
+                                    pointerEvents: 'none',
+                                    zIndex: 2
+                                }}/>
                             </ScrollPanel>
-                        </Container>
-                        <Frame padding="30px" estilo="spaced">
-                            <BotaoGrupo>
-                                <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                            </BotaoGrupo>
-                            <BotaoGrupo>
-                                <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
-                                <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
-                            </BotaoGrupo>
-                        </Frame>
+                        </div>
+                    </Container>
+                    <Frame padding="30px" estilo="spaced">
+                        <BotaoGrupo>
+                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
+                        </BotaoGrupo>
+                        <BotaoGrupo>
+                            <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
+                            <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
+                        </BotaoGrupo>
+                    </Frame>
                 </StepperPanel>
                 {!self && (
                   <StepperPanel header="Vaga">
