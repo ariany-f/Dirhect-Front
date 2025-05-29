@@ -259,7 +259,7 @@ function DetalhesTarefas() {
                         style={{
                           display: 'flex',
                           flexWrap: 'wrap',
-                          gap: 26,
+                          gap: 5,
                           alignItems: 'stretch',
                           justifyContent: 'space-between',
                         }}
