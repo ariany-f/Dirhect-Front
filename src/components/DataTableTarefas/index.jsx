@@ -435,7 +435,11 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                     {label}
                 </Texto>
                 <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                    {cpf ? 'CPF:' : ''}&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
+                    {cpf && cpf !== '---' && cpf !== null && (
+                        <>
+                            CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
+                        </>
+                    )}
                 </div>
             </div>
     };
