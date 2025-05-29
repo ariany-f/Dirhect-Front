@@ -18,7 +18,7 @@ import { Stepper } from 'primereact/stepper';
 import { StepperPanel } from 'primereact/stepperpanel';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { HiArrowLeft, HiArrowRight } from 'react-icons/hi';
-import { FaTrash, FaSave } from 'react-icons/fa';
+import { FaTrash, FaSave, FaEye, FaUpload } from 'react-icons/fa';
 import { CiCirclePlus } from 'react-icons/ci';
 import SwitchInput from '@components/SwitchInput';
 
@@ -92,6 +92,9 @@ const CandidatoRegistro = () => {
     ]);
     const [estados, setEstados] = useState([]);
     const navegar = useNavigate()
+
+    // Adicione um estado para controlar o modo de substituição de cada documento
+    const [editandoDocumento, setEditandoDocumento] = useState({});
 
     const handleSubmit = (e) => {
         e.preventDefault();        
@@ -621,23 +624,41 @@ const CandidatoRegistro = () => {
                 <StepperPanel header="Documentos Pessoais">
                     <ScrollPanel style={{ width: '100%', height: '380px'}}>
                         <Col12>
-                            {getDocumentosRequeridos().map((doc) => (
-                                <Col6 key={doc.id} style={{ marginTop: 10, marginBottom: 5 }}>
-                                    <div>
-                                        <p>{doc.nome}</p>
-                                        <CampoArquivo
-                                            onFileChange={(file) => handleUploadDocumento(doc.id, file)}
-                                            accept={doc.tipoArquivo ? doc.tipoArquivo.split(',').map(t => '.' + t.trim()).join(',') : '.pdf, .jpg, .png'}
-                                            id={`arquivo-${doc.id}`}
-                                            name={`arquivo-${doc.id}`}
-                                        />
-                                        {getArquivoCandidato(doc.id) && <p>Arquivo selecionado: {getArquivoCandidato(doc.id)}</p>}
-                                    </div>
-                                </Col6>
-                            ))}
+                            {getDocumentosRequeridos().map((doc) => {
+                                const arquivo = getArquivoCandidato(doc.id);
+                                const editando = !!editandoDocumento[doc.id];
+                                return (
+                                    <Col6 key={doc.id} style={{ marginTop: 10, marginBottom: 5 }}>
+                                        <div>
+                                            <p>{doc.nome}</p>
+                                            {arquivo && !editando ? (
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: 2, padding: '12px 10px', marginBottom: 18, border: '1px solid var(--neutro-200)', borderRadius: 16, borderStyle: 'dashed', marginTop: 2 }}>
+                                                    <span style={{ fontSize: 13, color: 'var(--neutro-800)', fontWeight: 500 }}>{arquivo}</span>
+                                                    <button type="button" style={{ fontSize: 12, display: 'flex', background: 'transparent', alignItems: 'center', gap: 4, marginLeft: 8, borderRadius: 4, padding: '5px 2px',  color: 'var(--neutro-800)', cursor: 'pointer', border: 'none' }} onClick={() => window.open(arquivo, '_blank')}><FaEye size={14}/> </button>
+                                                    <button type="button" style={{ fontSize: 12, display: 'flex', background: 'transparent', alignItems: 'center', gap: 4, marginLeft: 8, borderRadius: 4, padding: '5px 2px',  color: 'var(--neutro-800)', cursor: 'pointer', border: 'none' }} onClick={() => setEditandoDocumento(prev => ({ ...prev, [doc.id]: true }))}><FaUpload size={12}/> </button>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <CampoArquivo
+                                                        onFileChange={(file) => { handleUploadDocumento(doc.id, file); setEditandoDocumento(prev => ({ ...prev, [doc.id]: false })); }}
+                                                        accept={doc.tipoArquivo ? doc.tipoArquivo.split(',').map(t => '.' + t.trim()).join(',') : '.pdf, .jpg, .png'}
+                                                        id={`arquivo-${doc.id}`}
+                                                        name={`arquivo-${doc.id}`}
+                                                    />
+                                                    {arquivo && (
+                                                        <div style={{ display: 'flex', justifyContent: 'center', gap: 8 }}>
+                                                            <button type="button" style={{ marginTop: 2, fontSize: 12, color: 'var(--vermilion-400)', cursor: 'pointer', border: 'none', textDecoration: 'underline', backgroundColor: 'transparent', padding: '5px 10px' }} onClick={() => setEditandoDocumento(prev => ({ ...prev, [doc.id]: false }))}>Cancelar</button>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            )}
+                                        </div>
+                                    </Col6>
+                                );
+                            })}
                         </Col12>
                     </ScrollPanel>
-                    <Frame padding="30px" estilo="end">
+                    <Frame padding="30px" alinhamento="end">
                         <BotaoGrupo>
                             <Botao iconPos="right" aoClicar={() => true}><FaSave fill="white"/> Salvar</Botao>
                             <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
