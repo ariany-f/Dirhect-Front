@@ -56,7 +56,10 @@
                 "check": false, 
                 "atribuido": 1250 
             }
-        ]
+        ],
+        "admissao_id": 7,
+        "ferias_id": null,
+        "demissao_id": null
     },
     { 
         "id": 2, 
@@ -97,7 +100,10 @@
                 "check": false, 
                 "atribuido": 5700 
             }
-        ]
+        ],
+        "admissao_id": null,
+        "ferias_id": null,
+        "demissao_id": null
     },
     { 
         "id": 3, 
@@ -156,7 +162,10 @@
                 "check": true, 
                 "atribuido": 1250 
             }
-        ]
+        ],
+        "admissao_id": null,
+        "ferias_id": null,
+        "demissao_id": null
     },
     { 
         "id": 4, 
@@ -197,7 +206,10 @@
                 "check": false, 
                 "atribuido": 5700 
             }
-        ]
+        ],
+        "admissao_id": null,
+        "ferias_id": null,
+        "demissao_id": null
     },
     { 
         "id": 5, 
@@ -244,7 +256,10 @@
                 "check": false, 
                 "atribuido": 5700 
             }
-        ]
+        ],
+        "admissao_id": null,
+        "ferias_id": 9,
+        "demissao_id": null
     },
     { 
         "id": 6, 
@@ -297,7 +312,10 @@
                 "check": false, 
                 "atribuido": 5700 
             }
-        ]
+        ],
+        "admissao_id": null,
+        "ferias_id": null,
+        "demissao_id": 10
     },
     {
         "id": 7,
@@ -324,8 +342,12 @@
             { "descricao": "Cadastrar no Sistema", "prazo": 2, "check": false, "atribuido": 1002 },
             { "descricao": "Solicitar Exame Médico", "prazo": 3, "check": false, "atribuido": 1003 },
             { "descricao": "Conferir Dados", "prazo": 2, "check": false, "atribuido": 1004 },
-            { "descricao": "Enviar para Folha", "prazo": 1, "check": false, "atribuido": 1005 }
-        ]
+            { "descricao": "Enviar para Folha", "prazo": 1, "check": false, "atribuido": 1005 },
+            { "descricao": "Integrar com RM", "prazo": 1, "check": false, "atribuido": 0 }
+        ],
+        "admissao_id": 7,
+        "ferias_id": null,
+        "demissao_id": null
     },
     {
         "id": 8,
@@ -352,8 +374,12 @@
             { "descricao": "Cadastrar no Sistema", "prazo": 2, "check": false, "atribuido": 1007 },
             { "descricao": "Solicitar Exame Médico", "prazo": 3, "check": false, "atribuido": 1008 },
             { "descricao": "Conferir Dados", "prazo": 2, "check": false, "atribuido": 1009 },
-            { "descricao": "Enviar para Folha", "prazo": 1, "check": false, "atribuido": 1010 }
-        ]
+            { "descricao": "Enviar para Folha", "prazo": 1, "check": false, "atribuido": 1010 },
+            { "descricao": "Integrar com RM", "prazo": 1, "check": false, "atribuido": 0 }
+        ],
+        "admissao_id": 5,
+        "ferias_id": null,
+        "demissao_id": null
     },
     {
         "id": 9,
@@ -380,7 +406,10 @@
             { "descricao": "Aprovar RH", "prazo": 2, "check": false, "atribuido": 2002 },
             { "descricao": "Enviar para Contabilidade", "prazo": 2, "check": false, "atribuido": 2003 },
             { "descricao": "Notificar Colaborador", "prazo": 1, "check": false, "atribuido": 2004 }
-        ]
+        ],
+        "ferias_id": 9,
+        "admissao_id": null,
+        "demissao_id": null
     },
     {
         "id": 10,
@@ -406,7 +435,10 @@
             { "descricao": "Calcular Rescisão", "prazo": 3, "check": false, "atribuido": 3001 },
             { "descricao": "Homologar", "prazo": 2, "check": false, "atribuido": 3002 },
             { "descricao": "Enviar Documentos", "prazo": 1, "check": false, "atribuido": 3003 }
-        ]
+        ],
+        "admissao_id": null,
+        "ferias_id": null,
+        "demissao_id": 10
     },
     {
         "id": 11,
@@ -433,7 +465,10 @@
             { "descricao": "Validar Dados", "prazo": 5, "check": true, "atribuido": 4002 },
             { "descricao": "Enviar para Folha", "prazo": 10, "check": false, "atribuido": 4003 },
             { "descricao": "Aprovar RH", "prazo": 5, "check": false, "atribuido": 4004 }
-        ]
+        ],
+        "admissao_id": null,
+        "ferias_id": null,
+        "demissao_id": null
     },
     {
         "id": 12,
@@ -459,8 +494,12 @@
             { "descricao": "Receber Documentos", "prazo": 2, "check": true, "atribuido": 1001 },
             { "descricao": "Cadastrar no Sistema", "prazo": 2, "check": false, "atribuido": 1002 },
             { "descricao": "Solicitar Exame Médico", "prazo": 3, "check": false, "atribuido": 1003 },
-            { "descricao": "Conferir Dados", "prazo": 2, "check": false, "atribuido": 1004 }
-        ]
+            { "descricao": "Conferir Dados", "prazo": 2, "check": false, "atribuido": 1004 },
+            { "descricao": "Integrar com RM", "prazo": 1, "check": false, "atribuido": 0 }
+        ],
+        "admissao_id": 11,
+        "ferias_id": null,
+        "demissao_id": null
     },
     {
         "id": 13,
@@ -487,7 +526,10 @@
             { "descricao": "Calcular Férias", "prazo": 5, "check": true, "atribuido": 2001 },
             { "descricao": "Aprovar RH", "prazo": 2, "check": true, "atribuido": 2002 },
             { "descricao": "Notificar Colaborador", "prazo": 1, "check": true, "atribuido": 2004 }
-        ]
+        ],
+        "ferias_id": 13,
+        "admissao_id": null,
+        "demissao_id": null
     },
     {
         "id": 14,
@@ -513,7 +555,11 @@
         "checklist": [
             { "descricao": "Calcular Rescisão", "prazo": 3, "check": true, "atribuido": 3001 },
             { "descricao": "Homologar", "prazo": 2, "check": true, "atribuido": 3002 },
-            { "descricao": "Enviar Documentos", "prazo": 1, "check": true, "atribuido": 3003 }
-        ]
+            { "descricao": "Enviar Documentos", "prazo": 1, "check": true, "atribuido": 3003 },
+            { "descricao": "Integrar com RM", "prazo": 1, "check": false, "atribuido": 0 }
+        ],
+        "admissao_id": null,
+        "ferias_id": null,
+        "demissao_id": 14
     }
 ]

@@ -21,6 +21,7 @@ import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import { Real } from '@utils/formats'
 import { PrimeIcons } from 'primereact/api'
+import { FaExternalLinkAlt } from 'react-icons/fa'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -71,18 +72,27 @@ function DetalhesTarefas() {
     function tipoTarefaTag(tarefa) {
         let color = 'var(--neutro-400)';
         let label = '';
+        let link = null;
+        let id = null;
+        let url = null;
         switch(tarefa.tipo_tarefa) {
             case 'admissao':
                 color = 'var(--info)';
                 label = 'Admissão';
+                id = tarefa.admissao_id;
+                url = id ? `/admissao/registro/${id}` : null;
                 break;
             case 'demissao':
                 color = 'var(--error)';
                 label = 'Demissão';
+                id = tarefa.demissao_id;
+                url = id ? `/demissao/detalhes/${id}` : null;
                 break;
             case 'ferias':
                 color = 'var(--green-500)';
                 label = 'Férias';
+                id = tarefa.ferias_id;
+                url = id ? `/ferias/detalhes/${id}` : null;
                 break;
             case 'envio_variaveis':
                 color = 'var(--primaria)';
@@ -103,7 +113,16 @@ function DetalhesTarefas() {
             default:
                 label = tarefa.tipo_tarefa;
         }
-        return <Tag value={label} style={{ backgroundColor: color, color: 'white', fontWeight: 600, fontSize: 15, borderRadius: 8, padding: '6px 18px' }} />;
+        return (
+            <span style={{display: 'flex', alignItems: 'center', gap: 6}}>
+                <Tag value={label} style={{ backgroundColor: color, color: 'white', fontWeight: 600, fontSize: 14, borderRadius: 8, padding: '6px 18px' }} />
+                {url && (
+                    <a href={url} rel="noopener noreferrer" style={{marginLeft: 2, color: color, display: 'flex', alignItems: 'center'}}>
+                        <FaExternalLinkAlt size={14} />
+                    </a>
+                )}
+            </span>
+        );
     }
 
     // Função para pegar o nome da referência com prefixo
@@ -222,12 +241,12 @@ function DetalhesTarefas() {
                     }}>
                       {/* Esquerda: tipo de tarefa, status do prazo, referência */}
                       <div style={{display: 'flex', flexDirection: 'column', gap: 8, minWidth: 220}}>
-                        <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
-                          {tipoTarefaTag(tarefa)}
-                        </div>
                         {/* Referência em destaque, grande */}
                         <div style={{marginTop: 4, display: 'flex', alignItems: 'start', gap: 8, flexDirection: 'column'}}>
-                          <span style={{fontWeight: 900, fontSize: 24, color: '#222'}}>{referenciaDetalhada(tarefa).label}</span>
+                          <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                            <span style={{fontWeight: 900, fontSize: 24, color: '#222'}}>{referenciaDetalhada(tarefa).label}</span>
+                            {tipoTarefaTag(tarefa)}
+                          </div>
                           {referenciaDetalhada(tarefa).cpf && (
                             <div style={{fontSize: 15, color: '#888', fontWeight: 500, marginTop: 2}}>
                               CPF: {referenciaDetalhada(tarefa).cpf}

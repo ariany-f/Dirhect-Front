@@ -4,7 +4,6 @@ import { FaUpload } from 'react-icons/fa';
 import Texto from '@components/Texto';
 
 const CampoArquivoContainer = styled.div`
-    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
 `;
@@ -14,11 +13,10 @@ const CampoArquivoInput = styled.input`
 `;
 
 const CampoArquivoCard = styled.div`
-    margin-top: 10px;
     border-style: dashed;
     border-color: #aaa;
     border-width: 1px;
-    padding: 10px;
+    padding: 3px 5px;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
