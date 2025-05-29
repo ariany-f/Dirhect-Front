@@ -43,7 +43,6 @@ function DetalhesContratos() {
     const { t } = useTranslation('common');
    
     const carregarContrato = () => {
-        console.log('carregando contrato');
         setLoading(true);
         http.get(`contrato/${id}/?format=json`)
             .then(response => {
