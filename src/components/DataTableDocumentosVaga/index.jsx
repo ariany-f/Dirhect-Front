@@ -2,6 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 function DataTableDocumentosVaga({ documentos = [], onEdit, onDelete }) {
 
@@ -14,8 +15,7 @@ function DataTableDocumentosVaga({ documentos = [], onEdit, onDelete }) {
     );
     const actionTemplate = (rowData) => (
         <div style={{ display: 'flex', gap: 12 }}>
-            <FaEdit style={{ cursor: 'pointer', color: 'var(--primaria)' }} onClick={() => onEdit(rowData)} />
-            <FaTrash style={{ cursor: 'pointer', color: 'var(--error)' }} onClick={() => onDelete(rowData)} />
+            <RiDeleteBin6Line style={{ cursor: 'pointer', color: 'var(--error)' }} onClick={() => onDelete(rowData)} />
         </div>
     );
 
