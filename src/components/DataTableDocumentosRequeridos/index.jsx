@@ -30,7 +30,7 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
     );
 
     const instrucaoTemplate = (rowData) => (
-        <Texto weight={500}>{rowData.instrucao}</Texto>
+        <Texto width="100%" weight={500}>{rowData.instrucao}</Texto>
     );
 
     const descricaoTemplate = (rowData) => (
@@ -109,14 +109,7 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
                 field="instrucao" 
                 header="Instrução" 
                 sortable
-                style={{ width: '15%' }} 
-            />
-            <Column 
-                body={descricaoTemplate} 
-                field="descricao" 
-                header="Descrição" 
-                sortable
-                style={{ width: '10%' }} 
+                style={{ width: '20%' }} 
             />
             <Column 
                 body={obrigatorioTemplate} 
