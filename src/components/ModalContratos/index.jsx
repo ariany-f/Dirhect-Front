@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom"
 import http from "@http"
 import styled from "styled-components"
 import styles from './ModalAdicionarDepartamento.module.css'
-import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles'
 
 const Col12 = styled.div`
     display: flex;
@@ -156,110 +156,106 @@ function ModalContratos({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalva
     };
 
     return (
-        <>
-            {opened && (
-                <Overlay>
-                    <DialogEstilizado open={opened}>
-                        <Frame>
-                            <Titulo>
-                                <button className="close" onClick={aoFechar}>
-                                    <RiCloseFill size={20} className="fechar" />  
-                                </button>
-                                <h6>{contrato ? 'Editar Contrato' : 'Novo Contrato'}</h6>
-                            </Titulo>
-                        </Frame>
-                        
-                        <Frame padding="12px 0px">
-                            <Col12>
-                                <Col12>
-                                    <Col6 style={{ marginTop: '-12px' }}>
-                                        <DropdownItens 
-                                            camposVazios={classError.includes('operadora') ? ['operadora'] : []}
-                                            valor={operadora} 
-                                            setValor={setOperadora} 
-                                            options={dropdownOperadoras} 
-                                            label="Operadora*" 
-                                            name="operadora" 
-                                            placeholder="Selecione a operadora"
-                                            optionTemplate={operadoraOptionTemplate}
-                                            valueTemplate={operadoraValueTemplate}
-                                            disabled={!!contrato}
-                                        /> 
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto
-                                            camposVazios={classError.includes('num_contrato') ? ['num_contrato'] : []}
-                                            name="num_contrato"
-                                            valor={numContrato}
-                                            setValor={setNumContrato}
-                                            type="text"
-                                            label="Número do Contrato*"
-                                            placeholder="Digite o número do contrato"
-                                        />
-                                    </Col6>
-                                </Col12>
-                                <Col12>
-                                    <Col6>
-                                        <CampoTexto
-                                            camposVazios={classError.includes('data_inicio') ? ['data_inicio'] : []}
-                                            name="data_inicio"
-                                            valor={data_inicio}
-                                            setValor={setDataInicio}
-                                            type="date"
-                                            label="Data Início*"
-                                            placeholder="Digite a Data Início"
-                                        />
-                                    </Col6>
-                                    <Col6>
-                                        <CampoTexto
-                                            camposVazios={classError.includes('data_fim') ? ['data_fim'] : []}
-                                            name="data_fim"
-                                            valor={data_fim}
-                                            setValor={setDataFim}
-                                            type="date"
-                                            label="Data Fim*"
-                                            placeholder="Digite a Data Fim"
-                                        />
-                                    </Col6>
-                                </Col12>
-                                <Col12>
-                                    <Col6>
-                                        <CampoTexto
-                                            camposVazios={classError.includes('observacao') ? ['observacao'] : []}
-                                            name="observacao"
-                                            valor={observacao}
-                                            setValor={setObservacao}
-                                            type="text"
-                                            label="Observação*"
-                                            placeholder="Digite a observação"
-                                        />
-                                    </Col6>
-                                </Col12>
-                            </Col12>
-                        </Frame>
-                        
-                        <div className={styles.containerBottom}>
-                            <Botao 
-                                aoClicar={aoFechar} 
-                                estilo="neutro" 
-                                size="medium" 
-                                filled
-                            >
-                                Voltar
-                            </Botao>
-                            <Botao 
-                                aoClicar={validarESalvar} 
-                                estilo="vermilion" 
-                                size="medium" 
-                                filled
-                            >
-                                {contrato ? 'Atualizar' : 'Confirmar'}
-                            </Botao>
-                        </div>
-                    </DialogEstilizado>
-                </Overlay>
-            )}
-        </>
+        <OverlayRight $opened={opened}>
+            <DialogEstilizadoRight $width="60vw" open={opened} $opened={opened}>
+                <Frame>
+                    <Titulo>
+                        <button className="close" onClick={aoFechar}>
+                            <RiCloseFill size={20} className="fechar" />  
+                        </button>
+                        <h6>{contrato ? 'Editar Contrato' : 'Novo Contrato'}</h6>
+                    </Titulo>
+                </Frame>
+                
+                <Frame padding="12px 0px">
+                    <Col12>
+                        <Col12>
+                            <Col6 style={{ marginTop: '-12px' }}>
+                                <DropdownItens 
+                                    camposVazios={classError.includes('operadora') ? ['operadora'] : []}
+                                    valor={operadora} 
+                                    setValor={setOperadora} 
+                                    options={dropdownOperadoras} 
+                                    label="Operadora*" 
+                                    name="operadora" 
+                                    placeholder="Selecione a operadora"
+                                    optionTemplate={operadoraOptionTemplate}
+                                    valueTemplate={operadoraValueTemplate}
+                                    disabled={!!contrato}
+                                /> 
+                            </Col6>
+                            <Col6>
+                                <CampoTexto
+                                    camposVazios={classError.includes('num_contrato') ? ['num_contrato'] : []}
+                                    name="num_contrato"
+                                    valor={numContrato}
+                                    setValor={setNumContrato}
+                                    type="text"
+                                    label="Número do Contrato*"
+                                    placeholder="Digite o número do contrato"
+                                />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <CampoTexto
+                                    camposVazios={classError.includes('data_inicio') ? ['data_inicio'] : []}
+                                    name="data_inicio"
+                                    valor={data_inicio}
+                                    setValor={setDataInicio}
+                                    type="date"
+                                    label="Data Início*"
+                                    placeholder="Digite a Data Início"
+                                />
+                            </Col6>
+                            <Col6>
+                                <CampoTexto
+                                    camposVazios={classError.includes('data_fim') ? ['data_fim'] : []}
+                                    name="data_fim"
+                                    valor={data_fim}
+                                    setValor={setDataFim}
+                                    type="date"
+                                    label="Data Fim*"
+                                    placeholder="Digite a Data Fim"
+                                />
+                            </Col6>
+                        </Col12>
+                        <Col12>
+                            <Col6>
+                                <CampoTexto
+                                    camposVazios={classError.includes('observacao') ? ['observacao'] : []}
+                                    name="observacao"
+                                    valor={observacao}
+                                    setValor={setObservacao}
+                                    type="text"
+                                    label="Observação*"
+                                    placeholder="Digite a observação"
+                                />
+                            </Col6>
+                        </Col12>
+                    </Col12>
+                </Frame>
+                
+                <div className={styles.containerBottom}>
+                    <Botao 
+                        aoClicar={aoFechar} 
+                        estilo="neutro" 
+                        size="medium" 
+                        filled
+                    >
+                        Voltar
+                    </Botao>
+                    <Botao 
+                        aoClicar={validarESalvar} 
+                        estilo="vermilion" 
+                        size="medium" 
+                        filled
+                    >
+                        {contrato ? 'Atualizar' : 'Confirmar'}
+                    </Botao>
+                </div>
+            </DialogEstilizadoRight>
+        </OverlayRight>
     );
 }
 
