@@ -383,6 +383,7 @@ function BarraLateral({ $sidebarOpened }) {
       'Vagas',
       'Pedidos',
       'Movimentação',
+      'Tarefas',
       'Lançtos de Folha'
     ];
 
