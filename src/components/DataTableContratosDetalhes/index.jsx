@@ -380,6 +380,8 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                         if (onUpdate) {
                             onUpdate();
                         }
+
+                        setSelectedBeneficio(updatedBeneficios.find(beneficio => beneficio.id === selectedBeneficio.id));
                     }
                 })
                 .catch(erro => {
@@ -392,30 +394,36 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 http.post(`contrato_beneficio_item/`, data)
                 .then(response => {
                     if(response.id) {
-                        // Atualiza a lista de itens do benefício selecionado
-                        if(response.versao_ativa) {
-                            const updatedItems = [...selectedItems, response];
-                            setSelectedItems(updatedItems);
+                      
+                        const updatedItems = [...selectedItems, response];
+                        setSelectedItems(updatedItems);
+                    
+                        // Atualiza o benefício selecionado
+                        const updatedBeneficios = beneficiosProcessados.map(beneficio => {
+                            if (beneficio.id === selectedBeneficio.id) {
+                                return {
+                                    ...beneficio,
+                                    itens: updatedItems
+                                };
+                            }
+                            return beneficio;
+                        });
+                        setBeneficiosProcessados(updatedBeneficios);
                         
-                            // Atualiza o benefício selecionado
-                            const updatedBeneficios = beneficiosProcessados.map(beneficio => {
-                                if (beneficio.id === selectedBeneficio.id) {
-                                    return {
-                                        ...beneficio,
-                                        itens: updatedItems
-                                    };
-                                }
-                                return beneficio;
-                            });
-                            setBeneficiosProcessados(updatedBeneficios);
-                            
-                        }
                         
                         toast.current.show({severity:'success', summary: 'Adicionado com Sucesso', detail: 'Sucesso!', life: 3000});
+
                         // Notifica o componente pai sobre a atualização
                         if (onUpdate) {
                             onUpdate();
                         }
+
+                        setTimeout(() => {
+                            setSelectedBeneficio(updatedBeneficios.find(beneficio => beneficio.id === selectedBeneficio.id))
+                            setSelectedItems((updatedBeneficios.find(beneficio => beneficio.id === selectedBeneficio.id)?.itens || []).filter(item => item.versao_ativa === true));
+                        }, 1000)
+                        // setSelectedBeneficio();
+
                     }
                 })
                 .catch(erro => {
