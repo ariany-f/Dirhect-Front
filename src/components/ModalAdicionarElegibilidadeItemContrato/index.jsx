@@ -228,7 +228,7 @@ const ContainerGrupos = styled.div`
 `;
 
 function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar, aoSalvar, item, heranca }) {
-    console.log(heranca);
+
     const { usuario } = useSessaoUsuarioContext();
     
     const [tipoSelecionado, setTipoSelecionado] = useState(null);

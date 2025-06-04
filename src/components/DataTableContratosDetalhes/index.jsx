@@ -270,7 +270,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     };
 
     const representativeBeneficiosTemplate = (rowData) => {
-        const isActive = selectedBeneficio == rowData;
+        const isActive = false;
         return (
             <div key={rowData?.dados_beneficio?.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                 <BadgeGeral 
@@ -419,7 +419,6 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                     }
                 })
                 .catch(erro => {
-                    console.log(erro)
                     toast.current.show({severity:'error', summary: 'Não foi possível adicionar', detail: 'Erro!', life: 3000});
                 })
                 .finally(function() {
@@ -432,8 +431,8 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
     const onRowSelect = (e) => {
         if (!e.value || (e.value && e.value.id === selectedBeneficio?.id)) {
             // Impede desselecionar ou selecionar o mesmo
-            setSelectedBeneficio(selectedBeneficio);
-            setSelectedItems((selectedBeneficio?.itens || []).filter(item => item.versao_ativa === true));
+            // setSelectedBeneficio(selectedBeneficio);
+            // setSelectedItems((selectedBeneficio?.itens || []).filter(item => item.versao_ativa === true));
             return;
         }
         setSelectedBeneficio(e.value);
