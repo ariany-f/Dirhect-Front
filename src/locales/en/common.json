@@ -33,5 +33,10 @@
     "Can view": "Can view",
     "Can add": "Can add",
     "Can change": "Can change",
-    "Can delete": "Can delete"
+    "Can delete": "Can delete",
+    "select_group": "Select group",
+    "password_weak": "The password is too weak",
+    "password_medium": "The password is medium",
+    "password_strong": "The password is strong",
+    "password_prompt": "Enter the password"
 }

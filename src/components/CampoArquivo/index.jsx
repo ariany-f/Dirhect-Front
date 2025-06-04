@@ -31,7 +31,6 @@ const CampoArquivo = ({ label, onFileChange, disabled = false, accept = "*", id,
     const inputRef = useRef(null);
 
     const handleClick = () => {
-        console.log(inputRef.current)
         if (inputRef.current) {
             inputRef.current.click();
         }

@@ -32,6 +32,7 @@ function LoginMobile() {
         setCpf,
         setEmail,
         setTipo,
+        setGroups,
         setPassword,
         setUserPublicId,
         setName,
@@ -96,24 +97,8 @@ function LoginMobile() {
                 setMfaRequired(response.mfa_required);
                 setEmail(response.user.email);
                 setCpf(response.user.cpf ?? '');
-                setTipo(response.groups[0]);
                 setUserPublicId(response.user.id);
                 setName(response.user.first_name + ' ' + response.user.last_name);
-                 
-                ArmazenadorToken.definirUsuario(
-                    response.user.first_name + ' ' + response.user.last_name,
-                    response.user.email,
-                    response.user.cpf ?? '',
-                    response.user.id,
-                    response.groups[0],
-                    '', 
-                    '', 
-                    '', 
-                    '', 
-                    response.mfa_required
-                );
-
-                setUsuarioEstaLogado(true);
 
                 // Aguarda o estado ser atualizado
                 await new Promise(resolve => setTimeout(resolve, 0));
@@ -121,15 +106,52 @@ function LoginMobile() {
                 if(response.mfa_required) {
                     navegar('/login/mfa');
                 } else {
-                    // Navegação conforme tipo de usuário
-                    if(response.groups[0] !== 'funcionario') {
-                        if(response.groups[0] !== 'candidato') {
-                            navegar('/login/selecionar-empresa');
-                        } else {
-                            navegar(`/admissao/registro/${response.user.id}`);
-                        }
+                    if(response.groups.length > 1) {
+                        setGroups(response.groups);
+                        ArmazenadorToken.definirUsuario(
+                            response.user.first_name + ' ' + response.user.last_name,
+                            response.user.email,
+                            response.user.cpf ?? '',
+                            response.user.id,
+                            '',
+                            '', 
+                            '', 
+                            '', 
+                            '', 
+                            response.mfa_required
+                        );
+
+                        setUsuarioEstaLogado(true);
+                        ArmazenadorToken.definirGrupos(response.groups);
+                        navegar('/login/selecionar-grupo');
                     } else {
-                        navegar(`/colaborador/detalhes/${response.user.id}`);
+                        
+                        setTipo(response.groups[0]);
+
+                        ArmazenadorToken.definirUsuario(
+                            response.user.first_name + ' ' + response.user.last_name,
+                            response.user.email,
+                            response.user.cpf ?? '',
+                            response.user.id,
+                            response.groups[0],
+                            '', 
+                            '', 
+                            '', 
+                            '', 
+                            response.mfa_required
+                        );
+
+                        setUsuarioEstaLogado(true);
+                            // Navegação conforme tipo de usuário
+                        if(response.groups[0] !== 'funcionario') {
+                            if(response.groups[0] !== 'candidato') {
+                                navegar('/login/selecionar-empresa');
+                            } else {
+                                navegar(`/admissao/registro/${response.user.id}`);
+                            }
+                        } else {
+                            navegar(`/colaborador/detalhes/${response.user.id}`);
+                        }
                     }
                 }
             } else {

@@ -114,7 +114,6 @@ function DataTableBeneficios({
     useEffect(() => {
         // Buscar tipos de benefício do endpoint
         http.get('tipo_beneficio/?format=json').then(resp => {
-            console.log(resp)
             if (resp) {
                 const tiposMap = resp.reduce((acc, tipo) => {
                     acc[tipo.chave] = tipo.descricao;

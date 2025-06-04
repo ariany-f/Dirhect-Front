@@ -155,6 +155,7 @@ import ConfiguracoesVagas from '@pages/Vagas/configuracoes'
 import MfaGenerate from '@pages/Login/mfa_generate'
 import Documentos from './pages/DocumentosRequeridos'
 import DocumentosConfiguracoes from './pages/DocumentosRequeridos/configuracoes'
+import SelecionarGrupo from '@pages/Login/selecionar-grupo'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -190,6 +191,7 @@ function AppRouter() {
               }
               <Route path="mfa/:confirmed" element={<Mfa />} />
               <Route path="mfa/generate" element={<MfaGenerate />} />
+              <Route path="selecionar-grupo" element={<SelecionarGrupo />} />
               {isDesktop ?
                 <Route path="selecionar-empresa" element={<SelecionarEmpresa />} />
                 :

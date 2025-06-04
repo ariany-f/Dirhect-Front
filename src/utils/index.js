@@ -126,6 +126,9 @@ export class ArmazenadorToken {
     static get UserTipo() {
         return sessionStorage.getItem(USER_TYPE)
     }
+    static definirTipo(tipo) {
+        sessionStorage.setItem(USER_TYPE, tipo)
+    }
     static get UserPublicId() {
         return sessionStorage.getItem(USER_PUBLIC_ID)
     }

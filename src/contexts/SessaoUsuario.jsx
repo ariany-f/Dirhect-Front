@@ -28,7 +28,8 @@ const usuarioInicial = {
     companies: null,
     code: [],
     mfa_required: false,
-    tipo: sessionStorage.getItem('tipo') ?? ''
+    tipo: sessionStorage.getItem('tipo') ?? '',
+    groups: sessionStorage.getItem('groups') ?? null
 }
 
 const recuperacaoSenhaInicial = {
@@ -95,6 +96,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const emailSalvo = sessionStorage.getItem('email');
         const publicIdSalvo = sessionStorage.getItem('public_id');
         const tipoSalvo = sessionStorage.getItem('tipo');
+        const groupsSalvo = sessionStorage.getItem('groups');
         const domainSalvo = sessionStorage.getItem('domain');
         const simboloSalvo = sessionStorage.getItem('simbolo');
         const logoSalvo = sessionStorage.getItem('logo');
@@ -105,6 +107,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
             email: emailSalvo ?? '',
             mfa_required: mfaRequiredSalvo ?? false,
             tipo: tipoSalvo ?? '',
+            groups: groupsSalvo ?? null,
             name: nameSalvo ?? '',
             public_id: publicIdSalvo ?? '',
             company_domain: domainSalvo ?? '',
@@ -275,6 +278,16 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
+
+    const setGroups = (groups) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                groups
+            }
+        })
+    }
+
     const solicitarCodigoLogin = () => {
 
         var sendableContent = {
@@ -507,7 +520,8 @@ export const SessaoUsuarioProvider = ({ children }) => {
         solicitarCodigoRecuperacaoSenha,
         submeterRecuperacaoSenha,
         redefinirSenha,
-        setTipo
+        setTipo,
+        setGroups
     }
 
     const value = {

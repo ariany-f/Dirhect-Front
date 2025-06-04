@@ -26,6 +26,7 @@ function Mfa() {
         setCpf,
         setEmail,
         setTipo,
+        setGroups,
         setPassword,
         setUserPublicId,
         setName,
@@ -85,26 +86,48 @@ function Mfa() {
                 
                 setEmail(response.user.email);
                 setCpf(response.user.cpf ?? '');
-                setTipo(response.groups[0]);
                 setUserPublicId(response.user.id);
                 setName(response.user.first_name + ' ' + response.user.last_name);
 
-                ArmazenadorToken.definirUsuario(
-                    response.user.first_name + ' ' + response.user.last_name,
-                    response.user.email,
-                    response.user.cpf ?? '',
-                    response.user.id,
-                    response.groups[0],
-                    '', 
-                    '', 
-                    '', 
-                    '', 
-                    response.mfa_required
-                );
-                ArmazenadorToken.removerTempToken();   
-                
-                setUsuarioEstaLogado(true);
-                navegar('/login/selecionar-empresa');
+                if(response.groups.length > 1) {
+                    setGroups(response.groups);
+                    ArmazenadorToken.definirUsuario(
+                        response.user.first_name + ' ' + response.user.last_name,
+                        response.user.email,
+                        response.user.cpf ?? '',
+                        response.user.id,
+                        '',
+                        '', 
+                        '', 
+                        '', 
+                        '', 
+                        response.mfa_required
+                    );
+                    ArmazenadorToken.removerTempToken();   
+                    ArmazenadorToken.definirGrupos(response.groups);
+                    
+                    setUsuarioEstaLogado(true);
+                    navegar('/login/selecionar-grupo');
+                } else {
+                    setTipo(response.groups[0]);
+
+                    ArmazenadorToken.definirUsuario(
+                        response.user.first_name + ' ' + response.user.last_name,
+                        response.user.email,
+                        response.user.cpf ?? '',
+                        response.user.id,
+                        response.groups[0],
+                        '', 
+                        '', 
+                        '', 
+                        '', 
+                        response.mfa_required
+                    );
+                    ArmazenadorToken.removerTempToken();   
+                    
+                    setUsuarioEstaLogado(true);
+                    navegar('/login/selecionar-empresa');
+                }
             })
             .catch(error => {
                 if(error.otp)
@@ -129,26 +152,44 @@ function Mfa() {
                 
                 setEmail(response.user.email);
                 setCpf(response.user.cpf ?? '');
-                setTipo(response.groups[0]);
                 setUserPublicId(response.user.id);
                 setName(response.user.first_name + ' ' + response.user.last_name);
-
-                ArmazenadorToken.definirUsuario(
-                    response.user.first_name + ' ' + response.user.last_name,
-                    response.user.email,
-                    response.user.cpf ?? '',
-                    response.user.id,
-                    response.groups[0],
-                    '', 
-                    '', 
-                    '', 
-                    '', 
-                    response.mfa_required
-                );
-                ArmazenadorToken.removerTempToken();   
                 
                 setUsuarioEstaLogado(true);
-                navegar('/login/selecionar-empresa');
+                if(response.groups.length > 1) {
+                    setGroups(response.groups);
+                    ArmazenadorToken.definirUsuario(
+                        response.user.first_name + ' ' + response.user.last_name,
+                        response.user.email,
+                        response.user.cpf ?? '',
+                        response.user.id,
+                        '',
+                        '', 
+                        '', 
+                        '', 
+                        '', 
+                        response.mfa_required
+                    );
+                    ArmazenadorToken.removerTempToken();
+                    ArmazenadorToken.definirGrupos(response.groups);
+                    navegar('/login/selecionar-grupo');
+                } else {
+                    setTipo(response.groups[0]);
+                    ArmazenadorToken.definirUsuario(
+                        response.user.first_name + ' ' + response.user.last_name,
+                        response.user.email,
+                        response.user.cpf ?? '',
+                        response.user.id,
+                        response.groups[0],
+                        '', 
+                        '', 
+                        '', 
+                        '', 
+                        response.mfa_required
+                    );
+                    ArmazenadorToken.removerTempToken();   
+                    navegar('/login/selecionar-empresa');
+                }
             })
             .catch(error => {
                 if(error.otp)
