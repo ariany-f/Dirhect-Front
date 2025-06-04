@@ -93,7 +93,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
             setEmpresa(dadoAntigo.valor_empresa)
             setDesconto(dadoAntigo.valor_desconto)
             setTempoMinimo(dadoAntigo.tempo_minimo)
-            setExtensivelDependente(dadoAntigo.extensivel_depentende)
+            setExtensivelDependente(dadoAntigo.extensivel_dependente)
             setDescricao(dadoAntigo.descricao)
             setHerdado(dadoAntigo.herdado)
 
@@ -106,6 +106,13 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
 
     const fecharModal = () => {
         aoFechar();
+        setHerdado(true)
+
+        setValor('')
+        setEmpresa('')
+        setDesconto('')
+        setDescricao('')
+        setTipoCalculo('')
     }
 
     useEffect(() => {
@@ -139,15 +146,6 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                 currency: 'BRL'
             })
         }
-    }
-
-    const formatarValor = (valor) => {
-        if (!valor) return ''
-        const valorNumerico = parseFloat(valor.replace(/[^\d,]/g, '').replace(',', '.'))
-        return valorNumerico.toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        })
     }
 
     const handleValorCompraChange = (novoValor) => {
