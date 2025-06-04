@@ -197,7 +197,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
                             </form>
-                            <h6 style={{marginBottom: 16}}>{id ? 'Alterar Configuração do' : 'Adicionar Configuração ao'} Contrato</h6>
+                            <h6 style={{marginBottom: 16}}>{id ? 'Alterar Item do' : 'Adicionar Item ao'} Contrato</h6>
                             {contrato && 
                                 <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={contrato?.dados_operadora?.id}>
                                     <CustomImage src={contrato?.dados_operadora?.imagem_url} alt={contrato?.dados_operadora?.nome} width={45} height={45} title={contrato?.dados_operadora?.nome} />
