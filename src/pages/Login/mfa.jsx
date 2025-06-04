@@ -89,6 +89,7 @@ function Mfa() {
                 setUserPublicId(response.user.id);
                 setName(response.user.first_name + ' ' + response.user.last_name);
 
+                setUsuarioEstaLogado(true);
                 if(response.groups.length > 1) {
                     setGroups(response.groups);
                     ArmazenadorToken.definirUsuario(
@@ -106,7 +107,6 @@ function Mfa() {
                     ArmazenadorToken.removerTempToken();   
                     ArmazenadorToken.definirGrupos(response.groups);
                     
-                    setUsuarioEstaLogado(true);
                     navegar('/login/selecionar-grupo');
                 } else {
                     setTipo(response.groups[0]);
@@ -125,7 +125,6 @@ function Mfa() {
                     );
                     ArmazenadorToken.removerTempToken();   
                     
-                    setUsuarioEstaLogado(true);
                     navegar('/login/selecionar-empresa');
                 }
             })

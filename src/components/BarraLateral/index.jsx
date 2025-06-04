@@ -158,19 +158,22 @@ function BarraLateral({ $sidebarOpened }) {
 
     
     useEffect(() => {
-        // Se já existe no ArmazenadorToken, usa ele
-        if (ArmazenadorToken.userPermissions && Array.isArray(ArmazenadorToken.userPermissions) && ArmazenadorToken.userPermissions.length > 0) {
-            setGrupos(ArmazenadorToken.userPermissions);
-           
-        } else {
-            http.get(`permissao_grupo/?format=json&name=${usuario.tipo}`)
-                .then(response => {
-                    setGrupos(response);
-                    ArmazenadorToken.definirPermissoes(response);
-                })
-                .catch(error => console.log('Erro ao buscar grupos:', error));
+        console.log(usuario)
+        if(usuario.tipo) {
+            // Se já existe no ArmazenadorToken, usa ele
+            if (ArmazenadorToken.userPermissions && Array.isArray(ArmazenadorToken.userPermissions) && ArmazenadorToken.userPermissions.length > 0) {
+                setGrupos(ArmazenadorToken.userPermissions);
+            
+            } else {
+                http.get(`permissao_grupo/?format=json&name=${usuario.tipo}`)
+                    .then(response => {
+                        setGrupos(response);
+                        ArmazenadorToken.definirPermissoes(response);
+                    })
+                    .catch(error => console.log('Erro ao buscar grupos:', error));
+            }
         }
-    }, []);
+    }, [usuario]);
 
     useEffect(() => {
 

@@ -63,6 +63,7 @@ function LoginMobile() {
             ArmazenadorToken.removerToken();
             ArmazenadorToken.removerTempToken();
             ArmazenadorToken.removerCompany();
+            ArmazenadorToken.removerPermissoes();
             if(usuarioEstaLogado) {
                 setUsuarioEstaLogado(false);
             }
@@ -106,6 +107,7 @@ function LoginMobile() {
                 if(response.mfa_required) {
                     navegar('/login/mfa');
                 } else {
+                    setUsuarioEstaLogado(true);
                     if(response.groups.length > 1) {
                         setGroups(response.groups);
                         ArmazenadorToken.definirUsuario(
@@ -120,9 +122,10 @@ function LoginMobile() {
                             '', 
                             response.mfa_required
                         );
+                        ArmazenadorToken.removerTempToken();
 
-                        setUsuarioEstaLogado(true);
                         ArmazenadorToken.definirGrupos(response.groups);
+
                         navegar('/login/selecionar-grupo');
                     } else {
                         
@@ -141,7 +144,8 @@ function LoginMobile() {
                             response.mfa_required
                         );
 
-                        setUsuarioEstaLogado(true);
+                        ArmazenadorToken.removerTempToken();
+
                             // Navegação conforme tipo de usuário
                         if(response.groups[0] !== 'funcionario') {
                             if(response.groups[0] !== 'candidato') {

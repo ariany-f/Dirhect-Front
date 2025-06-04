@@ -76,6 +76,7 @@ function SelecionarGrupo() {
     }
 
     const handleSelectSave = (value) => {
+        setTipo(selected)
         ArmazenadorToken.definirTipo(selected);
         navegar('/login/selecionar-empresa')
     }
