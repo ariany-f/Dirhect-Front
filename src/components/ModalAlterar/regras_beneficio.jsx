@@ -15,7 +15,7 @@ import { Link } from "react-router-dom"
 import { FaDownload } from "react-icons/fa"
 import { IoSettingsSharp } from "react-icons/io5"
 import { Col12, Col6 } from '@components/Colunas'
-import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles'
 import IconeBeneficio from '@components/IconeBeneficio'
 import SwitchInput from '@components/SwitchInput'
 import CustomImage from '@components/CustomImage'
@@ -180,15 +180,12 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     }
 
     return(
-        <>
-            {opened &&
-            <Overlay>
-                <DialogEstilizado 
+            <OverlayRight $opened={opened}>
+                <DialogEstilizadoRight 
                     $width="60vw" 
-                    $minWidth="500px"
-                    $maxWidth="900px"
                     id="modal-add-departamento" 
                     open={opened}
+                    $opened={opened}
                 >
                     <Frame>
                         <Titulo>
@@ -341,9 +338,8 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                             <Botao aoClicar={validarESalvar} estilo="vermilion" size="medium" filled>Salvar</Botao>
                         </div>
                     </form>
-                </DialogEstilizado>
-            </Overlay>}
-        </>
+                </DialogEstilizadoRight>
+            </OverlayRight>
     )
 }
 
