@@ -18,6 +18,9 @@ import { Col12, Col6 } from '@components/Colunas'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import IconeBeneficio from '@components/IconeBeneficio'
 import SwitchInput from '@components/SwitchInput'
+import CustomImage from '@components/CustomImage'
+import ContainerHorizontal from '@components/ContainerHorizontal'
+import BadgeGeral from '@components/BadgeGeral'
 
 const StyledDropdownContainer = styled.div`
     width: 100%;
@@ -52,8 +55,8 @@ const TituloComIcone = styled.div`
     margin-bottom: 8px;
 `;
 
-function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo, nomeBeneficio = '', iconeBeneficio = '' }) {
-
+function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo, nomeBeneficio = '', iconeBeneficio = '', contrato = null }) {
+    
     const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
     const [id, setId] = useState('')
@@ -194,9 +197,30 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
                             </form>
-                            <h6>{id ? 'Alterar Configuração do' : 'Adicionar Configuração ao'} Contrato {id && ` - ${nomeBeneficio}`} {id && iconeBeneficio && (
-                                   <IconeBeneficio nomeIcone={iconeBeneficio} size={16} />
-                            )}</h6>
+                            <h6 style={{marginBottom: 16}}>{id ? 'Alterar Configuração do' : 'Adicionar Configuração ao'} Contrato</h6>
+                            {contrato && 
+                                <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={contrato?.dados_operadora?.id}>
+                                    <CustomImage src={contrato?.dados_operadora?.imagem_url} alt={contrato?.dados_operadora?.nome} width={45} height={45} title={contrato?.dados_operadora?.nome} />
+                                    <div>
+                                        <b>{contrato?.dados_operadora?.nome} {contrato?.num_contrato_origem ? `- #${contrato?.num_contrato_origem}` : ``}</b>
+                                        <BadgeGeral 
+                                            severity={''} 
+                                            weight={500} 
+                                            nomeBeneficio={
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                    <IconeBeneficio 
+                                                        nomeIcone={iconeBeneficio} 
+                                                        size={20}
+                                                    />
+                                                    <div>
+                                                        {nomeBeneficio}
+                                                    </div>
+                                                </div>
+                                            }  
+                                        />
+                                    </div>
+                                </ContainerHorizontal>
+                            }
                         </Titulo>
                     </Frame>
                     <Frame padding="24px 0px">

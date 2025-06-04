@@ -49,7 +49,7 @@ const Col7 = styled.div`
     padding: 0px;
 `;
 
-function DataTableContratosDetalhes({ beneficios, onUpdate }) {
+function DataTableContratosDetalhes({ beneficios, onUpdate, contrato }) {
     
     const[selectedBeneficio, setSelectedBeneficio] = useState(0)
     const[selectedItemBeneficio, setSelectedItemBeneficio] = useState(0)
@@ -620,7 +620,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
             </Col12>
             <ModalAdicionarElegibilidadeItemContrato item={selectedItemBeneficio} heranca={selectedBeneficio?.regra_elegibilidade_pai} aoSalvar={salvarGrupos} aoFechar={() => setModalElegibilidadeOpened(false)} opened={modalElegibilidadeOpened} />
             <ModalAdicionarElegibilidadeBeneficioContrato item={selectedBeneficio} aoSalvar={salvarGruposBeneficio} aoFechar={() => setModalElegibilidadeBeneficioOpened(false)} opened={modalElegibilidadeBeneficioOpened} />
-            <ModalAlterarRegrasBeneficio contrato={selectedItemBeneficio?.id} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} nomeBeneficio={selectedBeneficio?.dados_beneficio?.descricao} iconeBeneficio={selectedBeneficio?.dados_beneficio?.icone} dadoAntigo={sendData} />
+            <ModalAlterarRegrasBeneficio contrato={contrato} aoSalvar={alterarRegras} aoFechar={() => setModalOpened(false)} opened={modalOpened} nomeBeneficio={selectedBeneficio?.dados_beneficio?.descricao} iconeBeneficio={selectedBeneficio?.dados_beneficio?.icone} dadoAntigo={sendData} />
         </>
     )
 }

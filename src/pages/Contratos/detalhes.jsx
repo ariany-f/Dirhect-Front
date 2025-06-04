@@ -131,7 +131,7 @@ function DetalhesContratos() {
                     </>
                     : <></>
                 }
-                <DataTableContratosDetalhes beneficios={contrato?.beneficios} onUpdate={carregarContrato} />
+                <DataTableContratosDetalhes contrato={contrato} beneficios={contrato?.beneficios} onUpdate={carregarContrato} />
                 <ModalContratoBeneficios beneficiosContrato={contrato?.beneficios} operadora={contrato?.dados_operadora} aoSalvar={vincularBeneficio} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Container>
         </Frame>
