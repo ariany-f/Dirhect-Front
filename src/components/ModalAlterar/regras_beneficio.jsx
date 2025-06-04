@@ -59,6 +59,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     const [valor, setValor] = useState('')
     const [tempo_minimo, setTempoMinimo] = useState('')
     const [extensivo_dependentes, setExxtensivelDependente] = useState(false)
+    const [herdado, setHerdado] = useState(false)
     const [dropdownTiposCalculo, setDropdownTiposCalculo] = useState([])
     const [dropdownTiposDesconto, setDropdownTiposDesconto] = useState([])
     const [empresa, setEmpresa] = useState('')
@@ -107,6 +108,10 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
 
     const handleChange = (checked) => {
         setExxtensivelDependente(checked) // Atualiza o estado da tarefa
+    };
+
+    const handleChangeHerdado = (checked) => {
+        setHerdado(checked) // Atualiza o estado da tarefa
     };
 
     useEffect(() => {
@@ -305,6 +310,14 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                     name="extensivo_dependentes" 
                                     valor={extensivo_dependentes} 
                                     setValor={handleChange} 
+                                />
+                            </Col6>
+                            <Col6>
+                                <CheckboxContainer 
+                                    label="Herdar Regras do Benefício?" 
+                                    name="herdado" 
+                                    valor={herdado} 
+                                    setValor={handleChangeHerdado} 
                                 />
                             </Col6>
                         </Col12>
