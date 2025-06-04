@@ -71,6 +71,10 @@ function SelecionarGrupo() {
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
+    useEffect(() => {
+        setSelected(ArmazenadorToken.UserGroups[0])
+    }, [usuario])
+
     function handleSelectChange(value) {
         setSelected(value);
     }
