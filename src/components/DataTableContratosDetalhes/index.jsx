@@ -396,20 +396,21 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                         if(response.versao_ativa) {
                             const updatedItems = [...selectedItems, response];
                             setSelectedItems(updatedItems);
+                        
+                            // Atualiza o benefício selecionado
+                            const updatedBeneficios = beneficiosProcessados.map(beneficio => {
+                                if (beneficio.id === selectedBeneficio.id) {
+                                    return {
+                                        ...beneficio,
+                                        itens: updatedItems
+                                    };
+                                }
+                                return beneficio;
+                            });
+                            setBeneficiosProcessados(updatedBeneficios);
+                            
                         }
                         
-                        // Atualiza o benefício selecionado
-                        const updatedBeneficios = beneficiosProcessados.map(beneficio => {
-                            if (beneficio.id === selectedBeneficio.id) {
-                                return {
-                                    ...beneficio,
-                                    itens: updatedItems
-                                };
-                            }
-                            return beneficio;
-                        });
-                        
-                        setBeneficiosProcessados(updatedBeneficios);
                         toast.current.show({severity:'success', summary: 'Adicionado com Sucesso', detail: 'Sucesso!', life: 3000});
                         // Notifica o componente pai sobre a atualização
                         if (onUpdate) {
@@ -418,6 +419,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                     }
                 })
                 .catch(erro => {
+                    console.log(erro)
                     toast.current.show({severity:'error', summary: 'Não foi possível adicionar', detail: 'Erro!', life: 3000});
                 })
                 .finally(function() {
