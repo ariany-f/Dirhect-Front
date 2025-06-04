@@ -14,6 +14,7 @@ const USER_PUBLIC_ID = 'public_id'
 const MFA_REQUIRED = 'mfa_required'
 const USER_TYPE = 'tipo'
 const USER_GROUPS = 'groups'
+const USER_PERMISSIONS = 'permissions'
 
 export class ArmazenadorToken {
     static definirGrupos(groups) {
@@ -21,6 +22,12 @@ export class ArmazenadorToken {
     }
     static get UserGroups() {
         return JSON.parse(sessionStorage.getItem(USER_GROUPS))
+    }
+    static definirPermissoes(permissions) {
+        sessionStorage.setItem(USER_PERMISSIONS, JSON.stringify(permissions))
+    }
+    static get UserPermissions() {
+        return JSON.parse(sessionStorage.getItem(USER_PERMISSIONS))
     }
     static definirTempToken(tempToken) {
         sessionStorage.setItem(TEMP_TOKEN, tempToken)
