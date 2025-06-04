@@ -213,6 +213,7 @@ function BarraLateral({ $sidebarOpened }) {
     const permissionMap = {
         'view_funcionario': ['Colaboradores', 'Demissões'],
         'view_admissao': ['Admissões'],
+        'view_tarefa': ['Tarefas'],
         'view_dependente': ['Dependentes'],
         'view_ferias': ['Férias'],
         'view_ausencia': ['Ausências'],
@@ -252,13 +253,6 @@ function BarraLateral({ $sidebarOpened }) {
             itemTitulo: 'Lançtos de Folha',
         },
         {
-            id: 7,
-            url: '/tarefas',
-            pageTitulo: 'Tarefas',
-            icone: <GoTasklist size={20} fill="white" />, 
-            itemTitulo: 'Tarefas',
-        },
-        {
             id: 8,
             url: '/admissao/registro/1/true',
             pageTitulo: 'Minha Admissão',
@@ -294,6 +288,14 @@ function BarraLateral({ $sidebarOpened }) {
             icone: <RiUser3Fill size={20} className="icon" />,
             itemTitulo: 'Admissões',
             permission: 'view_admissao',
+        },
+        {
+            id: 7,
+            url: '/tarefas',
+            pageTitulo: 'Tarefas',
+            icone: <GoTasklist size={20} fill="white" />, 
+            itemTitulo: 'Tarefas',
+            permission: 'view_tarefa',
         },
         {
             id: 11,
