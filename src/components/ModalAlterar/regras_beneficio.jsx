@@ -17,6 +17,7 @@ import { IoSettingsSharp } from "react-icons/io5"
 import { Col12, Col6 } from '@components/Colunas'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import IconeBeneficio from '@components/IconeBeneficio'
+import SwitchInput from '@components/SwitchInput'
 
 const StyledDropdownContainer = styled.div`
     width: 100%;
@@ -58,8 +59,8 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     const [id, setId] = useState('')
     const [valor, setValor] = useState('')
     const [tempo_minimo, setTempoMinimo] = useState('')
-    const [extensivo_dependentes, setExxtensivelDependente] = useState(false)
-    const [herdado, setHerdado] = useState(false)
+    const [extensivo_dependentes, setExtensivelDependente] = useState(false)
+    const [herdado, setHerdado] = useState(true)
     const [dropdownTiposCalculo, setDropdownTiposCalculo] = useState([])
     const [dropdownTiposDesconto, setDropdownTiposDesconto] = useState([])
     const [empresa, setEmpresa] = useState('')
@@ -92,7 +93,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
             setEmpresa(dadoAntigo.valor_empresa)
             setDesconto(dadoAntigo.valor_desconto)
             setTempoMinimo(dadoAntigo.tempo_minimo)
-            setExxtensivelDependente(dadoAntigo.extensivel_depentende)
+            setExtensivelDependente(dadoAntigo.extensivel_depentende)
             setDescricao(dadoAntigo.descricao)
             setHerdado(dadoAntigo.herdado)
 
@@ -106,14 +107,6 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     const fecharModal = () => {
         aoFechar();
     }
-
-    const handleChange = (checked) => {
-        setExxtensivelDependente(checked) // Atualiza o estado da tarefa
-    };
-
-    const handleChangeHerdado = (checked) => {
-        setHerdado(checked) // Atualiza o estado da tarefa
-    };
 
     useEffect(() => {
         setDropdownTiposCalculo((estadoAnterior) => {
@@ -306,20 +299,17 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                         </Col12>
                         <Col12>
                             <Col6>
-                                <CheckboxContainer 
-                                    label="Extensível Dependente?" 
-                                    name="extensivo_dependentes" 
-                                    valor={extensivo_dependentes} 
-                                    setValor={handleChange} 
-                                />
+                            
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                    <span style={{ fontSize: 14, color: '#888' }}>Extensível Dependente?</span>
+                                    <SwitchInput checked={extensivo_dependentes} onChange={() => setExtensivelDependente(!extensivo_dependentes)} color="var(--primaria)" />
+                                </div>
                             </Col6>
                             <Col6>
-                                <CheckboxContainer 
-                                    label="Herdar Regras do Benefício?" 
-                                    name="herdado" 
-                                    valor={herdado} 
-                                    setValor={handleChangeHerdado} 
-                                />
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                    <span style={{ fontSize: 14, color: '#888' }}>Herdar regras de elegibilidade do Benefício?</span>
+                                    <SwitchInput checked={herdado} onChange={() => setHerdado(!herdado)} color="var(--primaria)" />
+                                </div>
                             </Col6>
                         </Col12>
                     </Frame>
