@@ -99,6 +99,7 @@ export class ArmazenadorToken {
         sessionStorage.removeItem(EXPIRATION)
         sessionStorage.removeItem(PERMISSIONS)
         sessionStorage.removeItem(USER_GROUPS)
+        sessionStorage.removeItem(USER_PERMISSIONS)
         sessionStorage.removeItem(REFRESH_TOKEN)
         sessionStorage.removeItem(USER_NAME)
         sessionStorage.removeItem(USER_EMAIL)
@@ -157,11 +158,14 @@ export class ArmazenadorToken {
     static hasPermission(codename) {
         try {
             const groupsRaw = sessionStorage.getItem(USER_GROUPS);
-            if (!groupsRaw) return false;
-            let groups = groupsRaw;
-            if (typeof groupsRaw === 'string') {
+            const permissionsRaw = sessionStorage.getItem(USER_PERMISSIONS);
+            
+            if (!permissionsRaw) return false;
+            let groups = permissionsRaw;
+
+            if (typeof permissionsRaw === 'string') {
                 try {
-                    groups = JSON.parse(groupsRaw);
+                    groups = JSON.parse(permissionsRaw);
                 } catch {
                     // Se não for JSON, pode ser um objeto já
                 }
@@ -170,7 +174,8 @@ export class ArmazenadorToken {
             if (!Array.isArray(groups)) {
                 groups = [groups];
             }
-           
+            console.log(groups)
+            
             for (const group of groups) { 
                 if (group.permissions && Array.isArray(group.permissions)) {
                     if (group.permissions.some(p => p.codename === codename)) {

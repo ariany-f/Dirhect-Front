@@ -90,6 +90,7 @@ function Mfa() {
                 setName(response.user.first_name + ' ' + response.user.last_name);
 
                 setUsuarioEstaLogado(true);
+
                 if(response.groups.length > 1) {
                     setGroups(response.groups);
                     ArmazenadorToken.definirUsuario(
