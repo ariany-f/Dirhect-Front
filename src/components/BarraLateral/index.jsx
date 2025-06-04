@@ -158,7 +158,6 @@ function BarraLateral({ $sidebarOpened }) {
 
     
     useEffect(() => {
-        console.log(usuario)
         if(usuario.tipo) {
             // Se já existe no ArmazenadorToken, usa ele
             if (ArmazenadorToken.userPermissions && Array.isArray(ArmazenadorToken.userPermissions) && ArmazenadorToken.userPermissions.length > 0) {
@@ -213,6 +212,7 @@ function BarraLateral({ $sidebarOpened }) {
     // Mapeamento de permissões para menus
     const permissionMap = {
         'view_funcionario': ['Colaboradores', 'Demissões'],
+        'view_admissao': ['Admissões'],
         'view_dependente': ['Dependentes'],
         'view_ferias': ['Férias'],
         'view_ausencia': ['Ausências'],
@@ -229,13 +229,6 @@ function BarraLateral({ $sidebarOpened }) {
             pageTitulo: 'Home',
             icone: <AiFillHome size={20} className="icon" />,
             itemTitulo: 'Home',
-        },
-        {
-            id: 3,
-            url: '/admissao',
-            pageTitulo: 'Admissões',
-            icone: <RiUser3Fill size={20} className="icon" />,
-            itemTitulo: 'Admissões',
         },
         {
             id: 4,
@@ -294,6 +287,14 @@ function BarraLateral({ $sidebarOpened }) {
 
     // Menus condicionais por permissão
     const conditionalMenus = [
+        {
+            id: 3,
+            url: '/admissao',
+            pageTitulo: 'Admissões',
+            icone: <RiUser3Fill size={20} className="icon" />,
+            itemTitulo: 'Admissões',
+            permission: 'view_admissao',
+        },
         {
             id: 11,
             url: '/colaborador',
