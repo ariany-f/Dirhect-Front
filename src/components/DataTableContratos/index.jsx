@@ -224,14 +224,38 @@ function DataTableContratos({
                         size={90} 
                         title={rowData?.dados_operadora?.nome} 
                     />
-                    <Texto weight={700} width={'100%'}>
-                        {rowData?.dados_operadora?.nome}
-                    </Texto>
+                    <div style={{ alignItems: 'center', gap: '10px' }}>
+                        <Texto weight={700} width={'100%'}>
+                            {rowData?.dados_operadora?.nome}
+                        </Texto>
+                        <Texto weight={300} width={'100%'}>
+                            {rowData?.num_contrato_origem}
+                        </Texto>
+                    </div>
                 </div>
             )
         }
         return '';
     }
+    
+    const representativeBeneficioRegraElegibilidadeTemplate = (rowData) => {
+        if (!rowData.beneficios || rowData.beneficios.length === 0) return '0/0';
+        let totalItens = 0;
+        let itensComRegra = 0;
+        rowData.beneficios.forEach(beneficio => {
+            totalItens += 1;
+            itensComRegra += (beneficio.regra_elegibilidade_pai.length > 0);
+
+        });
+        const texto = `${itensComRegra}/${totalItens}`;
+        return (
+            <>
+            
+            <Tooltip target=".setting" mouseTrack mouseTrackLeft={10} />
+            <span className="setting" data-pr-tooltip="Elegibilidades Configuradas" style={{ cursor: 'help' }}>{texto}</span>
+            </>
+        );
+    };
 
     const representativeRegraElegibilidadeTemplate = (rowData) => {
         if (!rowData.beneficios || rowData.beneficios.length === 0) return '0/0';
@@ -444,11 +468,12 @@ function DataTableContratos({
             >
                 <Column body={representativeNomeTemplate} header="Operadora" field="dados_operadora.nome" sortField="operadora" sortable style={{ width: '20%' }}></Column>
                 <Column field="observacao" sortable sortField="observacao" header="Observação" style={{ width: '12%' }}></Column>
-                <Column field="num_contrato_origem" sortField="num_contrato_origem" sortable header="Número Contrato" style={{ width: '10%' }}></Column>
+                {/* <Column field="num_contrato_origem" sortField="num_contrato_origem" sortable header="Número Contrato" style={{ width: '10%' }}></Column> */}
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>
-                <Column body={representativeRegraElegibilidadeTemplate} header="Itens com Regras" style={{ width: '15%', textAlign: 'center' }}></Column>
+                <Column body={representativeBeneficioRegraElegibilidadeTemplate} header="Benefícios com Regras" style={{ width: '15%', textAlign: 'center' }}></Column>
+                <Column body={representativeRegraElegibilidadeTemplate} header="Itens com Regras" style={{ width: '10%', textAlign: 'center' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '15%', textAlign: 'center' }}></Column>
             </DataTable>
             
