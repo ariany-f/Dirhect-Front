@@ -94,6 +94,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
             setTempoMinimo(dadoAntigo.tempo_minimo)
             setExxtensivelDependente(dadoAntigo.extensivel_depentende)
             setDescricao(dadoAntigo.descricao)
+            setHerdado(dadoAntigo.herdado)
 
              // Encontrar o objeto correspondente para o dropdown
              setTipoCalculo(prev => tiposCalculo.find(item => item.code === dadoAntigo.tipo_calculo) || prev);
@@ -180,7 +181,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
         if (errors.length > 0) {
             setClassError(errors);
         } else {
-            aoSalvar(id, descricao, tipo_calculo.code, tipo_desconto.code, extensivo_dependentes, valor, empresa, desconto);
+            aoSalvar(id, descricao, tipo_calculo.code, tipo_desconto.code, extensivo_dependentes, valor, empresa, desconto, herdado);
         }
     }
 

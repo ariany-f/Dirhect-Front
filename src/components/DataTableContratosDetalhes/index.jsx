@@ -329,7 +329,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
         );
     };
 
-    const alterarRegras = (id, descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto) => {
+    const alterarRegras = (id, descricao, tipo_calculo, tipo_desconto, extensivo_dependentes, valor, empresa, desconto, herdado) => {
         if(descricao == '' || valor == '' || empresa == '' || desconto == '') {
             toast.current.show({severity:'error', summary: 'Erro', detail: 'Preencha todos os campos!', life: 3000});
         } else {
@@ -347,7 +347,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate }) {
                 parametro_aplicacao: "I",
                 regra_elegibilidade: selectedItemBeneficio?.regra_elegibilidade ?? [],
                 numero_decimal: true,
-                herdado: selectedItemBeneficio?.herdado ?? false,
+                herdado: herdado ? true : false,
                 valor: converterParaNumero(valor),
                 valor_empresa: converterParaNumero(empresa),
                 valor_desconto: converterParaNumero(desconto)
