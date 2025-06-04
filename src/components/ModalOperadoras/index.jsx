@@ -7,7 +7,7 @@ import CampoTexto from "@components/CampoTexto";
 import Titulo from "@components/Titulo";
 import styles from './ModalOperadoras.module.css';
 import { Toast } from "primereact/toast";
-import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles';
 
 const ImageUploadContainer = styled.div`
     display: flex;
@@ -138,103 +138,99 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
     };
 
     return (
-        <>
-            {opened && (
-                <Overlay>
-                    <Toast ref={toast} />
-                    <DialogEstilizado open={opened}>
-                        <Frame>
-                            <Titulo>
-                                <button className="close" onClick={aoFechar}>
-                                    <RiCloseFill size={20} className="fechar" />  
-                                </button>
-                                <h6>{operadora ? 'Editar Operadora' : 'Nova Operadora'}</h6>
-                            </Titulo>
-                        </Frame>
-                        <br/>
-                        <Frame padding="24px">
-                            <CampoTexto
-                                name="nome"
-                                valor={nome}
-                                setValor={setNome}
-                                type="text"
-                                label="Nome da Operadora*"
-                                placeholder="Digite o nome da operadora"
-                            />
-                            
-                            <ImageUploadContainer>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    ref={fileInputRef}
-                                    style={{ display: 'none' }}
-                                    id="operadora-image-upload"
-                                />
-                                
-                                <UploadArea 
-                                    htmlFor="operadora-image-upload"
-                                    $hasImage={!!previewImagem}
-                                >
-                                    {previewImagem ? (
-                                        <UploadPreview 
-                                            src={previewImagem} 
-                                            alt="Preview da imagem da operadora"
-                                        />
-                                    ) : (
-                                        <UploadIcon>
-                                            <RiUpload2Fill size={'28px'} />
-                                            <UploadText>Clique para adicionar uma imagem</UploadText>
-                                            <UploadText>(PNG, JPG, até 2MB)</UploadText>
-                                        </UploadIcon>
-                                    )}
-                                </UploadArea>
-                                
-                                {previewImagem && (
-                                    <div style={{ display: 'flex', gap: '10px' }}>
-                                        <Botao 
-                                            aoClicar={() => fileInputRef.current.click()}
-                                            estilo="neutro" 
-                                            size="small"
-                                        >
-                                            Alterar Imagem
-                                        </Botao>
-                                        <Botao 
-                                            aoClicar={handleRemoveImage}
-                                            estilo="erro" 
-                                            size="small"
-                                        >
-                                            Remover Imagem
-                                        </Botao>
-                                    </div>
-                                )}
-                            </ImageUploadContainer>
-                        </Frame>
+        <OverlayRight $opened={opened}>
+            <Toast ref={toast} />
+            <DialogEstilizadoRight $align="flex-start" $width="40vw" open={opened} $opened={opened}>
+                <Frame>
+                    <Titulo>
+                        <button className="close" onClick={aoFechar}>
+                            <RiCloseFill size={20} className="fechar" />  
+                        </button>
+                        <h6>{operadora ? 'Editar Operadora' : 'Nova Operadora'}</h6>
+                    </Titulo>
+                </Frame>
+                <br/>
+                <Frame padding="24px">
+                    <CampoTexto
+                        name="nome"
+                        valor={nome}
+                        setValor={setNome}
+                        type="text"
+                        label="Nome da Operadora*"
+                        placeholder="Digite o nome da operadora"
+                    />
+                    
+                    <ImageUploadContainer>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            id="operadora-image-upload"
+                        />
                         
-                        <div className={styles.containerBottom}>
-                            <Botao 
-                                aoClicar={aoFechar} 
-                                estilo="neutro" 
-                                size="medium" 
-                                filled
-                                disabled={isUploading}
-                            >
-                                Cancelar
-                            </Botao>
-                            <Botao 
-                                aoClicar={handleSubmit} 
-                                estilo="vermilion" 
-                                size="small" 
-                                filled
-                                loading={isUploading}
-                            >
-                                {isUploading ? 'Salvando...' : 'Salvar Operadora'}
-                            </Botao>
-                        </div>
-                    </DialogEstilizado>
-                </Overlay>
-            )}
-        </>
+                        <UploadArea 
+                            htmlFor="operadora-image-upload"
+                            $hasImage={!!previewImagem}
+                        >
+                            {previewImagem ? (
+                                <UploadPreview 
+                                    src={previewImagem} 
+                                    alt="Preview da imagem da operadora"
+                                />
+                            ) : (
+                                <UploadIcon>
+                                    <RiUpload2Fill size={'28px'} />
+                                    <UploadText>Clique para adicionar uma imagem</UploadText>
+                                    <UploadText>(PNG, JPG, até 2MB)</UploadText>
+                                </UploadIcon>
+                            )}
+                        </UploadArea>
+                        
+                        {previewImagem && (
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <Botao 
+                                    aoClicar={() => fileInputRef.current.click()}
+                                    estilo="neutro" 
+                                    size="small"
+                                >
+                                    Alterar Imagem
+                                </Botao>
+                                <Botao 
+                                    aoClicar={handleRemoveImage}
+                                    estilo="erro" 
+                                    size="small"
+                                >
+                                    Remover Imagem
+                                </Botao>
+                            </div>
+                        )}
+                    </ImageUploadContainer>
+                </Frame>
+                
+                <div className={styles.containerBottom}>
+                    <Botao 
+                        aoClicar={aoFechar} 
+                        estilo="neutro" 
+                        size="medium" 
+                        filled
+                        disabled={isUploading}
+                    >
+                        Cancelar
+                    </Botao>
+                    <Botao 
+                        aoClicar={handleSubmit} 
+                        estilo="vermilion" 
+                        size="small" 
+                        filled
+                        loading={isUploading}
+                    >
+                        {isUploading ? 'Salvando...' : 'Salvar Operadora'}
+                    </Botao>
+                </div>
+            </DialogEstilizadoRight>
+        </OverlayRight>
     );
 }
 
