@@ -10,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { toast } from 'react-toastify'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import http from "@http"
+import { ArmazenadorToken } from '@utils';
 
 function EsqueciASenha() {
     
@@ -45,6 +46,10 @@ function EsqueciASenha() {
     }
 
     useEffect(() =>{
+        ArmazenadorToken.removerToken();
+        ArmazenadorToken.removerTempToken();
+        ArmazenadorToken.removerPermissoes();
+        ArmazenadorToken.removerCompany();
         async function init() {
             let tentativas = 0;
             let sucesso = false;
@@ -95,12 +100,13 @@ function EsqueciASenha() {
         {
             solicitarCodigoRecuperacaoSenha()
                 .then((response) => {
-                    if(response.success)
+                    if(response)
                     {
                         navegar('/esqueci-a-senha/seguranca')
                     }
                 })
                 .catch(erro => {
+                    toast.error('Erro ao solicitar código de recuperação de senha!')
                     console.error(erro)
                 })
         }

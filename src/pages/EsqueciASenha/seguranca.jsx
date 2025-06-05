@@ -11,33 +11,14 @@ import { useRef } from "react"
 
 function Seguranca() {
     
-    const {
-        usuario,
-        setCode,
-        submeterRecuperacaoSenha
-    } = useSessaoUsuarioContext()
+    // const {
+    //     usuario,
+    //     setCode,
+    //     submeterRecuperacaoSenha
+    // } = useSessaoUsuarioContext()
     
     const navegar = useNavigate()
-    const toast = useRef(null)
-
-    const sendData = (evento) => {
-        evento.preventDefault()
-        submeterRecuperacaoSenha()
-            .then((response) => {
-                if(response.success)
-                { 
-                    navegar('/esqueci-a-senha/check-inbox')
-                }
-                else{
-                    toast.current.show({ severity: 'error', summary: 'Erro', detail: response.data.message })
-                    return false
-                }
-            })
-            .catch(erro => {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: erro.data.message })
-                return false
-            })
-    }
+    // const toast = useRef(null)
 
     return (
         <>
@@ -47,16 +28,11 @@ function Seguranca() {
                 <Titulo>
                     <h2>Segurança</h2>
                     <SubTitulo>
-                        Enviamos um código token para o celular e e-mail cadastrados
+                        Enviamos um link para o e-mail cadastrado
                     </SubTitulo>
                 </Titulo>
             </Frame>
-            <form>
-                <Frame>
-                    <CamposVerificacao valor={usuario.code} setValor={setCode} label="Código de autenticação" />
-                </Frame>
-            </form>
-            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+            <Botao aoClicar={() => navegar('/login')} estilo="vermilion" size="medium" filled>Voltar para o Login</Botao>
         </>
     )
 }
