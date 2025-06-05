@@ -36,7 +36,7 @@ const recuperacaoSenhaInicial = {
     token: '',
     password: '',
     confirm_password: '',
-    uuid: ''
+    uid: ''
 }
 
 export const SessaoUsuarioContext = createContext({
@@ -130,11 +130,11 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
-    const setRecuperacaoUuid = (uuid) => {
+    const setRecuperacaoUuid = (uid) => {
         setRecuperacaoSenha(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                uuid
+                uid
             }
         })
     }
@@ -346,7 +346,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
     const redefinirSenha = () => {
 
         const obj = {
-            uuid: recuperacaoSenha.uuid,
+            uid: recuperacaoSenha.uid,
             token: recuperacaoSenha.token,
             new_password: recuperacaoSenha.password
         }

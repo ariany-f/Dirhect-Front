@@ -200,7 +200,7 @@ function AppRouter() {
             </Route>
             <Route path="/esqueci-a-senha" element={<Publico/>}>
               <Route index element={<EsqueciASenha />} />
-              <Route path="redefinir/:uuid/:token" element={<RedefinirSenha />} />
+              <Route path="redefinir/:uid/:token" element={<RedefinirSenha />} />
               <Route path="seguranca" element={<Seguranca />} />
               <Route path="check-inbox" element={<RedefinirSenhaCheckInbox />} />
               <Route path="sucesso" element={<RedefinirSenhaSucesso />} />

@@ -15,7 +15,7 @@ import Loading from "@components/Loading"
 
 function RedefinirSenha() {
     
-    const {uuid, token} = useParams()
+    const {uid, token} = useParams()
     const [ready, setReady] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
@@ -40,10 +40,10 @@ function RedefinirSenha() {
     });
 
     useEffect(() => {
-        http.get(`/password/reset/${uuid}/${token}/`)
+        http.get(`/password/reset/${uid}/${token}/`)
         .then(response => {
             if(response) {
-                setRecuperacaoUuid(uuid)
+                setRecuperacaoUuid(uid)
                 setRecuperacaoToken(token)
                 setReady(true)
             }
@@ -93,7 +93,7 @@ function RedefinirSenha() {
         }
         redefinirSenha()
             .then((response) => {
-                if(response.detail)
+                if(response.detail && response.detail != "Senha redefinida com sucesso")
                 {
                     toast.error(response.detail)
                 }
