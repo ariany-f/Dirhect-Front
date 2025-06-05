@@ -11,9 +11,9 @@ function RedefinirSenhaSucesso() {
 
     return (
         <>
-            <Frame>
-                <Titulo>
-                    <img src={Success}/>
+            <Frame gap="16px" alinhamento="center">
+                <img width="100px" src={Success}/>
+                <Titulo >
                     <h2>Senha redefinida</h2>
                     <SubTitulo>
                         Acesso sua conta e ofereça os melhores benefícios aos seus colaboradores
