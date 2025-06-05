@@ -62,8 +62,8 @@ function RedefinirSenha() {
             toast.error('As senhas devem coincidir')
             return
         }
-        if(recuperacaoSenha.password.length < 6) {
-            toast.error('A senha deve ter pelo menos 6 caracteres')
+        if(recuperacaoSenha.password.length < 8) {
+            toast.error('A senha deve ter pelo menos 8 caracteres')
             return
         }
         if(!/[A-Z]/.test(recuperacaoSenha.password)) {
