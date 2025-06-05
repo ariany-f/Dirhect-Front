@@ -6,7 +6,7 @@ function RegrasCriacaoSenha() {
     return (
         <Frame estilo="vermilion" padding="16px">
             <Texto weight="800">Regras para criação de senha:</Texto>
-            <Item>A senha deve conter exatamente 6 dígitos</Item>
+            <Item>A senha deve conter pelo menos 6 caracteres</Item>
         </Frame>
     )
 }
