@@ -100,7 +100,11 @@ function EsqueciASenha() {
         {
             solicitarCodigoRecuperacaoSenha()
                 .then((response) => {
-                    if(response)
+                    if(response.detail)
+                    {
+                        toast.error(response.detail)
+                    }
+                    else if(response !== undefined || response.data !== undefined)
                     {
                         navegar('/esqueci-a-senha/seguranca')
                     }

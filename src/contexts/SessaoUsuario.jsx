@@ -348,7 +348,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const obj = {
             uuid: recuperacaoSenha.uuid,
             token: recuperacaoSenha.token,
-            password: recuperacaoSenha.password
+            new_password: recuperacaoSenha.password
         }
         return http.post(`password/reset/confirm/`, obj)
             .then((response) => {

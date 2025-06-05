@@ -93,7 +93,11 @@ function RedefinirSenha() {
         }
         redefinirSenha()
             .then((response) => {
-                if(response !== undefined || response.data !== undefined)
+                if(response.detail)
+                {
+                    toast.error(response.detail)
+                }
+                else if(response !== undefined || response.data !== undefined)
                 {
                     navegar('/esqueci-a-senha/sucesso')
                 }
