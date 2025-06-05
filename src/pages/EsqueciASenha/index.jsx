@@ -117,7 +117,7 @@ function EsqueciASenha() {
                 <Titulo>
                     <h2>Esqueceu sua senha?</h2>
                     <SubTitulo>
-                    Para recuperar sua senha, precisamos do CPF do responsável da conta corporativa
+                    Para recuperar sua senha, precisamos do e-mail da conta
                     </SubTitulo>
                 </Titulo>
             </Frame>
