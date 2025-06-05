@@ -20,7 +20,7 @@ function RedefinirSenha() {
         setRecuperacaoToken,
         setRecuperacaoPassword,
         setRecuperacaoConfirmPassword,
-        setRecuperacaoPublicId,
+        setRecuperacaoUuid,
         redefinirSenha
     } = useSessaoUsuarioContext()
     
@@ -38,7 +38,7 @@ function RedefinirSenha() {
         http.get(`/password/reset/${uuid}/${token}`)
         .then(response => {
             if(response) {
-                setRecuperacaoPublicId(uuid)
+                setRecuperacaoUuid(uuid)
                 setRecuperacaoToken(token)
             }
         })
@@ -49,6 +49,14 @@ function RedefinirSenha() {
 
     const sendData = (evento) => {
         evento.preventDefault()
+        if(recuperacaoSenha.password !== recuperacaoSenha.confirm_password) {
+            toast.error('As senhas devem coincidir')
+            return
+        }
+        if(recuperacaoSenha.password.length < 8) {
+            toast.error('A senha deve ter pelo menos 8 caracteres')
+            return
+        }
         redefinirSenha()
             .then((response) => {
                 if(response !== undefined || response.data !== undefined)

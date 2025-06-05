@@ -36,7 +36,7 @@ const recuperacaoSenhaInicial = {
     token: '',
     password: '',
     confirm_password: '',
-    publicId: ''
+    uuid: ''
 }
 
 export const SessaoUsuarioContext = createContext({
@@ -61,7 +61,7 @@ export const SessaoUsuarioContext = createContext({
     setRecuperacaoToken:() => null,
     setRecuperacaoPassword:() => null,
     setRecuperacaoConfirmPassword:() => null,
-    setRecuperacaoPublicId:() => null,
+    setRecuperacaoUuid:() => null,
     submeterCompanySession: () => null,
     retornarCompanySession: () => null,
     dadosUsuario: () => null,
@@ -72,7 +72,6 @@ export const SessaoUsuarioContext = createContext({
     submeterLogin: () => null,
     gerarBearer: () => null,
     solicitarCodigoRecuperacaoSenha: () => null,
-    submeterRecuperacaoSenha: () => null,
     redefinirSenha: () => null,
     setTipo: () => null
 })
@@ -131,11 +130,11 @@ export const SessaoUsuarioProvider = ({ children }) => {
             }
         })
     }
-    const setRecuperacaoPublicId = (publicId) => {
+    const setRecuperacaoUuid = (uuid) => {
         setRecuperacaoSenha(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                publicId
+                uuid
             }
         })
     }
@@ -342,33 +341,11 @@ export const SessaoUsuarioProvider = ({ children }) => {
                 return erro
             })
     }
-    
-    const submeterRecuperacaoSenha = () => {
-
-        var sendCode = '';
-        
-        usuario.code.map(item => {
-            if(typeof item.preenchimento !== undefined)
-            {
-                sendCode += item.preenchimento
-            }
-        })
-
-        usuario.code = sendCode
-
-        return http.post('api/auth/reset-password', usuario)
-            .then((response) => {
-                return response
-            })
-            .catch(erro => {
-                return erro
-            })
-    }
 
     const redefinirSenha = () => {
 
         const obj = {
-            uuid: recuperacaoSenha.publicId,
+            uuid: recuperacaoSenha.uuid,
             token: recuperacaoSenha.token,
             password: recuperacaoSenha.password
         }
@@ -488,7 +465,6 @@ export const SessaoUsuarioProvider = ({ children }) => {
             })
     }
 
-
     const contexto = {
         usuario,
         usuarioEstaLogado,
@@ -511,7 +487,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         setRecuperacaoToken,
         setRecuperacaoPassword,
         setRecuperacaoConfirmPassword,
-        setRecuperacaoPublicId,
+        setRecuperacaoUuid,
         submeterLogin,
         submeterLogout,
         submeterCompanySession,
@@ -522,7 +498,6 @@ export const SessaoUsuarioProvider = ({ children }) => {
         gerarBearer,
         dadosUsuario,
         solicitarCodigoRecuperacaoSenha,
-        submeterRecuperacaoSenha,
         redefinirSenha,
         setTipo,
         setGroups
