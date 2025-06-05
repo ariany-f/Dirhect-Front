@@ -5,7 +5,7 @@ import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 import BotaoVoltar from "@components/BotaoVoltar"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import * as Yup from 'yup'
 import { useEffect } from "react"
 import http from '@http'
@@ -13,7 +13,7 @@ import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 
 function RedefinirSenha() {
     
-    const searchParams = new URLSearchParams(document.location.search)
+    const {uuid, token} = useParams()
 
     const {
         recuperacaoSenha,
@@ -35,25 +35,16 @@ function RedefinirSenha() {
     });
 
     useEffect(() => {
-
-        /**
-         * Pegar colaboradores
-         */
-        // http.get(`api/user/password/reset?${searchParams}`)
-        // .then(response => {
-        //     if(response.data)
-        //     {
-        //         if(response.data.status === 'error')
-        //         {
-        //             alert(response.data.message)
-        //         }
-        //         setRecuperacaoToken(response.data.token)
-        //         setRecuperacaoPublicId(response.data.public_id)
-        //     }
-        // })
-        // .catch(erro => {
-        //     console.error(erro)
-        // })
+        http.get(`/password/reset/${uuid}/${token}`)
+        .then(response => {
+            if(response) {
+                setRecuperacaoPublicId(uuid)
+                setRecuperacaoToken(token)
+            }
+        })
+        .catch(erro => {
+            console.error(erro)
+        })
     }, [])
 
     const sendData = (evento) => {

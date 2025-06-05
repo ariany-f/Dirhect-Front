@@ -334,8 +334,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const solicitarCodigoRecuperacaoSenha = () => {
 
-        usuario.cpf = usuario.cpf.replace(/[^a-zA-Z0-9 ]/g, '')
-        return http.post('api/auth/forgot-password', usuario)
+        return http.post('password/reset', usuario)
             .then((response) => {
                 return response
             })
@@ -368,7 +367,12 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     const redefinirSenha = () => {
 
-        return http.post(`api/user/password/reset/${recuperacaoSenha.publicId}`, recuperacaoSenha)
+        const obj = {
+            uuid: recuperacaoSenha.publicId,
+            token: recuperacaoSenha.token,
+            password: recuperacaoSenha.password
+        }
+        return http.post(`password/reset/confirm/`, obj)
             .then((response) => {
                 return response
             })

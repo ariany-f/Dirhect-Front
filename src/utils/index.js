@@ -174,7 +174,6 @@ export class ArmazenadorToken {
             if (!Array.isArray(groups)) {
                 groups = [groups];
             }
-            console.log(groups)
             
             for (const group of groups) { 
                 if (group.permissions && Array.isArray(group.permissions)) {
