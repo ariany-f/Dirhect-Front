@@ -7,6 +7,10 @@ function RegrasCriacaoSenha() {
         <Frame estilo="vermilion" padding="16px">
             <Texto weight="800">Regras para criação de senha:</Texto>
             <Item>A senha deve conter pelo menos 6 caracteres</Item>
+            <Item>A senha deve conter pelo menos 1 letra maiúscula</Item>
+            <Item>A senha deve conter pelo menos 1 letra minúscula</Item>
+            <Item>A senha deve conter pelo menos 1 número</Item>
+            <Item>A senha deve conter pelo menos 1 caractere especial</Item>
         </Frame>
     )
 }

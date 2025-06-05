@@ -66,6 +66,18 @@ function RedefinirSenha() {
             toast.error('A senha deve ter pelo menos 6 caracteres')
             return
         }
+        if(!/[A-Z]/.test(recuperacaoSenha.password)) {
+            toast.error('A senha deve conter pelo menos 1 letra maiúscula')
+            return
+        }
+        if(!/[0-9]/.test(recuperacaoSenha.password)) {
+            toast.error('A senha deve conter pelo menos 1 número')
+            return
+        }
+        if(!/[!@#$%^&*]/.test(recuperacaoSenha.password)) {
+            toast.error('A senha deve conter pelo menos 1 caractere especial')
+            return
+        }
         redefinirSenha()
             .then((response) => {
                 if(response !== undefined || response.data !== undefined)
