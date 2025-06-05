@@ -106,8 +106,14 @@ function EsqueciASenha() {
                     }
                 })
                 .catch(erro => {
-                    toast.error('Erro ao solicitar código de recuperação de senha!')
-                    console.error(erro)
+                    if(erro.detail)
+                    {
+                        toast.error(erro.detail)
+                    }
+                    else
+                    {
+                        toast.error('Erro ao solicitar código de recuperação de senha!')
+                    }
                 })
         }
     }

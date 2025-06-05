@@ -321,7 +321,6 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
     
     const dadosUsuario = () => {
-
         return http.get('api/auth/me')
             .then((response) => {
                 return response
@@ -332,8 +331,10 @@ export const SessaoUsuarioProvider = ({ children }) => {
     }
 
     const solicitarCodigoRecuperacaoSenha = () => {
-
-        return http.post('password/reset', usuario)
+        const obj = {   
+            email: usuario.email
+        }
+        return http.post('password/reset/', obj)
             .then((response) => {
                 return response
             })

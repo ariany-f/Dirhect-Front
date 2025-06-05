@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { Toast } from 'primereact/toast'
 import { useRef } from "react"
+import { toast } from 'react-toastify'
 
 function Seguranca() {
     
@@ -22,7 +23,6 @@ function Seguranca() {
 
     return (
         <>
-            <Toast ref={toast} />
             <Frame>
                 <BotaoVoltar />
                 <Titulo>

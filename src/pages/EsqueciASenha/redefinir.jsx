@@ -7,14 +7,18 @@ import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
 import BotaoVoltar from "@components/BotaoVoltar"
 import { useNavigate, useParams } from "react-router-dom"
 import * as Yup from 'yup'
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import http from '@http'
 import { toast } from 'react-toastify'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
+import Loading from "@components/Loading"
 
 function RedefinirSenha() {
     
     const {uuid, token} = useParams()
+    const [ready, setReady] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
 
     const {
         recuperacaoSenha,
@@ -36,15 +40,24 @@ function RedefinirSenha() {
     });
 
     useEffect(() => {
-        http.get(`/password/reset/${uuid}/${token}`)
+        http.get(`/password/reset/${uuid}/${token}/`)
         .then(response => {
             if(response) {
                 setRecuperacaoUuid(uuid)
                 setRecuperacaoToken(token)
+                setReady(true)
             }
         })
         .catch(erro => {
-            console.error(erro)
+            setReady(true)
+            setError(true)
+            if(erro.detail) {
+                toast.error(erro.detail)
+            }
+            else
+            {
+                toast.error('Erro ao redefinir senha')
+            }
         })
     }, [])
 
@@ -92,20 +105,39 @@ function RedefinirSenha() {
 
     return (
         <>
-            <Frame>
-                <Titulo>
-                    <h2>Redefinir senha</h2>
-                    <SubTitulo>
-                        Informe sua nova senha:
-                    </SubTitulo>
-                </Titulo>
-            </Frame>
-            <Frame padding="8px">
-                <CampoTexto name="senha" valor={recuperacaoSenha.password} setValor={setRecuperacaoPassword} type="password" label="Senha" placeholder="Digite sua senha" />
-                <CampoTexto name="confirmar-senha" valor={recuperacaoSenha.confirm_password} setValor={setRecuperacaoConfirmPassword} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
-                <RegrasCriacaoSenha senha={recuperacaoSenha.password || ""} />
-            </Frame>
-            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+            {ready ? 
+                error ?
+                    <>
+                    <Frame>
+                        <Titulo>
+                            <h2>Redefinir senha</h2>
+                            <SubTitulo>
+                                Não foi possível redefinir a senha.
+                            </SubTitulo>
+                        </Titulo>
+                    </Frame>
+                    <Botao aoClicar={() => navegar('/login')} estilo="vermilion" size="medium" filled>Voltar pro Login</Botao>
+                    </>
+                :
+                <>
+                    <Frame>
+                        <Titulo>
+                            <h2>Redefinir senha</h2>
+                            <SubTitulo>
+                                Informe sua nova senha:
+                            </SubTitulo>
+                        </Titulo>
+                    </Frame>
+                    <Frame padding="8px">
+                        <CampoTexto name="senha" valor={recuperacaoSenha.password} setValor={setRecuperacaoPassword} type="password" label="Senha" placeholder="Digite sua senha" />
+                        <CampoTexto name="confirmar-senha" valor={recuperacaoSenha.confirm_password} setValor={setRecuperacaoConfirmPassword} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
+                        <RegrasCriacaoSenha senha={recuperacaoSenha.password || ""} />
+                    </Frame>
+                    <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                </>
+            :
+                <Loading opened={true}/>
+            }
         </>
     )
 }
