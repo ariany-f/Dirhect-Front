@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import * as Yup from 'yup'
 import { useEffect } from "react"
 import http from '@http'
+import { toast } from 'react-toastify'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 
 function RedefinirSenha() {
@@ -49,12 +50,20 @@ function RedefinirSenha() {
 
     const sendData = (evento) => {
         evento.preventDefault()
+        if(!recuperacaoSenha.password) {
+            toast.error('Necessário digitar senha')
+            return
+        }
+        if(!recuperacaoSenha.confirm_password) {
+            toast.error('Necessário digitar confirmação de senha')
+            return
+        }
         if(recuperacaoSenha.password !== recuperacaoSenha.confirm_password) {
             toast.error('As senhas devem coincidir')
             return
         }
-        if(recuperacaoSenha.password.length < 8) {
-            toast.error('A senha deve ter pelo menos 8 caracteres')
+        if(recuperacaoSenha.password.length < 6) {
+            toast.error('A senha deve ter pelo menos 6 caracteres')
             return
         }
         redefinirSenha()
