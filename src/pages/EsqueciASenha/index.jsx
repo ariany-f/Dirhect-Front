@@ -124,7 +124,7 @@ function EsqueciASenha() {
 
     return (
         <>
-            <Frame>
+            <Frame gap="16px">
                 <BotaoVoltar />
                 <Titulo>
                     <h2>Esqueceu sua senha?</h2>
