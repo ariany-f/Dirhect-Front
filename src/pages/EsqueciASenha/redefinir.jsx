@@ -100,10 +100,10 @@ function RedefinirSenha() {
                     </SubTitulo>
                 </Titulo>
             </Frame>
-            <Frame>
+            <Frame padding="8px">
                 <CampoTexto name="senha" valor={recuperacaoSenha.password} setValor={setRecuperacaoPassword} type="password" label="Senha" placeholder="Digite sua senha" />
                 <CampoTexto name="confirmar-senha" valor={recuperacaoSenha.confirm_password} setValor={setRecuperacaoConfirmPassword} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
-                <RegrasCriacaoSenha />
+                <RegrasCriacaoSenha senha={recuperacaoSenha.password || ""} />
             </Frame>
             <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
         </>

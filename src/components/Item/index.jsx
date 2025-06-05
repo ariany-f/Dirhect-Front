@@ -4,9 +4,9 @@ const ListItem = styled.li`
     font-size: 12px;
 `
 
-function Item({ children }) {
+function Item({ children, style }) {
     return (
-        <ListItem>{children}</ListItem>
+        <ListItem style={style}>{children}</ListItem>
     )
 }
 
