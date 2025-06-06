@@ -467,11 +467,11 @@ function DataTableContratos({
                 tableStyle={{ minWidth: '68vw' }}
             >
                 <Column body={representativeNomeTemplate} header="Operadora" field="dados_operadora.nome" sortField="operadora" sortable style={{ width: '20%' }}></Column>
-                <Column field="observacao" sortable sortField="observacao" header="Observação" style={{ width: '12%' }}></Column>
+                <Column field="observacao" sortable sortField="observacao" header="Observação" style={{ width: '10%' }}></Column>
                 {/* <Column field="num_contrato_origem" sortField="num_contrato_origem" sortable header="Número Contrato" style={{ width: '10%' }}></Column> */}
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '10%' }}></Column>
-                <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '15%' }}></Column>
+                <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '14%' }}></Column>
                 <Column body={representativeBeneficioRegraElegibilidadeTemplate} header="Benefícios com Regras" style={{ width: '10%', textAlign: 'center' }}></Column>
                 <Column body={representativeRegraElegibilidadeTemplate} header="Itens com Regras" style={{ width: '10%', textAlign: 'center' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '15%', textAlign: 'center' }}></Column>
