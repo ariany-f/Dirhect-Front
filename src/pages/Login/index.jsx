@@ -10,6 +10,7 @@ import styles from './Login.module.css'
 import CheckboxContainer from "@components/CheckboxContainer"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { useEffect, useRef, useState } from "react"
+import { CiWarning } from "react-icons/ci";
 import { toast } from 'react-toastify'
 import Loading from "@components/Loading"
 import { ArmazenadorToken } from "@utils"
@@ -20,10 +21,12 @@ import { useForm } from "react-hook-form"
 import http from "@http";
 import imagem from '@imagens/bg-mobile.jpg';
 import { SuccessIcon, ErrorIcon } from '@components/ToastIcons';
+import { FaTimesCircle } from "react-icons/fa"
 
 function Login() {
     const [loading, setLoading] = useState(false)
     const [ready, setReady] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
     const navegar = useNavigate()
     const { t } = useTranslation('common');
     const {
@@ -95,6 +98,7 @@ function Login() {
             return;
         }
         setLoading(true);
+        setErrorMessage(''); // Limpa mensagem de erro anterior
         try {
             data.app_token = ArmazenadorToken.AccessToken;
             
@@ -178,10 +182,12 @@ function Login() {
                 }
             } else {
                 toast.error('Usuário ou senha não encontrados', { icon: ErrorIcon });
+                setErrorMessage('Usuário ou senha não encontrados');
             }
         } catch (error) {
             if(error?.password) {
                 toast.error(error.password[0], { icon: ErrorIcon });
+                setErrorMessage(error.password[0]);
             } else if(error?.mfa_required && error?.mfa_required[0] && error?.mfa_required[0] == 'True') {
 
                 ArmazenadorToken.definirTempToken(error.temp_token[0]);
@@ -194,6 +200,7 @@ function Login() {
                 }
             } else {
                 toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
+                setErrorMessage('Ocorreu um erro ao tentar fazer login');
             }
         } finally {
             setLoading(false);
@@ -258,6 +265,24 @@ function Login() {
                     </div>
                 </Frame>
                 <Botao type="submit" estilo="vermilion" size="medium" filled style={{ marginTop: '20px', width: '100%' }}>{t('confirm')}</Botao>
+                {errorMessage && (
+                     <div style={{ 
+                        width: '100%',
+                        marginTop: '16px'
+                    }}>
+                        <Frame 
+                            estilo="error" 
+                            padding="16px" 
+                        >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <CiWarning size={24} color="var(--vermilion-700)" />
+                                <Texto weight="400" color="var(--neutro-900)">
+                                    {errorMessage}
+                                </Texto>
+                            </div>
+                        </Frame>
+                    </div>
+                )}
             </form>
         </>
     )
