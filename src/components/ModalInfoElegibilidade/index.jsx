@@ -194,7 +194,7 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
                         <Texto size="18px" weight={600} style={{marginBottom: 4}}>Outras Informações:</Texto>
                         <Texto size="14px">Valor:&nbsp;<b style={{color: 'var(--green-700)'}}>{Real.format(item.item?.valor)}</b></Texto>
                         <Texto size="14px">Valor Colaborador:&nbsp;<b style={{color: 'var(--error)'}}>{Real.format(item.item?.valor_desconto)}</b></Texto>
-                        <Texto size="14px">Valor Empresa:&nbsp;<b style={{color: 'var(--error)'}}>{Real.format(item.item?.valor_empresa)}</b></Texto>
+                        <Texto size="14px">Valor Empresa:&nbsp;<b style={{color: 'var(--primaria)'}}>{Real.format(item.item?.valor_empresa)}</b></Texto>
                         <Texto size="14px">Tipo de Cálculo:&nbsp;<b>{getTipoCalculo(item.item?.tipo_calculo) || '---'}</b></Texto>
                         <Texto size="14px">Tipo de Desconto:&nbsp;<b>{getTipoDesconto(item.item?.tipo_desconto) || '---'}</b></Texto>
                     </div>
