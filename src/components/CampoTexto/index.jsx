@@ -23,7 +23,7 @@ const Campo = styled(InputText)`
 
     &:disabled {
         background-color: #e9ecef;
-        color:#666666;
+        color:#555555;
     }
     &[readonly] {
         background-color:rgb(233, 236, 239);
