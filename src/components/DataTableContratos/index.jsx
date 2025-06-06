@@ -474,7 +474,7 @@ function DataTableContratos({
                 <Column body={representativSituacaoTemplate} header="Situação" style={{ width: '10%' }}></Column>
                 <Column body={representativeBeneficioRegraElegibilidadeTemplate} header="Benefícios com Regras" style={{ width: '10%', textAlign: 'center' }}></Column>
                 <Column body={representativeRegraElegibilidadeTemplate} header="Itens com Regras" style={{ width: '10%', textAlign: 'center' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '15%', textAlign: 'center' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '20%', textAlign: 'center' }}></Column>
             </DataTable>
             
             <ModalContratos 
