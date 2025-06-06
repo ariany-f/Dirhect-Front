@@ -466,7 +466,7 @@ function DataTableContratos({
                 removableSort 
                 tableStyle={{ minWidth: '68vw' }}
             >
-                <Column body={representativeNomeTemplate} header="Operadora" field="dados_operadora.nome" sortField="operadora" sortable style={{ width: '20%' }}></Column>
+                <Column body={representativeNomeTemplate} header="Operadora" field="dados_operadora.nome" sortField="operadora" sortable style={{ width: '18%' }}></Column>
                 <Column field="observacao" sortable sortField="observacao" header="Observação" style={{ width: '10%' }}></Column>
                 {/* <Column field="num_contrato_origem" sortField="num_contrato_origem" sortable header="Número Contrato" style={{ width: '10%' }}></Column> */}
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column>
