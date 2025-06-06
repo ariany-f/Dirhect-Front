@@ -1,10 +1,8 @@
 import Botao from "@components/Botao"
-import CampoTexto from "@components/CampoTexto"
 import Frame from "@components/Frame"
 import SubTitulo from "@components/SubTitulo"
 import Titulo from "@components/Titulo"
 import RegrasCriacaoSenha from "@components/RegrasCriacaoSenha"
-import BotaoVoltar from "@components/BotaoVoltar"
 import { useNavigate, useParams } from "react-router-dom"
 import * as Yup from 'yup'
 import { useEffect, useState } from "react"
@@ -12,6 +10,8 @@ import http from '@http'
 import { toast } from 'react-toastify'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import Loading from "@components/Loading"
+import Input from "@components/Input"
+import { useForm } from "react-hook-form"
 
 function RedefinirSenha() {
     
@@ -30,6 +30,7 @@ function RedefinirSenha() {
     } = useSessaoUsuarioContext()
     
     const navegar = useNavigate()
+    const { control } = useForm();
 
     const validationSchema = Yup.object().shape({
         password: Yup.string().required('Necessário digitar senha'),
@@ -133,8 +134,30 @@ function RedefinirSenha() {
                         </Titulo>
                     </Frame>
                     <Frame padding="8px">
-                        <CampoTexto name="senha" valor={recuperacaoSenha.password} setValor={setRecuperacaoPassword} type="password" label="Senha" placeholder="Digite sua senha" />
-                        <CampoTexto name="confirmar-senha" valor={recuperacaoSenha.confirm_password} setValor={setRecuperacaoConfirmPassword} type="password" label="Confirmar Senha" placeholder="Digite sua senha" />
+                        <Input
+                            control={control}
+                            type="password"
+                            id="password"
+                            name="password"
+                            label="Senha"
+                            icon="pi pi-lock"
+                            toggleMask={true}
+                            value={recuperacaoSenha.password}
+                            onChange={(e) => setRecuperacaoPassword(e.target.value)}
+                            showPasswordFeedback={false}
+                        />
+                        <Input
+                            control={control}
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            label="Confirmar Senha"
+                            icon="pi pi-lock"
+                            toggleMask={true}
+                            value={recuperacaoSenha.confirm_password}
+                            onChange={(e) => setRecuperacaoConfirmPassword(e.target.value)}
+                            showPasswordFeedback={false}
+                        />
                         <RegrasCriacaoSenha senha={recuperacaoSenha.password || ""} />
                     </Frame>
                     <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>

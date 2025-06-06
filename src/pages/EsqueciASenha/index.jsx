@@ -100,12 +100,16 @@ function EsqueciASenha() {
         {
             solicitarCodigoRecuperacaoSenha()
                 .then((response) => {
-                    if(response.detail)
+                    if(response.detail && response.detail !== "Se o email estiver registrado no sistema, você receberá um link para redefinição de senha.")
                     {
                         toast.error(response.detail)
                     }
-                    else if(response !== undefined || response.data !== undefined)
+                    else
                     {
+                        if(response.detail)
+                        {
+                            toast.success(response.detail)
+                        }
                         navegar('/esqueci-a-senha/seguranca')
                     }
                 })
