@@ -133,7 +133,7 @@ function RedefinirSenha() {
                             </SubTitulo>
                         </Titulo>
                     </Frame>
-                    <Frame padding="8px">
+                    <Frame gap="16px">
                         <Input
                             control={control}
                             type="password"
