@@ -575,6 +575,14 @@ function DataTableContratosDetalhes({ beneficios, onUpdate, contrato }) {
         });
     }
 
+    const representativeVersaoTemplate = (rowData) => {
+        return (
+            <div>
+                {rowData.versao}
+            </div>
+        )
+    }
+
     return (
         <>
             <Toast ref={toast} />
@@ -609,6 +617,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate, contrato }) {
                         >
                             <Column body={representativeTemplate} field="descricao" header="Descrição" style={{ width: '15%' }} />
                             <Column body={representativeExtensivelTemplate} field="extensivel_depentende" header="Extensível Dependente" style={{ width: '10%' }} />
+                            <Column body={representativeVersaoTemplate} field="versao" header="Versão" style={{ width: '10%' }} />
                             <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '12%' }} />
                             <Column body={representativeEmpresaTemplate} field="valor_empresa" header="Empresa" style={{ width: '15%' }} />
                             <Column body={representativeDescontoTemplate} field="valor_desconto" header="Desconto" style={{ width: '15%' }} />
