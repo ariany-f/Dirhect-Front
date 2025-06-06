@@ -598,6 +598,9 @@ function DataTableContratosDetalhes({ beneficios, onUpdate, contrato }) {
                         selection={selectedBeneficio} 
                         onSelectionChange={onRowSelect}
                         selectionMode="single"
+                        rowClassName={(data) => data === selectedBeneficio ? 'p-highlight' : ''}
+                        showGridlines
+                        stripedRows
                     >
                         <Column body={representativeBeneficiosTemplate} field="dados_beneficio.descricao" header="Benefício" style={{ width: '95%' }}></Column>
                     </DataTable>
