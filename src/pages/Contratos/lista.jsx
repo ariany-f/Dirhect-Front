@@ -46,7 +46,7 @@ const ContratosLista = () => {
     };
 
     const onUpdate = () => {
-        context.loadData(context.page, context.pageSize, context.searchTerm)
+        context.loadData(context.page, context.pageSize, context.searchTerm, getSortParam())
     }
 
     const onSort = ({ field, order }) => {
