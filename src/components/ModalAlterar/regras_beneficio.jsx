@@ -322,7 +322,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                             <Col6>
                             
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                    <span style={{ fontSize: 14, color: 'var(--neutro-800)' }}>Extensível Dependente?</span>
+                                    <span style={{ fontSize: 14, color: 'var(--neutro-900)' }}>Extensível Dependente?</span>
                                     <SwitchInput checked={extensivo_dependentes} onChange={() => setExtensivelDependente(!extensivo_dependentes)} color="var(--primaria)" />
                                 </div>
                             </Col6>
