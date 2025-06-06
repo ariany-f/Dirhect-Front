@@ -500,7 +500,7 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                 <Frame>
                     <Titulo>
                         <BotaoGrupo align="space-between">
-                            <h6>Grupos Elegíveis a {item?.descricao ? item?.descricao : 'este item de Contrato'} <small style={{fontSize: 12, color: 'var(--neutro-800)', fontWeight: 400}}>V. {item?.versao}</small></h6>
+                            <h6>Grupos Elegíveis a {item?.descricao ? item?.descricao : 'este item de Contrato'} <small style={{fontSize: 12, color: 'var(--neutro-800)', fontWeight: 400}}>{item?.versao ? `V. ${item?.versao}` : ''}</small></h6>
                         </BotaoGrupo>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                             <button className="close" onClick={aoFechar} formMethod="dialog">

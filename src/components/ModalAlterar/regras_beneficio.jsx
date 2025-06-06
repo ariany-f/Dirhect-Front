@@ -195,7 +195,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                 </button>
                             </form>
                             <div style={{display: 'flex', alignItems: 'center', gap: 16}}>
-                                <h6 style={{marginBottom: 16}}>{id ? 'Alterar Item do' : 'Adicionar Item ao'} Contrato <small style={{fontSize: 12, color: 'var(--neutro-800)', fontWeight: 400}}>V. {dadoAntigo.versao}</small></h6>
+                                <h6 style={{marginBottom: 16}}>{id ? 'Alterar Item do' : 'Adicionar Item ao'} Contrato <small style={{fontSize: 12, color: 'var(--neutro-800)', fontWeight: 400}}>{dadoAntigo?.versao ? `V. ${dadoAntigo.versao}` : ''}</small></h6>
                             </div>
                             {contrato && 
                                 <ContainerHorizontal padding={'0px'} align="start" gap={'10px'} key={contrato?.dados_operadora?.id}>
