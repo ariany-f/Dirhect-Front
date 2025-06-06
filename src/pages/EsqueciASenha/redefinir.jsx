@@ -80,6 +80,10 @@ function RedefinirSenha() {
             toast.error('A senha deve ter pelo menos 8 caracteres')
             return
         }
+        if(!/[a-z]/.test(recuperacaoSenha.password)) {
+            toast.error('A senha deve conter pelo menos 1 letra minúscula')
+            return
+        }
         if(!/[A-Z]/.test(recuperacaoSenha.password)) {
             toast.error('A senha deve conter pelo menos 1 letra maiúscula')
             return
