@@ -139,6 +139,7 @@ const InfoContrato = styled.div`
     color: var(--neutro-700);
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 2px;
     opacity: ${({ inativo }) => inativo ? 0.5 : 1};
     cursor: ${({ inativo }) => inativo ? 'not-allowed' : 'default'};
@@ -322,6 +323,7 @@ function ColaboradorBeneficios() {
                             item: {
                                 beneficio: beneficio,
                                 icone: beneficio.dados_beneficio.icone,
+                                versao: item.versao,
                                 valor: parseFloat(item.valor),
                                 valor_desconto: parseFloat(item.valor_desconto),
                                 valor_empresa: parseFloat(item.valor_empresa),
@@ -764,7 +766,7 @@ function ColaboradorBeneficios() {
                                                         </EditarPlanosSwitch>
                                                     </div>
                                                     {contrato.num_contrato_origem && (
-                                                        <span><b>Contrato:</b> {contrato.num_contrato_origem}</span>
+                                                        <span style={{marginLeft: 8}}><b>Contrato:</b> {contrato.num_contrato_origem}</span>
                                                     )}
                                                     <ContratoItensBox>
                                                         <ContratoItensGrid>

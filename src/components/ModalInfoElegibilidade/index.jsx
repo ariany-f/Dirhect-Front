@@ -79,7 +79,7 @@ const statusTemplate = (option, context, showChevron = false, showText = false, 
 };
 
 const ModalInfoElegibilidade = ({ open, item, onClose }) => {
-   
+    
     if (!open || !item) return null;
     const contrato = item.contratoInfo;
     const beneficio = item.item?.beneficio;
@@ -119,6 +119,9 @@ const ModalInfoElegibilidade = ({ open, item, onClose }) => {
                                 <CustomImage src={operadora.image_operadora} alt={operadora.nome_operadora} title={operadora.nome_operadora} width={50} height={40} />
                             )}
                             <span>{operadora?.nome_operadora || '---'}</span>
+                            {item?.item?.versao && 
+                                <small style={{fontSize: 12, color: 'var(--neutro-800)', fontWeight: 400}}>V. {item?.item?.versao}</small>
+                            }
                              {/* Badge de status do vínculo do colaborador */}
                              {item.status === 'sim' && (
                                 <span style={{
