@@ -328,7 +328,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                             </Col6>
                             <Col6>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                    <span style={{ fontSize: 14, color: 'var(--neutro-800)' }}>Herdar regras de elegibilidade do Benefício?</span>
+                                    <span style={{ fontSize: 14, color: 'var(--neutro-900)' }}>Herdar regras de elegibilidade do Benefício?</span>
                                     <SwitchInput checked={herdado} onChange={() => setHerdado(!herdado)} color="var(--primaria)" />
                                 </div>
                             </Col6>
