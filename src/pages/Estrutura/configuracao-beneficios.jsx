@@ -145,7 +145,7 @@ const Td = styled.td`
     border-bottom: 1px solid #f3f3f3;
 `;
 
-function EstruturaConfiguracaoBeneficios(type = 'Filial') {
+function EstruturaConfiguracaoBeneficios(type = 'filial') {
 
     let { id } = useParams()
     const [configuracoes, setConfiguracoes] = useState(null)
@@ -156,13 +156,13 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
             http.get(`matriz_eligibilidade/?format=json`)
                 .then(response => {
                     const atualizada = response.filter(
-                        el => el.content_type_name === type.type && el.entidade_id_origem === id
+                        el => el.entidade.tipo == type.type && el.entidade.id_origem == id
                     )
-                    setConfiguracoes(atualizada)
+                    const configs = atualizada[0]?.itens_configurados || [];
+                    setConfiguracoes(configs);
                 })
                 .catch(erro => console.log(erro))
         }
-        console.log(configuracoes)
     }, [configuracoes, id, type])
     
     const getTipoCalculo = (tipo) => {
@@ -205,7 +205,7 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                             const icone = <IconeBeneficio nomeIcone={dadosBeneficio?.icone ?? dadosBeneficio?.descricao ?? ''}/>
                             
                             return (
-                                <Col6 key={config.id}>
+                                <Col6 key={config.contrato_item}>
                                     <Beneficio>
                                         <Col12Spaced>
                                             <FrameVertical gap="8px" align="center">
@@ -271,7 +271,7 @@ function EstruturaConfiguracaoBeneficios(type = 'Filial') {
                                 const beneficio = config.item_beneficio;
                                 const ben = beneficio.beneficio;
                                 return (
-                                    <tr key={config.id}>
+                                    <tr key={config.contrato_item}>
                                         <Td>{ben.dados_beneficio?.descricao}</Td>
                                         <Td>
                                             <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>

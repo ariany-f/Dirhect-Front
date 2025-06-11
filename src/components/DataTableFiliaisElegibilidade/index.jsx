@@ -22,7 +22,7 @@ const Beneficios = styled.div`
 `
 
 function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
-    
+    console.log(filiais)
     const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -103,30 +103,33 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
 
             if (Array.isArray(selectedValue)) {
                 setSelectedFiliais(selectedValue);
-                setSelected(selectedValue.map(filial => filial.id)); // Mantém os IDs no estado global
+                setSelected(selectedValue.map(filial => filial.id_origem)); // Usando id_origem
             } else {
-                if (newSelection.some(filial => filial.id === selectedValue.id)) {
-                    newSelection = newSelection.filter(filial => filial.id !== selectedValue.id);
+                if (newSelection.some(filial => filial.id_origem === selectedValue.id_origem)) {
+                    newSelection = newSelection.filter(filial => filial.id_origem !== selectedValue.id_origem);
                 } else {
                     newSelection.push(selectedValue);
                 }
                 setSelectedFiliais(newSelection);
-                setSelected(newSelection.map(filial => filial.id));
+                setSelected(newSelection.map(filial => filial.id_origem));
             }
         } else {
             if(e.value)
             {
-                setSelectedFilial(e.value.id);
+                setSelectedFilial(e.value.id_origem);
                 verDetalhes(e.value);
             }
         }
     }
     
-   const representativeDescriptionTemplate = (rowData) => {
-        return <Texto width={'100%'} weight={800}>{`#${rowData.id} - ${rowData.nome}`}</Texto>
+    const representativeDescriptionTemplate = (rowData) => {
+        return <Texto width={'100%'} weight={800}>{`#${rowData.id_origem} - ${rowData.nome}`}</Texto>
     }
 
     const representativeBeneficiosTemplate = (rowData) => {
+        // Cria um Set para armazenar benefícios únicos
+        const beneficiosUnicos = new Set();
+        
         return (
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
                 <Texto weight={300}>Benefícios elegíveis</Texto>
@@ -134,12 +137,22 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
                     {!rowData?.elegibilidade || rowData.elegibilidade.length === 0 ? (
                         <FaBan size={10} />
                     ) : (
-                        rowData.elegibilidade.map(item => (
-                            <BadgeBeneficio 
-                                key={item.item_beneficio.beneficio?.id || item.id}
-                                nomeBeneficio={item.item_beneficio.beneficio?.dados_beneficio?.descricao}
-                            />
-                        ))
+                        rowData.elegibilidade
+                            .filter(item => {
+                                const descricao = item.item_beneficio.beneficio?.dados_beneficio?.descricao;
+                                if (beneficiosUnicos.has(descricao)) {
+                                    return false;
+                                }
+                                beneficiosUnicos.add(descricao);
+                                return true;
+                            })
+                            .map(item => (
+                                <BadgeBeneficio 
+                                    key={item.item_beneficio.beneficio?.id || item.id}
+                                    nomeBeneficio={item.item_beneficio.beneficio?.dados_beneficio?.descricao}
+                                    icone={item.item_beneficio.beneficio?.dados_beneficio?.icone}
+                                />
+                            ))
                     )}
                 </Beneficios>
             </div>

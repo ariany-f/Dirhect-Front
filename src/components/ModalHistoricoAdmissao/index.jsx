@@ -56,63 +56,22 @@ const TimelineDescription = styled.div`
 `;
 
 function ModalHistoricoAdmissao({ opened = false, aoFechar, candidato }) {
-    // Dados fake para o histórico
-    const historico = [
-        {
-            data: '2024-03-15 14:30',
-            titulo: 'Oferta enviada',
-            descricao: 'Email de oferta enviado para o candidato',
-            status: 'success',
-            isEmail: true
-        },
-        {
-            data: '2024-03-16 10:15',
-            titulo: 'Oferta aceita',
-            descricao: 'Candidato aceitou a oferta de emprego',
-            status: 'success'
-        },
-        {
-            data: '2024-03-16 12:00',
-            titulo: 'LGPD Aceita',
-            descricao: 'Candidato aceitou compartilhar seus dados com a empresa',
-            status: 'success'
-        },
-        {
-            data: '2024-03-17 09:00',
-            titulo: 'Agendamento de exame médico',
-            descricao: 'Exame médico agendado para 25/03/2024',
-            status: 'success'
-        },
-        {
-            data: '2024-03-20 15:45',
-            titulo: 'Email de instruções enviado',
-            descricao: 'Email com instruções para o exame médico foi enviado',
-            status: 'success',
-            isEmail: true
-        },
-        {
-            data: '2024-03-25 11:30',
-            titulo: 'Exame médico realizado',
-            descricao: 'Candidato realizou o exame médico',
-            status: 'success'
-        },
-        {
-            data: '2024-03-26 16:20',
-            titulo: 'Exame médico anexado',
-            descricao: 'Resultado do exame médico foi anexado ao processo',
-            status: 'success'
-        },
-        {
-            data: '2024-03-27 13:00',
-            titulo: 'Aguardando documentação',
-            descricao: 'Aguardando anexo dos documentos pendentes',
-            status: 'pending'
-        }
-    ];
-
     const handleReenviar = (item) => {
-        alert(`Reenviar: ${item.titulo}`);
+        alert(`Reenviar: ${item.mensagem}`);
         // Aqui você pode implementar a lógica real de reenvio
+    };
+
+    const getStatusColor = (tipo) => {
+        switch (tipo) {
+            case 'sistema':
+                return 'var(--primaria)';
+            case 'usuario':
+                return 'var(--green-500)';
+            case 'erro':
+                return 'var(--error)';
+            default:
+                return 'var(--primaria)';
+        }
     };
 
     return (
@@ -128,41 +87,46 @@ function ModalHistoricoAdmissao({ opened = false, aoFechar, candidato }) {
                     </Titulo>
                 </Frame>
                 <TimelineContainer>
-                    {historico.map((item, index) => {
-                        const isEmail = !!item.isEmail;
-                        return (
-                            <TimelineItem key={index} status={item.status}>
-                                <TimelineDate>
-                                    {new Date(item.data).toLocaleString('pt-BR')}
-                                </TimelineDate>
-                                <TimelineTitle style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                    <Texto weight={600}>{item.titulo}</Texto>
-                                    {isEmail && (
-                                        <button
-                                            style={{
-                                                background: 'var(--primaria)',
-                                                color: 'white',
-                                                border: 'none',
-                                                borderRadius: 6,
-                                                padding: '4px 10px',
-                                                cursor: 'pointer',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 4,
-                                                fontSize: 11
-                                            }}
-                                            onClick={() => handleReenviar(item)}
-                                        >
-                                            <FaRegPaperPlane fill="white" size={8} /> Reenviar
-                                        </button>
-                                    )}
-                                </TimelineTitle>
-                                <TimelineDescription>
-                                    {item.descricao}
-                                </TimelineDescription>
-                            </TimelineItem>
-                        );
-                    })}
+                    {candidato?.log_tarefas?.map((item, index) => (
+                        <TimelineItem 
+                            key={index} 
+                            status={item.sucesso ? 'success' : 'error'}
+                            style={{
+                                '&:before': {
+                                    backgroundColor: getStatusColor(item.tipo)
+                                }
+                            }}
+                        >
+                            <TimelineDate>
+                                {new Date(item.criado_em).toLocaleString('pt-BR')}
+                            </TimelineDate>
+                            <TimelineTitle style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <Texto weight={600}>{item.tipo_display}</Texto>
+                                {item.tipo === 'sistema' && item.mensagem.toLowerCase().includes('email') && (
+                                    <button
+                                        style={{
+                                            background: 'var(--primaria)',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: 6,
+                                            padding: '4px 10px',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 4,
+                                            fontSize: 11
+                                        }}
+                                        onClick={() => handleReenviar(item)}
+                                    >
+                                        <FaRegPaperPlane fill="white" size={8} /> Reenviar
+                                    </button>
+                                )}
+                            </TimelineTitle>
+                            <TimelineDescription>
+                                {item.mensagem}
+                            </TimelineDescription>
+                        </TimelineItem>
+                    ))}
                 </TimelineContainer>
             </DialogEstilizado>
         </Overlay>

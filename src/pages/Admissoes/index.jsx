@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react'
 import React, { createContext, useContext } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
 import DataTableAdmissao from '@components/DataTableAdmissao'
+import http from '@http'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -21,8 +22,16 @@ const ConteudoFrame = styled.div`
 const Admissoes = () => {
 
     const location = useLocation();
-
     const [admissoes, setAdmissoes] = useState([])
+    useEffect(() => {
+        http.get('admissao/?format=json')
+            .then(response => {
+                setAdmissoes(response)
+            })
+            .catch(error => {   
+                console.log(error)
+            })
+    }, [])
    
     const { 
         vagas
@@ -33,31 +42,31 @@ const Admissoes = () => {
         if((!admissoes) || admissoes.length === 0){
 
             // Função para adicionar candidatos ao objeto admissões
-            const adicionarCandidatos = (vagasArray, status) => {
-                vagasArray.forEach(vaga => {
-                    vaga.candidatos.forEach(candidato => {
-                        if(candidato.statusDeCandidato === "Aprovado")
-                        {
-                            // Atualizando o estado com o candidato
-                            setAdmissoes(prevAdmissoes => [
-                                ...prevAdmissoes,
-                                {
-                                    vaga: vaga.titulo,
-                                    id: vaga.id,
-                                    adiantamento_percentual: vaga.adiantamento_percentual,
-                                    candidato: candidato,
-                                    documentos_requeridos: vaga.documentos_requeridos,
-                                    status
-                                }
-                            ]);
-                        }
-                    });
-                });
-            };
+            // const adicionarCandidatos = (vagasArray, status) => {
+            //     vagasArray.forEach(vaga => {
+            //         vaga.candidatos.forEach(candidato => {
+            //             if(candidato.statusDeCandidato === "Aprovado")
+            //             {
+            //                 // Atualizando o estado com o candidato
+            //                 setAdmissoes(prevAdmissoes => [
+            //                     ...prevAdmissoes,
+            //                     {
+            //                         vaga: vaga.titulo,
+            //                         id: vaga.id,
+            //                         adiantamento_percentual: vaga.adiantamento_percentual,
+            //                         candidato: candidato,
+            //                         documentos_requeridos: vaga.documentos_requeridos,
+            //                         status
+            //                     }
+            //                 ]);
+            //             }
+            //         });
+            //     });
+            // };
 
 
             // Adicionando candidatos das vagas abertas
-            adicionarCandidatos(vagas, "Aberta");
+            // adicionarCandidatos(vagas, "Aberta");
         }
     }, [])
 

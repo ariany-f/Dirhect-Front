@@ -71,6 +71,27 @@ const ElegibilidadeLista = () => {
         fetchData('funcao', setFuncoes);
     }, [])
 
+    useEffect(() => {
+        if (context) {
+            console.log('Contexto completo:', context);
+            const abas = context
+                .filter(item => {
+                    console.log('Item sendo filtrado:', item);
+                    console.log('Tem itens configurados?', item.itens_configurados && item.itens_configurados.length > 0);
+                    return item.itens_configurados && item.itens_configurados.length > 0;
+                })
+                .map(item => {
+                    console.log('Item após filtro:', item);
+                    console.log('Tipo da entidade:', item.entidade.tipo);
+                    return item.entidade.tipo;
+                });
+            console.log('Abas antes do Set:', abas);
+            const abasUnicas = [...new Set(abas)];
+            console.log('Abas disponíveis:', abasUnicas);
+            setAbasDisponiveis(abasUnicas);
+        }
+    }, [context]);
+
     // Segundo useEffect para verificar se todos os dados foram carregados
     useEffect(() => {
         const todasAsListasCarregadas = [
@@ -88,34 +109,44 @@ const ElegibilidadeLista = () => {
     useEffect(() => {
         if (context && context.length > 0 && dadosCarregados) {
             const adicionarElegibilidade = (lista, setLista, nomeEntidade) => {
-                if (!lista || lista.length === 0) return false
+                if (!lista || lista.length === 0) return false;
+                console.log(nomeEntidade)
+                console.log('context', context)
                 const listaAtualizada = lista.map(item => {
-                    const correspondente = context.filter(
-                        el => el.content_type_name === nomeEntidade && el.entidade_id_origem === item.id_origem
-                    )
+                    console.log('item', item)
+                    const itensConfigurados = context
+                        .filter(el => el.entidade.tipo === nomeEntidade && el.entidade.id_origem == item.id_origem)
+                        .flatMap(el => el.itens_configurados || []);
+                    console.log('itensConfigurados', itensConfigurados)
+                    
                     return {
                         ...item,
-                        elegibilidade: correspondente || null
-                    }
-                })
-                setLista(listaAtualizada)
-                return listaAtualizada.some(item => item.elegibilidade && item.elegibilidade.length > 0)
-            }
+                        elegibilidade: itensConfigurados
+                    };
+                });
+                
+                setLista(listaAtualizada);
+                return listaAtualizada.some(item => item.elegibilidade && item.elegibilidade.length > 0);
+            };
+
             const abasComElegibilidade = {
-                filiais: adicionarElegibilidade(filiais, setFiliais, 'Filial'),
-                departamentos: adicionarElegibilidade(departamentos, setDepartamentos, 'Departamento'),
-                secoes: adicionarElegibilidade(secoes, setSecoes, 'Secao'),
-                cargos: adicionarElegibilidade(cargos, setCargos, 'Cargo'),
-                funcoes: adicionarElegibilidade(funcoes, setFuncoes, 'Funcao'),
-                centros_custo: adicionarElegibilidade(centros_custo, setCentrosCusto, 'Centro de Custo'),
-                sindicatos: adicionarElegibilidade(sindicatos, setSindicatos, 'Sindicato'),
-                horarios: adicionarElegibilidade(horarios, setHorarios, 'Horario')
-            }
-            setAbasDisponiveis(Object.entries(abasComElegibilidade)
+                filial: adicionarElegibilidade(filiais, setFiliais, 'filial'),
+                departamento: adicionarElegibilidade(departamentos, setDepartamentos, 'departamento'),
+                secao: adicionarElegibilidade(secoes, setSecoes, 'secao'),
+                cargo: adicionarElegibilidade(cargos, setCargos, 'cargo'),
+                funcao: adicionarElegibilidade(funcoes, setFuncoes, 'funcao'),
+                centro_custo: adicionarElegibilidade(centros_custo, setCentrosCusto, 'centro_custo'),
+                sindicato: adicionarElegibilidade(sindicatos, setSindicatos, 'sindicato'),
+                horario: adicionarElegibilidade(horarios, setHorarios, 'horario')
+            };
+
+            const novasAbas = Object.entries(abasComElegibilidade)
                 .filter(([_, temElegibilidade]) => temElegibilidade)
-                .map(([key]) => key))
+                .map(([key]) => key);
+
+            // setAbasDisponiveis(novasAbas);
         }
-    }, [context, dadosCarregados])
+    }, [context, dadosCarregados]);
 
     const renderizarAba = (nome, componente) => {
         if (!mostrarTodas && !abasDisponiveis.includes(nome)) return null;
@@ -148,14 +179,14 @@ const ElegibilidadeLista = () => {
             <Frame>
                 <Container gap="32px">
                     <TabView activeIndex={activeIndex} onTabChange={e => setActiveIndex(e.index)}>
-                        {renderizarAba('filiais', <DataTableFiliaisElegibilidade filiais={filiais} showSearch={false} />)}
-                        {renderizarAba('departamentos', <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false} />)}
-                        {renderizarAba('secoes', <DataTableSecoesElegibilidade secoes={secoes} showSearch={false} />)}
-                        {renderizarAba('centros_custo', <DataTableCentrosCustoElegibilidade centros_custo={centros_custo} showSearch={false} />)}
-                        {renderizarAba('cargos', <DataTableCargosElegibilidade cargos={cargos} showSearch={false} />)}
-                        {renderizarAba('funcoes', <DataTableFuncoesElegibilidade funcoes={funcoes} showSearch={false} />)}
-                        {renderizarAba('sindicatos', <DataTableSindicatosElegibilidade sindicatos={sindicatos} showSearch={false} />)}
-                        {renderizarAba('horarios', <DataTableHorariosElegibilidade horarios={horarios} showSearch={false} />)}
+                        {renderizarAba('filial', <DataTableFiliaisElegibilidade filiais={filiais} showSearch={false} />)}
+                        {renderizarAba('departamento', <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false} />)}
+                        {renderizarAba('secao', <DataTableSecoesElegibilidade secoes={secoes} showSearch={false} />)}
+                        {renderizarAba('centro_custo', <DataTableCentrosCustoElegibilidade centros_custo={centros_custo} showSearch={false} />)}
+                        {renderizarAba('cargo', <DataTableCargosElegibilidade cargos={cargos} showSearch={false} />)}
+                        {renderizarAba('funcao', <DataTableFuncoesElegibilidade funcoes={funcoes} showSearch={false} />)}
+                        {renderizarAba('sindicato', <DataTableSindicatosElegibilidade sindicatos={sindicatos} showSearch={false} />)}
+                        {renderizarAba('horario', <DataTableHorariosElegibilidade horarios={horarios} showSearch={false} />)}
                     </TabView>
                 </Container>
             </Frame>

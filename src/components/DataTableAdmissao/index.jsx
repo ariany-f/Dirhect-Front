@@ -18,10 +18,7 @@ import { Tag } from 'primereact/tag';
 import ModalExameMedico from '@components/ModalExameMedico';
 import { ProgressBar } from 'primereact/progressbar';
 
-
 function DataTableAdmissao({ vagas }) {
-
-    const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -35,16 +32,13 @@ function DataTableAdmissao({ vagas }) {
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
-
         _filters['global'].value = value;
-
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
 
-    function verDetalhes(value)
-    {
-        navegar(`/admissao/registro/${value.candidato.id}`)
+    function verDetalhes(value) {
+        navegar(`/admissao/registro/${value.id}`)
     }
 
     const handleHistorico = (e, rowData) => {
@@ -55,32 +49,30 @@ function DataTableAdmissao({ vagas }) {
 
     const handleDadosCandidato = (e, rowData) => {
         e.stopPropagation();
-        setSelectedCandidato(rowData);
+        setSelectedCandidato(rowData?.dados_candidato);
         setShowDadosCandidato(true);
     };
 
-    
     function formataCPF(cpf) {
+        if (!cpf) return '---';
         cpf = cpf.replace(/[^\d]/g, "");
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
-      
+
     const representativeCandidatoTemplate = (rowData) => {
-        const cpf = rowData?.candidato?.cpf ?
-        formataCPF(rowData?.candidato?.cpf)
-        : '---';
-        return <div key={rowData.id}>
+        const nome = rowData?.dados_candidato?.nome;
+        return <div key={rowData?.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.candidato?.nome}
+                {nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
+                CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.dados_candidato?.cpf}</p>
             </div>
         </div>
     }
 
     const representativeLgpdTemplate = (rowData) => {
-        const aceito = rowData.candidato.statusLgpd;
+        const aceito = rowData?.aceite_lgpd;
         return (
             <Tag
                 value={aceito ? 'Aceito' : 'Não aceito'}
@@ -90,77 +82,38 @@ function DataTableAdmissao({ vagas }) {
                     fontWeight: 600,
                     fontSize: 13,
                     borderRadius: 8,
-
                     padding: '4px 12px',
                 }}
             />
         );
     };
-    
+
     const representativeStatusTemplate = (rowData) => {
-        const documentosRequeridos = rowData.documentos_requeridos || [];
+        const total = rowData?.documentos_status?.total || 0;
+        const enviados = rowData?.documentos_status?.enviados || 0;
+        const percent = total > 0 ? Math.round((enviados / total) * 100) : 0;
         
-        const documentosCandidato = rowData.candidato.documentos || [];
-        // Filtra apenas obrigatórios
-        const obrigatorios = documentosRequeridos.filter(doc => doc.obrigatorio);
-        const total = obrigatorios.length;
-        let preenchidos = 0;
-        let pendentes = 0;
-        obrigatorios.forEach(req => {
-            const docCandidato = documentosCandidato.find(doc => doc.id_requerido === req.id && doc.arquivo && doc.arquivo.length > 0);
-            if (docCandidato) {
-                preenchidos++;
-            } else {
-                pendentes++;
-            }
-        });
-        const percent = total > 0 ? Math.round((preenchidos / total) * 100) : 0;
         return (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <ProgressBar value={percent} style={{ height: 12, width: 80 }} showValue={false} />
-                <span style={{ minWidth: 48, fontWeight: 400 }}>{`${preenchidos}/${total}`}</span>
+                <span style={{ minWidth: 48, fontWeight: 400 }}>{`${enviados}/${total}`}</span>
             </div>
         );
     }
 
     const representativeAdiantamentoTemplate = (rowData) => {
-        const valor = rowData.adiantamento_percentual;
         return (
             <span style={{ fontWeight: 500 }}>
-                {valor !== undefined && valor !== null ? `${valor}%` : '--'}
+                --
             </span>
         );
     };
 
     const representativeExameTemplate = (rowData) => {
-        if (rowData.candidato.dataExameMedico) {
-            return (
-                <span style={{ fontWeight: 500 }}>
-                    {new Date(rowData.candidato.dataExameMedico).toLocaleDateString('pt-BR')}
-                </span>
-            );
-        }
         return (
-            <button
-                style={{
-                    background: 'var(--primaria)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: 6,
-                    fontSize: 11,
-                    padding: '4px 12px',
-                    cursor: 'pointer',
-                    fontWeight: 500
-                }}
-                onClick={e => {
-                    e.stopPropagation();
-                    setCandidatoExame(rowData);
-                    setModalExameAberto(true);
-                }}
-            >
-                <FaCalendarAlt fill="white" />
-                Agendar
-            </button>
+            <span style={{ fontWeight: 500 }}>
+                --
+            </span>
         );
     };
 
@@ -206,12 +159,11 @@ function DataTableAdmissao({ vagas }) {
 
     const vagaTemplate = (rowData) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>{rowData.vaga}</span>
-            {rowData.id && (
-                <Link to={`/vagas/detalhes/${rowData.id}`} rel="noopener noreferrer" style={{ color: 'var(--primaria)' }}>
-                    <FaExternalLinkAlt size={13} title="Ver detalhes da vaga" />
-                </Link>
-            )}
+            {rowData?.dados_vaga?.titulo ?
+                <span>{rowData?.dados_vaga?.titulo}</span>
+            :
+                <span>---</span>
+            }
         </div>
     );
 
@@ -219,14 +171,21 @@ function DataTableAdmissao({ vagas }) {
         <>
             <div className="flex justify-content-end">
                 <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
+                    <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
                 </span>
             </div>
-            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas admissões pendentes" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={vagas} 
+                filters={filters} 
+                globalFilterFields={['id']}  
+                emptyMessage="Não foram encontradas admissões pendentes" 
+                paginator 
+                rows={10}  
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
-                <Column body={vagaTemplate} field="vaga" header="Vaga" style={{ width: '18%' }}></Column>
+                <Column body={vagaTemplate} header="Vaga" style={{ width: '18%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status Preenchimento" style={{ width: '25%' }}></Column>
-                <Column body={representativeAdiantamentoTemplate} header="Adiantamento (%)" style={{ width: '12%' }} />
                 <Column body={representativeExameTemplate} header="Exame Médico" style={{ width: '14%' }} />
                 <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '15%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
@@ -246,7 +205,6 @@ function DataTableAdmissao({ vagas }) {
                 opened={modalExameAberto}
                 aoFechar={() => setModalExameAberto(false)}
                 aoAgendar={({ medico, data }) => {
-                    // Aqui você pode atualizar o candidato na lista, se desejar
                     setModalExameAberto(false);
                 }}
             />
