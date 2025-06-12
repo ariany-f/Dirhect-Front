@@ -166,7 +166,7 @@ function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagina
                 value={funcoesFiltradas} 
                 filters={filters} 
                 globalFilterFields={['id', 'nome', 'descricao']} 
-                emptyMessage="Não foram encontrados funções" 
+                emptyMessage={mostrarTodas ? "Não foram encontrados funções" : "Não foram encontrados funções com benefícios elegíveis"} 
                 selection={selected ? selectedFuncaos : selectedFuncao} 
                 onSelectionChange={handleSelectChange} 
                 selectionMode={selected ? "checkbox" : "single"} 
