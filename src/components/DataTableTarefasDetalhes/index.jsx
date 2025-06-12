@@ -13,6 +13,7 @@ import CheckboxContainer from '@components/CheckboxContainer'
 import { Real } from '@utils/formats'
 import { Button } from 'primereact/button';
 import { FaLink } from 'react-icons/fa';
+import { Tag } from 'primereact/tag';
 
 function DataTableTarefasDetalhes({ tarefas }) {
 
@@ -25,27 +26,75 @@ function DataTableTarefasDetalhes({ tarefas }) {
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
-
         _filters['global'].value = value;
-
         setFilters(_filters);
         setGlobalFilterValue(value);
     };
 
     const representativePrazoTemplate = (rowData) => {
         return (
-            rowData.prazo
+            rowData.agendado_para ? new Date(rowData.agendado_para).toLocaleDateString('pt-BR') : '-'
         )
     }
 
     const representativeCheckTemplate = (rowData, onUpdateStatus) => {
         const handleChange = (checked) => {
-            onUpdateStatus(rowData.id, checked); // Atualiza o estado da tarefa
+            onUpdateStatus(rowData.id, checked);
         };
     
         return (
             <CheckboxContainer name="feito" valor={rowData.check} setValor={handleChange} />
         );
+    };
+
+    const representativeStatusTemplate = (rowData) => {
+        let severity = '';
+        let status = rowData.status_display;
+
+        switch(rowData.status_display) {
+            case 'Concluída':
+                severity = 'success';
+                break;
+            case 'Em andamento':
+                severity = 'warning';
+                break;
+            case 'Pendente':
+                severity = 'danger';
+                break;
+            default:
+                severity = 'info';
+        }
+
+        return <Tag severity={severity} value={status} />;
+    };
+
+    const representativePrioridadeTemplate = (rowData) => {
+        let severity = '';
+        let label = '';
+
+        switch(rowData.prioridade) {
+            case 1:
+                severity = 'danger';
+                label = 'Alta';
+                break;
+            case 2:
+                severity = 'warning';
+                label = 'Média';
+                break;
+            case 3:
+                severity = 'info';
+                label = 'Baixa';
+                break;
+            default:
+                severity = 'info';
+                label = 'Normal';
+        }
+
+        return <Tag severity={severity} value={label} />;
+    };
+
+    const representativeConcluidoEmTemplate = (rowData) => {
+        return rowData.concluido_em ? new Date(rowData.concluido_em).toLocaleDateString('pt-BR') : '-';
     };
     
     const handleUpload = async (arquivoId, file) => {
@@ -62,7 +111,6 @@ function DataTableTarefasDetalhes({ tarefas }) {
 
     const representativeActionsTemplate = (rowData, _, rowIndex) => {
         if (rowData.descricao === 'Integrar com RM') {
-            // Verifica se todas as tarefas anteriores estão concluídas
             const anterioresConcluidas = tarefas.slice(0, rowIndex).every(t => t.check === true);
             return <Botao size="small" aoClicar={() => anterioresConcluidas && alert('Integração com RM!')} disabled={!anterioresConcluidas} estilo={anterioresConcluidas ? 'vermilion' : 'cinza'}>
                 <FaLink fill="white" /> Integrar
@@ -71,30 +119,30 @@ function DataTableTarefasDetalhes({ tarefas }) {
         return null;
     };
     
-    const representativeResponsibleTemplate = (rowData) => {
-        if(rowData.responsible)
-        {
-            return <span>{rowData.responsible}</span>;
-        }
-        else
-        {
-            return <span>---</span>;
-        }
-    }
-    
     const representativeDescricaoTemplate = (rowData) => {
         return <Texto width="100%" weight={600}>{rowData.descricao}</Texto>;
     }
     
+    // Ordena as tarefas por prioridade
+    const tarefasOrdenadas = Array.isArray(tarefas) ? [...tarefas].sort((a, b) => a.prioridade - b.prioridade) : [];
+    
     return (
         <>
-            <DataTable value={tarefas} filters={filters} globalFilterFields={['funcionario']}  emptyMessage="Não foram encontrados tarefas" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '20%' }}></Column>
-                <Column body={representativePrazoTemplate} field="prazo" header="Prazo (SLA)" style={{ width: '10%' }}></Column>
-                <Column body={representativeCheckTemplate} field="check" header="Concluído" style={{ width: '10%' }}></Column>
-                <Column body={representativeFilesTemplate} field="files" header="Anexos" style={{ width: '20%' }}></Column>
-                <Column body={representativeResponsibleTemplate} field="responsible" header="Responsável" style={{ width: '12%' }}></Column>
-                <Column body={(rowData, options) => representativeActionsTemplate(rowData, options, options.rowIndex)} header="Ações" style={{ width: '18%' }}></Column>
+            <DataTable 
+                value={tarefasOrdenadas} 
+                filters={filters} 
+                globalFilterFields={['funcionario']}  
+                emptyMessage="Não foram encontrados tarefas" 
+                paginator 
+                rows={10}  
+                tableStyle={{ minWidth: '68vw' }}
+            >
+                <Column body={representativePrioridadeTemplate} field="prioridade" header="Prioridade" style={{ width: '10%' }}></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '30%' }}></Column>
+                <Column body={representativeStatusTemplate} field="status" header="Status" style={{ width: '15%' }}></Column>
+                <Column body={representativePrazoTemplate} field="agendado_para" header="Data Agendada" style={{ width: '15%' }}></Column>
+                <Column body={representativeConcluidoEmTemplate} field="concluido_em" header="Concluído em" style={{ width: '15%' }}></Column>
+                <Column body={representativeCheckTemplate} field="check" header="Concluído" style={{ width: '15%' }}></Column>
             </DataTable>
         </>
     )

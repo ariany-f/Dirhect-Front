@@ -3,17 +3,17 @@ import { createGlobalStyle } from 'styled-components'
 const EstilosGlobais = createGlobalStyle`
   :root {
       --primaria: #0c004c;
-      --vermilion-50: #FFF5EC;
-      --vermilion-100: #FFE8D3;
-      --vermilion-200: #FFCDA5;
-      --vermilion-300: #FFAA6D;
-      --vermilion-400: #192a4e;
-      --vermilion-500: #FF570A;
-      --vermilion-600: #190742;
-      --vermilion-700: #CC2702;
-      --vermilion-800: #A1200B;
-      --vermilion-900: #821D0C;
-      --vermilion-950: #460B04;
+      --vermilion-50: #F0F4FA;
+      --vermilion-100: #D6E0F0;
+      --vermilion-200: #B3C6E3;
+      --vermilion-300: #7D9FD1;
+      --vermilion-400: #192a4e;  /* Mantido */
+      --vermilion-500: #142244;  /* Azul mais escuro que o 400 */
+      --vermilion-600: #190742;  /* Mantido (azul-arroxeado) */
+      --vermilion-700: #0F052D;
+      --vermilion-800: #0A031F;
+      --vermilion-900: #050112;
+      --vermilion-950: #020008;
       --secundaria: #fd95ff;
       --astra-50: #FCFBEA;
       --astra-100: #FAF3AE;

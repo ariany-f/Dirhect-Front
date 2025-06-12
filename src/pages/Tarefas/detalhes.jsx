@@ -16,12 +16,12 @@ import { Toast } from 'primereact/toast'
 import DataTableTarefasDetalhes from '@components/DataTableTarefasDetalhes'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
-import tarefas from '@json/tarefas.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import { Real } from '@utils/formats'
 import { PrimeIcons } from 'primereact/api'
 import { FaExternalLinkAlt } from 'react-icons/fa'
+import http from '@http'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -34,38 +34,85 @@ function DetalhesTarefas() {
 
     let { id } = useParams()
     const location = useLocation();
-    const [tarefa, setTarefa] = useState([])
+    const [tarefa, setTarefa] = useState(null)
+    const [cliente, setCliente] = useState(null)
     const toast = useRef(null)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
    
     useEffect(() => {
-        if(tarefa.length == 0)
-        {
-            let cc = tarefas.filter(tarefa => tarefa.id == id);
-            if(cc.length > 0)
-            {
-                setTarefa(cc[0])
-            }
-        }
-    }, [tarefa])
-
+        setLoading(true);
+        http.get(`processos/${id}/`)
+            .then(response => {
+                setTarefa(response);
+                // Busca dados do cliente se houver tenant
+                if (response.tenant) {
+                    http.get(`/client_tenant/${response.tenant}/`)
+                        .then(clienteResponse => {
+                            setCliente(clienteResponse);
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar dados do cliente:', error);
+                        });
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar processo:', error);
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao carregar processo',
+                    life: 3000
+                });
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [id]);
 
     function representativSituacaoTemplate() {
-        let status = tarefa?.status;
-        
-        switch(tarefa?.status)
+        let status = '';
+        let severity = '';
+
+        switch(tarefa?.status_display)
         {
             case 'Concluída':
-                status = <Tag severity="success" value="Concluída"></Tag>;
+                status = 'Concluído';
+                severity = 'success';
                 break;
             case 'Em andamento':
-                status = <Tag severity="warning" value="Em andamento"></Tag>;
+                status = 'Em Andamento';
+                severity = 'warning';
                 break;
             case 'Aguardando':
-                status = <Tag severity="danger" value="Aguardando Início"></Tag>;
+                status = 'Aguardando Início';
+                severity = 'danger';
                 break;
+            case 'Cancelada':
+                status = 'Cancelada';
+                severity = 'danger';
+                break;
+            case 'Pendente':
+                status = 'Pendente';
+                severity = 'warning';
+                break;
+            default:
+                // Se não tiver status_display, usa a lógica do percentual
+                if (tarefa?.percentual_conclusao === 0) {
+                    status = 'Não iniciado';
+                    severity = 'danger';
+                } else if (tarefa?.percentual_conclusao === 100) {
+                    status = 'Concluído';
+                    severity = 'success';
+                } else if (tarefa?.percentual_conclusao < 30) {
+                    status = 'Aguardando';
+                    severity = 'danger';
+                } else {
+                    status = 'Em Andamento';
+                    severity = 'warning';
+                }
         }
-        return status
+
+        return <Tag severity={severity} value={status} />;
     }
     
     // Função para retornar a tag do tipo de tarefa
@@ -75,23 +122,23 @@ function DetalhesTarefas() {
         let link = null;
         let id = null;
         let url = null;
-        switch(tarefa.tipo_tarefa) {
+        switch(tarefa.processo_codigo) {
             case 'admissao':
                 color = 'var(--info)';
                 label = 'Admissão';
-                id = tarefa.admissao_id;
+                id = tarefa?.objeto?.id;
                 url = id ? `/admissao/registro/${id}` : null;
                 break;
             case 'demissao':
                 color = 'var(--error)';
                 label = 'Demissão';
-                id = tarefa.demissao_id;
+                id = tarefa?.objeto?.id;
                 url = id ? `/demissao/detalhes/${id}` : null;
                 break;
             case 'ferias':
                 color = 'var(--green-500)';
                 label = 'Férias';
-                id = tarefa.ferias_id;
+                id = tarefa?.objeto?.id;
                 url = id ? `/ferias/detalhes/${id}` : null;
                 break;
             case 'envio_variaveis':
@@ -111,7 +158,7 @@ function DetalhesTarefas() {
                 label = 'Folha Mensal';
                 break;
             default:
-                label = tarefa.tipo_tarefa;
+                label = tarefa.processo_nome;
         }
         return (
             <span style={{display: 'flex', alignItems: 'center', gap: 6}}>
@@ -129,16 +176,18 @@ function DetalhesTarefas() {
     function referenciaDetalhada(tarefa) {
         let label = '';
         let cpf = '';
-        if(tarefa.tipo_tarefa === 'admissao') {
-            label = `${tarefa.candidato_nome || '-'}`;
-            cpf = tarefa.candidato_cpf || '';
-        } else if(tarefa.tipo_tarefa === 'demissao' || tarefa.tipo_tarefa === 'ferias' || tarefa.tipo_tarefa === 'adiantamento' || tarefa.tipo_tarefa === 'folha') {
-            label = `${tarefa.colaborador_nome || '-'}`;
-            cpf = tarefa.colaborador_cpf || '';
-        } else if(tarefa.tipo_tarefa === 'envio_variaveis' || tarefa.tipo_tarefa === 'encargos') {
-            label = `${tarefa.filial_nome || '-'}`;
+        
+        if (tarefa?.objeto?.dados_candidato) {
+            label = tarefa.objeto.dados_candidato.nome;
+            cpf = tarefa.objeto.dados_candidato.cpf;
+        } else if (tarefa?.objeto?.dados_colaborador) {
+            label = tarefa.objeto.dados_colaborador.nome;
+            cpf = tarefa.objeto.dados_colaborador.cpf;
+        } else {
+            label = tarefa?.processo_nome || '-';
             cpf = '';
         }
+        
         return { label, cpf };
     }
 
@@ -220,6 +269,56 @@ function DetalhesTarefas() {
         return cor;
     }
 
+    const dataInicioTemplate = () => {
+        return <p style={{fontWeight: '400'}}>{tarefa?.created_at ? new Date(tarefa.created_at).toLocaleDateString('pt-BR') : '-'}</p>
+    }
+
+    const dataEntregaTemplate = () => {
+        const sla = tarefa?.sla || (tarefa?.percentual_conclusao < 100 ? 2 : 0);
+        const dataInicio = tarefa?.created_at ? new Date(tarefa.created_at) : new Date();
+        // Calcula a data de entrega com base no SLA
+        const dataEntrega = new Date(dataInicio);
+        dataEntrega.setDate(dataEntrega.getDate() + sla);
+        
+        if (!dataEntrega || !dataInicio) {
+            return <p style={{fontWeight: '400'}}>{dataEntrega ? dataEntrega.toLocaleDateString('pt-BR') : '-'}</p>;
+        }
+
+        const hoje = new Date();
+        const totalDias = Math.ceil((dataEntrega - dataInicio) / (1000 * 60 * 60 * 24));
+        const diasPassados = Math.ceil((hoje - dataInicio) / (1000 * 60 * 60 * 24));
+        const porcentagem = totalDias > 0 ? (diasPassados / totalDias) : 1;
+        
+        let statusPrazo = '';
+        let cor = '';
+        
+        if (tarefa?.status === 'Concluída') {
+            statusPrazo = 'Concluída';
+            cor = 'var(--green-500)';
+        } else {
+            if (hoje > dataEntrega) {
+                statusPrazo = 'Em atraso';
+                cor = 'var(--error-600)';
+            } else if (porcentagem < 0.6) {
+                statusPrazo = 'Dentro do prazo';
+                cor = 'var(--green-500)';
+            } else if (porcentagem < 0.9) {
+                statusPrazo = 'Próxima do vencimento';
+                cor = 'var(--warning)';
+            } else {
+                statusPrazo = 'Próxima do vencimento';
+                cor = 'var(--warning)';
+            }
+        }
+
+        return (
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+                <p style={{fontWeight: '600', margin: 0, color: cor}}>{dataEntrega.toLocaleDateString('pt-BR')}</p>
+                <span style={{fontSize: 12, fontWeight: 400, marginTop: 2}}>{statusPrazo}</span>
+            </div>
+        );
+    }
+
     return (
         <>
         <Frame>
@@ -228,7 +327,7 @@ function DetalhesTarefas() {
             <ConfirmDialog />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/tarefas" />
-                {tarefa && tarefa?.tipo ?
+                {tarefa ?
                     <>
                     {/* Topo: tipo de tarefa, status do prazo, referência (esquerda) e cliente (direita) */}
                     <div style={{
@@ -256,10 +355,16 @@ function DetalhesTarefas() {
                       </div>
                       {/* Direita: cliente */}
                       <div style={{display: 'flex', alignItems: 'center', gap: 14, minWidth: 220, justifyContent: 'flex-end'}}>
-                        <img src={tarefa.client_simbolo} alt={tarefa.client_nome} width={38} height={38} style={{borderRadius: '50%', border: '2px solid #eee'}} />
-                        <div>
-                          <Texto weight={700} size={14} style={{textAlign: 'right'}}>{tarefa.client_nome}</Texto>
-                        </div>
+                        {cliente ? (
+                          <>
+                            <img src={cliente.simbolo} alt={cliente.nome} width={38} height={38} style={{borderRadius: '50%', border: '2px solid #eee'}} />
+                            <div>
+                              <Texto weight={700} size={14} style={{textAlign: 'right'}}>{cliente.nome}</Texto>
+                            </div>
+                          </>
+                        ) : (
+                          <Skeleton shape="circle" size="38px" />
+                        )}
                       </div>
                     </div>
                     {/* Card de detalhes: status geral e outros dados */}
@@ -288,30 +393,14 @@ function DetalhesTarefas() {
                           <span style={{color: '#222', fontWeight: 700, fontSize: 11, marginBottom: 3}}>
                             <i className="pi pi-calendar" style={{marginRight: 6, fontSize: 13}}/>Data Início
                           </span>
-                          <span style={{fontWeight: 500, fontSize: 14, color: '#444', paddingLeft: '16px'}}>
-                            {tarefa.data_inicio ? new Date(tarefa.data_inicio).toLocaleDateString('pt-BR') : '-'}
-                          </span>
+                          {dataInicioTemplate()}
                         </div>
                         {/* Data Entrega + Status do Prazo */}
                         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minWidth: 96}}>
                           <span style={{color: '#222', fontWeight: 700, fontSize: 11, marginBottom: 3}}>
                             <i className="pi pi-calendar" style={{marginRight: 6, fontSize: 13}}/>Data Entrega
                           </span>
-                          <span style={{fontWeight: 500, fontSize: 14, color: corStatusPrazo(tarefa), paddingLeft: '16px'}}>
-                            {tarefa.data_entrega ? new Date(tarefa.data_entrega).toLocaleDateString('pt-BR') : '-'}
-                          </span>
-                          <span style={{fontWeight: 500, fontSize: 11, color: '#888', marginTop: 2, paddingLeft: '16px'}}>
-                            {statusPrazo(tarefa)}
-                          </span>
-                        </div>
-                        {/* Recorrência */}
-                        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minWidth: 96}}>
-                          <span style={{color: '#222', fontWeight: 700, fontSize: 11, marginBottom: 3}}>
-                            <i className="pi pi-refresh" style={{marginRight: 6, fontSize: 13}}/>Recorrência
-                          </span>
-                          <span style={{fontWeight: 500, fontSize: 14, color: '#444', paddingLeft: '16px'}}>
-                            {tarefa.recorrencia ? tarefa.tipo_recorrencia : 'Não'}
-                          </span>
+                          {dataEntregaTemplate()}
                         </div>
                         {/* Status da Tarefa (tag) */}
                         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minWidth: 96}}>
@@ -326,7 +415,7 @@ function DetalhesTarefas() {
                             <i className="pi pi-list" style={{marginRight: 6, fontSize: 13}}/>Itens Concluídos
                           </span>
                           <span style={{fontWeight: 500, fontSize: 14, color: '#444', paddingLeft: '16px'}}>
-                            {tarefa?.feito}/{tarefa?.total_tarefas}
+                            {tarefa?.concluidas_atividades}/{tarefa?.total_atividades}
                           </span>
                         </div>
                       </div>
@@ -334,7 +423,7 @@ function DetalhesTarefas() {
                     </>
                     : <></>
                 }
-                <DataTableTarefasDetalhes tarefas={tarefa?.checklist} />
+                <DataTableTarefasDetalhes tarefas={tarefa?.tarefas} />
             </Container>
         </Frame>
         </>

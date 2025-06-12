@@ -83,9 +83,13 @@ function DetalhesVaga() {
     function getStatusVaga(status, dt_encerramento) {
         const hoje = new Date();
         const encerramento = new Date(dt_encerramento);
+        const inicio = new Date(vaga?.dt_inicio);
         
         if (hoje > encerramento) {
             return 'Encerrada';
+        }
+        if (inicio && hoje < inicio) {
+            return 'Aguardando';
         }
         return status === 'A' ? 'Aberta' : 'Fechada';
     }
@@ -93,11 +97,29 @@ function DetalhesVaga() {
     function getStatusColor(status, dt_encerramento) {
         const hoje = new Date();
         const encerramento = new Date(dt_encerramento);
+        const inicio = new Date(vaga?.dt_inicio);
         
         if (hoje > encerramento) {
             return 'var(--error)';
         }
+        if (inicio && hoje < inicio) {
+            return 'var(--yellow-500)';
+        }
         return status === 'A' ? 'var(--green-500)' : 'var(--error)';
+    }
+
+    // Função para verificar se a vaga está aguardando
+    const vagaAguardando = () => {
+        const hoje = new Date();
+        const inicio = new Date(vaga?.dt_inicio);
+        return inicio && hoje < inicio;
+    }
+
+    // Função para verificar se a vaga está encerrada
+    const vagaEncerrada = () => {
+        const hoje = new Date();
+        const encerramento = new Date(vaga?.dt_encerramento);
+        return hoje > encerramento;
     }
 
     // Função para buscar documentos da vaga
@@ -346,7 +368,15 @@ function DetalhesVaga() {
                                         <BotaoSemBorda $color="var(--primaria)">
                                             <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
                                         </BotaoSemBorda>
-                                        <Botao aoClicar={abrirModal} size="small">
+                                        <Botao 
+                                            aoClicar={abrirModal} 
+                                            size="small"
+                                            disabled={vagaAguardando() || vagaEncerrada()}
+                                            title={
+                                                vagaAguardando() ? "Não é possível encaminhar candidatos enquanto a vaga estiver aguardando" :
+                                                vagaEncerrada() ? "Não é possível encaminhar candidatos para uma vaga encerrada" : ""
+                                            }
+                                        >
                                             <FaArrowAltCircleRight fill="white" />
                                             Encaminhar para novo candidato
                                         </Botao>

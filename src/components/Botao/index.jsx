@@ -18,20 +18,26 @@ const BotaoEstilizado = styled.button`
     justify-content: center;
     align-items: center;
     ${props => props.$style ? props.$style : ''};
+
+    &:disabled {
+        opacity: 0.5;
+        background-color: var(--neutro-200);
+        cursor: not-allowed;
+    }
 `
 
-function Botao( {children, extraclasses = '',estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px', outStyle='' } ) {
+function Botao( {children, extraclasses = '',estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px', outStyle='', disabled = false } ) {
 
     const classes = `${estilo} ${model} ${size} ${weight} ${extraclasses} ${tab ? 'tab' : ''} p-ripple`;
    
     return (
         aoClicar ?
-            <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} onClick={aoClicar} className={classes}>
+            <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} onClick={aoClicar} className={classes} disabled={disabled}>
                 {children}
                 <Ripple />
             </BotaoEstilizado>
         :
-            <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} className={classes}>
+            <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} className={classes} disabled={disabled}>
                 {children}
                 <Ripple />
             </BotaoEstilizado>

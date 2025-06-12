@@ -4,7 +4,7 @@ import { Column } from 'primereact/column';
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styles from '@pages/Tarefas/Tarefas.module.css'
 import { Tag } from 'primereact/tag';
@@ -22,6 +22,8 @@ import { FaDollarSign, FaMoneyBill, FaPaperPlane, FaRegPaperPlane, FaUmbrellaBea
 import { LuNewspaper } from 'react-icons/lu';
 import CustomImage from '@components/CustomImage';
 import { Tooltip } from 'primereact/tooltip';
+import { Skeleton } from 'primereact/skeleton';
+import http from '@http';
 
 function DataTableTarefas({ tarefas, colaborador = null }) {
 
@@ -203,21 +205,23 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     }
 
     const representativStatusTemplate = (rowData) => {
-        let status = rowData?.status_display;
+        let status = '';
 
-        switch(rowData?.status)
+        switch(rowData?.percentual_conclusao)
         {
-            case 'Aprovada':
-                status = <Tag severity="success" value={rowData.status_display}></Tag>;
+            case 0:
+                status = 'Não iniciado';
                 break;
-            case 'Em andamento':
-                status = <Tag style={{backgroundColor: 'var(--info)'}} value={rowData.status_display}></Tag>;
+            case 100:
+                status = 'Concluído';
                 break;
-            case 'Pendente':
-                status = <Tag severity="danger" value={rowData.status_display}></Tag>;
-                break;
-            case 'Cancelada':
-                status = <Tag severity="warning" value={rowData.status_display}></Tag>;
+            
+            default:
+                if (rowData?.percentual_conclusao < 30) {
+                    status = 'Aguardando';
+                } else {
+                    status = 'Em Andamento';
+                }
                 break;
         }
 
@@ -227,8 +231,8 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
             );
         };
 
-        var feito = rowData.feito;
-        var tarefas = rowData.total_tarefas;
+        var feito = rowData.concluidas_atividades;
+        var tarefas = rowData.total_atividades;
         
         if(rowData.status_display === 'Aprovada') {
             var progresso = 100;
@@ -274,15 +278,12 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     }
 
     const representativeTipoTemplate = (rowData) => {
-        const totalLogs = rowData.logs?.length || 0;
-        const logsConcluidos = rowData.logs?.filter(log => log.sucesso)?.length || 0;
-        
         return <div key={rowData.id}>
-            <Texto weight={500} width={'100%'}>
+            {/* <Texto weight={500} width={'100%'}>
                 {rowData.tipo_display}
-            </Texto>
+            </Texto> */}
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                Itens: <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {logsConcluidos}/{totalLogs}</p>
+                Itens: <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {rowData.concluidas_atividades}/{rowData.total_atividades}</p>
             </div>
         </div>
     }
@@ -296,7 +297,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         let color = 'var(--neutro-400)';
         let label = '';
         let icon = '';
-        switch(rowData.entidade_display) {
+        switch(rowData.processo_codigo) {
             case 'admissao':
                 color = 'var(--info)';
                 label = 'Admissão';
@@ -333,7 +334,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 icon = <LuNewspaper fill="white" stroke="white" color="white" size={16}/>;
                 break;
             default:
-                label = rowData.tipo_tarefa;
+                label = rowData.processo_nome;
         }
         if(icon) {
             label = <div style={{display: 'flex', alignItems: 'center', gap: 8, color: 'white'}}>{icon} {label}</div>;
@@ -342,12 +343,15 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     };
 
     const dataInicioTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.criado_em ? new Date(rowData.criado_em).toLocaleDateString('pt-BR') : '-'}</p>
+        return <p style={{fontWeight: '400'}}>{rowData.created_at ? new Date(rowData.created_at).toLocaleDateString('pt-BR') : '-'}</p>
     }
 
     const dataEntregaTemplate = (rowData) => {
-        const dataEntrega = rowData.agendado_para ? new Date(rowData.agendado_para) : null;
-        const dataInicio = rowData.criado_em ? new Date(rowData.criado_em) : null;
+        const sla = rowData.sla || (rowData.percentual_conclusao < 100 ? 2 : 0);
+        const dataInicio = rowData.created_at ? new Date(rowData.created_at) : new Date();
+        // Calcula a data de entrega com base no SLA
+        const dataEntrega = new Date(dataInicio);
+        dataEntrega.setDate(dataEntrega.getDate() + sla);
         
         if (!dataEntrega || !dataInicio) {
             return <p style={{fontWeight: '400'}}>{dataEntrega ? dataEntrega.toLocaleDateString('pt-BR') : '-'}</p>;
@@ -394,31 +398,57 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     }
 
     const pessoaTemplate = (rowData) => {
-        if (!rowData?.descricao) {
-            return <div key={rowData?.id || 'unknown'}>
-                <Texto weight={700} width={'100%'}>
-                    ----
-                </Texto>
-                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                    ID: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.entidade_id || '-'}</p>
+        if(rowData.entidade_tipo_display == 'admissao') {
+            if(rowData.objeto.dados_candidato) {
+                return <div key={rowData?.id || 'unknown'}>
+                    <Texto weight={700} width={'100%'}>
+                         {rowData.objeto.dados_candidato.nome}
+                    </Texto>
+                    <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                        CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.dados_candidato?.cpf ? formataCPF(rowData?.objeto?.dados_candidato?.cpf) : '-'}</p>
+                    </div>
                 </div>
-            </div>
+            }
+            else {
+                return <div key={rowData?.id || 'unknown'}>
+                   <Link to={`/${rowData.entidade_tipo_display}/detalhes/${rowData.objeto.id}`}>{rowData.processo_nome}</Link>
+                </div>
+            }
         }
-
-        return <div key={rowData.id}>
-            <Texto weight={700} width={'100%'}>
-                {rowData.descricao}
-            </Texto>
-        </div>
     };
 
     // Template para coluna do cliente
     const clienteTemplate = (rowData) => {
+        const [cliente, setCliente] = useState(null);
+
+        useEffect(() => {
+            if (rowData.tenant) {
+                http.get(`/client_tenant/${rowData.tenant}/`)
+                    .then(response => {
+                        setCliente(response);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar dados do cliente:', error);
+                    });
+            }
+        }, [rowData.tenant]);
+
+        if (!cliente) {
+            return (
+                <>
+                    <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
+                    <div data-pr-tooltip="Carregando..." className="cliente">
+                        <Skeleton shape="circle" size="24px" />
+                    </div>
+                </>
+            );
+        }
+
         return (
             <>
                 <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
-                <div data-pr-tooltip={rowData.client_nome || '-'} className="cliente">
-                    <CustomImage src={rowData.client_simbolo} width={24} height={24} />
+                <div data-pr-tooltip={cliente.nome || '-'} className="cliente">
+                    <CustomImage src={cliente.simbolo} width={24} height={24} />
                 </div>
             </>
         );
@@ -439,12 +469,12 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 tableStyle={{ minWidth: '68vw' }}
                 header={headerTemplate}
             >
-                <Column body={tipoTarefaTagTemplate} field="tipo_tarefa" header="Tipo de Tarefa" style={{ width: '18%' }} />
+                <Column body={tipoTarefaTagTemplate} field="tipo_tarefa" header="Tipo de Processo" style={{ width: '18%' }} />
                 <Column body={pessoaTemplate} field="pessoa" header="Referência" style={{ width: '15%' }} />
                 <Column body={dataInicioTemplate} field="data_inicio" header="Data de Início" style={{width: '10%'}} />
                 <Column body={dataEntregaTemplate} field="data_entrega" header="Data de Entrega" style={{width: '10%'}} />
                 <Column body={representativeTipoTemplate} field="tipo" header="Concluído" style={{ width: '11%' }}></Column>
-                {/* <Column body={clienteTemplate} field="client_nome" header="Cliente" style={{ width: '8%' }} /> */}
+                <Column body={clienteTemplate} field="client_nome" header="Cliente" style={{ width: '8%' }} />
                 <Column body={representativStatusTemplate} field="status" header="Situação" style={{ width: '14%' }}></Column>
             </DataTable>
             <ModalTarefas opened={modalOpened} aoFechar={() => setModalOpened(false)} />

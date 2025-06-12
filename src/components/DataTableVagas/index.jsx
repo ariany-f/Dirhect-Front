@@ -53,6 +53,10 @@ function DataTableVagas({ vagas }) {
         return <p style={{fontWeight: '600'}}>{rowData.titulo}</p>
     }
 
+    const representativeAprovadosTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData?.total_aprovados ?? 0}</p>
+    }
+
     const representativeStatusTemplate = (rowData) => {
         const hoje = new Date();
         const abertura = new Date(rowData.dt_abertura);
@@ -100,6 +104,7 @@ function DataTableVagas({ vagas }) {
                 <Column body={representativeEncerramentoTemplate} header="Encerramento" style={{ width: '15%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '12%' }}></Column>
                 <Column body={representativeNumeroColaboradoresTemplate} header="Candidatos" style={{ width: '10%' }}></Column>
+                <Column body={representativeAprovadosTemplate} header="Aprovados" style={{ width: '10%' }}></Column>
                 <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '15%' }}></Column>
                 
             </DataTable>

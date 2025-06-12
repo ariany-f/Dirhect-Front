@@ -72,6 +72,10 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
         { code: 'SC', name: 'Exposição a Substâncias Cancerígenas' }
     ]);
 
+    // Verifica se a vaga tem candidatos
+    const temCandidatos = vaga?.candidatos?.length > 0;
+    const vagaAberta = vaga?.status === 'A';
+
     useEffect(() => {
         if (vaga) {
             setTitulo(vaga.titulo || '');
@@ -168,7 +172,9 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                     type="date" 
                                     valor={dataAbertura} 
                                     setValor={setDataAbertura}
-                                    label="Data de Abertura"  />
+                                    label="Data de Abertura"
+                                    disabled={vagaAberta && temCandidatos}
+                                    title={vagaAberta && temCandidatos ? "Não é possível alterar a data de início pois a vaga já possui candidatos" : ""} />
                             </Col6>
                             <Col6>
                                 <CampoTexto 

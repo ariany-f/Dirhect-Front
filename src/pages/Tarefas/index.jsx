@@ -24,7 +24,7 @@ const Tarefas = () => {
     const [listaTarefas, setListaTarefas] = useState([])
 
     useEffect(() => {
-        http.get('tarefas/?format=json')
+        http.get('processos/?format=json')
             .then(response => {
                 console.log(response)
                 setListaTarefas(response)

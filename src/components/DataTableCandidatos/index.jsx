@@ -256,10 +256,18 @@ function DataTableCandidatos({ candidatos, vagaId = null }) {
         
         const vagaConfigurada = rowData?.vagas_configuradas?.[0];
         const vagaAprovada = vagaConfigurada?.status === 'A';
+
+        // Conta quantos candidatos já foram aprovados
+        const candidatosAprovados = listaCandidatos.filter(c => 
+            c.vagas_configuradas?.[0]?.status === 'A'
+        ).length;
+
+        // Verifica se já atingiu o limite de vagas
+        const vagasPreenchidas = candidatosAprovados >= rowData?.vaga?.qtd_vaga;
         
         return (
             <div style={{ display: 'flex', gap: '12px' }}>
-                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                {/* <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
                 <RiDeleteBin6Line
                     title="Excluir"
                     data-pr-tooltip={vagaEncerrada ? "Vaga encerrada - Ação indisponível" : "Excluir candidatura"}
@@ -270,8 +278,8 @@ function DataTableCandidatos({ candidatos, vagaId = null }) {
                         color: vagaEncerrada ? 'var(--neutro-400)' : 'var(--primaria)',
                         opacity: vagaEncerrada ? 0.5 : 1,
                     }}
-                />
-                {!vagaEncerrada && !vagaAprovada && vagaConfigurada?.status !== 'R' && (
+                /> */}
+                {!vagaEncerrada && !vagaAprovada && vagaConfigurada?.status !== 'R' && !vagasPreenchidas && (
                     <>
                         <Tooltip target=".aprovar" mouseTrack mouseTrackLeft={10} />
                         <FaCheck 
