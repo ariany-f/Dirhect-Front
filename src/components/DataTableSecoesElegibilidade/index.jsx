@@ -151,7 +151,7 @@ function DataTableSecoesElegibilidade({ secoes = [], showSearch = true, paginati
                     </span>
                 </div>
             }
-            <DataTable value={secoesFiltradas} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selected ? selectedSecoes : selectedSecao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={secoesFiltradas} filters={filters} globalFilterFields={['id']} emptyMessage={mostrarTodas ? "Não foram encontrados seções" : "Não foram encontrados seções com benefícios elegíveis"} selection={selected ? selectedSecoes : selectedSecao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
                 <Column field="" header="" style={{ width: '5%' }} body={<MdOutlineKeyboardArrowRight size={24}/>}></Column>
