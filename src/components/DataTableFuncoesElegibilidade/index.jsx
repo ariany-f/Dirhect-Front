@@ -28,7 +28,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
     console.log(funcoes)
     const[selectedFuncao, setSelectedFuncao] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -37,6 +37,11 @@ function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagina
     })
     const [selectedFuncaos, setSelectedFuncaos] = useState([]);
     const navegar = useNavigate()
+
+    // Filtra as funções se não estiver mostrando todas
+    const funcoesFiltradas = mostrarTodas ? funcoes : funcoes.filter(funcao => 
+        funcao.elegibilidade && funcao.elegibilidade.length > 0
+    );
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -157,7 +162,18 @@ function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagina
                     </span>
                 </div>
             }
-            <DataTable value={funcoes} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados funcoes" selection={selected ? selectedFuncaos : selectedFuncao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable 
+                value={funcoesFiltradas} 
+                filters={filters} 
+                globalFilterFields={['id', 'nome', 'descricao']} 
+                emptyMessage="Não foram encontrados funções" 
+                selection={selected ? selectedFuncaos : selectedFuncao} 
+                onSelectionChange={handleSelectChange} 
+                selectionMode={selected ? "checkbox" : "single"} 
+                paginator={pagination} 
+                rows={10}  
+                tableStyle={{ minWidth: '68vw' }}
+            >
                 <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
                 <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight size={24}/>}></Column>

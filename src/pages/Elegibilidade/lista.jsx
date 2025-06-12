@@ -26,6 +26,7 @@ import { BiChevronRight } from 'react-icons/bi'
 import { Real } from '@utils/formats'
 import { InputSwitch } from 'primereact/inputswitch'
 import SwitchInput from '@components/SwitchInput'
+import React from 'react'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -149,9 +150,10 @@ const ElegibilidadeLista = () => {
 
     const renderizarAba = (nome, componente) => {
         if (!mostrarTodas && !abasDisponiveis.includes(nome)) return null;
+
         return (
             <TabPanel header={nome.charAt(0).toUpperCase() + nome.slice(1).replace('_', ' ')}>
-                {componente}
+                {React.cloneElement(componente, { mostrarTodas })}
             </TabPanel>
         );
     };
