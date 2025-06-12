@@ -110,14 +110,12 @@ const ElegibilidadeLista = () => {
         if (context && context.length > 0 && dadosCarregados) {
             const adicionarElegibilidade = (lista, setLista, nomeEntidade) => {
                 if (!lista || lista.length === 0) return false;
-                console.log(nomeEntidade)
-                console.log('context', context)
+                
                 const listaAtualizada = lista.map(item => {
-                    console.log('item', item)
+                    // Procura por itens configurados que correspondam ao id_origem da entidade
                     const itensConfigurados = context
-                        .filter(el => el.entidade.tipo === nomeEntidade && el.entidade.id_origem == item.id_origem)
+                        .filter(el => el.entidade.tipo === nomeEntidade && el.entidade.id_origem == item.id)
                         .flatMap(el => el.itens_configurados || []);
-                    console.log('itensConfigurados', itensConfigurados)
                     
                     return {
                         ...item,
@@ -126,6 +124,7 @@ const ElegibilidadeLista = () => {
                 });
                 
                 setLista(listaAtualizada);
+                // Retorna true se houver pelo menos um item com elegibilidade
                 return listaAtualizada.some(item => item.elegibilidade && item.elegibilidade.length > 0);
             };
 
@@ -144,7 +143,7 @@ const ElegibilidadeLista = () => {
                 .filter(([_, temElegibilidade]) => temElegibilidade)
                 .map(([key]) => key);
 
-            // setAbasDisponiveis(novasAbas);
+            setAbasDisponiveis(novasAbas);
         }
     }, [context, dadosCarregados]);
 
