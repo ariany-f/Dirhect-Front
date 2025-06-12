@@ -159,11 +159,16 @@ const ElegibilidadeLista = () => {
 
     useEffect(() => {
         if (!mostrarTodas && abasDisponiveis.length > 0) {
-            if (activeIndex >= abasDisponiveis.length) {
-                setActiveIndex(0);
+            // Encontra o índice da primeira aba disponível
+            const primeiroIndiceDisponivel = ['filial', 'departamento', 'secao', 'centro_custo', 'cargo', 'funcao', 'sindicato', 'horario']
+                .findIndex(aba => abasDisponiveis.includes(aba));
+            
+            // Se o índice atual não estiver entre as abas disponíveis, muda para a primeira aba disponível
+            if (!abasDisponiveis.includes(['filial', 'departamento', 'secao', 'centro_custo', 'cargo', 'funcao', 'sindicato', 'horario'][activeIndex])) {
+                setActiveIndex(primeiroIndiceDisponivel);
             }
         }
-    }, [mostrarTodas, abasDisponiveis, activeIndex])
+    }, [mostrarTodas, abasDisponiveis, activeIndex]);
 
     return (
         <ConteudoFrame style={{ position: 'relative' }}>
@@ -178,7 +183,20 @@ const ElegibilidadeLista = () => {
             </div>
             <Frame>
                 <Container gap="32px">
-                    <TabView activeIndex={activeIndex} onTabChange={e => setActiveIndex(e.index)}>
+                    <TabView 
+                        activeIndex={activeIndex} 
+                        onTabChange={e => {
+                            // Se não estiver mostrando todas as abas, verifica se a aba selecionada está disponível
+                            if (!mostrarTodas) {
+                                const abaSelecionada = ['filial', 'departamento', 'secao', 'centro_custo', 'cargo', 'funcao', 'sindicato', 'horario'][e.index];
+                                if (abasDisponiveis.includes(abaSelecionada)) {
+                                    setActiveIndex(e.index);
+                                }
+                            } else {
+                                setActiveIndex(e.index);
+                            }
+                        }}
+                    >
                         {renderizarAba('filial', <DataTableFiliaisElegibilidade filiais={filiais} showSearch={false} />)}
                         {renderizarAba('departamento', <DataTableDepartamentosElegibilidade departamentos={departamentos} showSearch={false} />)}
                         {renderizarAba('secao', <DataTableSecoesElegibilidade secoes={secoes} showSearch={false} />)}
