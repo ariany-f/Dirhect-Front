@@ -335,6 +335,9 @@ const statusIcons = {
     aprovada: <FaCalendarCheck fill='white'/>,
     acontecendo: <FaSun fill='white' />,
     passada: <FaCheckCircle fill='white' />,
+    paga: <FaCheckCircle fill='white' />,
+    marcada: <FaRegClock fill='white' />,
+    finalizada: <FaCheckCircle fill='white' />,
 };
 
 const INITIAL_DAYS = 365; // Começa com 1 ano
@@ -395,7 +398,9 @@ const CalendarFerias = ({ colaboradores }) => {
     }
 
     // Usa a função para garantir o formato correto
-    const allColabs = normalizarColaboradores(colaboradores);
+    const colabsReais = normalizarColaboradores(colaboradores);
+    const colabsFake = normalizarColaboradores(colaboradoresFake);
+    const allColabs = [...colabsReais, ...colabsFake];
 
     // Encontrar a menor data de início e maior data de fim entre todos os eventos
     let minDate = null;
@@ -495,6 +500,10 @@ const CalendarFerias = ({ colaboradores }) => {
             case 'C': return 'passada';
             case 'E': return 'acontecendo';
             case 'R': return 'rejeitada'; // pode ser ignorado ou adicionar cor especial
+            case 'P': return 'paga';
+            case 'M': return 'marcada';
+            case 'F': return 'finalizada';
+
             default: return 'aprovada';
         }
     }
@@ -619,14 +628,14 @@ const CalendarFerias = ({ colaboradores }) => {
                                         const type = mapStatusToType(aus.status);
                                         const { startPercent, widthPercent } = getBarPosition(aus.data_inicio, aus.data_fim, startDate, totalDays);
                                         let label = '';
-                                        if (type === 'aprovada' || type === 'passada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
-                                        if (type === 'acontecendo' || type === 'solicitada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
+                                        if (type === 'aprovada' || type === 'passada' || type === 'paga' || type === 'finalizada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
+                                        if (type === 'acontecendo' || type === 'solicitada' || type === 'marcada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'rejeitada') return null; // não exibe
                                         let tooltip = `Início: ${format(new Date(aus.data_inicio), 'dd/MM/yyyy')}\nFim: ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
-                                        if (type === 'solicitada') tooltip = 'Solicitada';
+                                        if (type === 'solicitada' || type === 'marcada') tooltip = 'Solicitada';
                                         if (type === 'acontecendo') tooltip = 'Em curso';
-                                        if (type === 'aprovada') tooltip = 'Aprovada';
-                                        if (type === 'passada') tooltip = 'Concluída';
+                                        if (type === 'aprovada' || type === 'marcada') tooltip = 'Aprovada';
+                                        if (type === 'passada' || type === 'finalizada' || type === 'paga') tooltip = 'Concluída';
                                         return (
                                             <EventBar
                                                 key={i}
