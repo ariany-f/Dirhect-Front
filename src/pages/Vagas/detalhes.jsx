@@ -80,11 +80,23 @@ function DetalhesVaga() {
         return item ? item.name : '--';
     }
 
-    function getStatusVaga(status) {
+    function getStatusVaga(status, dt_encerramento) {
+        const hoje = new Date();
+        const encerramento = new Date(dt_encerramento);
+        
+        if (hoje > encerramento) {
+            return 'Encerrada';
+        }
         return status === 'A' ? 'Aberta' : 'Fechada';
     }
 
-    function getStatusColor(status) {
+    function getStatusColor(status, dt_encerramento) {
+        const hoje = new Date();
+        const encerramento = new Date(dt_encerramento);
+        
+        if (hoje > encerramento) {
+            return 'var(--error)';
+        }
         return status === 'A' ? 'var(--green-500)' : 'var(--error)';
     }
 
@@ -237,6 +249,7 @@ function DetalhesVaga() {
         const successMessage = candidatoId ? 'Candidato atualizado com sucesso!' : 'Candidato encaminhado com sucesso!';
         const errorMessage = candidatoId ? 'Erro ao atualizar candidato' : 'Erro ao encaminhar candidato';
 
+        // Ao adicionar candidato precisa configurar a vaga_candidato para "S"
         http[method](url, dadosCandidato)
         .then(response => {
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: successMessage, life: 3000 });
@@ -309,9 +322,9 @@ function DetalhesVaga() {
                                     {vaga?.titulo}
                                     {vaga?.status && (
                                         <Tag
-                                            value={getStatusVaga(vaga.status)}
+                                            value={getStatusVaga(vaga.status, vaga.dt_encerramento)}
                                             style={{
-                                                backgroundColor: getStatusColor(vaga.status),
+                                                backgroundColor: getStatusColor(vaga.status, vaga.dt_encerramento),
                                                 color: 'white',
                                                 fontWeight: 600,
                                                 fontSize: 13,
@@ -439,7 +452,10 @@ function DetalhesVaga() {
                 <Titulo>
                     <h5>Candidatos</h5>
                 </Titulo>
-                <DataTableCandidatos vagaId={vaga?.id} candidatos={vaga?.candidatos} />
+                <DataTableCandidatos vagaId={vaga?.id} candidatos={vaga?.candidatos?.map(candidato => ({
+                    ...candidato,
+                    vaga: vaga
+                }))} />
                 <Titulo>
                     <h5>Documentos Requeridos da Vaga</h5>
                 </Titulo>

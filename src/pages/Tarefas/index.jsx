@@ -9,6 +9,7 @@ import { FaDownload } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import tarefas from '@json/tarefas.json'
 import React, { createContext, useContext } from 'react';
+import http from '@http';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -20,7 +21,15 @@ const ConteudoFrame = styled.div`
 const Tarefas = () => {
 
     const location = useLocation();
-    // const [tarefas, setTarefas] = useState([])
+    const [listaTarefas, setListaTarefas] = useState([])
+
+    useEffect(() => {
+        http.get('tarefas/?format=json')
+            .then(response => {
+                console.log(response)
+                setListaTarefas(response)
+            })
+    }, [])
 
     return (
         <ConteudoFrame>

@@ -16,7 +16,6 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { confirmDialog } from 'primereact/confirmdialog';
 
 function DataTableCandidatos({ candidatos, vagaId = null }) {
-    
     const[selectedCandidato, setSelectedCandidato] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -24,6 +23,37 @@ function DataTableCandidatos({ candidatos, vagaId = null }) {
     })
     const navegar = useNavigate()
     const [listaCandidatos, setListaCandidatos] = useState(candidatos || []);
+
+    useEffect(() => {
+        if (candidatos?.length > 0 && vagaId) {
+            const buscarDadosVagas = async () => {
+                try {
+                    const response = await http.get(`vagas_candidatos/?vaga=${vagaId}`);
+                    
+                    // Mapeia os candidatos com suas respectivas vagas configuradas
+                    const candidatosAtualizados = candidatos.map(candidato => {
+                        const vagaConfigurada = response.find(vc => vc.candidato_id === candidato.id);
+                        if (vagaConfigurada) {
+                            return {
+                                ...candidato,
+                                vagas_configuradas: [vagaConfigurada]
+                            };
+                        }
+                        return candidato;
+                    });
+
+                    setListaCandidatos(candidatosAtualizados);
+                } catch (error) {
+                    console.error('Erro ao buscar vagas configuradas:', error);
+                    setListaCandidatos(candidatos);
+                }
+            };
+
+            buscarDadosVagas();
+        } else {
+            setListaCandidatos(candidatos);
+        }
+    }, [candidatos, vagaId]);
 
     useEffect(() => {
         setListaCandidatos(candidatos)
@@ -68,15 +98,35 @@ function DataTableCandidatos({ candidatos, vagaId = null }) {
     }
 
     const representativeStatusPreenchimentoTemplate = (rowData) => {
-        const status = rowData.statusDePreenchimento ?? '-----';
+        const vagaConfigurada = rowData?.vagas_configuradas?.[0];
+        const status = vagaConfigurada?.status || '-----';
         let color = 'var(--neutro-400)';
-        if (status?.toLowerCase() === 'preenchido') color = 'var(--green-500)';
-        else if (status?.toLowerCase() === 'em análise') color = 'var(--primaria)';
-        else if (status?.toLowerCase() === 'rejeitado') color = 'var(--error)';
-        else color = 'var(--error)';
+        let labelStatus = '-----';
+        
+        switch (status) {
+            case 'A':
+                color = 'var(--green-500)';
+                labelStatus = 'Aprovado';
+                break;
+            case 'R':
+                color = 'var(--error)';
+                labelStatus = 'Rejeitado';
+                break;
+            case 'S':
+                color = 'var(--primaria)';
+                labelStatus = 'Processo de Seleção';
+                break;
+            case 'C':
+                color = 'var(--neutro-500)';
+                labelStatus = 'Cancelado';
+                break;
+            default:
+                color = 'var(--neutro-400)';
+        }
+
         return (
             <Tag
-                value={status}
+                value={labelStatus}
                 style={{
                     backgroundColor: color,
                     color: 'white',
@@ -127,16 +177,40 @@ function DataTableCandidatos({ candidatos, vagaId = null }) {
         });
     }
 
-    const handleAprovar = (rowData) => {
-        setListaCandidatos(listaCandidatos.map(c =>
-            c === rowData ? { ...c, statusDePreenchimento: 'Preenchido', statusDeCandidato: 'Aprovado' } : c
-        ));
+    const handleAprovar = async (rowData) => {
+        try {
+            const vagaConfigurada = rowData?.vagas_configuradas?.[0];
+            if (!vagaConfigurada) return;
+            
+            await http.post(`vagas_candidatos/${vagaConfigurada.id}/seguir/`);
+            
+            setListaCandidatos(listaCandidatos.map(c =>
+                c === rowData ? { 
+                    ...c, 
+                    vagas_configuradas: [{ ...c.vagas_configuradas[0], status: 'A' }]
+                } : c
+            ));
+        } catch (error) {
+            console.error('Erro ao aprovar candidato:', error);
+        }
     };
 
-    const handleRejeitar = (rowData) => {
-        setListaCandidatos(listaCandidatos.map(c =>
-            c === rowData ? { ...c, statusDePreenchimento: 'Rejeitado', statusDeCandidato: 'Rejeitado' } : c
-        ));
+    const handleRejeitar = async (rowData) => {
+        try {
+            const vagaConfigurada = rowData?.vagas_configuradas?.[0];
+            if (!vagaConfigurada) return;
+            
+            await http.post(`vagas_candidatos/${vagaConfigurada.id}/reprovar/`);
+            
+            setListaCandidatos(listaCandidatos.map(c =>
+                c === rowData ? { 
+                    ...c, 
+                    vagas_configuradas: [{ ...c.vagas_configuradas[0], status: 'R' }]
+                } : c
+            ));
+        } catch (error) {
+            console.error('Erro ao rejeitar candidato:', error);
+        }
     };
       
     const representativeCandidatoTemplate = (rowData) => {
@@ -175,39 +249,61 @@ function DataTableCandidatos({ candidatos, vagaId = null }) {
         <span style={{ fontSize: 13 }}>{rowData.telefone || '-----'}</span>
     );
 
-    const actionTemplate = (rowData) => (
-        <div style={{ display: 'flex', gap: '12px' }}>
-            <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-            <RiDeleteBin6Line
-                title="Excluir"
-                data-pr-tooltip="Excluir candidatura"
-                className="delete"
-                onClick={() => handleExcluir(rowData)}
-            />
-            {rowData.statusDeCandidato?.toLowerCase() !== 'aprovado' && (
-                <>
-                    <Tooltip target=".aprovar" mouseTrack mouseTrackLeft={10} />
-                    <FaCheck 
-                        title="Aprovar" 
-                        data-pr-tooltip="Aprovar candidato"
-                        className="aprovar"
-                        onClick={() => handleAprovar(rowData)}
-                    />
-                </>
-            )}
-            {rowData.statusDeCandidato?.toLowerCase() !== 'rejeitado' && (
-                <>
-                    <Tooltip target=".rejeitar" mouseTrack mouseTrackLeft={10} />
-                    <FaTimes 
-                        title="Rejeitar" 
-                        data-pr-tooltip="Rejeitar candidato"
-                        className="rejeitar"
-                        onClick={() => handleRejeitar(rowData)}
-                    />
-                </>
-            )}
-        </div>
-    );
+    const actionTemplate = (rowData) => {
+        const hoje = new Date();
+        const encerramento = new Date(rowData?.vaga?.dt_encerramento);
+        const vagaEncerrada = rowData?.vaga?.status === 'F' || hoje > encerramento;
+        
+        const vagaConfigurada = rowData?.vagas_configuradas?.[0];
+        const vagaAprovada = vagaConfigurada?.status === 'A';
+        
+        return (
+            <div style={{ display: 'flex', gap: '12px' }}>
+                <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                <RiDeleteBin6Line
+                    title="Excluir"
+                    data-pr-tooltip={vagaEncerrada ? "Vaga encerrada - Ação indisponível" : "Excluir candidatura"}
+                    className="delete"
+                    onClick={() => !vagaEncerrada && handleExcluir(rowData)}
+                    style={{
+                        cursor: vagaEncerrada ? 'not-allowed' : 'pointer',
+                        color: vagaEncerrada ? 'var(--neutro-400)' : 'var(--primaria)',
+                        opacity: vagaEncerrada ? 0.5 : 1,
+                    }}
+                />
+                {!vagaEncerrada && !vagaAprovada && vagaConfigurada?.status !== 'R' && (
+                    <>
+                        <Tooltip target=".aprovar" mouseTrack mouseTrackLeft={10} />
+                        <FaCheck 
+                            title="Aprovar" 
+                            data-pr-tooltip="Aprovar candidato"
+                            className="aprovar"
+                            onClick={() => handleAprovar(rowData)}
+                            style={{
+                                cursor: 'pointer',
+                                color: 'var(--primaria)',
+                            }}
+                        />
+                    </>
+                )}
+                {!vagaEncerrada && vagaConfigurada?.status !== 'R' && (
+                    <>
+                        <Tooltip target=".rejeitar" mouseTrack mouseTrackLeft={10} />
+                        <FaTimes 
+                            title="Rejeitar" 
+                            data-pr-tooltip="Rejeitar candidato"
+                            className="rejeitar"
+                            onClick={() => handleRejeitar(rowData)}
+                            style={{
+                                cursor: 'pointer',
+                                color: 'var(--primaria)',
+                            }}
+                        />
+                    </>
+                )}
+            </div>
+        );
+    };
 
     return (
         <>
@@ -225,7 +321,7 @@ function DataTableCandidatos({ candidatos, vagaId = null }) {
                 <Column body={representativeDatasTemplate} field="dt_exame_medico" header="Datas" style={{ width: '15%' }}></Column>
                 {/* <Column body={representativeDataExameMedicoTemplate} field="dt_exame_medico" header="Exame Médico" style={{ width: '10%' }}></Column>
                 <Column body={representativeDataInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '10%' }}></Column> */}
-                <Column body={representativeStatusPreenchimentoTemplate} field="statusDePreenchimento" header="Status Preenchimento" style={{ width: '12%' }} />
+                <Column body={representativeStatusPreenchimentoTemplate} field="statusDePreenchimento" header="Status" style={{ width: '12%' }} />
                 {/* <Column body={representativeStatusCandidatoTemplate} field="statusDeCandidato" header="Status Candidato" style={{ width: '12%' }} /> */}
                 <Column body={actionTemplate} style={{ width: '10%' }} />
                 {/* <Column field="statusDeCandidato" header="Status Candidato" style={{ width: '10%' }}></Column> */}

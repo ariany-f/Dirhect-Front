@@ -160,7 +160,20 @@ function DataTableAdmissao({ vagas }) {
     const vagaTemplate = (rowData) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {rowData?.dados_vaga?.titulo ?
-                <span>{rowData?.dados_vaga?.titulo}</span>
+                <Link 
+                    to={`/vagas/detalhes/${rowData?.dados_vaga?.id}`}
+                    style={{ 
+                        color: 'var(--primaria)',
+                        textDecoration: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <span>{rowData?.dados_vaga?.titulo}</span>
+                    <FaExternalLinkAlt size={12} />
+                </Link>
             :
                 <span>---</span>
             }

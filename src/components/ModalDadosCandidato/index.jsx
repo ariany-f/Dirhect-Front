@@ -35,17 +35,37 @@ function ModalDadosCandidato({ opened = false, aoFechar, candidato }) {
 
   const getStatusColor = (status) => {
     if (!status) return 'var(--neutro-400)';
-    switch (status.toLowerCase()) {
-      case 'aprovado':
+    switch (status) {
+      case 'A':
         return 'var(--green-500)';
-      case 'rejeitado':
+      case 'R':
         return 'var(--error)';
-      case 'em análise':
+      case 'S':
         return 'var(--primaria)';
+      case 'C':
+        return 'var(--neutro-500)';
       default:
         return 'var(--neutro-400)';
     }
   };
+
+  const getStatusLabel = (status) => {
+    if (!status) return '-----';
+    switch (status) {
+      case 'A':
+        return 'Aprovado';
+      case 'R':
+        return 'Rejeitado';
+      case 'S':
+        return 'Processo de Seleção';
+      case 'C':
+        return 'Cancelado';
+      default:
+        return status;
+    }
+  };
+
+  const vagaConfigurada = dados.vagas_configuradas?.[0];
 
   return (
     <OverlayRight $opened={opened}>
@@ -58,11 +78,11 @@ function ModalDadosCandidato({ opened = false, aoFechar, candidato }) {
             <BotaoGrupo align="space-between">
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ fontWeight: 700, fontSize: 18 }}><RiUser3Line style={{ marginRight: 8 }} />{dados.nome || '-'}</span>
-                {dados.statusDeCandidato && (
+                {vagaConfigurada?.status && (
                   <Tag 
-                    value={dados.statusDeCandidato}
+                    value={getStatusLabel(vagaConfigurada.status)}
                     style={{
-                      backgroundColor: getStatusColor(dados.statusDeCandidato),
+                      backgroundColor: getStatusColor(vagaConfigurada.status),
                       color: 'white',
                       fontWeight: 600,
                       fontSize: 13,
@@ -94,20 +114,26 @@ function ModalDadosCandidato({ opened = false, aoFechar, candidato }) {
             </InfoLinha>
             <InfoLinha>
               <Label>Data de Nascimento</Label>
-              <Valor>{dados.dataNascimento ? new Date(dados.dataNascimento).toLocaleDateString('pt-BR') : '-'}</Valor>
-            </InfoLinha>
-            <InfoLinha>
-              <Label>Status de Preenchimento</Label>
-              <Valor>{dados.statusDePreenchimento || '-'}</Valor>
+              <Valor>{dados.dt_nascimento ? new Date(dados.dt_nascimento).toLocaleDateString('pt-BR') : '-'}</Valor>
             </InfoLinha>
             <InfoLinha>
               <Label>Data de Início</Label>
-              <Valor>{dados.dataInicio ? new Date(dados.dataInicio).toLocaleDateString('pt-BR') : '-'}</Valor>
+              <Valor>{dados.dt_inicio ? new Date(dados.dt_inicio).toLocaleDateString('pt-BR') : '-'}</Valor>
             </InfoLinha>
             <InfoLinha>
               <Label>Data do Exame Médico</Label>
-              <Valor>{dados.dataExameMedico ? new Date(dados.dataExameMedico).toLocaleDateString('pt-BR') : '-'}</Valor>
+              <Valor>{dados.dt_exame_medico ? new Date(dados.dt_exame_medico).toLocaleDateString('pt-BR') : '-'}</Valor>
             </InfoLinha>
+            <InfoLinha>
+              <Label>Salário</Label>
+              <Valor>{dados.salario ? `R$ ${Number(dados.salario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}</Valor>
+            </InfoLinha>
+            {dados.observacao && (
+              <InfoLinha>
+                <Label>Observação</Label>
+                <Valor>{dados.observacao}</Valor>
+              </InfoLinha>
+            )}
           </div>
         </Frame>
       </DialogEstilizadoRight>
@@ -116,3 +142,4 @@ function ModalDadosCandidato({ opened = false, aoFechar, candidato }) {
 }
 
 export default ModalDadosCandidato;
+
