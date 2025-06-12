@@ -220,41 +220,38 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
 
     const representativStatusTemplate = (rowData) => {
         let status = rowData?.status;
-        let statusDisplay = rowData?.status_display;
 
         switch(rowData?.status)
         {
-            case 'aprovada':
-                status = <Tag severity="success" value={statusDisplay}></Tag>;
+            case 'Concluída':
+                status = <Tag severity="success" value="Concluída"></Tag>;
                 break;
-            case 'pendente':
-                status = <Tag severity="danger" value={statusDisplay}></Tag>;
+            case 'Em andamento':
+                status = <Tag style={{backgroundColor: 'var(--info)'}} value="Em andamento"></Tag>;
                 break;
-            default:
-                status = <Tag style={{backgroundColor: 'var(--neutro-400)'}} value={statusDisplay}></Tag>;
+            case 'Aguardando':
+                status = <Tag severity="danger" value="Aguardando Início"></Tag>;
+                break;
         }
 
         const valueTemplate = (value) => {
-            return (
-                <Texto color="var(--white)">{value}%</Texto>
-            );
-        };
+                return (
+                    <Texto color="var(--white)">{value}%</Texto>
+                );
+            };
 
-        // Calcula o progresso baseado no status
-        let progresso = 0;
-        if (rowData.status === 'aprovada') {
-            progresso = 100;
-        } else if (rowData.status === 'pendente') {
-            progresso = 0;
-        }
-
-        let severity = "var(--info)";
-        if (progresso === 0) {
+        var feito = rowData.feito;
+        var tarefas = rowData.total_tarefas;
+        
+        var progresso = Math.round((feito / tarefas) * 100); // Arredonda a porcentagem concluída
+    
+        // Define a cor com base no progresso
+        let severity = "rgb(139, 174, 44)";
+        if (progresso <= 30) {
             severity = "rgb(212, 84, 114)";
-        } else if (progresso === 100) {
-            severity = "rgb(139, 174, 44)";
+        } else if (progresso <= 99) {
+            severity = "var(--info)";
         }
-
         return (
             <div style={{width: '100%'}}>
                 <b>{status}</b>
@@ -299,26 +296,47 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
 
     const tipoTarefaTagTemplate = (rowData) => {
         let color = 'var(--neutro-400)';
-        let label = rowData.tipo_display || rowData.tipo_codigo;
+        let label = '';
         let icon = '';
-        
-        switch(rowData.tipo_codigo) {
-            case 'aceite_lgpd':
+        switch(rowData.tipo_tarefa) {
+            case 'admissao':
                 color = 'var(--info)';
+                label = 'Admissão';
                 icon = <FaUserPlus fill="white" stroke="white" color="white" size={16}/>;
                 break;
-            case 'documentos_pendentes':
+            case 'demissao':
                 color = 'var(--error)';
+                label = 'Demissão';
                 icon = <FaUserMinus fill="white" stroke="white" color="white" size={16}/>;
                 break;
-            case 'integracao_erp':
+            case 'ferias':
                 color = 'var(--green-500)';
-                icon = <FaPaperPlane fill="white" stroke="white" color="white" size={16}/>;
+                label = 'Férias';
+                icon = <FaUmbrellaBeach fill="white" stroke="white" color="white" size={16}/>
+                break;
+            case 'envio_variaveis':
+                color = 'var(--primaria)';
+                label = 'Envio de Variáveis';
+                icon = <FaUserPlus fill="white" stroke="white" color="white" size={16}/>;
+                break;
+            case 'adiantamento':
+                color = 'var(--astra-500)';
+                label = 'Adiantamento';
+                icon = <FaDollarSign fill="white" stroke="white" color="white" size={16}/>;
+                break;
+            case 'encargos':
+                color = 'var(--green-400)';
+                label = 'Encargos';
+                icon = <FaDollarSign fill="white" stroke="white" color="white" size={16}/>;
+                break;
+            case 'folha':
+                color = 'var(--secundaria)';
+                label = 'Folha Mensal';
+                icon = <LuNewspaper fill="white" stroke="white" color="white" size={16}/>;
                 break;
             default:
-                color = 'var(--neutro-400)';
+                label = rowData.tipo_tarefa;
         }
-
         if(icon) {
             label = <div style={{display: 'flex', alignItems: 'center', gap: 8, color: 'white'}}>{icon} {label}</div>;
         }
@@ -326,28 +344,39 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     };
 
     const dataInicioTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.criado_em ? new Date(rowData.criado_em).toLocaleDateString('pt-BR') : '-'}</p>
+        return <p style={{fontWeight: '400'}}>{rowData.data_inicio ? new Date(rowData.data_inicio).toLocaleDateString('pt-BR') : '-'}</p>
     }
 
     const dataEntregaTemplate = (rowData) => {
-        const dataEntrega = rowData.agendado_para ? new Date(rowData.agendado_para) : null;
-        const dataInicio = rowData.criado_em ? new Date(rowData.criado_em) : null;
-        
+        const dataEntrega = rowData.data_entrega ? new Date(rowData.data_entrega) : null;
+        const dataInicio = rowData.data_inicio ? new Date(rowData.data_inicio) : null;
+        // Se não houver datas, só mostra a data
         if (!dataEntrega || !dataInicio) {
             return <p style={{fontWeight: '400'}}>{dataEntrega ? dataEntrega.toLocaleDateString('pt-BR') : '-'}</p>;
         }
-
+        // Cálculo de status de prazo
         const hoje = new Date();
         const totalDias = Math.ceil((dataEntrega - dataInicio) / (1000 * 60 * 60 * 24));
         const diasPassados = Math.ceil((hoje - dataInicio) / (1000 * 60 * 60 * 24));
         const porcentagem = totalDias > 0 ? (diasPassados / totalDias) : 1;
-        
         let statusPrazo = '';
         let cor = '';
-        
-        if (rowData.status === 'aprovada') {
-            statusPrazo = 'Concluída';
-            cor = 'var(--green-500)';
+        // Se concluída
+        if (rowData.status === 'Concluída') {
+            // Se existir data_conclusao, pode comparar, senão considera dentro do prazo
+            if (rowData.data_conclusao) {
+                const dataConclusao = new Date(rowData.data_conclusao);
+                if (dataConclusao <= dataEntrega) {
+                    statusPrazo = 'Concluída dentro do prazo';
+                    cor = 'var(--green-500)';
+                } else {
+                    statusPrazo = 'Concluída fora do prazo';
+                    cor = 'var(--error)';
+                }
+            } else {
+                statusPrazo = 'Concluída';
+                cor = 'var(--green-500)';
+            }
         } else {
             if (hoje > dataEntrega) {
                 statusPrazo = 'Em atraso';
@@ -363,7 +392,6 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 cor = 'var(--warning)';
             }
         }
-
         return (
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
                 <p style={{fontWeight: '600', margin: 0, color: cor}}>{dataEntrega.toLocaleDateString('pt-BR')}</p>
@@ -378,18 +406,42 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     }
 
     const pessoaTemplate = (rowData) => {
-        // Extrai o nome do candidato da descrição
-        const nomeMatch = rowData.descricao.match(/para (.*?)(?=\s|$)/);
-        const nome = nomeMatch ? nomeMatch[1] : '-';
+        let label = '';
+        let cpf = '';
+        if(rowData.tipo_tarefa === 'admissao') {
+            label = rowData.candidato_nome || '-';
+            cpf = rowData.candidato_cpf || '-';
+        } else if(rowData.tipo_tarefa === 'demissao' || rowData.tipo_tarefa === 'ferias') {
+            label = rowData.colaborador_nome || '-';
+            cpf = rowData.colaborador_cpf || '-';
+        } else if(rowData.tipo_tarefa === 'envio_variaveis') {
+            label = rowData.filial_nome || '-';
+            cpf = null;
+        } else if(rowData.tipo_tarefa === 'adiantamento') {
+            label = rowData.colaborador_nome || '-';
+            cpf = rowData.colaborador_cpf || '-';
+        } else if(rowData.tipo_tarefa === 'encargos') {
+            label = rowData.filial_nome || '-';
+            cpf = null;
+        } else if(rowData.tipo_tarefa === 'folha') {
+            label = rowData.colaborador_nome || '-';
+            cpf = rowData.colaborador_cpf || '-';
+        }
+
         
-        return <div key={rowData.id}>
-            <Texto weight={700} width={'100%'}>
-                {nome}
-            </Texto>
-            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                ID: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.entidade_id}</p>
+            cpf = cpf ? formataCPF(cpf) : '---';
+            return <div key={rowData.id}>
+                <Texto weight={700} width={'100%'}>
+                    {label}
+                </Texto>
+                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                    {cpf && cpf !== '---' && cpf !== null && (
+                        <>
+                            CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
+                        </>
+                    )}
+                </div>
             </div>
-        </div>
     };
 
     // Template para coluna do cliente
@@ -409,7 +461,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
             <DataTable 
                 value={tarefasFiltradas} 
                 filters={filters} 
-                globalFilterFields={['descricao', 'tipo_display', 'status_display']}  
+                globalFilterFields={['titulo', 'pessoa', 'data_inicio', 'data_entrega', 'tipo_tarefa', 'client_nome', 'candidato_nome', 'colaborador_nome', 'filial_nome']}  
                 emptyMessage="Não foram encontrados tarefas" 
                 selection={selectedVaga} 
                 onSelectionChange={(e) => verDetalhes(e.value)} 
@@ -419,10 +471,12 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 tableStyle={{ minWidth: '68vw' }}
                 header={headerTemplate}
             >
-                <Column body={tipoTarefaTagTemplate} field="tipo_codigo" header="Tipo de Tarefa" style={{ width: '18%' }} />
-                <Column body={pessoaTemplate} field="descricao" header="Referência" style={{ width: '15%' }} />
-                <Column body={dataInicioTemplate} field="criado_em" header="Data de Início" style={{width: '10%'}} />
-                <Column body={dataEntregaTemplate} field="agendado_para" header="Data de Entrega" style={{width: '10%'}} />
+                <Column body={tipoTarefaTagTemplate} field="tipo_tarefa" header="Tipo de Tarefa" style={{ width: '18%' }} />
+                <Column body={pessoaTemplate} field="pessoa" header="Referência" style={{ width: '15%' }} />
+                <Column body={dataInicioTemplate} field="data_inicio" header="Data de Início" style={{width: '10%'}} />
+                <Column body={dataEntregaTemplate} field="data_entrega" header="Data de Entrega" style={{width: '10%'}} />
+                <Column body={representativeTipoTemplate} field="tipo" header="Concluído" style={{ width: '11%' }}></Column>
+                <Column body={clienteTemplate} field="client_nome" header="Cliente" style={{ width: '8%' }} />
                 <Column body={representativStatusTemplate} field="status" header="Situação" style={{ width: '14%' }}></Column>
             </DataTable>
             <ModalTarefas opened={modalOpened} aoFechar={() => setModalOpened(false)} />
