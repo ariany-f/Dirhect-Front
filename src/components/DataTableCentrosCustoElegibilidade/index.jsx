@@ -27,7 +27,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableCentrosCustoElegibilidade({ centros_custo = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableCentrosCustoElegibilidade({ centros_custo = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
    
     const[selectedCentroCusto, setSelectedCentroCusto] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -36,6 +36,11 @@ function DataTableCentrosCustoElegibilidade({ centros_custo = [], showSearch = t
     })
     const [selectedCentrosCusto, setSelectedCentrosCusto] = useState([]);
     const navegar = useNavigate()
+
+    // Filtra os centros de custo se não estiver mostrando todas
+    const centrosCustoFiltrados = mostrarTodas ? centros_custo : centros_custo.filter(centro_custo => 
+        centro_custo.elegibilidade && centro_custo.elegibilidade.length > 0
+    );
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -127,7 +132,7 @@ function DataTableCentrosCustoElegibilidade({ centros_custo = [], showSearch = t
                 </div>
             }
             <DataTable 
-                value={centros_custo} 
+                value={centrosCustoFiltrados} 
                 filters={filters} 
                 globalFilterFields={['id']}  
                 emptyMessage="Não foram encontrados centros de custo" 

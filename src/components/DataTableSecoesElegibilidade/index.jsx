@@ -28,7 +28,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableSecoesElegibilidade({ secoes = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableSecoesElegibilidade({ secoes = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
    
     const[selectedSecao, setSelectedSecao] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -37,6 +37,11 @@ function DataTableSecoesElegibilidade({ secoes = [], showSearch = true, paginati
     })
     const [selectedSecoes, setSelectedSecoes] = useState([]);
     const navegar = useNavigate()
+
+    // Filtra as seções se não estiver mostrando todas
+    const secoesFiltradas = mostrarTodas ? secoes : secoes.filter(secao => 
+        secao.elegibilidade && secao.elegibilidade.length > 0
+    );
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -146,7 +151,7 @@ function DataTableSecoesElegibilidade({ secoes = [], showSearch = true, paginati
                     </span>
                 </div>
             }
-            <DataTable value={secoes} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selected ? selectedSecoes : selectedSecao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={secoesFiltradas} filters={filters} globalFilterFields={['id']} emptyMessage="Não foram encontrados seções" selection={selected ? selectedSecoes : selectedSecao} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
                 <Column field="" header="" style={{ width: '5%' }} body={<MdOutlineKeyboardArrowRight size={24}/>}></Column>

@@ -28,7 +28,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableCargosElegibilidade({ cargos = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableCargosElegibilidade({ cargos = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
    
     const[selectedCargo, setSelectedCargo] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -37,6 +37,11 @@ function DataTableCargosElegibilidade({ cargos = [], showSearch = true, paginati
     })
     const [selectedCargos, setSelectedCargos] = useState([]);
     const navegar = useNavigate()
+
+    // Filtra os cargos se não estiver mostrando todas
+    const cargosFiltrados = mostrarTodas ? cargos : cargos.filter(cargo => 
+        cargo.elegibilidade && cargo.elegibilidade.length > 0
+    );
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -124,7 +129,7 @@ function DataTableCargosElegibilidade({ cargos = [], showSearch = true, paginati
                     </span>
                 </div>
             }
-            <DataTable value={cargos} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados cargos" selection={selected ? selectedCargos : selectedCargo} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={cargosFiltrados} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados cargos" selection={selected ? selectedCargos : selectedCargo} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
                 <Column style={{ width: '5%' }} body={<MdOutlineKeyboardArrowRight size={24}/>}></Column>

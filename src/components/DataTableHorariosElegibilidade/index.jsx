@@ -28,7 +28,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
    
     const[selectedHorario, setSelectedHorario] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -37,6 +37,11 @@ function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagi
     })
     const [selectedHorarios, setSelectedHorarios] = useState([]);
     const navegar = useNavigate()
+
+    // Filtra os horários se não estiver mostrando todas
+    const horariosFiltrados = mostrarTodas ? horarios : horarios.filter(horario => 
+        horario.elegibilidade && horario.elegibilidade.length > 0
+    );
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -147,10 +152,10 @@ function DataTableHorariosElegibilidade({ horarios = [], showSearch = true, pagi
                     </span>
                 </div>
             }
-            <DataTable value={horarios} filters={filters} globalFilterFields={['id', 'codigo', 'descricao']} emptyMessage="Não foram encontrados horarios" selection={selected ? selectedHorarios : selectedHorario} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeDescriptionTemplate} style={{ width: '30%' }}></Column>
-                <Column body={representativeBeneficiosTemplate} style={{ width: '65%' }}></Column>
-                <Column field="" header="" style={{ width: '5%' }}  body={<MdOutlineKeyboardArrowRight size={24}/>}></Column>
+            <DataTable value={horariosFiltrados} filters={filters} globalFilterFields={['id', 'nome', 'descricao']} emptyMessage="Não foram encontrados horários" selection={selected ? selectedHorarios : selectedHorario} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+                <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
+                <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
+                <Column style={{ width: '5%' }} body={<MdOutlineKeyboardArrowRight size={24}/>}></Column>
             </DataTable>
         </>
     )

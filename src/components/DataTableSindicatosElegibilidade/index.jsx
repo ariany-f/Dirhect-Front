@@ -21,7 +21,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
 
     const[selectedSindicato, setSelectedSindicato] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -33,6 +33,11 @@ function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, 
     const [selectedSindicatos, setSelectedSindicatos] = useState([]);
 
     const navegar = useNavigate()
+
+    // Filtra os sindicatos se não estiver mostrando todas
+    const sindicatosFiltrados = mostrarTodas ? sindicatos : sindicatos.filter(sindicato => 
+        sindicato.elegibilidade && sindicato.elegibilidade.length > 0
+    );
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -170,7 +175,7 @@ function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, 
                     </span>
                 </div>
             }
-            <DataTable value={sindicatos} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage="Não foram encontradas sindicatos" selection={selected ? selectedSindicatos : selectedSindicato} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={sindicatosFiltrados} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage="Não foram encontradas sindicatos" selection={selected ? selectedSindicatos : selectedSindicato} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} field="descricao" style={{ width: '30%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '65%' }}></Column>
                 <Column body={<MdOutlineKeyboardArrowRight size={24}/>} style={{ width: '5%' }}></Column>

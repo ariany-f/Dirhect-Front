@@ -27,7 +27,7 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = true, pagination = true, selected = null, setSelected = () => { } }) {
+function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
    
     const[selectedDepartamento, setSelectedDepartamento] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -37,6 +37,11 @@ function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = 
     const navegar = useNavigate()
 
     const [selectedDepartamentos, setSelectedDepartamentos] = useState([]);
+
+    // Filtra os departamentos se não estiver mostrando todas
+    const departamentosFiltrados = mostrarTodas ? departamentos : departamentos.filter(departamento => 
+        departamento.elegibilidade && departamento.elegibilidade.length > 0
+    );
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -98,6 +103,9 @@ function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = 
 
     
     const representativeBeneficiosTemplate = (rowData) => {
+        // Cria um Set para armazenar benefícios únicos
+        const beneficiosUnicos = new Set();
+        
         return (
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
                 <Texto weight={300}>Benefícios elegíveis</Texto>
@@ -105,21 +113,20 @@ function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = 
                     {!rowData?.elegibilidade || rowData.elegibilidade.length === 0 ? (
                         <FaBan size={10} />
                     ) : (
-                        // Filtra itens únicos por descrição antes de mapear
                         rowData.elegibilidade
-                            .filter((item, index, self) => {
-                                const descricao = item.item_beneficio.beneficio?.dados_beneficio?.descricao || 
-                                                item.item_beneficio.descricao;
-                                return self.findIndex(i => 
-                                    (i.item_beneficio.beneficio?.dados_beneficio?.descricao || 
-                                     i.item_beneficio.descricao) === descricao
-                                ) === index;
+                            .filter(item => {
+                                const descricao = item.item_beneficio.beneficio?.dados_beneficio?.descricao;
+                                if (beneficiosUnicos.has(descricao)) {
+                                    return false;
+                                }
+                                beneficiosUnicos.add(descricao);
+                                return true;
                             })
                             .map(item => (
                                 <BadgeBeneficio 
                                     key={item.item_beneficio.beneficio?.id || item.id}
-                                    nomeBeneficio={item.item_beneficio.beneficio?.dados_beneficio?.icone || item.item_beneficio.beneficio?.dados_beneficio?.descricao || 
-                                        item.item_beneficio.icone || item.item_beneficio.descricao}
+                                    nomeBeneficio={item.item_beneficio.beneficio?.dados_beneficio?.descricao}
+                                    icone={item.item_beneficio.beneficio?.dados_beneficio?.icone}
                                 />
                             ))
                     )}
@@ -137,7 +144,7 @@ function DataTableDepartamentosElegibilidade({ departamentos = [], showSearch = 
                     </span>
                 </div>
             }
-            <DataTable value={departamentos} filters={filters} globalFilterFields={['id', 'filial.nome']} emptyMessage="Não foram encontrados departamentos" selection={selected ? selectedDepartamentos : selectedDepartamento} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={departamentosFiltrados} filters={filters} globalFilterFields={['id', 'filial.nome']} emptyMessage="Não foram encontrados departamentos" selection={selected ? selectedDepartamentos : selectedDepartamento} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate}  style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
                 <Column body={<MdOutlineKeyboardArrowRight size={24}/>} style={{ width: '5%' }}></Column>
