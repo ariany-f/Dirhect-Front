@@ -21,8 +21,8 @@ const Beneficios = styled.div`
     flex-wrap: wrap;
 `
 
-function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
-    console.log(filiais)
+function DataTableColaboradorElegibilidade({ colaboradores = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
+    console.log(colaboradores)
     const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -34,8 +34,8 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
 
     const navegar = useNavigate()
 
-    // Filtra as filiais se não estiver mostrando todas
-    const filiaisFiltradas = mostrarTodas ? filiais : filiais.filter(filial => 
+    // Filtra as colaboradores se não estiver mostrando todas
+    const colaboradoresFiltradas = mostrarTodas ? colaboradores : colaboradores.filter(filial => 
         filial.elegibilidade && filial.elegibilidade.length > 0
     );
 
@@ -128,7 +128,7 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
     }
     
     const representativeDescriptionTemplate = (rowData) => {
-        return <Texto width={'100%'} weight={800}>{`#${rowData.id_origem} - ${rowData.nome}`}</Texto>
+        return <Texto width={'100%'} weight={800}>{`#${rowData.id} - ${rowData?.funcionario_pessoa_fisica?.nome}`}</Texto>
     }
 
     const representativeBeneficiosTemplate = (rowData) => {
@@ -170,11 +170,11 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">
-                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar filiais" />
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaboradores" />
                     </span>
                 </div>
             }
-            <DataTable value={filiaisFiltradas} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage={mostrarTodas ? "Não foram encontradas filiais" : "Não foram encontradas filiais com benefícios elegíveis"} selection={selected ? selectedFiliais : selectedFilial} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={colaboradoresFiltradas} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage={mostrarTodas ? "Não foram encontradas colaboradores" : "Não foram encontradas colaboradores com benefícios elegíveis"} selection={selected ? selectedFiliais : selectedFilial} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} style={{ width: '20%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '75%' }}></Column>
                 <Column body={<MdOutlineKeyboardArrowRight size={24}/>} style={{ width: '5%' }}></Column>
@@ -184,4 +184,4 @@ function DataTableFiliaisElegibilidade({ filiais = [], showSearch = true, pagina
     )
 }
 
-export default DataTableFiliaisElegibilidade
+export default DataTableColaboradorElegibilidade

@@ -175,7 +175,7 @@ function DataTableSindicatosElegibilidade({ sindicatos = [], showSearch = true, 
                     </span>
                 </div>
             }
-            <DataTable value={sindicatosFiltrados} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage="Não foram encontradas sindicatos" selection={selected ? selectedSindicatos : selectedSindicato} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
+            <DataTable value={sindicatosFiltrados} filters={filters} globalFilterFields={['nome','cnpj']}  emptyMessage={mostrarTodas ? "Não foram encontradas sindicatos" : "Não foram encontradas sindicatos com benefícios elegíveis"} selection={selected ? selectedSindicatos : selectedSindicato} onSelectionChange={handleSelectChange} selectionMode={selected ? "checkbox" : "single"} paginator={pagination} rows={10}  tableStyle={{ minWidth: '68vw' }}>
                 <Column body={representativeDescriptionTemplate} field="descricao" style={{ width: '30%' }}></Column>
                 <Column body={representativeBeneficiosTemplate} style={{ width: '65%' }}></Column>
                 <Column body={<MdOutlineKeyboardArrowRight size={24}/>} style={{ width: '5%' }}></Column>

@@ -27,6 +27,7 @@ import { Real } from '@utils/formats'
 import { InputSwitch } from 'primereact/inputswitch'
 import SwitchInput from '@components/SwitchInput'
 import React from 'react'
+import DataTableColaboradorElegibilidade from '@components/DataTableColaboradorElegibilidade'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -36,7 +37,7 @@ const ConteudoFrame = styled.div`
 `
 
 const ElegibilidadeLista = () => {
-    const context = useOutletContext()
+    const [context, colaboradorElegibilidade] = useOutletContext()
     const toast = useRef(null)
     const [loading, setLoading] = useState(true)
     const [atualizado, setAtualizado] = useState(false)
@@ -53,6 +54,7 @@ const ElegibilidadeLista = () => {
     const [sindicatos, setSindicatos] = useState([])
     const [horarios, setHorarios] = useState([])
     const [abasDisponiveis, setAbasDisponiveis] = useState([])
+    const [colaboradores, setColaboradores] = useState([])
 
     const fetchData = (endpoint, setter) => {
         http.get(`${endpoint}/?format=json`)
@@ -70,6 +72,7 @@ const ElegibilidadeLista = () => {
         fetchData('sindicato', setSindicatos);
         fetchData('horario', setHorarios);
         fetchData('funcao', setFuncoes);
+        fetchData('funcionario', setColaboradores);
     }, [])
 
     useEffect(() => {
@@ -129,6 +132,31 @@ const ElegibilidadeLista = () => {
                 return listaAtualizada.some(item => item.elegibilidade && item.elegibilidade.length > 0);
             };
 
+            // Processa os colaboradores com suas elegibilidades
+            if (colaboradores && colaboradores.length > 0 && colaboradorElegibilidade) {
+                const colaboradoresAtualizados = colaboradores.map(colaborador => {
+                    const beneficiosElegiveis = colaboradorElegibilidade
+                        .filter(beneficio => beneficio.funcionario?.id === colaborador.id)
+                        .map(beneficio => ({
+                            item_beneficio: {
+                                beneficio: {
+                                    dados_beneficio: {
+                                        descricao: beneficio.descricao,
+                                        icone: beneficio.icone
+                                    }
+                                }
+                            }
+                        }));
+
+                    return {
+                        ...colaborador,
+                        elegibilidade: beneficiosElegiveis
+                    };
+                });
+
+                setColaboradores(colaboradoresAtualizados);
+            }
+
             const abasComElegibilidade = {
                 filial: adicionarElegibilidade(filiais, setFiliais, 'filial'),
                 departamento: adicionarElegibilidade(departamentos, setDepartamentos, 'departamento'),
@@ -146,9 +174,20 @@ const ElegibilidadeLista = () => {
 
             setAbasDisponiveis(novasAbas);
         }
-    }, [context, dadosCarregados]);
+    }, [context, dadosCarregados, colaboradorElegibilidade]);
 
     const renderizarAba = (nome, componente) => {
+        // Se for a aba de colaboradores, verifica se tem dados no colaboradorElegibilidade
+        if (nome === 'colaborador') {
+            if (!colaboradorElegibilidade || colaboradorElegibilidade.length === 0) return null;
+            return (
+                <TabPanel header={nome.charAt(0).toUpperCase() + nome.slice(1).replace('_', ' ')}>
+                    {React.cloneElement(componente, { mostrarTodas })}
+                </TabPanel>
+            );
+        }
+
+        // Para as outras abas, mantém a lógica existente
         if (!mostrarTodas && !abasDisponiveis.includes(nome)) return null;
 
         return (
@@ -161,11 +200,12 @@ const ElegibilidadeLista = () => {
     useEffect(() => {
         if (!mostrarTodas && abasDisponiveis.length > 0) {
             // Encontra o índice da primeira aba disponível
-            const primeiroIndiceDisponivel = ['filial', 'departamento', 'secao', 'centro_custo', 'cargo', 'funcao', 'sindicato', 'horario']
+            const primeiroIndiceDisponivel = ['filial', 'departamento', 'secao', 'centro_custo', 'cargo', 'funcao', 'sindicato', 'horario', 'colaborador']
                 .findIndex(aba => abasDisponiveis.includes(aba));
             
-            // Se o índice atual não estiver entre as abas disponíveis, muda para a primeira aba disponível
-            if (!abasDisponiveis.includes(['filial', 'departamento', 'secao', 'centro_custo', 'cargo', 'funcao', 'sindicato', 'horario'][activeIndex])) {
+            // Se o índice atual não estiver entre as abas disponíveis e não for a aba de colaboradores
+            const abaAtual = ['filial', 'departamento', 'secao', 'centro_custo', 'cargo', 'funcao', 'sindicato', 'horario', 'colaborador'][activeIndex];
+            if (abaAtual !== 'colaborador' && !abasDisponiveis.includes(abaAtual)) {
                 setActiveIndex(primeiroIndiceDisponivel);
             }
         }
@@ -187,9 +227,16 @@ const ElegibilidadeLista = () => {
                     <TabView 
                         activeIndex={activeIndex} 
                         onTabChange={e => {
-                            // Se não estiver mostrando todas as abas, verifica se a aba selecionada está disponível
+                            const abaSelecionada = ['filial', 'departamento', 'secao', 'centro_custo', 'cargo', 'funcao', 'sindicato', 'horario', 'colaborador'][e.index];
+                            
+                            // Se for a aba de colaboradores, permite a navegação
+                            if (abaSelecionada === 'colaborador') {
+                                setActiveIndex(e.index);
+                                return;
+                            }
+
+                            // Para as outras abas, mantém a lógica existente
                             if (!mostrarTodas) {
-                                const abaSelecionada = ['filial', 'departamento', 'secao', 'centro_custo', 'cargo', 'funcao', 'sindicato', 'horario'][e.index];
                                 if (abasDisponiveis.includes(abaSelecionada)) {
                                     setActiveIndex(e.index);
                                 }
@@ -206,6 +253,7 @@ const ElegibilidadeLista = () => {
                         {renderizarAba('funcao', <DataTableFuncoesElegibilidade funcoes={funcoes} showSearch={false} />)}
                         {renderizarAba('sindicato', <DataTableSindicatosElegibilidade sindicatos={sindicatos} showSearch={false} />)}
                         {renderizarAba('horario', <DataTableHorariosElegibilidade horarios={horarios} showSearch={false} />)}
+                        {renderizarAba('colaborador', <DataTableColaboradorElegibilidade colaboradores={colaboradores} showSearch={false} />)}
                     </TabView>
                 </Container>
             </Frame>
