@@ -6,10 +6,7 @@ import { GrAddCircle } from 'react-icons/gr'
 import styles from './Contratos.module.css'
 import styled from "styled-components"
 import { Link, useOutletContext } from "react-router-dom"
-import QuestionCard from '@components/QuestionCard'
 import Management from '@assets/Management.svg'
-import { AiFillQuestionCircle } from 'react-icons/ai'
-import DataTableContratos from '@components/DataTableContratos'
 import DataTableFerias from '@components/DataTableFerias'
 import ModalFerias from '@components/ModalFerias'
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
@@ -118,7 +115,7 @@ function FeriasListagem() {
             </TabPanel>
             {ferias ?
                 <>
-                    {tab === 'calendario' && <CalendarFerias ausencias={ferias} />}
+                    {tab === 'calendario' && <CalendarFerias colaboradores={ferias} />}
                     {tab === 'lista' && <DataTableFerias ferias={ferias} />}
                 </>
             :

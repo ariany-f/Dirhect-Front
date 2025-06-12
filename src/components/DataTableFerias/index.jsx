@@ -57,6 +57,24 @@ function DataTableFerias({ ferias, colaborador = null }) {
     const representativeFimAquisicaoTemplate = (rowData) => {
         return <p style={{fontWeight: '400'}}>{new Date(rowData.fimperaquis).toLocaleDateString("pt-BR")}</p>
     }
+
+    const representativeSituacaoTemplate = (rowData) => {
+        let tag = rowData?.situacaoferias;
+        switch(rowData?.situacaoferias)
+        {
+            case 'P':
+                tag = <Tag severity="success" value="Paga"></Tag>;
+                break;
+            case 'M':
+                tag = <Tag severity="warning" value="Marcada"></Tag>;
+                break;
+            case 'F':
+                tag = <Tag severity="danger" value="Finalizada"></Tag>;
+                break;
+        }
+        return <p style={{fontWeight: '400'}}>{tag}</p>
+    }
+
     
     const representativeColaboradorTemplate = (rowData) => {
        
@@ -129,6 +147,7 @@ function DataTableFerias({ ferias, colaborador = null }) {
                 </>
                 }
                 <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '10%' }}></Column>
+                <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     )

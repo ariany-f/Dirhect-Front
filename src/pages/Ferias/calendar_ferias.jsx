@@ -6,6 +6,7 @@ import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck,
 import { Tooltip } from 'primereact/tooltip';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import colaboradoresFake from '@json/ferias.json';
+import DropdownItens from '@components/DropdownItens'
 
 const GRADIENT = 'linear-gradient(to left, #0c004c, #5d0b62)';
 
@@ -342,6 +343,7 @@ const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
 const CalendarFerias = ({ colaboradores }) => {
+    console.log(colaboradores);
     const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal' ou 'trimestral'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);
@@ -364,14 +366,75 @@ const CalendarFerias = ({ colaboradores }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Sempre 1 ano de dados
+    // Função para normalizar os dados recebidos (fake ou API)
+    function normalizarColaboradores(colaboradores) {
+        if (colaboradores.length && colaboradores[0].ausencias) return colaboradores;
+        const colaboradoresMap = {};
+        colaboradores.forEach(item => {
+            const funcionario = item.funcionario;
+            if (!funcionario) return;
+            const id = funcionario.id;
+            if (!colaboradoresMap[id]) {
+                colaboradoresMap[id] = {
+                    id: id,
+                    nome: item.funcionario_nome || funcionario.nome,
+                    gestor: '', // Se quiser, preencha aqui
+                    ausencias: [],
+                    feriasARequisitar: []
+                };
+            }
+            if (item.dt_inicio && item.dt_fim) {
+                colaboradoresMap[id].ausencias.push({
+                    data_inicio: item.dt_inicio,
+                    data_fim: item.dt_fim,
+                    status: item.situacaoferias
+                });
+            }
+        });
+        return Object.values(colaboradoresMap);
+    }
+
+    // Usa a função para garantir o formato correto
+    const allColabs = normalizarColaboradores(colaboradores);
+
+    // Encontrar a menor data de início e maior data de fim entre todos os eventos
+    let minDate = null;
+    let maxDate = null;
+    allColabs.forEach(colab => {
+        colab.ausencias.forEach(aus => {
+            const ini = new Date(aus.data_inicio);
+            const fim = new Date(aus.data_fim);
+            if (!minDate || ini < minDate) minDate = ini;
+            // if (!maxDate || fim > maxDate) maxDate = fim;
+        });
+    });
+    // Se não houver dados, usa o ano atual
     const currentDate = new Date();
-    const startDate = startOfMonth(currentDate);
-    const endDate = addDays(startDate, DAYS_IN_YEAR - 1);
+    if (!minDate) minDate = new Date(currentDate.getFullYear(), 0, 1);
+    if (!maxDate) maxDate = new Date(currentDate.getFullYear(), 11, 31);
+
+    // Lista de anos disponíveis
+    const minYear = minDate.getFullYear();
+    const maxYear = maxDate.getFullYear();
+    const anosDisponiveis = [];
+    for (let y = minYear; y <= maxYear; y++) anosDisponiveis.push(y);
+
+    // Estado do ano selecionado
+    const [anoSelecionado, setAnoSelecionado] = useState(maxYear);
+
+    // Atualiza o ano selecionado se os dados mudarem
+    useEffect(() => {
+        if (anoSelecionado < minYear || anoSelecionado > maxYear) {
+            setAnoSelecionado(maxYear);
+        }
+    }, [minYear, maxYear]);
+
+    // Ajusta para o início e fim do ano selecionado
+    const startDate = startOfMonth(new Date(anoSelecionado, 0, 1));
+    const endDate = endOfMonth(new Date(anoSelecionado, 11, 1));
     const daysArray = getDaysArray(startDate, endDate);
     const totalDays = daysArray.length;
     const monthsArray = getMonthsInRange(startDate, endDate);
-    const allColabs = colaboradores || colaboradoresFake;
 
     // Zoom dinâmico: calcula a largura do dia conforme a visualização e o tamanho do container
     let dayWidth = 40;
@@ -457,6 +520,17 @@ const CalendarFerias = ({ colaboradores }) => {
                     </ViewToggleOption>
                 </ViewToggleSwitch>
             </ViewToggleBar>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16, width: '100%' }}>
+                <DropdownItens
+                    valor={anoSelecionado}
+                    setValor={setAnoSelecionado}
+                    options={anosDisponiveis.map(y => ({ name: y.toString(), value: y }))}
+                    placeholder="Selecione o ano"
+                    name="ano"
+                    $width="120px"
+                    allowClear={false}
+                />
+            </div>
             <CalendarScrollArea ref={scrollRef} style={{ cursor: isDragging ? 'grabbing' : 'auto' }}>
                 <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative'}}>
                     {/* Linhas roxas de separação dos meses */}
