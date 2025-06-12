@@ -1,16 +1,5 @@
 [
     {
-        "id": 1,
-        "nome": "MARISA MONTE",
-        "gestor": "ANA PAULA SOUZA",
-        "ausencias": [
-            { "data_inicio": "2025-01-10", "data_fim": "2025-01-25", "status": "C" }
-        ],
-        "feriasARequisitar": [
-            { "limite": "2025-09-15" }
-        ]
-    },
-    {
         "id": 2,
         "nome": "CAROL SHAW",
         "gestor": "ANA PAULA SOUZA",
@@ -71,7 +60,9 @@
         "ausencias": [
             { "data_inicio": "2025-04-01", "data_fim": "2025-04-16", "status": "R" }
         ],
-        "feriasARequisitar": []
+        "feriasARequisitar": [
+            { "limite": "2025-09-15" }
+        ]
     },
     {
         "id": 9,

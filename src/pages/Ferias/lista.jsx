@@ -69,6 +69,14 @@ const TabButton = styled.button`
     }
 `
 
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-y: auto;
+    max-height: 70vh;
+`
+
 // Configurar o localizador com Moment.js
 const localizer = momentLocalizer(moment);
 
@@ -113,20 +121,21 @@ function FeriasListagem() {
                     <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
                 </TabButton>
             </TabPanel>
-            {ferias ?
-                <>
-                    {tab === 'calendario' && <CalendarFerias colaboradores={ferias} />}
-                    {tab === 'lista' && <DataTableFerias ferias={ferias} />}
-                </>
-            :
-            <ContainerSemRegistro>
-            <section className={styles.container}>
-                    <img src={Management} />
-                    <h6>Não há férias registrados</h6>
-                    <p>Aqui você verá todas as ausências registradas.</p>
-                </section>
-            </ContainerSemRegistro>}
-
+            <Wrapper>
+                {ferias ?
+                    <>
+                        {tab === 'calendario' && <CalendarFerias colaboradores={ferias} />}
+                        {tab === 'lista' && <DataTableFerias ferias={ferias} />}
+                    </>
+                :
+                <ContainerSemRegistro>
+                <section className={styles.container}>
+                        <img src={Management} />
+                        <h6>Não há férias registrados</h6>
+                        <p>Aqui você verá todas as ausências registradas.</p>
+                    </section>
+                </ContainerSemRegistro>}
+            </Wrapper>
             <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
     )

@@ -426,6 +426,8 @@ const CalendarFerias = ({ colaboradores }) => {
 
     // Estado do ano selecionado
     const [anoSelecionado, setAnoSelecionado] = useState(maxYear);
+    // Estado do filtro de colaborador
+    const [filtroColaborador, setFiltroColaborador] = useState('');
 
     // Atualiza o ano selecionado se os dados mudarem
     useEffect(() => {
@@ -440,6 +442,11 @@ const CalendarFerias = ({ colaboradores }) => {
     const daysArray = getDaysArray(startDate, endDate);
     const totalDays = daysArray.length;
     const monthsArray = getMonthsInRange(startDate, endDate);
+
+    // Filtra colaboradores pelo nome
+    const colabsFiltrados = allColabs.filter(colab =>
+        colab.nome.toLowerCase().includes(filtroColaborador.toLowerCase())
+    );
 
     // Zoom dinâmico: calcula a largura do dia conforme a visualização e o tamanho do container
     let dayWidth = 40;
@@ -529,7 +536,14 @@ const CalendarFerias = ({ colaboradores }) => {
                     </ViewToggleOption>
                 </ViewToggleSwitch>
             </ViewToggleBar>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16, width: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 16, width: '100%', gap: 12 }}>
+                <input
+                    type="text"
+                    value={filtroColaborador}
+                    onChange={e => setFiltroColaborador(e.target.value)}
+                    placeholder="Filtrar colaborador"
+                    style={{ width: 220, height: 46, borderRadius: 6, border: '1px solid #ccc', padding: '0 12px', fontSize: 15 }}
+                />
                 <DropdownItens
                     valor={anoSelecionado}
                     setValor={setAnoSelecionado}
@@ -605,7 +619,7 @@ const CalendarFerias = ({ colaboradores }) => {
                             ))}
                         </WeekDaysRow>
                     )}
-                    {allColabs.map((colab, idx) => (
+                    {colabsFiltrados.map((colab, idx) => (
                         <EmployeeRow key={colab.nome}>
                             <EmployeeCell>{colab.nome}</EmployeeCell>
                             <DaysBar style={{ minWidth: '100%', position: 'relative' }}>
