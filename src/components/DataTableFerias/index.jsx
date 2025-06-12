@@ -129,7 +129,7 @@ function DataTableFerias({ ferias, colaborador = null }) {
     return (
         <>
             {!colaborador &&
-            <div className="flex justify-content-end">
+            <div className="flex justify-content-space-between">
                 <span className="p-input-icon-left">
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por colaborador" />
                 </span>

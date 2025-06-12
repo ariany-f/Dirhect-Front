@@ -74,7 +74,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     width: 100%;
     overflow-y: auto;
-    max-height: 70vh;
+    max-height: 73vh;
 `
 
 // Configurar o localizador com Moment.js
