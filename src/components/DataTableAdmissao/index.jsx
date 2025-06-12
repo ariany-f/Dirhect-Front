@@ -131,17 +131,21 @@ function DataTableAdmissao({ vagas }) {
                         color: 'var(--primaria)',
                     }}
                 />
-                <Tooltip target=".history" mouseTrack mouseTrackLeft={10} />
-                <FaHistory
-                    className="history"
-                    data-pr-tooltip="Ver Histórico"
-                    size={16}
-                    onClick={(e) => handleHistorico(e, rowData)}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--primaria)',
-                    }}
-                />
+                {rowData.log_tarefas?.length > 0 && (
+                    <>
+                        <Tooltip target=".history" mouseTrack mouseTrackLeft={10} />
+                        <FaHistory
+                            className="history"
+                            data-pr-tooltip="Ver Histórico"
+                            size={16}
+                            onClick={(e) => handleHistorico(e, rowData)}
+                            style={{
+                                cursor: 'pointer',
+                                color: 'var(--primaria)',
+                            }}
+                        />
+                    </>
+                )}
                 <Tooltip target=".details" mouseTrack mouseTrackLeft={10} />
                 <CgDetailsMore
                     className="details"
