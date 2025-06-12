@@ -274,14 +274,16 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     }
 
     const representativeTipoTemplate = (rowData) => {
+        const totalLogs = rowData.logs?.length || 0;
+        const logsConcluidos = rowData.logs?.filter(log => log.sucesso)?.length || 0;
+        
         return <div key={rowData.id}>
             <Texto weight={500} width={'100%'}>
                 {rowData.tipo_display}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                Tentativas: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.tentativas}</p>
+                Itens: <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {logsConcluidos}/{totalLogs}</p>
             </div>
-            
         </div>
     }
 
