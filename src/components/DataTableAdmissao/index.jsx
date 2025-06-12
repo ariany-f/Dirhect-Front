@@ -66,7 +66,7 @@ function DataTableAdmissao({ vagas }) {
                 {nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.dados_candidato?.cpf}</p>
+                CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.dados_candidato?.cpf ? formataCPF(rowData?.dados_candidato?.cpf) : '---'}</p>
             </div>
         </div>
     }
@@ -203,7 +203,6 @@ function DataTableAdmissao({ vagas }) {
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
                 <Column body={vagaTemplate} header="Vaga" style={{ width: '18%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status Preenchimento" style={{ width: '25%' }}></Column>
-                <Column body={representativeExameTemplate} header="Exame Médico" style={{ width: '14%' }} />
                 <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '15%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
             </DataTable>
