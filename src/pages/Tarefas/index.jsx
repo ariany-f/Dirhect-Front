@@ -33,7 +33,7 @@ const Tarefas = () => {
 
     return (
         <ConteudoFrame>
-            <Outlet context={tarefas} />
+            <Outlet context={listaTarefas} />
         </ConteudoFrame>
     );
 };
