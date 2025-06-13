@@ -28,12 +28,27 @@ import { InputSwitch } from 'primereact/inputswitch'
 import SwitchInput from '@components/SwitchInput'
 import React from 'react'
 import DataTableColaboradorElegibilidade from '@components/DataTableColaboradorElegibilidade'
+import { FaSpinner } from 'react-icons/fa'
+import { ImSpinner2 } from "react-icons/im";
+
 
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
     width: 100%;
+`
+
+const SpinningIcon = styled(ImSpinner2)`
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    animation: spin 1s linear infinite;
 `
 
 const ElegibilidadeLista = () => {
@@ -200,7 +215,7 @@ const ElegibilidadeLista = () => {
                     <TabPanel header={
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             Colaborador
-                            <Loading opened={true} size="small" />
+                            <SpinningIcon style={{ fontSize: 14 }} />
                         </div>
                     } disabled>
                         <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
@@ -214,7 +229,7 @@ const ElegibilidadeLista = () => {
                 return (
                     <TabPanel header={
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, opacity: 0.5 }}>
-                            <Loading opened={true} size="small" />
+                            <SpinningIcon style={{ fontSize: 14 }} />
                             Colaborador
                         </div>
                     } disabled>
