@@ -92,21 +92,14 @@ const ElegibilidadeLista = () => {
 
     useEffect(() => {
         if (context) {
-            console.log('Contexto completo:', context);
             const abas = context
                 .filter(item => {
-                    console.log('Item sendo filtrado:', item);
-                    console.log('Tem itens configurados?', item.itens_configurados && item.itens_configurados.length > 0);
                     return item.itens_configurados && item.itens_configurados.length > 0;
                 })
                 .map(item => {
-                    console.log('Item após filtro:', item);
-                    console.log('Tipo da entidade:', item.entidade.tipo);
                     return item.entidade.tipo;
                 });
-            console.log('Abas antes do Set:', abas);
             const abasUnicas = [...new Set(abas)];
-            console.log('Abas disponíveis:', abasUnicas);
             setAbasDisponiveis(abasUnicas);
         }
     }, [context]);

@@ -35,7 +35,6 @@ const Elegibilidade = () => {
         setLoadingBeneficios(true)
         http.get(`/catalogo_beneficios/?format=json`)
         .then(response => {
-            console.log(response)
             setColaboradorElegibilidade(response)
         })
         .finally(() => {
