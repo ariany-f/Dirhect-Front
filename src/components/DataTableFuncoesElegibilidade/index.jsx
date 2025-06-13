@@ -29,7 +29,6 @@ const Beneficios = styled.div`
 `
 
 function DataTableFuncoesElegibilidade({ funcoes = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
-    console.log(funcoes)
     const[selectedFuncao, setSelectedFuncao] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
