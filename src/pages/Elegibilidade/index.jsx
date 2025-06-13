@@ -24,6 +24,7 @@ const Elegibilidade = () => {
     const location = useLocation();
     const [elegibilidade, setElegibilidade] = useState([])
     const [colaboradorElegibilidade, setColaboradorElegibilidade] = useState([])
+    const [loadingBeneficios, setLoadingBeneficios] = useState(true)
 
     useEffect(() => {
         http.get(`/matriz_eligibilidade/?format=json`)
@@ -31,10 +32,14 @@ const Elegibilidade = () => {
             setElegibilidade(response)
         })
 
+        setLoadingBeneficios(true)
         http.get(`/catalogo_beneficios/?format=json`)
         .then(response => {
             console.log(response)
             setColaboradorElegibilidade(response)
+        })
+        .finally(() => {
+            setLoadingBeneficios(false)
         })
     }, [])
 
@@ -42,7 +47,7 @@ const Elegibilidade = () => {
         
         <ConfiguracaoElegibilidadeProvider>
             <ConteudoFrame>
-                <Outlet context={[elegibilidade, colaboradorElegibilidade]} />
+                <Outlet context={[elegibilidade, colaboradorElegibilidade, loadingBeneficios]} />
             </ConteudoFrame>
         </ConfiguracaoElegibilidadeProvider>
     );

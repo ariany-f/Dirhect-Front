@@ -37,7 +37,7 @@ const ConteudoFrame = styled.div`
 `
 
 const ElegibilidadeLista = () => {
-    const [context, colaboradorElegibilidade] = useOutletContext()
+    const [context, colaboradorElegibilidade, loadingBeneficios] = useOutletContext()
     const toast = useRef(null)
     const [loading, setLoading] = useState(true)
     const [atualizado, setAtualizado] = useState(false)
@@ -132,31 +132,6 @@ const ElegibilidadeLista = () => {
                 return listaAtualizada.some(item => item.elegibilidade && item.elegibilidade.length > 0);
             };
 
-            // Processa os colaboradores com suas elegibilidades
-            if (colaboradores && colaboradores.length > 0 && colaboradorElegibilidade) {
-                const colaboradoresAtualizados = colaboradores.map(colaborador => {
-                    const beneficiosElegiveis = colaboradorElegibilidade
-                        .filter(beneficio => beneficio.funcionario?.id === colaborador.id)
-                        .map(beneficio => ({
-                            item_beneficio: {
-                                beneficio: {
-                                    dados_beneficio: {
-                                        descricao: beneficio.descricao,
-                                        icone: beneficio.icone
-                                    }
-                                }
-                            }
-                        }));
-
-                    return {
-                        ...colaborador,
-                        elegibilidade: beneficiosElegiveis
-                    };
-                });
-
-                setColaboradores(colaboradoresAtualizados);
-            }
-
             const abasComElegibilidade = {
                 filial: adicionarElegibilidade(filiais, setFiliais, 'filial'),
                 departamento: adicionarElegibilidade(departamentos, setDepartamentos, 'departamento'),
@@ -172,14 +147,84 @@ const ElegibilidadeLista = () => {
                 .filter(([_, temElegibilidade]) => temElegibilidade)
                 .map(([key]) => key);
 
+            // Adiciona a aba de colaboradores se houver dados
+            if (colaboradorElegibilidade && colaboradorElegibilidade.length > 0) {
+                novasAbas.push('colaborador');
+            }
+
             setAbasDisponiveis(novasAbas);
         }
     }, [context, dadosCarregados, colaboradorElegibilidade]);
 
+    // Novo useEffect para processar os colaboradores
+    useEffect(() => {
+        if (colaboradores && colaboradores.length > 0 && colaboradorElegibilidade) {
+            // Primeiro, mapeia os benefícios por funcionário
+            const beneficiosPorFuncionario = {};
+            colaboradorElegibilidade.forEach(beneficio => {
+                if (beneficio.funcionarios && beneficio.funcionarios.length > 0) {
+                    beneficio.funcionarios.forEach(funcionario => {
+                        if (!beneficiosPorFuncionario[funcionario.id]) {
+                            beneficiosPorFuncionario[funcionario.id] = [];
+                        }
+                        beneficiosPorFuncionario[funcionario.id].push({
+                            item_beneficio: {
+                                beneficio: {
+                                    dados_beneficio: {
+                                        descricao: beneficio.descricao,
+                                        icone: beneficio.icone
+                                    }
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+
+            // Depois, atualiza os colaboradores com seus benefícios
+            const colaboradoresAtualizados = colaboradores.map(colaborador => ({
+                ...colaborador,
+                elegibilidade: beneficiosPorFuncionario[colaborador.id] || []
+            }));
+
+            setColaboradores(colaboradoresAtualizados);
+        }
+    }, [colaboradores, colaboradorElegibilidade]);
+
     const renderizarAba = (nome, componente) => {
-        // Se for a aba de colaboradores, verifica se tem dados no colaboradorElegibilidade
+        // Se for a aba de colaboradores
         if (nome === 'colaborador') {
-            if (!colaboradorElegibilidade || colaboradorElegibilidade.length === 0) return null;
+            // Se estiver carregando, mostra loading
+            if (loadingBeneficios) {
+                return (
+                    <TabPanel header={
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            Colaborador
+                            <Loading opened={true} size="small" />
+                        </div>
+                    } disabled>
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
+                            Carregando dados de elegibilidade...
+                        </div>
+                    </TabPanel>
+                );
+            }
+            // Se não tiver dados ainda, mostra loading
+            if (!colaboradorElegibilidade) {
+                return (
+                    <TabPanel header={
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, opacity: 0.5 }}>
+                            <Loading opened={true} size="small" />
+                            Colaborador
+                        </div>
+                    } disabled>
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '32px' }}>
+                            Carregando dados de elegibilidade...
+                        </div>
+                    </TabPanel>
+                );
+            }
+            // Se tiver dados, mostra normalmente
             return (
                 <TabPanel header={nome.charAt(0).toUpperCase() + nome.slice(1).replace('_', ' ')}>
                     {React.cloneElement(componente, { mostrarTodas })}

@@ -75,6 +75,25 @@ const Wrapper = styled.div`
     width: 100%;
     overflow-y: auto;
     max-height: 73vh;
+    
+    &::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+        background: #f5f5f5;
+        border-radius: 8px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 8px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: #b0b7c3;
+    }
+    &::-webkit-scrollbar-button {
+        display: none;
+        width: 0;
+        height: 0;
+    }
 `
 
 // Configurar o localizador com Moment.js
