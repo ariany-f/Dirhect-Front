@@ -346,7 +346,6 @@ const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
 const CalendarFerias = ({ colaboradores }) => {
-    console.log(colaboradores);
     const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal' ou 'trimestral'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);

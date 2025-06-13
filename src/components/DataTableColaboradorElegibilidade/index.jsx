@@ -22,7 +22,6 @@ const Beneficios = styled.div`
 `
 
 function DataTableColaboradorElegibilidade({ colaboradores = [], showSearch = true, pagination = true, selected = null, setSelected = () => { }, mostrarTodas = true }) {
-    console.log(colaboradores)
     const[selectedFilial, setSelectedFilial] = useState({})
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
