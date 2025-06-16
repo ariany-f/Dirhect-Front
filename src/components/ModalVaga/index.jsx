@@ -154,6 +154,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
 
     useEffect(() => {
         if (vaga) {
+            console.log(vaga)
             setTitulo(vaga.titulo || '');
             setDescricao(vaga.descricao || '');
             setDataAbertura(vaga.dt_abertura || '');
@@ -165,14 +166,14 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
             setInclusaoPara(vaga.inclusao_para || '');
             setPericulosidade(vaga.periculosidade ? listaPericulosidades.find(p => p.code === vaga.periculosidade) : '');
             setInsalubridade(vaga.insalubridade || '');
-            setFilial(vaga.filial ? { code: vaga.filial, name: filiais.find(f => f.id === vaga.filial)?.nome } : null);
-            setCentroCusto(vaga.centro_custo ? { code: vaga.centro_custo, name: centros_custo.find(cc => cc.id === vaga.centro_custo)?.nome } : null);
-            setDepartamento(vaga.departamento ? { code: vaga.departamento, name: departamentos.find(d => d.id === vaga.departamento)?.nome } : null);
-            setSecao(vaga.secao ? { code: vaga.secao, name: secoes.find(s => s.id === vaga.secao)?.nome } : null);
-            setCargo(vaga.cargo ? { code: vaga.cargo, name: cargos.find(c => c.id === vaga.cargo)?.nome } : null);
-            setHorario(vaga.horario ? { code: vaga.horario, name: horarios.find(h => h.id === vaga.horario)?.codigo + ' - ' + horarios.find(h => h.id === vaga.horario)?.descricao } : null);
-            setFuncao(vaga.funcao ? { code: vaga.funcao, name: funcoes.find(f => f.id === vaga.funcao)?.nome } : null);
-            setSindicato(vaga.sindicato ? { code: vaga.sindicato, name: sindicatos.find(s => s.id === vaga.sindicato)?.codigo + ' - ' + sindicatos.find(s => s.id === vaga.sindicato)?.descricao } : null);
+            setFilial(vaga.filial_id ? { code: vaga.filial_id, name: filiais.find(f => f.id === vaga.filial_id)?.nome } : null);
+            setCentroCusto(vaga.centro_custo_id ? { code: vaga.centro_custo_id, name: centros_custo.find(cc => cc.id === vaga.centro_custo_id)?.nome } : null);
+            setDepartamento(vaga.departamento_id ? { code: vaga.departamento_id, name: departamentos.find(d => d.id === vaga.departamento_id)?.nome } : null);
+            setSecao(vaga.secao_id ? { code: vaga.secao_id, name: secoes.find(s => s.id === vaga.secao_id)?.nome } : null);
+            setCargo(vaga.cargo_id ? { code: vaga.cargo_id, name: cargos.find(c => c.id === vaga.cargo_id)?.nome } : null);
+            setHorario(vaga.horario_id ? { code: vaga.horario_id, name: horarios.find(h => h.id === vaga.horario_id)?.codigo + ' - ' + horarios.find(h => h.id === vaga.horario_id)?.descricao } : null);
+            setFuncao(vaga.funcao_id ? { code: vaga.funcao_id, name: funcoes.find(f => f.id === vaga.funcao_id)?.nome } : null);
+            setSindicato(vaga.sindicato_id ? { code: vaga.sindicato_id, name: sindicatos.find(s => s.id === vaga.sindicato_id)?.codigo + ' - ' + sindicatos.find(s => s.id === vaga.sindicato_id)?.descricao } : null);
         }
     }, [vaga, filiais, centros_custo, departamentos, secoes, cargos, horarios, funcoes, sindicatos]);
 

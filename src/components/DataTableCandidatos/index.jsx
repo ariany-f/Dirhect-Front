@@ -55,10 +55,6 @@ function DataTableCandidatos({ candidatos, vagaId = null }) {
         }
     }, [candidatos, vagaId]);
 
-    useEffect(() => {
-        setListaCandidatos(candidatos)
-    }, [candidatos])
-
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
 
