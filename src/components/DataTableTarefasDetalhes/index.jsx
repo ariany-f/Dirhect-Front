@@ -7,16 +7,18 @@ import CampoArquivo from '@components/CampoArquivo';
 import Botao from '@components/Botao';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Checkbox } from 'primereact/checkbox';
 import CheckboxContainer from '@components/CheckboxContainer'
 import { Real } from '@utils/formats'
 import { Button } from 'primereact/button';
 import { FaLink } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
+import http from '@http';
+import { Toast } from 'primereact/toast';
 
 function DataTableTarefasDetalhes({ tarefas }) {
-
+    const toast = useRef(null);
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -37,13 +39,33 @@ function DataTableTarefasDetalhes({ tarefas }) {
         )
     }
 
-    const representativeCheckTemplate = (rowData, onUpdateStatus) => {
-        const handleChange = (checked) => {
-            onUpdateStatus(rowData.id, checked);
+    const representativeCheckTemplate = (rowData) => {
+        const handleChange = async (checked) => {
+            try {
+                await http.post(`/tarefas/${rowData.id}/aprovar/`);
+                rowData.status = 'A';
+                rowData.status_display = 'Aprovada';
+                rowData.check = true;
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Tarefa aprovada com sucesso',
+                    life: 3000
+                });
+            } catch (error) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro ao aprovar tarefa',
+                    life: 3000
+                });
+            }
         };
     
         return (
-            <CheckboxContainer name="feito" valor={rowData.check} setValor={handleChange} />
+            <CheckboxContainer 
+                name="feito" 
+                valor={rowData.status_display === 'Aprovada'} 
+                setValor={handleChange} 
+            />
         );
     };
 
@@ -128,6 +150,7 @@ function DataTableTarefasDetalhes({ tarefas }) {
     
     return (
         <>
+            <Toast ref={toast} />
             <DataTable 
                 value={tarefasOrdenadas} 
                 filters={filters} 
