@@ -399,7 +399,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
 
     const pessoaTemplate = (rowData) => {
         if(rowData.entidade_tipo_display == 'admissao') {
-            if(rowData.objeto.dados_candidato) {
+            if(rowData.objeto?.dados_candidato) {
                 return <div key={rowData?.id || 'unknown'}>
                     <Texto weight={700} width={'100%'}>
                          {rowData.objeto.dados_candidato.nome}
