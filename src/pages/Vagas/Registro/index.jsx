@@ -150,6 +150,33 @@ const VagasRegistro = () => {
             setErroPeriInsa(false);
         }
 
+        // Validação dos campos obrigatórios
+        const camposObrigatorios = [
+            { campo: titulo, nome: 'Titulo' },
+            { campo: descricao, nome: 'Descricao' },
+            { campo: dataAbertura, nome: 'dt_abertura' },
+            { campo: dataEncerramento, nome: 'dt_encerramento' },
+            { campo: salario, nome: 'salario' },
+            { campo: qtdVagas, nome: 'qtd_vaga' },
+            { campo: filial, nome: 'Filial' },
+            { campo: departamento, nome: 'Departamento' },
+            { campo: cargo, nome: 'Cargo' },
+            { campo: horario, nome: 'horario' }
+        ];
+
+        const camposVazios = camposObrigatorios.filter(campo => !campo.campo);
+        
+        if (camposVazios.length > 0) {
+            setClassError(camposVazios.map(campo => campo.nome.toLowerCase().replace(/\s+/g, '_')));
+            toast.current.show({
+                severity: 'error',
+                summary: 'Campos obrigatórios não preenchidos',
+                detail: `Por favor, preencha os seguintes campos: ${camposVazios.map(campo => campo.nome).join(', ')}`,
+                life: 5000
+            });
+            return;
+        }
+
         document.querySelectorAll('input').forEach(function(element) {
             if(element.value !== '' && (!element.classList.contains('not_required')))
             {
