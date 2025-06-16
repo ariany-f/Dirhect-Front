@@ -42,19 +42,19 @@ function DataTableTarefasDetalhes({ tarefas }) {
     const representativeCheckTemplate = (rowData) => {
         const handleChange = async (checked) => {
             try {
-                await http.post(`/tarefas/${rowData.id}/aprovar/`);
-                rowData.status = 'A';
-                rowData.status_display = 'Aprovada';
+                await http.post(`/tarefas/${rowData.id}/concluir/`);
+                rowData.status = 'concluida';
+                rowData.status_display = 'Concluída';
                 rowData.check = true;
                 toast.current.show({
                     severity: 'success',
-                    summary: 'Tarefa aprovada com sucesso',
+                    summary: 'Tarefa concluída com sucesso',
                     life: 3000
                 });
             } catch (error) {
                 toast.current.show({
                     severity: 'error',
-                    summary: 'Erro ao aprovar tarefa',
+                    summary: 'Erro ao concluir tarefa',
                     life: 3000
                 });
             }
@@ -63,7 +63,7 @@ function DataTableTarefasDetalhes({ tarefas }) {
         return (
             <CheckboxContainer 
                 name="feito" 
-                valor={rowData.status_display === 'Aprovada'} 
+                valor={rowData.status === 'aprovada'} 
                 setValor={handleChange} 
             />
         );
