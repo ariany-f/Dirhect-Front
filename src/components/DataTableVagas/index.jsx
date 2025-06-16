@@ -54,7 +54,7 @@ function DataTableVagas({ vagas }) {
     }
 
     const representativeAprovadosTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData?.total_aprovados ?? 0}</p>
+        return <p style={{fontWeight: '400'}}><FaUserAlt /> {rowData?.candidatos_aprovados ?? 0}</p>
     }
 
     const representativeStatusTemplate = (rowData) => {
