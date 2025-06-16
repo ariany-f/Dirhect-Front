@@ -410,9 +410,16 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 </div>
             }
             else {
-                return <div key={rowData?.id || 'unknown'}>
-                   <Link to={`/${rowData.entidade_tipo_display}/detalhes/${rowData.objeto.id}`}>{rowData.processo_nome}</Link>
-                </div>
+                if(rowData?.objeto?.id) {
+                    return <div key={rowData?.id || 'unknown'}>
+                        <Link to={`/${rowData.entidade_tipo_display}/detalhes/${rowData?.objeto?.id}`}>{rowData.processo_nome}</Link>
+                    </div>
+                }
+                else {
+                    return <div key={rowData?.id || 'unknown'}>
+                        <Link to={`/${rowData.entidade_tipo_display}/`}>{rowData.processo_nome}</Link>
+                    </div>
+                }
             }
         }
     };
