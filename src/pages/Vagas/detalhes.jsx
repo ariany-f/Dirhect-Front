@@ -416,35 +416,35 @@ function DetalhesVaga() {
                         </Col6>
                         <Col6>
                             <Texto>Filial</Texto>
-                            {vaga?.filial ?
-                                <Texto weight="800">{vaga?.filial}</Texto>
+                            {vaga?.filial_id ?
+                                <Texto weight="800">{vaga?.filial_nome}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }   
                             <Texto>Secao</Texto>
-                            {vaga?.secao ?
-                                <Texto weight="800">{vaga?.secao}</Texto>
+                            {vaga?.secao_id ?
+                                <Texto weight="800">{vaga?.secao_nome}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }   
                             <Texto>Cargo</Texto>
-                            {vaga?.cargo ?
-                                <Texto weight="800">{vaga?.cargo}</Texto>
+                            {vaga?.cargo_id ?
+                                <Texto weight="800">{vaga?.cargo_nome}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col6>
                         <Col6>
                             <Texto>Horario</Texto>
-                            {vaga?.horario ?
-                                <Texto weight="800">{vaga?.horario}</Texto>
+                            {vaga?.horario_id ?
+                                <Texto weight="800">{vaga?.horario_nome}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Funcao</Texto>
-                            {vaga?.funcao ?
-                                <Texto weight="800">{vaga?.funcao}</Texto>
+                            {vaga?.funcao_id ?
+                                <Texto weight="800">{vaga?.funcao_nome}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Sindicato</Texto>
-                            {vaga?.sindicato ?  
-                                <Texto weight="800">{vaga?.sindicato}</Texto>   
+                            {vaga?.sindicato_id ?  
+                                <Texto weight="800">{vaga?.sindicato_nome}</Texto>   
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }  
                         </Col6>

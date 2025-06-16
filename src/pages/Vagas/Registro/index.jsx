@@ -162,7 +162,15 @@ const VagasRegistro = () => {
             inclusao_para: inclusao_para || null,
             qtd_vaga: qtdVagas ? parseInt(qtdVagas) : null,
             status: 'A',
-            salario: salarioNumerico
+            salario: salarioNumerico,
+            filial: filial?.id || null,
+            centro_custo: centroCusto?.id || null,
+            departamento: departamento?.id || null,
+            secao: secao?.id || null,
+            cargo: cargo?.id || null,
+            horario: horario?.id || null,
+            funcao: funcao?.id || null,
+            sindicato: sindicato?.id || null
         };
 
         http.post('/vagas/', novaVaga)
