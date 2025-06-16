@@ -8,6 +8,7 @@ import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { RiCloseFill } from 'react-icons/ri';
 import Titulo from '@components/Titulo';
 import { unformatCurrency } from '@utils/formats';
+import DropdownItens from '@components/DropdownItens';
 
 const Col12 = styled.div`
     display: flex;
@@ -19,6 +20,39 @@ const Col12 = styled.div`
 const Col6 = styled.div`
     padding: 15px 0px;
     flex: 1 1 calc(50% - 10px);
+`
+
+const ModalContent = styled.div`
+    display: flex;
+    gap: 24px;
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding: 0 24px;
+`
+
+const Column = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: var(--surface-card);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    h6 {
+        margin: 0;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--surface-border);
+    }
+`
+
+const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 24px;
+    border-top: 1px solid var(--surface-border);
+    background: var(--surface-ground);
 `
 
 function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
@@ -77,6 +111,48 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
     const vagaAberta = vaga?.status === 'A';
 
     useEffect(() => {
+        http.get('filial/?format=json')
+            .then(response => {
+                setFiliais(response)
+            })
+
+        http.get('departamento/?format=json')
+            .then(response => {
+                setDepartamentos(response)
+            })
+
+        http.get('secao/?format=json')
+            .then(response => {
+                setSecoes(response)
+            })
+
+        http.get('cargo/?format=json')
+            .then(response => {
+                setCargos(response)
+            })
+
+        http.get('centro_custo/?format=json')
+            .then(response => {
+                setCentrosCusto(response)
+            })
+
+        http.get('sindicato/?format=json')
+            .then(response => {
+                setSindicatos(response)
+            })
+            
+        http.get('horario/?format=json')
+            .then(response => {
+                setHorarios(response)
+            })
+
+        http.get('funcao/?format=json')
+            .then(response => {
+                setFuncoes(response)
+            })
+    }, [])
+
+    useEffect(() => {
         if (vaga) {
             setTitulo(vaga.titulo || '');
             setDescricao(vaga.descricao || '');
@@ -89,8 +165,16 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
             setInclusaoPara(vaga.inclusao_para || '');
             setPericulosidade(vaga.periculosidade ? listaPericulosidades.find(p => p.code === vaga.periculosidade) : '');
             setInsalubridade(vaga.insalubridade || '');
+            setFilial(vaga.filial ? { code: vaga.filial, name: filiais.find(f => f.id === vaga.filial)?.nome } : null);
+            setCentroCusto(vaga.centro_custo ? { code: vaga.centro_custo, name: centros_custo.find(cc => cc.id === vaga.centro_custo)?.nome } : null);
+            setDepartamento(vaga.departamento ? { code: vaga.departamento, name: departamentos.find(d => d.id === vaga.departamento)?.nome } : null);
+            setSecao(vaga.secao ? { code: vaga.secao, name: secoes.find(s => s.id === vaga.secao)?.nome } : null);
+            setCargo(vaga.cargo ? { code: vaga.cargo, name: cargos.find(c => c.id === vaga.cargo)?.nome } : null);
+            setHorario(vaga.horario ? { code: vaga.horario, name: horarios.find(h => h.id === vaga.horario)?.codigo + ' - ' + horarios.find(h => h.id === vaga.horario)?.descricao } : null);
+            setFuncao(vaga.funcao ? { code: vaga.funcao, name: funcoes.find(f => f.id === vaga.funcao)?.nome } : null);
+            setSindicato(vaga.sindicato ? { code: vaga.sindicato, name: sindicatos.find(s => s.id === vaga.sindicato)?.codigo + ' - ' + sindicatos.find(s => s.id === vaga.sindicato)?.descricao } : null);
         }
-    }, [vaga]);
+    }, [vaga, filiais, centros_custo, departamentos, secoes, cargos, horarios, funcoes, sindicatos]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -107,7 +191,6 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
             setErroPeriInsa(false);
         }
 
-        // Remove formatação e converte para número inteiro (sem centavos)
         const salarioNumerico = salario ? 
             Math.floor(Number(unformatCurrency(salario)) / 100)
             : null;
@@ -124,7 +207,15 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
             inclusao,
             inclusao_para: inclusao_para || null,
             qtd_vaga: qtdVagas ? parseInt(qtdVagas) : null,
-            salario: salarioNumerico
+            salario: salarioNumerico,
+            filial: filial?.code || null,
+            centro_custo: centroCusto?.code || null,
+            departamento: departamento?.code || null,
+            secao: secao?.code || null,
+            cargo: cargo?.code || null,
+            horario: horario?.code || null,
+            funcao: funcao?.code || null,
+            sindicato: sindicato?.code || null
         };
 
         aoSalvar(vagaAtualizada);
@@ -142,76 +233,191 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                         <h6>Editar Vaga</h6>
                     </Titulo>
                 </Frame>
-                <Frame padding="24px 0px">
-                    <form onSubmit={handleSubmit}>
-                        <Col12>
-                            <Col6>
-                                <CampoTexto 
-                                    camposVazios={classError}
-                                    name="titulo" 
-                                    valor={titulo} 
-                                    setValor={setTitulo} 
-                                    type="text" 
-                                    label="Título" 
-                                    placeholder="Digite o titulo" />
-                            </Col6>
-                            <Col6>
-                                <CampoTexto 
-                                    camposVazios={classError}
-                                    name="descricao" 
-                                    valor={descricao} 
-                                    setValor={setDescricao} 
-                                    type="text" 
-                                    label="Descrição" 
-                                    placeholder="Digite a descrição" />
-                            </Col6>
-                        </Col12>
-                        <Col12>
-                            <Col6>
-                                <CampoTexto 
-                                    type="date" 
-                                    valor={dataAbertura} 
-                                    setValor={setDataAbertura}
-                                    label="Data de Abertura"
-                                    disabled={vagaAberta && temCandidatos}
-                                    title={vagaAberta && temCandidatos ? "Não é possível alterar a data de início pois a vaga já possui candidatos" : ""} />
-                            </Col6>
-                            <Col6>
-                                <CampoTexto 
-                                    type="date" 
-                                    valor={dataEncerramento} 
-                                    setValor={setDataEncerramento}
-                                    label="Data de Encerramento"  />
-                            </Col6>
-                        </Col12>
-                        
-                        <Col12>
-                            <Col6>
-                                <CampoTexto 
-                                    camposVazios={classError}
-                                    name="salario" 
-                                    valor={salario} 
-                                    setValor={setSalario} 
-                                    type="text" 
-                                    patternMask="BRL"
-                                    label="Salário" 
-                                    placeholder="Digite o salário" />
-                            </Col6>
-                            <Col6>
-                                <CampoTexto
-                                    name="qtd_vaga"
-                                    valor={qtdVagas}
-                                    setValor={setQtdVagas}
-                                    type="number"
-                                    label="Quantidade de Vagas"
-                                    placeholder="Digite a quantidade de vagas"
-                                />
-                            </Col6>
-                        </Col12>
+                <form onSubmit={handleSubmit}>
+                    <ModalContent>
+                        <Column>
+                            <h6>Dados Básicos</h6>
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="titulo" 
+                                        valor={titulo} 
+                                        setValor={setTitulo} 
+                                        type="text" 
+                                        label="Título" 
+                                        placeholder="Digite o titulo" />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="descricao" 
+                                        valor={descricao} 
+                                        setValor={setDescricao} 
+                                        type="text" 
+                                        label="Descrição" 
+                                        placeholder="Digite a descrição" />
+                                </Col6>
+                            </Col12>
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        type="date" 
+                                        valor={dataAbertura} 
+                                        setValor={setDataAbertura}
+                                        label="Data de Abertura"
+                                        disabled={vagaAberta && temCandidatos}
+                                        title={vagaAberta && temCandidatos ? "Não é possível alterar a data de início pois a vaga já possui candidatos" : ""} />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto 
+                                        type="date" 
+                                        valor={dataEncerramento} 
+                                        setValor={setDataEncerramento}
+                                        label="Data de Encerramento"  />
+                                </Col6>
+                            </Col12>
+                            
+                            <Col12>
+                                <Col6>
+                                    <CampoTexto 
+                                        camposVazios={classError}
+                                        name="salario" 
+                                        valor={salario} 
+                                        setValor={setSalario} 
+                                        type="text" 
+                                        patternMask="BRL"
+                                        label="Salário" 
+                                        placeholder="Digite o salário" />
+                                </Col6>
+                                <Col6>
+                                    <CampoTexto
+                                        name="qtd_vaga"
+                                        valor={qtdVagas}
+                                        setValor={setQtdVagas}
+                                        type="number"
+                                        label="Quantidade de Vagas"
+                                        placeholder="Digite a quantidade de vagas"
+                                    />
+                                </Col6>
+                            </Col12>
+                        </Column>
 
+                        <Column>
+                            <h6>Estrutura Organizacional</h6>
+                            <Col12>
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError}
+                                        name="filial" 
+                                        valor={filial}
+                                        setValor={setFilial} 
+                                        options={filiais.map(filial => ({
+                                            name: filial.nome,
+                                            code: filial.id
+                                        }))} 
+                                        placeholder="Filial" />
+                                </Col6>
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError}
+                                        name="centro_custo" 
+                                        valor={centroCusto}
+                                        setValor={setCentroCusto} 
+                                        options={centros_custo.map(cc => ({
+                                            name: cc.nome,
+                                            code: cc.id
+                                        }))} 
+                                        placeholder="Centro de Custo" />
+                                </Col6>
+                            </Col12>
+
+                            <Col12>
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError}
+                                        name="departamento" 
+                                        valor={departamento}
+                                        setValor={setDepartamento} 
+                                        options={departamentos.map(dep => ({
+                                            name: dep.nome,
+                                            code: dep.id
+                                        }))} 
+                                        placeholder="Departamento" />
+                                </Col6>
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError}
+                                        name="secao" 
+                                        valor={secao}
+                                        setValor={setSecao} 
+                                        options={secoes.map(sec => ({
+                                            name: sec.nome,
+                                            code: sec.id
+                                        }))} 
+                                        placeholder="Seção" />
+                                </Col6>
+                            </Col12>
+
+                            <Col12>
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError}
+                                        name="cargo" 
+                                        valor={cargo}
+                                        setValor={setCargo} 
+                                        options={cargos.map(cargo => ({
+                                            name: cargo.nome,
+                                            code: cargo.id
+                                        }))} 
+                                        placeholder="Cargo" />
+                                </Col6>
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError}
+                                        name="horario" 
+                                        valor={horario}
+                                        setValor={setHorario} 
+                                        options={horarios.map(horario => ({
+                                            name: `${horario.codigo} - ${horario.descricao}`,
+                                            code: horario.id
+                                        }))} 
+                                        placeholder="Horário" />
+                                </Col6>
+                            </Col12>
+
+                            <Col12>
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError}
+                                        name="funcao" 
+                                        valor={funcao}
+                                        setValor={setFuncao} 
+                                        options={funcoes.map(funcao => ({
+                                            name: funcao.nome,
+                                            code: funcao.id
+                                        }))} 
+                                        placeholder="Função" />
+                                </Col6>
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError}
+                                        name="sindicato" 
+                                        valor={sindicato}
+                                        setValor={setSindicato} 
+                                        options={sindicatos.map(sindicato => ({
+                                            name: `${sindicato.codigo} - ${sindicato.descricao}`,
+                                            code: sindicato.id
+                                        }))} 
+                                        placeholder="Sindicato" />
+                                </Col6>
+                            </Col12>
+                        </Column>
+                    </ModalContent>
+                    <ButtonContainer>
                         <Botao type="submit">Salvar Alterações</Botao>
-                    </form>
-                </Frame>
+                    </ButtonContainer>
+                </form>
             </DialogEstilizado>
         </Overlay>
     );
