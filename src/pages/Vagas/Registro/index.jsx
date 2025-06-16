@@ -67,6 +67,12 @@ const VagasRegistro = () => {
     const toast = useRef(null)
     const [erroPeriInsa, setErroPeriInsa] = useState(false);
 
+    const converterData = (data) => {
+        if (!data) return null;
+        const [dia, mes, ano] = data.split('/');
+        return `${ano}-${mes}-${dia}`;
+    };
+
     useEffect(() => {
         http.get('filial/?format=json')
             .then(response => {
@@ -131,12 +137,12 @@ const VagasRegistro = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Validação: pelo menos um dos dois deve ser preenchido
-        if (!periculosidade && !insalubridade) {
+        // Validação: não pode ter os dois preenchidos
+        if (periculosidade && insalubridade) {
             setErroPeriInsa(true);
             toast.current.show({
                 severity: 'error',
-                summary: 'Preencha periculosidade ou insalubridade',
+                summary: 'Não é possível preencher periculosidade e insalubridade ao mesmo tempo',
                 life: 3000
             });
             return;
@@ -144,75 +150,93 @@ const VagasRegistro = () => {
             setErroPeriInsa(false);
         }
 
-        // Remove caracteres não numéricos e trata a vírgula do salário
-        const salarioNumerico = salario ? 
-            Math.floor(Number(unformatCurrency(salario)) / 100)
-            : null;
+        document.querySelectorAll('input').forEach(function(element) {
+            if(element.value !== '' && (!element.classList.contains('not_required')))
+            {
+                if(classError.includes(element.name))
+                {
+                    setClassError(classError.filter(item => item !== element.name))
+                }
+            }
+            else
+            {
+                if(!classError.includes(element.name))
+                {
+                    setClassError(estadoAnterior => [...estadoAnterior, element.name])
+                }
+            }
+        })
 
+        if(document.querySelectorAll("form .error").length === 0)
+        {
+            // Remove caracteres não numéricos e trata a vírgula do salário
+            const salarioNumerico = salario ? 
+                Math.floor(Number(unformatCurrency(salario)) / 100)
+                : null;
 
-        const novaVaga = {
-            titulo,
-            descricao,
-            dt_abertura: dataAbertura || null,
-            dt_encerramento: dataEncerramento || null,
-            deficiencia,
-            periculosidade: periculosidade?.code || null,
-            insalubridade: insalubridade || 0,
-            inclusao,
-            inclusao_para: inclusao_para || null,
-            qtd_vaga: qtdVagas ? parseInt(qtdVagas) : null,
-            status: 'A',
-            salario: salarioNumerico,
-            filial: filial?.id || null,
-            centro_custo: centroCusto?.id || null,
-            departamento: departamento?.id || null,
-            secao: secao?.id || null,
-            cargo: cargo?.id || null,
-            horario: horario?.id || null,
-            funcao: funcao?.id || null,
-            sindicato: sindicato?.id || null
-        };
+            const novaVaga = {
+                titulo,
+                descricao,
+                dt_abertura: converterData(dataAbertura),
+                dt_encerramento: converterData(dataEncerramento),
+                deficiencia,
+                periculosidade: periculosidade?.code || null,
+                insalubridade: insalubridade || 0,
+                inclusao,
+                inclusao_para: inclusao_para || null,
+                qtd_vaga: qtdVagas ? parseInt(qtdVagas) : null,
+                status: 'A',
+                salario: salarioNumerico,
+                filial: filial?.code || null,
+                centro_custo: centroCusto?.code || null,
+                departamento: departamento?.code || null,
+                secao: secao?.code || null,
+                cargo: cargo?.code || null,
+                horario: horario?.code || null,
+                funcao: funcao?.code || null,
+                sindicato: sindicato?.code || null
+            };
 
-        http.post('/vagas/', novaVaga)
-            .then((response) => {
-                
-                // Limpar o formulário
-                setTitulo('');
-                setDescricao('');
-                setDataAbertura('');
-                setDataEncerramento('');
-                setSalario('');
-                setFilial(null);
-                setCentroCusto(null);
-                setDepartamento(null);
-                setDeficiencia(false);
-                setQtdVagas('');
-                setInclusao(false);
-                setInclusaoPara('');
-                setPericulosidade('');
-                setInsalubridade('');
-                setSecao(null);
-                setCargo(null);
-                setHorario(null);
-                setFuncao(null);
-                setSindicato(null);
+            http.post('/vagas/', novaVaga)
+                .then((response) => {
+                    // Limpar o formulário
+                    setTitulo('');
+                    setDescricao('');
+                    setDataAbertura('');
+                    setDataEncerramento('');
+                    setSalario('');
+                    setFilial(null);
+                    setCentroCusto(null);
+                    setDepartamento(null);
+                    setDeficiencia(false);
+                    setQtdVagas('');
+                    setInclusao(false);
+                    setInclusaoPara('');
+                    setPericulosidade('');
+                    setInsalubridade('');
+                    setSecao(null);
+                    setCargo(null);
+                    setHorario(null);
+                    setFuncao(null);
+                    setSindicato(null);
 
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Vaga registrada com sucesso',
-                    life: 3000
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Vaga registrada com sucesso',
+                        life: 3000
+                    });
+                    
+                    navegar('/vagas');
+                })
+                .catch(() => {
+                    // erro
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro ao registrar vaga',
+                        life: 3000
+                    });
                 });
-                
-                navegar('/vagas');
-            })
-            .catch(() => {
-                // erro
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Erro ao registrar vaga',
-                    life: 3000
-                });
-            });
+        }
     };
 
     return (
@@ -229,35 +253,42 @@ const VagasRegistro = () => {
                             valor={titulo} 
                             setValor={setTitulo} 
                             type="text" 
-                        label="Título" 
-                            placeholder="Digite o titulo" />
+                            label="Título" 
+                            placeholder="Digite o título da vaga" />
                     </Col6>
                     <Col6>
                         <CampoTexto 
-                        camposVazios={classError}
-                        name="descricao" 
-                        valor={descricao} 
-                        setValor={setDescricao} 
-                        type="text" 
-                        label="Descrição" 
-                        placeholder="Digite a descrição" />
+                            camposVazios={classError}
+                            name="descricao" 
+                            valor={descricao} 
+                            setValor={setDescricao} 
+                            type="text" 
+                            label="Descrição" 
+                            placeholder="Digite a descrição da vaga" />
                     </Col6>
                 </Col12>
                 <Col12>
                     <Col6>
                         <CampoTexto 
-                        type="date" 
-                        valor={dataAbertura} 
-                        setValor={setDataAbertura}
-                        label="Data de Abertura"  />
-
+                            camposVazios={classError}
+                            patternMask={['99/99/9999']}
+                            name="dt_abertura" 
+                            valor={dataAbertura} 
+                            setValor={setDataAbertura} 
+                            type="text" 
+                            label="Data de Abertura" 
+                            placeholder="Digite a data de abertura" />
                     </Col6>
                     <Col6>
                         <CampoTexto 
-                        type="date" 
-                        valor={dataEncerramento} 
-                        setValor={setDataEncerramento}
-                        label="Data de Encerramento"  />
+                            camposVazios={classError}
+                            patternMask={['99/99/9999']}
+                            name="dt_encerramento" 
+                            valor={dataEncerramento} 
+                            setValor={setDataEncerramento} 
+                            type="text" 
+                            label="Data de Encerramento" 
+                            placeholder="Digite a data de encerramento" />
                     </Col6>
                 </Col12>
 
@@ -266,7 +297,11 @@ const VagasRegistro = () => {
                         <DropdownItens
                             name="periculosidade"
                             valor={periculosidade}
-                            setValor={valor => { setPericulosidade(valor); if (valor) setInsalubridade(''); }}
+                            setValor={valor => { 
+                                setPericulosidade(valor); 
+                                if (valor) setInsalubridade(''); 
+                                setErroPeriInsa(false);
+                            }}
                             options={listaPericulosidades}
                             label="Periculosidade"
                             placeholder="Selecione a periculosidade"
@@ -278,7 +313,11 @@ const VagasRegistro = () => {
                         <CampoTexto
                             name="insalubridade"
                             valor={insalubridade}
-                            setValor={valor => { setInsalubridade(valor); if (valor) setPericulosidade(''); }}
+                            setValor={valor => { 
+                                setInsalubridade(valor); 
+                                if (valor) setPericulosidade(''); 
+                                setErroPeriInsa(false);
+                            }}
                             type="text"
                             label="Insalubridade"
                             placeholder="Digite a insalubridade"
@@ -288,7 +327,7 @@ const VagasRegistro = () => {
                 </Col12>
                 {erroPeriInsa && (
                     <div style={{ color: 'var(--error)', marginBottom: 8, marginTop: -8 }}>
-                        Preencha periculosidade ou insalubridade
+                        Não é possível preencher periculosidade e insalubridade ao mesmo tempo
                     </div>
                 )}
 
@@ -301,24 +340,24 @@ const VagasRegistro = () => {
                     <Col6>
                         <CampoTexto 
                             camposVazios={classError}
+                            patternMask={'BRL'}
                             name="salario" 
                             valor={salario} 
                             setValor={setSalario} 
                             type="text" 
-                            patternMask="BRL"
                             label="Salário" 
                             placeholder="Digite o salário" />
                             
                     </Col6>
                     <Col6>
                         <CampoTexto
-                            name="qtd_vaga"
-                            valor={qtdVagas}
-                            setValor={setQtdVagas}
-                            type="number"
-                            label="Quantidade de Vagas"
-                            placeholder="Digite a quantidade de vagas"
-                        />
+                            patternMask={['999']}
+                            name="qtd_vaga" 
+                            valor={qtdVagas} 
+                            setValor={setQtdVagas} 
+                            type="text" 
+                            label="Quantidade de Vagas" 
+                            placeholder="Digite a quantidade de vagas" />
                     </Col6>
                 </Col12>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16, margin: '12px 0' }}>
@@ -331,8 +370,9 @@ const VagasRegistro = () => {
                         valor={inclusao_para}
                         setValor={setInclusaoPara}
                         type="text"
-                        label="Inclusiva para quem?"
-                        placeholder="Ex: PCD, LGBTQIA+, 50+ etc."
+                        label="Inclusão Para"
+                        placeholder="Digite a data de inclusão"
+                        className="not_required"
                     />
                 )}
 
@@ -349,7 +389,8 @@ const VagasRegistro = () => {
                                     name: filial.nome,
                                     code: filial.id
                                 }))} 
-                                placeholder="Filial" />
+                                placeholder="Filial"
+                                required />
                         </Col6>
                         <Col6>
                             <DropdownItens 
@@ -376,7 +417,8 @@ const VagasRegistro = () => {
                                     name: dep.nome,
                                     code: dep.id
                                 }))} 
-                                placeholder="Departamento" />
+                                placeholder="Departamento"
+                                required />
                         </Col6>
                         <Col6>
                             <DropdownItens 
@@ -403,7 +445,8 @@ const VagasRegistro = () => {
                                     name: cargo.nome,
                                     code: cargo.id
                                 }))} 
-                                placeholder="Cargo" />
+                                placeholder="Cargo"
+                                required />
                         </Col6>
                         <Col6>
                             <DropdownItens 
@@ -415,7 +458,8 @@ const VagasRegistro = () => {
                                     name: `${horario.codigo} - ${horario.descricao}`,
                                     code: horario.id
                                 }))} 
-                                placeholder="Horário" />
+                                placeholder="Horário"
+                                required />
                         </Col6>
                     </Col12>
 
@@ -454,3 +498,4 @@ const VagasRegistro = () => {
 };
 
 export default VagasRegistro;
+
