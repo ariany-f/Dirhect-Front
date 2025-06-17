@@ -41,6 +41,8 @@ function DataTableTarefasDetalhes({ tarefas }) {
 
     const representativeCheckTemplate = (rowData) => {
         const handleChange = async (checked) => {
+
+            if(rowData.status === 'aprovada' || rowData.status === 'em_andamento') {
             try {
                 await http.post(`/tarefas/${rowData.id}/concluir/`);
                 rowData.status = 'concluida';
@@ -58,6 +60,33 @@ function DataTableTarefasDetalhes({ tarefas }) {
                     life: 3000
                 });
             }
+        } else {
+            if(rowData.status === 'pendente') {
+                try {
+                    await http.post(`/tarefas/${rowData.id}/aprovar/`);
+                    rowData.status = 'aprovada';
+                    rowData.status_display = 'Aprovada';
+                    rowData.check = true;
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Tarefa concluída com sucesso',
+                        life: 3000
+                    });
+                } catch (error) {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Erro ao concluir tarefa',
+                        life: 3000
+                    });
+                }
+            } else {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Tarefa não pode ser concluída',
+                    life: 3000
+                });
+            }
+        }
         };
     
         return (
