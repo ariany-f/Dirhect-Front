@@ -92,7 +92,7 @@ function DataTableTarefasDetalhes({ tarefas }) {
         return (
             <CheckboxContainer 
                 name="feito" 
-                valor={rowData.status === 'aprovada'} 
+                valor={rowData.status === 'concluida'} 
                 setValor={handleChange} 
             />
         );
