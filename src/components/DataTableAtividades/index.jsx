@@ -63,7 +63,7 @@ function DataTableAtividades({ tarefas }) {
 
     const representativeCheckTemplate = (rowData) => {
         const handleChange = async (checked) => {
-            if(rowData.status === 'aprovada' || rowData.status === 'em_andamento') {
+            if(rowData.status === 'em_andamento') {
                 try {
                     await http.post(`/tarefas/${rowData.id}/concluir/`);
                     rowData.status = 'concluida';
