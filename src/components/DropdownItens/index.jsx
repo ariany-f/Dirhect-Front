@@ -105,8 +105,8 @@ function DropdownItens({
     options = [], 
     placeholder, 
     name, 
-    width,
-    height,
+    $width,
+    $height,
     label, 
     filter = false,
     camposVazios = [],
@@ -114,6 +114,7 @@ function DropdownItens({
     disabled = false, // Adiciona a prop disabled
     allowClear = false // Adiciona a prop allowClear
 }) {
+
     const [erro, setErro] = useState('')
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -155,8 +156,8 @@ function DropdownItens({
                 {
                     filter ?  
                         <Select 
-                            $width={width}
-                            $height={height}
+                            $width={$width}
+                            $height={$height}
                             filter
                             id={name}
                             placeholder={placeholder} 
@@ -171,8 +172,8 @@ function DropdownItens({
                         />
                     :
                     <Select 
-                        $width={width}
-                        $height={height}
+                        $width={$width}
+                        $height={$height}
                         id={name}
                         placeholder={placeholder} 
                         options={options} 

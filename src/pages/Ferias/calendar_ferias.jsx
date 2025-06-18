@@ -157,9 +157,8 @@ const ToggleButton = styled.button`
 const ViewToggleBar = styled.div`
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
     margin-bottom: 16px;
-    justify-content: flex-end;
 `;
 
 const ViewToggleSwitch = styled.div`
@@ -168,6 +167,12 @@ const ViewToggleSwitch = styled.div`
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px #5d0b6210;
+`;
+
+const FiltersContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
 `;
 
 const ViewToggleOption = styled.button`
@@ -518,6 +523,32 @@ const CalendarFerias = ({ colaboradores }) => {
         <CalendarContainer ref={containerRef}>
             <Tooltip target=".event-bar" />
             <ViewToggleBar>
+                <FiltersContainer>
+                    <input
+                        type="text"
+                        value={filtroColaborador}
+                        onChange={e => setFiltroColaborador(e.target.value)}
+                        placeholder="Filtrar colaborador"
+                        style={{ 
+                            width: 220, 
+                            height: 40, 
+                            borderRadius: 6, 
+                            border: '1px solid #e2e8f0', 
+                            padding: '0 12px', 
+                            fontSize: 14 
+                        }}
+                    />
+                    <DropdownItens
+                        valor={anoSelecionado}
+                        setValor={setAnoSelecionado}
+                        options={anosDisponiveis.map(y => ({ name: y.toString(), value: y }))}
+                        placeholder="Selecione o ano"
+                        name="ano"
+                        $width="130px"
+                        $height="40px"
+                        allowClear={false}
+                    />
+                </FiltersContainer>
                 <ViewToggleSwitch>
                     <ViewToggleOption
                         active={visualizacao === 'mensal'}
@@ -535,24 +566,6 @@ const CalendarFerias = ({ colaboradores }) => {
                     </ViewToggleOption>
                 </ViewToggleSwitch>
             </ViewToggleBar>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 16, width: '100%', gap: 12 }}>
-                <input
-                    type="text"
-                    value={filtroColaborador}
-                    onChange={e => setFiltroColaborador(e.target.value)}
-                    placeholder="Filtrar colaborador"
-                    style={{ width: 220, height: 46, borderRadius: 6, border: '1px solid #ccc', padding: '0 12px', fontSize: 15 }}
-                />
-                <DropdownItens
-                    valor={anoSelecionado}
-                    setValor={setAnoSelecionado}
-                    options={anosDisponiveis.map(y => ({ name: y.toString(), value: y }))}
-                    placeholder="Selecione o ano"
-                    name="ano"
-                    $width="120px"
-                    allowClear={false}
-                />
-            </div>
             <CalendarScrollArea ref={scrollRef} style={{ cursor: isDragging ? 'grabbing' : 'auto' }}>
                 <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative'}}>
                     {/* Linhas roxas de separação dos meses */}
