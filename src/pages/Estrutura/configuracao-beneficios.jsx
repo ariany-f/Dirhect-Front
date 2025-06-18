@@ -190,9 +190,11 @@ function EstruturaConfiguracaoBeneficios(type = 'filial') {
             <TabPanel>
                 <TabButton active={tab === 'cards'} onClick={() => setTab('cards')}>
                     <FaRegCalendarAlt fill={tab === 'cards' ? 'white' : '#000'} />
+                    <Texto color={tab === 'cards' ? 'white' : '#000'}>Cards</Texto>
                 </TabButton>
                 <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
                     <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
+                    <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
                 </TabButton>
             </TabPanel>
             {configuracoes && configuracoes.length > 0 ? (

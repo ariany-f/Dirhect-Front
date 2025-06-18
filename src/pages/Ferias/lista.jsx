@@ -15,6 +15,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import CalendarFerias from './calendar_ferias'
 import { FaListUl, FaRegCalendarAlt } from 'react-icons/fa';
+import Texto from '@components/Texto';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -135,9 +136,11 @@ function FeriasListagem() {
             <TabPanel>
                 <TabButton active={tab === 'calendario'} onClick={() => setTab('calendario')}>
                     <FaRegCalendarAlt fill={tab === 'calendario' ? 'white' : '#000'} />
+                    <Texto color={tab === 'calendario' ? 'white' : '#000'}>Calendário</Texto>
                 </TabButton>
                 <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
                     <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
+                    <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
                 </TabButton>
             </TabPanel>
             <Wrapper>

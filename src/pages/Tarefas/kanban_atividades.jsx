@@ -21,9 +21,10 @@ const VerticalMenu = styled.div`
     gap: 0px;
     min-width: 200px;
     background: white;
-    padding: 4px 0px;
+    padding: 8px 0px 48px 0px;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    justify-content: space-between;
 `
 
 const MenuItem = styled.button`
@@ -550,50 +551,63 @@ const DroppableColumn = ({ status, children, onDrop }) => {
 const FilterContainer = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 0px 16px;
-    margin-top: 12px;
+    gap: 0px;
+    padding: 0px;
+    margin-top: 8px;
 `
 
 const FilterButton = styled.button`
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
+    justify-content: space-between;
+    padding: 12px 16px;
     border: none;
-    border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
-    background: ${props => props.$active ? props.$bgColor : '#f8fafc'};
-    border: 1px solid ${props => props.$active ? props.$bgColor : '#e2e8f0'};
-    justify-content: space-between;
+    background: ${props => props.$active ? `linear-gradient(to left, ${props.$color}, ${props.$bgColor})` : 'transparent'};
+    color: ${props => props.$active ? 'white' : '#374151'};
+    width: 100%;
+    text-align: left;
 
     & span {
-        color: ${props => props.$active ? '#fff' : props.$color};
+        color: ${props => props.$active ? 'white' : '#374151'};
     }
 
-    &:hover {
-        background: ${props => props.$active ? props.$bgColor : `${props.$bgColor}15`};
-        border-color: ${props => props.$active ? props.$bgColor : props.$color};
+    .filter-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 
     & svg * {
+        color: ${props => props.$active ? '#fff' : props.$color};
+        fill: ${props => props.$active ? '#fff' : props.$color};
+    }
+
+    &:hover {
+        background: ${props => props.$active ? `linear-gradient(to left, ${props.$color}, ${props.$bgColor})` : '#f3f4f6'};
+    }
+
+    .remove-icon {
         display: flex;
         align-items: center;
-        margin-left: 4px;
-        color: ${props => props.$active ? '#fff' : props.$color};
+        opacity: 0.7;
+        
+        svg * {
+            color: ${props => props.$active ? '#fff' : props.$color};
+        }
     }
 `
 
 const FilterLabel = styled.div`
     color: #64748b;
     font-size: 12px;
-    padding: 0 16px;
+    padding: 8px 8px 4px;
     text-align: left;
-    margin-top: 24px;
     font-weight: 500;
+    margin-top: 16px;
 `
 
 const AtividadesKanban = () => {
@@ -611,29 +625,29 @@ const AtividadesKanban = () => {
         { 
             tipo: 'admissao', 
             label: 'Admissão',
-            color: '#1a73e8',
             bgColor: '#1a73e8',
+            color: '#4285f4',
             icon: <FaUserPlus size={14} />
         },
         { 
             tipo: 'demissao', 
             label: 'Rescisão',
-            color: '#dc3545',
             bgColor: '#dc3545',
+            color: '#e4606d',
             icon: <FaSignOutAlt size={14} />
         },
         { 
             tipo: 'ferias', 
             label: 'Férias',
-            color: '#ffa000',
             bgColor: '#ffa000',
+            color: '#ffb333',
             icon: <FaUmbrellaBeach size={14} />
         },
         { 
             tipo: 'envio_variaveis', 
             label: 'Envio Variáveis',
-            color: '#28a745',
             bgColor: '#28a745',
+            color: '#34ce57',
             icon: <FaFileInvoiceDollar size={14} />
         }
     ];
@@ -764,6 +778,7 @@ const AtividadesKanban = () => {
             <Container>
                 <KanbanLayout>
                     <VerticalMenu>
+                        <div>
                         {Object.entries(sections).map(([key, section]) => (
                             <MenuItem
                                 key={key}
@@ -775,29 +790,31 @@ const AtividadesKanban = () => {
                                 <span className="count">{section.count}</span>
                             </MenuItem>
                         ))}
-                        
-                        <FilterLabel>Filtrar por Tipo</FilterLabel>
-                        <FilterContainer>
-                            {tiposAtividade.map(({ tipo, label, color, bgColor, icon }) => (
-                                <FilterButton
-                                    key={tipo}
-                                    $active={selectedTypes.includes(tipo)}
-                                    $color={color}
-                                    $bgColor={bgColor}
-                                    onClick={() => toggleTipoFilter(tipo)}
-                                >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        {icon}
-                                        <span>{label}</span>
-                                    </div>
-                                    {selectedTypes.includes(tipo) && (
-                                        <div className="remove-icon">
-                                            <FaTimes size={12} />
+                        </div>
+                        <div>
+                            <FilterLabel>Filtrar por Tipo</FilterLabel>
+                            <FilterContainer>
+                                {tiposAtividade.map(({ tipo, label, color, bgColor, icon }) => (
+                                    <FilterButton
+                                        key={tipo}
+                                        $active={selectedTypes.includes(tipo)}
+                                        $color={color}
+                                        $bgColor={bgColor}
+                                        onClick={() => toggleTipoFilter(tipo)}
+                                    >
+                                        <div className="filter-content">
+                                            {icon}
+                                            <span>{label}</span>
                                         </div>
-                                    )}
-                                </FilterButton>
-                            ))}
-                        </FilterContainer>
+                                        {selectedTypes.includes(tipo) && (
+                                            <div className="remove-icon">
+                                                <FaTimes size={10} />
+                                            </div>
+                                        )}
+                                    </FilterButton>
+                                ))}
+                            </FilterContainer>
+                        </div>
                     </VerticalMenu>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <DndProvider backend={HTML5Backend}>
