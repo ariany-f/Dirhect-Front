@@ -260,10 +260,29 @@ const CardWrapper = styled.div`
         font-size: 12px;
         color: #6B7280;
 
-        .date {
+        .sla-info {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 4px;
+
+            .sla-status {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 500;
+            }
+
+            .sla-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                box-shadow: 0 0 4px currentColor;
+            }
+
+            .dias-aberto {
+                font-size: 11px;
+                color: #666;
+            }
         }
     }
 `;
@@ -369,7 +388,38 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
         }
     };
 
+    const getSLAInfo = () => {
+        const dataInicio = new Date(tarefa.criado_em);
+        const dataAgendada = new Date(tarefa.agendado_para);
+        const hoje = new Date();
+        const diasEmAberto = Math.ceil((hoje - dataInicio) / (1000 * 60 * 60 * 24));
+        
+        let cor = '';
+        let texto = '';
+        
+        if (tarefa.status === 'concluida') {
+            cor = '#28a745';
+            texto = 'Concluída';
+        } else {
+            const diasAteEntrega = Math.ceil((dataAgendada - hoje) / (1000 * 60 * 60 * 24));
+            if (diasAteEntrega >= 2) {
+                cor = '#28a745';
+                texto = 'Dentro do prazo';
+            } else if (diasAteEntrega > 0) {
+                cor = '#ffa000';
+                texto = 'Próximo do prazo';
+            } else {
+                cor = '#dc3545';
+                texto = 'Em atraso';
+            }
+        }
+        
+        return { cor, texto, diasEmAberto };
+    };
+
     drag(drop(ref));
+
+    const slaInfo = getSLAInfo();
 
     return (
         <CardWrapper
@@ -425,8 +475,17 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
                 {tarefa.descricao}
             </div>
             <div className="meta-info">
-                <div className="date">
-                    📅 {new Date(tarefa.agendado_para).toLocaleDateString('pt-BR')}
+                <div className="sla-info">
+                    <div className="sla-status">
+                        <div 
+                            className="sla-dot" 
+                            style={{ backgroundColor: slaInfo.cor }}
+                        />
+                        <div style={{ color: slaInfo.cor }}>{slaInfo.texto}</div>
+                    </div>
+                    <div className="dias-aberto">
+                        {slaInfo.diasEmAberto} dia(s) em aberto
+                    </div>
                 </div>
             </div>
         </CardWrapper>
