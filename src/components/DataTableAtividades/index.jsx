@@ -572,11 +572,33 @@ function DataTableAtividades({ tarefas }) {
                 tableStyle={{ minWidth: '68vw' }}
                 filterDisplay="menu"
                 showGridlines
+                className="p-datatable-sm"
             >
-                <Column body={representativeTipoTemplate} field="tipo_display" header="Tipo" style={{ width: '12%' }}></Column>
-                <Column body={representativePrioridadeTemplate} sortable field="prioridade" header="Prioridade" style={{ width: '10%' }}></Column>
-                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '22%' }}></Column>
-                <Column body={representativePrazoTemplate} field="agendado_para" header="Data Agendada" style={{ width: '12%' }}></Column>
+                <Column 
+                    body={representativeTipoTemplate} 
+                    field="tipo_display" 
+                    header="Tipo" 
+                    style={{ width: '12%' }}
+                ></Column>
+                <Column 
+                    body={representativePrioridadeTemplate} 
+                    sortable 
+                    field="prioridade" 
+                    header="Prioridade" 
+                    style={{ width: '10%' }}
+                ></Column>
+                <Column 
+                    body={representativeDescricaoTemplate} 
+                    field="descricao" 
+                    header="Descrição" 
+                    style={{ width: '22%' }}
+                ></Column>
+                <Column 
+                    body={representativePrazoTemplate} 
+                    field="agendado_para" 
+                    header="Data Agendada" 
+                    style={{ width: '12%' }}
+                ></Column>
                 <Column 
                     body={representativeStatusTemplate} 
                     field="status" 
@@ -617,8 +639,18 @@ function DataTableAtividades({ tarefas }) {
                     filterMenuStyle={{ width: '14rem' }}
                     showFilterMatchModes={false}
                 ></Column>
-                <Column body={representativeConcluidoEmTemplate} field="concluido_em" header="Concluído em" style={{ width: '10%' }}></Column>
-                <Column body={representativeCheckTemplate} field="check" header="Ações" style={{ width: '10%' }}></Column>
+                <Column 
+                    body={representativeConcluidoEmTemplate} 
+                    field="concluido_em" 
+                    header="Concluído em" 
+                    style={{ width: '10%' }}
+                ></Column>
+                <Column 
+                    body={representativeCheckTemplate} 
+                    field="check" 
+                    header="Ações" 
+                    style={{ width: '10%' }}
+                ></Column>
             </DataTable>
         </>
     )
