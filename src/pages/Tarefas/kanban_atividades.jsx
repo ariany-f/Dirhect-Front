@@ -7,6 +7,7 @@ import { DndProvider, useDrag, useDrop } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import http from '@http';
 import { FaInbox, FaSpinner, FaTimes, FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar } from 'react-icons/fa';
+import { Toast } from 'primereact/toast';
 
 const KanbanLayout = styled.div`
     display: flex;
@@ -292,7 +293,7 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
     
     const [{ isDragging }, drag] = useDrag({
         type: 'CARD',
-        item: { id: tarefa.id, index, columnId },
+        item: { id: tarefa.id, index, columnId, originalColumnId: columnId },
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
@@ -318,10 +319,11 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
             if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return;
             if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
 
-            moveCard(dragIndex, hoverIndex, sourceColumnId, targetColumnId);
-            
-            item.index = hoverIndex;
-            item.columnId = targetColumnId;
+            // Apenas reordena na mesma coluna durante o hover
+            if (sourceColumnId === targetColumnId) {
+                moveCard(dragIndex, hoverIndex, sourceColumnId, targetColumnId);
+                item.index = hoverIndex;
+            }
         },
     });
 
@@ -509,19 +511,23 @@ const DroppableColumn = ({ status, children, onDrop }) => {
     const [{ isOver, canDrop }, drop] = useDrop({
         accept: 'CARD',
         canDrop: (item) => {
-            const sourceStatus = item.columnId;
+            const sourceStatus = item.originalColumnId; // Usa a coluna original
             
             // Define o fluxo permitido
             const allowedTransitions = {
                 'pendente': ['aprovada'],
-                'aprovada': ['em_andamento'],
+                'aprovada': ['pendente'],
                 'em_andamento': ['concluida'],
-                'concluida': []
+                'concluida': ['em_andamento']
             };
 
             return allowedTransitions[sourceStatus]?.includes(status) || false;
         },
-        drop: (item) => onDrop(item, status),
+        drop: (item) => {
+            if (item.originalColumnId !== status) { // Só processa se for uma coluna diferente
+                onDrop(item, status);
+            }
+        },
         collect: monitor => ({
             isOver: monitor.isOver(),
             canDrop: monitor.canDrop(),
@@ -611,6 +617,7 @@ const FilterLabel = styled.div`
 
 const AtividadesKanban = () => {
     const tarefas = useOutletContext();
+    const toast = useRef(null);
     const [columns, setColumns] = useState({
         pendente: [],
         aprovada: [],
@@ -689,14 +696,17 @@ const AtividadesKanban = () => {
         // Define o fluxo permitido
         const allowedTransitions = {
             'pendente': ['aprovada'],
-            'aprovada': ['em_andamento'],
+            'aprovada': ['pendente'],
             'em_andamento': ['concluida'],
-            'concluida': []
+            'concluida': ['em_andamento']
         };
 
         if (!allowedTransitions[sourceColumnId]?.includes(targetColumnId)) {
             return;
         }
+
+        // Salva o estado anterior antes do movimento otimista
+        const previousColumns = JSON.parse(JSON.stringify(columns));
 
         const sourceCards = Array.from(columns[sourceColumnId]);
         const targetCards = sourceColumnId === targetColumnId 
@@ -728,6 +738,9 @@ const AtividadesKanban = () => {
                 case 'concluida':
                     endpoint = `/tarefas/${movedCard.id}/concluir/`;
                     break;
+                case 'pendente':
+                    endpoint = `/tarefas/${movedCard.id}/reprovar/`;
+                    break;
                 default:
                     return;
             }
@@ -735,25 +748,15 @@ const AtividadesKanban = () => {
             await http.post(endpoint);
         } catch (error) {
             console.error('Erro ao atualizar status:', error);
-            
-            // Reverte o movimento em caso de erro
-            const revertSourceCards = Array.from(columns[targetColumnId]);
-            const revertTargetCards = Array.from(columns[sourceColumnId]);
-            
-            // Remove o card da coluna de destino
-            const cardIndex = revertSourceCards.findIndex(card => card.id === movedCard.id);
-            if (cardIndex !== -1) {
-                const [revertedCard] = revertSourceCards.splice(cardIndex, 1);
-                revertedCard.status = originalStatus;
-                revertTargetCards.splice(fromIndex, 0, revertedCard);
-                
-                // Atualiza o estado com a reversão
-                setColumns({
-                    ...columns,
-                    [sourceColumnId]: revertTargetCards,
-                    [targetColumnId]: revertSourceCards,
-                });
-            }
+            // Exibe o toast de erro
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro ao atualizar status',
+                detail: 'Não foi possível atualizar o status da tarefa. A operação foi revertida.',
+                life: 5000
+            });
+            // Restaura o estado anterior
+            setColumns(previousColumns);
         }
     };
 
@@ -775,6 +778,7 @@ const AtividadesKanban = () => {
     return (
         <Frame>
             <Container>
+                <Toast ref={toast} />
                 <KanbanLayout>
                     <VerticalMenu>
                         <div>
