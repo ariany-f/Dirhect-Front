@@ -12,7 +12,7 @@ import Dashboard from '@assets/Dashboard.svg'
 import styled from 'styled-components'
 import IconeBeneficio from "@components/IconeBeneficio"
 import { Real } from '@utils/formats'
-import { FaListUl, FaRegCalendarAlt } from 'react-icons/fa'
+import { FaListUl, FaRegCalendarAlt, FaTable } from 'react-icons/fa'
 
 const Beneficio = styled.div`
    display: flex;
@@ -189,7 +189,7 @@ function EstruturaConfiguracaoBeneficios(type = 'filial') {
         <Frame>
             <TabPanel>
                 <TabButton active={tab === 'cards'} onClick={() => setTab('cards')}>
-                    <FaRegCalendarAlt fill={tab === 'cards' ? 'white' : '#000'} />
+                    <FaTable fill={tab === 'cards' ? 'white' : '#000'} />
                     <Texto color={tab === 'cards' ? 'white' : '#000'}>Grid</Texto>
                 </TabButton>
                 <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
