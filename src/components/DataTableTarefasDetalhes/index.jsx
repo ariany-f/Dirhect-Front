@@ -28,7 +28,7 @@ function DataTableTarefasDetalhes({ tarefas }) {
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         sla: { value: null, matchMode: FilterMatchMode.EQUALS },
-        status: { value: 'nao_concluido', matchMode: 'custom' }
+        status: { value: null, matchMode: 'custom' }
     })
     const navegar = useNavigate()
 
