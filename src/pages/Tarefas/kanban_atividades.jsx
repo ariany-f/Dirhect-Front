@@ -304,6 +304,7 @@ const CardWrapper = styled.div`
 const DraggableCard = ({ tarefa, index, moveCard, columnId, columns, showConcluir }) => {
     const ref = useRef(null);
     const isDisabled = tarefa.status === 'concluida' || tarefa.status === 'aprovada';
+    const isAutomatic = tarefa.atividade_automatica;
     
     const [{ isDragging }, drag] = useDrag({
         type: 'CARD',
@@ -458,11 +459,11 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId, columns, showConclui
             ref={ref}
             $isDragging={isDragging}
             style={{
-                opacity: isDragging ? 0.5 : isDisabled ? 0.98 : 1,
-                cursor: isDisabled ? 'not-allowed' : 'move',
-                backgroundColor: isDisabled ? '#f3f4f6' : undefined,
+                opacity: isDragging ? 0.5 : (isDisabled || isAutomatic) ? 0.98 : 1,
+                cursor: (isDisabled || isAutomatic) ? 'not-allowed' : 'move',
+                backgroundColor: (isDisabled || isAutomatic) ? '#f3f4f6' : undefined,
                 // filter: isDisabled ? 'grayscale(0.1)' : undefined,
-                pointerEvents: isDisabled ? 'none' : 'auto'
+                pointerEvents: (isDisabled || isAutomatic) ? 'none' : 'auto'
             }}
         >
             <div className="card-header">
@@ -536,7 +537,7 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId, columns, showConclui
             </div>
             {tarefa.atividade_automatica ? (
                 <div className="next-column-arrow" style={{ color: '#64748b' }}>
-                    <FaRobot fill="var(--info)" size={20} />
+                    <RiExchangeFill fill="var(--info)" size={20} />
                 </div>
             ) : tarefa.status === 'aprovada' ? (
                 <div className="next-column-arrow" style={{ color: '#1a73e8' }}>

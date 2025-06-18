@@ -12,7 +12,8 @@ import { Checkbox } from 'primereact/checkbox';
 import CheckboxContainer from '@components/CheckboxContainer'
 import { Real } from '@utils/formats'
 import { Button } from 'primereact/button';
-import { FaLink, FaArrowUp, FaArrowDown, FaCircle, FaCheck, FaRobot } from 'react-icons/fa';
+import { FaLink, FaArrowUp, FaArrowDown, FaCircle, FaCheck } from 'react-icons/fa';
+import { RiExchangeFill } from 'react-icons/ri';
 import { Tag } from 'primereact/tag';
 import http from '@http';
 import { Toast } from 'primereact/toast';
@@ -46,7 +47,7 @@ function DataTableTarefasDetalhes({ tarefas }) {
 
     const representativeCheckTemplate = (rowData) => {
         if (rowData.atividade_automatica) {
-            return <FaRobot size={18} fill="var(--info)" />;
+            return <RiExchangeFill size={18} fill="var(--info)" />;
         }
         const handleChange = async (checked) => {
 
