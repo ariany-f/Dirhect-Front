@@ -2,6 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
+import { FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar } from 'react-icons/fa';
 import './DataTable.css'
 import CampoArquivo from '@components/CampoArquivo';
 import Botao from '@components/Botao';
@@ -318,6 +319,16 @@ function DataTableAtividades({ tarefas }) {
         );
     };
 
+    const getTipoIcon = (tipo) => {
+        switch(tipo) {
+            case 'admissao': return <FaUserPlus fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
+            case 'demissao': return <FaSignOutAlt fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
+            case 'ferias': return <FaUmbrellaBeach fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
+            case 'envio_variaveis': return <FaFileInvoiceDollar fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
+            default: return null;
+        }
+    };
+
     const representativeTipoTemplate = (rowData) => {
         let cor = '';
         let background = '';
@@ -356,11 +367,13 @@ function DataTableAtividades({ tarefas }) {
                 color: cor,
                 padding: '4px 12px',
                 borderRadius: '4px',
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
                 fontSize: '13px',
-                fontWeight: '400',
-                textTransform: 'capitalize'
+                fontWeight: '400'
             }}>
+                {getTipoIcon(rowData.entidade_tipo)}
                 {texto}
             </div>
         );

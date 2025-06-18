@@ -6,7 +6,7 @@ import Container from '@components/Container'
 import { DndProvider, useDrag, useDrop } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import http from '@http';
-import { FaInbox, FaSpinner, FaTimes } from 'react-icons/fa';
+import { FaInbox, FaSpinner, FaTimes, FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar } from 'react-icons/fa';
 
 const KanbanLayout = styled.div`
     display: flex;
@@ -417,6 +417,16 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
         return { cor, texto, diasEmAberto };
     };
 
+    const getTipoIcon = (tipo) => {
+        switch(tipo) {
+            case 'admissao': return <FaUserPlus fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
+            case 'demissao': return <FaSignOutAlt fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
+            case 'ferias': return <FaUmbrellaBeach fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
+            case 'envio_variaveis': return <FaFileInvoiceDollar fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
+            default: return null;
+        }
+    };
+
     drag(drop(ref));
 
     const slaInfo = getSLAInfo();
@@ -435,7 +445,10 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
                     className="tipo-tag"
                     style={getTipoStyle(tarefa.entidade_tipo)}
                 >
-                    {getTipoText(tarefa.entidade_tipo)}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--white)' }}>
+                        {getTipoIcon(tarefa.entidade_tipo)}
+                        {getTipoText(tarefa.entidade_tipo)}
+                    </div>
                 </div>
                 <div 
                     className="prioridade-tag"
@@ -537,9 +550,9 @@ const DroppableColumn = ({ status, children, onDrop }) => {
 const FilterContainer = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 8px 8px;
-    margin-top: 0px;
+    gap: 4px;
+    padding: 0px 16px;
+    margin-top: 12px;
 `
 
 const FilterButton = styled.button`
@@ -548,25 +561,25 @@ const FilterButton = styled.button`
     gap: 8px;
     padding: 8px 12px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
-    background: ${props => props.$active ? props.$bgColor : '#fff'};
-    border: 1px solid ${props => props.$color};
+    background: ${props => props.$active ? props.$bgColor : '#f8fafc'};
+    border: 1px solid ${props => props.$active ? props.$bgColor : '#e2e8f0'};
     justify-content: space-between;
 
     & span {
-     color: ${props => props.$active ? '#fff' : props.$color};
-    }
-
-    &:hover {
-        background: ${props => props.$active ? props.$bgColor : `${props.$bgColor}40`};
         color: ${props => props.$active ? '#fff' : props.$color};
     }
 
-    .remove-icon svg * {
+    &:hover {
+        background: ${props => props.$active ? props.$bgColor : `${props.$bgColor}15`};
+        border-color: ${props => props.$active ? props.$bgColor : props.$color};
+    }
+
+    & svg * {
         display: flex;
         align-items: center;
         margin-left: 4px;
@@ -575,11 +588,12 @@ const FilterButton = styled.button`
 `
 
 const FilterLabel = styled.div`
-    color: var(--black);
-    font-size: 14px;
-    padding: 6px 8px;
+    color: #64748b;
+    font-size: 12px;
+    padding: 0 16px;
     text-align: left;
-    margin-top: 48px;
+    margin-top: 24px;
+    font-weight: 500;
 `
 
 const AtividadesKanban = () => {
@@ -598,25 +612,29 @@ const AtividadesKanban = () => {
             tipo: 'admissao', 
             label: 'Admissão',
             color: '#1a73e8',
-            bgColor: '#1a73e8'
+            bgColor: '#1a73e8',
+            icon: <FaUserPlus size={14} />
         },
         { 
             tipo: 'demissao', 
             label: 'Rescisão',
             color: '#dc3545',
-            bgColor: '#dc3545'
+            bgColor: '#dc3545',
+            icon: <FaSignOutAlt size={14} />
         },
         { 
             tipo: 'ferias', 
             label: 'Férias',
             color: '#ffa000',
-            bgColor: '#ffa000'
+            bgColor: '#ffa000',
+            icon: <FaUmbrellaBeach size={14} />
         },
         { 
             tipo: 'envio_variaveis', 
             label: 'Envio Variáveis',
             color: '#28a745',
-            bgColor: '#28a745'
+            bgColor: '#28a745',
+            icon: <FaFileInvoiceDollar size={14} />
         }
     ];
 
@@ -760,7 +778,7 @@ const AtividadesKanban = () => {
                         
                         <FilterLabel>Filtrar por Tipo</FilterLabel>
                         <FilterContainer>
-                            {tiposAtividade.map(({ tipo, label, color, bgColor }) => (
+                            {tiposAtividade.map(({ tipo, label, color, bgColor, icon }) => (
                                 <FilterButton
                                     key={tipo}
                                     $active={selectedTypes.includes(tipo)}
@@ -768,7 +786,10 @@ const AtividadesKanban = () => {
                                     $bgColor={bgColor}
                                     onClick={() => toggleTipoFilter(tipo)}
                                 >
-                                    <span>{label}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        {icon}
+                                        <span>{label}</span>
+                                    </div>
                                     {selectedTypes.includes(tipo) && (
                                         <div className="remove-icon">
                                             <FaTimes size={12} />
