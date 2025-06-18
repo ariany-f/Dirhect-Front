@@ -5,6 +5,7 @@ import DataTableAtividades from '@components/DataTableAtividades'
 import Frame from '@components/Frame'
 import Container from '@components/Container'
 import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaFileInvoiceDollar, FaTasks } from 'react-icons/fa'
+import { Dropdown } from 'primereact/dropdown';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -27,6 +28,7 @@ const Card = styled.div`
         if (props.tipo === 'demissao') return '#FFF5F5';
         if (props.tipo === 'ferias') return '#FFFDF5';
         if (props.tipo === 'envio_variaveis') return '#F5FFF8';
+        if (props.tipo === 'total') return '#F8F9FA';
         return '#fff';
     }};
     padding: 20px;
@@ -65,6 +67,7 @@ const Card = styled.div`
             if (props.tipo === 'demissao') return '#dc3545';
             if (props.tipo === 'ferias') return '#ffa000';
             if (props.tipo === 'envio_variaveis') return '#28a745';
+            if (props.tipo === 'total') return 'var(--black)';
             return '#222';
         }};
         & svg * {
@@ -73,6 +76,7 @@ const Card = styled.div`
                 if (props.tipo === 'demissao') return '#dc3545';
                 if (props.tipo === 'ferias') return '#ffa000';
                 if (props.tipo === 'envio_variaveis') return '#28a745';
+                if (props.tipo === 'total') return 'var(--black)';
                 return '#222';
             }};
         }
@@ -86,6 +90,7 @@ const Card = styled.div`
             if (props.tipo === 'demissao') return '#dc3545';
             if (props.tipo === 'ferias') return '#ffa000';
             if (props.tipo === 'envio_variaveis') return '#28a745';
+            if (props.tipo === 'total') return 'var(--black)';
             return '#222';
         }};
     }
@@ -98,6 +103,7 @@ const Card = styled.div`
             if (props.tipo === 'demissao') return '#dc3545';
             if (props.tipo === 'ferias') return '#ffa000';
             if (props.tipo === 'envio_variaveis') return '#28a745';
+            if (props.tipo === 'total') return 'var(--black)';
             return '#222';
         }};
     }
@@ -121,6 +127,26 @@ const AtividadesLista = () => {
     const contarTotalConcluidas = () => {
         if (!context) return 0;
         return context.filter(tarefa => tarefa.status === 'concluida').length;
+    };
+
+    const getSLAInfo = (tarefa) => {
+        const dataInicio = new Date(tarefa.criado_em);
+        const dataAgendada = new Date(tarefa.agendado_para);
+        const hoje = new Date();
+        const diasEmAberto = Math.ceil((hoje - dataInicio) / (1000 * 60 * 60 * 24));
+        
+        if (tarefa.status === 'concluida') {
+            return 'concluido';
+        }
+        
+        const diasAteEntrega = Math.ceil((dataAgendada - hoje) / (1000 * 60 * 60 * 24));
+        if (diasAteEntrega >= 2) {
+            return 'dentro_prazo';
+        } else if (diasAteEntrega > 0) {
+            return 'proximo_prazo';
+        } else {
+            return 'atrasado';
+        }
     };
 
     const cardConfig = {
@@ -151,9 +177,22 @@ const AtividadesLista = () => {
         }
     };
 
-    const tarefasFiltradas = filtroAtivo === 'total'
-        ? context
-        : context?.filter(tarefa => tarefa.entidade_tipo === filtroAtivo);
+    const tarefasFiltradas = context?.filter(tarefa => {
+        // Filtro por tipo
+        if (filtroAtivo !== 'total' && tarefa.entidade_tipo !== filtroAtivo) {
+            return false;
+        }
+
+        return true;
+    });
+
+    const handleFiltroChange = (tipo) => {
+        if (filtroAtivo === tipo) {
+            setFiltroAtivo('total');
+        } else {
+            setFiltroAtivo(tipo);
+        }
+    };
 
     return (
         <Frame gap="12px">
@@ -171,7 +210,7 @@ const AtividadesLista = () => {
                                 key={tipo}
                                 tipo={config.tipo}
                                 active={filtroAtivo === tipo}
-                                onClick={() => setFiltroAtivo(filtroAtivo === tipo ? null : tipo)}
+                                onClick={() => handleFiltroChange(tipo)}
                             >
                                 <div className="header">
                                     <div className="icon">
