@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState } from 'react';
 import DataTableAtividades from '@components/DataTableAtividades'
 import Frame from '@components/Frame'
 import Container from '@components/Container'
+import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaFileInvoiceDollar } from 'react-icons/fa'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -49,10 +50,36 @@ const Card = styled.div`
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
+    .header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .icon {
+        font-size: 16px;
+        color: ${props => {
+            if (props.tipo === 'admissao') return '#1a73e8';
+            if (props.tipo === 'demissao') return '#dc3545';
+            if (props.tipo === 'ferias') return '#ffa000';
+            if (props.tipo === 'envio_variaveis') return '#28a745';
+            return '#222';
+        }};
+        & svg * {
+            fill: ${props => {
+                if (props.tipo === 'admissao') return '#1a73e8';
+                if (props.tipo === 'demissao') return '#dc3545';
+                if (props.tipo === 'ferias') return '#ffa000';
+                if (props.tipo === 'envio_variaveis') return '#28a745';
+                return '#222';
+            }};
+        }
+    }
+
     .titulo {
         font-size: 14px;
         font-weight: 500;
-        margin-bottom: 8px;
         color: ${props => {
             if (props.tipo === 'admissao') return '#1a73e8';
             if (props.tipo === 'demissao') return '#dc3545';
@@ -83,10 +110,28 @@ const AtividadesLista = () => {
     const contarTarefasPorTipo = (tipo) => {
         if (!context) return 0;
         return context.filter(tarefa => {
-            // Conta apenas tarefas não concluídas
             if (tarefa.status === 'concluida') return false;
             return tarefa.entidade_tipo === tipo;
         }).length;
+    };
+
+    const cardConfig = {
+        admissao: {
+            icon: <FaUserPlus />,
+            titulo: 'Admissões'
+        },
+        demissao: {
+            icon: <FaUserMinus />,
+            titulo: 'Rescisões'
+        },
+        ferias: {
+            icon: <FaUmbrellaBeach />,
+            titulo: 'Férias'
+        },
+        envio_variaveis: {
+            icon: <FaFileInvoiceDollar />,
+            titulo: 'Envio Variáveis'
+        }
     };
 
     const tarefasFiltradas = filtroAtivo 
@@ -97,38 +142,22 @@ const AtividadesLista = () => {
         <Frame>
             <Container gap="32px">
                 <CardContainer>
-                    <Card 
-                        tipo="admissao"
-                        active={filtroAtivo === 'admissao'} 
-                        onClick={() => setFiltroAtivo(filtroAtivo === 'admissao' ? null : 'admissao')}
-                    >
-                        <div className="titulo">Admissões</div>
-                        <div className="quantidade">{contarTarefasPorTipo('admissao')}</div>
-                    </Card>
-                    <Card 
-                        tipo="demissao"
-                        active={filtroAtivo === 'demissao'} 
-                        onClick={() => setFiltroAtivo(filtroAtivo === 'demissao' ? null : 'demissao')}
-                    >
-                        <div className="titulo">Rescisões</div>
-                        <div className="quantidade">{contarTarefasPorTipo('demissao')}</div>
-                    </Card>
-                    <Card 
-                        tipo="ferias"
-                        active={filtroAtivo === 'ferias'} 
-                        onClick={() => setFiltroAtivo(filtroAtivo === 'ferias' ? null : 'ferias')}
-                    >
-                        <div className="titulo">Férias</div>
-                        <div className="quantidade">{contarTarefasPorTipo('ferias')}</div>
-                    </Card>
-                    <Card 
-                        tipo="envio_variaveis"
-                        active={filtroAtivo === 'envio_variaveis'} 
-                        onClick={() => setFiltroAtivo(filtroAtivo === 'envio_variaveis' ? null : 'envio_variaveis')}
-                    >
-                        <div className="titulo">Envio Variáveis</div>
-                        <div className="quantidade">{contarTarefasPorTipo('envio_variaveis')}</div>
-                    </Card>
+                    {Object.entries(cardConfig).map(([tipo, config]) => (
+                        <Card 
+                            key={tipo}
+                            tipo={tipo}
+                            active={filtroAtivo === tipo}
+                            onClick={() => setFiltroAtivo(filtroAtivo === tipo ? null : tipo)}
+                        >
+                            <div className="header">
+                                <div className="icon">
+                                    {config.icon}
+                                </div>
+                                <div className="titulo">{config.titulo}</div>
+                            </div>
+                            <div className="quantidade">{contarTarefasPorTipo(tipo)}</div>
+                        </Card>
+                    ))}
                 </CardContainer>
                 
                 <DataTableAtividades tarefas={tarefasFiltradas} />
@@ -137,4 +166,4 @@ const AtividadesLista = () => {
     );
 };
 
-export default AtividadesLista; 
+export default AtividadesLista;

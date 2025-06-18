@@ -158,6 +158,7 @@ import DocumentosConfiguracoes from './pages/DocumentosRequeridos/configuracoes'
 import SelecionarGrupo from '@pages/Login/selecionar-grupo'
 import Atividades from './pages/Tarefas/atividades'
 import AtividadesLista from './pages/Tarefas/lista_atividades'
+import AtividadesKanban from './pages/Tarefas/kanban_atividades'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -370,6 +371,7 @@ function AppRouter() {
 
               <Route path="atividades" element={<Atividades />} >
                 <Route index element={<AtividadesLista />} />
+                <Route path="kanban" element={<AtividadesKanban />} />
               </Route>
 
               <Route path="movimentos" element={<Movimentos />} >

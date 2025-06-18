@@ -16,6 +16,7 @@ import { FaLink } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import http from '@http';
 import { Toast } from 'primereact/toast';
+import { Tooltip } from 'primereact/tooltip';
 
 function DataTableAtividades({ tarefas }) {
     const toast = useRef(null);
@@ -89,12 +90,28 @@ function DataTableAtividades({ tarefas }) {
         }
         };
     
+        const getTooltipText = () => {
+            if (rowData.status === 'concluida') {
+                return null;
+            }
+            return rowData.status === 'pendente' ? 'Aprovar tarefa' : 'Concluir tarefa';
+        };
+    
         return (
-            <CheckboxContainer 
-                name="feito" 
-                valor={rowData.status === 'concluida'} 
-                setValor={handleChange} 
-            />
+            <div className="flex align-items-center">
+                <div 
+                    data-pr-tooltip={getTooltipText()}
+                    data-pr-position="left"
+                    style={{ display: 'inline-flex' }}
+                >
+                    <CheckboxContainer 
+                        name="feito" 
+                        valor={rowData.status === 'concluida'} 
+                        setValor={handleChange} 
+                    />
+                </div>
+                <Tooltip target="[data-pr-tooltip]" />
+            </div>
         );
     };
 
@@ -272,7 +289,7 @@ function DataTableAtividades({ tarefas }) {
                 cor = 'var(--green-500)';
                 texto = 'Dentro do prazo';
             } else if (diasAteEntrega > 0) {
-                cor = '#ffa000'; // amarelo
+                cor = '#ffa000';
                 texto = 'Próximo do prazo';
             } else {
                 cor = 'var(--error-600)';
@@ -282,8 +299,21 @@ function DataTableAtividades({ tarefas }) {
         
         return (
             <div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
-                <div style={{color: cor, fontWeight: 500}}>{texto}</div>
-                <div style={{fontSize: '12px', color: '#666'}}>{diasEmAberto} dias em aberto</div>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                }}>
+                    <div style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: cor,
+                        boxShadow: `0 0 4px ${cor}`
+                    }} />
+                    <div style={{color: cor, fontWeight: 500}}>{texto}</div>
+                </div>
+                <div style={{fontSize: '12px', color: '#666'}}>{diasEmAberto} dia(s) em aberto</div>
             </div>
         );
     };
@@ -355,7 +385,7 @@ function DataTableAtividades({ tarefas }) {
                 <Column body={representativeStatusTemplate} field="status" header="Situação" style={{ width: '12%' }}></Column>
                 <Column body={representativeSLATemplate} field="criado_em" header="SLA" style={{ width: '12%' }}></Column>
                 <Column body={representativeConcluidoEmTemplate} field="concluido_em" header="Concluído em" style={{ width: '10%' }}></Column>
-                <Column body={representativeCheckTemplate} field="check" header="Concluído" style={{ width: '10%' }}></Column>
+                <Column body={representativeCheckTemplate} field="check" header="Ações" style={{ width: '10%' }}></Column>
             </DataTable>
         </>
     )
