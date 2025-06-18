@@ -201,8 +201,8 @@ const CardWrapper = styled.div`
     `}
 
     &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         background: #ffffff;
         border-color: #e2e8f0;
     }
