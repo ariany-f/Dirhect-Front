@@ -109,10 +109,12 @@ const AtividadesLista = () => {
 
     const contarTarefasPorTipo = (tipo) => {
         if (!context) return 0;
-        return context.filter(tarefa => {
-            if (tarefa.status === 'concluida') return false;
-            return tarefa.entidade_tipo === tipo;
-        }).length;
+        return context.filter(tarefa => tarefa.entidade_tipo === tipo).length;
+    };
+
+    const contarConcluidasPorTipo = (tipo) => {
+        if (!context) return 0;
+        return context.filter(tarefa => tarefa.entidade_tipo === tipo && tarefa.status === 'concluida').length;
     };
 
     const cardConfig = {
@@ -142,22 +144,31 @@ const AtividadesLista = () => {
         <Frame gap="12px">
             <Container gap="12px">
                 <CardContainer>
-                    {Object.entries(cardConfig).map(([tipo, config]) => (
-                        <Card 
-                            key={tipo}
-                            tipo={tipo}
-                            active={filtroAtivo === tipo}
-                            onClick={() => setFiltroAtivo(filtroAtivo === tipo ? null : tipo)}
-                        >
-                            <div className="header">
-                                <div className="icon">
-                                    {config.icon}
+                    {Object.entries(cardConfig).map(([tipo, config]) => {
+                        const total = contarTarefasPorTipo(tipo);
+                        const concluidas = contarConcluidasPorTipo(tipo);
+                        return (
+                            <Card 
+                                key={tipo}
+                                tipo={tipo}
+                                active={filtroAtivo === tipo}
+                                onClick={() => setFiltroAtivo(filtroAtivo === tipo ? null : tipo)}
+                            >
+                                <div className="header">
+                                    <div className="icon">
+                                        {config.icon}
+                                    </div>
+                                    <div className="titulo">{config.titulo}</div>
                                 </div>
-                                <div className="titulo">{config.titulo}</div>
-                            </div>
-                            <div className="quantidade">{contarTarefasPorTipo(tipo)}</div>
-                        </Card>
-                    ))}
+                                <div className="quantidade">{total}</div>
+                                {concluidas > 0 && (
+                                    <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
+                                        {concluidas} concluída{concluidas > 1 ? 's' : ''}
+                                    </div>
+                                )}
+                            </Card>
+                        );
+                    })}
                 </CardContainer>
                 
                 <DataTableAtividades tarefas={tarefasFiltradas} />
