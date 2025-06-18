@@ -15,7 +15,7 @@ import http from '@http';
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 8px;
     width: 100%;
 `
 

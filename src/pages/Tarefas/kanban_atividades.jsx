@@ -12,7 +12,6 @@ const KanbanLayout = styled.div`
     display: flex;
     gap: 0px;
     height: calc(100vh - 140px);
-    margin-top: -20px;
 `
 
 const VerticalMenu = styled.div`
@@ -21,7 +20,7 @@ const VerticalMenu = styled.div`
     gap: 0px;
     min-width: 200px;
     background: white;
-    padding: 8px 0px 48px 0px;
+    padding: 2px 0px 48px 0px;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     justify-content: space-between;

@@ -30,7 +30,7 @@ const Card = styled.div`
         return '#fff';
     }};
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
     flex: 1;
@@ -139,8 +139,8 @@ const AtividadesLista = () => {
         : context;
 
     return (
-        <Frame>
-            <Container gap="32px">
+        <Frame gap="12px">
+            <Container gap="12px">
                 <CardContainer>
                     {Object.entries(cardConfig).map(([tipo, config]) => (
                         <Card 
