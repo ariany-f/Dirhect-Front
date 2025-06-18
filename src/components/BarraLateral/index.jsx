@@ -298,6 +298,14 @@ function BarraLateral({ $sidebarOpened }) {
             permission: 'view_tarefa',
         },
         {
+            id: 19,
+            url: '/atividades',
+            pageTitulo: 'Atividades',
+            icone: <BsHourglassSplit size={20} className="icon" />,
+            itemTitulo: 'Atividades',
+            permission: 'view_tarefa',
+        },
+        {
             id: 11,
             url: '/colaborador',
             pageTitulo: 'Colaboradores',
@@ -384,6 +392,7 @@ function BarraLateral({ $sidebarOpened }) {
       'Pedidos',
       'Movimentação',
       'Tarefas',
+      'Atividades',
       'Lançtos de Folha'
     ];
 
