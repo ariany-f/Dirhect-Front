@@ -335,7 +335,9 @@ function DataTableAtividades({ tarefas }) {
                     fontSize: '12px',
                     fontWeight: '400'
                 }}>
-                    {texto}
+                    {texto == 'Alta' ? 
+                        <b style={{color: cor}}>{texto}</b>
+                    : texto}
                 </div>
             </div>
         );
