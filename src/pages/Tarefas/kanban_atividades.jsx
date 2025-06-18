@@ -6,7 +6,7 @@ import Container from '@components/Container'
 import { DndProvider, useDrag, useDrop } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import http from '@http';
-import { FaInbox, FaSpinner } from 'react-icons/fa';
+import { FaInbox, FaSpinner, FaTimes } from 'react-icons/fa';
 
 const KanbanLayout = styled.div`
     display: flex;
@@ -534,6 +534,54 @@ const DroppableColumn = ({ status, children, onDrop }) => {
     );
 };
 
+const FilterContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 8px;
+    margin-top: 0px;
+`
+
+const FilterButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: ${props => props.$active ? props.$bgColor : '#fff'};
+    border: 1px solid ${props => props.$color};
+    justify-content: space-between;
+
+    & span {
+     color: ${props => props.$active ? '#fff' : props.$color};
+    }
+
+    &:hover {
+        background: ${props => props.$active ? props.$bgColor : `${props.$bgColor}40`};
+        color: ${props => props.$active ? '#fff' : props.$color};
+    }
+
+    .remove-icon svg * {
+        display: flex;
+        align-items: center;
+        margin-left: 4px;
+        color: ${props => props.$active ? '#fff' : props.$color};
+    }
+`
+
+const FilterLabel = styled.div`
+    color: var(--black);
+    font-size: 14px;
+    padding: 6px 8px;
+    text-align: left;
+    margin-top: 48px;
+`
+
 const AtividadesKanban = () => {
     const tarefas = useOutletContext();
     const [columns, setColumns] = useState({
@@ -542,7 +590,35 @@ const AtividadesKanban = () => {
         em_andamento: [],
         concluida: []
     });
-    const [activeSection, setActiveSection] = useState('novas'); // 'novas' ou 'andamento'
+    const [activeSection, setActiveSection] = useState('novas');
+    const [selectedTypes, setSelectedTypes] = useState(['admissao']);
+
+    const tiposAtividade = [
+        { 
+            tipo: 'admissao', 
+            label: 'Admissão',
+            color: '#1a73e8',
+            bgColor: '#1a73e8'
+        },
+        { 
+            tipo: 'demissao', 
+            label: 'Rescisão',
+            color: '#dc3545',
+            bgColor: '#dc3545'
+        },
+        { 
+            tipo: 'ferias', 
+            label: 'Férias',
+            color: '#ffa000',
+            bgColor: '#ffa000'
+        },
+        { 
+            tipo: 'envio_variaveis', 
+            label: 'Envio Variáveis',
+            color: '#28a745',
+            bgColor: '#28a745'
+        }
+    ];
 
     useEffect(() => {
         if (tarefas && Array.isArray(tarefas)) {
@@ -554,17 +630,29 @@ const AtividadesKanban = () => {
             };
 
             tarefas.forEach(tarefa => {
-                const status = tarefa.status || 'pendente';
-                if (newColumns[status]) {
-                    newColumns[status].push(tarefa);
-                } else {
-                    newColumns.pendente.push(tarefa);
+                // Só adiciona a tarefa se o tipo dela estiver selecionado nos filtros
+                if (selectedTypes.includes(tarefa.entidade_tipo)) {
+                    const status = tarefa.status || 'pendente';
+                    if (newColumns[status]) {
+                        newColumns[status].push(tarefa);
+                    } else {
+                        newColumns.pendente.push(tarefa);
+                    }
                 }
             });
 
             setColumns(newColumns);
         }
-    }, [tarefas]);
+    }, [tarefas, selectedTypes]);
+
+    const toggleTipoFilter = (tipo) => {
+        setSelectedTypes(prev => {
+            if (prev.includes(tipo)) {
+                return prev.filter(t => t !== tipo);
+            }
+            return [...prev, tipo];
+        });
+    };
 
     const moveCard = async (fromIndex, toIndex, sourceColumnId, targetColumnId) => {
         // Define o fluxo permitido
@@ -669,47 +757,69 @@ const AtividadesKanban = () => {
                                 <span className="count">{section.count}</span>
                             </MenuItem>
                         ))}
-                    </VerticalMenu>
-                    <DndProvider backend={HTML5Backend}>
-                        <KanbanContainer>
-                            <KanbanGroup>
-                                {sections[activeSection].columns.map(status => (
-                                    <Column key={status} $status={status}>
-                                        <div className="column-header">
-                                            <div className="title">
-                                                {status === 'pendente' && 'Pendente'}
-                                                {status === 'aprovada' && 'Aprovada'}
-                                                {status === 'em_andamento' && 'Em Andamento'}
-                                                {status === 'concluida' && 'Concluída'}
-                                            </div>
-                                            <div className="count">
-                                                {(columns[status] || []).length}
-                                            </div>
+                        
+                        <FilterLabel>Filtrar por Tipo</FilterLabel>
+                        <FilterContainer>
+                            {tiposAtividade.map(({ tipo, label, color, bgColor }) => (
+                                <FilterButton
+                                    key={tipo}
+                                    $active={selectedTypes.includes(tipo)}
+                                    $color={color}
+                                    $bgColor={bgColor}
+                                    onClick={() => toggleTipoFilter(tipo)}
+                                >
+                                    <span>{label}</span>
+                                    {selectedTypes.includes(tipo) && (
+                                        <div className="remove-icon">
+                                            <FaTimes size={12} />
                                         </div>
-                                        <DroppableColumn 
-                                            status={status}
-                                            onDrop={(item, targetStatus) => {
-                                                const sourceStatus = item.columnId;
-                                                const sourceIndex = item.index;
-                                                const targetIndex = columns[targetStatus].length;
-                                                moveCard(sourceIndex, targetIndex, sourceStatus, targetStatus);
-                                            }}
-                                        >
-                                            {(columns[status] || []).map((tarefa, index) => (
-                                                <DraggableCard
-                                                    key={tarefa.id}
-                                                    tarefa={tarefa}
-                                                    index={index}
-                                                    columnId={status}
-                                                    moveCard={moveCard}
-                                                />
-                                            ))}
-                                        </DroppableColumn>
-                                    </Column>
-                                ))}
-                            </KanbanGroup>
-                        </KanbanContainer>
-                    </DndProvider>
+                                    )}
+                                </FilterButton>
+                            ))}
+                        </FilterContainer>
+                    </VerticalMenu>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <DndProvider backend={HTML5Backend}>
+                            <KanbanContainer>
+                                <KanbanGroup>
+                                    {sections[activeSection].columns.map(status => (
+                                        <Column key={status} $status={status}>
+                                            <div className="column-header">
+                                                <div className="title">
+                                                    {status === 'pendente' && 'Pendente'}
+                                                    {status === 'aprovada' && 'Aprovada'}
+                                                    {status === 'em_andamento' && 'Em Andamento'}
+                                                    {status === 'concluida' && 'Concluída'}
+                                                </div>
+                                                <div className="count">
+                                                    {(columns[status] || []).length}
+                                                </div>
+                                            </div>
+                                            <DroppableColumn 
+                                                status={status}
+                                                onDrop={(item, targetStatus) => {
+                                                    const sourceStatus = item.columnId;
+                                                    const sourceIndex = item.index;
+                                                    const targetIndex = columns[targetStatus].length;
+                                                    moveCard(sourceIndex, targetIndex, sourceStatus, targetStatus);
+                                                }}
+                                            >
+                                                {(columns[status] || []).map((tarefa, index) => (
+                                                    <DraggableCard
+                                                        key={tarefa.id}
+                                                        tarefa={tarefa}
+                                                        index={index}
+                                                        columnId={status}
+                                                        moveCard={moveCard}
+                                                    />
+                                                ))}
+                                            </DroppableColumn>
+                                        </Column>
+                                    ))}
+                                </KanbanGroup>
+                            </KanbanContainer>
+                        </DndProvider>
+                    </div>
                 </KanbanLayout>
             </Container>
         </Frame>
