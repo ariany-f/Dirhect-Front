@@ -156,6 +156,8 @@ import MfaGenerate from '@pages/Login/mfa_generate'
 import Documentos from './pages/DocumentosRequeridos'
 import DocumentosConfiguracoes from './pages/DocumentosRequeridos/configuracoes'
 import SelecionarGrupo from '@pages/Login/selecionar-grupo'
+import Atividades from './pages/Tarefas/atividades'
+import AtividadesLista from './pages/Tarefas/lista_atividades'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -364,6 +366,10 @@ function AppRouter() {
               <Route path="tarefas" element={<Tarefas />} >
                 <Route index element={<TarefasLista />} />
                 <Route path="detalhes/:id" element={<DetalhesTarefas />} />
+              </Route>
+
+              <Route path="atividades" element={<Atividades />} >
+                <Route index element={<AtividadesLista />} />
               </Route>
 
               <Route path="movimentos" element={<Movimentos />} >
