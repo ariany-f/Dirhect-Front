@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState } from 'react';
 import DataTableAtividades from '@components/DataTableAtividades'
 import Frame from '@components/Frame'
 import Container from '@components/Container'
-import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaFileInvoiceDollar } from 'react-icons/fa'
+import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaFileInvoiceDollar, FaTasks } from 'react-icons/fa'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -42,6 +42,7 @@ const Card = styled.div`
         if (props.tipo === 'demissao') return '#dc3545';
         if (props.tipo === 'ferias') return '#ffa000';
         if (props.tipo === 'envio_variaveis') return '#28a745';
+        if (props.tipo === 'total') return 'var(--black)';
         return '#E5E7EB';
     }};
 
@@ -105,7 +106,7 @@ const Card = styled.div`
 const AtividadesLista = () => {
     const location = useLocation();
     const context = useOutletContext();
-    const [filtroAtivo, setFiltroAtivo] = useState('admissao');
+    const [filtroAtivo, setFiltroAtivo] = useState('total');
 
     const contarTarefasPorTipo = (tipo) => {
         if (!context) return 0;
@@ -117,40 +118,58 @@ const AtividadesLista = () => {
         return context.filter(tarefa => tarefa.entidade_tipo === tipo && tarefa.status === 'concluida').length;
     };
 
+    const contarTotalConcluidas = () => {
+        if (!context) return 0;
+        return context.filter(tarefa => tarefa.status === 'concluida').length;
+    };
+
     const cardConfig = {
+        total: {
+            icon: <FaTasks />,
+            titulo: 'Total',
+            tipo: 'total'
+        },
         admissao: {
             icon: <FaUserPlus />,
-            titulo: 'Admissões'
+            titulo: 'Admissões',
+            tipo: 'admissao'
         },
         demissao: {
             icon: <FaUserMinus />,
-            titulo: 'Rescisões'
+            titulo: 'Rescisões',
+            tipo: 'demissao'
         },
         ferias: {
             icon: <FaUmbrellaBeach />,
-            titulo: 'Férias'
+            titulo: 'Férias',
+            tipo: 'ferias'
         },
         envio_variaveis: {
             icon: <FaFileInvoiceDollar />,
-            titulo: 'Envio Variáveis'
+            titulo: 'Envio Variáveis',
+            tipo: 'envio_variaveis'
         }
     };
 
-    const tarefasFiltradas = filtroAtivo 
-        ? context?.filter(tarefa => tarefa.entidade_tipo === filtroAtivo)
-        : context;
+    const tarefasFiltradas = filtroAtivo === 'total'
+        ? context
+        : context?.filter(tarefa => tarefa.entidade_tipo === filtroAtivo);
 
     return (
         <Frame gap="12px">
             <Container gap="12px">
                 <CardContainer>
                     {Object.entries(cardConfig).map(([tipo, config]) => {
-                        const total = contarTarefasPorTipo(tipo);
-                        const concluidas = contarConcluidasPorTipo(tipo);
+                        const total = tipo === 'total' 
+                            ? (context?.length || 0)
+                            : contarTarefasPorTipo(tipo);
+                        const concluidas = tipo === 'total'
+                            ? contarTotalConcluidas()
+                            : contarConcluidasPorTipo(tipo);
                         return (
                             <Card 
                                 key={tipo}
-                                tipo={tipo}
+                                tipo={config.tipo}
                                 active={filtroAtivo === tipo}
                                 onClick={() => setFiltroAtivo(filtroAtivo === tipo ? null : tipo)}
                             >

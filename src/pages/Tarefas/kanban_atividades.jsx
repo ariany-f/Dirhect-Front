@@ -625,7 +625,7 @@ const AtividadesKanban = () => {
         concluida: []
     });
     const [activeSection, setActiveSection] = useState('novas');
-    const [selectedTypes, setSelectedTypes] = useState(['admissao']);
+    const [selectedTypes, setSelectedTypes] = useState([]);
 
     const tiposAtividade = [
         { 
@@ -668,8 +668,8 @@ const AtividadesKanban = () => {
             };
 
             tarefas.forEach(tarefa => {
-                // Só adiciona a tarefa se o tipo dela estiver selecionado nos filtros
-                if (selectedTypes.includes(tarefa.entidade_tipo)) {
+                // Se não houver filtros selecionados, mostra todas as tarefas
+                if (selectedTypes.length === 0 || selectedTypes.includes(tarefa.entidade_tipo)) {
                     const status = tarefa.status || 'pendente';
                     if (newColumns[status]) {
                         newColumns[status].push(tarefa);
