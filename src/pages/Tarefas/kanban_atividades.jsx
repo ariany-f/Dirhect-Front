@@ -194,7 +194,7 @@ const CardWrapper = styled.div`
         : '0 2px 4px rgba(0,0,0,0.05)'};
     border: 1px solid ${props => props.$isDragging ? '#e2e8f0' : '#f0f0f0'};
     cursor: grab;
-    transition: all 0.2s;
+    transition: all 0.25s;
     margin-bottom: ${props => props.$isDragging ? '24px' : '0'};
     position: relative;
     
@@ -205,7 +205,6 @@ const CardWrapper = styled.div`
     &:hover {
         transform: translateY(-1px);
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        background: #ffffff;
         border-color: #e2e8f0;
     }
 
@@ -770,7 +769,7 @@ const AtividadesKanban = () => {
     };
 
     const slaOptions = [
-        { value: 'todos', label: 'Todos', color: '#23272f', bgColor: '#f3f4f6' },
+        { value: 'todos', label: 'Todos', color: '#23272f', bgColor: '#353a40' },
         { value: 'dentro_prazo', label: 'Dentro do Prazo', color: '#6fcf97', bgColor: '#e8f5e9' },
         { value: 'proximo_prazo', label: 'Próximo do Prazo', color: '#ffc043', bgColor: '#fff8e1' },
         { value: 'atrasado', label: 'Atrasado', color: '#f76c6c', bgColor: '#ffe0e0' },
