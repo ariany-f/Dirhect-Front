@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator, FilterService } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight, MdFilterAltOff } from 'react-icons/md'
-import { FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaTimes, FaCheck } from 'react-icons/fa';
+import { FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaTimes, FaCheck, FaRobot } from 'react-icons/fa';
 import './DataTable.css'
 import CampoArquivo from '@components/CampoArquivo';
 import Botao from '@components/Botao';
@@ -62,6 +62,9 @@ function DataTableAtividades({ tarefas }) {
     }
 
     const representativeCheckTemplate = (rowData) => {
+        if (rowData.atividade_automatica) {
+            return <FaRobot size={18} fill="var(--info)" />;
+        }
         const handleChange = async (checked) => {
             if(rowData.status === 'em_andamento') {
                 try {

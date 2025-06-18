@@ -292,9 +292,9 @@ function BarraLateral({ $sidebarOpened }) {
         {
             id: 7,
             url: '/tarefas',
-            pageTitulo: 'Tarefas',
+            pageTitulo: 'Processos',
             icone: <GoTasklist size={20} fill="white" />, 
-            itemTitulo: 'Tarefas',
+            itemTitulo: 'Processos',
             permission: 'view_tarefa',
         },
         {
@@ -391,7 +391,7 @@ function BarraLateral({ $sidebarOpened }) {
       'Vagas',
       'Pedidos',
       'Movimentação',
-      'Tarefas',
+      'Processos',
       'Atividades',
       'Lançtos de Folha'
     ];

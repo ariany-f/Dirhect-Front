@@ -7,7 +7,7 @@ import { DndProvider, useDrag, useDrop } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import http from '@http';
 import Texto from '@components/Texto';
-import { FaInbox, FaSpinner, FaTimes, FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaArrowAltCircleRight, FaCheckCircle } from 'react-icons/fa';
+import { FaInbox, FaSpinner, FaTimes, FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaArrowAltCircleRight, FaCheckCircle, FaRobot } from 'react-icons/fa';
 import { CgArrowsExchangeAltV } from 'react-icons/cg';
 import { Toast } from 'primereact/toast';
 import { RiExchangeFill } from 'react-icons/ri';
@@ -534,7 +534,11 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId, columns, showConclui
                     </div>
                 </div>
             </div>
-            {tarefa.status === 'aprovada' ? (
+            {tarefa.atividade_automatica ? (
+                <div className="next-column-arrow" style={{ color: '#64748b' }}>
+                    <FaRobot fill="var(--info)" size={20} />
+                </div>
+            ) : tarefa.status === 'aprovada' ? (
                 <div className="next-column-arrow" style={{ color: '#1a73e8' }}>
                     <RiExchangeFill fill="var(--info)" size={20} />
                 </div>
