@@ -122,6 +122,13 @@ const AtividadesLista = () => {
         ).length;
     };
 
+    const contarTotalTarefasPorTipo = (tipo) => {
+        if (!context) return 0;
+        return context.filter(tarefa => 
+            tarefa.entidade_tipo === tipo
+        ).length;
+    };
+
     const contarConcluidasPorTipo = (tipo) => {
         if (!context) return 0;
         return context.filter(tarefa => tarefa.entidade_tipo === tipo && tarefa.status === 'concluida').length;
@@ -224,7 +231,7 @@ const AtividadesLista = () => {
                                 <div className="quantidade">{total}</div>
                                 {concluidas > 0 && (
                                     <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
-                                        {concluidas} concluída{concluidas > 1 ? 's' : ''}
+                                        {concluidas} de {tipo === 'total' ? context?.length : contarTotalTarefasPorTipo(tipo)} concluída{concluidas > 1 ? 's' : ''}
                                     </div>
                                 )}
                             </Card>

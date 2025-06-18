@@ -81,14 +81,14 @@ const Atividades = () => {
                     onClick={() => handleTabChange('lista')}
                 >
                     <FaList fill={!location.pathname.includes('/kanban') ? 'white' : '#000'} />
-                    <Texto color={!location.pathname.includes('/kanban') ? 'white' : '#000'}>Lista</Texto>
+                    <Texto color={!location.pathname.includes('/kanban') ? 'white' : '#000'}>Fila</Texto>
                 </TabButton>
                 <TabButton 
                     active={location.pathname.includes('/kanban')} 
                     onClick={() => handleTabChange('kanban')}
                 >
                     <FaColumns fill={location.pathname.includes('/kanban') ? 'white' : '#000'} />
-                    <Texto color={location.pathname.includes('/kanban') ? 'white' : '#000'}>Kanban</Texto>
+                    <Texto color={location.pathname.includes('/kanban') ? 'white' : '#000'}>Cartões</Texto>
                 </TabButton>
             </TabPanel>
             <Outlet context={listaTarefas} />

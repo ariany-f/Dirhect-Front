@@ -6,7 +6,8 @@ import Container from '@components/Container'
 import { DndProvider, useDrag, useDrop } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import http from '@http';
-import { FaInbox, FaSpinner, FaTimes, FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar } from 'react-icons/fa';
+import Texto from '@components/Texto';
+import { FaInbox, FaSpinner, FaTimes, FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaArrowAltCircleRight, FaCheckCircle } from 'react-icons/fa';
 import { Toast } from 'primereact/toast';
 
 const KanbanLayout = styled.div`
@@ -94,17 +95,6 @@ const KanbanGroup = styled.div`
     background: rgba(0,0,0,0.02);
     border-radius: 12px;
     border: 1px dashed #e5e7eb;
-
-    &:not(:last-child)::after {
-        content: '→';
-        position: absolute;
-        right: -18px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 20px;
-        color: #9ca3af;
-        z-index: 1;
-    }
 `
 
 const Column = styled.div`
@@ -196,7 +186,7 @@ const Column = styled.div`
 const CardWrapper = styled.div`
     background: ${props => props.$isDragging ? '#ffffff' : '#f8fafc'};
     border-radius: 8px;
-    padding: 16px;
+    padding: 20px 16px;
     box-shadow: ${props => props.$isDragging 
         ? '0 8px 16px rgba(0,0,0,0.1)' 
         : '0 2px 4px rgba(0,0,0,0.05)'};
@@ -286,23 +276,47 @@ const CardWrapper = styled.div`
             }
         }
     }
+
+    .next-column-arrow {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        font-size: 24px;
+        color: #6B7280;
+        cursor: pointer;
+        transition: all 0.2s;
+        z-index: 2;
+        font-weight: 500;
+
+        &:hover {
+            transform: scale(1.01);
+        }
+
+        &.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    }
 `;
 
-const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
+const DraggableCard = ({ tarefa, index, moveCard, columnId, columns }) => {
     const ref = useRef(null);
+    const isDisabled = tarefa.status === 'concluida' || tarefa.status === 'aprovada';
     
     const [{ isDragging }, drag] = useDrag({
         type: 'CARD',
-        item: { id: tarefa.id, index, columnId, originalColumnId: columnId },
+        item: isDisabled ? undefined : { id: tarefa.id, index, columnId, originalColumnId: columnId },
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
+        canDrag: !isDisabled
     });
 
     const [, drop] = useDrop({
         accept: 'CARD',
         hover(item, monitor) {
-            if (!ref.current) return;
+            if (!ref.current || isDisabled) return;
             
             const dragIndex = item.index;
             const hoverIndex = index;
@@ -319,7 +333,6 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
             if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return;
             if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
 
-            // Apenas reordena na mesma coluna durante o hover
             if (sourceColumnId === targetColumnId) {
                 moveCard(dragIndex, hoverIndex, sourceColumnId, targetColumnId);
                 item.index = hoverIndex;
@@ -429,6 +442,30 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
         }
     };
 
+    const getNextColumn = (currentColumn) => {
+        switch(currentColumn) {
+            case 'pendente': return 'aprovada';
+            case 'aprovada': return 'pendente';
+            case 'em_andamento': return 'concluida';
+            case 'concluida': return 'em_andamento';
+            default: return null;
+        }
+    };
+
+    const handleNextColumn = () => {
+        const nextColumn = getNextColumn(columnId);
+        if (nextColumn) {
+            const targetIndex = columns[nextColumn].length;
+            moveCard(index, targetIndex, columnId, nextColumn);
+        }
+    };
+
+    const canMoveToNext = () => {
+        if (isDisabled) return false;
+        const nextColumn = getNextColumn(columnId);
+        return nextColumn !== null;
+    };
+
     drag(drop(ref));
 
     const slaInfo = getSLAInfo();
@@ -438,14 +475,20 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
             ref={ref}
             $isDragging={isDragging}
             style={{
-                opacity: isDragging ? 0.5 : 1,
-                cursor: 'move',
+                opacity: isDragging ? 0.5 : isDisabled ? 0.98 : 1,
+                cursor: isDisabled ? 'not-allowed' : 'move',
+                backgroundColor: isDisabled ? '#f3f4f6' : undefined,
+                // filter: isDisabled ? 'grayscale(0.1)' : undefined,
+                pointerEvents: isDisabled ? 'none' : 'auto'
             }}
         >
             <div className="card-header">
                 <div 
                     className="tipo-tag"
-                    style={getTipoStyle(tarefa.entidade_tipo)}
+                    style={{
+                        ...getTipoStyle(tarefa.entidade_tipo),
+                        opacity: isDisabled ? 0.7 : 1
+                    }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--white)' }}>
                         {getTipoIcon(tarefa.entidade_tipo)}
@@ -454,7 +497,12 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
                 </div>
                 <div 
                     className="prioridade-tag"
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                    style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '6px',
+                        opacity: isDisabled ? 0.7 : 1
+                    }}
                 >
                     {getPrioridadeStyle(tarefa.prioridade).icon === 'circle' ? (
                         <div style={{
@@ -486,10 +534,10 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
                     </div>
                 </div>
             </div>
-            <div className="descricao">
+            <div className="descricao" style={{ opacity: isDisabled ? 0.7 : 1 }}>
                 {tarefa.descricao}
             </div>
-            <div className="meta-info">
+            <div className="meta-info" style={{ opacity: isDisabled ? 0.7 : 1 }}>
                 <div className="sla-info">
                     <div className="sla-status">
                         <div 
@@ -503,6 +551,25 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId }) => {
                     </div>
                 </div>
             </div>
+            {isDisabled ? (
+                <div className="next-column-arrow" style={{ color: '#28a745' }}>
+                    <FaCheckCircle color="#28a745" fill="#28a745" size={18} />
+                </div>
+            ) : canMoveToNext() && (
+                <div 
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                    className="next-column-arrow"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleNextColumn();
+                    }}
+                >
+                    <Texto size={'12px'} color="var(--primaria)">
+                        {columnId === 'em_andamento' ? 'Concluir' : 'Aprovar'}
+                    </Texto>
+                    <FaArrowAltCircleRight fill="var(--primaria)" size={18} />
+                </div>
+            )}
         </CardWrapper>
     );
 };
@@ -511,9 +578,8 @@ const DroppableColumn = ({ status, children, onDrop }) => {
     const [{ isOver, canDrop }, drop] = useDrop({
         accept: 'CARD',
         canDrop: (item) => {
-            const sourceStatus = item.originalColumnId; // Usa a coluna original
+            const sourceStatus = item.originalColumnId;
             
-            // Define o fluxo permitido
             const allowedTransitions = {
                 'pendente': ['aprovada'],
                 'aprovada': ['pendente'],
@@ -524,7 +590,7 @@ const DroppableColumn = ({ status, children, onDrop }) => {
             return allowedTransitions[sourceStatus]?.includes(status) || false;
         },
         drop: (item) => {
-            if (item.originalColumnId !== status) { // Só processa se for uma coluna diferente
+            if (item.originalColumnId !== status) {
                 onDrop(item, status);
             }
         },
@@ -852,6 +918,7 @@ const AtividadesKanban = () => {
                                                         index={index}
                                                         columnId={status}
                                                         moveCard={moveCard}
+                                                        columns={columns}
                                                     />
                                                 ))}
                                             </DroppableColumn>
