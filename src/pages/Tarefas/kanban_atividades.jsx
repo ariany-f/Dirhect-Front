@@ -8,7 +8,9 @@ import { HTML5Backend } from "react-dnd-html5-backend"
 import http from '@http';
 import Texto from '@components/Texto';
 import { FaInbox, FaSpinner, FaTimes, FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaArrowAltCircleRight, FaCheckCircle } from 'react-icons/fa';
+import { CgArrowsExchangeAltV } from 'react-icons/cg';
 import { Toast } from 'primereact/toast';
+import { RiExchangeFill } from 'react-icons/ri';
 
 const KanbanLayout = styled.div`
     display: flex;
@@ -533,7 +535,11 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId, columns, showConclui
                     </div>
                 </div>
             </div>
-            {isDisabled ? (
+            {tarefa.status === 'aprovada' ? (
+                <div className="next-column-arrow" style={{ color: '#1a73e8' }}>
+                    <RiExchangeFill fill="var(--info)" size={20} />
+                </div>
+            ) : isDisabled ? (
                 <div className="next-column-arrow" style={{ color: '#28a745' }}>
                     <FaCheckCircle color="#28a745" fill="#28a745" size={18} />
                 </div>
@@ -620,12 +626,12 @@ const FilterButton = styled.button`
     cursor: pointer;
     transition: all 0.2s;
     background: ${props => props.$active ? `linear-gradient(90deg, ${props.$color} 85%, ${props.$bgColor} 100%)` : 'transparent'};
-    color: ${props => props.$active ? 'white' : props.$color};
+    color: ${props => props.$active ? 'white' : '#23272f'};
     width: 100%;
     text-align: left;
 
     & span {
-        color: ${props => props.$active ? 'white' : props.$color};
+        color: ${props => props.$active ? 'white' : '#23272f'};
     }
 
     .filter-content {
@@ -635,8 +641,8 @@ const FilterButton = styled.button`
     }
 
     & svg * {
-        color: ${props => props.$active ? '#fff' : props.$color};
-        fill: ${props => props.$active ? '#fff' : props.$color};
+        color: ${props => props.$active ? '#fff' : '#23272f'};
+        fill: ${props => props.$active ? '#fff' : '#23272f'};
     }
 
     &:hover {
@@ -649,7 +655,7 @@ const FilterButton = styled.button`
         opacity: 0.7;
         
         svg * {
-            color: ${props => props.$active ? '#fff' : props.$color};
+            color: ${props => props.$active ? '#fff' : '#23272f'};
         }
     }
 `
@@ -764,11 +770,11 @@ const AtividadesKanban = () => {
     };
 
     const slaOptions = [
-        { value: 'todos', label: 'Todos', color: '#64748b', bgColor: '#e5e7eb' },
-        { value: 'dentro_prazo', label: 'Dentro do Prazo', color: '#28a745', bgColor: '#e8f5e9' },
-        { value: 'proximo_prazo', label: 'Próximo do Prazo', color: '#ffa000', bgColor: '#fff8e1' },
-        { value: 'atrasado', label: 'Atrasado', color: '#dc3545', bgColor: '#ffe0e0' },
-        { value: 'concluido', label: 'Concluído', color: '#1a5d32', bgColor: '#d1f5e0' },
+        { value: 'todos', label: 'Todos', color: '#23272f', bgColor: '#f3f4f6' },
+        { value: 'dentro_prazo', label: 'Dentro do Prazo', color: '#6fcf97', bgColor: '#e8f5e9' },
+        { value: 'proximo_prazo', label: 'Próximo do Prazo', color: '#ffc043', bgColor: '#fff8e1' },
+        { value: 'atrasado', label: 'Atrasado', color: '#f76c6c', bgColor: '#ffe0e0' },
+        { value: 'concluido', label: 'Concluído', color: '#4e9a7c', bgColor: '#d1f5e0' },
     ];
 
     const moveCard = async (fromIndex, toIndex, sourceColumnId, targetColumnId) => {
