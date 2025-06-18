@@ -300,7 +300,7 @@ const CardWrapper = styled.div`
     }
 `;
 
-const DraggableCard = ({ tarefa, index, moveCard, columnId, columns }) => {
+const DraggableCard = ({ tarefa, index, moveCard, columnId, columns, showConcluir }) => {
     const ref = useRef(null);
     const isDisabled = tarefa.status === 'concluida' || tarefa.status === 'aprovada';
     
@@ -403,33 +403,15 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId, columns }) => {
         }
     };
 
-    const getSLAInfo = () => {
+    const getSLAInfo = (tarefa) => {
         const dataInicio = new Date(tarefa.criado_em);
         const dataAgendada = new Date(tarefa.agendado_para);
         const hoje = new Date();
-        const diasEmAberto = Math.ceil((hoje - dataInicio) / (1000 * 60 * 60 * 24));
-        
-        let cor = '';
-        let texto = '';
-        
-        if (tarefa.status === 'concluida') {
-            cor = '#28a745';
-            texto = 'Concluída';
-        } else {
-            const diasAteEntrega = Math.ceil((dataAgendada - hoje) / (1000 * 60 * 60 * 24));
-            if (diasAteEntrega >= 2) {
-                cor = '#28a745';
-                texto = 'Dentro do prazo';
-            } else if (diasAteEntrega > 0) {
-                cor = '#ffa000';
-                texto = 'Próximo do prazo';
-            } else {
-                cor = '#dc3545';
-                texto = 'Em atraso';
-            }
-        }
-        
-        return { cor, texto, diasEmAberto };
+        if (tarefa.status === 'concluida') return 'concluido';
+        const diasAteEntrega = Math.ceil((dataAgendada - hoje) / (1000 * 60 * 60 * 24));
+        if (diasAteEntrega >= 2) return 'dentro_prazo';
+        if (diasAteEntrega > 0) return 'proximo_prazo';
+        return 'atrasado';
     };
 
     const getTipoIcon = (tipo) => {
@@ -468,7 +450,7 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId, columns }) => {
 
     drag(drop(ref));
 
-    const slaInfo = getSLAInfo();
+    const slaInfo = getSLAInfo(tarefa);
 
     return (
         <CardWrapper
@@ -542,12 +524,12 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId, columns }) => {
                     <div className="sla-status">
                         <div 
                             className="sla-dot" 
-                            style={{ backgroundColor: slaInfo.cor }}
+                            style={{ backgroundColor: slaInfo === 'concluido' ? '#28a745' : slaInfo === 'dentro_prazo' ? '#28a745' : slaInfo === 'proximo_prazo' ? '#ffa000' : '#dc3545' }}
                         />
-                        <div style={{ color: slaInfo.cor }}>{slaInfo.texto}</div>
+                        <div style={{ color: slaInfo === 'concluido' ? '#28a745' : slaInfo === 'dentro_prazo' ? '#28a745' : slaInfo === 'proximo_prazo' ? '#ffa000' : '#dc3545' }}>{slaInfo === 'concluido' ? 'Concluída' : slaInfo === 'dentro_prazo' ? 'Dentro do prazo' : slaInfo === 'proximo_prazo' ? 'Próximo do prazo' : 'Em atraso'}</div>
                     </div>
                     <div className="dias-aberto">
-                        {slaInfo.diasEmAberto} dia(s) em aberto
+                        {slaInfo === 'concluido' ? 'Concluída' : slaInfo === 'dentro_prazo' ? 'Dentro do prazo' : slaInfo === 'proximo_prazo' ? 'Próximo do prazo' : 'Em atraso'}
                     </div>
                 </div>
             </div>
@@ -637,13 +619,13 @@ const FilterButton = styled.button`
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
-    background: ${props => props.$active ? `linear-gradient(to left, ${props.$color}, ${props.$bgColor})` : 'transparent'};
-    color: ${props => props.$active ? 'white' : '#374151'};
+    background: ${props => props.$active ? `linear-gradient(90deg, ${props.$color} 85%, ${props.$bgColor} 100%)` : 'transparent'};
+    color: ${props => props.$active ? 'white' : props.$color};
     width: 100%;
     text-align: left;
 
     & span {
-        color: ${props => props.$active ? 'white' : '#374151'};
+        color: ${props => props.$active ? 'white' : props.$color};
     }
 
     .filter-content {
@@ -658,7 +640,7 @@ const FilterButton = styled.button`
     }
 
     &:hover {
-        background: ${props => props.$active ? `linear-gradient(to left, ${props.$color}, ${props.$bgColor})` : '#f3f4f6'};
+        background: ${props => props.$active ? `linear-gradient(90deg, ${props.$color} 85%, ${props.$bgColor} 100%)` : '#f3f4f6'};
     }
 
     .remove-icon {
@@ -686,12 +668,11 @@ const AtividadesKanban = () => {
     const toast = useRef(null);
     const [columns, setColumns] = useState({
         pendente: [],
-        aprovada: [],
         em_andamento: [],
         concluida: []
     });
-    const [activeSection, setActiveSection] = useState('novas');
     const [selectedTypes, setSelectedTypes] = useState([]);
+    const [selectedSLA, setSelectedSLA] = useState([]);
 
     const tiposAtividade = [
         { 
@@ -724,30 +705,42 @@ const AtividadesKanban = () => {
         }
     ];
 
+    const getSLAInfo = (tarefa) => {
+        const dataInicio = new Date(tarefa.criado_em);
+        const dataAgendada = new Date(tarefa.agendado_para);
+        const hoje = new Date();
+        if (tarefa.status === 'concluida') return 'concluido';
+        const diasAteEntrega = Math.ceil((dataAgendada - hoje) / (1000 * 60 * 60 * 24));
+        if (diasAteEntrega >= 2) return 'dentro_prazo';
+        if (diasAteEntrega > 0) return 'proximo_prazo';
+        return 'atrasado';
+    };
+
     useEffect(() => {
         if (tarefas && Array.isArray(tarefas)) {
             const newColumns = {
                 pendente: [],
-                aprovada: [],
                 em_andamento: [],
                 concluida: []
             };
-
             tarefas.forEach(tarefa => {
-                // Se não houver filtros selecionados, mostra todas as tarefas
-                if (selectedTypes.length === 0 || selectedTypes.includes(tarefa.entidade_tipo)) {
-                    const status = tarefa.status || 'pendente';
-                    if (newColumns[status]) {
-                        newColumns[status].push(tarefa);
-                    } else {
+                const sla = getSLAInfo(tarefa);
+                if (
+                    (selectedTypes.length === 0 || selectedTypes.includes(tarefa.entidade_tipo)) &&
+                    (selectedSLA.length === 0 || selectedSLA.includes(sla))
+                ) {
+                    if (tarefa.status === 'pendente') {
                         newColumns.pendente.push(tarefa);
+                    } else if (tarefa.status === 'em_andamento' || tarefa.status === 'aprovada') {
+                        newColumns.em_andamento.push(tarefa);
+                    } else if (tarefa.status === 'concluida') {
+                        newColumns.concluida.push(tarefa);
                     }
                 }
             });
-
             setColumns(newColumns);
         }
-    }, [tarefas, selectedTypes]);
+    }, [tarefas, selectedTypes, selectedSLA]);
 
     const toggleTipoFilter = (tipo) => {
         setSelectedTypes(prev => {
@@ -758,22 +751,38 @@ const AtividadesKanban = () => {
         });
     };
 
+    const toggleSLAFilter = (value) => {
+        if (value === 'todos') {
+            setSelectedSLA([]);
+        } else {
+            setSelectedSLA(prev =>
+                prev.includes(value)
+                    ? prev.filter(v => v !== value)
+                    : [...prev, value]
+            );
+        }
+    };
+
+    const slaOptions = [
+        { value: 'todos', label: 'Todos', color: '#64748b', bgColor: '#e5e7eb' },
+        { value: 'dentro_prazo', label: 'Dentro do Prazo', color: '#28a745', bgColor: '#e8f5e9' },
+        { value: 'proximo_prazo', label: 'Próximo do Prazo', color: '#ffa000', bgColor: '#fff8e1' },
+        { value: 'atrasado', label: 'Atrasado', color: '#dc3545', bgColor: '#ffe0e0' },
+        { value: 'concluido', label: 'Concluído', color: '#1a5d32', bgColor: '#d1f5e0' },
+    ];
+
     const moveCard = async (fromIndex, toIndex, sourceColumnId, targetColumnId) => {
         // Define o fluxo permitido
         const allowedTransitions = {
-            'pendente': ['aprovada'],
-            'aprovada': ['pendente'],
-            'em_andamento': ['concluida'],
-            'concluida': ['em_andamento']
+            'pendente': ['em_andamento'],
+            'em_andamento': ['concluida']
         };
 
         if (!allowedTransitions[sourceColumnId]?.includes(targetColumnId)) {
             return;
         }
 
-        // Salva o estado anterior antes do movimento otimista
         const previousColumns = JSON.parse(JSON.stringify(columns));
-
         const sourceCards = Array.from(columns[sourceColumnId]);
         const targetCards = sourceColumnId === targetColumnId 
             ? sourceCards 
@@ -781,10 +790,13 @@ const AtividadesKanban = () => {
 
         const [movedCard] = sourceCards.splice(fromIndex, 1);
         const originalStatus = movedCard.status;
-        movedCard.status = targetColumnId;
+        if (sourceColumnId === 'pendente' && targetColumnId === 'em_andamento') {
+            movedCard.status = 'em_andamento';
+        } else if (sourceColumnId === 'em_andamento' && targetColumnId === 'concluida') {
+            movedCard.status = 'concluida';
+        }
         targetCards.splice(toIndex, 0, movedCard);
 
-        // Atualiza o estado imediatamente (movimento otimista)
         const newColumns = {
             ...columns,
             [sourceColumnId]: sourceCards,
@@ -794,50 +806,22 @@ const AtividadesKanban = () => {
 
         try {
             let endpoint = '';
-            switch (targetColumnId) {
-                case 'aprovada':
-                    endpoint = `/tarefas/${movedCard.id}/aprovar/`;
-                    break;
-                case 'em_andamento':
-                    endpoint = `/tarefas/${movedCard.id}/iniciar/`;
-                    break;
-                case 'concluida':
-                    endpoint = `/tarefas/${movedCard.id}/concluir/`;
-                    break;
-                case 'pendente':
-                    endpoint = `/tarefas/${movedCard.id}/reprovar/`;
-                    break;
-                default:
-                    return;
+            if (sourceColumnId === 'pendente' && targetColumnId === 'em_andamento') {
+                endpoint = `/tarefas/${movedCard.id}/aprovar/`;
+            } else if (sourceColumnId === 'em_andamento' && targetColumnId === 'concluida') {
+                endpoint = `/tarefas/${movedCard.id}/concluir/`;
+            } else {
+                return;
             }
-
             await http.post(endpoint);
         } catch (error) {
-            console.error('Erro ao atualizar status:', error);
-            // Exibe o toast de erro
             toast.current.show({
                 severity: 'error',
                 summary: 'Erro ao atualizar status',
                 detail: 'Não foi possível atualizar o status da tarefa. A operação foi revertida.',
                 life: 5000
             });
-            // Restaura o estado anterior
             setColumns(previousColumns);
-        }
-    };
-
-    const sections = {
-        novas: {
-            title: 'Novas Tarefas',
-            icon: <FaInbox size={16} />,
-            columns: ['pendente', 'aprovada'],
-            count: (columns['pendente']?.length || 0) + (columns['aprovada']?.length || 0)
-        },
-        andamento: {
-            title: 'Em Progresso',
-            icon: <FaSpinner size={16} />,
-            columns: ['em_andamento', 'concluida'],
-            count: (columns['em_andamento']?.length || 0) + (columns['concluida']?.length || 0)
         }
     };
 
@@ -847,19 +831,6 @@ const AtividadesKanban = () => {
                 <Toast ref={toast} />
                 <KanbanLayout>
                     <VerticalMenu>
-                        <div>
-                        {Object.entries(sections).map(([key, section]) => (
-                            <MenuItem
-                                key={key}
-                                $active={activeSection === key}
-                                onClick={() => setActiveSection(key)}
-                            >
-                                {section.icon}
-                                {section.title}
-                                <span className="count">{section.count}</span>
-                            </MenuItem>
-                        ))}
-                        </div>
                         <div>
                             <FilterLabel>Filtrar por Tipo</FilterLabel>
                             <FilterContainer>
@@ -883,20 +854,40 @@ const AtividadesKanban = () => {
                                     </FilterButton>
                                 ))}
                             </FilterContainer>
+                            <FilterLabel style={{ marginTop: 24 }}>Filtrar por SLA</FilterLabel>
+                            <FilterContainer>
+                                {slaOptions.map(opt => (
+                                    <FilterButton
+                                        key={opt.value}
+                                        $active={opt.value === 'todos' ? selectedSLA.length === 0 : selectedSLA.includes(opt.value)}
+                                        $color={opt.color}
+                                        $bgColor={opt.bgColor}
+                                        onClick={() => toggleSLAFilter(opt.value)}
+                                    >
+                                        <div className="filter-content">
+                                            <span>{opt.label}</span>
+                                            {opt.value !== 'todos' && selectedSLA.includes(opt.value) && (
+                                                <div className="remove-icon">
+                                                    <FaTimes size={10} />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </FilterButton>
+                                ))}
+                            </FilterContainer>
                         </div>
                     </VerticalMenu>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                         <DndProvider backend={HTML5Backend}>
                             <KanbanContainer>
                                 <KanbanGroup>
-                                    {sections[activeSection].columns.map(status => (
+                                    {['pendente', 'em_andamento', 'concluida'].map(status => (
                                         <Column key={status} $status={status}>
                                             <div className="column-header">
                                                 <div className="title">
                                                     {status === 'pendente' && 'Pendente'}
-                                                    {status === 'aprovada' && 'Aprovada'}
                                                     {status === 'em_andamento' && 'Em Andamento'}
-                                                    {status === 'concluida' && 'Concluída'}
+                                                    {status === 'concluida' && 'Concluído'}
                                                 </div>
                                                 <div className="count">
                                                     {(columns[status] || []).length}
@@ -919,6 +910,7 @@ const AtividadesKanban = () => {
                                                         columnId={status}
                                                         moveCard={moveCard}
                                                         columns={columns}
+                                                        showConcluir={status === 'em_andamento' && tarefa.status === 'em_andamento'}
                                                     />
                                                 ))}
                                             </DroppableColumn>
