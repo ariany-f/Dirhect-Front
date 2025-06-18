@@ -302,7 +302,7 @@ const VagasRegistro = () => {
                             name="dt_abertura" 
                             valor={dataAbertura} 
                             setValor={setDataAbertura} 
-                            type="text" 
+                            type="date" 
                             label="Data de Abertura" 
                             placeholder="Digite a data de abertura" />
                     </Col6>
@@ -313,7 +313,7 @@ const VagasRegistro = () => {
                             name="dt_encerramento" 
                             valor={dataEncerramento} 
                             setValor={setDataEncerramento} 
-                            type="text" 
+                            type="date" 
                             label="Data de Encerramento" 
                             placeholder="Digite a data de encerramento" />
                     </Col6>
