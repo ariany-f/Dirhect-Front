@@ -116,22 +116,20 @@ const AtividadesLista = () => {
 
     const contarTarefasPorTipo = (tipo) => {
         if (!context) return 0;
-        return context.filter(tarefa => tarefa.entidade_tipo === tipo).length;
+        return context.filter(tarefa => 
+            tarefa.entidade_tipo === tipo && 
+            tarefa.status !== 'concluida'
+        ).length;
     };
 
     const contarConcluidasPorTipo = (tipo) => {
         if (!context) return 0;
-        return context.filter(tarefa => 
-            tarefa.entidade_tipo === tipo && 
-            ['aprovada', 'concluida'].includes(tarefa.status)
-        ).length;
+        return context.filter(tarefa => tarefa.entidade_tipo === tipo && tarefa.status === 'concluida').length;
     };
 
     const contarTotalConcluidas = () => {
         if (!context) return 0;
-        return context.filter(tarefa => 
-            ['aprovada', 'concluida'].includes(tarefa.status)
-        ).length;
+        return context.filter(tarefa => tarefa.status === 'concluida').length;
     };
 
     const getSLAInfo = (tarefa) => {
@@ -205,7 +203,7 @@ const AtividadesLista = () => {
                 <CardContainer>
                     {Object.entries(cardConfig).map(([tipo, config]) => {
                         const total = tipo === 'total' 
-                            ? (context?.length || 0)
+                            ? context?.filter(tarefa => tarefa.status !== 'concluida').length || 0
                             : contarTarefasPorTipo(tipo);
                         const concluidas = tipo === 'total'
                             ? contarTotalConcluidas()

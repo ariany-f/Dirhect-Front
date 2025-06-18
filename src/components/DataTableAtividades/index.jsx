@@ -23,10 +23,10 @@ import { Dropdown } from 'primereact/dropdown';
 // Registra o filtro customizado para situação
 FilterService.register('custom_status', (value, filter) => {
     if (filter === 'nao_concluido') {
-        return ['pendente', 'em_andamento'].includes(value);
+        return ['pendente', 'em_andamento', 'aprovada'].includes(value);
     }
     if (filter === 'concluido') {
-        return value === 'concluida' || value === 'aprovada';
+        return value === 'concluida';
     }
     return true;
 });
@@ -588,9 +588,9 @@ function DataTableAtividades({ tarefas }) {
                     filterFunction={(rowData, filter) => {
                         if (!filter || filter === 'todos') return true;
                         if (filter === 'nao_concluido') {
-                            return ['pendente', 'em_andamento'].includes(rowData.status);
+                            return ['pendente', 'em_andamento', 'aprovada'].includes(rowData.status);
                         }
-                        if (filter === 'concluido') return rowData.status === 'concluida' || rowData.status === 'aprovada';
+                        if (filter === 'concluido') return rowData.status === 'concluida';
                         return true;
                     }}
                     showFilterMenu={true}
