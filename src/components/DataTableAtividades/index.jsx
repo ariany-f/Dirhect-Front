@@ -23,10 +23,10 @@ import { Dropdown } from 'primereact/dropdown';
 // Registra o filtro customizado para situação
 FilterService.register('custom_status', (value, filter) => {
     if (filter === 'nao_concluido') {
-        return ['pendente', 'aprovada', 'em_andamento'].includes(value);
+        return ['pendente', 'em_andamento'].includes(value);
     }
     if (filter === 'concluido') {
-        return value === 'concluida';
+        return value === 'concluida' || value === 'aprovada';
     }
     return true;
 });
@@ -193,7 +193,7 @@ function DataTableAtividades({ tarefas }) {
                             options.filterCallback(checked ? 'nao_concluido' : null);
                         }}
                     />
-                    <label htmlFor="status-nao-concluido" className="cursor-pointer">Não Concluído</label>
+                    <label htmlFor="status-nao-concluido" className="cursor-pointer">Em aberto</label>
                 </div>
                 <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                     <CheckboxContainer 
@@ -372,58 +372,19 @@ function DataTableAtividades({ tarefas }) {
         return <Texto width="100%" weight={600}>{rowData.descricao}</Texto>;
     }
     
-    // Função para calcular o SLA
-    const calcularSLA = (rowData) => {
-        const hoje = new Date();
-        let dataAgendada = rowData.agendado_para ? new Date(rowData.agendado_para) : null;
-
-        if (rowData.status === 'concluida') {
-            return 'concluido';
-        }
-
-        if (!dataAgendada || isNaN(dataAgendada.getTime())) {
-            return 'atrasado';
-        }
-
-        const hojeSemHora = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-        const agendadaSemHora = new Date(dataAgendada.getFullYear(), dataAgendada.getMonth(), dataAgendada.getDate());
-        const diffMs = agendadaSemHora - hojeSemHora;
-        const diasAteEntrega = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-
-        if (diasAteEntrega >= 2) {
-            return 'dentro_prazo';
-        } else if (diasAteEntrega > 0) {
-            return 'proximo_prazo';
-        } else {
-            return 'atrasado';
-        }
-    };
-
-    // Ordena as tarefas por prioridade e adiciona o campo sla calculado
-    const tarefasOrdenadas = Array.isArray(tarefas) ? [...tarefas].sort((a, b) => a.prioridade - b.prioridade).map(tarefa => ({
-        ...tarefa,
-        sla: calcularSLA(tarefa)
-    })) : [];
-
+    // Ordena as tarefas por prioridade
+    const tarefasOrdenadas = Array.isArray(tarefas) ? [...tarefas].sort((a, b) => a.prioridade - b.prioridade) : [];
+    
     const getSLAInfo = (rowData) => {
+        const dataInicio = new Date(rowData.criado_em);
+        const dataAgendada = new Date(rowData.agendado_para);
         const hoje = new Date();
-        let dataAgendada = rowData.agendado_para ? new Date(rowData.agendado_para) : null;
-
+        
         if (rowData.status === 'concluida') {
             return 'concluido';
         }
-
-        if (!dataAgendada || isNaN(dataAgendada.getTime())) {
-            // Se não tem data agendada, considera como atrasado
-            return 'atrasado';
-        }
-
-        // Zera horas para comparar apenas datas
-        const hojeSemHora = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-        const agendadaSemHora = new Date(dataAgendada.getFullYear(), dataAgendada.getMonth(), dataAgendada.getDate());
-        const diffMs = agendadaSemHora - hojeSemHora;
-        const diasAteEntrega = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-
+        
+        const diasAteEntrega = Math.ceil((dataAgendada - hoje) / (1000 * 60 * 60 * 24));
         if (diasAteEntrega >= 2) {
             return 'dentro_prazo';
         } else if (diasAteEntrega > 0) {
@@ -492,31 +453,30 @@ function DataTableAtividades({ tarefas }) {
 
     const representativeSLATemplate = (rowData) => {
         const dataInicio = new Date(rowData.criado_em);
+        const dataAgendada = new Date(rowData.agendado_para);
         const hoje = new Date();
         const diasEmAberto = Math.ceil((hoje - dataInicio) / (1000 * 60 * 60 * 24));
+        
         let cor = '';
         let texto = '';
-        switch (rowData.sla) {
-            case 'concluido':
-                cor = 'var(--green-500)';
-                texto = 'Concluída';
-                break;
-            case 'dentro_prazo':
+        
+        if (rowData.status === 'concluida') {
+            cor = 'var(--green-500)';
+            texto = 'Concluída';
+        } else {
+            const diasAteEntrega = Math.ceil((dataAgendada - hoje) / (1000 * 60 * 60 * 24));
+            if (diasAteEntrega >= 2) {
                 cor = 'var(--green-500)';
                 texto = 'Dentro do prazo';
-                break;
-            case 'proximo_prazo':
+            } else if (diasAteEntrega > 0) {
                 cor = '#ffa000';
                 texto = 'Próximo do prazo';
-                break;
-            case 'atrasado':
+            } else {
                 cor = 'var(--error-600)';
                 texto = 'Em atraso';
-                break;
-            default:
-                cor = '#666';
-                texto = '-';
+            }
         }
+        
         return (
             <div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
                 <div style={{
@@ -627,9 +587,9 @@ function DataTableAtividades({ tarefas }) {
                     filterFunction={(rowData, filter) => {
                         if (!filter || filter === 'todos') return true;
                         if (filter === 'nao_concluido') {
-                            return ['pendente', 'aprovada', 'em_andamento'].includes(rowData.status);
+                            return ['pendente', 'em_andamento'].includes(rowData.status);
                         }
-                        if (filter === 'concluido') return rowData.status === 'concluida';
+                        if (filter === 'concluido') return rowData.status === 'concluida' || rowData.status === 'aprovada';
                         return true;
                     }}
                     showFilterMenu={true}
@@ -648,7 +608,7 @@ function DataTableAtividades({ tarefas }) {
                     filterElement={slaFilterTemplate}
                     filterFunction={(rowData, filter) => {
                         if (!filter) return true;
-                        return rowData.sla === filter;
+                        return getSLAInfo(rowData) === filter;
                     }}
                     showFilterMenu={true}
                     filterClear={filterClearTemplate}

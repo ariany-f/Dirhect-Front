@@ -121,12 +121,17 @@ const AtividadesLista = () => {
 
     const contarConcluidasPorTipo = (tipo) => {
         if (!context) return 0;
-        return context.filter(tarefa => tarefa.entidade_tipo === tipo && tarefa.status === 'concluida').length;
+        return context.filter(tarefa => 
+            tarefa.entidade_tipo === tipo && 
+            ['aprovada', 'concluida'].includes(tarefa.status)
+        ).length;
     };
 
     const contarTotalConcluidas = () => {
         if (!context) return 0;
-        return context.filter(tarefa => tarefa.status === 'concluida').length;
+        return context.filter(tarefa => 
+            ['aprovada', 'concluida'].includes(tarefa.status)
+        ).length;
     };
 
     const getSLAInfo = (tarefa) => {
