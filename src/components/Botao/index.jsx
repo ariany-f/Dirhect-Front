@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Ripple } from 'primereact/ripple';
 
 const BotaoEstilizado = styled.button`
-    display: flex;
+    display: ${ props => props.$flex ? 'flex' : 'inline-block'};
     border-radius: 40px;
     cursor: pointer;
     transition: all .1s linear;
@@ -13,6 +13,7 @@ const BotaoEstilizado = styled.button`
     font-weight: 600;
     font-family: var(--fonte-primaria);
     font-size: ${ props => props.$fontSize ? props.$fontSize : '16px'};
+    flex-wrap: ${ props => props.$wrap ? 'wrap' : 'nowrap'};
     width: ${ props => props.$size ? props.$size : '100%'};
     line-height: 150%; /* 24px */
     justify-content: center;
@@ -26,18 +27,28 @@ const BotaoEstilizado = styled.button`
     }
 `
 
-function Botao( {children, extraclasses = '',estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px', outStyle='', disabled = false } ) {
+function Botao( {children, flex = true,  wrap = false, extraclasses = '',estilo = 'vermilion', model = 'filled', size = 'medium', tab = false, aoClicar = null, weight = 'bold', fontSize='16px', outStyle='', disabled = false } ) {
 
     const classes = `${estilo} ${model} ${size} ${weight} ${extraclasses} ${tab ? 'tab' : ''} p-ripple`;
+
+    if(size === 'small') {
+        size = '200px';
+    }
+    else if(size === 'medium') {
+        size = '300px';
+    }
+    else if(size === 'large') {
+        size = '400px';
+    }
    
     return (
         aoClicar ?
-            <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} onClick={aoClicar} className={classes} disabled={disabled}>
+            <BotaoEstilizado $wrap={wrap} $flex={flex} $style={outStyle} $fontSize={fontSize} $size={size} onClick={aoClicar} className={classes} disabled={disabled}>
                 {children}
                 <Ripple />
             </BotaoEstilizado>
         :
-            <BotaoEstilizado $style={outStyle} $fontSize={fontSize} $size={size} className={classes} disabled={disabled}>
+            <BotaoEstilizado $wrap={wrap} $flex={flex} $style={outStyle} $fontSize={fontSize} $size={size} className={classes} disabled={disabled}>
                 {children}
                 <Ripple />
             </BotaoEstilizado>
