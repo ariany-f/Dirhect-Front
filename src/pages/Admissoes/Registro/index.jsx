@@ -17,7 +17,7 @@ import styles from './../Candidatos.module.css'
 import { Stepper } from 'primereact/stepper';
 import { StepperPanel } from 'primereact/stepperpanel';
 import { ScrollPanel } from 'primereact/scrollpanel';
-import { HiArrowLeft, HiArrowRight } from 'react-icons/hi';
+import { HiArrowLeft, HiArrowRight, HiEye } from 'react-icons/hi';
 import { FaTrash, FaSave, FaEye, FaUpload } from 'react-icons/fa';
 import { CiCirclePlus } from 'react-icons/ci';
 import SwitchInput from '@components/SwitchInput';
@@ -507,7 +507,14 @@ const CandidatoRegistro = () => {
                     <ScrollPanel style={{ width: '100%', height: '380px'}}>
                         <StepDocumentos toast={toast} />
                     </ScrollPanel>
-                    <Frame padding="30px" alinhamento="end">
+                    <Frame padding="30px" estilo="spaced">
+                        <BotaoGrupo>
+                            {!self ? 
+                                <Botao estilo="neutro" aoClicar={() => navegar(`/admissao/registro/${id}/true`)}><HiEye/> Visão do Candidato</Botao>
+                                :
+                                <Botao estilo="neutro" aoClicar={() => navegar(`/admissao/registro/${id}`)}><HiEye/> Visão da Empresa</Botao>
+                            }
+                        </BotaoGrupo>
                         <BotaoGrupo>
                             <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
                         </BotaoGrupo>
