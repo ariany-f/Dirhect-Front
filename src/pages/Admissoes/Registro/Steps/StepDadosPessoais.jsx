@@ -54,6 +54,15 @@ const StepDadosPessoais = ({ classError, estados }) => {
             />
             <CampoTexto
                 camposVazios={classError}
+                name="cpf"
+                valor={candidato?.dados_candidato?.cpf ?? ''}
+                setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, cpf: valor })}
+                patternMask="999.999.999-99"
+                label="CPF"
+                placeholder="Digite o CPF"
+            />
+            <CampoTexto
+                camposVazios={classError}
                 name="email"
                 valor={candidato?.dados_candidato?.email ?? ''}
                 setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, email: valor })}
