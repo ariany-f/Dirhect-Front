@@ -7,9 +7,26 @@ import { FaTrash, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const StepExperiencia = () => {
     const { candidato, addArrayItem, updateArrayItem, removeArrayItem } = useCandidatoContext();
-    const [abertos, setAbertos] = useState([0]);
+    const [abertos, setAbertos] = useState(() => {
+        // Se não houver itens, retorna array vazio
+        if (!candidato.experiencia?.length) return [];
+        // Retorna array com o índice do último item
+        return [candidato.experiencia.length - 1];
+    });
 
     const toggleAcordeon = (idx) => {
+        const experiencia = candidato.experiencia[idx];
+        const isCompleto = experiencia.cargo &&
+                          experiencia.empresa &&
+                          experiencia.descricao &&
+                          experiencia.dataInicio &&
+                          experiencia.dataSaida;
+
+        // Se não estiver completo e estiver tentando fechar, não permite
+        if (!isCompleto && abertos.includes(idx)) {
+            return;
+        }
+
         setAbertos(prev => {
             if (prev.includes(idx)) {
                 return prev.filter(i => i !== idx);

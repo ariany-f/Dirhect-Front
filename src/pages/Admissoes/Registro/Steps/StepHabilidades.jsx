@@ -7,9 +7,22 @@ import { FaTrash, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const StepHabilidades = () => {
     const { candidato, addArrayItem, updateArrayItem, removeArrayItem } = useCandidatoContext();
-    const [abertos, setAbertos] = useState([0]);
+    const [abertos, setAbertos] = useState(() => {
+        // Se não houver itens, retorna array vazio
+        if (!candidato.habilidades?.length) return [];
+        // Retorna array com o índice do último item
+        return [candidato.habilidades.length - 1];
+    });
 
     const toggleAcordeon = (idx) => {
+        const habilidade = candidato.habilidades[idx];
+        const isCompleto = habilidade.nivel && habilidade.descricao;
+
+        // Se não estiver completo e estiver tentando fechar, não permite
+        if (!isCompleto && abertos.includes(idx)) {
+            return;
+        }
+
         setAbertos(prev => {
             if (prev.includes(idx)) {
                 return prev.filter(i => i !== idx);

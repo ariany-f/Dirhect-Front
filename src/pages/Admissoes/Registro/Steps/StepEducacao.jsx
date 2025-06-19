@@ -7,9 +7,26 @@ import { FaTrash, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const StepEducacao = () => {
     const { candidato, addArrayItem, updateArrayItem, removeArrayItem } = useCandidatoContext();
-    const [abertos, setAbertos] = useState([0]); // Primeiro item sempre aberto
+    const [abertos, setAbertos] = useState(() => {
+        // Se não houver itens, retorna array vazio
+        if (!candidato.educacao?.length) return [];
+        // Retorna array com o índice do último item
+        return [candidato.educacao.length - 1];
+    });
 
     const toggleAcordeon = (idx) => {
+        const educacao = candidato.educacao[idx];
+        const isCompleto = educacao.nivel &&
+                          educacao.instituicao &&
+                          educacao.curso &&
+                          educacao.dataInicio &&
+                          educacao.dataConclusao;
+
+        // Se não estiver completo e estiver tentando fechar, não permite
+        if (!isCompleto && abertos.includes(idx)) {
+            return;
+        }
+
         setAbertos(prev => {
             if (prev.includes(idx)) {
                 return prev.filter(i => i !== idx);
