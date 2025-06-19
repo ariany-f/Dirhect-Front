@@ -509,7 +509,7 @@ const CandidatoRegistro = () => {
                     </ScrollPanel>
                     <Frame padding="30px" alinhamento="end">
                         <BotaoGrupo>
-                            <Botao label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}><HiArrowRight fill="white"/> Salvar e Continuar</Botao>
+                            <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
                         </BotaoGrupo>
                     </Frame>
                 </StepperPanel>
