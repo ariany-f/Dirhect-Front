@@ -197,7 +197,7 @@ const CandidatoRegistro = () => {
     }, []);
 
     const handleSalvarAdmissao = async () => {
-        console.log(candidato)
+       
         if (!admissao?.id) return;
         try {
             // Função para remover a máscara BRL do salário
@@ -434,8 +434,63 @@ const CandidatoRegistro = () => {
     };
 
     const handleAceitarLGPD = async () => {
-        await handleSalvarAdmissao();
-        await concluirTarefa('aceite_lgpd');
+        try {
+            // Atualiza o estado local
+            await setCandidato(prev => ({
+                ...prev,
+                aceite_lgpd: true
+            }));
+
+            // Faz o upload do aceite na admissão
+            await http.put(`admissao/${admissao.id}/`, {
+                ...candidato,
+                aceite_lgpd: true
+            });
+
+            // Após confirmar que o aceite foi salvo, conclui a tarefa
+            await concluirTarefa('aceite_lgpd');
+            
+            // Atualiza o contexto com a tarefa concluída
+            const tarefaLGPD = candidato.tarefas.find(t => t.tipo_codigo === 'aceite_lgpd');
+            if (tarefaLGPD) {
+                const novasTarefas = candidato.tarefas.map(t => {
+                    if (t.id === tarefaLGPD.id) {
+                        return {
+                            ...t,
+                            status: 'concluida',
+                            status_display: 'Concluída',
+                            concluido_em: new Date().toISOString()
+                        };
+                    }
+                    return t;
+                });
+
+                setCandidato(prev => ({
+                    ...prev,
+                    tarefas: novasTarefas
+                }));
+            }
+
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Termo LGPD aceito com sucesso!',
+                life: 3000
+            });
+        } catch (error) {
+            // Em caso de erro, reverte o estado local
+            setCandidato(prev => ({
+                ...prev,
+                aceite_lgpd: false
+            }));
+
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao salvar o aceite da LGPD.',
+                life: 3000
+            });
+        }
     };
 
     const handleSalvarEContinuar = async () => {
@@ -557,7 +612,13 @@ const CandidatoRegistro = () => {
                             <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
                         </BotaoGrupo>
                         <BotaoGrupo>
-                            <Botao iconPos="right" aoClicar={handleAceitarLGPD}><FaSave fill="white"/> Aceitar e Salvar</Botao>
+                            <Botao 
+                                iconPos="right" 
+                                aoClicar={handleAceitarLGPD}
+                                disabled={candidato.aceite_lgpd}
+                            >
+                                <FaSave fill="white"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Salvar'}
+                            </Botao>
                         </BotaoGrupo>
                     </Frame>
                   </StepperPanel>

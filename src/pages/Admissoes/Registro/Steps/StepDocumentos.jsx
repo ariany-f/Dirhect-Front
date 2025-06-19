@@ -157,6 +157,11 @@ const StepDocumentos = ({ toast }) => {
         return '';
     };
 
+    const getExtensaoAceita = (documento) => {
+        if (!documento.ext_permitidas) return '.pdf,.jpg,.jpeg,.png';
+        return documento.ext_permitidas.split(',').map(ext => `.${ext.trim()}`).join(',');
+    };
+
     return (
         <div>
             {candidato?.documentos?.map((documento) => (
@@ -172,7 +177,7 @@ const StepDocumentos = ({ toast }) => {
                         <Instrucao>
                             <span>{documento.instrucao}</span>
                             <FormatosAceitos>
-                                Formatos aceitos: PDF, JPG, JPEG, PNG
+                                Formatos aceitos: {documento.ext_permitidas || 'PDF, JPG, JPEG, PNG'}
                             </FormatosAceitos>
                         </Instrucao>
                     )}
@@ -185,7 +190,7 @@ const StepDocumentos = ({ toast }) => {
                                     valor={item.arquivo}
                                     onFileChange={(arquivo) => handleUpload(documento.id, idx, arquivo)}
                                     label={documento.frente_verso ? (idx === 0 ? 'Frente do documento' : 'Verso do documento') : 'Arquivo'}
-                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    accept={getExtensaoAceita(documento)}
                                 />
                                 {item.upload_feito && item.arquivo && (
                                     <ArquivoEnviado>
