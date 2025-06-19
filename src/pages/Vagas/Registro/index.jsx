@@ -204,8 +204,8 @@ const VagasRegistro = () => {
             const novaVaga = {
                 titulo,
                 descricao,
-                dt_abertura: converterData(dataAbertura),
-                dt_encerramento: converterData(dataEncerramento),
+                dt_abertura: dataAbertura,
+                dt_encerramento: dataEncerramento,
                 deficiencia,
                 periculosidade: periculosidade?.code || null,
                 insalubridade: insalubridade || 0,
@@ -298,7 +298,6 @@ const VagasRegistro = () => {
                     <Col6>
                         <CampoTexto 
                             camposVazios={classError}
-                            patternMask={['99/99/9999']}
                             name="dt_abertura" 
                             valor={dataAbertura} 
                             setValor={setDataAbertura} 
@@ -309,7 +308,6 @@ const VagasRegistro = () => {
                     <Col6>
                         <CampoTexto 
                             camposVazios={classError}
-                            patternMask={['99/99/9999']}
                             name="dt_encerramento" 
                             valor={dataEncerramento} 
                             setValor={setDataEncerramento} 
