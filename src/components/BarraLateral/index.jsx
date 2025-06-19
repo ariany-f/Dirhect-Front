@@ -253,13 +253,6 @@ function BarraLateral({ $sidebarOpened }) {
             itemTitulo: 'Lançtos de Folha',
         },
         {
-            id: 8,
-            url: '/admissao/registro/1/true',
-            pageTitulo: 'Minha Admissão',
-            icone: <RiFileListFill size={20} className="icon" />,
-            itemTitulo: 'Minha Admissão',
-        },
-        {
             id: 9,
             url: '/colaborador/detalhes/109',
             pageTitulo: 'Meu Cadastro',
