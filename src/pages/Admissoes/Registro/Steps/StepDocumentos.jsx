@@ -173,7 +173,7 @@ const StepDocumentos = ({ toast }) => {
         if (arquivo instanceof File) return '';
         
         // Se já contém a URL completa, retorna como está
-        if (arquivo.includes('geral.dirhect.net')) {
+        if (arquivo.includes('dirhect.net')) {
             return arquivo;
         }
         
