@@ -104,7 +104,7 @@ const StepDocumentos = ({ toast }) => {
                 formData.append('item', itemIndex + 1);
             }
 
-            await http.post(`admissao/${candidato.id}/upload_documento/`, formData, {
+            const response = await http.post(`admissao/${candidato.id}/upload_documento/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -113,7 +113,7 @@ const StepDocumentos = ({ toast }) => {
             const novosItens = [...documento.itens];
             novosItens[itemIndex] = {
                 ...novosItens[itemIndex],
-                arquivo: arquivo,
+                arquivo: response.arquivo,
                 upload_feito: true
             };
 
@@ -171,6 +171,11 @@ const StepDocumentos = ({ toast }) => {
     const getArquivoUrl = (arquivo) => {
         if (!arquivo) return '';
         if (arquivo instanceof File) return '';
+        
+        // Se já contém a URL completa, retorna como está
+        if (arquivo.includes('geral.dirhect.net')) {
+            return arquivo;
+        }
         
         // Remove a primeira barra se existir
         const caminhoLimpo = arquivo.startsWith('/') ? arquivo.substring(1) : arquivo;
