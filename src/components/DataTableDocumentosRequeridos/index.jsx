@@ -7,19 +7,6 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import Texto from '@components/Texto';
 
 function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
-    const obrigatorioTemplate = (rowData) => (
-        <Tag 
-            value={rowData.obrigatorio ? 'Sim' : 'Não'} 
-            style={{ 
-                backgroundColor: rowData.obrigatorio ? 'var(--error)' : 'var(--neutro-400)', 
-                color: 'white', 
-                fontWeight: 600, 
-                fontSize: 13, 
-                borderRadius: 8, 
-                padding: '4px 12px' 
-            }} 
-        />
-    );
 
     const extPermitidasTemplate = (rowData) => (
         <Texto width="100%" weight={500}>{rowData.ext_permitidas}</Texto>
@@ -110,13 +97,6 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
                 header="Instrução" 
                 sortable
                 style={{ width: '20%' }} 
-            />
-            <Column 
-                body={obrigatorioTemplate} 
-                field="obrigatorio" 
-                header="Obrigatório" 
-                sortable
-                style={{ width: '10%' }} 
             />
             <Column 
                 body={actionTemplate} 
