@@ -1,10 +1,11 @@
 import React from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoArquivo from '@components/CampoArquivo';
+import BotaoSemBorda from '@components/BotaoSemBorda';
 import styled from 'styled-components';
 import http from '@http';
 import { useRef } from 'react';
-import { FaCheck, FaFile } from 'react-icons/fa';
+import { FaCheck, FaFile, FaEye } from 'react-icons/fa';
 
 const DocumentoContainer = styled.div`
     border: 1px solid var(--surface-border);
@@ -75,8 +76,13 @@ const ArquivoStatus = styled.div`
     display: flex;
     align-items: center;
     gap: 4px;
-    color: var(--green-600);
     font-size: 12px;
+`;
+
+const ArquivoAcoes = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
 `;
 
 const StepDocumentos = ({ toast }) => {
@@ -162,6 +168,15 @@ const StepDocumentos = ({ toast }) => {
         return documento.ext_permitidas.split(',').map(ext => `.${ext.trim()}`).join(',');
     };
 
+    const getArquivoUrl = (arquivo) => {
+        if (!arquivo) return '';
+        if (arquivo instanceof File) return '';
+        
+        // Remove a primeira barra se existir
+        const caminhoLimpo = arquivo.startsWith('/') ? arquivo.substring(1) : arquivo;
+        return `https://geral.dirhect.net/${caminhoLimpo}`;
+    };
+
     return (
         <div>
             {candidato?.documentos?.map((documento) => (
@@ -196,9 +211,17 @@ const StepDocumentos = ({ toast }) => {
                                     <ArquivoEnviado>
                                         <FaFile />
                                         <ArquivoNome>{getArquivoNome(item.arquivo)}</ArquivoNome>
-                                        <ArquivoStatus>
-                                            <FaCheck /> Enviado
-                                        </ArquivoStatus>
+                                        <ArquivoAcoes>
+                                            <ArquivoStatus>
+                                                <FaCheck /> Enviado
+                                            </ArquivoStatus>
+                                            <BotaoSemBorda 
+                                                aoClicar={() => window.open(getArquivoUrl(item.arquivo), '_blank')}
+                                                color="var(--primary-color)"
+                                            >
+                                                <FaEye /> Visualizar
+                                            </BotaoSemBorda>
+                                        </ArquivoAcoes>
                                     </ArquivoEnviado>
                                 )}
                             </div>
