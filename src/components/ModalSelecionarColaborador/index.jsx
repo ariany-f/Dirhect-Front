@@ -8,7 +8,7 @@ import { RiCloseFill } from 'react-icons/ri'
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
-import styles from './ModalFerias.module.css'
+import styles from './ModalSelecionarColaborador.module.css'
 import { useDepartamentoContext } from "@contexts/Departamento"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import http from '@http'
@@ -109,7 +109,7 @@ const SearchContainer = styled.div`
     }
 `;
 
-function ModalFerias({ opened = false, aoFechar, aoSelecionar }) {
+function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) {
     const [colaboradores, setColaboradores] = useState([]);
     const [busca, setBusca] = useState('');
     const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
@@ -206,4 +206,4 @@ function ModalFerias({ opened = false, aoFechar, aoSelecionar }) {
     )
 }
 
-export default ModalFerias
+export default ModalSelecionarColaborador

@@ -12,7 +12,7 @@ import ContainerHorizontal from "@components/ContainerHorizontal"
 import Container from "@components/Container"
 import styles from './Colaboradores.module.css'
 import { Skeleton } from 'primereact/skeleton'
-import { FaCopy, FaTrash } from 'react-icons/fa'
+import { FaCopy, FaTrash, FaUserTimes } from 'react-icons/fa'
 import { IoMdFemale, IoMdMale } from "react-icons/io";
 import { Toast } from 'primereact/toast'
 import http from '@http'
@@ -27,6 +27,9 @@ import { IoCopyOutline } from 'react-icons/io5';
 import styled from 'styled-components';
 import { BiFemale, BiMale } from 'react-icons/bi';
 import { ArmazenadorToken } from '@utils';
+import ModalDemissao from '@components/ModalDemissao';
+import { TiUserDelete } from "react-icons/ti";
+
 
 const Col12 = styled.div`
     display: flex;
@@ -140,6 +143,7 @@ function ColaboradorDetalhes() {
     const [tipoSituacao, setTipoSituacao] = useState(null)
     const [departamento, setDepartamento] = useState(null)
     const [centroCusto, setCentroCusto] = useState(null)
+    const [modalDemissaoAberto, setModalDemissaoAberto] = useState(false);
     const navegar = useNavigate()
     const toast = useRef(null)
 
@@ -149,6 +153,26 @@ function ColaboradorDetalhes() {
         accept: 'Sim',
         reject: 'Não'
     })
+
+    const handleSalvarDemissao = (dadosDemissao) => {
+        http.post(`funcionario/${id}/solicita_demissao`, {
+            ...dadosDemissao
+        })
+        .then(() => {
+            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Solicitação de demissão enviada com sucesso!', life: 3000 });
+            setModalDemissaoAberto(false);
+            // Re-fetch collaborator data to update status
+            http.get(`funcionario/${id}/?format=json`)
+                .then(response => {
+                    setColaborador(response);
+                });
+        })
+        .catch(erro => {
+            console.error("Erro ao enviar solicitação de demissão", erro);
+            const errorMessage = erro.response?.data?.detail || 'Falha ao enviar solicitação de demissão.';
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
+        });
+    };
 
     useEffect(() => {
         if(!colaborador)
@@ -229,21 +253,30 @@ function ColaboradorDetalhes() {
             <HeaderContainer gap="24px" alinhamento="space-between">
                 {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                     <>
-                        <BotaoVoltar linkFixo="/colaborador" />
-                        <BotaoGrupo align="start">
-                            <Titulo align="left">
-                                <FrameVertical gap="10px">
-                                    <h3>{colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}</h3>
-                                    {representativSituacaoTemplate()}
-                                </FrameVertical>
-                                {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica.email &&
-                                    <>
-                                        <p>{colaborador?.funcionario_pessoa_fisica.email}</p>  
-                                        <IoCopyOutline className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.email)}} />
-                                    </>
-                                }
-                            </Titulo>
-                        </BotaoGrupo>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px'}}>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '24px'}}>
+                            <BotaoVoltar linkFixo="/colaborador" />
+                            <BotaoGrupo align="start">
+                                <Titulo align="left">
+                                    <FrameVertical gap="10px">
+                                        <h3>{colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}</h3>
+                                        {representativSituacaoTemplate()}
+                                    </FrameVertical>
+                                    {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica.email &&
+                                        <>
+                                            <p>{colaborador?.funcionario_pessoa_fisica.email}</p>  
+                                            <IoCopyOutline className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.email)}} />
+                                        </>
+                                    }
+                                </Titulo>
+                            </BotaoGrupo>
+                            </div>
+                            {colaborador?.tipo_situacao_descricao == 'Ativo' &&
+                                <BotaoGrupo>
+                                    <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="vermilion" size="small"><FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> Demissão</Botao>
+                                </BotaoGrupo>
+                            }
+                        </div>
                     </>
                     : <>
                         <Skeleton variant="rectangular" width={70} height={20} />
@@ -401,6 +434,12 @@ function ColaboradorDetalhes() {
                 : <Skeleton variant="rectangular" width={900} height={420} />
                 }
             </Col12Vertical>
+            <ModalDemissao 
+                opened={modalDemissaoAberto}
+                aoFechar={() => setModalDemissaoAberto(false)}
+                colaborador={colaborador}
+                aoSalvar={handleSalvarDemissao}
+            />
         </Frame>
     )
 }

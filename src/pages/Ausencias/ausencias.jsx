@@ -8,7 +8,7 @@ import styled from "styled-components"
 import { Link, useOutletContext } from "react-router-dom"
 import DataTableAusencias from '@components/DataTableAusencias'
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
-import ModalFerias from '@components/ModalFerias'
+import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -64,7 +64,7 @@ function AusenciasListagem() {
         <ConteudoFrame>          
             <DataTableAusencias ausencias={ausencias} />
           
-            <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+            <ModalSelecionarColaborador opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
     )
 }

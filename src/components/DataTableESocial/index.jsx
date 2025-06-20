@@ -11,7 +11,7 @@ import Botao from '@components/Botao';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
-import ModalFerias from '../ModalFerias';
+import ModalSelecionarColaborador from '../ModalSelecionarColaborador';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 
 function DataTableESocial({ historico }) {
@@ -63,7 +63,7 @@ function DataTableESocial({ historico }) {
                     <Column field="id_origem" header="Id Origem" style={{ width: '35%' }}></Column>
                     <Column field="recibo" header="Recibo" style={{ width: '35%' }}></Column>
                 </DataTable>
-                <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+                <ModalSelecionarColaborador opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Frame>
         </>
     )

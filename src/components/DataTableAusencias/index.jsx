@@ -9,7 +9,7 @@ import BotaoGrupo from '@components/BotaoGrupo'
 import { useNavigate } from 'react-router-dom';
 import CampoTexto from '@components/CampoTexto';
 import { useEffect, useState } from 'react';
-import ModalFerias from '../ModalFerias';
+import ModalSelecionarColaborador from '../ModalSelecionarColaborador';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
 import styles from '@pages/Ausencias/Contratos.module.css'
@@ -103,7 +103,7 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
                 <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '15%' }}></Column>
             </DataTable>
-            <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+            <ModalSelecionarColaborador opened={modalOpened} aoFechar={() => setModalOpened(false)} />
 
         </>
     )

@@ -13,7 +13,7 @@ import DataTableDependentes from '@components/DataTableDependentes'
 import DataTableFerias from '@components/DataTableFerias'
 import { useSessaoUsuarioContext } from '../../../contexts/SessaoUsuario'
 import { GrAddCircle } from 'react-icons/gr'
-import ModalFerias from '@components/ModalFerias'
+import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador'
 import DataTableAusencias from '@components/DataTableAusencias'
 
 const DivPrincipal = styled.div`
@@ -47,7 +47,7 @@ function ColaboradorAusencias() {
                     </BotaoGrupo>
                 </BotaoGrupo>}
             <DataTableAusencias colaborador={id} ausencias={ausencias}/>
-            <ModalFerias opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
+            <ModalSelecionarColaborador opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
         </>
     )
 }

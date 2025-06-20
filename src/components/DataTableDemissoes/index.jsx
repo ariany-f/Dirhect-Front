@@ -8,8 +8,15 @@ import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Real } from '@utils/formats'
+import Botao from '@components/Botao';
+import BotaoGrupo from '@components/BotaoGrupo';
+import { GrAddCircle } from 'react-icons/gr';
+import { ArmazenadorToken } from '@utils';
+import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador';
+import ModalDemissao from '@components/ModalDemissao';
+import http from '@http';
 
-function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder, onSort }) {
+function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder, onSort, aoAtualizar }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -17,6 +24,10 @@ function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const navegar = useNavigate()
+
+    const [modalSelecaoAberto, setModalSelecaoAberto] = useState(false);
+    const [modalDemissaoAberto, setModalDemissaoAberto] = useState(false);
+    const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -31,6 +42,31 @@ function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder
     {
         console.log(value)
     }
+
+    const handleColaboradorSelecionado = (colaborador) => {
+        setColaboradorSelecionado(colaborador);
+        setModalSelecaoAberto(false);
+        setModalDemissaoAberto(true);
+    };
+
+    const handleSalvarDemissao = (dadosDemissao) => {
+        http.post(`demissao/`, {
+            colaborador: colaboradorSelecionado.id,
+            ...dadosDemissao
+        })
+        .then(() => {
+            alert('Solicitação de demissão enviada com sucesso!');
+            setModalDemissaoAberto(false);
+            if (aoAtualizar) {
+                aoAtualizar();
+            }
+        })
+        .catch(erro => {
+            console.error("Erro ao enviar solicitação de demissão", erro);
+            const errorMessage = erro.response?.data?.detail || 'Falha ao enviar solicitação de demissão.';
+            alert(errorMessage);
+        });
+    };
 
     function formataCPF(cpf) {
         cpf = cpf.replace(/[^\d]/g, "");
@@ -77,10 +113,15 @@ function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder
     return (
         <>
             {!colaborador &&
-            <div className="flex justify-content-end">
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
                 <span className="p-input-icon-left">
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
                 </span>
+                {ArmazenadorToken.hasPermission('view_funcionario') &&
+                    <BotaoGrupo>
+                        <Botao aoClicar={() => setModalSelecaoAberto(true)} estilo="vermilion" size="small"><GrAddCircle stroke="white" style={{marginRight: '8px'}} /> Solicitação de Demissão</Botao>
+                    </BotaoGrupo>
+                }
             </div>}
             <DataTable value={demissoes} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas demissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
                 sortField={sortField}
@@ -97,6 +138,19 @@ function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder
                 <Column body={representativeDataDemissaoTemplate} field="dt_demissao" header="Data Demissão" sortable style={{ width: '30%' }}></Column>
                 <Column body={representativeTipoDemissaoTemplate} field="tipo_demissao" header="Tipo Demissão" sortable style={{ width: '30%' }}></Column>
             </DataTable>
+            <ModalSelecionarColaborador 
+                opened={modalSelecaoAberto}
+                aoFechar={() => setModalSelecaoAberto(false)}
+                aoSelecionar={handleColaboradorSelecionado}
+            />
+            {modalDemissaoAberto && (
+                <ModalDemissao 
+                    opened={modalDemissaoAberto}
+                    aoFechar={() => setModalDemissaoAberto(false)}
+                    colaborador={colaboradorSelecionado}
+                    aoSalvar={handleSalvarDemissao}
+                />
+            )}
         </>
     )
 }

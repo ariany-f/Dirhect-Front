@@ -8,7 +8,7 @@ import styled from "styled-components"
 import { Link, useOutletContext } from "react-router-dom"
 import Management from '@assets/Management.svg'
 import DataTableFerias from '@components/DataTableFerias'
-import ModalFerias from '@components/ModalFerias'
+import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador'
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias'
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -187,7 +187,7 @@ function FeriasListagem() {
                     </section>
                 </ContainerSemRegistro>}
             </Wrapper>
-            <ModalFerias 
+            <ModalSelecionarColaborador 
                 opened={modalSelecaoColaboradorOpened} 
                 aoFechar={() => setModalSelecaoColaboradorOpened(false)} 
                 aoSelecionar={handleColaboradorSelecionado}

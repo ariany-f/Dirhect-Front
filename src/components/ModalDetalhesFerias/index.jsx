@@ -247,6 +247,7 @@ const AcoesContainer = styled.div`
 
 export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     console.log(evento);
+    
     const [dataInicio, setDataInicio] = useState('');
     const [dataFim, setDataFim] = useState('');
     const [adiantarDecimoTerceiro, setAdiantarDecimoTerceiro] = useState(false);

@@ -11,7 +11,7 @@ import Management from '@assets/Management.svg'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import DataTableContratos from '@components/DataTableContratos'
 import DataTableAusencias from '@components/DataTableAusencias'
-import ModalFerias from '@components/ModalFerias'
+import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador'
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -96,7 +96,7 @@ function FeriasAusenciasListagem() {
                 />
             </div> */}
 
-            <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+            <ModalSelecionarColaborador opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
     )
 }

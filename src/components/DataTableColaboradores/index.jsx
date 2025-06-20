@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import ModalDemissao from '../ModalDemissao';
 import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
-import ModalFerias from '../ModalFerias';
+import ModalSelecionarColaborador from '../ModalSelecionarColaborador';
 import { Tag } from 'primereact/tag';
 import { FaTrash, FaUserTimes, FaUmbrella, FaDownload, FaUmbrellaBeach } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
@@ -27,7 +27,7 @@ import { ArmazenadorToken } from '@utils';
 function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort, sortField, sortOrder }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
-    const [modalFeriasOpened, setModalFeriasOpened] = useState(false)
+    const [modalFeriasOpened, setModalSelecionarColaboradorOpened] = useState(false)
     const [modalImportarPlanilhaOpened, setModalImportarPlanilhaOpened] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filiais, setFiliais] = useState([]);
@@ -177,7 +177,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     size={16} 
                     onClick={(e) => {
                         e.stopPropagation();
-                        setModalFeriasOpened(true);
+                        setModalSelecionarColaboradorOpened(true);
                     }}
                     style={{
                         cursor: 'pointer',
@@ -288,7 +288,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 }
             </DataTable>
             <ModalDemissao opened={modalOpened} aoFechar={() => setModalOpened(false)}/>
-            <ModalFerias opened={modalFeriasOpened} aoFechar={() => setModalFeriasOpened(false)}/>
+            <ModalSelecionarColaborador opened={modalFeriasOpened} aoFechar={() => setModalSelecionarColaboradorOpened(false)}/>
             <ModalImportarPlanilha opened={modalImportarPlanilhaOpened} aoFechar={() => setModalImportarPlanilhaOpened(false)} />
         </>
     )
