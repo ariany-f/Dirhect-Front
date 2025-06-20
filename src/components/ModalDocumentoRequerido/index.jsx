@@ -94,8 +94,7 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
             ext_permitidas: extPermitidas,
             frente_verso: frenteVerso,
             instrucao,
-            descricao,
-            obrigatorio
+            descricao
         });
     };
 
@@ -176,13 +175,6 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                         <SwitchInput 
                                             checked={frenteVerso} 
                                             onChange={handleFrenteVersoChange}
-                                        />
-                                    </Col6Centered>
-                                    <Col6Centered>
-                                        <label style={{ fontWeight: 600, marginRight: 8 }}>Obrigatório</label>
-                                        <SwitchInput 
-                                            checked={obrigatorio} 
-                                            onChange={handleObrigatorioChange}
                                         />
                                     </Col6Centered>
                                 </Col12>

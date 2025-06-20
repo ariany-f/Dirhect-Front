@@ -12,6 +12,10 @@
         align-items: center;
         padding: 10px 20px;
     }
+    &.end {
+        justify-content: center;
+        align-items: flex-end;
+    }
     &.around {
         justify-content: space-around;
         flex-direction: row;
