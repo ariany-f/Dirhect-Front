@@ -9,6 +9,7 @@ import { Link, useOutletContext } from "react-router-dom"
 import Management from '@assets/Management.svg'
 import DataTableFerias from '@components/DataTableFerias'
 import ModalFerias from '@components/ModalFerias'
+import ModalDetalhesFerias from '@components/ModalDetalhesFerias'
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -16,6 +17,7 @@ import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import CalendarFerias from './calendar_ferias'
 import { FaListUl, FaRegCalendarAlt } from 'react-icons/fa';
 import Texto from '@components/Texto';
+import { ArmazenadorToken } from '@utils';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -41,11 +43,17 @@ const ContainerSemRegistro = styled.div`
     }
 `
 
+const HeaderRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+`;
+
 const TabPanel = styled.div`
     display: flex;
     align-items: center;
     gap: 0;
-    margin-bottom: 24px;
 `
 
 const TabButton = styled.button`
@@ -104,7 +112,8 @@ function FeriasListagem() {
 
     const [ferias, setFerias] = useState(null)
     const context = useOutletContext()
-    const [modalOpened, setModalOpened] = useState(false)
+    const [modalSelecaoColaboradorOpened, setModalSelecaoColaboradorOpened] = useState(false)
+    const [eventoSelecionado, setEventoSelecionado] = useState(null)
     const { usuario } = useSessaoUsuarioContext()
     const [tab, setTab] = useState('calendario') // 'lista' ou 'calendario'
 
@@ -124,25 +133,45 @@ function FeriasListagem() {
         
      }, [ferias, context])
 
+    const handleColaboradorSelecionado = (colaborador) => {
+        setModalSelecaoColaboradorOpened(false);
+
+        const evento = {
+            colab: {
+                id: colaborador.id,
+                nome: colaborador.funcionario_pessoa_fisica?.nome,
+                gestor: colaborador.gestor,
+            },
+            evento: {
+                periodo_aquisitivo_inicio: '2024-01-01',
+                periodo_aquisitivo_fim: '2024-12-31',
+                saldo_dias: 30,
+                limite: '2025-11-30',
+            },
+            tipo: 'aSolicitar'
+        };
+        setEventoSelecionado(evento);
+    }
+
     return (
         <ConteudoFrame>
-            <BotaoGrupo align="end">
-                {(usuario.tipo === 'equipeFolhaPagamento' || usuario.tipo === 'colaborador') && (
-                    <BotaoGrupo align="center">
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
+            <HeaderRow>
+                <TabPanel>
+                    <TabButton active={tab === 'calendario'} onClick={() => setTab('calendario')}>
+                        <FaRegCalendarAlt fill={tab === 'calendario' ? 'white' : '#000'} />
+                        <Texto color={tab === 'calendario' ? 'white' : '#000'}>Calendário</Texto>
+                    </TabButton>
+                    <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
+                        <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
+                        <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
+                    </TabButton>
+                </TabPanel>
+                {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && (
+                    <BotaoGrupo>
+                        <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
                     </BotaoGrupo>
                 )}
-            </BotaoGrupo>
-            <TabPanel>
-                <TabButton active={tab === 'calendario'} onClick={() => setTab('calendario')}>
-                    <FaRegCalendarAlt fill={tab === 'calendario' ? 'white' : '#000'} />
-                    <Texto color={tab === 'calendario' ? 'white' : '#000'}>Calendário</Texto>
-                </TabButton>
-                <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
-                    <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
-                    <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
-                </TabButton>
-            </TabPanel>
+            </HeaderRow>
             <Wrapper>
                 {ferias ?
                     <>
@@ -158,7 +187,16 @@ function FeriasListagem() {
                     </section>
                 </ContainerSemRegistro>}
             </Wrapper>
-            <ModalFerias opened={modalOpened} aoFechar={() => setModalOpened(false)} />
+            <ModalFerias 
+                opened={modalSelecaoColaboradorOpened} 
+                aoFechar={() => setModalSelecaoColaboradorOpened(false)} 
+                aoSelecionar={handleColaboradorSelecionado}
+            />
+            <ModalDetalhesFerias 
+                opened={!!eventoSelecionado} 
+                evento={eventoSelecionado} 
+                aoFechar={() => setEventoSelecionado(null)} 
+            />
         </ConteudoFrame>
     )
 }

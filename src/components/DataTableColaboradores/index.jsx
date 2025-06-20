@@ -22,6 +22,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import { Dropdown } from 'primereact/dropdown';
+import { ArmazenadorToken } from '@utils';
 
 function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort, sortField, sortOrder }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
@@ -148,7 +149,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     }
 
     const representativeActionsTemplate = (rowData) => {
-        if (usuario.tipo !== 'cliente' && usuario.tipo !== 'equipeFolhaPagamento') {
+        if (!ArmazenadorToken.hasPermission('view_funcionario')) {
             return null;
         }
 

@@ -11,6 +11,8 @@ import styled from "styled-components"
 import styles from './ModalFerias.module.css'
 import { useDepartamentoContext } from "@contexts/Departamento"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import http from '@http'
+import Loading from '@components/Loading'
 
 const Col12 = styled.div`
     display: flex;
@@ -56,182 +58,149 @@ const Item = styled.div`
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
-function ModalFerias({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, colaborador = null }) {
+const ListaColaboradores = styled.div`
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+    padding-right: 8px;
 
-    const [classError, setClassError] = useState([])
-    const [dataInicialFerias, setDataInicialFerias] = useState('');
-    const [dataFinalFerias, setDataFinalFerias] = useState('');
-    const [dataInicialAquisicao, setDataInicialAquisicao] = useState('');
-    const [dataFinalAquisicao, setDataFinalAquisicao] = useState('');
-    const [diasDeFerias, setDiasDeFerias] = useState(0);
-    const [abono, setAbono] = useState('');
-    const [decimoTerceiro, setDecimoTerceiro] = useState(false)
-
-    const navegar = useNavigate()
-
-    function handleDiasDeFerias() {
-        if (dataInicialFerias && dataFinalFerias) {
-            const inicio = new Date(dataInicialFerias);
-            const fim = new Date(dataFinalFerias);
-            
-            if (inicio > fim) {
-                setDiasDeFerias(0);
-                return;
-            }
-    
-            const diffTime = fim.getTime() - inicio.getTime();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o primeiro dia
-    
-            setDiasDeFerias(diffDays);
-        }
+    &::-webkit-scrollbar {
+        width: 6px;
     }
+    &::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 3px;
+    }
+`;
+
+const ItemColaborador = styled.div`
+    padding: 12px 16px;
+    border: 1px solid ${({ $selecionado }) => $selecionado ? 'var(--vermilion-principal)' : '#ddd'};
+    background-color: ${({ $selecionado }) => $selecionado ? 'var(--vermilion-100)' : '#fff'};
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background-color: #f9f9f9;
+        border-color: var(--vermilion-principal);
+    }
+`;
+
+const NomeColaborador = styled.span`
+    font-weight: 600;
+    color: #333;
+`;
+
+const ChapaColaborador = styled.span`
+    font-size: 12px;
+    color: #777;
+    margin-left: 8px;
+`;
+
+const SearchContainer = styled.div`
+    position: relative;
+    width: 100%;
+    .p-inputgroup {
+        width: 100%;
+    }
+`;
+
+function ModalFerias({ opened = false, aoFechar, aoSelecionar }) {
+    const [colaboradores, setColaboradores] = useState([]);
+    const [busca, setBusca] = useState('');
+    const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (dataInicialFerias && dataFinalFerias) {
-            const inicio = new Date(dataInicialFerias);
-            const fim = new Date(dataFinalFerias);
-
-            if (inicio > fim) {
-                setDiasDeFerias(0);
-                return;
-            }
-
-            const diffTime = fim.getTime() - inicio.getTime();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o primeiro dia
-
-            setDiasDeFerias(diffDays);
+        if (opened) {
+            setLoading(true);
+            http.get('funcionario/?format=json')
+                .then(response => {
+                    setColaboradores(response);
+                })
+                .catch(erro => console.error("Erro ao buscar colaboradores", erro))
+                .finally(() => setLoading(false));
         } else {
-            setDiasDeFerias(0);
+            setBusca('');
+            setColaboradorSelecionado(null);
         }
-    }, [dataInicialFerias, dataFinalFerias]);
-    
+    }, [opened]);
 
-    return(
+    const handleSelecionar = () => {
+        if (colaboradorSelecionado) {
+            aoSelecionar(colaboradorSelecionado);
+        } else {
+            alert('Por favor, selecione um colaborador.');
+        }
+    };
+
+    const colaboradoresFiltrados = busca.length > 0
+        ? colaboradores.filter(colab =>
+            (colab.chapa && colab.chapa.toLowerCase().includes(busca.toLowerCase())) ||
+            (colab.funcionario_pessoa_fisica?.nome && colab.funcionario_pessoa_fisica.nome.toLowerCase().includes(busca.toLowerCase()))
+        )
+        : colaboradores;
+
+    return (
         <>
             {opened &&
-            <>
-                <Overlay>
-                    <DialogEstilizado open={opened}>
+                <Overlay onClick={aoFechar}>
+                    <DialogEstilizado open={opened} onClick={e => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+                        <Loading opened={loading} />
                         <Frame>
                             <Titulo>
                                 <button className="close" onClick={aoFechar}>
-                                    <RiCloseFill size={20} className="fechar" />  
+                                    <RiCloseFill size={20} className="fechar" />
                                 </button>
-                                <h6>Solicitação de Férias</h6>
+                                <h6>Selecionar Colaborador</h6>
                             </Titulo>
                         </Frame>
-                        
-                        <Frame padding="12px 0px">
-                            <Col12>
-                                <Col6>
-                                    <Col12>
-                                        <SubTitulo>Período Aquisitivo</SubTitulo>
-                                    </Col12>
-                                    <Col12>
-                                        <Col6>
-                                            <CampoTexto
-                                                camposVazios={classError}
-                                                name="data_inicial_aquisition"
-                                                valor={dataInicialAquisicao}
-                                                setValor={setDataInicialAquisicao}
-                                                type="date"
-                                                label="Data Inicial"
-                                                placeholder="Selecione a data inicial"
-                                            />
-                                        </Col6>
-                                        <Col6>
-                                            <CampoTexto
-                                                camposVazios={classError}
-                                                name="data_final_aquisition"
-                                                valor={dataFinalAquisicao}
-                                                setValor={setDataFinalAquisicao}
-                                                type="date"
-                                                label="Data Final"
-                                                placeholder="Selecione a data final"
-                                            />
-                                        </Col6>
-                                    </Col12>
-                                </Col6>
-                                <Col6>
-                                    <Col12>
-                                        <SubTitulo>Férias</SubTitulo>
-                                    </Col12>
-                                    <Col12>
-                                        <Col6>
-                                            <CampoTexto
-                                                camposVazios={classError}
-                                                name="data_inicial_ferias"
-                                                valor={dataInicialFerias}
-                                                setValor={setDataInicialFerias}
-                                                type="date"
-                                                label="Data Inicial"
-                                                placeholder="Selecione a data inicial"
-                                            />
-                                        </Col6>
-                                        <Col6>
-                                            <CampoTexto
-                                                camposVazios={classError}
-                                                name="data_final_ferias"
-                                                valor={dataFinalFerias}
-                                                setValor={setDataFinalFerias}
-                                                type="date"
-                                                label="Data Final"
-                                                placeholder="Selecione a data final"
-                                            />
-                                        </Col6>
-                                    </Col12>
-                                </Col6>
-                            </Col12>
-                            <Col12>
-                                <Col4Centered>
-                                    <CheckboxContainer fontSize="16px" name="decimo" valor={decimoTerceiro} setValor={() => setDecimoTerceiro(!decimoTerceiro)} label="13º Salário"/>
-                                </Col4Centered>
-                                <Col4>
-                                    <CampoTexto
-                                        camposVazios={classError}
-                                        name="abono"
-                                        valor={abono}
-                                        setValor={setAbono}
-                                        type="number"
-                                        label="Abono"
-                                        placeholder="Digite o abono"
-                                    />
-                                </Col4>
-                                <Col4>
-                                    <CampoTexto
-                                        camposVazios={classError}
-                                        name="dias_ferias"
-                                        valor={diasDeFerias}
-                                        setValor={setDiasDeFerias}
-                                        type="number"
-                                        label="Dias de Férias"
-                                        placeholder="Dias de férias"
-                                        disabled
-                                    />
-                                </Col4>
-                            </Col12>
+
+                        <Frame padding="12px 24px">
+                            <SearchContainer>
+                               <CampoTexto
+                                    valor={busca}
+                                    setValor={setBusca}
+                                    placeholder="Buscar por nome ou chapa..."
+                                />
+                            </SearchContainer>
+                            <ListaColaboradores>
+                                {colaboradoresFiltrados.map(colab => (
+                                    <ItemColaborador
+                                        key={colab.id}
+                                        $selecionado={colaboradorSelecionado?.id === colab.id}
+                                        onClick={() => setColaboradorSelecionado(colab)}
+                                    >
+                                        <NomeColaborador>{colab.funcionario_pessoa_fisica?.nome}</NomeColaborador>
+                                        <ChapaColaborador>Chapa: {colab.chapa}</ChapaColaborador>
+                                    </ItemColaborador>
+                                ))}
+                            </ListaColaboradores>
                         </Frame>
-                        <div className={styles.containerBottom}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '16px 24px', borderTop: '1px solid #eee', gap: '12px' }}>
                             <Botao
-                                aoClicar={aoFechar} 
-                                estilo="neutro" 
-                                size="medium" 
-                                filled
+                                aoClicar={aoFechar}
+                                estilo="neutro"
+                                size="medium"
                             >
                                 Cancelar
                             </Botao>
                             <Botao
-                                aoClicar={aoSalvar} 
-                                estilo="vermilion" 
-                                size="medium" 
+                                aoClicar={handleSelecionar}
+                                estilo="vermilion"
+                                size="medium"
                                 filled
+                                disabled={!colaboradorSelecionado}
                             >
-                                Salvar
+                                Selecionar
                             </Botao>
                         </div>
                     </DialogEstilizado>
                 </Overlay>
-            </>
             }
         </>
     )

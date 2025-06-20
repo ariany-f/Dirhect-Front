@@ -16,6 +16,7 @@ import { GrAddCircle } from 'react-icons/gr'
 import ModalFerias from '@components/ModalFerias'
 import DataTableDemissao from '@components/DataTableDemissoes'
 import ModalDemissao from '@components/ModalDemissao'
+import { ArmazenadorToken } from '@utils'
 
 const DivPrincipal = styled.div`
     width: 65vw;
@@ -46,7 +47,7 @@ function ColabroadorDemissoes() {
             <Titulo>
                 <h6>Demissões</h6>
             </Titulo>
-            {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
+            {(ArmazenadorToken.hasPermission('view_funcionario')) && 
                 <BotaoGrupo align="end">
                     <BotaoGrupo align="center">
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Criar solicitação de Demissão</Botao>
