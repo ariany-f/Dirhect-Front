@@ -231,46 +231,12 @@ function BarraLateral({ $sidebarOpened }) {
             icone: <AiFillHome size={20} className="icon" />,
             itemTitulo: 'Home',
         },
-        {
-            id: 4,
-            url: '/pedidos',
-            pageTitulo: 'Pedidos',
-            icone: <HiMiniShoppingBag size={20} fill="white" />, 
-            itemTitulo: 'Pedidos',
-        },
-        {
-            id: 5,
-            url: '/movimentos',
-            pageTitulo: 'Movimentação',
-            icone: <MdAllInbox size={20} fill="white" />, 
-            itemTitulo: 'Movimentação',
-        },
-        {
-            id: 6,
-            url: '/ciclos',
-            pageTitulo: 'Lançtos de Folha',
-            icone: <HiMiniNewspaper size={20} fill="white"/>,
-            itemTitulo: 'Lançtos de Folha',
-        },
-        {
-            id: 9,
-            url: '/colaborador/detalhes/109',
-            pageTitulo: 'Meu Cadastro',
-            icone: <RiFilePaperFill size={20} className="icon" />,
-            itemTitulo: 'Meu Cadastro',
-        },
-        {
-            id: 10,
-            url: '/ciclos/1',
-            pageTitulo: 'Ciclos de Pagamento',
-            icone: <RiUser3Fill size={20} className="icon" />,
-            itemTitulo: 'Ciclos de Pagamento',
-        },
     ];
 
     // Buscar permissões do grupo do usuário logado diretamente
     const grupo = grupos.find(g => g.name === usuario.tipo);
     const userPermissions = grupo ? grupo.permissions.map(p => p.codename) : [];
+    const userGroups = grupo ? grupo.name : [];
 
     // Menus condicionais por permissão
     const conditionalMenus = [
@@ -362,7 +328,59 @@ function BarraLateral({ $sidebarOpened }) {
             itemTitulo: 'Vagas',
             permission: 'view_vagas',
         },
+        {
+            id: 4,
+            url: '/pedidos',
+            pageTitulo: 'Pedidos',
+            icone: <HiMiniShoppingBag size={20} fill="white" />, 
+            itemTitulo: 'Pedidos',
+            permission: 'view_pedido',
+        },
+        {
+            id: 5,
+            url: '/movimentos',
+            pageTitulo: 'Movimentação',
+            icone: <MdAllInbox size={20} fill="white" />, 
+            itemTitulo: 'Movimentação',
+            permission: 'view_folha',
+        },
+        {
+            id: 6,
+            url: '/ciclos',
+            pageTitulo: 'Lançtos de Folha',
+            icone: <HiMiniNewspaper size={20} fill="white"/>,
+            itemTitulo: 'Lançtos de Folha',
+            permission: 'view_folha',
+        },
+        {
+            id: 9,
+            url: '/colaborador/detalhes/109',
+            pageTitulo: 'Meu Cadastro',
+            icone: <RiFilePaperFill size={20} className="icon" />,
+            itemTitulo: 'Meu Cadastro',
+            permission: 'view_cadastro',
+        },
+        {
+            id: 10,
+            url: '/ciclos/1',
+            pageTitulo: 'Ciclos de Pagamento',
+            icone: <RiUser3Fill size={20} className="icon" />,
+            itemTitulo: 'Ciclos de Pagamento',
+            permission: 'view_folha',
+        },
     ];
+
+    // Adicionar permissões de acordo com o grupo do usuário GAMBIARRA
+    if(userGroups.includes('Benefícios')) {
+        userPermissions.push('view_pedido')
+    }
+    else if(userGroups.includes('RH')) {
+        userPermissions.push('view_folha')
+    }
+    else if(userGroups.includes('Candidato')) {
+        userPermissions.push('view_cadastro')
+    }
+
 
     // Filtrar menus condicionais pelas permissões do usuário
     const filteredConditionalMenus = conditionalMenus.filter(menu => userPermissions.includes(menu.permission));

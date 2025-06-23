@@ -175,10 +175,31 @@ export class ArmazenadorToken {
                 groups = [groups];
             }
             
-            for (const group of groups) { 
-                if (group.permissions && Array.isArray(group.permissions)) {
-                    if (group.permissions.some(p => p.codename === codename)) {
+            for (const group of groups) {
+
+                // GAMBIARRA
+                if(codename === 'view_pedido') {
+                    if(group.name === 'Benefícios') {
                         return true;
+                    }
+                }
+                else if(codename === 'view_folha') {
+                    console.log(group)
+                    if(group.name === 'RH') {
+                        return true;
+                    }
+                }
+                else if(codename === 'view_cadastro') {
+                    if(group.name === 'Candidato') {
+                        return true;
+                    }
+                }
+                else {
+                    // VÁLIDO SOMENTE O QUE ESTÁ AQUI DENTRO
+                    if (group.permissions && Array.isArray(group.permissions)) {
+                        if (group.permissions.some(p => p.codename === codename)) {
+                            return true;
+                        }
                     }
                 }
             }
