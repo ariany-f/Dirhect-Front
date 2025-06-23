@@ -581,7 +581,7 @@ function DataTableAtividades({ tarefas }) {
                 <Column 
                     body={representativeTipoTemplate} 
                     field="tipo_display" 
-                    header="Tipo" 
+                    header="Tipo de Processo" 
                     style={{ width: '12%' }}
                 ></Column>
                 <Column 
