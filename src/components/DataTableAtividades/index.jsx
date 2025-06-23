@@ -8,7 +8,7 @@ import './DataTable.css'
 import CampoArquivo from '@components/CampoArquivo';
 import Botao from '@components/Botao';
 import Texto from '@components/Texto';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { Checkbox } from 'primereact/checkbox';
 import CheckboxContainer from '@components/CheckboxContainer'
@@ -122,18 +122,31 @@ function DataTableAtividades({ tarefas }) {
         };
 
         const getColaboradorTemplate = (rowData) => {
-            return (
-                <Link to={`/colaborador/detalhes/${rowData.objeto?.funcionario_detalhe?.id}`}>
-                    <FaUser size={20} style={{marginRight: '10px'}} fill="var(--neutro-500)" />
-                </Link>
-            )
+            if(rowData.objeto?.funcionario_detalhe?.id) {
+                return (
+                    <div 
+                        className="colaborador-tooltip"
+                        data-pr-tooltip='Ir para o colaborador'
+                        data-pr-position="left"
+                    >
+                        <Link to={`/colaborador/detalhes/${rowData.objeto?.funcionario_detalhe?.id}`}>
+                            <FaUser size={14} style={{marginLeft: '10px'}} />
+                        </Link>
+                        <Tooltip target=".colaborador-tooltip" />
+                    </div>
+                )
+            }
+            else {
+                return null;
+            }
         }
     
         return (
-            <div className="flex align-items-center">
+            <div style={{display: 'flex', alignItems: 'center'}}>
                 <div 
                     data-pr-tooltip={getTooltipText()}
                     data-pr-position="left"
+                    className="tarefa-tooltip"
                     style={{ display: 'inline-flex' }}
                 >
                     <CheckboxContainer 
@@ -143,7 +156,7 @@ function DataTableAtividades({ tarefas }) {
                     />
                 </div>
                 {getColaboradorTemplate(rowData)}
-                <Tooltip target="[data-pr-tooltip]" />
+                <Tooltip target=".tarefa-tooltip" />
             </div>
         );
     };
