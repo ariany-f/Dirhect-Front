@@ -71,7 +71,7 @@ const StepEducacao = () => {
     );
 
     return (
-        <div>
+        <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
             {candidato.educacao.map((edu, idx) => (
                 <div key={idx} style={{ 
                     border: '1px solid #eee', 
@@ -143,12 +143,14 @@ const StepEducacao = () => {
                     )}
                 </div>
             ))}
-            <BotaoSemBorda 
-                aoClicar={adicionarEducacao} 
+            <div style={{marginTop: '12px'}}>
+                <BotaoSemBorda 
+                    aoClicar={adicionarEducacao} 
                 color={podeAdicionarEducacao() ? 'var(--primaria)' : 'var(--surface-500)'}
             >
-                <GrAddCircle /> Adicionar Educação
-            </BotaoSemBorda>
+                    <GrAddCircle /> Adicionar Educação
+                </BotaoSemBorda>
+            </div>
         </div>
     );
 };

@@ -67,7 +67,7 @@ const StepExperiencia = () => {
     );
 
     return (
-        <div>
+        <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
             {candidato.experiencia.map((exp, idx) => (
                 <div key={idx} style={{ 
                     border: '1px solid #eee', 
@@ -139,12 +139,14 @@ const StepExperiencia = () => {
                     )}
                 </div>
             ))}
-            <BotaoSemBorda 
-                aoClicar={adicionarExperiencia} 
-                color={podeAdicionarExperiencia() ? 'var(--primaria)' : 'var(--surface-500)'}
-            >
-                <GrAddCircle /> Adicionar Experiência
-            </BotaoSemBorda>
+            <div style={{marginTop: '12px'}}>
+                <BotaoSemBorda 
+                    aoClicar={adicionarExperiencia} 
+                    color={podeAdicionarExperiencia() ? 'var(--primaria)' : 'var(--surface-500)'}
+                >
+                    <GrAddCircle /> Adicionar Experiência
+                </BotaoSemBorda>
+            </div>
         </div>
     );
 };

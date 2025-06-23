@@ -69,7 +69,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
     };
 
     return (
-        <div>
+        <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
             <DropdownItens
                 name="filial"
                 valor={getValorSelecionado('filial_id', filiais)}

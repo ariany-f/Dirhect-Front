@@ -59,7 +59,7 @@ const StepHabilidades = () => {
     );
 
     return (
-        <div>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
             {candidato.habilidades.map((hab, idx) => (
                 <div key={idx} style={{ 
                     border: '1px solid #eee', 
@@ -111,12 +111,14 @@ const StepHabilidades = () => {
                     )}
                 </div>
             ))}
-            <BotaoSemBorda 
-                aoClicar={adicionarHabilidade} 
-                color={podeAdicionarHabilidade() ? 'var(--primaria)' : 'var(--surface-500)'}
-            >
-                <GrAddCircle /> Adicionar Habilidade
-            </BotaoSemBorda>
+            <div style={{marginTop: '12px'}}>
+                <BotaoSemBorda 
+                    aoClicar={adicionarHabilidade} 
+                    color={podeAdicionarHabilidade() ? 'var(--primaria)' : 'var(--surface-500)'}
+                >
+                    <GrAddCircle /> Adicionar Habilidade
+                </BotaoSemBorda>
+            </div>
         </div>
     );
 };

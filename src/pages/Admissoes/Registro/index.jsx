@@ -540,17 +540,21 @@ const CandidatoRegistro = () => {
                 </StepperPanel>
                 {!self && (
                   <StepperPanel header="Vaga">
-                    <Container padding={'30px 0 30px 0'}>
-                        <StepVaga 
-                            filiais={filiais}
-                            departamentos={departamentos}
-                            secoes={secoes}
-                            cargos={cargos}
-                            centros_custo={centros_custo}
-                            horarios={horarios}
-                            funcoes={funcoes}
-                            sindicatos={sindicatos}
-                        />
+                    <Container padding={'30px 0 0 0'}>
+                        <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
+                            <ScrollPanel style={{ width: '100%', height: '380px', marginBottom: 10 }}>
+                                <StepVaga 
+                                    filiais={filiais}
+                                    departamentos={departamentos}
+                                    secoes={secoes}
+                                    cargos={cargos}
+                                    centros_custo={centros_custo}
+                                    horarios={horarios}
+                                    funcoes={funcoes}
+                                    sindicatos={sindicatos}
+                                />
+                            </ScrollPanel>
+                        </div>
                     </Container>
                     <Frame padding="30px" estilo="spaced">
                         <BotaoGrupo>
@@ -565,7 +569,11 @@ const CandidatoRegistro = () => {
                 )}
                 <StepperPanel header="Educação">
                     <ScrollPanel style={{ width: '100%', height: '380px'}}>
-                        <StepEducacao />
+                        <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+                            <ScrollPanel style={{ width: '100%', height: '380px', marginBottom: 10 }}>
+                                <StepEducacao />
+                            </ScrollPanel>
+                        </div>
                     </ScrollPanel>
                     <Frame padding="30px" estilo="spaced">
                         <BotaoGrupo>
@@ -579,7 +587,11 @@ const CandidatoRegistro = () => {
                 </StepperPanel>
                 <StepperPanel header="Habilidades">
                     <ScrollPanel style={{ width: '100%', height: '380px'}}>
-                        <StepHabilidades />
+                        <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+                            <ScrollPanel style={{ width: '100%', height: '380px', marginBottom: 10 }}>
+                                <StepHabilidades />
+                            </ScrollPanel>
+                        </div>
                     </ScrollPanel>
                     <Frame padding="30px" estilo="spaced">
                         <BotaoGrupo>
@@ -593,7 +605,11 @@ const CandidatoRegistro = () => {
                 </StepperPanel>
                 <StepperPanel header="Experiência Profissional">
                     <ScrollPanel style={{ width: '100%', height: '380px'}}>
-                        <StepExperiencia />
+                        <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+                            <ScrollPanel style={{ width: '100%', height: '380px', marginBottom: 10 }}>
+                                <StepExperiencia />
+                            </ScrollPanel>
+                        </div>
                     </ScrollPanel>
                     <Frame padding="30px" estilo="spaced">
                         <BotaoGrupo>
