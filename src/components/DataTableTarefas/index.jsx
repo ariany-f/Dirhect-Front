@@ -398,38 +398,36 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     }
 
     const pessoaTemplate = (rowData) => {
-        if(rowData.entidade_tipo_display == 'admissao') {
-            if(rowData.objeto?.dados_candidato) {
-                return <div key={rowData?.id || 'unknown'}>
-                    <Texto weight={700} width={'100%'}>
-                         {rowData.objeto.dados_candidato.nome}
-                    </Texto>
-                    <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                        CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.dados_candidato?.cpf ? formataCPF(rowData?.objeto?.dados_candidato?.cpf) : '-'}</p>
-                    </div>
+        if(rowData.objeto?.dados_candidato) {
+            return <div key={rowData?.id || 'unknown'}>
+                <Texto uppercase weight={700} width={'100%'}>
+                    {rowData.objeto.dados_candidato.nome}
+                </Texto>
+                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                    CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.dados_candidato?.cpf ? formataCPF(rowData?.objeto?.dados_candidato?.cpf) : '-'}</p>
                 </div>
-            }
-            else if(rowData.objeto?.funcionario_detalhe) {
+            </div>
+        }
+        else if(rowData.objeto?.funcionario_detalhe) {
+            return <div key={rowData?.id || 'unknown'}>
+                <Texto uppercase weight={700} width={'100%'}>
+                    {rowData.objeto.funcionario_detalhe.nome}
+                </Texto>
+                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                    CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.funcionario_detalhe?.cpf ? formataCPF(rowData?.objeto?.funcionario_detalhe?.cpf) : '-'}</p>
+                </div>
+            </div>
+        }
+        else {
+            if(rowData?.objeto?.id) {
                 return <div key={rowData?.id || 'unknown'}>
-                    <Texto weight={700} width={'100%'}>
-                        {rowData.objeto.funcionario_detalhe.nome}
-                    </Texto>
-                    <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                        CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.funcionario_detalhe?.cpf ? formataCPF(rowData?.objeto?.funcionario_detalhe?.cpf) : '-'}</p>
-                    </div>
+                    <Link to={`/${rowData.entidade_tipo_display}/detalhes/${rowData?.objeto?.id}`}>{rowData.processo_nome}</Link>
                 </div>
             }
             else {
-                if(rowData?.objeto?.id) {
-                    return <div key={rowData?.id || 'unknown'}>
-                        <Link to={`/${rowData.entidade_tipo_display}/detalhes/${rowData?.objeto?.id}`}>{rowData.processo_nome}</Link>
-                    </div>
-                }
-                else {
-                    return <div key={rowData?.id || 'unknown'}>
-                        <Link to={`/${rowData.entidade_tipo_display}/`}>{rowData.processo_nome}</Link>
-                    </div>
-                }
+                return <div key={rowData?.id || 'unknown'}>
+                    <Link to={`/${rowData.entidade_tipo_display}/`}>{rowData.processo_nome}</Link>
+                </div>
             }
         }
     };
