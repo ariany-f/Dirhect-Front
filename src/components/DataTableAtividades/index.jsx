@@ -62,6 +62,15 @@ function DataTableAtividades({ tarefas }) {
         )
     }
 
+    const handleRowClick = (e) => {
+        const rowData = e.data;
+        if(rowData.objeto?.funcionario_detalhe?.id) {
+            navegar(`/colaborador/detalhes/${rowData.objeto.funcionario_detalhe.id}`);
+        } else if(rowData.objeto?.dados_candidato?.id) {
+            navegar(`/admissao/registro/${rowData?.entidade_id}`);
+        }
+    };
+
     const representativeCheckTemplate = (rowData) => {
         if (rowData.atividade_automatica) {
             return <RiExchangeFill size={18} fill="var(--info)" />;
@@ -130,13 +139,26 @@ function DataTableAtividades({ tarefas }) {
                         data-pr-position="left"
                     >
                         <Link to={`/colaborador/detalhes/${rowData.objeto?.funcionario_detalhe?.id}`}>
-                            <FaUser size={14} style={{marginLeft: '10px'}} />
+                            <FaUser size={12} style={{marginLeft: '10px'}} />
                         </Link>
                         <Tooltip target=".colaborador-tooltip" />
                     </div>
                 )
             }
-            else {
+            else if(rowData.objeto?.dados_candidato?.id) {
+                return (
+                    <div 
+                        className="candidato-tooltip"
+                        data-pr-tooltip='Ir para admissão'
+                        data-pr-position="left"
+                    >
+                        <Link to={`/admissao/registro/${rowData?.entidade_id}`}>
+                            <FaUserPlus size={14} style={{marginLeft: '10px'}} />
+                        </Link>
+                        <Tooltip target=".candidato-tooltip" />
+                    </div>
+                )
+            } else {
                 return null;
             }
         }
@@ -155,7 +177,6 @@ function DataTableAtividades({ tarefas }) {
                         setValor={handleChange} 
                     />
                 </div>
-                {getColaboradorTemplate(rowData)}
                 <Tooltip target=".tarefa-tooltip" />
             </div>
         );
@@ -599,6 +620,8 @@ function DataTableAtividades({ tarefas }) {
                 filterDisplay="menu"
                 showGridlines
                 className="p-datatable-sm"
+                onRowClick={handleRowClick}
+                selectionMode={'single'}
             >
                 <Column 
                     body={representativeTipoTemplate} 
