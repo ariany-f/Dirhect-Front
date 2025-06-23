@@ -229,11 +229,11 @@ const AtividadesLista = () => {
                                     <div className="titulo">{config.titulo}</div>
                                 </div>
                                 <div className="quantidade">{total}</div>
-                                {concluidas > 0 && (
+                                {/* {concluidas > 0 && ( */}
                                     <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
                                         {concluidas} de {tipo === 'total' ? context?.length : contarTotalTarefasPorTipo(tipo)} concluída{concluidas > 1 ? 's' : ''}
                                     </div>
-                                )}
+                                {/* )} */}
                             </Card>
                         );
                     })}
