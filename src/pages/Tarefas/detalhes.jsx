@@ -319,6 +319,11 @@ function DetalhesTarefas() {
         );
     }
 
+    function formatarCPF(cpf) {
+        if (!cpf) return '-';
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
     return (
         <>
         <Frame>
@@ -348,7 +353,7 @@ function DetalhesTarefas() {
                           </div>
                           {referenciaDetalhada(tarefa).cpf && (
                             <div style={{fontSize: 15, color: '#888', fontWeight: 500, marginTop: 2}}>
-                              CPF: {referenciaDetalhada(tarefa).cpf}
+                              CPF: {formatarCPF(referenciaDetalhada(tarefa).cpf)}
                             </div>
                           )}
                         </div>
