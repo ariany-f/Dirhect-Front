@@ -502,6 +502,7 @@ function DetalhesVaga() {
                     documentos={documentos}
                     onEdit={doc => { setDocumentoEditando(doc); setModalDocumentoAberto(true); }}
                     onDelete={doc => setDocumentos(documentos.filter(d => d !== doc))}
+                    toastRef={toast}
                 />
                 <ModalDocumentoVaga
                     opened={modalDocumentoAberto}
