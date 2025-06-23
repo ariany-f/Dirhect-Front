@@ -190,7 +190,7 @@ export class ArmazenadorToken {
                     }
                 }
                 else if(codename === 'view_cadastro') {
-                    if(group.name === 'Candidato') {
+                    if(group.name === 'Candidato' || group.name === 'Colaborador') {
                         return true;
                     }
                 }
