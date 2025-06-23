@@ -65,7 +65,8 @@ const StepHabilidades = () => {
                     border: '1px solid #eee', 
                     borderRadius: 8, 
                     marginBottom: 12, 
-                    padding: 12 
+                    padding: 12,
+                    width: '100%'
                 }}>
                     <div style={{ 
                         display: 'flex', 
