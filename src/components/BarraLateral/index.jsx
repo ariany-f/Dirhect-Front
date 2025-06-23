@@ -342,7 +342,7 @@ function BarraLateral({ $sidebarOpened }) {
             pageTitulo: 'Movimentação',
             icone: <MdAllInbox size={20} fill="white" />, 
             itemTitulo: 'Movimentação',
-            permission: 'view_folha',
+            permission: 'view_pedido',
         },
         {
             id: 6,
