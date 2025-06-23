@@ -213,7 +213,7 @@ function BarraLateral({ $sidebarOpened }) {
     const permissionMap = {
         'view_funcionario': ['Colaboradores', 'Demissões'],
         'view_admissao': ['Admissões'],
-        'view_tarefa': ['Tarefas'],
+        'view_tarefa': ['Processos'],
         'view_dependente': ['Dependentes'],
         'view_ferias': ['Férias'],
         'view_ausencia': ['Ausências'],
