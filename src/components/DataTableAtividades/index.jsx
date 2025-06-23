@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator, FilterService } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight, MdFilterAltOff } from 'react-icons/md'
-import { FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaTimes, FaCheck } from 'react-icons/fa';
+import { FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaTimes, FaCheck, FaUser } from 'react-icons/fa';
 import { RiExchangeFill } from 'react-icons/ri';
 import './DataTable.css'
 import CampoArquivo from '@components/CampoArquivo';
@@ -120,6 +120,14 @@ function DataTableAtividades({ tarefas }) {
             }
             return rowData.status === 'pendente' ? 'Aprovar tarefa' : 'Concluir tarefa';
         };
+
+        const getColaboradorTemplate = (rowData) => {
+            return (
+                <Link to={`/colaborador/detalhes/${rowData.objeto?.funcionario_detalhe?.id}`}>
+                    <FaUser size={20} style={{marginRight: '10px'}} fill="var(--neutro-500)" />
+                </Link>
+            )
+        }
     
         return (
             <div className="flex align-items-center">
@@ -134,6 +142,7 @@ function DataTableAtividades({ tarefas }) {
                         setValor={handleChange} 
                     />
                 </div>
+                {getColaboradorTemplate(rowData)}
                 <Tooltip target="[data-pr-tooltip]" />
             </div>
         );
