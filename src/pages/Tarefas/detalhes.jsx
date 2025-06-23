@@ -180,9 +180,9 @@ function DetalhesTarefas() {
         if (tarefa?.objeto?.dados_candidato) {
             label = tarefa.objeto.dados_candidato.nome;
             cpf = tarefa.objeto.dados_candidato.cpf;
-        } else if (tarefa?.objeto?.dados_colaborador) {
-            label = tarefa.objeto.dados_colaborador.nome;
-            cpf = tarefa.objeto.dados_colaborador.cpf;
+        } else if (tarefa?.objeto?.funcionario_detalhe) {
+            label = tarefa.objeto.funcionario_detalhe.nome;
+            cpf = tarefa.objeto.funcionario_detalhe.cpf;
         } else {
             label = tarefa?.processo_nome || '-';
             cpf = '';

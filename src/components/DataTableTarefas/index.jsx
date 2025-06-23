@@ -409,13 +409,13 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                     </div>
                 </div>
             }
-            else if(rowData.objeto?.dados_colaborador) {
+            else if(rowData.objeto?.funcionario_detalhe) {
                 return <div key={rowData?.id || 'unknown'}>
                     <Texto weight={700} width={'100%'}>
-                        {rowData.objeto.dados_colaborador.nome}
+                        {rowData.objeto.funcionario_detalhe.nome}
                     </Texto>
                     <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                        CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.dados_colaborador?.cpf ? formataCPF(rowData?.objeto?.dados_colaborador?.cpf) : '-'}</p>
+                        CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.funcionario_detalhe?.cpf ? formataCPF(rowData?.objeto?.dados_colaborador?.cpf) : '-'}</p>
                     </div>
                 </div>
             }
