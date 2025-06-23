@@ -15,7 +15,8 @@ import http from '@http';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { confirmDialog } from 'primereact/confirmdialog';
 
-function DataTableCandidatos({ candidatos, vagaId = null }) {
+function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
+    console.log(documentos)
     const[selectedCandidato, setSelectedCandidato] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -174,12 +175,35 @@ function DataTableCandidatos({ candidatos, vagaId = null }) {
     }
 
     const handleAprovar = async (rowData) => {
+        const vagaConfigurada = rowData?.vagas_configuradas?.[0];
+        if (!vagaConfigurada) return;
+
+        if (documentos.length === 0) {
+            confirmDialog({
+                message: 'A vaga não possui documentos requeridos. Por isso, não serão solicitados documentos ao candidato. Deseja continuar?',
+                header: 'Atenção',
+                icon: 'pi pi-info-circle',
+                acceptLabel: 'Sim',
+                rejectLabel: 'Não',
+                accept: async () => {
+                    try {
+                        await http.post(`vagas_candidatos/${vagaConfigurada.id}/seguir/`);
+                        setListaCandidatos(listaCandidatos.map(c =>
+                            c === rowData ? { 
+                                ...c, 
+                                vagas_configuradas: [{ ...c.vagas_configuradas[0], status: 'A' }]
+                            } : c
+                        ));
+                    } catch (error) {
+                        console.error('Erro ao aprovar candidato:', error);
+                    }
+                },
+                reject: () => {}
+            });
+            return;
+        }
         try {
-            const vagaConfigurada = rowData?.vagas_configuradas?.[0];
-            if (!vagaConfigurada) return;
-            
             await http.post(`vagas_candidatos/${vagaConfigurada.id}/seguir/`);
-            
             setListaCandidatos(listaCandidatos.map(c =>
                 c === rowData ? { 
                     ...c, 

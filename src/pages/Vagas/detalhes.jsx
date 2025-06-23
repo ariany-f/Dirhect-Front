@@ -482,7 +482,7 @@ function DetalhesVaga() {
                 <Titulo>
                     <h5>Candidatos</h5>
                 </Titulo>
-                <DataTableCandidatos vagaId={vaga?.id} candidatos={vaga?.candidatos?.map(candidato => ({
+                <DataTableCandidatos documentos={documentos} vagaId={vaga?.id} candidatos={vaga?.candidatos?.map(candidato => ({
                     ...candidato,
                     vaga: vaga
                 }))} />
