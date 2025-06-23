@@ -21,7 +21,7 @@ import { MdFilterAltOff } from 'react-icons/md';
 import React from 'react';
 import { Tooltip } from 'primereact/tooltip';
 
-function DataTableTarefasDetalhes({ tarefas }) {
+function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
     const toast = useRef(null);
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -45,36 +45,27 @@ function DataTableTarefasDetalhes({ tarefas }) {
         )
     }
 
+    const handleRowClick = (e) => {
+        if(objeto)
+        {
+            if(objeto?.funcionario_detalhe?.id) {
+                navegar(`/colaborador/detalhes/${objeto.funcionario_detalhe.id}`);
+            } else if(objeto?.dados_candidato?.id) {
+                navegar(`/admissao/registro/${objeto.id}`);
+            }
+        }
+    };
+
     const representativeCheckTemplate = (rowData) => {
         if (rowData.atividade_automatica) {
             return <RiExchangeFill size={18} fill="var(--info)" />;
         }
         const handleChange = async (checked) => {
-
             if(rowData.status === 'em_andamento') {
-            try {
-                await http.post(`/tarefas/${rowData.id}/concluir/`);
-                rowData.status = 'concluida';
-                rowData.status_display = 'Concluída';
-                rowData.check = true;
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Tarefa concluída com sucesso',
-                    life: 3000
-                });
-            } catch (error) {
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Erro ao concluir tarefa',
-                    life: 3000
-                });
-            }
-        } else {
-            if(rowData.status === 'pendente') {
                 try {
-                    await http.post(`/tarefas/${rowData.id}/aprovar/`);
-                    rowData.status = 'aprovada';
-                    rowData.status_display = 'Aprovada';
+                    await http.post(`/tarefas/${rowData.id}/concluir/`);
+                    rowData.status = 'concluida';
+                    rowData.status_display = 'Concluída';
                     rowData.check = true;
                     toast.current.show({
                         severity: 'success',
@@ -89,13 +80,32 @@ function DataTableTarefasDetalhes({ tarefas }) {
                     });
                 }
             } else {
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Tarefa não pode ser concluída',
-                    life: 3000
-                });
+                if(rowData.status === 'pendente') {
+                    try {
+                        await http.post(`/tarefas/${rowData.id}/aprovar/`);
+                        rowData.status = 'aprovada';
+                        rowData.status_display = 'Aprovada';
+                        rowData.check = true;
+                        toast.current.show({
+                            severity: 'success',
+                            summary: 'Tarefa concluída com sucesso',
+                            life: 3000
+                        });
+                    } catch (error) {
+                        toast.current.show({
+                            severity: 'error',
+                            summary: 'Erro ao concluir tarefa',
+                            life: 3000
+                        });
+                    }
+                } else {
+                    toast.current.show({
+                        severity: 'error',
+                        summary: 'Tarefa não pode ser concluída',
+                        life: 3000
+                    });
+                }
             }
-        }
         };
     
         const getTooltipText = () => {
@@ -465,6 +475,8 @@ function DataTableTarefasDetalhes({ tarefas }) {
                 rows={10}  
                 tableStyle={{ minWidth: '68vw' }}
                 onFilter={(e) => setFilters(e.filters)}
+                onRowClick={handleRowClick}
+                selectionMode={'single'}
             >
                 <Column body={representativePrioridadeTemplate} field="prioridade" header="Prioridade" style={{ width: '10%' }}></Column>
                 <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '30%' }}></Column>

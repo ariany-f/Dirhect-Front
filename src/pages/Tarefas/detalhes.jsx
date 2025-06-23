@@ -431,7 +431,7 @@ function DetalhesTarefas() {
                 <Titulo>
                     <Texto size={20} weight={700}>Atividades</Texto>
                 </Titulo>
-                <DataTableTarefasDetalhes tarefas={tarefa?.tarefas} />
+                <DataTableTarefasDetalhes objeto={tarefa?.objeto} tarefas={tarefa?.tarefas} />
             </Container>
         </Frame>
         </>
