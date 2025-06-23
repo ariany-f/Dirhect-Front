@@ -325,7 +325,7 @@ function DetalhesTarefas() {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <ConfirmDialog />
-            <Container gap="32px">
+            <Container gap="18px">
                 <BotaoVoltar linkFixo="/tarefas" />
                 {tarefa ?
                     <>
