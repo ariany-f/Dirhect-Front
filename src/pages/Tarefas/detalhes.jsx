@@ -132,14 +132,14 @@ function DetalhesTarefas() {
             case 'demissao':
                 color = 'var(--error)';
                 label = 'Demissão';
-                id = tarefa?.objeto?.id;
-                url = id ? `/demissao/detalhes/${id}` : null;
+                id = tarefa?.objeto?.funcionario_detalhe?.id;
+                url = id ? `/colaborador/detalhes/${id}` : null;
                 break;
             case 'ferias':
                 color = 'var(--green-500)';
                 label = 'Férias';
-                id = tarefa?.objeto?.id;
-                url = id ? `/ferias/detalhes/${id}` : null;
+                id = tarefa?.objeto?.funcionario_detalhe?.id;
+                url = id ? `/colaborador/detalhes/${id}` : null;
                 break;
             case 'envio_variaveis':
                 color = 'var(--primaria)';
