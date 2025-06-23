@@ -415,7 +415,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                         {rowData.objeto.funcionario_detalhe.nome}
                     </Texto>
                     <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                        CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.funcionario_detalhe?.cpf ? formataCPF(rowData?.objeto?.dados_colaborador?.cpf) : '-'}</p>
+                        CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.funcionario_detalhe?.cpf ? formataCPF(rowData?.objeto?.funcionario_detalhe?.cpf) : '-'}</p>
                     </div>
                 </div>
             }
