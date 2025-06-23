@@ -185,57 +185,57 @@ const StepDocumentos = ({ toast }) => {
 
     return (
         <div>
-            {(candidato?.documento) ?
+            {(candidato?.documentos && candidato?.documentos.length > 0) ?
                 <div>
                     {candidato?.documentos?.map((documento) => (
-                                    <DocumentoContainer key={documento.id}>
-                                        <DocumentoHeader>
-                                            <DocumentoTitulo>{documento.nome}</DocumentoTitulo>
-                                            <ObrigatorioTag isObrigatorio={documento.obrigatorio}>
-                                                {documento.obrigatorio ? 'Obrigatório' : 'Opcional'}
-                                            </ObrigatorioTag>
-                                        </DocumentoHeader>
-                                        
-                                        {documento.instrucao && (
-                                            <Instrucao>
-                                                <span>{documento.instrucao}</span>
-                                                <FormatosAceitos>
-                                                    Formatos aceitos: {documento.ext_permitidas || 'PDF, JPG, JPEG, PNG'}
-                                                </FormatosAceitos>
-                                            </Instrucao>
-                                        )}
+                        <DocumentoContainer key={documento.id}>
+                            <DocumentoHeader>
+                                <DocumentoTitulo>{documento.nome}</DocumentoTitulo>
+                                <ObrigatorioTag isObrigatorio={documento.obrigatorio}>
+                                    {documento.obrigatorio ? 'Obrigatório' : 'Opcional'}
+                                </ObrigatorioTag>
+                            </DocumentoHeader>
+                            
+                            {documento.instrucao && (
+                                <Instrucao>
+                                    <span>{documento.instrucao}</span>
+                                    <FormatosAceitos>
+                                        Formatos aceitos: {documento.ext_permitidas || 'PDF, JPG, JPEG, PNG'}
+                                    </FormatosAceitos>
+                                </Instrucao>
+                            )}
 
-                                        <ItensContainer>
-                                            {documento.itens.map((item, idx) => (
-                                                <div key={`${documento.id}-${idx}`} style={{ flex: 1 }}>
-                                                    <CampoArquivo
-                                                        nome={documento.frente_verso ? (idx === 0 ? 'Frente' : 'Verso') : documento.nome}
-                                                        valor={item.arquivo}
-                                                        onFileChange={(arquivo) => handleUpload(documento.id, idx, arquivo)}
-                                                        label={documento.frente_verso ? (idx === 0 ? 'Frente do documento' : 'Verso do documento') : 'Arquivo'}
-                                                        accept={getExtensaoAceita(documento)}
-                                                    />
-                                                    {item.upload_feito && item.arquivo && (
-                                                        <ArquivoEnviado>
-                                                            <FaFile />
-                                                            <ArquivoNome>{getArquivoNome(item.arquivo)}</ArquivoNome>
-                                                            <ArquivoAcoes>
-                                                                <ArquivoStatus>
-                                                                    <FaCheck /> Enviado
-                                                                </ArquivoStatus>
-                                                                <BotaoSemBorda 
-                                                                    aoClicar={() => window.open(getArquivoUrl(item.arquivo), '_blank')}
-                                                                    color="var(--primary-color)"
-                                                                >
-                                                                    <FaEye /> Visualizar
-                                                                </BotaoSemBorda>
-                                                            </ArquivoAcoes>
-                                                        </ArquivoEnviado>
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </ItensContainer>
-                                    </DocumentoContainer>
+                            <ItensContainer>
+                                {documento.itens.map((item, idx) => (
+                                    <div key={`${documento.id}-${idx}`} style={{ flex: 1 }}>
+                                        <CampoArquivo
+                                            nome={documento.frente_verso ? (idx === 0 ? 'Frente' : 'Verso') : documento.nome}
+                                            valor={item.arquivo}
+                                            onFileChange={(arquivo) => handleUpload(documento.id, idx, arquivo)}
+                                            label={documento.frente_verso ? (idx === 0 ? 'Frente do documento' : 'Verso do documento') : 'Arquivo'}
+                                            accept={getExtensaoAceita(documento)}
+                                        />
+                                        {item.upload_feito && item.arquivo && (
+                                            <ArquivoEnviado>
+                                                <FaFile />
+                                                <ArquivoNome>{getArquivoNome(item.arquivo)}</ArquivoNome>
+                                                <ArquivoAcoes>
+                                                    <ArquivoStatus>
+                                                        <FaCheck /> Enviado
+                                                    </ArquivoStatus>
+                                                    <BotaoSemBorda 
+                                                        aoClicar={() => window.open(getArquivoUrl(item.arquivo), '_blank')}
+                                                        color="var(--primary-color)"
+                                                    >
+                                                        <FaEye /> Visualizar
+                                                    </BotaoSemBorda>
+                                                </ArquivoAcoes>
+                                            </ArquivoEnviado>
+                                        )}
+                                    </div>
+                                ))}
+                            </ItensContainer>
+                        </DocumentoContainer>
                     ))}
                 </div>
             : 
