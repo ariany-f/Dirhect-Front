@@ -859,7 +859,7 @@ const CandidatoRegistro = () => {
                     className="custom-stepper"
                 >
                     <StepperPanel header="Documentos Pessoais">
-                        <Container padding={'10px 0 0 0'} gap="10px">
+                        <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel">
                                     <StepDocumentos toast={toast} />
@@ -869,7 +869,7 @@ const CandidatoRegistro = () => {
                     </StepperPanel>
                     
                     <StepperPanel header="Dados Pessoais">
-                        <Container padding={'10px 0 0 0'} gap="10px">
+                        <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
                                     <StepDadosPessoais classError={classError} estados={estados} />
@@ -880,7 +880,7 @@ const CandidatoRegistro = () => {
                     
                     {!self && (
                         <StepperPanel header="Vaga">
-                            <Container padding={'10px 0 0 0'}>
+                            <Container padding={'0'}>
                                 <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                     <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
                                         <StepVaga 
