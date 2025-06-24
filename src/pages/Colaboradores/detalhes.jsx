@@ -155,7 +155,7 @@ function ColaboradorDetalhes() {
     })
 
     const handleSalvarDemissao = (dadosDemissao) => {
-        http.post(`funcionario/${id}/solicita_demissao`, {
+        http.post(`funcionario/${id}/solicita_demissao/`, {
             ...dadosDemissao
         })
         .then(() => {
