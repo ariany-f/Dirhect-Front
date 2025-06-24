@@ -2,11 +2,16 @@ import Titulo from '@components/Titulo'
 import QuestionCard from '@components/QuestionCard'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import http from '@http'
 import Loading from '@components/Loading'
 import DataTableDependentes from '@components/DataTableDependentes'
+import { GrAddCircle } from 'react-icons/gr'
+import styles from '@pages/Colaboradores/Colaboradores.module.css'
+import BotaoGrupo from '@components/BotaoGrupo'
+import Botao from '@components/Botao'
+import { useTranslation } from 'react-i18next'
 
 function ColaboradorDependentes() {
 
@@ -18,6 +23,7 @@ function ColaboradorDependentes() {
     const [dep_pess, setDepPess] = useState(null)
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
+    const { t } = useTranslation('common');
 
     useEffect(() => {
         if(!dep_pess) {
@@ -79,11 +85,20 @@ function ColaboradorDependentes() {
     return (
         <>
             <Loading opened={loading} />
-            <Titulo>
-                <QuestionCard alinhamento="start" element={<h6>Dependentes</h6>}>
-                    <AiFillQuestionCircle className="question-icon" size={20} />
-                </QuestionCard>
-            </Titulo>
+            <BotaoGrupo align="space-between">
+
+                <Titulo>
+                    <QuestionCard alinhamento="start" element={<h6>Dependentes</h6>}>
+                        <AiFillQuestionCircle className="question-icon" size={20} />
+                    </QuestionCard>
+                </Titulo>
+                    
+                <BotaoGrupo align="end">
+                    <Link to="/colaborador/registro">
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> {t('add')} Dependente</Botao>
+                    </Link>
+                </BotaoGrupo>
+            </BotaoGrupo>
             <DataTableDependentes search={false} dependentes={dep_pess} sortField={sortField} sortOrder={sortOrder} onSort={onSort}/>
         </>
     )

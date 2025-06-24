@@ -143,7 +143,6 @@ function DataTableDependentes({ dependentes, search = true, sortField, sortOrder
 
     return (
         <>
-        
             <BotaoGrupo align="space-between">
                 {search &&
                     <div className="flex justify-content-end">
@@ -152,11 +151,6 @@ function DataTableDependentes({ dependentes, search = true, sortField, sortOrder
                         </span>
                     </div>
                 }
-                <BotaoGrupo align="end">
-                    <Link to="/colaborador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> {t('add')} Dependente</Botao>
-                    </Link>
-                </BotaoGrupo>
             </BotaoGrupo>
             
             <DataTable 
