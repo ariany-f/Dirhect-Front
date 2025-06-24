@@ -1,14 +1,15 @@
 import http from '@http'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import DashboardCard from '@components/DashboardCard'
 import Loading from '@components/Loading'
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
 import { Card } from 'primereact/card'
 import { Chart } from 'primereact/chart'
 import { Tag } from 'primereact/tag'
-import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaArrowRight, FaUserTimes, FaCheckCircle, FaRegClock } from 'react-icons/fa';
+import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaArrowRight, FaUserTimes, FaCheckCircle, FaRegClock, FaSyncAlt } from 'react-icons/fa';
 import { MdWork, MdBarChart, MdPieChart, MdTimeline } from 'react-icons/md';
 import { Link } from 'react-router-dom';
+import { IoMdSync } from 'react-icons/io';
 import { Tooltip } from 'primereact/tooltip';
 import '@pages/Dashboard/DashboardAtividades.css'
 
@@ -31,6 +32,8 @@ function Dashboard() {
     const [totalDemissoes, setTotalDemissoes] = useState(0)
     const [totalAdmissoes, setTotalAdmissoes] = useState(0)
     const [atividadesRaw, setAtividadesRaw] = useState([])
+    const [refreshing, setRefreshing] = useState(false)
+    const isMounted = useRef(true)
 
     // Mapeamento deve vir logo no início do componente
     const entidadeDisplayMap = {
@@ -46,89 +49,88 @@ function Dashboard() {
         'Admissão': <FaUserPlus size={14} style={{marginRight: 4, color: '#fff'}} />,
     };
 
-    useEffect(() => {
-        if(usuarioEstaLogado) {
-            if(!colaboradores) {
-                http.get('funcionario/?format=json')
-                .then(response => {
-                    setColaboradores(response)
-                })
-                .catch(erro => {
-                    setLoadingOpened(false)
-                })
+    // Função para buscar todos os dados do dashboard
+    const carregarDashboard = async () => {
+        setRefreshing(true);
+        try {
+            if(usuarioEstaLogado) {
+                if(!colaboradores) {
+                    await http.get('funcionario/?format=json')
+                    .then(response => {
+                        setColaboradores(response)
+                    })
+                    .catch(erro => {
+                        setLoadingOpened(false)
+                    })
+                }
+                await http.get('tarefas/?format=json')
+                    .then(response => {
+                        setAtividadesRaw(response)
+                        // atividades abertas: status diferente de concluida/finalizada
+                        const atividadesAbertas = response.filter(atividade => 
+                            atividade.status !== 'concluida' && 
+                            atividade.status !== 'finalizada'
+                        ).length
+                        setAtividadesAbertas(atividadesAbertas || 0)
+                        // Agrupar por status
+                        const porStatus = response.reduce((acc, atividade) => {
+                            acc[atividade.status] = (acc[atividade.status] || 0) + 1;
+                            return acc;
+                        }, {});
+                        setAtividadesPorStatus(porStatus)
+                        // Agrupar por tipo de atividade
+                        const porTipo = response.reduce((acc, atividade) => {
+                            const tipo = atividade.tipo_display || atividade.entidade_display || atividade.tipo_tarefa || atividade.tipo;
+                            acc[tipo] = (acc[tipo] || 0) + 1;
+                            return acc;
+                        }, {});
+                        setAtividadesPorTipo(porTipo)
+                        // Agrupar por SLA
+                        const porSLA = response.reduce((acc, atividade) => {
+                            const slaInfo = getSLAInfo(atividade);
+                            acc[slaInfo] = (acc[slaInfo] || 0) + 1;
+                            return acc;
+                        }, {});
+                        setAtividadesPorSLA(porSLA)
+                        // Agrupar por entidade
+                        const porEntidade = response.reduce((acc, atividade) => {
+                            const entidade = atividade.entidade_display || atividade.entidade_tipo || 'Outro';
+                            acc[entidade] = (acc[entidade] || 0) + 1;
+                            return acc;
+                        }, {});
+                        setAtividadesPorEntidade(porEntidade);
+                    })
+                    .catch(() => {
+                        setAtividadesAbertas(0)
+                        setAtividadesPorStatus({})
+                        setAtividadesPorTipo({})
+                        setAtividadesPorSLA({})
+                        setAtividadesPorEntidade({})
+                        setAtividadesRaw([])
+                    })
+                await http.get('vagas/').then(response => {
+                    setTotalVagas(Array.isArray(response) ? response.length : (response.count || 0));
+                }).catch(() => setTotalVagas(0));
+                await http.get('ferias/').then(response => {
+                    setTotalFerias(Array.isArray(response) ? response.length : (response.count || 0));
+                }).catch(() => setTotalFerias(0));
+                await http.get('funcionario/?format=json&situacao=D').then(response => {
+                    setTotalDemissoes(Array.isArray(response) ? response.length : (response.count || 0));
+                }).catch(() => setTotalDemissoes(0));
+                await http.get('admissao/').then(response => {
+                    setTotalAdmissoes(Array.isArray(response) ? response.length : (response.count || 0));
+                }).catch(() => setTotalAdmissoes(0));
             }
-            // Buscar atividades/tarefas
-            http.get('tarefas/?format=json')
-                .then(response => {
-                    setAtividadesRaw(response)
-                    // atividades abertas: status diferente de concluida/finalizada
-                    const atividadesAbertas = response.filter(atividade => 
-                        atividade.status !== 'concluida' && 
-                        atividade.status !== 'finalizada'
-                    ).length
-                    setAtividadesAbertas(atividadesAbertas || 0)
-                    
-                    // Agrupar por status
-                    const porStatus = response.reduce((acc, atividade) => {
-                        acc[atividade.status] = (acc[atividade.status] || 0) + 1;
-                        return acc;
-                    }, {});
-                    setAtividadesPorStatus(porStatus)
-                    
-                    // Agrupar por tipo de atividade
-                    const porTipo = response.reduce((acc, atividade) => {
-                        const tipo = atividade.tipo_display || atividade.entidade_display || atividade.tipo_tarefa || atividade.tipo;
-                        acc[tipo] = (acc[tipo] || 0) + 1;
-                        return acc;
-                    }, {});
-                    setAtividadesPorTipo(porTipo)
-                    
-                    // Agrupar por SLA
-                    const porSLA = response.reduce((acc, atividade) => {
-                        const slaInfo = getSLAInfo(atividade);
-                        acc[slaInfo] = (acc[slaInfo] || 0) + 1;
-                        return acc;
-                    }, {});
-                    setAtividadesPorSLA(porSLA)
-                    
-                    // Agrupar por entidade
-                    const porEntidade = response.reduce((acc, atividade) => {
-                        const entidade = atividade.entidade_display || atividade.entidade_tipo || 'Outro';
-                        acc[entidade] = (acc[entidade] || 0) + 1;
-                        return acc;
-                    }, {});
-                    setAtividadesPorEntidade(porEntidade);
-                })
-                .catch(() => {
-                    setAtividadesAbertas(0)
-                    setAtividadesPorStatus({})
-                    setAtividadesPorTipo({})
-                    setAtividadesPorSLA({})
-                    setAtividadesPorEntidade({})
-                    setAtividadesRaw([])
-                })
-
-            // Buscar número de vagas
-            http.get('vagas/').then(response => {
-                setTotalVagas(Array.isArray(response) ? response.length : (response.count || 0));
-            }).catch(() => setTotalVagas(0));
-
-            // Buscar número de férias
-            http.get('ferias/').then(response => {
-                setTotalFerias(Array.isArray(response) ? response.length : (response.count || 0));
-            }).catch(() => setTotalFerias(0));
-
-            // Buscar número de demissões
-            http.get('funcionario/?format=json&situacao=D').then(response => {
-                setTotalDemissoes(Array.isArray(response) ? response.length : (response.count || 0));
-            }).catch(() => setTotalDemissoes(0));
-
-            // Buscar número de admissões
-            http.get('admissao/').then(response => {
-                setTotalAdmissoes(Array.isArray(response) ? response.length : (response.count || 0));
-            }).catch(() => setTotalAdmissoes(0));
+        } finally {
+            if (isMounted.current) setRefreshing(false);
         }
-    }, [usuarioEstaLogado, colaboradores])
+    };
+
+    useEffect(() => {
+        isMounted.current = true;
+        carregarDashboard();
+        return () => { isMounted.current = false; };
+    }, [usuarioEstaLogado, colaboradores]);
 
     const getSLAInfo = (atividade) => {
         if (atividade.status === 'concluida') {
@@ -225,6 +227,12 @@ function Dashboard() {
     const abertasPrioridadeAlta = atividadesRaw.filter(
         atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && (atv.prioridade === 1)
     ).length;
+
+    // Função para recarregar os dados
+    const recarregarDashboard = () => {
+        window.location.reload(); // Simples: recarrega a página inteira
+        // Para um refresh mais elegante, pode-se refazer as chamadas dos useEffect
+    };
 
     if (!colaboradores) {
         return <Loading opened={loadingOpened} />
@@ -408,6 +416,11 @@ function Dashboard() {
 
     return (
         <>
+            <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%', marginBottom: 12}}>
+                <button onClick={carregarDashboard} style={{background: 'none', border: 'none', cursor: 'pointer', padding: 8, borderRadius: 8, transition: 'background 0.2s'}} title="Recarregar dashboard" disabled={refreshing}>
+                    <FaSyncAlt size={22} color="#888" className={refreshing ? 'spin-refresh' : ''} />
+                </button>
+            </div>
             {mostrarAtividades && (
                 <div
                     style={{
@@ -426,7 +439,7 @@ function Dashboard() {
                                 Ver todas <FaArrowRight size={15} />
                             </Link>
                         </div>
-                        <div style={{display: 'flex', gap: 16, alignItems: 'flex-end', marginBottom: 8, justifyContent: 'center'}}>
+                        <div style={{display: 'flex', width: '100%', gap: 16, alignItems: 'flex-end', marginBottom: 8, justifyContent: 'space-between'}}>
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 70}}>
                                 <span style={{fontSize: 24, fontWeight: 900, color: '#222', display: 'flex', alignItems: 'center', gap: 2}}>
                                     <MdBarChart size={24} style={{marginRight: 2, verticalAlign: 'middle'}} /> {totalAtividades}

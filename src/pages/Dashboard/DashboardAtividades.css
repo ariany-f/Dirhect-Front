@@ -145,4 +145,11 @@
   color: #888;
   font-weight: 600;
   margin-top: 0;
+}
+
+.spin-refresh {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
 } 
