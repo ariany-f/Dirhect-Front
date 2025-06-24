@@ -28,7 +28,6 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalSelecionarColaboradorOpened] = useState(false)
-    const [modalImportarPlanilhaOpened, setModalImportarPlanilhaOpened] = useState(false)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filiais, setFiliais] = useState([]);
     const [funcoes, setFuncoes] = useState([]);
@@ -225,14 +224,6 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                             <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar colaborador" />
                         </span>
                     </div>
-                    <BotaoGrupo align="end" gap="8px">
-                        <BotaoSemBorda color="var(--primaria)">
-                            <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
-                        </BotaoSemBorda>
-                        <Link to="/colaborador/registro">
-                            <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
-                        </Link>
-                    </BotaoGrupo>
                     </>
                 )}
             </BotaoGrupo>
@@ -289,7 +280,6 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             </DataTable>
             <ModalDemissao opened={modalOpened} aoFechar={() => setModalOpened(false)}/>
             <ModalSelecionarColaborador opened={modalFeriasOpened} aoFechar={() => setModalSelecionarColaboradorOpened(false)}/>
-            <ModalImportarPlanilha opened={modalImportarPlanilhaOpened} aoFechar={() => setModalImportarPlanilhaOpened(false)} />
         </>
     )
 }

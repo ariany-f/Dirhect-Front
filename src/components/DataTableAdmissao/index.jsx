@@ -11,12 +11,19 @@ import { FaCalendarAlt, FaHistory, FaExternalLinkAlt } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import ModalHistoricoAdmissao from '@components/ModalHistoricoAdmissao';
 import ModalDadosCandidato from '@components/ModalDadosCandidato';
+import ModalImportarPlanilha from '@components/ModalImportarPlanilha';
 import Texto from '@components/Texto';
 import { RiUser3Line } from 'react-icons/ri';
 import { CgDetailsMore } from "react-icons/cg";
 import { Tag } from 'primereact/tag';
 import ModalExameMedico from '@components/ModalExameMedico';
 import { ProgressBar } from 'primereact/progressbar';
+import BotaoGrupo from '@components/BotaoGrupo';
+import BotaoSemBorda from '@components/BotaoSemBorda';
+import Botao from '@components/Botao';
+import { FaDownload } from 'react-icons/fa';
+import { GrAddCircle } from 'react-icons/gr';
+import styles from '@pages/Colaboradores/Colaboradores.module.css'
 
 function DataTableAdmissao({ vagas }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -27,7 +34,9 @@ function DataTableAdmissao({ vagas }) {
     const [selectedCandidato, setSelectedCandidato] = useState(null);
     const [showDadosCandidato, setShowDadosCandidato] = useState(false);
     const [modalExameAberto, setModalExameAberto] = useState(false);
-    const [candidatoExame, setCandidatoExame] = useState(null);
+    const [candidatoExame, setCandidatoExame] = useState(null);    
+    const [modalImportarPlanilhaOpened, setModalImportarPlanilhaOpened] = useState(false)
+
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
@@ -186,11 +195,23 @@ function DataTableAdmissao({ vagas }) {
 
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
-                </span>
-            </div>
+            <BotaoGrupo align="space-between">
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
+                    </span>
+                </div>
+                {/* <BotaoGrupo align="end" gap="8px">
+                    <BotaoSemBorda color="var(--primaria)">
+                        <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
+                    </BotaoSemBorda>
+                    <Link to="/colaborador/registro">
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Cadastrar Individualmente</Botao>
+                    </Link>
+                </BotaoGrupo>  */}
+            </BotaoGrupo>
+
+           
             <DataTable 
                 value={vagas} 
                 filters={filters} 
@@ -224,6 +245,7 @@ function DataTableAdmissao({ vagas }) {
                     setModalExameAberto(false);
                 }}
             />
+            <ModalImportarPlanilha opened={modalImportarPlanilhaOpened} aoFechar={() => setModalImportarPlanilhaOpened(false)} />
         </>
     )
 }

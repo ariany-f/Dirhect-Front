@@ -279,9 +279,9 @@ function ColaboradorDetalhes() {
                         </div>
                     </>
                     : <>
-                        <Skeleton variant="rectangular" width={70} height={20} />
+                        <Skeleton variant="rectangular" width={'70%'} height={'20%'} />
                         <ContainerHorizontal gap="16px" align="start">
-                            <Skeleton variant="rectangular" width={340} height={40} />
+                            <Skeleton variant="rectangular" width={'50%'} height={40} />
                             <Skeleton variant="rectangular" width={70} height={30} />
                         </ContainerHorizontal>
                     </>
@@ -371,7 +371,7 @@ function ColaboradorDetalhes() {
                             </Frame>
                      </div>
                      </Col4Vertical>
-                    : <Skeleton variant="rectangular" width={220} height={420} />
+                    : <Skeleton variant="rectangular" width={'23%'} height={420} />
                     }
                     {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                     <Col8Vertical>
@@ -431,7 +431,10 @@ function ColaboradorDetalhes() {
                     </BotaoGrupo>
                     <Outlet context={colaborador}/>
                 </Col8Vertical>
-                : <Skeleton variant="rectangular" width={900} height={420} />
+                : <Container gap="8px">
+                        <Skeleton variant="rectangular" width={'100%'} height={30} />
+                        <Skeleton variant="rectangular" width={'100%'} height={420} />
+                    </Container>
                 }
             </Col12Vertical>
             <ModalDemissao 
