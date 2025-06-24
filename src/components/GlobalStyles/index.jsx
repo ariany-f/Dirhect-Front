@@ -270,6 +270,9 @@ template {
   background-color: var(--primaria);
   color: var(--white);
 }
+.p-stepper .p-stepper-panels {
+  padding: 5px 0px 0px 0px;
+}
 .p-stepper.p-stepper-vertical .p-stepper-panel .p-stepper-content {
   padding-top: 1rem;
 }
