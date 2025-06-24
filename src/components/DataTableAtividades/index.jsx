@@ -62,7 +62,7 @@ function DataTableAtividades({ tarefas }) {
         return (
             <div>
                 {rowData.agendado_para ? new Date(rowData.agendado_para).toLocaleDateString('pt-BR') : '-'}
-                {rowData.concluido_emo_em ? <div>
+                {rowData.concluido_em ? <div>
                    Conclusão: {new Date(rowData.concluido_em).toLocaleDateString('pt-BR')}
                 </div> : null}
             </div>
