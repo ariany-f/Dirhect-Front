@@ -439,6 +439,7 @@ function ColaboradorDetalhes() {
                 aoFechar={() => setModalDemissaoAberto(false)}
                 colaborador={colaborador}
                 aoSalvar={handleSalvarDemissao}
+                mostrarColaborador={false}
             />
         </Frame>
     )

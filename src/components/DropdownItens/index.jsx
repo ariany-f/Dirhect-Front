@@ -19,6 +19,7 @@ const Select = styled(Dropdown)`
     font-size: 14px;
     width: ${ props => props.$width ?  props.$width : 'inherit' };
     height: ${ props => props.$height ?  props.$height : '46px' };
+    margin-bottom: ${ props => props.$margin ?  props.$margin : '0px' };
 
     & span {
         display: flex;
@@ -108,6 +109,7 @@ function DropdownItens({
     $width,
     $height,
     label, 
+    $margin,
     filter = false,
     camposVazios = [],
     optionTemplate, // Nova prop para o template personalizado
@@ -160,6 +162,7 @@ function DropdownItens({
                             $height={$height}
                             filter
                             id={name}
+                            $margin={$margin}
                             placeholder={placeholder} 
                             options={options} 
                             value={valor} 
@@ -174,6 +177,7 @@ function DropdownItens({
                     <Select 
                         $width={$width}
                         $height={$height}
+                        $margin={$margin}
                         id={name}
                         placeholder={placeholder} 
                         options={options} 

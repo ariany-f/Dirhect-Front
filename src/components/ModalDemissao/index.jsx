@@ -62,13 +62,14 @@ const DetalhesTitulo = styled.h4`
 const DetalhesCard = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 14px;
 `;
 
 const Linha = styled.div`
     display: flex;
     flex-direction: column;
     gap: 4px;
+    margin-bottom: ${props => props.$margin ? props.$margin : '10px'};
 `;
 
 const Label = styled.span`
@@ -96,7 +97,7 @@ const BotaoFechar = styled.button`
     }
 `;
 
-function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar }) {
+function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostrarColaborador = true }) {
     const [dataDemissao, setDataDemissao] = useState('');
     const [tipoDemissao, setTipoDemissao] = useState(null);
     const [motivoDemissao, setMotivoDemissao] = useState(null);
@@ -141,6 +142,10 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar }) {
         });
     }
 
+    function formatarCPF(cpf) {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    }
+
     return(
         <>
             {opened &&
@@ -149,13 +154,13 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar }) {
                     <DialogEstilizadoRight
                         open={opened}
                         $opened={opened}
-                        $width="60vw"
+                        $width="50vw"
                         onClick={e => e.stopPropagation()}
                     >
                         <Cabecalho>
                             <div>
                                 <h6 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0 }}>
-                                    Solicitação de Demissão
+                                    Solicitação de Demissão {colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}
                                 </h6>
                             </div>
                             <BotaoFechar onClick={aoFechar}>
@@ -164,13 +169,10 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar }) {
                         </Cabecalho>
 
                         <ConteudoContainer>
+                            {mostrarColaborador &&
                             <DetalhesContainer>
                                 {colaborador && (
                                     <DetalhesCard>
-                                        <Linha>
-                                            <Label>Nome</Label>
-                                            <Valor>{colaborador.funcionario_pessoa_fisica.nome}</Valor>
-                                        </Linha>
                                         <Linha>
                                             <Label>Matrícula</Label>
                                             <Valor>{colaborador.chapa}</Valor>
@@ -181,11 +183,12 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar }) {
                                         </Linha>
                                         <Linha>
                                             <Label>CPF</Label>
-                                            <Valor>{colaborador.funcionario_pessoa_fisica.cpf}</Valor>
+                                            <Valor>{formatarCPF(colaborador.funcionario_pessoa_fisica.cpf)}</Valor>
                                         </Linha>
                                     </DetalhesCard>
                                 )}
                             </DetalhesContainer>
+                            }
                             <AcoesContainer>
                                 <Frame>
                                     <CampoTexto
@@ -203,6 +206,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar }) {
                                         label="Tipo de Demissão"
                                         name="tipo_demissao"
                                         placeholder="Selecione o tipo"
+                                        $margin="20px"
                                     />
                                     <DropdownItens
                                         valor={motivoDemissao}
@@ -211,6 +215,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar }) {
                                         label="Motivo da Demissão"
                                         name="motivo_demissao"
                                         placeholder="Selecione o motivo"
+                                        $margin="15px"
                                     />
                                     <CampoTexto
                                         name="observacao"
@@ -221,17 +226,21 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar }) {
                                         type="textarea"
                                         rows={4}
                                     />
-                                    <BotaoGrupo align="end" gap="12px" style={{marginTop: '16px'}}>
-                                        <Botao aoClicar={aoFechar} estilo="neutro" size="small">
-                                            Cancelar
-                                        </Botao>
-                                        <Botao aoClicar={handleSalvar} estilo="vermilion" size="small">
-                                            Confirmar
-                                        </Botao>
-                                    </BotaoGrupo>
                                 </Frame>
                             </AcoesContainer>
                         </ConteudoContainer>
+                        <Frame estilo="spaced">
+                            <BotaoGrupo align="space-between" wrap>
+                                <Botao aoClicar={aoFechar} estilo="neutro" size="small">
+                                    Cancelar
+                                </Botao>
+                            </BotaoGrupo>
+                            <BotaoGrupo align="space-between" wrap>
+                                <Botao aoClicar={handleSalvar} estilo="vermilion" size="small">
+                                    Confirmar
+                                </Botao>
+                            </BotaoGrupo>
+                        </Frame>
                     </DialogEstilizadoRight>
                 </OverlayRight>
             </>
