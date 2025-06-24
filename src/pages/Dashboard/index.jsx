@@ -364,7 +364,7 @@ function Dashboard() {
                 position: 'bottom',
                 labels: {
                     color: '#222',
-                    font: { size: 14, weight: 600 }
+                    font: { size: 14, weight: 400 }
                 }
             },
             tooltip: {
