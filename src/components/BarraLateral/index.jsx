@@ -24,6 +24,7 @@ import { PiHandshake } from "react-icons/pi"
 import { Ripple } from 'primereact/ripple'
 import { ArmazenadorToken } from "@utils"
 import http from "@http"
+import { FaExchangeAlt } from 'react-icons/fa'
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -436,6 +437,9 @@ function BarraLateral({ $sidebarOpened }) {
                 }}>
                     <NavEstilizada>
                         <NavTitulo>{capitalizeTipo(usuario.tipo)}</NavTitulo>
+                        <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                            <FaExchangeAlt size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
+                        </Link>
                         <ListaEstilizada>
                             {alwaysVisible.map((item) => (
                                 <StyledLink 
@@ -471,7 +475,12 @@ function BarraLateral({ $sidebarOpened }) {
                     overflow: 'hidden'
                 }}>
                     <NavEstilizada>
-                        <NavTitulo>{usuario.tipo}</NavTitulo>
+                        <NavTitulo>
+                            {usuario.tipo}
+                            <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                                <FaExchangeAlt fill="white" size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
+                            </Link>
+                        </NavTitulo>
                         <ListaEstilizada>
                             {menusOrdenados.map((item) => (
                                 <StyledLink 

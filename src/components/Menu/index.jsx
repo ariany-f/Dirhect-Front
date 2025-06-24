@@ -240,6 +240,14 @@ function Menu({ opened = false, aoFechar }){
                                 </Link>
                             </li>
                         )}
+                        <li onClick={() => FecharMenu()}>
+                            <Link className="link" to="/login/selecionar-grupo">
+                                <div className="group">
+                                    Alterar perfil
+                                    <MdOutlineChevronRight size={20} className="icon"/>
+                                </div>
+                            </Link>
+                        </li>
                         <div className="divider" />
                         <li onClick={Sair}>
                             <Link className="link">
