@@ -13,6 +13,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from "styled-components"
 import http from '@http'
 import axios from "axios"
+import BotaoVoltar from "@components/BotaoVoltar"
 import styles from './../Candidatos.module.css'
 import { Stepper } from 'primereact/stepper';
 import { StepperPanel } from 'primereact/stepperpanel';
@@ -36,7 +37,7 @@ import { RiExchangeFill } from 'react-icons/ri';
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 8px;
     width: 100%;
     position: relative;
 
@@ -752,13 +753,18 @@ const CandidatoRegistro = () => {
             <Toast ref={toast} style={{ zIndex: 9999 }} />
             <ConfirmDialog />
             
+            {/* Botão Voltar */}
+            {candidato?.dados_candidato?.nome && (
+                <BotaoVoltar />
+            )}
+            
             {/* Header com informações do candidato */}
             {candidato?.dados_candidato && (
                 <div style={{
                     background: 'linear-gradient(to bottom, #0c004c, #5d0b62)',
                     borderRadius: 8,
                     padding: '12px 16px',
-                    marginBottom: 16,
+                    marginBottom: 0,
                     color: '#fff',
                     boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
                     position: 'sticky',
