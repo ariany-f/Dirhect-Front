@@ -742,6 +742,11 @@ const CandidatoRegistro = () => {
         };
     }, []);
 
+    const formatarCPF = (cpf) => {
+        if (!cpf) return 'CPF não informado';
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    };
+
     return (
         <ConteudoFrame>
             <Toast ref={toast} style={{ zIndex: 9999 }} />
@@ -803,7 +808,7 @@ const CandidatoRegistro = () => {
                                     opacity: 0.9,
                                     fontWeight: 400
                                 }}>
-                                    CPF: {candidato.dados_candidato.cpf || 'CPF não informado'}
+                                    CPF: {formatarCPF(candidato.dados_candidato.cpf) || 'CPF não informado'}
                                 </p>
                             </div>
                         </div>
@@ -823,18 +828,18 @@ const CandidatoRegistro = () => {
                                 color: '#fff',
                                 opacity: 0.9
                             }}>
-                                Status:
+                                Vaga:
                             </span>
                             <span style={{
-                                background: candidato.status === 'ativo' ? '#4CAF50' : '#FF9800',
+                                background: '#333',
                                 color: '#fff',
-                                padding: '2px 8px',
+                                padding: '4px 8px',
                                 borderRadius: 12,
                                 fontSize: 11,
-                                fontWeight: 600,
+                                fontWeight: 400,
                                 textTransform: 'capitalize'
                             }}>
-                                {candidato.status || 'Em processo'}
+                                {candidato?.dados_vaga?.titulo || 'Vaga não informada'}
                             </span>
                         </div>
                     </div>
