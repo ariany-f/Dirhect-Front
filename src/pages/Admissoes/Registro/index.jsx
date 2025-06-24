@@ -39,6 +39,103 @@ const ConteudoFrame = styled.div`
     gap: 24px;
     width: 100%;
     position: relative;
+
+    .custom-stepper {
+        display: flex;
+        flex-direction: column;
+        height: 500px; /* Altura fixa menor */
+        min-height: 400px; /* Altura mínima */
+    }
+
+    .custom-stepper .p-stepper-header {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        flex-shrink: 0; /* Impede que o header encolha */
+        min-height: auto !important;
+    }
+
+    .custom-stepper .p-stepper-content {
+        padding-top: 10px !important;
+        flex: 1; /* Permite que o conteúdo use o espaço restante */
+        overflow: hidden; /* Evita overflow que pode esconder o header */
+    }
+
+    .custom-stepper .p-stepper-panels {
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .custom-stepper .p-stepper-panel {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Altura responsiva para o ScrollPanel principal */
+    .responsive-scroll-panel {
+        width: 100%;
+        height: 380px; /* Altura fixa menor */
+        min-height: 300px;
+        max-height: 380px;
+    }
+
+    /* Altura responsiva para ScrollPanels internos */
+    .responsive-inner-scroll {
+        width: 100%;
+        height: 340px; /* Altura fixa menor */
+        min-height: 260px;
+        max-height: 340px;
+        margin-bottom: 10px;
+    }
+
+    /* Media query específica para detectar zoom/escala do Windows */
+    @media (min-resolution: 120dpi), (min-resolution: 1.25dppx) {
+        .custom-stepper {
+            height: 450px; /* Altura menor para zoom 125% */
+        }
+        .responsive-scroll-panel {
+            height: 330px; /* Altura menor para zoom 125% */
+            min-height: 280px;
+            max-height: 330px;
+        }
+        .responsive-inner-scroll {
+            height: 290px;
+            min-height: 240px;
+            max-height: 290px;
+        }
+    }
+
+    /* Para zoom ainda maior (150%+) */
+    @media (min-resolution: 144dpi), (min-resolution: 1.5dppx) {
+        .custom-stepper {
+            height: 400px;
+        }
+        .responsive-scroll-panel {
+            height: 280px;
+            min-height: 250px;
+            max-height: 280px;
+        }
+        .responsive-inner-scroll {
+            height: 240px;
+            min-height: 210px;
+            max-height: 240px;
+        }
+    }
+
+    /* Para telas muito pequenas */
+    @media (max-height: 600px) {
+        .custom-stepper {
+            height: 350px;
+        }
+        .responsive-scroll-panel {
+            height: 250px;
+            min-height: 200px;
+        }
+        .responsive-inner-scroll {
+            height: 210px;
+            min-height: 170px;
+        }
+    }
 `
 
 const CandidatoRegistro = () => {
@@ -59,6 +156,7 @@ const CandidatoRegistro = () => {
     const [sindicatos, setSindicatos] = useState([]);
     const [estados, setEstados] = useState([]);
     const toast = useRef(null);
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const [listaPericulosidades, setListaPericulosidades] = useState([
         { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
@@ -496,157 +594,342 @@ const CandidatoRegistro = () => {
     const handleSalvarEContinuar = async () => {
         await handleSalvarAdmissao();
         stepperRef.current.nextCallback();
+        setActiveIndex(prev => prev + 1);
     };
+
+    const handleVoltar = () => {
+        stepperRef.current.prevCallback();
+        setActiveIndex(prev => prev - 1);
+    };
+
+    const handleAvancar = () => {
+        stepperRef.current.nextCallback();
+        setActiveIndex(prev => prev + 1);
+    };
+
+    // Função para renderizar os botões baseado no step atual
+    const renderFooterButtons = () => {
+        const isFirstStep = activeIndex === 0;
+        const isLastStep = (self && activeIndex === 6) || (!self && activeIndex === 5);
+        
+        return (
+            <div style={{
+                position: 'fixed',
+                bottom: 0,
+                left: '248px', // Ajustado para não sobrepor a sidebar (assumindo largura padrão de sidebar)
+                right: 0,
+                background: '#fff',
+                borderTop: '1px solid #e0e0e0',
+                padding: '16px 24px',
+                boxShadow: '0 -2px 8px rgba(0,0,0,0.1)',
+                zIndex: 1000,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+            }}>
+                <div style={{ display: 'flex', gap: 12 }}>
+                    {/* Botão Visão do Candidato/Empresa - só no primeiro step */}
+                    {isFirstStep && (
+                        !self ? 
+                            <Botao size="small" estilo="neutro" aoClicar={() => navegar(`/admissao/registro/${id}/true`)}>
+                                <HiEye/> Visão do Candidato
+                            </Botao>
+                            :
+                            <Botao size="small" estilo="neutro" aoClicar={() => navegar(`/admissao/registro/${id}`)}>
+                                <HiEye/> Visão da Empresa
+                            </Botao>
+                    )}
+                    
+                    {/* Botão Voltar - em todos os steps exceto o primeiro */}
+                    {!isFirstStep && (
+                        <Botao size="small" estilo="neutro" aoClicar={handleVoltar}>
+                            <HiArrowLeft/> Voltar
+                        </Botao>
+                    )}
+                </div>
+
+                <div style={{ display: 'flex', gap: 12 }}>
+                    {/* Botões específicos por step */}
+                    {activeIndex === 0 && (
+                        <Botao size="small" label="Next" iconPos="right" aoClicar={handleAvancar}>
+                            <HiArrowRight fill="white"/> Continuar
+                        </Botao>
+                    )}
+                    
+                    {(activeIndex >= 1 && activeIndex <= 4) && (
+                        <>
+                            <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
+                                <FaSave fill="white"/> Salvar
+                            </Botao>
+                            <Botao size="small" label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}>
+                                <HiArrowRight fill="white"/> Salvar e Continuar
+                            </Botao>
+                        </>
+                    )}
+                    
+                    {/* Step Experiência - último step antes da finalização */}
+                    {activeIndex === 5 && (
+                        <>
+                            <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
+                                <FaSave fill="white"/> Salvar
+                            </Botao>
+                            {self ? (
+                                <Botao size="small" label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}>
+                                    <HiArrowRight fill="white"/> Salvar e Continuar
+                                </Botao>
+                            ) : (
+                                <Botao size="small" label="Next" iconPos="right" aoClicar={handleFinalizarDocumentos}>
+                                    <RiExchangeFill fill="white"/> Finalizar
+                                </Botao>
+                            )}
+                        </>
+                    )}
+                    
+                    {/* Step LGPD - só para candidatos */}
+                    {self && activeIndex === 6 && (
+                        <Botao 
+                            iconPos="right" 
+                            aoClicar={handleAceitarLGPD}
+                            disabled={candidato.aceite_lgpd}
+                        >
+                            <FaSave fill="white"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Finalizar'}
+                        </Botao>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    // Detectar cliques nos headers do stepper
+    useEffect(() => {
+        const stepperElement = stepperRef.current?.getElement?.();
+        if (!stepperElement) return;
+
+        const handleStepHeaderClick = (event) => {
+            const stepHeader = event.target.closest('.p-stepper-header');
+            if (stepHeader) {
+                const stepIndex = Array.from(stepHeader.parentElement.children).indexOf(stepHeader);
+                console.log('Header clicado, step:', stepIndex);
+                setActiveIndex(stepIndex);
+            }
+        };
+
+        stepperElement.addEventListener('click', handleStepHeaderClick);
+        
+        // Fallback: usar MutationObserver para detectar mudanças no stepper
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    const activeHeader = stepperElement.querySelector('.p-stepper-header.p-highlight');
+                    if (activeHeader) {
+                        const stepIndex = Array.from(activeHeader.parentElement.children).indexOf(activeHeader);
+                        console.log('MutationObserver detectou step ativo:', stepIndex);
+                        setActiveIndex(stepIndex);
+                    }
+                }
+            });
+        });
+
+        // Observar mudanças nos headers
+        const headers = stepperElement.querySelectorAll('.p-stepper-header');
+        headers.forEach(header => {
+            observer.observe(header, { attributes: true, attributeFilter: ['class'] });
+        });
+        
+        return () => {
+            stepperElement.removeEventListener('click', handleStepHeaderClick);
+            observer.disconnect();
+        };
+    }, []);
 
     return (
         <ConteudoFrame>
             <Toast ref={toast} style={{ zIndex: 9999 }} />
             <ConfirmDialog />
-            <Stepper headerPosition="top" ref={stepperRef} style={{ flexBasis: '50rem', maxHeight: '85vh', overflow: 'auto' }}>
-                <StepperPanel header="Documentos Pessoais">
-                    <ScrollPanel style={{ width: '100%', height: '380px'}}>
-                        <StepDocumentos toast={toast} />
-                    </ScrollPanel>
-                    <Frame padding="30px" estilo="spaced">
-                        <BotaoGrupo>
-                            {!self ? 
-                                <Botao estilo="neutro" aoClicar={() => navegar(`/admissao/registro/${id}/true`)}><HiEye/> Visão do Candidato</Botao>
-                                :
-                                <Botao estilo="neutro" aoClicar={() => navegar(`/admissao/registro/${id}`)}><HiEye/> Visão da Empresa</Botao>
-                            }
-                        </BotaoGrupo>
-                        <BotaoGrupo>
-                            <Botao label="Next" iconPos="right" aoClicar={() => stepperRef.current.nextCallback()}><HiArrowRight fill="white"/> Continuar</Botao>
-                        </BotaoGrupo>
-                    </Frame>
-                </StepperPanel>
-                <StepperPanel header="Dados Pessoais">
-                    <Container padding={'30px 0 0 0'} gap="10px">
-                        <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
-                            <ScrollPanel style={{ width: '100%', height: '390px', marginBottom: 10 }}>
-                                <StepDadosPessoais classError={classError} estados={estados} />
-                            </ScrollPanel>
+            
+            {/* Header com informações do candidato */}
+            {candidato?.dados_candidato && (
+                <div style={{
+                    background: 'linear-gradient(to bottom, #0c004c, #5d0b62)',
+                    borderRadius: 8,
+                    padding: '12px 16px',
+                    marginBottom: 16,
+                    color: '#fff',
+                    boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 100
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: 10
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10
+                        }}>
+                            <div style={{
+                                width: 36,
+                                height: 36,
+                                borderRadius: '50%',
+                                background: 'rgba(255, 255, 255, 0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 16,
+                                fontWeight: 'bold',
+                                color: '#fff'
+                            }}>
+                                {candidato.dados_candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
+                            </div>
+                            <div>
+                                <h2 style={{
+                                    margin: 0,
+                                    fontSize: 16,
+                                    fontWeight: 700,
+                                    color: '#fff',
+                                    textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                                }}>
+                                    {candidato.dados_candidato.nome || 'Nome não informado'}
+                                </h2>
+                                <p style={{
+                                    margin: 0,
+                                    fontSize: 12,
+                                    color: '#fff',
+                                    opacity: 0.9,
+                                    fontWeight: 400
+                                }}>
+                                    CPF: {candidato.dados_candidato.cpf || 'CPF não informado'}
+                                </p>
+                            </div>
                         </div>
-                    </Container>
-                    <Frame padding="30px" estilo="spaced">
-                        <BotaoGrupo>
-                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                        </BotaoGrupo>
-                        <BotaoGrupo>
-                            <Botao iconPos="right" aoClicar={handleSalvarAdmissao}><FaSave fill="white"/> Salvar</Botao>
-                            <Botao label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}><HiArrowRight fill="white"/> Salvar e Continuar</Botao>
-                        </BotaoGrupo>
-                    </Frame>
-                </StepperPanel>
-                {!self && (
-                  <StepperPanel header="Vaga">
-                    <Container padding={'30px 0 0 0'}>
-                        <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
-                            <ScrollPanel style={{ width: '100%', height: '380px', marginBottom: 10 }}>
-                                <StepVaga 
-                                    filiais={filiais}
-                                    departamentos={departamentos}
-                                    secoes={secoes}
-                                    cargos={cargos}
-                                    centros_custo={centros_custo}
-                                    horarios={horarios}
-                                    funcoes={funcoes}
-                                    sindicatos={sindicatos}
-                                />
-                            </ScrollPanel>
+                        
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 6,
+                            background: 'rgba(255, 255, 255, 0.15)',
+                            padding: '4px 10px',
+                            borderRadius: 6,
+                            backdropFilter: 'blur(10px)'
+                        }}>
+                            <span style={{
+                                fontSize: 11,
+                                fontWeight: 600,
+                                color: '#fff',
+                                opacity: 0.9
+                            }}>
+                                Status:
+                            </span>
+                            <span style={{
+                                background: candidato.status === 'ativo' ? '#4CAF50' : '#FF9800',
+                                color: '#fff',
+                                padding: '2px 8px',
+                                borderRadius: 12,
+                                fontSize: 11,
+                                fontWeight: 600,
+                                textTransform: 'capitalize'
+                            }}>
+                                {candidato.status || 'Em processo'}
+                            </span>
                         </div>
-                    </Container>
-                    <Frame padding="30px" estilo="spaced">
-                        <BotaoGrupo>
-                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                        </BotaoGrupo>
-                        <BotaoGrupo>
-                            <Botao iconPos="right" aoClicar={handleSalvarAdmissao}><FaSave fill="white"/> Salvar</Botao>
-                            <Botao label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}><HiArrowRight fill="white"/> Salvar e Continuar</Botao>
-                        </BotaoGrupo>
-                    </Frame>
-                  </StepperPanel>
-                )}
-                <StepperPanel header="Educação">
-                    <ScrollPanel style={{ width: '100%', height: '380px'}}>
-                        <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
-                            <ScrollPanel style={{ width: '100%', height: '380px', marginBottom: 10 }}>
-                                <StepEducacao />
+                    </div>
+                </div>
+            )}
+
+            <div style={{ paddingBottom: '80px' }}> {/* Espaço para o footer fixo */}
+                <Stepper 
+                    headerPosition="top" 
+                    ref={stepperRef} 
+                    className="custom-stepper"
+                >
+                    <StepperPanel header="Documentos Pessoais">
+                        <Container padding={'10px 0 0 0'} gap="10px">
+                            <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
+                                <ScrollPanel className="responsive-scroll-panel">
+                                    <StepDocumentos toast={toast} />
+                                </ScrollPanel>
+                            </div>
+                        </Container>
+                    </StepperPanel>
+                    
+                    <StepperPanel header="Dados Pessoais">
+                        <Container padding={'10px 0 0 0'} gap="10px">
+                            <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
+                                <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
+                                    <StepDadosPessoais classError={classError} estados={estados} />
+                                </ScrollPanel>
+                            </div>
+                        </Container>
+                    </StepperPanel>
+                    
+                    {!self && (
+                        <StepperPanel header="Vaga">
+                            <Container padding={'10px 0 0 0'}>
+                                <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
+                                    <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
+                                        <StepVaga 
+                                            filiais={filiais}
+                                            departamentos={departamentos}
+                                            secoes={secoes}
+                                            cargos={cargos}
+                                            centros_custo={centros_custo}
+                                            horarios={horarios}
+                                            funcoes={funcoes}
+                                            sindicatos={sindicatos}
+                                        />
+                                    </ScrollPanel>
+                                </div>
+                            </Container>
+                        </StepperPanel>
+                    )}
+                    
+                    <StepperPanel header="Educação">
+                        <ScrollPanel className="responsive-scroll-panel">
+                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+                                <ScrollPanel className="responsive-inner-scroll">
+                                    <StepEducacao />
+                                </ScrollPanel>
+                            </div>
+                        </ScrollPanel>
+                    </StepperPanel>
+                    
+                    <StepperPanel header="Habilidades">
+                        <ScrollPanel className="responsive-scroll-panel">
+                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+                                <ScrollPanel className="responsive-inner-scroll">
+                                    <StepHabilidades />
+                                </ScrollPanel>
+                            </div>
+                        </ScrollPanel>
+                    </StepperPanel>
+                    
+                    <StepperPanel header="Experiência Profissional">
+                        <ScrollPanel className="responsive-scroll-panel">
+                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+                                <ScrollPanel className="responsive-inner-scroll">
+                                    <StepExperiencia />
+                                </ScrollPanel>
+                            </div>
+                        </ScrollPanel>
+                    </StepperPanel>
+                    
+                    {self && (
+                        <StepperPanel header="LGPD">
+                            <ScrollPanel className="responsive-scroll-panel" style={{ textAlign: 'center' }}>
+                                <StepLGPD />
                             </ScrollPanel>
-                        </div>
-                    </ScrollPanel>
-                    <Frame padding="30px" estilo="spaced">
-                        <BotaoGrupo>
-                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                        </BotaoGrupo>
-                        <BotaoGrupo wrap={false}>
-                            <Botao iconPos="right" aoClicar={handleSalvarAdmissao}><FaSave fill="white"/> Salvar</Botao>
-                            <Botao flex={false} label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}><HiArrowRight fill="white"/> Salvar e Continuar</Botao>
-                        </BotaoGrupo>
-                    </Frame>
-                </StepperPanel>
-                <StepperPanel header="Habilidades">
-                    <ScrollPanel style={{ width: '100%', height: '380px'}}>
-                        <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
-                            <ScrollPanel style={{ width: '100%', height: '380px', marginBottom: 10 }}>
-                                <StepHabilidades />
-                            </ScrollPanel>
-                        </div>
-                    </ScrollPanel>
-                    <Frame padding="30px" estilo="spaced">
-                        <BotaoGrupo>
-                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                        </BotaoGrupo>
-                        <BotaoGrupo>
-                            <Botao iconPos="right" aoClicar={handleSalvarAdmissao}><FaSave fill="white"/> Salvar</Botao>
-                            <Botao flex={false} label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}><HiArrowRight fill="white"/> Salvar e Continuar</Botao>
-                        </BotaoGrupo>
-                    </Frame>
-                </StepperPanel>
-                <StepperPanel header="Experiência Profissional">
-                    <ScrollPanel style={{ width: '100%', height: '380px'}}>
-                        <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
-                            <ScrollPanel style={{ width: '100%', height: '380px', marginBottom: 10 }}>
-                                <StepExperiencia />
-                            </ScrollPanel>
-                        </div>
-                    </ScrollPanel>
-                    <Frame padding="30px" estilo="spaced">
-                        <BotaoGrupo>
-                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                        </BotaoGrupo>
-                        <BotaoGrupo>
-                            <Botao iconPos="right" aoClicar={handleSalvarAdmissao}><FaSave fill="white"/> Salvar</Botao>
-                             {self ? (
-                                <Botao label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}><HiArrowRight fill="white"/> Salvar e Continuar</Botao>
-                            ) : (
-                                <Botao label="Next" iconPos="right" aoClicar={handleFinalizarDocumentos}><RiExchangeFill fill="white"/> Finalizar</Botao>
-                            )}
-                        </BotaoGrupo>
-                    </Frame>
-                </StepperPanel>
-                {self && (
-                  <StepperPanel header="LGPD">
-                    <ScrollPanel style={{ width: '100%', height: '380px',  textAlign: 'center'}}>
-                        <StepLGPD />
-                    </ScrollPanel>
-                    <Frame padding="30px" estilo="spaced">
-                        <BotaoGrupo>
-                            <Botao estilo="neutro" aoClicar={() => stepperRef.current.prevCallback()}><HiArrowLeft/> Voltar</Botao>
-                        </BotaoGrupo>
-                        <BotaoGrupo>
-                            <Botao 
-                                iconPos="right" 
-                                aoClicar={handleAceitarLGPD}
-                                disabled={candidato.aceite_lgpd}
-                            >
-                                <FaSave fill="white"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Salvar'}
-                            </Botao>
-                        </BotaoGrupo>
-                    </Frame>
-                  </StepperPanel>
-                )}
-            </Stepper>
+                        </StepperPanel>
+                    )}
+                </Stepper>
+            </div>
+
+            {/* Footer fixo com botões */}
+            {renderFooterButtons()}
         </ConteudoFrame>
     );
 };

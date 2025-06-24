@@ -242,9 +242,13 @@ function CampoTexto({ validateError = true, label, disabled = false, readonly = 
             } else {
                 valorFormatado = masker(unMask(valor), patternMask);
             }
-            setValor(valorFormatado); // Atualiza o estado com o valor mascarado
+            
+            // Só atualiza se o valor formatado for diferente do valor atual
+            if (valorFormatado !== valor) {
+                setValor(valorFormatado, name);
+            }
         }
-    }, [valor, patternMask, type, setValor]); // Executa sempre que `valor` mudar
+    }, [valor, patternMask, type, name]); // Removido setValor das dependências
 
     // Se for textarea
     if (rows) {

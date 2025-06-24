@@ -121,6 +121,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 label="Cidade"
             />
             <DropdownItens
+                $margin={'10px'}
                 valor={getEstadoFormatado()}
                 setValor={valor => setCampo('estado', valor.code)}
                 options={estados}
