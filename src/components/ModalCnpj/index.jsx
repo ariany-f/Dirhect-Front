@@ -15,6 +15,7 @@ import { ArmazenadorToken } from "@utils"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import { useTranslation } from "react-i18next"
 import CustomImage from "@components/CustomImage"
+import CampoTexto from "@components/CampoTexto"
 
 const AdicionarCnpjBotao = styled.div`
     font-size: 14px;
@@ -73,6 +74,24 @@ const Item = styled.div`
     }
 `;
 
+const ListaEmpresas = styled.div`
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 0px;
+    padding-right: 8px;
+    width: 100%;
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 3px;
+    }
+`;
+
 function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
 
     const { 
@@ -90,6 +109,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? '')
     const navegar = useNavigate()
     const { t } = useTranslation('common');
+    const [busca, setBusca] = useState('');
 
     useEffect(() => {
         if(opened)
@@ -207,19 +227,43 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
     }
 
+    const empresasFiltradas = empresas?.filter(emp => {
+        const nome = emp?.tenant?.nome?.toLowerCase() || '';
+        const cnpj = (emp?.pessoaJuridica?.cnpj || emp?.pessoa_juridica?.cnpj || '').replace(/\D/g, '');
+        const buscaTrim = busca.trim();
+        const buscaNome = buscaTrim.toLowerCase();
+        const buscaCnpj = buscaTrim.replace(/\D/g, '');
+
+        if (!buscaTrim) return true; // Se busca vazia, mostra tudo
+
+        // Se busca só tem números, filtra por CNPJ
+        if (/^[0-9]+$/.test(buscaCnpj) && buscaCnpj.length > 0) {
+            return cnpj.includes(buscaCnpj);
+        }
+        // Se busca tem letras, filtra por nome
+        return nome.includes(buscaNome);
+    }) || [];
+
+    console.log(busca)
+    console.log(empresasFiltradas)
     return(
         <>
             {opened &&
             <Overlay>
                 <DialogEstilizado id="modal-cnpj" open={opened}>
-                    <Frame>
+                    <Frame gap="16px">
                         <Titulo>
                             <h6>{t('select_company')}</h6>
                         </Titulo>
                         {empresas && empresas.length > 0 &&
                         <>
-                            <Wrapper>
-                                {empresas.map((empresa, idx) => {
+                            <CampoTexto
+                                valor={busca}
+                                setValor={valor => setBusca(valor)}
+                                placeholder="Buscar por nome ou CNPJ..."
+                            />
+                            <ListaEmpresas>
+                                {empresasFiltradas.map((empresa, idx) => {
                                     return (
                                         <Item 
                                             key={idx} 
@@ -245,14 +289,13 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                                         </Item>
                                     )
                                 })}
-                            </Wrapper>
+                            </ListaEmpresas>
                         </>
                     }
-                        {/* <CardText>
-                            <p className={styles.subtitulo}>Você pode ter mais de um CNPJ cadastrado, porém às configurações são individuas para cada empresa.</p>
-                        </CardText> */}
                         <Frame alinhamento="center">
-                            <AdicionarCnpjBotao onClick={() => navegarParaAdicionarCnpj()}><CiCirclePlus size={20} className="icon" />Adicionar uma nova empresa</AdicionarCnpjBotao>
+                            <AdicionarCnpjBotao style={{opacity: 0.5, pointerEvents: 'none', userSelect: 'none'}} disabled>
+                                <CiCirclePlus size={20} className="icon" />Adicionar uma nova empresa
+                            </AdicionarCnpjBotao>
                         </Frame>
                     </Frame>
                     <form method="dialog">
