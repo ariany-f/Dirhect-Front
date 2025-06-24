@@ -786,7 +786,7 @@ const CandidatoRegistro = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 fontSize: 16,
-                                fontWeight: 'bold',
+                                fontWeight: 500,
                                 color: '#fff'
                             }}>
                                 {candidato.dados_candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
