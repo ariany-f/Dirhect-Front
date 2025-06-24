@@ -273,7 +273,7 @@ function ColaboradorDetalhes() {
                             </div>
                             {colaborador?.tipo_situacao_descricao == 'Ativo' &&
                                 <BotaoGrupo>
-                                    <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="vermilion" size="small"><FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> Demissão</Botao>
+                                    <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="vermilion" size="small"><FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> Solicitar Demissão</Botao>
                                 </BotaoGrupo>
                             }
                         </div>

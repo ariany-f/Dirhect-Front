@@ -15,6 +15,7 @@ import { ArmazenadorToken } from '@utils';
 import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador';
 import ModalDemissao from '@components/ModalDemissao';
 import http from '@http';
+import { FaUserTimes } from 'react-icons/fa';
 
 function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder, onSort, aoAtualizar }) {
 
@@ -119,7 +120,7 @@ function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder
                 </span>
                 {ArmazenadorToken.hasPermission('view_funcionario') &&
                     <BotaoGrupo>
-                        <Botao aoClicar={() => setModalSelecaoAberto(true)} estilo="vermilion" size="small"><GrAddCircle stroke="white" style={{marginRight: '8px'}} /> Solicitação de Demissão</Botao>
+                        <Botao aoClicar={() => setModalSelecaoAberto(true)} estilo="vermilion" size="small"><FaUserTimes fill="white" stroke="white" /> Solicitar Demissão</Botao>
                     </BotaoGrupo>
                 }
             </div>}

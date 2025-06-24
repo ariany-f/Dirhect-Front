@@ -50,7 +50,7 @@ function ColabroadorDemissoes() {
             {(ArmazenadorToken.hasPermission('view_funcionario')) && 
                 <BotaoGrupo align="end">
                     <BotaoGrupo align="center">
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Criar solicitação de Demissão</Botao>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Solicitar Demissão</Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>}
             {/* <DataTableDemissao colaborador={id} demissoes={demissoes}/> */}

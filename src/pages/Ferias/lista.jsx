@@ -15,7 +15,7 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import CalendarFerias from './calendar_ferias'
-import { FaListUl, FaRegCalendarAlt } from 'react-icons/fa';
+import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach } from 'react-icons/fa';
 import Texto from '@components/Texto';
 import { ArmazenadorToken } from '@utils';
 
@@ -168,7 +168,7 @@ function FeriasListagem() {
                 </TabPanel>
                 {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && (
                     <BotaoGrupo>
-                        <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar solicitação de Férias</Botao>
+                        <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill='white' color='white' className={styles.icon}/> Solicitar Férias</Botao>
                     </BotaoGrupo>
                 )}
             </HeaderRow>

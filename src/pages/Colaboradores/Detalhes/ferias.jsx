@@ -15,6 +15,7 @@ import { useSessaoUsuarioContext } from '../../../contexts/SessaoUsuario'
 import { GrAddCircle } from 'react-icons/gr'
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias'
 import { ArmazenadorToken } from '@utils'
+import { FaUmbrellaBeach } from 'react-icons/fa'
 
 const DivPrincipal = styled.div`
     width: 65vw;
@@ -85,9 +86,10 @@ function ColabroadorFerias() {
             {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && 
                 <BotaoGrupo align="end">
                     <BotaoGrupo align="center">
-                        <Botao aoClicar={criarSolicitacao} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" color="white"/> Criar solicitação de Férias</Botao>
+                        <Botao aoClicar={criarSolicitacao} estilo="vermilion" size="small" tab><FaUmbrellaBeach className={styles.icon} fill="white" color="white"/> Solicitar Férias</Botao>
                     </BotaoGrupo>
-                </BotaoGrupo>}
+                </BotaoGrupo>
+            }
             <DataTableFerias colaborador={id} ferias={ferias}/>
             <ModalDetalhesFerias opened={!!eventoSelecionado} evento={eventoSelecionado} aoFechar={() => setEventoSelecionado(null)} />
         </>
