@@ -78,18 +78,20 @@ function ColabroadorFerias() {
     return (
         <>
             <Loading opened={loading} />
-            <Titulo>
-                <QuestionCard alinhamento="start" element={<h6>Férias</h6>}>
-                    <AiFillQuestionCircle className="question-icon" size={20} />
-                </QuestionCard>
-            </Titulo>
-            {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && 
-                <BotaoGrupo align="end">
-                    <BotaoGrupo align="center">
-                        <Botao aoClicar={criarSolicitacao} estilo="vermilion" size="small" tab><FaUmbrellaBeach className={styles.icon} fill="white" color="white"/> Solicitar Férias</Botao>
+            <BotaoGrupo align="space-between">
+                <Titulo>
+                    <QuestionCard alinhamento="start" element={<h6>Férias</h6>}>
+                        <AiFillQuestionCircle className="question-icon" size={20} />
+                    </QuestionCard>
+                </Titulo>
+                {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && 
+                    <BotaoGrupo align="end">
+                        <BotaoGrupo align="center">
+                            <Botao aoClicar={criarSolicitacao} estilo="vermilion" size="small" tab><FaUmbrellaBeach className={styles.icon} fill="white" color="white"/> Solicitar Férias</Botao>
+                        </BotaoGrupo>
                     </BotaoGrupo>
-                </BotaoGrupo>
-            }
+                }
+            </BotaoGrupo>
             <DataTableFerias colaborador={id} ferias={ferias}/>
             <ModalDetalhesFerias opened={!!eventoSelecionado} evento={eventoSelecionado} aoFechar={() => setEventoSelecionado(null)} />
         </>
