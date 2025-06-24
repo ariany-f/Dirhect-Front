@@ -74,22 +74,27 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
         switch(status)
         {
             case 'Em preparação':
-                status = "neutral";
-                break;
+                return "neutral";
             case 'Em validação':
-                status = "warning";
-                break;
+                return "warning";
             case 'Em aprovação':
-                status = "info";
-                break;
+                return "info";
             case 'Pedido Realizado':
-                status = "success";
-                break;
+                return "success";
             case 'Cancelado':
-                status = "danger";
-                break;
+                return "danger";
+            case 'Aguardando':
+            case 'pendente':
+                return "warning";
+            case 'Em andamento':
+            case 'em_andamento':
+                return "info";
+            case 'Concluída':
+            case 'concluida':
+                return "success";
+            default:
+                return "info";
         }
-        return status
     }
 
     function representativSituacaoTemplate(status) {
@@ -103,7 +108,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
 
         return (
             <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isCompleted ? 'var(--primaria)' : 'gray' }}>
-                 {isCompleted ? representativSituacaoTemplate(item) : <BadgeGeral weight={500} severity={getSeverity(item)} size={'12px'} nomeBeneficio={item} />}
+                 {isCompleted ? representativSituacaoTemplate(item) : <Tag severity={getSeverity(item)} value={item} style={{fontWeight: '500'}} />}
             </span>
         );
     };
@@ -120,11 +125,11 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     <Frame estilo="spaced">
                         <div className={styles.right}>
                             <Texto size="14px" weight={500} color={'var(--neutro-500)'}>{t('hirings')}</Texto>
-                            <BadgeGeral severity="success" nomeBeneficio={10} iconeBeneficio={<FaUserPlus />}></BadgeGeral>
+                            <BadgeGeral severity="success" nomeBeneficio={dashboardData.totalAdmissoes} iconeBeneficio={<FaUserPlus />}></BadgeGeral>
                         </div>
                         <div className={styles.right}>
                             <Texto size="14px" weight={500} color={'var(--neutro-500)'}>{t('terminations')}</Texto>
-                            <BadgeGeral severity="error" nomeBeneficio={2} iconeBeneficio={<FaUserMinus />}></BadgeGeral>
+                            <BadgeGeral severity="error" nomeBeneficio={dashboardData.totalDemissoes} iconeBeneficio={<FaUserMinus />}></BadgeGeral>
                         </div>
                     </Frame>
                     <Frame estilo="spaced">
@@ -184,7 +189,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                         </Frame>
                         <div className={styles.transacao}>
                             <div className={styles.right}>
-                                <Texto size={'35px'} color={"var(--primaria)"} weight={800}><MdWork />&nbsp;&nbsp;{10}</Texto>
+                                <Texto size={'35px'} color={"var(--primaria)"} weight={800}><MdWork />&nbsp;&nbsp;{dashboardData.totalVagas}</Texto>
                             </div>
                         </div>
                     </div>
@@ -196,7 +201,7 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                                 </Frame>
                                 <div className={styles.transacao}>
                                     <div className={styles.right}>
-                                        <Texto size={'35px'} color={"var(--primaria)"} weight={800}><FaUmbrellaBeach />&nbsp;&nbsp;{12}</Texto>
+                                        <Texto size={'35px'} color={"var(--primaria)"} weight={800}><FaUmbrellaBeach />&nbsp;&nbsp;{dashboardData.totalFerias}</Texto>
                                     </div>
                                 </div>
                             </div>

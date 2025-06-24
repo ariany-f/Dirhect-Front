@@ -8,15 +8,39 @@ import { useEffect, useState } from 'react';
 import { Real } from '@utils/formats'
 import { FaUserAlt } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
+import http from '@http';
 
-function DataTableVagas({ vagas }) {
+function DataTableVagas({ vagas: initialVagas }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    const [vagas, setVagas] = useState(initialVagas || []);
+    const [sortField, setSortField] = useState(null);
+    const [sortOrder, setSortOrder] = useState(null);
     const navegar = useNavigate()
+
+    useEffect(() => {
+        setVagas(initialVagas || []);
+    }, [initialVagas]);
+
+    const fetchVagas = (field = null, order = null) => {
+        let ordering = '';
+        if (field) {
+            ordering = order === 1 ? field : `-${field}`;
+        }
+        http.get(`vagas/?ordering=${ordering}`)
+            .then(response => setVagas(response))
+            .catch(() => setVagas([]));
+    };
+
+    const onSort = (e) => {
+        setSortField(e.sortField);
+        setSortOrder(e.sortOrder);
+        fetchVagas(e.sortField, e.sortOrder);
+    };
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -97,16 +121,29 @@ function DataTableVagas({ vagas }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar vaga" />
                 </span>
             </div>
-            <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas vagas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '20%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '25%' }}></Column>
+            <DataTable
+                value={vagas}
+                filters={filters}
+                globalFilterFields={['titulo']}
+                emptyMessage="Não foram encontradas vagas"
+                selection={selectedVaga}
+                onSelectionChange={(e) => verDetalhes(e.value)}
+                selectionMode="single"
+                paginator
+                rows={10}
+                tableStyle={{ minWidth: '68vw' }}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                onSort={onSort}
+            >
+                <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '20%' }} sortable></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '25%' }} sortable></Column>
                 <Column body={representativeAberturaTemplate} sortable header="Abertura" style={{ width: '15%' }}></Column>
-                <Column body={representativeEncerramentoTemplate} header="Encerramento" style={{ width: '15%' }}></Column>
+                <Column body={representativeEncerramentoTemplate} header="Encerramento" style={{ width: '15%' }} sortable></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '12%' }}></Column>
                 <Column body={representativeNumeroColaboradoresTemplate} header="Candidatos" style={{ width: '10%' }}></Column>
                 <Column body={representativeAprovadosTemplate} header="Aprovados" style={{ width: '10%' }}></Column>
-                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '15%' }}></Column>
-                
+                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '15%' }} sortable></Column>
             </DataTable>
         </>
     )
