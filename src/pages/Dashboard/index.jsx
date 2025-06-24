@@ -226,7 +226,7 @@ function Dashboard() {
     }
 
     // Gráficos de atividades (só para RH ou Outsourcing)
-    const mostrarAtividades = usuario?.tipo === 'RH' || usuario?.tipo === 'Outsourcing';
+    const mostrarAtividades = usuario?.tipo === 'Outsourcing';
     
     // Mapeamento de cor por status
     const statusColorMap = {
