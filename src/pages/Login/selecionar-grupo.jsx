@@ -3,7 +3,8 @@ import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
 import styled from "styled-components"
 import { useEffect, useRef, useState } from "react"
-import { RiBuildingLine, RiErrorWarningLine } from "react-icons/ri"
+import { RiBuildingLine, RiErrorWarningLine, RiUserLine } from "react-icons/ri"
+import { FaUser } from "react-icons/fa"
 import Texto from "@components/Texto"
 import styles from './Login.module.css'
 import http from '@http';
@@ -15,26 +16,69 @@ import Loading from "@components/Loading"
 import { useTranslation } from "react-i18next"
 import CustomImage from "@components/CustomImage"
 
-const Wrapper = styled.div`
+const WrapperProfiles = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 16px;
-    align-self: stretch;
-`;
-
-const Item = styled.div`
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 16px;
-    display: flex;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    width: 94%;
-    border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
+`;
+
+const ProfileCard = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1 1 1 33%;
+    width: calc(33% - 12px);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 16px;
+    border: 2px solid ${props => props.$active ? 'var(--primaria)' : 'transparent'};
+    background: ${props => props.$active ? 'var(--primaria-50)' : '#fff'};
+    box-shadow: ${props => props.$active ? '0 8px 24px rgba(84, 114, 212, 0.2)' : '0 4px 12px rgba(0, 0, 0, 0.08)'};
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        border-color: var(--primaria);
+    }
+`;
+
+const ProfileIcon = styled.div`
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: ${props => props.$active ? 'var(--primaria)' : 'var(--neutro-100)'};
+    color: ${props => props.$active ? '#fff' : 'var(--neutro-600)'};
+    font-size: 32px;
+    transition: all 0.3s ease;
+    border: 3px solid ${props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)'};
+    
+    ${ProfileCard}:hover & {
+        background: var(--primaria);
+        color: #fff;
+        border-color: var(--primaria);
+    }
+`;
+
+const ProfileName = styled.h6`
+    font-size: 16px;
+    font-weight: 600;
+    color: ${props => props.$active ? 'var(--primaria)' : 'var(--neutro-800)'};
+    text-align: center;
+    margin: 0;
+    transition: color 0.3s ease;
+    
+    ${ProfileCard}:hover & {
+        color: var(--primaria);
+    }
 `;
 
 const WrapperOut = styled.div`
@@ -72,8 +116,10 @@ function SelecionarGrupo() {
     const { t } = useTranslation('common');
 
     useEffect(() => {
-        setSelected(ArmazenadorToken.UserGroups[0])
-    }, [usuario])
+        if (grupos && grupos.length > 0) {
+            setSelected(ArmazenadorToken.UserGroups[0])
+        }
+    }, [usuario, grupos])
 
     function handleSelectChange(value) {
         setSelected(value);
@@ -86,7 +132,7 @@ function SelecionarGrupo() {
     }
 
     return (
-        <>
+        <WrapperOut>
             <Toast ref={toast} />
             <Loading opened={loading} />
             {grupos && grupos.length > 0 &&
@@ -94,24 +140,27 @@ function SelecionarGrupo() {
                     <Titulo>
                         <h2>{t('select_group')}</h2>
                     </Titulo>
-                    <Wrapper>
+                    <WrapperProfiles>
                         {grupos.map((grupo, idx) => {
                             return (
-                                <Item 
+                                <ProfileCard 
                                     key={idx} 
                                     $active={selected === grupo}
-                                    onClick={id_group => handleSelectChange(grupo)}>
-                                    <div className={styles.cardEmpresa}>
-                                        <h6>{grupo}</h6>
-                                    </div>
-                                </Item>
+                                    onClick={() => handleSelectChange(grupo)}>
+                                    <ProfileIcon $active={selected === grupo}>
+                                        <FaUser fill={selected === grupo ? '#fff' : 'var(--neutro-600)'} />
+                                    </ProfileIcon>
+                                    <ProfileName $active={selected === grupo}>
+                                        {grupo}
+                                    </ProfileName>
+                                </ProfileCard>
                             )
                         })}
-                    </Wrapper>
+                    </WrapperProfiles>
                     <Botao estilo="vermilion" size="medium" filled aoClicar={handleSelectSave} >{t('confirm')}</Botao>
                 </>
             }
-        </>
+        </WrapperOut>
     )
 }
 

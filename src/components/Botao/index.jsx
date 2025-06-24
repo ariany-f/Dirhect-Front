@@ -38,7 +38,7 @@ function Botao( {children, flex = true,  wrap = false, extraclasses = '',estilo 
         size = '300px';
     }
     else if(size === 'large') {
-        size = '400px';
+        size = '100%';
     }
    
     return (

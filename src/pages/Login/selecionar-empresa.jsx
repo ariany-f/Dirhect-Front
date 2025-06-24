@@ -1,6 +1,7 @@
 import Botao from "@components/Botao"
 import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
+import CampoTexto from "@components/CampoTexto"
 import styled from "styled-components"
 import { useEffect, useRef, useState } from "react"
 import { RiBuildingLine, RiErrorWarningLine } from "react-icons/ri"
@@ -14,6 +15,7 @@ import { ArmazenadorToken } from "@utils"
 import Loading from "@components/Loading"
 import { useTranslation } from "react-i18next"
 import CustomImage from "@components/CustomImage"
+import Frame from "@components/Frame"
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,6 +24,24 @@ const Wrapper = styled.div`
     justify-content: center;
     gap: 16px;
     align-self: stretch;
+`;
+
+const ListaEmpresas = styled.div`
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 8px;
+    width: 100%;
+    
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 3px;
+    }
 `;
 
 const Item = styled.div`
@@ -33,7 +53,7 @@ const Item = styled.div`
     padding: 20px;
     justify-content: space-between;
     align-items: center;
-    width: 94%;
+    width: 100%;
     border-color: ${ props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)' };
 `;
 
@@ -67,6 +87,7 @@ function SelecionarEmpresa() {
     const [empresas, setEmpresas] = useState(usuario.companies ?? null)
     const [selected, setSelected] = useState(ArmazenadorToken.UserCompanyPublicId ?? ArmazenadorToken.UserCompanyPublicId ?? '')
     const [loading, setLoading] = useState(false)
+    const [busca, setBusca] = useState('')
     const toast = useRef(null)
     const navegar = useNavigate()
     const { t } = useTranslation('common');
@@ -178,48 +199,74 @@ function SelecionarEmpresa() {
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
     }
 
+    // Filtro das empresas - mesmo padrão do modal CNPJ
+    const empresasFiltradas = empresas?.filter(emp => {
+        const nome = emp?.tenant?.nome?.toLowerCase() || '';
+        const cnpj = (emp?.pessoaJuridica?.cnpj || emp?.pessoa_juridica?.cnpj || '').replace(/\D/g, '');
+        const buscaTrim = busca.trim();
+        const buscaNome = buscaTrim.toLowerCase();
+        const buscaCnpj = buscaTrim.replace(/\D/g, '');
+
+        if (!buscaTrim) return true; // Se busca vazia, mostra tudo
+
+        // Se busca só tem números, filtra por CNPJ
+        if (/^[0-9]+$/.test(buscaCnpj) && buscaCnpj.length > 0) {
+            return cnpj.includes(buscaCnpj);
+        }
+        // Se busca tem letras, filtra por nome
+        return nome.includes(buscaNome);
+    }) || [];
+
     return (
         <>
             <Toast ref={toast} />
             <Loading opened={loading} />
             {empresas && empresas.length > 0 && (!serversOut) &&
-                <>
+                <Frame gap="12px">
                     <Titulo>
                         <h2>{t('select_company')}</h2>
                     </Titulo>
+                    <CampoTexto
+                        valor={busca}
+                        validateError={false}
+                        setValor={valor => setBusca(valor)}
+                        placeholder="Buscar por nome ou CNPJ..."
+                    />
                     <Wrapper>
-                        {empresas.map((empresa, idx) => {
-                            return (
-                                <Item 
-                                    key={idx} 
-                                    $active={selected === empresa.id_tenant}
-                                    onClick={id_tenant => handleSelectChange(empresa.id_tenant)}>
-                                    <div className={styles.cardEmpresa}>
-                                        {empresa.tenant.simbolo ? 
-                                            <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant.nome} width={50} height={50} borderRadius={16} />
-                                        : (selected === empresa.id_tenant) ?
-                                            <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
-                                        : <RiBuildingLine className={styles.buildingIcon} size={20} />
-                                        }
-                                        <div className={styles.DadosEmpresa}>
-                                            <h6 style={{ fontSize: empresa.tenant.nome.length > 22 ? 13 : undefined }}>
-                                                {empresa.tenant.nome.toUpperCase()}
-                                            </h6>
-                                            <div>{formataCNPJ(empresa.pessoaJuridica.cnpj)}</div>
+                        <ListaEmpresas>
+                            {empresasFiltradas.map((empresa, idx) => {
+                                return (
+                                    <Item 
+                                        key={idx} 
+                                        $active={selected === empresa.id_tenant}
+                                        onClick={id_tenant => handleSelectChange(empresa.id_tenant)}>
+                                        <div className={styles.cardEmpresa}>
+                                            {empresa.tenant.simbolo ? 
+                                                <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant.nome} width={50} height={50} borderRadius={16} />
+                                            : (selected === empresa.id_tenant) ?
+                                                <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
+                                            : <RiBuildingLine className={styles.buildingIcon} size={20} />
+                                            }
+                                            <div className={styles.DadosEmpresa}>
+                                                <h6 style={{ fontSize: empresa.tenant.nome.length > 22 ? 13 : undefined }}>
+                                                    {empresa.tenant.nome.toUpperCase()}
+                                                </h6>
+                                                <div>{formataCNPJ(empresa.pessoaJuridica.cnpj)}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <RadioButton
-                                        name="selected_company"
-                                        value={empresa.id_tenant}
-                                        checked={selected === empresa.id_tenant}
-                                        onSelected={(id_tenant) => handleSelectChange}
-                                    />
-                                </Item>
-                            )
-                        })}
+                                        <RadioButton
+                                            name="selected_company"
+                                            value={empresa.id_tenant}
+                                            checked={selected === empresa.id_tenant}
+                                            onSelected={(id_tenant) => handleSelectChange}
+                                        />
+                                    </Item>
+                                )
+                            })}
+                        </ListaEmpresas>
                     </Wrapper>
-                    <Botao estilo="vermilion" size="medium" filled aoClicar={selectCompany} >{t('confirm')}</Botao>
-                </>
+                    <Botao estilo="vermilion" size="large" filled aoClicar={selectCompany} >{t('confirm')}</Botao>
+                </Frame>
             }
             
             {serversOut &&

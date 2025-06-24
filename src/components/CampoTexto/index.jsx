@@ -129,7 +129,7 @@ const CampoArea = styled(InputTextarea)`
     }
 `
 
-function CampoTexto({ label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
+function CampoTexto({ validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -287,7 +287,9 @@ function CampoTexto({ label, disabled = false, readonly = false, type='text',  s
                     <p className={styles.erroMessage}>Você deve preencher esse campo</p>
                     : (erro ?
                         <p className={styles.erroMessage}>{erro}</p>
-                        : <p className={styles.erroMessage}>&nbsp;</p>
+                        : (validateError && 
+                            <p className={styles.erroMessage}>&nbsp;</p>
+                        )
                     )
                 }
             </div>

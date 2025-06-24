@@ -258,6 +258,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                         {empresas && empresas.length > 0 &&
                         <>
                             <CampoTexto
+                                validateError={false}
                                 valor={busca}
                                 setValor={valor => setBusca(valor)}
                                 placeholder="Buscar por nome ou CNPJ..."
