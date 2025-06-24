@@ -98,9 +98,9 @@ function DataTableVagas({ vagas }) {
                 </span>
             </div>
             <DataTable value={vagas} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas vagas" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: '68vw' }}>
-                <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '25%' }}></Column>
-                <Column field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
-                <Column body={representativeAberturaTemplate} header="Abertura" style={{ width: '15%' }}></Column>
+                <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '20%' }}></Column>
+                <Column field="descricao" header="Descrição" style={{ width: '25%' }}></Column>
+                <Column body={representativeAberturaTemplate} sortable header="Abertura" style={{ width: '15%' }}></Column>
                 <Column body={representativeEncerramentoTemplate} header="Encerramento" style={{ width: '15%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Status" style={{ width: '12%' }}></Column>
                 <Column body={representativeNumeroColaboradoresTemplate} header="Candidatos" style={{ width: '10%' }}></Column>
