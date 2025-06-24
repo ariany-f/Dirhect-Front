@@ -125,11 +125,11 @@ function DashboardCard({ dashboardData, colaboradores = [] }){
                     <Frame estilo="spaced">
                         <div className={styles.right}>
                             <Texto size="14px" weight={500} color={'var(--neutro-500)'}>{t('hirings')}</Texto>
-                            <BadgeGeral severity="success" nomeBeneficio={dashboardData.totalAdmissoes} iconeBeneficio={<FaUserPlus />}></BadgeGeral>
+                            <BadgeGeral severity="success" nomeBeneficio={dashboardData.totalAdmissoes || 0} iconeBeneficio={<FaUserPlus />}></BadgeGeral>
                         </div>
                         <div className={styles.right}>
                             <Texto size="14px" weight={500} color={'var(--neutro-500)'}>{t('terminations')}</Texto>
-                            <BadgeGeral severity="error" nomeBeneficio={dashboardData.totalDemissoes} iconeBeneficio={<FaUserMinus />}></BadgeGeral>
+                            <BadgeGeral severity="error" nomeBeneficio={dashboardData.totalDemissoes || 0} iconeBeneficio={<FaUserMinus />}></BadgeGeral>
                         </div>
                     </Frame>
                     <Frame estilo="spaced">
