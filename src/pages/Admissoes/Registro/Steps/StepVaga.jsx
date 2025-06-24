@@ -72,6 +72,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
         <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
             <DropdownItens
                 name="filial"
+                $margin={'15px'}
                 valor={getValorSelecionado('filial_id', filiais)}
                 setValor={valor => {
                     setCampo('dados_vaga', { 
@@ -84,6 +85,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 label="Filial"
             />
             <DropdownItens
+                $margin={'15px'}
                 name="departamento"
                 valor={getValorSelecionado('departamento_id', departamentos)}
                 setValor={valor => {
@@ -97,6 +99,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 label="Departamento"
             />
             <DropdownItens
+                $margin={'15px'}
                 name="secao"
                 valor={getValorSelecionado('secao_id', secoes)}
                 setValor={valor => {
@@ -110,6 +113,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 label="Seção"
             />
             <DropdownItens
+                $margin={'15px'}
                 name="cargo"
                 valor={getValorSelecionado('cargo_id', cargos)}
                 setValor={valor => {
@@ -123,6 +127,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 label="Cargo"
             />
             <DropdownItens
+                $margin={'15px'}
                 name="centro_custo"
                 valor={getValorSelecionado('centro_custo_id', centros_custo)}
                 setValor={valor => {
@@ -136,6 +141,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 label="Centro de Custo"
             />
             <DropdownItens
+                $margin={'15px'}
                 name="horario"
                 valor={getValorSelecionado('horario_id', horarios)}
                 setValor={valor => {
@@ -149,6 +155,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 label="Horário"
             />
             <DropdownItens
+                $margin={'15px'}
                 name="funcao"
                 valor={getValorSelecionado('funcao_id', funcoes)}
                 setValor={valor => {
@@ -162,6 +169,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 label="Função"
             />
             <DropdownItens
+                $margin={'15px'}
                 name="sindicato"
                 valor={getValorSelecionado('sindicato_id', sindicatos)}
                 setValor={valor => {
