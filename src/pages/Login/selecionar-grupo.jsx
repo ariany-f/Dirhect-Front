@@ -37,13 +37,11 @@ const ProfileCard = styled.div`
     cursor: pointer;
     transition: all 0.3s ease;
     border-radius: 16px;
-    border: 2px solid ${props => props.$active ? 'var(--primaria)' : 'transparent'};
+    border: 1px solid ${props => props.$active ? 'var(--primaria)' : 'transparent'};
     background: ${props => props.$active ? 'var(--primaria-50)' : '#fff'};
-    box-shadow: ${props => props.$active ? '0 8px 24px rgba(84, 114, 212, 0.2)' : '0 4px 12px rgba(0, 0, 0, 0.08)'};
     
     &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         border-color: var(--primaria);
     }
 `;
