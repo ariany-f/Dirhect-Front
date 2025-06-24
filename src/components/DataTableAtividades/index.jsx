@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { Checkbox } from 'primereact/checkbox';
 import CheckboxContainer from '@components/CheckboxContainer'
+import CustomImage from '@components/CustomImage'
 import { Real } from '@utils/formats'
 import { Button } from 'primereact/button';
 import { FaLink } from 'react-icons/fa';
@@ -20,6 +21,7 @@ import http from '@http';
 import { Toast } from 'primereact/toast';
 import { Tooltip } from 'primereact/tooltip';
 import { Dropdown } from 'primereact/dropdown';
+import { Skeleton } from 'primereact/skeleton';
 
 // Registra o filtro customizado para situação
 FilterService.register('custom_status', (value, filter) => {
@@ -58,7 +60,12 @@ function DataTableAtividades({ tarefas }) {
 
     const representativePrazoTemplate = (rowData) => {
         return (
-            rowData.agendado_para ? new Date(rowData.agendado_para).toLocaleDateString('pt-BR') : '-'
+            <div>
+                {rowData.agendado_para ? new Date(rowData.agendado_para).toLocaleDateString('pt-BR') : '-'}
+                {rowData.concluido_emo_em ? <div>
+                   Conclusão: {new Date(rowData.concluido_em).toLocaleDateString('pt-BR')}
+                </div> : null}
+            </div>
         )
     }
 
@@ -642,6 +649,44 @@ function DataTableAtividades({ tarefas }) {
             return <Texto uppercase width="100%" weight={600}>---</Texto>;
         }
     }
+    
+
+    // Template para coluna do cliente
+    const representativeClienteTemplate = (rowData) => {
+        const [cliente, setCliente] = useState(null);
+
+        useEffect(() => {
+            if (rowData.tenant) {
+                http.get(`/client_tenant/${rowData.tenant}/`)
+                    .then(response => {
+                        setCliente(response);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar dados do cliente:', error);
+                    });
+            }
+        }, [rowData.tenant]);
+
+        if (!cliente) {
+            return (
+                <>
+                    <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
+                    <div data-pr-tooltip="Carregando..." className="cliente">
+                        <Skeleton shape="circle" size="24px" />
+                    </div>
+                </>
+            );
+        }
+
+        return (
+            <>
+                <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
+                <div data-pr-tooltip={cliente.nome || '-'} className="cliente">
+                    <CustomImage src={cliente.simbolo} width={24} height={24} />
+                </div>
+            </>
+        );
+    };
 
     return (
         <>
@@ -672,6 +717,12 @@ function DataTableAtividades({ tarefas }) {
                     field="prioridade" 
                     header="Prioridade" 
                     style={{ width: '10%' }}
+                ></Column>
+                <Column
+                    body={representativeClienteTemplate}
+                    field="cliente"
+                    header="Cliente"
+                    style={{ width: '12%' }}
                 ></Column>
                 <Column 
                     body={representativeDescricaoTemplate} 
@@ -730,12 +781,6 @@ function DataTableAtividades({ tarefas }) {
                     filterApply={filterApplyTemplate}
                     filterMenuStyle={{ width: '14rem' }}
                     showFilterMatchModes={false}
-                ></Column>
-                <Column 
-                    body={representativeConcluidoEmTemplate} 
-                    field="concluido_em" 
-                    header="Conclusão" 
-                    style={{ width: '10%' }}
                 ></Column>
                 <Column 
                     body={representativeCheckTemplate} 
