@@ -556,6 +556,10 @@ function DataTableAtividades({ tarefas }) {
         }
     };
 
+    const formataCPF = (cpf) => {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    }
+
     const representativeTipoTemplate = (rowData) => {
         let cor = '';
         let background = '';
@@ -606,6 +610,39 @@ function DataTableAtividades({ tarefas }) {
         );
     };
 
+    const representativeReferenciaTemplate = (rowData) => {
+        if(rowData.objeto?.dados_candidato) {
+            return <div key={rowData?.id || 'unknown'}>
+            <Texto uppercase weight={700} width={'100%'}>
+                {rowData.objeto.dados_candidato.nome}
+            </Texto>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.dados_candidato?.cpf ? formataCPF(rowData?.objeto?.dados_candidato?.cpf) : '-'}</p>
+            </div>
+        </div>
+        } else if(rowData.objeto?.funcionario_detalhe) {
+            return <div key={rowData?.id || 'unknown'}>
+            <Texto uppercase weight={700} width={'100%'}>
+                {rowData.objeto.funcionario_detalhe.nome}
+            </Texto>
+            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.funcionario_detalhe?.cpf ? formataCPF(rowData?.objeto?.funcionario_detalhe?.cpf) : '-'}</p>
+            </div>
+        </div>;
+        } else if(rowData.objeto?.dados_colaborador) {
+            return <div key={rowData?.id || 'unknown'}>
+                <Texto uppercase weight={700} width={'100%'}>
+                    {rowData.objeto.dados_colaborador.nome}
+                </Texto>
+                <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                    CPF: <p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.objeto?.dados_colaborador?.cpf ? formataCPF(rowData?.objeto?.dados_colaborador?.cpf) : '-'}</p>
+                </div>
+            </div>;
+        } else {
+            return <Texto uppercase width="100%" weight={600}>---</Texto>;
+        }
+    }
+
     return (
         <>
             <Toast ref={toast} />
@@ -640,13 +677,19 @@ function DataTableAtividades({ tarefas }) {
                     body={representativeDescricaoTemplate} 
                     field="descricao" 
                     header="Descrição" 
-                    style={{ width: '22%' }}
+                    style={{ width: '18%' }}
                 ></Column>
                 <Column 
                     body={representativePrazoTemplate} 
                     field="agendado_para" 
                     header="Data Agendada" 
                     style={{ width: '12%' }}
+                ></Column>
+                <Column 
+                    body={representativeReferenciaTemplate}
+                    field="referencia"
+                    header="Referência"
+                    style={{ width: '15%' }}
                 ></Column>
                 <Column 
                     body={representativeStatusTemplate} 
@@ -691,7 +734,7 @@ function DataTableAtividades({ tarefas }) {
                 <Column 
                     body={representativeConcluidoEmTemplate} 
                     field="concluido_em" 
-                    header="Concluído em" 
+                    header="Conclusão" 
                     style={{ width: '10%' }}
                 ></Column>
                 <Column 
