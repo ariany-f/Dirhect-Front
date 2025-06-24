@@ -51,6 +51,14 @@ function DataTableFerias({ ferias, colaborador = null }) {
     }
     
     const representativeInicioAquisicaoTemplate = (rowData) => {
+        const fim = new Date(rowData.fimperaquis);
+        if (isNaN(fim)) return <p style={{fontWeight: '400'}}>-</p>;
+        const inicio = new Date(fim);
+        inicio.setFullYear(fim.getFullYear() - 1);
+        return <p style={{fontWeight: '400'}}>{inicio.toLocaleDateString("pt-BR")}</p>;
+    }
+
+    const representativePagamentoTemplate = (rowData) => {
         return <p style={{fontWeight: '400'}}>{new Date(rowData.datapagamento).toLocaleDateString("pt-BR")}</p>
     }
     
@@ -136,10 +144,11 @@ function DataTableFerias({ ferias, colaborador = null }) {
             </div>}
             <DataTable value={filteredData} filters={filters} globalFilterFields={['colaborador_id']} emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '30%' }}></Column>}
-                <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Data Inicio Aquisição" style={{ width: '15%' }}></Column>
-                <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Data Fim Aquisição" style={{ width: '15%' }}></Column>
-                <Column body={representativeInicioTemplate} field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
-                <Column body={representativeFimTemplate} field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
+                <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Inicio Aquisição" style={{ width: '15%' }}></Column>
+                <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Fim Aquisição" style={{ width: '15%' }}></Column>
+                <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '15%' }}></Column>
+                <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '15%' }}></Column>
+                <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '15%' }}></Column>
                 {colaborador && 
                 <>
                     <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
