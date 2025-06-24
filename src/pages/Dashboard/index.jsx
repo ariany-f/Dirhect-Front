@@ -300,6 +300,16 @@ function Dashboard() {
         '#5472d4', '#66BB6A', '#FFA726', '#FF6384', '#8884d8', '#ffb347', '#20c997', '#1a73e8', '#dc3545', '#ffa000', '#28a745', '#6f42c1', '#fd7e14'
     ];
 
+    // Mapeamento de cor para SLA
+    const slaColorMap = {
+        'Concluído': '#5472d4',        // azul/cinza
+        'Dentro do Prazo': '#43a047', // verde
+        'Próximo do Prazo': '#FFA726',// amarelo/laranja
+        'Atrasado': '#e53935',        // vermelho
+    };
+    const slaLabels = chartDataSLA.labels;
+    const slaColors = slaLabels.map(label => slaColorMap[label] || '#8884d8');
+
     const chartOptions = {
         plugins: {
             legend: {
@@ -487,7 +497,7 @@ function Dashboard() {
                                         width: 16,
                                         height: 16,
                                         borderRadius: '50%',
-                                        background: chartColors[idx % chartColors.length],
+                                        background: slaColors[idx],
                                         marginRight: 4
                                     }} />
                                     {label}
@@ -495,7 +505,7 @@ function Dashboard() {
                             ))}
                         </div>
                         <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
-                            <Chart type="pie" data={{...chartDataSLA, datasets: [{...chartDataSLA.datasets[0], backgroundColor: chartColors}]}} options={chartOptionsNoLegend} style={{maxWidth: 260, margin: '0 auto'}} />
+                            <Chart type="pie" data={{...chartDataSLA, datasets: [{...chartDataSLA.datasets[0], backgroundColor: slaColors}]}} options={chartOptionsNoLegend} style={{maxWidth: 260, margin: '0 auto'}} />
                         </div>
                     </div>
                 </div>
