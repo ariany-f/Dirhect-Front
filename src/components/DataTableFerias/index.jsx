@@ -10,7 +10,9 @@ import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
 
 function formatarDataBr(data) {
-    const [ano, mes, dia] = data.split('-');
+    if (!data) return '-';
+    // Aceita formatos YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss
+    const [ano, mes, dia] = data.split('T')[0].split('-');
     return `${dia}/${mes}/${ano}`;
 }
 
@@ -43,27 +45,33 @@ function DataTableFerias({ ferias, colaborador = null }) {
     }
     
     const representativeInicioTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_inicio).toLocaleDateString("pt-BR")}</p>
+        return <p style={{fontWeight: '400'}}>{formatarDataBr(rowData.dt_inicio)}</p>;
     }
     
     const representativeFimTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_fim).toLocaleDateString("pt-BR")}</p>
+        return <p style={{fontWeight: '400'}}>{formatarDataBr(rowData.dt_fim)}</p>;
     }
     
     const representativeInicioAquisicaoTemplate = (rowData) => {
-        const fim = new Date(rowData.fimperaquis);
-        if (isNaN(fim)) return <p style={{fontWeight: '400'}}>-</p>;
-        const inicio = new Date(fim);
-        inicio.setFullYear(fim.getFullYear() - 1);
-        return <p style={{fontWeight: '400'}}>{inicio.toLocaleDateString("pt-BR")}</p>;
+        if (!rowData.fimperaquis) return <p style={{fontWeight: '400'}}>-</p>;
+        const [ano, mes, dia] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
+        // Subtrai 1 ano
+        let dataInicio = new Date(ano - 1, mes - 1, dia);
+        // Soma 1 dia
+        dataInicio.setDate(dataInicio.getDate() + 1);
+        // Formata DD/MM/AAAA
+        const diaStr = String(dataInicio.getDate()).padStart(2, '0');
+        const mesStr = String(dataInicio.getMonth() + 1).padStart(2, '0');
+        const anoStr = dataInicio.getFullYear();
+        return <p style={{fontWeight: '400'}}>{`${diaStr}/${mesStr}/${anoStr}`}</p>;
     }
 
     const representativePagamentoTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.datapagamento).toLocaleDateString("pt-BR")}</p>
+        return <p style={{fontWeight: '400'}}>{formatarDataBr(rowData.datapagamento)}</p>;
     }
     
     const representativeFimAquisicaoTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.fimperaquis).toLocaleDateString("pt-BR")}</p>
+        return <p style={{fontWeight: '400'}}>{formatarDataBr(rowData.fimperaquis)}</p>;
     }
 
     const representativeSituacaoTemplate = (rowData) => {
