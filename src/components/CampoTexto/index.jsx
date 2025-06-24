@@ -6,6 +6,7 @@ import { FaEnvelope } from 'react-icons/fa'
 import { BsSearch } from 'react-icons/bs'
 import {FloatLabel} from 'primereact/floatlabel'
 import { InputText } from "primereact/inputtext";
+import { InputTextarea } from "primereact/inputtextarea";
 import * as Yup from 'yup'
 import { currency, mask as masker, unMask } from "remask"
 
@@ -89,7 +90,46 @@ const Campo = styled(InputText)`
     }
 `
 
-function CampoTexto({ label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null}) {
+const CampoArea = styled(InputTextarea)`
+    border-radius: 4px;
+    outline: .4px solid var(--neutro-400);
+    background: var(--background-label);
+    padding: 22px 16px;
+    border: none;
+    font-weight: 600;
+    width: ${ props => props.$width ?  props.$width : 'inherit' };
+    min-height: 80px;
+    resize: vertical;
+    font-family: inherit;
+    &:disabled {
+        background-color: #e9ecef;
+        color:#444;
+    }
+    &[readonly] {
+        background-color:rgb(233, 236, 239);
+        color:rgb(123, 122, 122);
+    }
+    &.error {
+        outline: 1px solid var(--error);
+    }
+    &::placeholder {
+        color: var(--neutro-200);
+        font-size: 14px;
+        font-weight: 600;
+    }
+    &:not(:disabled) {
+        &:active {
+            outline-color: var(--primaria);
+            background: var(--white);
+        }
+        &:focus {
+            outline-color: var(--primaria);
+            background: var(--white);
+        }
+    }
+`
+
+function CampoTexto({ label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -205,6 +245,54 @@ function CampoTexto({ label, disabled = false, readonly = false, type='text',  s
             setValor(valorFormatado); // Atualiza o estado com o valor mascarado
         }
     }, [valor, patternMask, type, setValor]); // Executa sempre que `valor` mudar
+
+    // Se for textarea
+    if (rows) {
+        return (
+            <div className={styles.inputContainer}>
+                {label ?
+                    <FloatLabel className={styles.lb}>
+                        <CampoArea
+                            id={name}
+                            name={name}
+                            value={valor}
+                            onChange={e => setValor(e.target.value, name)}
+                            disabled={disabled}
+                            readOnly={readonly}
+                            rows={rows}
+                            $width={width}
+                            className={(classeCampoVazio.includes(name) ? 'error' : '')}
+                            placeholder={placeholder}
+                        />
+                        <label htmlFor={name} className={styles.label}>{label}</label>
+                    </FloatLabel>
+                :
+                    <CampoArea
+                        id={name}
+                        name={name}
+                        value={valor}
+                        onChange={e => setValor(e.target.value, name)}
+                        disabled={disabled}
+                        readOnly={readonly}
+                        rows={rows}
+                        $width={width}
+                        className={(classeCampoVazio.includes(name) ? 'error' : '')}
+                        placeholder={placeholder}
+                    />
+                }
+                {numeroCaracteres &&
+                    <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>
+                }
+                {classeCampoVazio.includes(name)?
+                    <p className={styles.erroMessage}>Você deve preencher esse campo</p>
+                    : (erro ?
+                        <p className={styles.erroMessage}>{erro}</p>
+                        : <p className={styles.erroMessage}>&nbsp;</p>
+                    )
+                }
+            </div>
+        )
+    }
 
     return (
         <>
