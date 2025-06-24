@@ -500,7 +500,9 @@ function Dashboard() {
                     </div>
                 </div>
             )}
-            <DashboardCard dashboardData={dadosDashboard} colaboradores={colaboradores} />
+            {usuario?.tipo !== 'Outsourcing' && (
+                <DashboardCard dashboardData={dadosDashboard} colaboradores={colaboradores} />
+            )}
             {cardsExtras.length > 0 && (
                 <div style={{marginTop: 32, display: 'flex', gap: 24, flexWrap: 'wrap'}}>
                     {cardsExtras}
