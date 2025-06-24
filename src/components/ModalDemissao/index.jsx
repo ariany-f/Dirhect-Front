@@ -37,6 +37,7 @@ const DetalhesContainer = styled.div`
 const AcoesContainer = styled.div`
     flex: 1 1 50%;
     max-width: calc(50% - 24px);
+    width: 100%;
     & > ${Frame} {
         background-color: #fff;
         border: 1px solid #dee2e6;

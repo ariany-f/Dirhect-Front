@@ -247,7 +247,7 @@ const AcoesContainer = styled.div`
 
 export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     console.log(evento);
-    
+
     const [dataInicio, setDataInicio] = useState('');
     const [dataFim, setDataFim] = useState('');
     const [adiantarDecimoTerceiro, setAdiantarDecimoTerceiro] = useState(false);
@@ -349,7 +349,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         }
         
         try {
-            await http.post(`/funcionario/${eventoCompletado.colab.id}/solicitar_ferias/`, {
+            await http.post(`/funcionario/${eventoCompletado.colab.id}/solicita_ferias/`, {
                 data_inicio: dataInicio,
                 data_fim: dataFim,
                 adiantar_13: adiantarDecimoTerceiro
