@@ -471,7 +471,7 @@ function BarraLateral({ $sidebarOpened }) {
                     overflow: 'hidden'
                 }}>
                     <NavEstilizada>
-                        <NavTitulo>{capitalizeTipo(usuario.tipo)}</NavTitulo>
+                        <NavTitulo>{usuario.tipo}</NavTitulo>
                         <ListaEstilizada>
                             {menusOrdenados.map((item) => (
                                 <StyledLink 
