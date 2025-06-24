@@ -9,6 +9,8 @@ import { Tag } from 'primereact/tag'
 import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaArrowRight, FaUserTimes, FaCheckCircle, FaRegClock } from 'react-icons/fa';
 import { MdWork, MdBarChart, MdPieChart, MdTimeline } from 'react-icons/md';
 import { Link } from 'react-router-dom';
+import { Tooltip } from 'primereact/tooltip';
+import '@pages/Dashboard/DashboardAtividades.css'
 
 function Dashboard() {
     const {
@@ -186,6 +188,43 @@ function Dashboard() {
         };
         return tipos[tipo] || tipo;
     }
+
+    // Função para verificar se uma data é desta semana
+    function isThisWeek(dateString) {
+        const now = new Date();
+        const date = new Date(dateString);
+        const firstDayOfWeek = new Date(now);
+        firstDayOfWeek.setDate(now.getDate() - now.getDay());
+        firstDayOfWeek.setHours(0,0,0,0);
+        const lastDayOfWeek = new Date(firstDayOfWeek);
+        lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+        lastDayOfWeek.setHours(23,59,59,999);
+        return date >= firstDayOfWeek && date <= lastDayOfWeek;
+    }
+
+    // Função para verificar se uma data é hoje
+    function isToday(dateString) {
+        const now = new Date();
+        const date = new Date(dateString);
+        return date.getDate() === now.getDate() &&
+               date.getMonth() === now.getMonth() &&
+               date.getFullYear() === now.getFullYear();
+    }
+
+    // Contar abertas criadas esta semana
+    const abertasEstaSemana = atividadesRaw.filter(
+        atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && isThisWeek(atv.criado_em)
+    ).length;
+
+    // Contar abertas com prazo final hoje
+    const abertasPrazoHoje = atividadesRaw.filter(
+        atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && atv.agendado_para && isToday(atv.agendado_para)
+    ).length;
+
+    // Contar abertas com prioridade alta
+    const abertasPrioridadeAlta = atividadesRaw.filter(
+        atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && (atv.prioridade === 1)
+    ).length;
 
     if (!colaboradores) {
         return <Loading opened={loadingOpened} />
@@ -380,49 +419,122 @@ function Dashboard() {
                         width: '100%',
                     }}
                 >
-                    <div style={{
-                        background: '#fff',
-                        border: '1px solid var(--neutro-200)',
-                        borderRadius: 20,
-                        boxShadow: '0 2px 8px 0 rgba(60,60,60,0.06)',
-                        padding: 28,
-                        minHeight: 180,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'flex-start',
-                        alignItems: 'flex-start',
-                        gap: 12,
-                    }}>
-                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: 6}}>
-                            <span style={{fontWeight: 700, fontSize: 18}}>Atividades</span>
+                    <div className="card-atividade" style={{position: 'relative', overflow: 'hidden', width: '100%', boxSizing: 'border-box'}}>
+                        <div className="card-header">
+                            <span className="card-title">Atividades</span>
                             <Link to="/atividades" style={{fontWeight: 500, color: 'var(--neutro-500)', fontSize: 14, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4}}>
-                                Ver mais&nbsp;<FaArrowRight size={15} />
+                                Ver todas <FaArrowRight size={15} />
                             </Link>
                         </div>
-                        <div style={{fontSize: 32, fontWeight: 800, color: 'var(--primaria)'}}>{totalAtividades}</div>
-                        <div style={{display: 'flex', flexDirection: 'column', gap: 16, marginTop: 2, marginBottom: 8}}>
-                            <span style={{fontSize: 15, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 4}}>
-                                <FaCheckCircle color="#43a047" size={15} /> {atividadesConcluidas} concluídas
-                            </span>
-                            <span style={{fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4}}>
-                                <FaRegClock color="#5472d4" size={15} /> {atividadesAbertas} abertas
-                            </span>
+                        <div style={{display: 'flex', gap: 16, alignItems: 'flex-end', marginBottom: 8, justifyContent: 'center'}}>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 70}}>
+                                <span style={{fontSize: 24, fontWeight: 900, color: '#222', display: 'flex', alignItems: 'center', gap: 2}}>
+                                    <MdBarChart size={24} style={{marginRight: 2, verticalAlign: 'middle'}} /> {totalAtividades}
+                                </span>
+                                <span style={{fontWeight: 700, fontSize: 15, color: '#888', marginTop: 2}}>Total</span>
+                            </div>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 70}}>
+                                <span style={{fontSize: 24, fontWeight: 900, color: '#5472d4', display: 'flex', alignItems: 'center', gap: 2}}>
+                                    <FaRegClock fill="#5472d4" size={22} style={{marginRight: 2, verticalAlign: 'middle'}} /> {atividadesAbertas}
+                                </span>
+                                <span style={{fontWeight: 700, fontSize: 15, color: '#5472d4', marginTop: 2}}>Abertas</span>
+                            </div>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 70}}>
+                                <span style={{fontSize: 24, fontWeight: 900, color: '#43a047', display: 'flex', alignItems: 'center', gap: 2}}>
+                                    <FaCheckCircle fill="#43a047" size={22} style={{marginRight: 2, verticalAlign: 'middle'}} /> {atividadesConcluidas}
+                                </span>
+                                <span style={{fontWeight: 700, fontSize: 15, color: '#43a047', marginTop: 2}}>Concluídas</span>
+                            </div>
                         </div>
-                        <div style={{height: 8}} />
-                        <div style={{display: 'flex', flexWrap: 'wrap', gap: 8}}>
-                            {Object.entries(abertasPorEntidade).map(([entidade, qtd], idx) => (
-                                <span key={entidade} style={{
-                                    display: 'flex', alignItems: 'center', gap: 6,
-                                    background: chartColors[idx % chartColors.length] + '22',
-                                    color: chartColors[idx % chartColors.length],
-                                    borderRadius: 14, padding: '4px 12px', fontWeight: 600, fontSize: 13
+                        <div className="progress-bar-area" style={{width: '100%'}}>
+                            <div className="progress-bar-bg">
+                                <div className="progress-bar-fg" style={{width: `${totalAtividades ? (atividadesConcluidas/totalAtividades*100) : 0}%`}} />
+                            </div>
+                            <span className="progress-label">{totalAtividades ? ((atividadesConcluidas/totalAtividades*100).toFixed(1)) : 0}% concluídas</span>
+                        </div>
+                        <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', margin: '10px 0 0 0'}}>
+                            {abertasEstaSemana > 0 && (
+                                <span style={{
+                                    background: '#e3eafd',
+                                    color: '#27408b',
+                                    fontWeight: 700,
+                                    borderRadius: 16,
+                                    padding: '6px 16px',
+                                    fontSize: 14,
+                                    minWidth: 0,
+                                    textAlign: 'center'
                                 }}>
-                                    {entidadeIconMap[entidade]}
+                                    {abertasEstaSemana} abertas esta semana
+                                </span>
+                            )}
+                            {abertasPrazoHoje > 0 && (
+                                <span style={{
+                                    background: '#ffeaea',
+                                    color: '#b71c1c',
+                                    fontWeight: 700,
+                                    borderRadius: 16,
+                                    padding: '6px 16px',
+                                    fontSize: 14,
+                                    minWidth: 0,
+                                    textAlign: 'center'
+                                }}>
+                                    {abertasPrazoHoje} com prazo final hoje
+                                </span>
+                            )}
+                            {abertasPrioridadeAlta > 0 && (
+                                <span style={{
+                                    background: '#fff4e5',
+                                    color: '#b26a00',
+                                    fontWeight: 700,
+                                    borderRadius: 16,
+                                    padding: '6px 16px',
+                                    fontSize: 14,
+                                    minWidth: 0,
+                                    textAlign: 'center'
+                                }}>
+                                    {abertasPrioridadeAlta} com prioridade alta
+                                </span>
+                            )}
+                            {(abertasEstaSemana === 0 && abertasPrazoHoje === 0 && abertasPrioridadeAlta === 0) && (
+                                <span style={{
+                                    color: '#888',
+                                    fontWeight: 500,
+                                    fontSize: 14,
+                                    background: '#f5f5f5',
+                                    borderRadius: 16,
+                                    padding: '6px 16px',
+                                    minWidth: 0,
+                                    textAlign: 'center'
+                                }}>
+                                    Nenhuma novidade relevante esta semana
+                                </span>
+                            )}
+                        </div>
+                        <hr style={{width: '100%', border: 'none', borderTop: '1px solid #f0f0f0', margin: '10px 0 8px 0'}} />
+                        <div className="tags-entidade" style={{width: '100%'}}>
+                            {Object.entries(abertasPorEntidade).map(([entidade, qtd], idx) => (
+                                <span key={entidade}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 4,
+                                        background: chartColors[idx % chartColors.length] + '18',
+                                        color: '#222',
+                                        borderRadius: 10,
+                                        padding: '2px 10px',
+                                        fontWeight: 500,
+                                        fontSize: 12,
+                                        marginTop: 2
+                                    }}>
                                     {entidade}
                                     <span style={{
                                         background: chartColors[idx % chartColors.length],
-                                        color: '#fff', borderRadius: 10, padding: '1px 8px',
-                                        fontWeight: 700, fontSize: 13, marginLeft: 4
+                                        color: '#fff',
+                                        borderRadius: 8,
+                                        padding: '1px 6px',
+                                        fontWeight: 700,
+                                        fontSize: 12,
+                                        marginLeft: 3
                                     }}>{qtd}</span>
                                 </span>
                             ))}
