@@ -440,23 +440,23 @@ function Dashboard() {
                             </Link>
                         </div>
                         <div style={{display: 'flex', width: '100%', gap: 16, alignItems: 'flex-end', marginBottom: 8, justifyContent: 'space-between'}}>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 70}}>
-                                <span style={{fontSize: 24, fontWeight: 900, color: '#222', display: 'flex', alignItems: 'center', gap: 2}}>
-                                    <MdBarChart size={24} style={{marginRight: 2, verticalAlign: 'middle'}} /> {totalAtividades}
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start', minWidth: 70}}>
+                                <span style={{fontSize: 20, fontWeight: 900, color: '#222', display: 'flex', alignItems: 'center', gap: 2}}>
+                                    {totalAtividades}
                                 </span>
-                                <span style={{fontWeight: 700, fontSize: 15, color: '#888', marginTop: 2}}>Total</span>
+                                <span style={{fontWeight: 400, fontSize: 12, marginTop: 2}}>Total</span>
                             </div>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 70}}>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start', minWidth: 70}}>
                                 <span style={{fontSize: 24, fontWeight: 900, color: '#5472d4', display: 'flex', alignItems: 'center', gap: 2}}>
                                     <FaRegClock fill="#5472d4" size={22} style={{marginRight: 2, verticalAlign: 'middle'}} /> {atividadesAbertas}
                                 </span>
-                                <span style={{fontWeight: 700, fontSize: 15, color: '#5472d4', marginTop: 2}}>Abertas</span>
+                                <span style={{fontWeight: 400, fontSize: 12, marginTop: 2}}>Abertas</span>
                             </div>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 70}}>
-                                <span style={{fontSize: 24, fontWeight: 900, color: '#43a047', display: 'flex', alignItems: 'center', gap: 2}}>
-                                    <FaCheckCircle fill="#43a047" size={22} style={{marginRight: 2, verticalAlign: 'middle'}} /> {atividadesConcluidas}
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start', minWidth: 70}}>
+                                <span style={{fontSize: 20, fontWeight: 900, display: 'flex', alignItems: 'center', gap: 2}}>
+                                    {atividadesConcluidas}
                                 </span>
-                                <span style={{fontWeight: 700, fontSize: 15, color: '#43a047', marginTop: 2}}>Concluídas</span>
+                                <span style={{fontWeight: 400, fontSize: 12, marginTop: 2}}>Concluídas</span>
                             </div>
                         </div>
                         <div className="progress-bar-area" style={{width: '100%'}}>
@@ -470,42 +470,42 @@ function Dashboard() {
                                 <span style={{
                                     background: '#e3eafd',
                                     color: '#27408b',
-                                    fontWeight: 700,
-                                    borderRadius: 16,
+                                    fontWeight: 400,
+                                    borderRadius: 8,
                                     padding: '6px 16px',
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     minWidth: 0,
                                     textAlign: 'center'
                                 }}>
-                                    {abertasEstaSemana} abertas esta semana
+                                    <b style={{color: '#27408b', fontSize: 14}}>{abertasEstaSemana}</b> abertas esta semana
                                 </span>
                             )}
                             {abertasPrazoHoje > 0 && (
                                 <span style={{
                                     background: '#ffeaea',
                                     color: '#b71c1c',
-                                    fontWeight: 700,
-                                    borderRadius: 16,
+                                    fontWeight: 400,
+                                    borderRadius: 8,
                                     padding: '6px 16px',
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     minWidth: 0,
                                     textAlign: 'center'
                                 }}>
-                                    {abertasPrazoHoje} com prazo final hoje
+                                    <b style={{color: '#b71c1c', fontSize: 14}}>{abertasPrazoHoje}</b> com prazo final hoje
                                 </span>
                             )}
                             {abertasPrioridadeAlta > 0 && (
                                 <span style={{
                                     background: '#fff4e5',
                                     color: '#b26a00',
-                                    fontWeight: 700,
-                                    borderRadius: 16,
+                                    fontWeight: 400,
+                                    borderRadius: 8,
                                     padding: '6px 16px',
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     minWidth: 0,
                                     textAlign: 'center'
                                 }}>
-                                    {abertasPrioridadeAlta} com prioridade alta
+                                    <b style={{color: '#b26a00', fontSize: 14}}>{abertasPrioridadeAlta}</b> com prioridade alta
                                 </span>
                             )}
                             {(abertasEstaSemana === 0 && abertasPrazoHoje === 0 && abertasPrioridadeAlta === 0) && (
