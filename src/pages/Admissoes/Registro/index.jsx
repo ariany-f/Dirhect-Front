@@ -1,13 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
-import ContainerHorizontal from '@components/ContainerHorizontal'; // Importando o componente ContainerHorizontal
-import CampoArquivo from '@components/CampoArquivo'; // Importando o componente BotaoGrupo
-import BotaoGrupo from '@components/BotaoGrupo'; // Importando o componente BotaoGrupo
-import Titulo from '@components/Titulo'; // Importando o componente Titulo
-import CampoTexto from '@components/CampoTexto'; // Importando o componente CampoTexto
-import DropdownItens from '@components/DropdownItens'; // Importando o componente DropdownItens
 import Container from '@components/Container'; // Importando o componente Container
-import Frame from '@components/Frame'; // Importando o componente Frame
 import Botao from '@components/Botao'; // Importando o componente Container
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from "styled-components"
@@ -20,12 +13,11 @@ import { StepperPanel } from 'primereact/stepperpanel';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { HiArrowLeft, HiArrowRight, HiEye } from 'react-icons/hi';
 import { FaTrash, FaSave, FaEye, FaUpload } from 'react-icons/fa';
-import { CiCirclePlus } from 'react-icons/ci';
-import SwitchInput from '@components/SwitchInput';
 import { Toast } from 'primereact/toast';
 import { CandidatoProvider, useCandidatoContext } from '@contexts/Candidato';
 import StepDocumentos from './Steps/StepDocumentos';
 import StepDadosPessoais from './Steps/StepDadosPessoais';
+import StepDadosBancarios from './Steps/StepDadosBancarios';
 import StepVaga from './Steps/StepVaga';
 import StepEducacao from './Steps/StepEducacao';
 import StepHabilidades from './Steps/StepHabilidades';
@@ -329,6 +321,7 @@ const CandidatoRegistro = () => {
                 agencia: candidato.agencia,
                 conta_corrente: candidato.conta_corrente,
                 pix: candidato.pix,
+                pix_tipo: candidato.pix_tipo,
                 estado_natal: candidato.estado_natal,
                 naturalidade: candidato.naturalidade,
                 apelido: candidato.apelido,
@@ -408,6 +401,13 @@ const CandidatoRegistro = () => {
                 tipo_funcionario: candidato.tipo_funcionario,
                 tipo_situacao: candidato.tipo_situacao,
                 banco: candidato.banco,
+                banco_codigo: candidato.banco_codigo,
+                agencia: candidato.agencia,
+                conta_corrente: candidato.conta_corrente,
+                tipo_conta: candidato.tipo_conta,
+                operacao: candidato.operacao,
+                pix: candidato.pix,
+                pix_tipo: candidato.pix_tipo,
                 estado_civil: candidato.estado_civil,
                 genero: candidato.genero,
                 educacao: candidato.educacao,
@@ -611,7 +611,8 @@ const CandidatoRegistro = () => {
     // Função para renderizar os botões baseado no step atual
     const renderFooterButtons = () => {
         const isFirstStep = activeIndex === 0;
-        const isLastStep = (self && activeIndex === 6) || (!self && activeIndex === 5);
+        // Ajustado para o novo step de dados bancários
+        const isLastStep = (self && activeIndex === 7) || (!self && activeIndex === 6);
         
         return (
             <div style={{
@@ -657,7 +658,8 @@ const CandidatoRegistro = () => {
                         </Botao>
                     )}
                     
-                    {(activeIndex >= 1 && activeIndex <= 4) && (
+                    {/* Steps intermediários com salvar (Dados Pessoais, Dados Bancários, Vaga, Educação, Habilidades) */}
+                    {(activeIndex >= 1 && activeIndex <= (self ? 5 : 5)) && (
                         <>
                             <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
                                 <FaSave fill="white"/> Salvar
@@ -669,7 +671,7 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Step Experiência - último step antes da finalização */}
-                    {activeIndex === 5 && (
+                    {activeIndex === (self ? 6 : 6) && (
                         <>
                             <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
                                 <FaSave fill="white"/> Salvar
@@ -687,7 +689,7 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Step LGPD - só para candidatos */}
-                    {self && activeIndex === 6 && (
+                    {self && activeIndex === 7 && (
                         <Botao 
                             iconPos="right" 
                             aoClicar={handleAceitarLGPD}
@@ -873,6 +875,16 @@ const CandidatoRegistro = () => {
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
                                     <StepDadosPessoais classError={classError} estados={estados} />
+                                </ScrollPanel>
+                            </div>
+                        </Container>
+                    </StepperPanel>
+                    
+                    <StepperPanel header="Dados Bancários">
+                        <Container padding={'0'} gap="10px">
+                            <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
+                                <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
+                                    <StepDadosBancarios />
                                 </ScrollPanel>
                             </div>
                         </Container>
