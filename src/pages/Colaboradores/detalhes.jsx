@@ -29,6 +29,7 @@ import { BiFemale, BiMale } from 'react-icons/bi';
 import { ArmazenadorToken } from '@utils';
 import ModalDemissao from '@components/ModalDemissao';
 import { TiUserDelete } from "react-icons/ti";
+import { FaUser, FaIdCard, FaBirthdayCake, FaBuilding, FaBriefcase, FaUserTie } from 'react-icons/fa';
 
 
 const Col12 = styled.div`
@@ -77,16 +78,17 @@ const Col4Vertical = styled.div`
     flex-direction: column;
     flex: 1 1 calc(25% - 4px);
     max-width: calc(25% - 4px);
-    gap: 8px;
-    border: 1px solid var(--neutro-100);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 5px 24px;
+    gap: 12px;
+    background: #fafbfc;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #f1f5f9;
 
     @media screen and (max-width: 768px) {
         flex: 1 1 100%;
         max-width: 100%;
         order: 2;
+        padding: 16px;
     }
 `;
 
@@ -130,6 +132,115 @@ const HeaderContainer = styled(Container)`
             font-size: 1.2rem;
         }
     }
+`;
+
+const InfoItem = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.2s ease;
+    
+    &:last-child {
+        border-bottom: none;
+    }
+    
+    &:hover {
+        margin: 0 -12px;
+        padding: 12px;
+        border-radius: 8px;
+        border-bottom: 1px solid transparent;
+    }
+    
+    &:hover:last-child {
+        border-bottom: none;
+    }
+`;
+
+const InfoLabel = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    min-width: 80px;
+`;
+
+const InfoValue = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    justify-content: flex-end;
+`;
+
+const InfoText = styled.span`
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    text-align: right;
+`;
+
+const CopyButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: #f8fafc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #64748b;
+    opacity: 0.3;
+    
+    ${InfoItem}:hover & {
+        opacity: 1;
+    }
+    
+    &:hover {
+        color: #fff;
+        transform: scale(1.1);
+    }
+`;
+
+const GenderIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    color: white;
+    margin-right: 8px;
+`;
+
+const SectionTitle = styled.h3`
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+`;
+
+const CustomTag = styled.div`
+    background: ${props => props.bg || '#f1f5f9'};
+    color: ${props => props.color || '#475569'};
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 2px solid ${props => props.border || 'transparent'};
+    white-space: nowrap;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
 `;
 
 function ColaboradorDetalhes() {
@@ -383,58 +494,91 @@ function ColaboradorDetalhes() {
             <Col12Vertical>
                 {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                     <Col4Vertical>
-                    <div style={{marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                        <Frame gap="2px" alinhamento="start">
-                            <Texto size={'14px'} weight={600}>Nome Social</Texto>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                {/* {colaborador?.funcionario_pessoa_fisica?.sexo == 'M' ? <BiMale size={20}/> : <BiFemale size={20}/>} */}
-                                {representativeGeneroTemplate()}
-                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.nome_social}</Texto>
-                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}} />
-                                </div>
-                            </div>
-                        </Frame>
+                        
+                        <InfoItem>
+                            <InfoLabel>
+                                Nome Social
+                            </InfoLabel>
+                            <InfoValue>
+                                <GenderIcon gender={colaborador?.funcionario_pessoa_fisica?.sexo}>
+                                    {representativeGeneroTemplate()}
+                                </GenderIcon>
+                                <InfoText>{colaborador?.funcionario_pessoa_fisica?.nome_social || 'Não informado'}</InfoText>
+                                <CopyButton onClick={() => copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}>
+                                    <IoCopyOutline size={12} />
+                                </CopyButton>
+                            </InfoValue>
+                        </InfoItem>
                     
-                        <Frame gap="2px" alinhamento="start">
-                            <Texto size={'14px'} weight={600}>CPF</Texto>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                <Texto size={'14px'}>{formataCPF(colaborador?.funcionario_pessoa_fisica?.cpf)}</Texto>
-                                <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.cpf)}} />
-                            </div>
-                        </Frame>
+                        <InfoItem>
+                            <InfoLabel>
+                                CPF
+                            </InfoLabel>
+                            <InfoValue>
+                                <InfoText>{formataCPF(colaborador?.funcionario_pessoa_fisica?.cpf)}</InfoText>
+                                <CopyButton onClick={() => copiarTexto(colaborador?.funcionario_pessoa_fisica?.cpf)}>
+                                    <IoCopyOutline size={12} />
+                                </CopyButton>
+                            </InfoValue>
+                        </InfoItem>
                     
-                        <Frame gap="2px" alinhamento="start">
-                            <Texto size={'14px'} weight={600}>Nascimento</Texto>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                <Texto size={'14px'}>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
-                                <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}} />
-                            </div>
-                        </Frame>
+                        <InfoItem>
+                            <InfoLabel>
+                                Nascimento
+                            </InfoLabel>
+                            <InfoValue>
+                                <InfoText>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</InfoText>
+                                <CopyButton onClick={() => copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}>
+                                    <IoCopyOutline size={12} />
+                                </CopyButton>
+                            </InfoValue>
+                        </InfoItem>
                         
+                        <InfoItem>
+                            <InfoLabel>
+                                Filial
+                            </InfoLabel>
+                            <InfoValue>
+                                <CustomTag 
+                                    bg="linear-gradient(135deg, #eff6ff, #dbeafe)"
+                                    color="#1e40af"
+                                    border="#93c5fd"
+                                >
+                                    {colaborador?.filial_nome ?? 'Não definida'}
+                                </CustomTag>
+                            </InfoValue>
+                        </InfoItem>
                         
-                        <Frame gap="2px" alinhamento="start">
-                            <Texto size={'14px'} weight={600}>Filial</Texto>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                <Tag severity="info" value={colaborador?.filial_nome ?? 'Não definida'}></Tag>
-                            </div>
-                        </Frame>
+                        <InfoItem>
+                            <InfoLabel>
+                                Função
+                            </InfoLabel>
+                            <InfoValue>
+                                <CustomTag 
+                                    bg="linear-gradient(135deg, #f0fdf4, #dcfce7)"
+                                    color="#166534"
+                                    border="#86efac"
+                                >
+                                    {colaborador?.funcao_nome ?? 'Não definida'}
+                                </CustomTag>
+                            </InfoValue>
+                        </InfoItem>
                         
-                        <Frame gap="2px" alinhamento="start">
-                            <Texto size={'14px'} weight={600}>Função</Texto>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                <Tag severity="info" value={colaborador?.funcao_nome ?? 'Não definida'}></Tag>
-                            </div>
-                        </Frame>
-                        
-                        <Frame gap="2px" alinhamento="start">
-                            <Texto size={'14px'} weight={600}>Tipo de Funcionário</Texto>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                <Tag severity="info" value={tipoFuncionario ?? 'Não definida'}></Tag>
-                            </div>
-                        </Frame>
-                 </div>
-                 </Col4Vertical>
+                        <InfoItem>
+                            <InfoLabel>
+                                Tipo de Funcionário
+                            </InfoLabel>
+                            <InfoValue>
+                                <CustomTag 
+                                    bg="linear-gradient(135deg, #fefce8, #fef3c7)"
+                                    color="#92400e"
+                                    border="#fbbf24"
+                                >
+                                    {tipoFuncionario ?? 'Não definida'}
+                                </CustomTag>
+                            </InfoValue>
+                        </InfoItem>
+                    </Col4Vertical>
                 : <Skeleton variant="rectangular" width={'23%'} height={420} />
                 }
                 {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
