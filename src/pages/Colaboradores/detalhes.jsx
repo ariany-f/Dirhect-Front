@@ -59,10 +59,10 @@ const Col6 = styled.div`
 const Col12Vertical = styled.div`
     display: flex;
     flex-direction: row;
-    margin-top: 30px;
+    margin-top: 20px;
     flex-wrap: wrap;
     width: 100%;
-    gap: 15px;
+    gap: 4px;
     justify-content: space-between;
 
     @media screen and (max-width: 768px) {
@@ -75,8 +75,8 @@ const Col12Vertical = styled.div`
 const Col4Vertical = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1 1 calc(25% - 15px);
-    max-width: calc(25% - 15px);
+    flex: 1 1 calc(25% - 4px);
+    max-width: calc(25% - 4px);
     gap: 8px;
     border: 1px solid var(--neutro-200);
     border-radius: 16px;
@@ -92,8 +92,8 @@ const Col4Vertical = styled.div`
 const Col8Vertical = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 1 1 calc(75% - 15px);
-    max-width: calc(75% - 15px);
+    flex: 1 1 calc(75% - 8px);
+    max-width: calc(75% - 8px);
     gap: 16px;
 
     @media screen and (max-width: 768px) {
@@ -111,8 +111,8 @@ const BeneficiosContainer = styled(FrameVertical)`
         justify-content: flex-start;
 
         & > div {
-            flex: 1 1 calc(50% - 4px);
-            min-width: calc(50% - 4px);
+            flex: 1 1 calc(50% - 8px);
+            min-width: calc(50% - 8px);
         }
     }
 
