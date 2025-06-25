@@ -401,7 +401,6 @@ const CandidatoRegistro = () => {
                 tipo_funcionario: candidato.tipo_funcionario,
                 tipo_situacao: candidato.tipo_situacao,
                 banco: candidato.banco,
-                banco_codigo: candidato.banco_codigo,
                 agencia: candidato.agencia,
                 conta_corrente: candidato.conta_corrente,
                 tipo_conta: candidato.tipo_conta,

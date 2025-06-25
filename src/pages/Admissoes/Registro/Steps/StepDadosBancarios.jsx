@@ -91,10 +91,10 @@ const StepDadosBancarios = () => {
 
             <DropdownItens
                 $margin={'10px'}
-                valor={candidato?.banco_codigo ? bancos.find(b => b.code === candidato.banco_codigo) || '' : ''}
+                valor={candidato?.banco ? bancos.find(b => b.code === candidato.banco) || '' : ''}
                 setValor={valor => {
+                    setCampo('banco', valor.code);
                     setCampo('banco_codigo', valor.code);
-                    setCampo('banco', valor.name);
                 }}
                 options={bancos}
                 name="banco"
