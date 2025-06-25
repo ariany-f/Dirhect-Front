@@ -320,13 +320,41 @@ const InfoContrato = styled.div`
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 24px;
+    padding: 8px 16px 16px 16px;
     margin-bottom: 20px;
     opacity: ${props => props.inativo ? '0.6' : '1'};
     transition: all 0.3s ease;
+    position: relative;
+    margin-top: 24px;
     
     &:hover {
         border-color: #cbd5e1;
+    }
+`;
+
+const OperadoraFieldset = styled.div`
+    position: absolute;
+    top: -24px;
+    left: 16px;
+    right: auto;
+    width: fit-content;
+    max-width: 60%;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); */
+    z-index: 10;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: 20px;
+        right: 20px;
+        height: 1px;
+        background: #ffffff;
+        z-index: 1;
     }
 `;
 
@@ -364,22 +392,22 @@ const ContratoItensBox = styled.div`
 const EditarPlanosSwitch = styled.div`
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 18px;
-    background: #ffffff;
-    border-radius: 12px;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #fff;
+    border-radius: 8px;
     border: 1px solid #e2e8f0;
     transition: all 0.3s ease;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     
     &:hover {
-        background: #f8fafc;
+        background: #f1f5f9;
         border-color: #cbd5e1;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
     }
     
     span {
-        font-size: 13px;
+        font-size: 12px;
         color: #374151;
         font-weight: 600;
         white-space: nowrap;
@@ -531,6 +559,12 @@ const CustomDropdownButton = styled(Dropdown)`
             }
         }
     }
+`;
+
+const StatusIconCard = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 function ColaboradorBeneficios() {
@@ -1037,33 +1071,27 @@ function ColaboradorBeneficios() {
                                         <div key={contratoId} style={{width: '100%'}}>
                                             {contrato && (
                                                 <InfoContrato inativo={getStatusContrato(contrato.status) === 'Indisponível' ? 'true' : undefined}>
-                                                    <div style={{
-                                                        display: 'flex', 
-                                                        alignItems: 'center', 
-                                                        justifyContent: 'space-between',
-                                                        marginBottom: 20, 
-                                                        width: '100%'
-                                                    }}>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                                    <OperadoraFieldset>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                                                             {operadora?.image_operadora ? (
                                                                 <CustomImage 
                                                                     src={operadora.image_operadora} 
                                                                     title={operadora.nome_operadora} 
-                                                                    width={48} 
-                                                                    height={32} 
-                                                                    borderRadius={8} 
+                                                                    width={36} 
+                                                                    height={24} 
+                                                                    borderRadius={6} 
                                                                 />
                                                             ) : null}
                                                             <div style={{ textAlign: 'left' }}>
                                                                 <div style={{ 
                                                                     display: 'flex', 
                                                                     alignItems: 'center', 
-                                                                    gap: 10, 
-                                                                    marginBottom: 6
+                                                                    gap: 8, 
+                                                                    marginBottom: 2
                                                                 }}>
                                                                     <span style={{
                                                                         fontWeight: 700, 
-                                                                        fontSize: 16, 
+                                                                        fontSize: 14, 
                                                                         color: '#111827'
                                                                     }}>
                                                                         {operadora?.nome_operadora}
@@ -1076,7 +1104,7 @@ function ColaboradorBeneficios() {
                                                                 </div>
                                                                 {contrato.num_contrato_origem && (
                                                                     <div style={{
-                                                                        fontSize: 13, 
+                                                                        fontSize: 11, 
                                                                         color: '#6b7280', 
                                                                         fontWeight: 500
                                                                     }}>
@@ -1085,6 +1113,14 @@ function ColaboradorBeneficios() {
                                                                 )}
                                                             </div>
                                                         </div>
+                                                    </OperadoraFieldset>
+                                                    
+                                                    <div style={{ 
+                                                        display: 'flex', 
+                                                        justifyContent: 'flex-end', 
+                                                        marginBottom: 16,
+                                                        marginTop: 2
+                                                    }}>
                                                         <EditarPlanosSwitch>
                                                             <span>Editar Planos</span>
                                                             <SwitchInput
@@ -1094,6 +1130,7 @@ function ColaboradorBeneficios() {
                                                             />
                                                         </EditarPlanosSwitch>
                                                     </div>
+                                                    
                                                     <ContratoItensBox>
                                                         <ContratoItensGrid>
                                                             {itensContrato.map((item, idx) => {
