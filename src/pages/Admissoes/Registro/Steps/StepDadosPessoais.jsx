@@ -91,6 +91,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 patternMask="999.999.999-99"
                 label="CPF"
                 placeholder="Digite o CPF"
+                disabled={candidato?.dados_candidato?.cpf && candidato.dados_candidato.cpf.trim() !== ''}
             />
             <CampoTexto
                 camposVazios={classError}
