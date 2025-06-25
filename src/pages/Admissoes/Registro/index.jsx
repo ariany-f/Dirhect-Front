@@ -870,7 +870,7 @@ const CandidatoRegistro = () => {
                                         e.target.style.background = 'rgba(255, 255, 255, 0.2)';
                                     }}
                                 >
-                                    <HiEye size={14}/> Visão do Candidato
+                                    <HiEye fill="white" size={14}/> Visão do Candidato
                                 </button>
                                 :
                                 <button
@@ -897,7 +897,7 @@ const CandidatoRegistro = () => {
                                         e.target.style.background = 'rgba(255, 255, 255, 0.2)';
                                     }}
                                 >
-                                    <HiEye size={14}/> Visão da Empresa
+                                    <HiEye fill="white" size={14}/> Visão da Empresa
                                 </button>
                             }
                         </div>
