@@ -2,6 +2,19 @@ import React from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
+import styled from 'styled-components';
+
+const GridContainer = styled.div`
+    padding: 0 10px 10px 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 16px;
+    
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+`;
 
 const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horarios, funcoes, sindicatos }) => {
     const { candidato, setCampo, vaga } = useCandidatoContext();
@@ -69,7 +82,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
     };
 
     return (
-        <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+        <GridContainer>
             <DropdownItens
                 name="filial"
                 $margin={'15px'}
@@ -189,7 +202,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 setValor={setSalario}
                 label="Salário"
             />
-        </div>
+        </GridContainer>
     );
 };
 

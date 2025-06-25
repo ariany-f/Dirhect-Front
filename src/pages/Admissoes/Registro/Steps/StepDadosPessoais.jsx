@@ -3,6 +3,37 @@ import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
 import axios from 'axios';
+import styled from 'styled-components';
+
+const GridContainer = styled.div`
+    padding: 0 10px 10px 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 16px;
+    
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+`;
+
+const Separator = styled.hr`
+    grid-column: 1 / -1;
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 20px 0;
+    width: 100%;
+`;
+
+const SectionTitle = styled.div`
+    grid-column: 1 / -1;
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+    margin: 20px 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+`;
 
 const StepDadosPessoais = ({ classError, estados }) => {
     const { candidato, setCampo } = useCandidatoContext();
@@ -42,7 +73,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
     };
 
     return (
-        <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+        <GridContainer>
             <CampoTexto
                 camposVazios={classError}
                 name="nome"
@@ -83,6 +114,9 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 label="Data de Nascimento"
                 type="date"
             />
+            
+            <SectionTitle>Endereço</SectionTitle>
+            
             <CampoTexto
                 name="cep"
                 patternMask="99999-999"
@@ -129,7 +163,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 label="Estado"
                 placeholder="Selecione o estado"
             />
-        </div>
+        </GridContainer>
     );
 };
 
