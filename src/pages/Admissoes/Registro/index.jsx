@@ -769,7 +769,7 @@ const CandidatoRegistro = () => {
                     boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
                     position: 'sticky',
                     top: 0,
-                    zIndex: 100
+                    zIndex: 5
                 }}>
                     <div style={{
                         display: 'flex',
