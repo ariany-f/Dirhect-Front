@@ -102,6 +102,16 @@ const StepDadosBancarios = () => {
                 placeholder="Selecione o banco"
             />
 
+            <DropdownItens
+                $margin={'10px'}
+                valor={candidato?.tipo_conta ? tiposConta.find(t => t.code === candidato.tipo_conta) || '' : ''}
+                setValor={valor => setCampo('tipo_conta', valor.code)}
+                options={tiposConta}
+                name="tipo_conta"
+                label="Tipo de Conta"
+                placeholder="Selecione o tipo de conta"
+            />
+
             <CampoTexto
                 name="agencia"
                 valor={candidato?.agencia ?? ''}
@@ -119,16 +129,6 @@ const StepDadosBancarios = () => {
                 placeholder="Digite o número da conta (com dígito)"
             />
 
-            <DropdownItens
-                $margin={'10px'}
-                valor={candidato?.tipo_conta ? tiposConta.find(t => t.code === candidato.tipo_conta) || '' : ''}
-                setValor={valor => setCampo('tipo_conta', valor.code)}
-                options={tiposConta}
-                name="tipo_conta"
-                label="Tipo de Conta"
-                placeholder="Selecione o tipo de conta"
-            />
-
             <CampoTexto
                 name="operacao"
                 valor={candidato?.operacao ?? ''}
@@ -138,16 +138,6 @@ const StepDadosBancarios = () => {
             />
 
             <SectionTitle>PIX (Opcional)</SectionTitle>
-
-            <DropdownItens
-                $margin={'10px'}
-                valor={candidato?.pix_tipo ? tiposPix.find(t => t.code === candidato.pix_tipo) || '' : ''}
-                setValor={valor => setCampo('pix_tipo', valor.code)}
-                options={tiposPix}
-                name="pix_tipo"
-                label="Tipo de Chave PIX"
-                placeholder="Selecione o tipo de chave PIX"
-            />
 
             <CampoTexto
                 name="pix"
