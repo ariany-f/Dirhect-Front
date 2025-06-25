@@ -179,6 +179,7 @@ function OperadorasListagem() {
         const response = await axios.put(`${baseUrl}operadora/${operadoraEditando.id}/`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${ArmazenadorToken.AccessToken}`
             },
         });
         if(response?.data.id) {
