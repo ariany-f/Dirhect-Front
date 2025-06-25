@@ -15,7 +15,7 @@ const CalendarContainer = styled.div`
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 5px;
     user-select: none;
     display: flex;
     flex-direction: column;
@@ -28,9 +28,8 @@ const FixedHeader = styled.div`
     top: 0;
     z-index: 100;
     background: #fff;
-    padding-bottom: 16px;
+    padding-bottom: 4px;
     border-bottom: 1px solid #e5e7eb;
-    margin-bottom: 16px;
 `;
 
 const CalendarScrollArea = styled.div`
