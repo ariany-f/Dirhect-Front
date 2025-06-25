@@ -163,7 +163,7 @@ const CardValue = styled.div`
     padding: 8px 14px;
     border-radius: 2px;
     letter-spacing: -0.025em;
-    z-index: 10;
+    z-index: 5;
     white-space: nowrap;
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
@@ -344,7 +344,7 @@ const OperadoraFieldset = styled.div`
     border-radius: 12px;
     padding: 12px 16px;
     /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); */
-    z-index: 10;
+    z-index: 5;
     
     &::before {
         content: '';
