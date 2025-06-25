@@ -78,8 +78,9 @@ const Col4Vertical = styled.div`
     flex: 1 1 calc(25% - 4px);
     max-width: calc(25% - 4px);
     gap: 8px;
-    border: 1px solid var(--neutro-200);
-    border-radius: 16px;
+    border: 1px solid var(--neutro-100);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
     padding: 5px 24px;
 
     @media screen and (max-width: 768px) {
