@@ -251,14 +251,69 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         } else if (progresso <= 99) {
             severity = "var(--info)";
         }
+
+        // Define a cor do status baseado no tipo
+        let statusColor = '#333';
+        let statusBgColor = 'rgba(51, 51, 51, 0.1)';
+        switch(status) {
+            case 'Não iniciado':
+                statusColor = '#e53935'; // vermelho
+                statusBgColor = 'rgba(229, 57, 53, 0.15)';
+                break;
+            case 'Aguardando':
+                statusColor = '#FFA726'; // laranja
+                statusBgColor = 'rgba(255, 167, 38, 0.15)';
+                break;
+            case 'Em Andamento':
+                statusColor = '#42A5F5'; // azul
+                statusBgColor = 'rgba(66, 165, 245, 0.15)';
+                break;
+            case 'Concluído':
+                statusColor = '#66BB6A'; // verde
+                statusBgColor = 'rgba(102, 187, 106, 0.15)';
+                break;
+            default:
+                statusColor = '#333'; // cinza padrão
+                statusBgColor = 'rgba(51, 51, 51, 0.1)';
+        }
+
         return (
             <div style={{width: '100%'}}>
-                <b>{status}</b>
-                <ProgressBar className={styles.progressBar}
-                    value={progresso} 
-                    color={severity} 
-                    displayValueTemplate={valueTemplate}
-                />
+                <div style={{ 
+                    textAlign: 'left', 
+                    marginBottom: 12
+                }}>
+                    <span style={{
+                        display: 'inline-block',
+                        padding: '4px 12px',
+                        borderRadius: 4,
+                        fontWeight: 500,
+                        fontSize: 12,
+                        color: statusColor,
+                        backgroundColor: statusBgColor
+                    }}>
+                        {status}
+                    </span>
+                </div>
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <ProgressBar 
+                        value={progresso} 
+                        color={severity}
+                        style={{ height: 8 }}
+                        className="custom-progressbar"
+                        showValue={false}
+                    />
+                    <span style={{ 
+                        fontSize: 12, 
+                        fontWeight: 400, 
+                        color: '#666',
+                        position: 'absolute',
+                        right: 0,
+                        textAlign: 'right',
+                        top: '100%',
+                        marginTop: 4
+                    }}>{`${progresso || 0}%`}</span>
+                </div>
             </div>
         )
     }
@@ -283,7 +338,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 {rowData.tipo_display}
             </Texto> */}
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                Itens: <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {rowData.concluidas_atividades}/{rowData.total_atividades}</p>
+                Itens:&nbsp; <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {rowData.concluidas_atividades}/{rowData.total_atividades}</p>
             </div>
         </div>
     }

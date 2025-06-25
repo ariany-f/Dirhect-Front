@@ -7,12 +7,29 @@ export const Real = new Intl.NumberFormat('pt-BR', {
 });
 
 /**
+ * Formatador de número para padrão brasileiro (sem símbolo de moeda)
+ */
+export const NumberBR = new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+});
+
+/**
  * Formata um número para moeda brasileira
  * @param {number} value - Valor a ser formatado
  * @returns {string} Valor formatado em Real (ex: R$ 1.234,56)
  */
 export const formatCurrency = (value) => {
     return Real.format(value);
+};
+
+/**
+ * Formata um número para padrão brasileiro sem símbolo de moeda
+ * @param {number} value - Valor a ser formatado
+ * @returns {string} Valor formatado (ex: 1.234,56)
+ */
+export const formatNumber = (value) => {
+    return NumberBR.format(value);
 };
 
 /**

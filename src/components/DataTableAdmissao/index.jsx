@@ -24,6 +24,7 @@ import Botao from '@components/Botao';
 import { FaDownload } from 'react-icons/fa';
 import { GrAddCircle } from 'react-icons/gr';
 import styles from '@pages/Colaboradores/Colaboradores.module.css'
+import { formatCurrency, formatNumber } from '@utils/formats';
 
 function DataTableAdmissao({ vagas }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -100,15 +101,67 @@ function DataTableAdmissao({ vagas }) {
     const representativeStatusTemplate = (rowData) => {
         const total = rowData?.documentos_status?.total || 0;
         const enviados = rowData?.documentos_status?.enviados || 0;
-        const percent = total > 0 ? Math.round((enviados / total) * 100) : 0;
+        
+        return <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                Documentos: &nbsp;<p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {enviados}/{total}</p>
+            </div>;
+    }
+
+    const representativeSalarioTemplate = (rowData) => {
+        const salarioVaga = rowData?.dados_vaga?.salario;
+        const salarioCandidato = rowData?.dados_candidato?.salario || rowData?.salario;
+        const salarioEfetivo = rowData?.salario || rowData?.dados_vaga?.salario || rowData?.dados_candidato?.salario;
         
         return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <ProgressBar value={percent} style={{ height: 12, width: 80 }} showValue={false} />
-                <span style={{ minWidth: 48, fontWeight: 400 }}>{`${enviados}/${total}`}</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 500 }}>
+                    <span style={{ color: '#666', fontSize: 12 }}>Vaga: </span>
+                    <span style={{ color: '#333' }}>
+                        {salarioVaga ? formatCurrency(salarioVaga) : 'Não informado'}
+                    </span>
+                </div>
+                {/* <div style={{ fontSize: 13, fontWeight: 500 }}>
+                    <span style={{ color: '#666', fontSize: 12 }}>Candidato: </span>
+                    <span style={{ color: '#333' }}>
+                        {salarioCandidato ? formatCurrency(salarioCandidato) : 'Não informado'}
+                    </span>
+                </div> */}
+                <div style={{ fontSize: 13, fontWeight: 500 }}>
+                    <span style={{ color: '#666', fontSize: 12 }}>Efetivo: </span>
+                    <span style={{ color: '#4CAF50', fontWeight: 600 }}>
+                        {salarioEfetivo ? formatCurrency(salarioEfetivo) : 'Não definido'}
+                    </span>
+                </div>
             </div>
         );
-    }
+    };
+
+    const representativeFilialTemplate = (rowData) => {
+        const filial_vaga_id = rowData?.dados_vaga?.filial_id;
+        const filial_vaga_nome = rowData?.dados_vaga?.filial_nome;
+        const filial = rowData?.filial;
+        
+        if (!filial_vaga_nome) {
+            return <span style={{ color: '#888', fontStyle: 'italic' }}>Não informado</span>;
+        }
+        
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 500 }}>
+                    <span style={{ color: '#666', fontSize: 12 }}>Vaga: </span>
+                    <span style={{ color: '#333' }}>
+                        {filial_vaga_nome}
+                    </span>
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 500 }}>
+                    <span style={{ color: '#666', fontSize: 12 }}>Efetivo: </span>
+                    <span style={{ color: '#4CAF50', fontWeight: 600 }}>
+                        {filial_vaga_id == filial ? filial_vaga_nome : 'Não definido'}
+                    </span>
+                </div>
+            </div>
+        );
+    };
 
     const representativeAdiantamentoTemplate = (rowData) => {
         return (
@@ -221,11 +274,13 @@ function DataTableAdmissao({ vagas }) {
                 rows={10}  
                 tableStyle={{ minWidth: '68vw' }}
             >
-                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
-                <Column body={vagaTemplate} header="Vaga" style={{ width: '18%' }}></Column>
-                <Column body={representativeStatusTemplate} header="Status Preenchimento" style={{ width: '25%' }}></Column>
-                <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '15%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '12%' }}></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '16%' }}></Column>
+                <Column body={vagaTemplate} header="Vaga" style={{ width: '14%' }}></Column>
+                <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: '13%' }}></Column>
+                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '14%' }}></Column>
+                <Column body={representativeFilialTemplate} header="Filial" style={{ width: '12%' }}></Column>
+                <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '11%' }}></Column>
+                <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
             </DataTable>
 
             <ModalHistoricoAdmissao 
