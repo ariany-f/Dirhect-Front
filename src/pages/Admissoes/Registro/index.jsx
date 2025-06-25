@@ -630,18 +630,6 @@ const CandidatoRegistro = () => {
                 alignItems: 'center'
             }}>
                 <div style={{ display: 'flex', gap: 12 }}>
-                    {/* Botão Visão do Candidato/Empresa - só no primeiro step */}
-                    {isFirstStep && (
-                        !self ? 
-                            <Botao size="small" estilo="neutro" aoClicar={() => navegar(`/admissao/registro/${id}/true`)}>
-                                <HiEye/> Visão do Candidato
-                            </Botao>
-                            :
-                            <Botao size="small" estilo="neutro" aoClicar={() => navegar(`/admissao/registro/${id}`)}>
-                                <HiEye/> Visão da Empresa
-                            </Botao>
-                    )}
-                    
                     {/* Botão Voltar - em todos os steps exceto o primeiro */}
                     {!isFirstStep && (
                         <Botao size="small" estilo="neutro" aoClicar={handleVoltar}>
@@ -824,31 +812,94 @@ const CandidatoRegistro = () => {
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 6,
-                            background: 'rgba(255, 255, 255, 0.15)',
-                            padding: '4px 10px',
-                            borderRadius: 6,
-                            backdropFilter: 'blur(10px)'
+                            gap: 12
                         }}>
-                            <span style={{
-                                fontSize: 11,
-                                fontWeight: 600,
-                                color: '#fff',
-                                opacity: 0.9
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                                background: 'rgba(255, 255, 255, 0.15)',
+                                padding: '4px 10px',
+                                borderRadius: 6,
+                                backdropFilter: 'blur(10px)'
                             }}>
-                                Vaga:
-                            </span>
-                            <span style={{
-                                background: '#333',
-                                color: '#fff',
-                                padding: '4px 8px',
-                                borderRadius: 12,
-                                fontSize: 11,
-                                fontWeight: 400,
-                                textTransform: 'capitalize'
-                            }}>
-                                {candidato?.dados_vaga?.titulo || 'Vaga não informada'}
-                            </span>
+                                <span style={{
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    color: '#fff',
+                                    opacity: 0.9
+                                }}>
+                                    Vaga:
+                                </span>
+                                <span style={{
+                                    background: '#333',
+                                    color: '#fff',
+                                    padding: '4px 8px',
+                                    borderRadius: 12,
+                                    fontSize: 11,
+                                    fontWeight: 400,
+                                    textTransform: 'capitalize'
+                                }}>
+                                    {candidato?.dados_vaga?.titulo || 'Vaga não informada'}
+                                </span>
+                            </div>
+                            
+                            {/* Botão Visão do Candidato/Empresa movido para o header */}
+                            {!self ? 
+                                <button
+                                    onClick={() => navegar(`/admissao/registro/${id}/true`)}
+                                    style={{
+                                        background: 'rgba(255, 255, 255, 0.2)',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        borderRadius: 6,
+                                        padding: '6px 12px',
+                                        color: '#fff',
+                                        fontSize: 12,
+                                        fontWeight: 500,
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 4,
+                                        transition: 'all 0.2s ease',
+                                        backdropFilter: 'blur(10px)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                    }}
+                                >
+                                    <HiEye size={14}/> Visão do Candidato
+                                </button>
+                                :
+                                <button
+                                    onClick={() => navegar(`/admissao/registro/${id}`)}
+                                    style={{
+                                        background: 'rgba(255, 255, 255, 0.2)',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        borderRadius: 6,
+                                        padding: '6px 12px',
+                                        color: '#fff',
+                                        fontSize: 12,
+                                        fontWeight: 500,
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 4,
+                                        transition: 'all 0.2s ease',
+                                        backdropFilter: 'blur(10px)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                    }}
+                                >
+                                    <HiEye size={14}/> Visão da Empresa
+                                </button>
+                            }
                         </div>
                     </div>
                 </div>
