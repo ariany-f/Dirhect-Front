@@ -202,12 +202,8 @@ function OperadorasListagem() {
 
     // Função para recarregar operadoras do backend
     const reloadOperadoras = async () => {
-        const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
-        const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
-        const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
-        const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
-        const response = await axios.get(`${baseUrl}operadora/`);
-        if (response?.data) setOperadoras(response.data);
+        const response = await http.get('operadora/');
+        if (response) setOperadoras(response);
     };
 
     // Função para deletar operadora com confirmação
@@ -219,12 +215,8 @@ function OperadorasListagem() {
             acceptLabel: 'Sim',
             rejectLabel: 'Não',
             accept: async () => {
-                const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
-                const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
-                const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
-                const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
                 try {
-                    await axios.delete(`${baseUrl}operadora/${operadora.id}/`);
+                    await http.delete(`operadora/${operadora.id}/`);
                     toast.current.show({
                         severity: 'success',
                         summary: 'Sucesso',
@@ -232,11 +224,12 @@ function OperadorasListagem() {
                         life: 3000
                     });
                     reloadOperadoras();
-                } catch {
+                } catch (error) {
+                    console.error('Erro ao excluir operadora:', error);
                     toast.current.show({
                         severity: 'error',
                         summary: 'Erro',
-                        detail: 'Erro ao excluir operadora!',
+                        detail: `Erro ao excluir operadora: ${error.response?.data?.detail || error.message}`,
                         life: 3000
                     });
                 }
@@ -253,12 +246,8 @@ function OperadorasListagem() {
             acceptLabel: 'Sim',
             rejectLabel: 'Não',
             accept: async () => {
-                const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
-                const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
-                const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
-                const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
                 try {
-                    await axios.delete(`${baseUrl}beneficio_operadora/${beneficioOperadora.id}/`);
+                    await http.delete(`beneficio_operadora/${beneficioOperadora.id}/`);
                     toast.current.show({
                         severity: 'success',
                         summary: 'Sucesso',
@@ -271,11 +260,12 @@ function OperadorasListagem() {
                             .then(response => response.beneficios_vinculados)
                         setBeneficios(updatedBeneficios)
                     }
-                } catch {
+                } catch (error) {
+                    console.error('Erro ao excluir benefício:', error);
                     toast.current.show({
                         severity: 'error',
                         summary: 'Erro',
-                        detail: 'Erro ao excluir benefício!',
+                        detail: `Erro ao excluir benefício: ${error.response?.data?.detail || error.message}`,
                         life: 3000
                     });
                 }
