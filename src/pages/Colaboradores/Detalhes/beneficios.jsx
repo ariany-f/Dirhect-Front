@@ -20,35 +20,41 @@ import { IoInformationCircleOutline } from "react-icons/io5"
 import SwitchInput from "@components/SwitchInput"
 
 const StatusTag = styled.div`
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 11px;
     font-weight: 500;
+    letter-spacing: 0.5px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    text-transform: uppercase;
     
     ${props => {
         switch (props.$tipo) {
             case 'ATIVO':
                 return `
-                    background-color: rgba(0, 200, 83, 0.1);
-                    color: var(--success);
+                    background-color: #dcfce7;
+                    color: #16a34a;
+                    border: 1px solid #bbf7d0;
                 `;
             case 'INATIVO':
                 return `
-                    background-color: rgba(229, 115, 115, 0.1);
-                    color: var(--error);
+                    background-color: #fef2f2;
+                    color: #dc2626;
+                    border: 1px solid #fecaca;
                 `;
             case 'OBRIGATORIO':
                 return `
-                    background-color: rgba(41, 98, 255, 0.1);
-                    color: var(--info);
+                    background-color:rgb(255, 240, 240);
+                    color:rgb(189, 93, 72);
+                    border: 1px solidrgb(253, 186, 186);
                 `;
             case 'AGUARDANDO':
                 return `
-                    background-color: rgba(255, 195, 106, 0.1);
-                    color: var(--warning-500);
+                    background-color: #f8fafc;
+                    color:rgb(94, 130, 149);
+                    border: 1px solid #e2e8f0;
                 `;
             default:
                 return '';
@@ -57,138 +63,326 @@ const StatusTag = styled.div`
 `
 
 const CardBeneficio = styled.div`
-    background: #fff;
+    background: #ffffff;
     border-radius: 16px;
-    border: 1px solid var(--neutro-200);
+    border: 1px solid #f1f5f9;
     margin-bottom: ${(props) => props.$marginBottom ? props.$marginBottom : '0px'};
-    padding: 24px 12px 24px 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     width: inherit;
     max-width: 100vw;
     position: relative;
     min-height: 180px;
+    transition: all 0.3s ease;
 `
 
 const ItensGrid = styled.div`
     display: flex;
     flex-wrap: wrap;
-    gap: 0 24px;
+    gap: 20px;
+    margin-top: 20px;
 `;
 
 const ColItem = styled.div`
-    flex: 1 1 calc(33.333% - 16px);
-    min-width: 280px;
+    flex: 1 1 calc(50% - 10px);
+    min-width: 300px;
+    max-width: 450px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    background: var(--neutro-50);
-    justify-content: flex-start;
-    box-shadow: 0 0 4px 1px ${props => {
+    background: #ffffff;
+    border: 1px solid ${props => {
         switch (props.$status) {
-            case 'sim':
-                return 'rgba(0, 200, 83, 0.45)';
-            case 'nao':
-                return 'rgba(229, 115, 115, 0.45)';
-            case 'pendente':
-                return 'rgba(255, 245, 106, 0.65)';
-            default:
-                return 'transparent';
+            case 'sim': return '#86efac';
+            case 'nao': return '#fca5a5';
+            case 'pendente': return '#fcd34d';
+            default: return '#e5e7eb';
         }
     }};
-    border-radius: 8px;
-    transition: box-shadow 0.3s ease;
-    &:hover {
-        box-shadow: 0 0 6px 2px ${props => {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0;
+    min-height: 160px;
+    overflow: hidden;
+    
+    /* Barra colorida no topo baseada no status */
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: ${props => {
             switch (props.$status) {
-                case 'sim':
-                    return 'rgba(0, 200, 83, 0.50)';
-                case 'nao':
-                    return 'rgba(229, 115, 115, 0.50)';
-                case 'pendente':
-                    return 'rgba(255, 245, 106, 0.70)';
-                default:
-                    return 'transparent';
+                case 'sim': return '#86efac';
+                case 'nao': return '#fca5a5';
+                case 'pendente': return '#fcd34d';
+                default: return '#e5e7eb';
             }
         }};
+        z-index: 1;
     }
 `;
 
-const TopRow = styled.div`
+const CardHeader = styled.div`
+    padding: 20px 20px 16px 20px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0 12px;
+    justify-content: flex-end;
+    gap: 16px;
+    background: #ffffff;
+    position: relative;
 `;
 
-// Grid para garantir pelo menos 2 colunas
-const ContratoItensGrid = styled.div`
+const CardContent = styled.div`
+    padding: 0 20px 16px 20px;
+    flex: 1;
     display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
+    flex-direction: column;
+    min-height: 20px;
+    align-items: flex-start;
+`;
+
+const CardTitle = styled.div`
+    font-size: 15px;
+    font-weight: 500;
+    color: #111827;
+    line-height: 1.4;
+`;
+
+const CardValue = styled.div`
+    position: absolute;
+    top: 16px;
+    left: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+    background: #f8fafc;
+    padding: 8px 14px;
+    border-radius: 2px;
+    letter-spacing: -0.025em;
+    z-index: 10;
+    white-space: nowrap;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+`;
+
+const CardSubtitle = styled.div`
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: auto;
+`;
+
+const StatusBadge = styled.div`
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    background: ${props => {
+            switch (props.$status) {
+            case 'sim': return '#ecfdf5';
+            case 'nao': return '#fef2f2';
+            case 'pendente': return '#fffbeb';
+            default: return '#f3f4f6';
+        }
+    }};
+    color: ${props => {
+        switch (props.$status) {
+            case 'sim': return '#065f46';
+            case 'nao': return '#7f1d1d';
+            case 'pendente': return '#78350f';
+            default: return '#374151';
+        }
+    }};
+`;
+
+const StatusIcon = styled.div`
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: ${props => {
+        switch (props.$status) {
+            case 'sim': return '#86efac';
+            case 'nao': return '#fca5a5';
+            case 'pendente': return '#fcd34d';
+            default: return '#9ca3af';
+        }
+    }};
+`;
+
+const ActionArea = styled.div`
+    padding: 16px 20px;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafbfc;
+    min-height: 52px;
+    margin-top: auto;
+`;
+
+const ActionLeft = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const ActionRight = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 11px;
+    color: #6b7280;
+    font-weight: 500;
+    min-width: 140px;
+`;
+
+const InfoIconButton = styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #3b82f6;
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: #f3f4f6;
+        color: #2563eb;
+    }
+`;
+
+const StatusButton = styled.div`
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: ${props => {
+        switch (props.$status) {
+            case 'sim': return '#ecfdf5';
+            case 'nao': return '#fef2f2';
+            case 'pendente': return '#fffbeb';
+            default: return '#f3f4f6';
+        }
+    }};
+    color: ${props => {
+        switch (props.$status) {
+            case 'sim': return '#065f46';
+            case 'nao': return '#7f1d1d';
+            case 'pendente': return '#78350f';
+            default: return '#374151';
+        }
+    }};
+    border: 1px solid ${props => {
+        switch (props.$status) {
+            case 'sim': return '#86efac';
+            case 'nao': return '#fca5a5';
+            case 'pendente': return '#fcd34d';
+            default: return '#e5e7eb';
+        }
+    }};
+`;
+
+// Grid para garantir layout responsivo
+const ContratoItensGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
     width: 100%;
+    
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
 `;
 
 // Componente para informações do contrato
 const InfoContrato = styled.div`
-    padding: 14px 12px;
-    background: var(--neutro-100);
-    border-radius: 8px;
-    font-size: 12px;
-    color: var(--neutro-700);
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    opacity: ${({ inativo }) => inativo ? 0.5 : 1};
-    cursor: ${({ inativo }) => inativo ? 'not-allowed' : 'default'};
-`
+    width: 100%;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    opacity: ${props => props.inativo ? '0.6' : '1'};
+    transition: all 0.3s ease;
+    
+    &:hover {
+        border-color: #cbd5e1;
+    }
+`;
 
 // Tag de status do contrato
 const StatusContratoTag = styled.span`
     display: inline-block;
-    padding: 2px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 500;
     margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     background: ${({ status }) =>
-        status === 'Disponível' ? 'rgba(0, 200, 83, 0.1)' :
-        status === 'Indisponível' ? 'rgba(229, 115, 115, 0.1)' :
-        'rgba(255, 167, 38, 0.1)'};
+        status === 'Disponível' ? '#d1fae5' :
+        status === 'Indisponível' ? '#fee2e2' :
+        '#fef3c7'};
     color: ${({ status }) =>
-        status === 'Disponível' ? 'var(--success)' :
-        status === 'Indisponível' ? 'var(--error)' :
-        'var(--warning)'};
+        status === 'Disponível' ? '#065f46' :
+        status === 'Indisponível' ? '#991b1b' :
+        '#92400e'};
+    border: 1px solid ${({ status }) =>
+        status === 'Disponível' ? '#a7f3d0' :
+        status === 'Indisponível' ? '#fecaca' :
+        '#fde68a'};
 `;
 
 // Container para os itens do contrato
 const ContratoItensBox = styled.div`
     border-radius: 12px;
-    padding: 16px 12px;
-`;
-
-const StatusIcon = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: end;
+    padding: 0;
     width: 100%;
-    height: 100%;
-    padding: 11px 0;
-    gap: 4px;
 `;
 
 const EditarPlanosSwitch = styled.div`
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-left: auto;
-    padding: 0 12px;
+    gap: 12px;
+    padding: 12px 18px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    
+    &:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
     
     span {
         font-size: 13px;
-        color: var(--neutro-600);
+        color: #374151;
+        font-weight: 600;
+        white-space: nowrap;
     }
 `;
 
@@ -239,6 +433,105 @@ const CustomDropdown = styled(Dropdown)`
         }
     }
 `
+
+const AddButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    &:active {
+        transform: translateY(0);
+    }
+    
+    &:disabled {
+        background: #f8fafc;
+        color: #94a3b8;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+`;
+
+const CustomDropdownButton = styled(Dropdown)`
+    & .p-dropdown-label {
+        height: 25px!important;
+    }
+    &.p-dropdown {
+        border: 1px solid #e2e8f0 !important;
+        background: #f1f5f9 !important;
+        border-radius: 6px !important;
+        padding: 2px 6px !important;
+        height: auto !important;
+        min-height: 16px !important;
+        width: auto !important;
+        min-width: 90px !important;
+        max-width: 120px !important;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        
+        &:hover {
+            background: #e2e8f0 !important;
+            border-color: #cbd5e1 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+    }
+    
+    .p-dropdown-label {
+        padding: 0 !important;
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        color: #475569 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+    
+    .p-dropdown-trigger {
+        width: 12px !important;
+        color: #475569 !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .p-dropdown-panel {
+        min-width: 120px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        
+        .p-dropdown-items {
+            padding: 4px !important;
+            
+            .p-dropdown-item {
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+                
+                &:hover {
+                    background: #f1f5f9 !important;
+                }
+            }
+        }
+    }
+`;
 
 function ColaboradorBeneficios() {
     let { id } = useParams()
@@ -638,7 +931,7 @@ function ColaboradorBeneficios() {
         else icon = <FaClock size={14} style={{ color, fontSize: 20 }} />;
 
         return (
-            <StatusIcon style={{gap: 8, justifyContent: 'flex-end'}}>
+            <StatusIconCard style={{gap: 8, justifyContent: 'flex-end'}}>
                 {forceAdicionar && option.value === 'pendente' ? (
                     <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--primaria)' }}>Adicionar</span>
                 ) : (
@@ -650,7 +943,7 @@ function ColaboradorBeneficios() {
                     </>
                 )}
                 {showChevron && <FaChevronDown style={{ color: 'var(--neutro-400)', fontSize: 16, marginLeft: 2 }} />}
-            </StatusIcon>
+            </StatusIconCard>
         );
     };
 
@@ -691,14 +984,14 @@ function ColaboradorBeneficios() {
                             <div style={{display: 'flex', alignItems: 'center', gap: 12, justifyContent: 'space-between'}}>
                                 <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
                                     <IconeBeneficio nomeIcone={itens[0]?.icone ?? descricao} />
-                                    <Texto weight={600} size="15px">{descricao}</Texto>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                                        <Texto weight={600} size="15px">{descricao}</Texto>
+                                        <StatusTag $tipo={itens[0].obrigatoriedade ? 'OBRIGATORIO' : 'AGUARDANDO'}>
+                                            {itens[0].obrigatoriedade ? 'BENEFÍCIO OBRIGATÓRIO' : 'BENEFÍCIO OPCIONAL'}
+                                        </StatusTag>
+                                    </div>
                                 </div>
                                 <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4}}>
-                                    {itens[0].obrigatoriedade ? (
-                                        <StatusTag $tipo="OBRIGATORIO">BENEFÍCIO OBRIGATÓRIO</StatusTag>
-                                    ) : (
-                                        <StatusTag $tipo="AGUARDANDO">BENEFÍCIO OPCIONAL</StatusTag>
-                                    )}
                                     {(() => {
                                         if (itens[0].multiplos_itens && itens[0].multiplos_operadoras) {
                                             return (
@@ -708,13 +1001,13 @@ function ColaboradorBeneficios() {
                                             );
                                         } else if (!itens[0].multiplos_itens && itens[0].multiplos_operadoras) {
                                             return (
-                                                <Texto size="13px" color="var(--warning-500)">
+                                                <Texto size="13px" color="var(--warning-600)">
                                                     Você só pode selecionar um item de cada operadora
                                                 </Texto>
                                             );
                                         } else if (!itens[0].multiplos_itens && !itens[0].multiplos_operadoras) {
                                             return (
-                                                <Texto size="13px" color="var(--warning-500)">
+                                                <Texto size="13px" color="var(--warning-600)">
                                                     Você só pode selecionar um dos itens abaixo
                                                 </Texto>
                                             );
@@ -744,94 +1037,173 @@ function ColaboradorBeneficios() {
                                         <div key={contratoId} style={{width: '100%'}}>
                                             {contrato && (
                                                 <InfoContrato inativo={getStatusContrato(contrato.status) === 'Indisponível' ? 'true' : undefined}>
-                                                    <div style={{display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2, width: '100%'}}>
-                                                        {operadora?.image_operadora ? (
-                                                            <CustomImage src={operadora.image_operadora} title={operadora.nome_operadora} width={32} height={20} borderRadius={4} />
-                                                        ) : null}
-                                                        <span style={{fontWeight: 600, fontSize: 13}}>
-                                                            {operadora?.nome_operadora}
-                                                        </span>
-                                                        {contrato.status && (
-                                                            <StatusContratoTag status={getStatusContrato(contrato.status)}>
-                                                                {getStatusContrato(contrato.status)}
-                                                            </StatusContratoTag>
-                                                        )}
+                                                    <div style={{
+                                                        display: 'flex', 
+                                                        alignItems: 'center', 
+                                                        justifyContent: 'space-between',
+                                                        marginBottom: 20, 
+                                                        width: '100%'
+                                                    }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                                            {operadora?.image_operadora ? (
+                                                                <CustomImage 
+                                                                    src={operadora.image_operadora} 
+                                                                    title={operadora.nome_operadora} 
+                                                                    width={48} 
+                                                                    height={32} 
+                                                                    borderRadius={8} 
+                                                                />
+                                                            ) : null}
+                                                            <div style={{ textAlign: 'left' }}>
+                                                                <div style={{ 
+                                                                    display: 'flex', 
+                                                                    alignItems: 'center', 
+                                                                    gap: 10, 
+                                                                    marginBottom: 6
+                                                                }}>
+                                                                    <span style={{
+                                                                        fontWeight: 700, 
+                                                                        fontSize: 16, 
+                                                                        color: '#111827'
+                                                                    }}>
+                                                                        {operadora?.nome_operadora}
+                                                                    </span>
+                                                                    {contrato.status && (
+                                                                        <StatusContratoTag status={getStatusContrato(contrato.status)}>
+                                                                            {getStatusContrato(contrato.status)}
+                                                                        </StatusContratoTag>
+                                                                    )}
+                                                                </div>
+                                                                {contrato.num_contrato_origem && (
+                                                                    <div style={{
+                                                                        fontSize: 13, 
+                                                                        color: '#6b7280', 
+                                                                        fontWeight: 500
+                                                                    }}>
+                                                                        <strong>Contrato:</strong> {contrato.num_contrato_origem}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                         <EditarPlanosSwitch>
-                                                            <span>Editar</span>
+                                                            <span>Editar Planos</span>
                                                             <SwitchInput
                                                                 checked={editarPlanos[operadora?.id] || false}
                                                                 onChange={() => toggleEditarPlanos(operadora?.id)}
-                                                                style={{ width: '36px' }}
+                                                                style={{ width: '40px' }}
                                                             />
                                                         </EditarPlanosSwitch>
                                                     </div>
-                                                    {contrato.num_contrato_origem && (
-                                                        <span style={{marginLeft: 8}}><b>Contrato:</b> {contrato.num_contrato_origem}</span>
-                                                    )}
                                                     <ContratoItensBox>
                                                         <ContratoItensGrid>
                                                             {itensContrato.map((item, idx) => {
                                                                 return (
                                                                 <ColItem key={item.id} $status={item.status}>
-                                                                    {/* Custom Accordion-like behavior */}
-                                                                    <div style={{width: '100%', padding: '12px'}}>
-                                                                        <TopRow>
-                                                                            <div style={{display: 'flex', alignItems: 'flex-start', gap: 8, flex: 1, flexDirection: 'column'}}>
-                                                                                <div style={{display: 'flex', alignItems: 'center', gap: 6}}>
-                                                                                    <Texto size="14px" weight={600}>{item.plano}</Texto>
-                                                                                </div>
-                                                                                <Texto size="12px" color="var(--neutro-400)">{Real.format(item.item.valor)}</Texto>
-                                                                            </div>
-                                                                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'end', justifyContent: 'space-around', minWidth: 56, gap: 0}}>
-                                                                               
-                                                                                <button
-                                                                                    style={{background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primaria)', fontSize: 16, padding: 0}}
-                                                                                    title="Mais informações"
-                                                                                    onClick={() => setModalInfo({ open: true, item })}
-                                                                                >
-                                                                                    <IoInformationCircleOutline />
-                                                                                </button>
-                                                                                 {editarPlanos[operadora?.id] ? (
-                                                                                    <CustomDropdown
+                                                                    <CardValue>{Real.format(item.item.valor)}</CardValue>
+                                                                    <CardHeader>
+                                                                        <StatusBadge $status={item.status}>
+                                                                            <StatusIcon $status={item.status}>
+                                                                                {item.status === 'sim' ? (
+                                                                                    <FaCheck size={6} style={{ color: '#ffffff' }} />
+                                                                                ) : item.status === 'nao' ? (
+                                                                                    <FaTimes size={6} style={{ color: '#ffffff' }} />
+                                                                                ) : (
+                                                                                    <FaClock size={5} style={{ color: '#ffffff' }} />
+                                                                                )}
+                                                                            </StatusIcon>
+                                                                            {item.status === 'sim' ? 'Ativo' : 
+                                                                             item.status === 'nao' ? 'Inativo' : 
+                                                                             'Pendente'}
+                                                                        </StatusBadge>
+                                                                    </CardHeader>
+                                                                    
+                                                                    <CardContent>
+                                                                        <CardTitle>{item.plano}</CardTitle>
+                                                                    </CardContent>
+                                                                    
+                                                                    <ActionArea>
+                                                                        <ActionLeft>
+                                                                            <InfoIconButton
+                                                                                title={item.obrigatoriedade ? "Benefício obrigatório" : "Informações do benefício"}
+                                                                                onClick={() => setModalInfo({ open: true, item })}
+                                                                            >
+                                                                                <FaInfoCircle />
+                                                                            </InfoIconButton>
+                                                                        </ActionLeft>
+                                                                        
+                                                                        <ActionRight>
+                                                                            {editarPlanos[operadora?.id] ? (
+                                                                                item.status === 'pendente' ? (
+                                                                                    <CustomDropdownButton
                                                                                         value={item.status}
                                                                                         options={statusOptions}
                                                                                         onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos_itens, item.multiplos_operadoras, item.operadora?.id)}
-                                                                                        style={{width: 30, height: 25, minWidth: 20, minHeight: 30, padding: 0, background: 'transparent', border: 'none', boxShadow: 'none'}}
-                                                                                        panelStyle={{fontSize: 12, minWidth: 80}}
+                                                                                        panelStyle={{fontSize: 12, minWidth: 120}}
                                                                                         appendTo={document.body}
-                                                                                        valueTemplate={(_, props) => statusTemplate(statusOptions.find(opt => opt.value === item.status), { value: item }, true, false, true)}
-                                                                                        itemTemplate={option => statusTemplate(option, { option: { ...option, obrigatoriedade: item.obrigatoriedade } }, false, true, false)}
+                                                                                        valueTemplate={() => (
+                                                                                            <span style={{ height: '20px', fontSize: '12px', fontWeight: 500 }}>
+                                                                                                Adicionar
+                                                                                            </span>
+                                                                                        )}
+                                                                                        itemTemplate={option => (
+                                                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0' }}>
+                                                                                                {option.icon}
+                                                                                                <span style={{ fontWeight: 500, fontSize: '12px' }}>{option.label}</span>
+                                                                                            </div>
+                                                                                        )}
                                                                                         disabled={getStatusContrato(item.contratoInfo?.status) === 'Indisponível'}
                                                                                     />
                                                                                 ) : (
-                                                                                    <StatusIcon>
-                                                                                        {item.status === 'sim' ? (
-                                                                                            <FaCheck size={18} fill="var(--green-600)" style={{ color: 'var(--green-600)', fontSize: 20 }} />
-                                                                                        ) : item.status === 'nao' ? (
-                                                                                            <FaTimes size={18} fill="var(--error)" style={{ color: 'var(--error)', fontSize: 20 }} />
-                                                                                        ) : (
-                                                                                            <FaClock size={14} style={{ color: 'var(--warning)', fontSize: 20 }} />
+                                                                                    <CustomDropdownButton
+                                                                                        value={item.status}
+                                                                                        options={statusOptions}
+                                                                                        onChange={e => handleStatusChange(item.id, e.value, item.descricao, item.multiplos_itens, item.multiplos_operadoras, item.operadora?.id)}
+                                                                                        panelStyle={{fontSize: 12, minWidth: 120}}
+                                                                                        appendTo={document.body}
+                                                                                        valueTemplate={() => (
+                                                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                                                                <div style={{
+                                                                                                    width: '12px',
+                                                                                                    height: '12px',
+                                                                                                    borderRadius: '50%',
+                                                                                                    background: item.status === 'sim' ? '#86efac' : '#fca5a5',
+                                                                                                    display: 'flex',
+                                                                                                    alignItems: 'center',
+                                                                                                    justifyContent: 'center'
+                                                                                                }}>
+                                                                                                    {item.status === 'sim' ? (
+                                                                                                        <FaCheck size={6} style={{ color: '#ffffff' }} />
+                                                                                                    ) : (
+                                                                                                        <FaTimes size={6} style={{ color: '#ffffff' }} />
+                                                                                                    )}
+                                                                                                </div>
+                                                                                                <span style={{ fontSize: '12px' }}>
+                                                                                                    {item.status === 'sim' ? 'Ativo' : 'Inativo'}
+                                                                                                </span>
+                                                                                            </div>
                                                                                         )}
-                                                                                    </StatusIcon>
-                                                                                )}
-                                                                                {(item.status === 'sim' || item.status === 'nao') && (
-                                                                                    <div style={{ fontSize: 11, color: 'var(--neutro-400)', marginTop: 2, textAlign: 'center' }}>
-                                                                                        {item.selecionadoEm ? `Selecionado em: ${new Date(item.selecionadoEm).toLocaleDateString('pt-BR')} ${new Date(item.selecionadoEm).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}` : ''}
-                                                                                    </div>
-                                                                                )}
-                                                                            </div>
-                                                                        </TopRow>
-                                                                        {expandedItems[descricao] === item.id && (
-                                                                            <div style={{background: 'var(--neutro-50)', borderRadius: 12, marginTop: '12px', padding: '12px 14px'}}>
-                                                                                <Texto size="12px" weight={600}>Detalhes do Plano: {item.plano}</Texto>
-                                                                                <Texto size="12px">Valor: {Real.format(item.item.valor)}</Texto>
-                                                                                <Texto size="12px">Desconto: {Real.format(item.item.valor_desconto)}</Texto>
-                                                                                <Texto size="12px">Empresa: {Real.format(item.item.valor_empresa)}</Texto>
-                                                                                <Texto size="12px">Tipo Cálculo: {item.item.tipo_calculo}</Texto>
-                                                                                <Texto size="12px">Tipo Desconto: {item.item.tipo_desconto}</Texto>
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
+                                                                                        itemTemplate={option => (
+                                                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '4px 0' }}>
+                                                                                                {option.icon}
+                                                                                                <span style={{ fontWeight: 500, fontSize: '12px' }}>{option.label}</span>
+                                                                                            </div>
+                                                                                        )}
+                                                                                        disabled={getStatusContrato(item.contratoInfo?.status) === 'Indisponível'}
+                                                                                    />
+                                                                                )
+                                                                            ) : (
+                                                                                <>
+                                                                                    {(item.status === 'sim' || item.status === 'nao') && item.selecionadoEm ? (
+                                                                                        <span>
+                                                                                            {item.status === 'sim' ? 'Ativado' : 'Desativado'} em {new Date(item.selecionadoEm).toLocaleDateString('pt-BR')}
+                                                                                        </span>
+                                                                                    ) : item.status === 'pendente' ? (
+                                                                                        <span>Aguardando seleção</span>
+                                                                                    ) : null}
+                                                                                </>
+                                                                            )}
+                                                                        </ActionRight>
+                                                                    </ActionArea>
                                                                 </ColItem>
                                                             );
                                                             })}

@@ -246,206 +246,263 @@ function ColaboradorDetalhes() {
         return genero
     }
 
+    const formatarCPF = (cpf) => {
+        if (!cpf) return 'CPF não informado';
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    };
+
     return (
         <Frame>
             <Toast ref={toast} />
             <ConfirmDialog />
-            <HeaderContainer gap="24px" alinhamento="space-between">
-                {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
-                    <>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px'}}>
-                            <div style={{display: 'flex', alignItems: 'center', gap: '24px'}}>
-                            <BotaoVoltar linkFixo="/colaborador" />
-                            <BotaoGrupo align="start">
-                                <Titulo align="left">
-                                    <FrameVertical gap="10px">
-                                        <h3>{colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}</h3>
-                                        {representativSituacaoTemplate()}
-                                    </FrameVertical>
-                                    {colaborador?.funcionario_pessoa_fisica && colaborador?.funcionario_pessoa_fisica.email &&
-                                        <>
-                                            <p>{colaborador?.funcionario_pessoa_fisica.email}</p>  
-                                            <IoCopyOutline className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.email)}} />
-                                        </>
-                                    }
-                                </Titulo>
-                            </BotaoGrupo>
+            
+            {/* Botão voltar acima do header */}
+            {colaborador?.funcionario_pessoa_fisica?.nome && (
+                <div style={{ marginBottom: '16px' }}>
+                    <BotaoVoltar linkFixo="/colaborador" />
+                </div>
+            )}
+            
+            {/* Header com informações do colaborador - similar ao da admissão */}
+            {colaborador?.funcionario_pessoa_fisica && (
+                <div style={{
+                    background: 'linear-gradient(to bottom, #0c004c, #5d0b62)',
+                    borderRadius: 8,
+                    padding: '12px 16px',
+                    marginBottom: 0,
+                    marginRight: '-24px', // Compensa o padding do Frame
+                    color: '#fff',
+                    boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
+                    position: 'sticky',
+                    top: 0,
+                    width: '100%'
+                }}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: 10
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10
+                        }}>
+                            <div style={{
+                                width: 36,
+                                height: 36,
+                                borderRadius: '50%',
+                                background: 'rgba(255, 255, 255, 0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 16,
+                                fontWeight: 500,
+                                color: '#fff'
+                            }}>
+                                {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
                             </div>
-                            {colaborador?.tipo_situacao_descricao == 'Ativo' &&
-                                <BotaoGrupo>
-                                    <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="vermilion" size="small"><FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> Solicitar Demissão</Botao>
-                                </BotaoGrupo>
-                            }
+                            <div>
+                                <h2 style={{
+                                    margin: 0,
+                                    fontSize: 16,
+                                    fontWeight: 700,
+                                    color: '#fff',
+                                    textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                                }}>
+                                    {colaborador.chapa} - {colaborador.funcionario_pessoa_fisica.nome}
+                                </h2>
+                                <p style={{
+                                    margin: 0,
+                                    fontSize: 12,
+                                    color: '#fff',
+                                    opacity: 0.9,
+                                    fontWeight: 400
+                                }}>
+                                    CPF: {formatarCPF(colaborador.funcionario_pessoa_fisica.cpf)}
+                                </p>
+                            </div>
                         </div>
-                    </>
-                    : <>
+                        
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                                background: 'rgba(255, 255, 255, 0.15)',
+                                padding: '4px 8px',
+                                borderRadius: 6,
+                                backdropFilter: 'blur(10px)'
+                            }}>
+                                <span style={{
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    color: '#fff',
+                                    opacity: 0.9
+                                }}>
+                                    Status:
+                                </span>
+                                <span style={{
+                                    background: colaborador.tipo_situacao_descricao === 'Ativo' ? '#4CAF50' : '#FF9800',
+                                    color: '#fff',
+                                    padding: '4px 8px',
+                                    borderRadius: 12,
+                                    fontSize: 11,
+                                    fontWeight: 400,
+                                    textTransform: 'capitalize'
+                                }}>
+                                    {colaborador.tipo_situacao_descricao || 'Status não informado'}
+                                </span>
+                            </div>
+                            
+                            {colaborador?.tipo_situacao_descricao == 'Ativo' && (
+                                <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="vermilion" size="small">
+                                    <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> 
+                                    Solicitar Demissão
+                                </Botao>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Conteúdo original simplificado */}
+            <HeaderContainer gap="24px" alinhamento="space-between">
+                {!colaborador?.funcionario_pessoa_fisica?.nome && (
+                    <>
                         <Skeleton variant="rectangular" width={'70%'} height={'20%'} />
                         <ContainerHorizontal gap="16px" align="start">
                             <Skeleton variant="rectangular" width={'50%'} height={40} />
                             <Skeleton variant="rectangular" width={70} height={30} />
                         </ContainerHorizontal>
                     </>
-                }
-                {/* <BeneficiosContainer gap="16px" alinhamento="left">
-                    <BadgeGeral weight={500} severity="success" nomeBeneficio={
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <RiShoppingCartFill size={20} />
-                            <div>
-                                Alimentação <br/>
-                                R$ 150,00
-                            </div>
-                        </div>
-                    }  />
-                    <BadgeGeral weight={500} severity="success" nomeBeneficio={
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <MdOutlineFastfood size={20} />
-                            <div>
-                                Refeição <br/>
-                                R$ 550,00
-                            </div>
-                        </div>
-                    }  />
-                    <BadgeGeral weight={500} severity="neutro" nomeBeneficio={
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <RiGasStationFill size={20} />
-                            <div>
-                                Combustível <br/>
-                                R$ 350,00
-                            </div>
-                        </div>
-                    }  />
-                </BeneficiosContainer> */}
+                )}
             </HeaderContainer>
             <Col12Vertical>
-                    {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
-                        <Col4Vertical>
-                        <div style={{marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                            <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Nome Social</Texto>
+                {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
+                    <Col4Vertical>
+                    <div style={{marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                        <Frame gap="2px" alinhamento="start">
+                            <Texto size={'14px'} weight={600}>Nome Social</Texto>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                {/* {colaborador?.funcionario_pessoa_fisica?.sexo == 'M' ? <BiMale size={20}/> : <BiFemale size={20}/>} */}
+                                {representativeGeneroTemplate()}
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    {/* {colaborador?.funcionario_pessoa_fisica?.sexo == 'M' ? <BiMale size={20}/> : <BiFemale size={20}/>} */}
-                                    {representativeGeneroTemplate()}
-                                    <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                        <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.nome_social}</Texto>
-                                        <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}} />
-                                    </div>
+                                    <Texto size={'14px'}>{colaborador?.funcionario_pessoa_fisica?.nome_social}</Texto>
+                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}} />
                                 </div>
-                            </Frame>
+                            </div>
+                        </Frame>
+                    
+                        <Frame gap="2px" alinhamento="start">
+                            <Texto size={'14px'} weight={600}>CPF</Texto>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                <Texto size={'14px'}>{formataCPF(colaborador?.funcionario_pessoa_fisica?.cpf)}</Texto>
+                                <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.cpf)}} />
+                            </div>
+                        </Frame>
+                    
+                        <Frame gap="2px" alinhamento="start">
+                            <Texto size={'14px'} weight={600}>Nascimento</Texto>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                <Texto size={'14px'}>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
+                                <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}} />
+                            </div>
+                        </Frame>
                         
-                            <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>CPF</Texto>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Texto size={'14px'}>{formataCPF(colaborador?.funcionario_pessoa_fisica?.cpf)}</Texto>
-                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(colaborador?.funcionario_pessoa_fisica?.cpf)}} />
-                                </div>
-                            </Frame>
                         
-                            <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Nascimento</Texto>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Texto size={'14px'}>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</Texto>
-                                    <IoCopyOutline size={10} className={styles.copyIcon} onClick={() => {copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}} />
-                                </div>
-                            </Frame>
-                            
-                            
-                            <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Filial</Texto>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={colaborador?.filial_nome ?? 'Não definida'}></Tag>
-                                </div>
-                            </Frame>
-                            
-                            <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Função</Texto>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={colaborador?.funcao_nome ?? 'Não definida'}></Tag>
-                                </div>
-                            </Frame>
-                            
-                            <Frame gap="2px" alinhamento="start">
-                                <Texto size={'14px'} weight={600}>Tipo de Funcionário</Texto>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={tipoFuncionario ?? 'Não definida'}></Tag>
-                                </div>
-                            </Frame>
-                     </div>
-                     </Col4Vertical>
-                    : <Skeleton variant="rectangular" width={'23%'} height={420} />
-                    }
-                    {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
-                    <Col8Vertical>
-                    <BotaoGrupo tabs gap="8px">
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Benefícios</Botao>
-                        </Link>
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-contratuais`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-contratuais` ? 'black':''} size="small" tab>Dados Contratuais</Botao>
-                        </Link>
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-pessoais`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-pessoais` ? 'black':''} size="small" tab>Dados Pessoais</Botao>
-                        </Link>
-                        {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/saldo`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/saldo` ? 'black':''} size="small" tab>Saldo em benefícios</Botao>
-                        </Link> */}
-                        {ArmazenadorToken.hasPermission('view_dependente') &&
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/dependentes`}>
-                            <Botao 
-                                estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
-                                size="small" 
-                                tab
-                            >
-                                Dependentes
-                            </Botao>
-                        </Link>}
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
-                        </Link>
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
-                        </Link>
-                        {/* <Link className={styles.link} to={`/colaborador/detalhes/${id}/demissoes`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/demissoes` ? 'black':''} size="small" tab>Demissões</Botao>
-                        </Link> */}
-                        {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') &&
-                            <>
-                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
-                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos de Folha</Botao>
-                            </Link>
-                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
-                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>ESocial</Botao>
-                            </Link>
-                            </>
-                        }
-
-                        {(usuario.tipo == 'grupo_rh' || usuario.tipo == 'global') && 
-                            <>
-                                <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
-                                    <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
-                                </Link>
-                                <Link className={styles.link} to={`/colaborador/detalhes/${id}/movimentos`}>
-                                    <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
-                                </Link>
-                            </>
-                        }
-                    </BotaoGrupo>
-                    <Outlet context={colaborador}/>
-                </Col8Vertical>
-                : <Container gap="8px">
-                        <Skeleton variant="rectangular" width={'100%'} height={30} />
-                        <Skeleton variant="rectangular" width={'100%'} height={420} />
-                    </Container>
+                        <Frame gap="2px" alinhamento="start">
+                            <Texto size={'14px'} weight={600}>Filial</Texto>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                <Tag severity="info" value={colaborador?.filial_nome ?? 'Não definida'}></Tag>
+                            </div>
+                        </Frame>
+                        
+                        <Frame gap="2px" alinhamento="start">
+                            <Texto size={'14px'} weight={600}>Função</Texto>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                <Tag severity="info" value={colaborador?.funcao_nome ?? 'Não definida'}></Tag>
+                            </div>
+                        </Frame>
+                        
+                        <Frame gap="2px" alinhamento="start">
+                            <Texto size={'14px'} weight={600}>Tipo de Funcionário</Texto>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                <Tag severity="info" value={tipoFuncionario ?? 'Não definida'}></Tag>
+                            </div>
+                        </Frame>
+                 </div>
+                 </Col4Vertical>
+                : <Skeleton variant="rectangular" width={'23%'} height={420} />
                 }
-            </Col12Vertical>
-            <ModalDemissao 
-                opened={modalDemissaoAberto}
-                aoFechar={() => setModalDemissaoAberto(false)}
-                colaborador={colaborador}
-                aoSalvar={handleSalvarDemissao}
-                mostrarColaborador={false}
-            />
-        </Frame>
-    )
+                {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
+                <Col8Vertical>
+                <BotaoGrupo tabs gap="8px">
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Benefícios</Botao>
+                    </Link>
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-contratuais`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-contratuais` ? 'black':''} size="small" tab>Dados Contratuais</Botao>
+                    </Link>
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-pessoais`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-pessoais` ? 'black':''} size="small" tab>Dados Pessoais</Botao>
+                    </Link>
+                    {ArmazenadorToken.hasPermission('view_dependente') &&
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/dependentes`}>
+                        <Botao 
+                            estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
+                            size="small" 
+                            tab
+                        >
+                            Dependentes
+                        </Botao>
+                    </Link>}
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
+                    </Link>
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
+                    </Link>
+                    {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') &&
+                        <>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos de Folha</Botao>
+                        </Link>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>ESocial</Botao>
+                        </Link>
+                        </>
+                    }
+
+                    {(usuario.tipo == 'grupo_rh' || usuario.tipo == 'global') && 
+                        <>
+                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
+                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
+                            </Link>
+                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/movimentos`}>
+                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
+                            </Link>
+                        </>
+                    }
+                </BotaoGrupo>
+                <Outlet context={colaborador}/>
+            </Col8Vertical>
+            : <Container gap="8px">
+                    <Skeleton variant="rectangular" width={'100%'} height={30} />
+                    <Skeleton variant="rectangular" width={'100%'} height={420} />
+                </Container>
+            }
+        </Col12Vertical>
+        <ModalDemissao 
+            opened={modalDemissaoAberto}
+            aoFechar={() => setModalDemissaoAberto(false)}
+            colaborador={colaborador}
+            aoSalvar={handleSalvarDemissao}
+            mostrarColaborador={false}
+        />
+    </Frame>
+)
 }
 
 export default ColaboradorDetalhes
