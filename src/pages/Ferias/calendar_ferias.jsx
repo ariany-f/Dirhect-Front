@@ -26,7 +26,6 @@ const CalendarContainer = styled.div`
 const FixedHeader = styled.div`
     position: sticky;
     top: 0;
-    z-index: 100;
     background: #fff;
     padding-bottom: 4px;
     border-bottom: 1px solid #e5e7eb;
@@ -64,7 +63,7 @@ const CalendarScrollArea = styled.div`
 const CalendarTableHeader = styled.div`
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 5;
     background: #fff;
     border-bottom: 1px solid #e5e7eb;
     margin-bottom: 4px;
