@@ -17,6 +17,58 @@ const CalendarContainer = styled.div`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     user-select: none;
+    display: flex;
+    flex-direction: column;
+    height: 73vh;
+    position: relative;
+`;
+
+const FixedHeader = styled.div`
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 16px;
+`;
+
+const CalendarScrollArea = styled.div`
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    border-radius: 8px;
+    background: #fff;
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f5f5f5;
+    user-select: none;
+    &::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+        background: #f5f5f5;
+        border-radius: 8px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 8px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: #b0b7c3;
+    }
+    &::-webkit-scrollbar-button {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+`;
+
+const CalendarTableHeader = styled.div`
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 4px;
 `;
 
 const CalendarHeader = styled.div`
@@ -79,7 +131,8 @@ const EmployeeCell = styled.div`
     min-height: 44px;
     position: sticky;
     left: 0;
-    z-index: 2;
+    z-index: 3;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 `;
 
 const EmployeeRow = styled.div`
@@ -212,35 +265,6 @@ const StickyHeader = styled.div`
 const DAY_WIDTH_MENSAL = 90;
 const DAY_WIDTH_TRIMESTRAL = 40;
 const DAYS_IN_YEAR = 365;
-
-const CalendarScrollArea = styled.div`
-    width: 100%;
-    overflow: auto;
-    position: relative;
-    border-radius: 8px;
-    background: #fff;
-    scrollbar-width: thin;
-    scrollbar-color: #d1d5db #f5f5f5;
-    user-select: none;
-    &::-webkit-scrollbar {
-        height: 8px;
-        width: 8px;
-        background: #f5f5f5;
-        border-radius: 8px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: #d1d5db;
-        border-radius: 8px;
-    }
-    &::-webkit-scrollbar-thumb:hover {
-        background: #b0b7c3;
-    }
-    &::-webkit-scrollbar-button {
-        display: none;
-        width: 0;
-        height: 0;
-    }
-`;
 
 const TrimestreHeader = styled.div`
     display: grid;
@@ -522,50 +546,52 @@ const CalendarFerias = ({ colaboradores }) => {
     return (
         <CalendarContainer ref={containerRef}>
             <Tooltip target=".event-bar" />
-            <ViewToggleBar>
-                <FiltersContainer>
-                    <input
-                        type="text"
-                        value={filtroColaborador}
-                        onChange={e => setFiltroColaborador(e.target.value)}
-                        placeholder="Filtrar colaborador"
-                        style={{ 
-                            width: 220, 
-                            height: 40, 
-                            borderRadius: 6, 
-                            border: '1px solid #e2e8f0', 
-                            padding: '0 12px', 
-                            fontSize: 14 
-                        }}
-                    />
-                    <DropdownItens
-                        valor={anoSelecionado}
-                        setValor={setAnoSelecionado}
-                        options={anosDisponiveis.map(y => ({ name: y.toString(), value: y }))}
-                        placeholder="Selecione o ano"
-                        name="ano"
-                        $width="130px"
-                        $height="40px"
-                        allowClear={false}
-                    />
-                </FiltersContainer>
-                <ViewToggleSwitch>
-                    <ViewToggleOption
-                        active={visualizacao === 'mensal'}
-                        onClick={() => setVisualizacao('mensal')}
-                        title="Visualização mensal"
-                    >
-                        <FaThLarge fill={visualizacao === 'mensal' ? 'white' : 'black'} /> Mensal
-                    </ViewToggleOption>
-                    <ViewToggleOption
-                        active={visualizacao === 'trimestral'}
-                        onClick={() => setVisualizacao('trimestral')}
-                        title="Visualização trimestral"
-                    >
-                        <FaThList fill={visualizacao === 'trimestral' ? 'white' : 'black'} /> Trimestral
-                    </ViewToggleOption>
-                </ViewToggleSwitch>
-            </ViewToggleBar>
+            <FixedHeader>
+                <ViewToggleBar>
+                    <FiltersContainer>
+                        <input
+                            type="text"
+                            value={filtroColaborador}
+                            onChange={e => setFiltroColaborador(e.target.value)}
+                            placeholder="Filtrar colaborador"
+                            style={{ 
+                                width: 220, 
+                                height: 40, 
+                                borderRadius: 6, 
+                                border: '1px solid #e2e8f0', 
+                                padding: '0 12px', 
+                                fontSize: 14 
+                            }}
+                        />
+                        <DropdownItens
+                            valor={anoSelecionado}
+                            setValor={setAnoSelecionado}
+                            options={anosDisponiveis.map(y => ({ name: y.toString(), value: y }))}
+                            placeholder="Selecione o ano"
+                            name="ano"
+                            $width="130px"
+                            $height="40px"
+                            allowClear={false}
+                        />
+                    </FiltersContainer>
+                    <ViewToggleSwitch>
+                        <ViewToggleOption
+                            active={visualizacao === 'mensal'}
+                            onClick={() => setVisualizacao('mensal')}
+                            title="Visualização mensal"
+                        >
+                            <FaThLarge fill={visualizacao === 'mensal' ? 'white' : 'black'} /> Mensal
+                        </ViewToggleOption>
+                        <ViewToggleOption
+                            active={visualizacao === 'trimestral'}
+                            onClick={() => setVisualizacao('trimestral')}
+                            title="Visualização trimestral"
+                        >
+                            <FaThList fill={visualizacao === 'trimestral' ? 'white' : 'black'} /> Trimestral
+                        </ViewToggleOption>
+                    </ViewToggleSwitch>
+                </ViewToggleBar>
+            </FixedHeader>
             <CalendarScrollArea ref={scrollRef} style={{ cursor: isDragging ? 'grabbing' : 'auto' }}>
                 <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative'}}>
                     {/* Linhas roxas de separação dos meses */}
@@ -580,57 +606,79 @@ const CalendarFerias = ({ colaboradores }) => {
                             />
                         );
                     })}
-                    <TrimestreHeader totalDays={totalDays}>
-                        <div></div>
-                        {monthsArray.map((m, idx) => {
-                            const startIdx = differenceInCalendarDays(m.start, startDate) + 1;
-                            const endIdx = differenceInCalendarDays(m.end, startDate) + 2;
-                            return (
-                                <TrimestreMonthCell
-                                    key={idx}
-                                    start={startIdx}
-                                    end={endIdx}
-                                    style={{ gridColumn: `${startIdx} / ${endIdx}` }}
-                                >
-                                    {format(m.start, 'MMMM yyyy', { locale: ptBR }).toUpperCase()}
-                                </TrimestreMonthCell>
-                            );
-                        })}
-                    </TrimestreHeader>
-                    {visualizacao === 'mensal' && (
-                        <WeekDayNameRow totalDays={totalDays}>
-                            <div></div>
-                            {daysArray.map((date, idx) => (
-                                <WeekDayNameCell key={idx}>
-                                    {['DOM','SEG','TER','QUA','QUI','SEX','SAB'][date.getDay()]}
-                                </WeekDayNameCell>
-                            ))}
-                        </WeekDayNameRow>
-                    )}
-                    {visualizacao === 'trimestral' ? (
-                        <WeekDaysRow totalDays={totalDays}>
-                            <div></div>
-                            {daysArray.map((date, idx) => (
-                                isMonday(date) ? (
-                                    <WeekDay key={idx}>SEG. {date.getDate()}</WeekDay>
-                                ) : (
-                                    <div key={idx}></div>
-                                )
-                            ))}
-                        </WeekDaysRow>
-                    ) : (
-                        <WeekDaysRow totalDays={totalDays}>
-                            <div></div>
-                            {daysArray.map((date, idx) => (
-                                <WeekDay
-                                    key={idx}
-                                    className={date.getDay() === 0 || date.getDay() === 6 ? 'weekend' : ''}
-                                >
-                                    {date.getDate()}
-                                </WeekDay>
-                            ))}
-                        </WeekDaysRow>
-                    )}
+                    <CalendarTableHeader>
+                        <TrimestreHeader totalDays={totalDays}>
+                            {monthsArray.map((m, idx) => {
+                                const startIdx = differenceInCalendarDays(m.start, startDate) + 1;
+                                const endIdx = differenceInCalendarDays(m.end, startDate) + 2;
+                                return (
+                                    <TrimestreMonthCell
+                                        key={idx}
+                                        start={startIdx}
+                                        end={endIdx}
+                                        style={{ gridColumn: `${startIdx} / ${endIdx}` }}
+                                    >
+                                        {format(m.start, 'MMMM yyyy', { locale: ptBR }).toUpperCase()}
+                                    </TrimestreMonthCell>
+                                );
+                            })}
+                        </TrimestreHeader>
+                        {visualizacao === 'mensal' && (
+                            <WeekDayNameRow totalDays={totalDays}>
+                                <div style={{
+                                    background: '#f5f5f5',
+                                    border: '1px solid #eee',
+                                    position: 'sticky',
+                                    left: 0,
+                                    zIndex: 4,
+                                    boxShadow: '2px 0 4px rgba(0, 0, 0, 0.1)'
+                                }}></div>
+                                {daysArray.map((date, idx) => (
+                                    <WeekDayNameCell key={idx}>
+                                        {['DOM','SEG','TER','QUA','QUI','SEX','SAB'][date.getDay()]}
+                                    </WeekDayNameCell>
+                                ))}
+                            </WeekDayNameRow>
+                        )}
+                        {visualizacao === 'trimestral' ? (
+                            <WeekDaysRow totalDays={totalDays}>
+                                <div style={{
+                                    background: '#f5f5f5',
+                                    border: '1px solid #eee',
+                                    position: 'sticky',
+                                    left: 0,
+                                    zIndex: 4,
+                                    boxShadow: '2px 0 4px rgba(0, 0, 0, 0.1)'
+                                }}></div>
+                                {daysArray.map((date, idx) => (
+                                    isMonday(date) ? (
+                                        <WeekDay key={idx}>SEG. {date.getDate()}</WeekDay>
+                                    ) : (
+                                        <div key={idx}></div>
+                                    )
+                                ))}
+                            </WeekDaysRow>
+                        ) : (
+                            <WeekDaysRow totalDays={totalDays}>
+                                <div style={{
+                                    background: '#f5f5f5',
+                                    border: '1px solid #eee',
+                                    position: 'sticky',
+                                    left: 0,
+                                    zIndex: 4,
+                                    boxShadow: '2px 0 4px rgba(0, 0, 0, 0.1)'
+                                }}></div>
+                                {daysArray.map((date, idx) => (
+                                    <WeekDay
+                                        key={idx}
+                                        className={date.getDay() === 0 || date.getDay() === 6 ? 'weekend' : ''}
+                                    >
+                                        {date.getDate()}
+                                    </WeekDay>
+                                ))}
+                            </WeekDaysRow>
+                        )}
+                    </CalendarTableHeader>
                     {colabsFiltrados.map((colab, idx) => (
                         <EmployeeRow key={colab.nome}>
                             <EmployeeCell>{colab.nome}</EmployeeCell>
