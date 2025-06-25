@@ -93,9 +93,9 @@ const ColItem = styled.div`
     background: #ffffff;
     border: 1px solid ${props => {
         switch (props.$status) {
-            case 'sim': return '#86efac';
+            case 'sim': return '#356b49';
             case 'nao': return '#fca5a5';
-            case 'pendente': return '#fcd34d';
+            case 'pendente': return '#fcaa4d';
             default: return '#e5e7eb';
         }
     }};
@@ -116,9 +116,9 @@ const ColItem = styled.div`
         height: 4px;
         background: ${props => {
             switch (props.$status) {
-                case 'sim': return '#86efac';
+                case 'sim': return '#356b49';
                 case 'nao': return '#fca5a5';
-                case 'pendente': return '#fcd34d';
+                case 'pendente': return '#fcaa4d';
                 default: return '#e5e7eb';
             }
         }};
@@ -213,9 +213,9 @@ const StatusIcon = styled.div`
     justify-content: center;
     background: ${props => {
         switch (props.$status) {
-            case 'sim': return '#86efac';
+            case 'sim': return '#356b49';
             case 'nao': return '#fca5a5';
-            case 'pendente': return '#fcd34d';
+            case 'pendente': return '#fcaa4d';
             default: return '#9ca3af';
         }
     }};
@@ -291,9 +291,9 @@ const StatusButton = styled.div`
     }};
     border: 1px solid ${props => {
         switch (props.$status) {
-            case 'sim': return '#86efac';
+            case 'sim': return '#356b49';
             case 'nao': return '#fca5a5';
-            case 'pendente': return '#fcd34d';
+            case 'pendente': return '#fcaa4d';
             default: return '#e5e7eb';
         }
     }};
@@ -1035,13 +1035,13 @@ function ColaboradorBeneficios() {
                                             );
                                         } else if (!itens[0].multiplos_itens && itens[0].multiplos_operadoras) {
                                             return (
-                                                <Texto size="13px" color="var(--warning-600)">
+                                                <Texto size="13px" color="var(--black)">
                                                     Você só pode selecionar um item de cada operadora
                                                 </Texto>
                                             );
                                         } else if (!itens[0].multiplos_itens && !itens[0].multiplos_operadoras) {
                                             return (
-                                                <Texto size="13px" color="var(--warning-600)">
+                                                <Texto size="13px" color="var(--black)">
                                                     Você só pode selecionar um dos itens abaixo
                                                 </Texto>
                                             );
@@ -1203,7 +1203,7 @@ function ColaboradorBeneficios() {
                                                                                                     width: '12px',
                                                                                                     height: '12px',
                                                                                                     borderRadius: '50%',
-                                                                                                    background: item.status === 'sim' ? '#86efac' : '#fca5a5',
+                                                                                                    background: item.status === 'sim' ? '#356b49' : '#fca5a5',
                                                                                                     display: 'flex',
                                                                                                     alignItems: 'center',
                                                                                                     justifyContent: 'center'
