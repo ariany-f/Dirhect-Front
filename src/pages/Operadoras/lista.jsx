@@ -16,6 +16,7 @@ import DataTableOperadorasDetalhes from '@components/DataTableOperadorasDetalhes
 import ModalOperadoraBeneficio from '@components/ModalOperadoraBeneficio'
 import { Col12, Col6 } from '@components/Colunas'
 import { confirmDialog } from 'primereact/confirmdialog';
+import { ArmazenadorToken } from '@utils';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -102,16 +103,17 @@ function OperadorasListagem() {
         const response = await axios.post(`${baseUrl}operadora/`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${ArmazenadorToken.AccessToken}`
             },
         });
         if(response?.data.id)
         {
             context.push(response?.data)
-            setModalOpened(false)
             toast.current.show({
                 message: 'Operadora adicionada com sucesso!',
                 type: 'success',
             });
+            setModalOpened(false)
             return true;
         }
         else
