@@ -17,13 +17,14 @@ import BotaoGrupo from "@components/BotaoGrupo"
 import { Toast } from 'primereact/toast'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import http from "@http"
-// import contratos from '@json/contratos.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import DataTableContratosDetalhes from '@components/DataTableContratosDetalhes'
 import ModalContratoBeneficios from '../../components/ModalContratoBeneficio'
 import { Real } from '@utils/formats'
 import { useTranslation } from 'react-i18next'
+import { TbSitemap, TbSitemapOff } from 'react-icons/tb'
+import { MdSettings, MdSettingsSuggest, MdWarning } from 'react-icons/md'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -150,10 +151,10 @@ function DetalhesContratos() {
                 }
                 <InfoBox>
                     <strong className="main-title">Sobre elegibilidade:</strong><br />
-                    • <strong>Regras no Benefício:</strong> definem quem pode ter acesso ao benefício como um todo<br />
-                    • <strong>Regras no Item:</strong> controlam especificamente cada item dentro do benefício<br />
-                    • <strong>Herança (botão verde):</strong> quando ativada, o item herda automaticamente as regras do benefício<br />
-                    • <strong>⚠️ Importante:</strong> se um item não tiver regras definidas (nem próprias nem herdadas), <u>nenhum colaborador</u> terá acesso a ele<br />
+                    • <strong>Regras no Benefício (<MdSettings  style={{verticalAlign: 'middle'}}/>/<MdSettingsSuggest fill="var(--info)" style={{verticalAlign: 'middle'}} />):</strong> definem quem pode ter acesso ao benefício como um todo<br />
+                    • <strong>Regras no Item (<MdSettings style={{verticalAlign: 'middle'}} />/<MdSettingsSuggest fill="var(--info)" style={{verticalAlign: 'middle'}} />):</strong> controlam especificamente cada item dentro do benefício<br />
+                    • <strong>Herança (<TbSitemap stroke="var(--green-500)" style={{verticalAlign: 'middle'}} />/<TbSitemapOff style={{verticalAlign: 'middle'}} />):</strong> quando ativada, o item herda automaticamente as regras do benefício<br />
+                    • <strong><MdWarning /> Importante:</strong> se um item não tiver regras definidas (nem próprias nem herdadas), <u>nenhum colaborador</u> terá acesso a ele<br />
                     • <strong>💡 Dica:</strong> sempre verifique se a herança está ativada ou se o item possui regras próprias
                 </InfoBox>
                 <DataTableContratosDetalhes contrato={contrato} beneficios={contrato?.beneficios} onUpdate={carregarContrato} />
