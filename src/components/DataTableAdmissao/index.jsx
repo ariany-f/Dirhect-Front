@@ -25,6 +25,7 @@ import { FaDownload } from 'react-icons/fa';
 import { GrAddCircle } from 'react-icons/gr';
 import styles from '@pages/Colaboradores/Colaboradores.module.css'
 import { formatCurrency, formatNumber } from '@utils/formats';
+import http from '@http';
 
 function DataTableAdmissao({ vagas }) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -112,6 +113,27 @@ function DataTableAdmissao({ vagas }) {
         const salarioCandidato = rowData?.dados_candidato?.salario || rowData?.salario;
         const salarioEfetivo = rowData?.salario || rowData?.dados_vaga?.salario || rowData?.dados_candidato?.salario;
         
+        const getSalarioEfetivoTexto = () => {
+            if (!salarioEfetivo) {
+                return '----';
+            }
+            return formatCurrency(salarioEfetivo);
+        };
+        
+        const getSalarioEfetivoCor = () => {
+            if (!salarioEfetivo) {
+                return '#666';
+            }
+            
+            // Se o salário efetivo é igual ao da vaga, usar verde
+            if (salarioEfetivo == salarioVaga) {
+                return 'var(--neutro-600)';
+            }
+            
+            // Se é diferente, usar azul
+            return 'var(--vermilion-500)';
+        };
+        
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>
@@ -120,16 +142,13 @@ function DataTableAdmissao({ vagas }) {
                         {salarioVaga ? formatCurrency(salarioVaga) : 'Não informado'}
                     </span>
                 </div>
-                {/* <div style={{ fontSize: 13, fontWeight: 500 }}>
-                    <span style={{ color: '#666', fontSize: 12 }}>Candidato: </span>
-                    <span style={{ color: '#333' }}>
-                        {salarioCandidato ? formatCurrency(salarioCandidato) : 'Não informado'}
-                    </span>
-                </div> */}
                 <div style={{ fontSize: 13, fontWeight: 500 }}>
                     <span style={{ color: '#666', fontSize: 12 }}>Efetivo: </span>
-                    <span style={{ color: '#4CAF50', fontWeight: 600 }}>
-                        {salarioEfetivo ? formatCurrency(salarioEfetivo) : 'Não definido'}
+                    <span style={{ 
+                        color: getSalarioEfetivoCor(), 
+                        fontWeight: 600 
+                    }}>
+                        {getSalarioEfetivoTexto()}
                     </span>
                 </div>
             </div>
@@ -137,13 +156,50 @@ function DataTableAdmissao({ vagas }) {
     };
 
     const representativeFilialTemplate = (rowData) => {
+        const [filialEfetivaNome, setFilialEfetivaNome] = useState(null);
+        const [carregandoFilial, setCarregandoFilial] = useState(false);
+        
         const filial_vaga_id = rowData?.dados_vaga?.filial_id;
         const filial_vaga_nome = rowData?.dados_vaga?.filial_nome;
-        const filial = rowData?.filial;
+        const filial_efetiva_id = rowData?.filial;
+        
+        useEffect(() => {
+            // Se a filial efetiva é diferente da filial da vaga, buscar o nome
+            if (filial_efetiva_id && filial_efetiva_id != filial_vaga_id) {
+                setCarregandoFilial(true);
+                http.get(`/filial/${filial_efetiva_id}/`)
+                    .then(response => {
+                        setFilialEfetivaNome(response.nome);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar filial:', error);
+                        setFilialEfetivaNome('Erro ao carregar');
+                    })
+                    .finally(() => {
+                        setCarregandoFilial(false);
+                    });
+            }
+        }, [filial_efetiva_id, filial_vaga_id]);
         
         if (!filial_vaga_nome) {
             return <span style={{ color: '#888', fontStyle: 'italic' }}>Não informado</span>;
         }
+        
+        const getFilialEfetivaTexto = () => {
+            if (!filial_efetiva_id) {
+                return '----';
+            }
+            
+            if (filial_efetiva_id == filial_vaga_id) {
+                return filial_vaga_nome;
+            }
+            
+            if (carregandoFilial) {
+                return 'Carregando...';
+            }
+            
+            return filialEfetivaNome || '----';
+        };
         
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -155,8 +211,11 @@ function DataTableAdmissao({ vagas }) {
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>
                     <span style={{ color: '#666', fontSize: 12 }}>Efetivo: </span>
-                    <span style={{ color: '#4CAF50', fontWeight: 600 }}>
-                        {filial_vaga_id == filial ? filial_vaga_nome : 'Não definido'}
+                    <span style={{ 
+                        color: filial_efetiva_id == filial_vaga_id ? 'var(--neutro-600)' : 'var(--vermilion-500)', 
+                        fontWeight: 600 
+                    }}>
+                        {getFilialEfetivaTexto()}
                     </span>
                 </div>
             </div>
