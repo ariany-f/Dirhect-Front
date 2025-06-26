@@ -126,7 +126,6 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
     const [funcao, setFuncao] = useState(null);
     const [sindicato, setSindicato] = useState(null);
 
-
     // Função para formatar CNPJ
     const formataCNPJ = (cnpj) => {
         if (!cnpj) return '';
@@ -435,7 +434,10 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
             sindicato: sindicato?.code || null
         };
 
-        aoSalvar(dadosTransferencia, clienteSelecionado.code);
+        // Usar o schema_name diretamente do tenant
+        const tenantDestino = clienteSelecionado.tenant?.schema_name || clienteSelecionado.code;
+
+        aoSalvar(dadosTransferencia, tenantDestino);
     };
 
     return (
