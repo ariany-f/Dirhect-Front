@@ -87,6 +87,9 @@ function DetalhesVaga() {
         const encerramento = new Date(dt_encerramento);
         const inicio = new Date(vaga?.dt_inicio);
         
+        if (status === 'T') {
+            return 'Transferida';
+        }
         if (hoje > encerramento) {
             return 'Encerrada';
         }
@@ -101,6 +104,9 @@ function DetalhesVaga() {
         const encerramento = new Date(dt_encerramento);
         const inicio = new Date(vaga?.dt_inicio);
         
+        if (status === 'T') {
+            return 'var(--blue-500)';
+        }
         if (hoje > encerramento) {
             return 'var(--error)';
         }
@@ -336,13 +342,21 @@ function DetalhesVaga() {
             tenant_destino: clienteId
         })
             .then(response => {
-                setVaga(response);
                 toast.current.show({
                     severity: 'success',
                     summary: 'Vaga transferida com sucesso!',
                     life: 3000
                 });
                 setModalTransferirAberto(false);
+                
+                // Recarregar os dados completos da vaga após a transferência
+                http.get(`vagas/${id}/?format=json`)
+                    .then(response => {
+                        setVaga(response);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao recarregar vaga após transferência:', error);
+                    });
             })
             .catch(error => {
                 console.error('Erro ao transferir vaga:', error);
@@ -416,6 +430,11 @@ function DetalhesVaga() {
                                             <FaDoorOpen /><Link onClick={reabrirVaga}>Reabrir vaga</Link>
                                         </BotaoSemBorda>
                                     </>
+                                }
+                                {vaga.status == 'T' && 
+                                    <div style={{ color: 'var(--blue-500)', fontStyle: 'italic' }}>
+                                        Esta vaga foi transferida para outra empresa
+                                    </div>
                                 }
                             </BotaoGrupo>
                      </BotaoGrupo>

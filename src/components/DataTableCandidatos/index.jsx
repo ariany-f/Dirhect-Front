@@ -272,6 +272,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
         const hoje = new Date();
         const encerramento = new Date(rowData?.vaga?.dt_encerramento);
         const vagaEncerrada = rowData?.vaga?.status === 'F' || hoje > encerramento;
+        const vagaTransferida = rowData?.vaga?.status === 'T';
         
         const vagaConfigurada = rowData?.vagas_configuradas?.[0];
         const vagaAprovada = vagaConfigurada?.status === 'A';
@@ -298,12 +299,12 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
                         opacity: vagaEncerrada ? 0.5 : 1,
                     }}
                 /> */}
-                {!vagaEncerrada && !vagaAprovada && vagaConfigurada?.status !== 'R' && !vagasPreenchidas && (
+                {!vagaEncerrada && !vagaTransferida && !vagaAprovada && vagaConfigurada?.status !== 'R' && !vagasPreenchidas && (
                     <>
                         <Tooltip target=".aprovar" mouseTrack mouseTrackLeft={10} />
                         <FaCheck 
                             title="Aprovar" 
-                            data-pr-tooltip="Aprovar candidato"
+                            data-pr-tooltip={vagaTransferida ? "Vaga transferida - Ação indisponível" : "Aprovar candidato"}
                             className="aprovar"
                             onClick={() => handleAprovar(rowData)}
                             style={{
@@ -313,12 +314,12 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
                         />
                     </>
                 )}
-                {!vagaEncerrada && vagaConfigurada?.status !== 'R' && (
+                {!vagaEncerrada && !vagaTransferida && vagaConfigurada?.status !== 'R' && (
                     <>
                         <Tooltip target=".rejeitar" mouseTrack mouseTrackLeft={10} />
                         <FaTimes 
                             title="Rejeitar" 
-                            data-pr-tooltip="Rejeitar candidato"
+                            data-pr-tooltip={vagaTransferida ? "Vaga transferida - Ação indisponível" : "Rejeitar candidato"}
                             className="rejeitar"
                             onClick={() => handleRejeitar(rowData)}
                             style={{
