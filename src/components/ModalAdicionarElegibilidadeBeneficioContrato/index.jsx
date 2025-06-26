@@ -549,6 +549,29 @@ function ModalAdicionarElegibilidadeItemContrato({ opened = false, aoFechar, aoS
                                         }
                                     </Botao>
                                 </BotaoGrupo>}
+                                
+                                    <div style={{
+                                        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+                                        border: '1px solid #cbd5e1',
+                                        borderRadius: '8px',
+                                        padding: '16px',
+                                        textAlign: 'left',
+                                        marginTop: '24px',
+                                        color: '#475569',
+                                        fontSize: '14px',
+                                        lineHeight: '1.6'
+                                    }}>
+                                        <strong style={{ color: '#1e293b', fontSize: '15px', display: 'block', marginBottom: '8px' }}>
+                                            Como funciona o botão "Desconsiderar"
+                                        </strong>
+                                        • <strong>DESATIVADO (padrão):</strong> O grupo <strong>TEM ACESSO</strong> ao benefício<br />
+                                        • <strong>ATIVADO:</strong> O grupo <strong>PERDE O ACESSO</strong> ao benefício<br /><br />
+                                        
+                                        <strong>Exemplo prático:</strong><br />
+                                        1. Adicione "Filial SP" → todos da filial SP terão acesso<br />
+                                        2. Adicione "Estagiários" e ative "Desconsiderar" → estagiários perdem o acesso<br />
+                                        3. <strong>Resultado:</strong> todos da Filial SP têm acesso, <u>exceto os estagiários</u>
+                                    </div>
                             </Wrapper>
                         </Col6>
                         <Col6>
