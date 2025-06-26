@@ -146,7 +146,7 @@ function DataTableAdmissao({ vagas }) {
                     <span style={{ color: '#666', fontSize: 12 }}>Efetivo: </span>
                     <span style={{ 
                         color: getSalarioEfetivoCor(), 
-                        fontWeight: 600 
+                        fontWeight: salarioEfetivo == salarioVaga ? 500 : 600
                     }}>
                         {getSalarioEfetivoTexto()}
                     </span>
@@ -213,7 +213,7 @@ function DataTableAdmissao({ vagas }) {
                     <span style={{ color: '#666', fontSize: 12 }}>Efetivo: </span>
                     <span style={{ 
                         color: filial_efetiva_id == filial_vaga_id ? 'var(--neutro-600)' : 'var(--vermilion-500)', 
-                        fontWeight: 600 
+                        fontWeight: filial_efetiva_id == filial_vaga_id ? 500 : 600
                     }}>
                         {getFilialEfetivaTexto()}
                     </span>
