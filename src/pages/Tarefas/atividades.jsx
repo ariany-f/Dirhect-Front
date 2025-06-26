@@ -58,6 +58,7 @@ const Atividades = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [listaTarefas, setListaTarefas] = useState([]);
+    const [filtroAtivo, setFiltroAtivo] = useState('total');
     const [activeTab, setActiveTab] = useState('lista'); // 'lista' ou 'kanban'
 
     useEffect(() => {
@@ -67,6 +68,24 @@ const Atividades = () => {
                 setListaTarefas(response)
             })
     }, [])
+
+    const atualizarTarefa = (tarefaId, novosDados) => {
+        setListaTarefas(prevTarefas => 
+            prevTarefas.map(tarefa => 
+                tarefa.id === tarefaId 
+                    ? { ...tarefa, ...novosDados }
+                    : tarefa
+            )
+        );
+    };
+
+    const tarefasFiltradas = listaTarefas?.filter(tarefa => {
+        // Filtro por tipo
+        if (filtroAtivo !== 'total' && tarefa.entidade_tipo !== filtroAtivo) {
+            return false;
+        }
+        return true;
+    });
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -91,7 +110,7 @@ const Atividades = () => {
                     <Texto color={location.pathname.includes('/kanban') ? 'white' : '#000'}>Cartões</Texto>
                 </TabButton>
             </TabPanel>
-            <Outlet context={listaTarefas} />
+            <Outlet context={{ listaTarefas, atualizarTarefa, filtroAtivo, setFiltroAtivo, tarefasFiltradas }} />
         </ConteudoFrame>
     );
 };

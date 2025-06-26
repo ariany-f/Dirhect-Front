@@ -111,32 +111,31 @@ const Card = styled.div`
 
 const AtividadesLista = () => {
     const location = useLocation();
-    const context = useOutletContext();
-    const [filtroAtivo, setFiltroAtivo] = useState('total');
+    const { listaTarefas, atualizarTarefa, filtroAtivo, setFiltroAtivo, tarefasFiltradas } = useOutletContext();
 
     const contarTarefasPorTipo = (tipo) => {
-        if (!context) return 0;
-        return context.filter(tarefa => 
+        if (!listaTarefas) return 0;
+        return listaTarefas.filter(tarefa => 
             tarefa.entidade_tipo === tipo && 
             tarefa.status !== 'concluida'
         ).length;
     };
 
     const contarTotalTarefasPorTipo = (tipo) => {
-        if (!context) return 0;
-        return context.filter(tarefa => 
+        if (!listaTarefas) return 0;
+        return listaTarefas.filter(tarefa => 
             tarefa.entidade_tipo === tipo
         ).length;
     };
 
     const contarConcluidasPorTipo = (tipo) => {
-        if (!context) return 0;
-        return context.filter(tarefa => tarefa.entidade_tipo === tipo && tarefa.status === 'concluida').length;
+        if (!listaTarefas) return 0;
+        return listaTarefas.filter(tarefa => tarefa.entidade_tipo === tipo && tarefa.status === 'concluida').length;
     };
 
     const contarTotalConcluidas = () => {
-        if (!context) return 0;
-        return context.filter(tarefa => tarefa.status === 'concluida').length;
+        if (!listaTarefas) return 0;
+        return listaTarefas.filter(tarefa => tarefa.status === 'concluida').length;
     };
 
     const getSLAInfo = (tarefa) => {
@@ -187,15 +186,6 @@ const AtividadesLista = () => {
         }
     };
 
-    const tarefasFiltradas = context?.filter(tarefa => {
-        // Filtro por tipo
-        if (filtroAtivo !== 'total' && tarefa.entidade_tipo !== filtroAtivo) {
-            return false;
-        }
-
-        return true;
-    });
-
     const handleFiltroChange = (tipo) => {
         if (filtroAtivo === tipo) {
             setFiltroAtivo('total');
@@ -210,7 +200,7 @@ const AtividadesLista = () => {
                 <CardContainer>
                     {Object.entries(cardConfig).map(([tipo, config]) => {
                         const total = tipo === 'total' 
-                            ? context?.filter(tarefa => tarefa.status !== 'concluida').length || 0
+                            ? listaTarefas?.filter(tarefa => tarefa.status !== 'concluida').length || 0
                             : contarTarefasPorTipo(tipo);
                         const concluidas = tipo === 'total'
                             ? contarTotalConcluidas()
@@ -231,7 +221,7 @@ const AtividadesLista = () => {
                                 <div className="quantidade">{total}</div>
                                 {/* {concluidas > 0 && ( */}
                                     <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
-                                        {concluidas} de {tipo === 'total' ? context?.length : contarTotalTarefasPorTipo(tipo)} concluída{concluidas > 1 ? 's' : ''}
+                                        {concluidas} de {tipo === 'total' ? listaTarefas?.length : contarTotalTarefasPorTipo(tipo)} concluída{concluidas > 1 ? 's' : ''}
                                     </div>
                                 {/* )} */}
                             </Card>
@@ -239,7 +229,7 @@ const AtividadesLista = () => {
                     })}
                 </CardContainer>
                 
-                <DataTableAtividades tarefas={tarefasFiltradas} />
+                <DataTableAtividades />
             </Container>
         </Frame>
     );

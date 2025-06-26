@@ -303,6 +303,8 @@ const CardWrapper = styled.div`
 
 const DraggableCard = ({ tarefa, index, moveCard, columnId, columns, showConcluir }) => {
     const ref = useRef(null);
+    const { atualizarTarefa } = useOutletContext();
+    const toast = useRef(null);
     const isDisabled = tarefa.status === 'concluida' || tarefa.status === 'aprovada';
     const isAutomatic = tarefa.atividade_automatica;
     
@@ -428,19 +430,49 @@ const DraggableCard = ({ tarefa, index, moveCard, columnId, columns, showConclui
 
     const getNextColumn = (currentColumn) => {
         switch(currentColumn) {
-            case 'pendente': return 'aprovada';
-            case 'aprovada': return 'pendente';
+            case 'pendente': return 'em_andamento';
             case 'em_andamento': return 'concluida';
-            case 'concluida': return 'em_andamento';
             default: return null;
         }
     };
 
-    const handleNextColumn = () => {
+    const handleNextColumn = async () => {
         const nextColumn = getNextColumn(columnId);
-        if (nextColumn) {
-            const targetIndex = columns[nextColumn].length;
-            moveCard(index, targetIndex, columnId, nextColumn);
+        if (!nextColumn) return;
+
+        try {
+            let endpoint = '';
+            let novoStatus = '';
+            let novoStatusDisplay = '';
+            
+            if (columnId === 'pendente' && nextColumn === 'em_andamento') {
+                endpoint = `/tarefas/${tarefa.id}/aprovar/`;
+                novoStatus = 'aprovada';
+                novoStatusDisplay = 'Aprovada';
+            } else if (columnId === 'em_andamento' && nextColumn === 'concluida') {
+                endpoint = `/tarefas/${tarefa.id}/concluir/`;
+                novoStatus = 'concluida';
+                novoStatusDisplay = 'Concluída';
+            } else {
+                return;
+            }
+
+            await http.post(endpoint);
+            
+            // Atualiza o estado no componente pai usando a função atualizarTarefa
+            const dadosAtualizacao = {
+                status: novoStatus,
+                status_display: novoStatusDisplay
+            };
+            
+            if (novoStatus === 'concluida') {
+                dadosAtualizacao.concluido_em = new Date().toISOString();
+            }
+            
+            atualizarTarefa(tarefa.id, dadosAtualizacao);
+
+        } catch (error) {
+            console.error('Erro ao atualizar tarefa:', error);
         }
     };
 
@@ -674,7 +706,7 @@ const FilterLabel = styled.div`
 `
 
 const AtividadesKanban = () => {
-    const tarefas = useOutletContext();
+    const { listaTarefas, atualizarTarefa } = useOutletContext();
     const toast = useRef(null);
     const [columns, setColumns] = useState({
         pendente: [],
@@ -727,13 +759,13 @@ const AtividadesKanban = () => {
     };
 
     useEffect(() => {
-        if (tarefas && Array.isArray(tarefas)) {
+        if (listaTarefas && Array.isArray(listaTarefas)) {
             const newColumns = {
                 pendente: [],
                 em_andamento: [],
                 concluida: []
             };
-            tarefas.forEach(tarefa => {
+            listaTarefas.forEach(tarefa => {
                 const sla = getSLAInfo(tarefa);
                 if (
                     (selectedTypes.length === 0 || selectedTypes.includes(tarefa.entidade_tipo)) &&
@@ -750,7 +782,7 @@ const AtividadesKanban = () => {
             });
             setColumns(newColumns);
         }
-    }, [tarefas, selectedTypes, selectedSLA]);
+    }, [listaTarefas, selectedTypes, selectedSLA]);
 
     const toggleTipoFilter = (tipo) => {
         setSelectedTypes(prev => {
@@ -792,46 +824,54 @@ const AtividadesKanban = () => {
             return;
         }
 
-        const previousColumns = JSON.parse(JSON.stringify(columns));
         const sourceCards = Array.from(columns[sourceColumnId]);
-        const targetCards = sourceColumnId === targetColumnId 
-            ? sourceCards 
-            : Array.from(columns[targetColumnId]);
-
         const [movedCard] = sourceCards.splice(fromIndex, 1);
         const originalStatus = movedCard.status;
-        if (sourceColumnId === 'pendente' && targetColumnId === 'em_andamento') {
-            movedCard.status = 'em_andamento';
-        } else if (sourceColumnId === 'em_andamento' && targetColumnId === 'concluida') {
-            movedCard.status = 'concluida';
-        }
-        targetCards.splice(toIndex, 0, movedCard);
-
-        const newColumns = {
-            ...columns,
-            [sourceColumnId]: sourceCards,
-            [targetColumnId]: targetCards,
-        };
-        setColumns(newColumns);
 
         try {
             let endpoint = '';
+            let novoStatus = '';
+            let novoStatusDisplay = '';
+            
             if (sourceColumnId === 'pendente' && targetColumnId === 'em_andamento') {
                 endpoint = `/tarefas/${movedCard.id}/aprovar/`;
+                novoStatus = 'aprovada';
+                novoStatusDisplay = 'Aprovada';
             } else if (sourceColumnId === 'em_andamento' && targetColumnId === 'concluida') {
                 endpoint = `/tarefas/${movedCard.id}/concluir/`;
+                novoStatus = 'concluida';
+                novoStatusDisplay = 'Concluída';
             } else {
                 return;
             }
+
             await http.post(endpoint);
+            
+            // Atualiza o estado no componente pai usando a função atualizarTarefa
+            const dadosAtualizacao = {
+                status: novoStatus,
+                status_display: novoStatusDisplay
+            };
+            
+            if (novoStatus === 'concluida') {
+                dadosAtualizacao.concluido_em = new Date().toISOString();
+            }
+            
+            atualizarTarefa(movedCard.id, dadosAtualizacao);
+
+            toast.current.show({
+                severity: 'success',
+                summary: 'Tarefa atualizada com sucesso',
+                life: 3000
+            });
+
         } catch (error) {
             toast.current.show({
                 severity: 'error',
                 summary: 'Erro ao atualizar status',
-                detail: 'Não foi possível atualizar o status da tarefa. A operação foi revertida.',
+                detail: 'Não foi possível atualizar o status da tarefa.',
                 life: 5000
             });
-            setColumns(previousColumns);
         }
     };
 

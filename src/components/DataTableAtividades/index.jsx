@@ -8,7 +8,7 @@ import './DataTable.css'
 import CampoArquivo from '@components/CampoArquivo';
 import Botao from '@components/Botao';
 import Texto from '@components/Texto';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { Checkbox } from 'primereact/checkbox';
 import CheckboxContainer from '@components/CheckboxContainer'
@@ -34,7 +34,8 @@ FilterService.register('custom_status', (value, filter) => {
     return true;
 });
 
-function DataTableAtividades({ tarefas }) {
+function DataTableAtividades() {
+    const { listaTarefas, atualizarTarefa, tarefasFiltradas } = useOutletContext();
     const toast = useRef(null);
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -86,9 +87,15 @@ function DataTableAtividades({ tarefas }) {
             if(rowData.status === 'em_andamento') {
                 try {
                     await http.post(`/tarefas/${rowData.id}/concluir/`);
-                    rowData.status = 'concluida';
-                    rowData.status_display = 'Concluída';
-                    rowData.check = true;
+                    
+                    // Atualiza o estado da tarefa no componente pai
+                    atualizarTarefa(rowData.id, {
+                        status: 'concluida',
+                        status_display: 'Concluída',
+                        concluido_em: new Date().toISOString(),
+                        check: true
+                    });
+                    
                     toast.current.show({
                         severity: 'success',
                         summary: 'Tarefa concluída com sucesso',
@@ -105,9 +112,14 @@ function DataTableAtividades({ tarefas }) {
                 if(rowData.status === 'pendente') {
                     try {
                         await http.post(`/tarefas/${rowData.id}/aprovar/`);
-                        rowData.status = 'aprovada';
-                        rowData.status_display = 'Aprovada';
-                        rowData.check = true;
+                        
+                        // Atualiza o estado da tarefa no componente pai
+                        atualizarTarefa(rowData.id, {
+                            status: 'aprovada',
+                            status_display: 'Aprovada',
+                            check: true
+                        });
+                        
                         toast.current.show({
                             severity: 'success',
                             summary: 'Tarefa concluída com sucesso',
@@ -415,7 +427,7 @@ function DataTableAtividades({ tarefas }) {
 
     const representativeActionsTemplate = (rowData, _, rowIndex) => {
         if (rowData.descricao === 'Integrar com RM') {
-            const anterioresConcluidas = tarefas.slice(0, rowIndex).every(t => t.check === true);
+            const anterioresConcluidas = tarefasFiltradas.slice(0, rowIndex).every(t => t.check === true);
             return <Botao size="small" aoClicar={() => anterioresConcluidas && alert('Integração com RM!')} disabled={!anterioresConcluidas} estilo={anterioresConcluidas ? 'vermilion' : 'cinza'}>
                 <FaLink fill="white" /> Integrar
             </Botao>;
@@ -428,7 +440,7 @@ function DataTableAtividades({ tarefas }) {
     }
     
     // Ordena as tarefas por prioridade
-    const tarefasOrdenadas = Array.isArray(tarefas) ? [...tarefas].sort((a, b) => a.prioridade - b.prioridade) : [];
+    const tarefasOrdenadas = Array.isArray(tarefasFiltradas) ? [...tarefasFiltradas].sort((a, b) => a.prioridade - b.prioridade) : [];
     
     const getSLAInfo = (rowData) => {
         const dataInicio = new Date(rowData.criado_em);
