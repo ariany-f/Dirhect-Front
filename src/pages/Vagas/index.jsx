@@ -38,6 +38,9 @@ const Vagas = () => {
                     <Link className={styles.link} to="/vagas/fechadas">
                         <Botao estilo={location.pathname == '/vagas/fechadas'?'black':''} size="small" tab>Fechadas</Botao>
                     </Link>
+                    <Link className={styles.link} to="/vagas/transferidas">
+                        <Botao estilo={location.pathname == '/vagas/transferidas'?'black':''} size="small" tab>Transferidas</Botao>
+                    </Link>
                 </BotaoGrupo>
                 <BotaoGrupo align="center">
                     <Link to="/vagas/registro">

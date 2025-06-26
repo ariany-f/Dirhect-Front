@@ -78,6 +78,7 @@ import ExtratoPagamento from '@pages/Extrato/pagamento'
 import Vagas from '@pages/Vagas'
 import VagasAbertas from '@pages/Vagas/abertas'
 import VagasCanceladas from '@pages/Vagas/canceladas'
+import VagasTransferidas from '@pages/Vagas/transferidas'
 import VagasRegistro from '@pages/Vagas/Registro'
 import DetalhesVaga from '@pages/Vagas/detalhes'
 import Admissoes from '@pages/Admissoes'
@@ -336,6 +337,7 @@ function AppRouter() {
               <Route path="vagas" element={<Vagas />} >
                 <Route index element={<VagasAbertas />} />
                 <Route path="fechadas" element={<VagasCanceladas />} />
+                <Route path="transferidas" element={<VagasTransferidas />} />
               </Route>
               <Route path="vagas/configuracoes" element={<ConfiguracoesVagas />} />
               <Route path="vagas/detalhes/:id" element={<DetalhesVaga />} />
