@@ -16,7 +16,6 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { confirmDialog } from 'primereact/confirmdialog';
 
 function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
-    console.log(documentos)
     const[selectedCandidato, setSelectedCandidato] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({

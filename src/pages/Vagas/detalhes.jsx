@@ -8,7 +8,7 @@ import Titulo from '@components/Titulo'
 import Botao from '@components/Botao'
 import { Skeleton } from 'primereact/skeleton'
 import Container from "@components/Container"
-import { FaArrowAltCircleRight, FaDoorOpen, FaEdit, FaPen, FaTrash } from 'react-icons/fa'
+import { FaArrowAltCircleRight, FaDoorOpen, FaEdit, FaPen, FaTrash, FaExchangeAlt } from 'react-icons/fa'
 import BotaoVoltar from "@components/BotaoVoltar"
 import BotaoGrupo from "@components/BotaoGrupo"
 import BotaoSemBorda from "@components/BotaoSemBorda"
@@ -25,6 +25,7 @@ import ModalDocumentoVaga from '@components/ModalDocumentoVaga'
 import { GrAdd, GrAddCircle } from 'react-icons/gr'
 import http from '@http'
 import ModalVaga from '@components/ModalVaga'
+import ModalTransferirVaga from '@components/ModalTransferirVaga'
 // import documentos from '@json/documentos_requeridos.json'
 import { unformatCurrency } from '@utils/formats'
 
@@ -56,6 +57,7 @@ function DetalhesVaga() {
     const [modalDocumentoAberto, setModalDocumentoAberto] = useState(false);
     const [documentoEditando, setDocumentoEditando] = useState(null);
     const [modalEditarAberto, setModalEditarAberto] = useState(false);
+    const [modalTransferirAberto, setModalTransferirAberto] = useState(false);
 
     const listaPericulosidades = [
         { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
@@ -292,7 +294,6 @@ function DetalhesVaga() {
     };
 
     const handleSalvarDocumentoVaga = (documento_nome, obrigatorio, documento) => {
-        console.log(documento_nome, obrigatorio, documento)
         http.post('/vagas_documentos/', {
             documento_nome: documento_nome,
             obrigatorio: obrigatorio,
@@ -329,6 +330,30 @@ function DetalhesVaga() {
             });
     };
 
+    const handleTransferirVaga = (vagaAtualizada, clienteId) => {
+        http.post(`vagas/${id}/transferir/`, {
+            ...vagaAtualizada,
+            tenant_destino: clienteId
+        })
+            .then(response => {
+                setVaga(response);
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Vaga transferida com sucesso!',
+                    life: 3000
+                });
+                setModalTransferirAberto(false);
+            })
+            .catch(error => {
+                console.error('Erro ao transferir vaga:', error);
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro ao transferir vaga',
+                    life: 3000
+                });
+            });
+    };
+
     return (
         <>
         <Frame>
@@ -357,7 +382,10 @@ function DetalhesVaga() {
                                         />
                                     )}
                                     {vaga.status == 'A' && (
-                                        <FaPen style={{ cursor: 'pointer' }} size={16} onClick={() => setModalEditarAberto(true)} fill="var(--primaria)" />
+                                        <>
+                                            <FaPen style={{ cursor: 'pointer' }} size={16} onClick={() => setModalEditarAberto(true)} fill="var(--primaria)" />
+                                            <FaExchangeAlt style={{ cursor: 'pointer' }} size={16} onClick={() => setModalTransferirAberto(true)} fill="var(--primaria)" title="Transferir vaga" />
+                                        </>
                                     )}
 
                                 </h3>
@@ -522,6 +550,12 @@ function DetalhesVaga() {
                 aoFechar={() => setModalEditarAberto(false)}
                 vaga={vaga}
                 aoSalvar={handleEditarVaga}
+            />
+            <ModalTransferirVaga 
+                opened={modalTransferirAberto}
+                aoFechar={() => setModalTransferirAberto(false)}
+                vaga={vaga}
+                aoSalvar={handleTransferirVaga}
             />
         </Container>
         </Frame>
