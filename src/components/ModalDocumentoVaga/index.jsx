@@ -34,12 +34,14 @@ const Col6Centered = styled.div`
     align-items: center;
 `
 
-function ModalDocumentoVaga({ opened = false, aoFechar, aoSalvar, documento = null }) {
+function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, documento = null }) {
     const [classError, setClassError] = useState([]);
     const [documentoNome, setDocumentoNome] = useState('');
     const [obrigatorio, setObrigatorio] = useState(true);
     const [documentoSelecionado, setDocumentoSelecionado] = useState(null);
     const [documentosRequeridos, setDocumentosRequeridos] = useState([]);
+
+    const vagaTransferida = vaga?.status === 'T';
 
     useEffect(() => {
         if (opened) {
@@ -67,6 +69,10 @@ function ModalDocumentoVaga({ opened = false, aoFechar, aoSalvar, documento = nu
     }, [documento, opened]);
 
     const validarESalvar = () => {
+        if (vagaTransferida) {
+            return;
+        }
+
         let errors = [];
         if (!documentoNome) errors.push('documento_nome');
         if (!documentoSelecionado) errors.push('documento');
@@ -93,11 +99,24 @@ function ModalDocumentoVaga({ opened = false, aoFechar, aoSalvar, documento = nu
                                 <button className="close" onClick={aoFechar}>
                                     <RiCloseFill size={20} className="fechar" />  
                                 </button>
-                                <h6>{documento ? 'Editar Documento' : 'Novo Documento'}</h6>
+                                <h6>{documento ? 'Editar Documento Requerido para a Vaga' : 'Novo Documento Requerido para a Vaga'}</h6>
                             </Titulo>
                         </Frame>
                         
                         <Frame padding="12px 0px">
+                            {vagaTransferida && (
+                                <div style={{ 
+                                    backgroundColor: 'var(--blue-100)', 
+                                    border: '1px solid var(--blue-500)', 
+                                    borderRadius: '8px', 
+                                    padding: '12px', 
+                                    margin: '16px',
+                                    color: 'var(--blue-700)',
+                                    fontStyle: 'italic'
+                                }}>
+                                    Esta vaga foi transferida para outra empresa. Não é possível modificar documentos requeridos.
+                                </div>
+                            )}
                             <Col12>
                                 <Col12>
                                     <Col6>
@@ -109,6 +128,7 @@ function ModalDocumentoVaga({ opened = false, aoFechar, aoSalvar, documento = nu
                                             type="text"
                                             label="Nome do Documento*"
                                             placeholder="Digite o nome do documento"
+                                            disabled={vagaTransferida}
                                         />
                                     </Col6>
                                     <Col6>
@@ -122,6 +142,7 @@ function ModalDocumentoVaga({ opened = false, aoFechar, aoSalvar, documento = nu
                                                 placeholder="Selecione o documento" 
                                                 style={{ width: '100%' }} 
                                                 className={classError.includes('documento') ? 'p-invalid' : ''}
+                                                disabled={vagaTransferida}
                                             />
                                         </div>
                                     </Col6>
@@ -129,7 +150,11 @@ function ModalDocumentoVaga({ opened = false, aoFechar, aoSalvar, documento = nu
                                 <Col12>
                                     <Col6Centered>
                                         <label style={{ fontWeight: 600, marginRight: 8 }}>Obrigatório</label>
-                                        <SwitchInput checked={obrigatorio} onChange={e => setObrigatorio(e.value)} />
+                                        <SwitchInput 
+                                            checked={obrigatorio} 
+                                            onChange={e => setObrigatorio(e.value)} 
+                                            disabled={vagaTransferida}
+                                        />
                                     </Col6Centered>
                                 </Col12>
                             </Col12>
@@ -141,6 +166,8 @@ function ModalDocumentoVaga({ opened = false, aoFechar, aoSalvar, documento = nu
                                 estilo="vermilion" 
                                 size="medium" 
                                 filled
+                                disabled={vagaTransferida}
+                                title={vagaTransferida ? "Não é possível modificar documentos de vagas transferidas" : ""}
                             >
                                 {documento ? 'Atualizar' : 'Confirmar'}
                             </Botao>

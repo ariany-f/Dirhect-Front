@@ -300,6 +300,17 @@ function DetalhesVaga() {
     };
 
     const handleSalvarDocumentoVaga = (documento_nome, obrigatorio, documento) => {
+        // Verifica se a vaga foi transferida
+        if (vaga?.status === 'T') {
+            toast.current.show({ 
+                severity: 'warn', 
+                summary: 'Ação não permitida', 
+                detail: 'Não é possível adicionar documentos a vagas transferidas.', 
+                life: 3000 
+            });
+            return;
+        }
+
         http.post('/vagas_documentos/', {
             documento_nome: documento_nome,
             obrigatorio: obrigatorio,
@@ -309,9 +320,21 @@ function DetalhesVaga() {
         .then(response => {
             fetchDocumentosVaga();
             setModalDocumentoAberto(false);
+            toast.current.show({ 
+                severity: 'success', 
+                summary: 'Sucesso', 
+                detail: 'Documento adicionado à vaga com sucesso!', 
+                life: 3000 
+            });
         })
         .catch(error => {   
             console.error('Erro ao salvar documento da vaga:', error);
+            toast.current.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Erro ao adicionar documento à vaga.', 
+                life: 3000 
+            });
         });
     }
 
@@ -540,19 +563,26 @@ function DetalhesVaga() {
                 <BotaoGrupo align="space-between">
                     <div></div>
                     <BotaoGrupo align="space-between">
-                        <Botao size="small" aoClicar={() => { setDocumentoEditando(null); setModalDocumentoAberto(true); }}>
+                        <Botao 
+                            size="small" 
+                            aoClicar={() => { setDocumentoEditando(null); setModalDocumentoAberto(true); }}
+                            disabled={vaga?.status === 'T'}
+                            title={vaga?.status === 'T' ? "Não é possível adicionar documentos em vagas transferidas" : ""}
+                        >
                             <GrAddCircle stroke="white" /> Adicionar documento requerido
                         </Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>
                 <DataTableDocumentosVaga
                     documentos={documentos}
+                    vaga={vaga}
                     onEdit={doc => { setDocumentoEditando(doc); setModalDocumentoAberto(true); }}
                     onDelete={doc => setDocumentos(documentos.filter(d => d !== doc))}
                     toastRef={toast}
                 />
                 <ModalDocumentoVaga
                     opened={modalDocumentoAberto}
+                    vaga={vaga}
                     documento={documentoEditando}
                     aoFechar={() => setModalDocumentoAberto(false)}
                     aoSalvar={handleSalvarDocumentoVaga}
