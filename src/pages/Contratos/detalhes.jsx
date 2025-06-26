@@ -32,6 +32,26 @@ const ConteudoFrame = styled.div`
     width: 100%;
 `
 
+const InfoBox = styled.div`
+    background: linear-gradient(45deg, #f8fafc, #f1f5f9);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+    & strong {
+        font-weight: 500;
+    }
+    
+    .main-title {
+        font-weight: 800;
+        color: #1f2937;
+    }
+`;
+
 function DetalhesContratos() {
 
     let { id } = useParams()
@@ -91,7 +111,7 @@ function DetalhesContratos() {
             <Toast ref={toast} />
             <Loading opened={loading} />
             <ConfirmDialog />
-            <Container gap="32px">
+            <Container gap="16px">
                 <BotaoVoltar linkFixo="/contratos" />
                 {contrato && contrato?.dados_operadora?.nome ?
                     <>
@@ -125,12 +145,17 @@ function DetalhesContratos() {
                         </Frame>
                         <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="black" color="black"/> {t('add')} Benefício ao Contrato</Botao>
                     </BotaoGrupo>
-                    <div className={styles.card_dashboard}>
-                       
-                    </div>
                     </>
                     : <></>
                 }
+                <InfoBox>
+                    <strong className="main-title">Sobre elegibilidade:</strong><br />
+                    • <strong>Regras no Benefício:</strong> definem quem pode ter acesso ao benefício como um todo<br />
+                    • <strong>Regras no Item:</strong> controlam especificamente cada item dentro do benefício<br />
+                    • <strong>Herança (botão verde):</strong> quando ativada, o item herda automaticamente as regras do benefício<br />
+                    • <strong>⚠️ Importante:</strong> se um item não tiver regras definidas (nem próprias nem herdadas), <u>nenhum colaborador</u> terá acesso a ele<br />
+                    • <strong>💡 Dica:</strong> sempre verifique se a herança está ativada ou se o item possui regras próprias
+                </InfoBox>
                 <DataTableContratosDetalhes contrato={contrato} beneficios={contrato?.beneficios} onUpdate={carregarContrato} />
                 <ModalContratoBeneficios beneficiosContrato={contrato?.beneficios} operadora={contrato?.dados_operadora} aoSalvar={vincularBeneficio} opened={modalOpened} aoFechar={() => setModalOpened(false)} />
             </Container>
