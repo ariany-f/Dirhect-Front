@@ -114,7 +114,6 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
     const [horarios, setHorarios] = useState([]);
     const [funcoes, setFuncoes] = useState([]);
     const [sindicatos, setSindicatos] = useState([]);
-    const [erroPeriInsa, setErroPeriInsa] = useState(false);
     const [loadingDados, setLoadingDados] = useState(false);
     const toast = useRef(null);
 
@@ -126,26 +125,7 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
     const [horario, setHorario] = useState(null);
     const [funcao, setFuncao] = useState(null);
     const [sindicato, setSindicato] = useState(null);
-    const [periculosidade, setPericulosidade] = useState('');
-    const [insalubridade, setInsalubridade] = useState('');
 
-    const [listaPericulosidades] = useState([
-        { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
-        { code: 'MP', name: 'Atividades com Máquinas e Equipamentos Pesados' },
-        { code: 'HA', name: 'Trabalho em Altura' },
-        { code: 'RA', name: 'Exposição a Radiação' },
-        { code: 'TE', name: 'Trabalho com Energia Elétrica' },
-        { code: 'CE', name: 'Exposição ao Calor Excessivo' },
-        { code: 'PE', name: 'Atividades com Produtos Explosivos' },
-        { code: 'CA', name: 'Trabalho em Ambientes Confinedos' },
-        { code: 'SA', name: 'Atividades Subaquáticas' },
-        { code: 'RAU', name: 'Exposição a Ruídos Altos' },
-        { code: 'PB', name: 'Perigos Biológicos' },
-        { code: 'TE', name: 'Exposição a Temperaturas Extremas' },
-        { code: 'DA', name: 'Trabalho em Áreas de Desastres ou Emergências' },
-        { code: 'MC', name: 'Manipulação de Materiais Cortantes' },
-        { code: 'SC', name: 'Exposição a Substâncias Cancerígenas' }
-    ]);
 
     // Função para formatar CNPJ
     const formataCNPJ = (cnpj) => {
@@ -274,8 +254,6 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
 
     useEffect(() => {
         if (vaga && opened) {
-            setPericulosidade(vaga.periculosidade ? listaPericulosidades.find(p => p.code === vaga.periculosidade) : '');
-            setInsalubridade(vaga.insalubridade || '');
             // Não preencher campos organizacionais - só quando selecionar empresa de destino
             setFilial(null);
             setCentroCusto(null);
@@ -308,8 +286,6 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
             setHorario(null);
             setFuncao(null);
             setSindicato(null);
-            setPericulosidade('');
-            setInsalubridade('');
             setLoadingDados(false);
         }
     }, [opened]);
@@ -447,22 +423,8 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
             return;
         }
 
-        if (!periculosidade && !insalubridade) {
-            setErroPeriInsa(true);
-            toast.current.show({
-                severity: 'error',
-                summary: 'Preencha periculosidade ou insalubridade',
-                life: 3000
-            });
-            return;
-        } else {
-            setErroPeriInsa(false);
-        }
-
         const dadosTransferencia = {
             id: vaga.id,
-            periculosidade: periculosidade?.code || null,
-            insalubridade: insalubridade || 0,
             filial: filial?.code || null,
             centro_custo: centroCusto?.code || null,
             departamento: departamento?.code || null,
@@ -479,7 +441,7 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
     return (
         opened &&
         <OverlayRight $opened={opened}>
-            <DialogEstilizadoRight $opened={opened} $align="flex-start" $width="95vw" $minWidth="80vw" open={opened}>
+            <DialogEstilizadoRight $opened={opened} $align="flex-start" $width="65vw" $minWidth="80vw" open={opened}>
                 <Frame>
                     <Titulo>
                         <button className="close" onClick={aoFechar}>
@@ -629,29 +591,6 @@ function ModalTransferirVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                                     code: sindicato.id
                                                 }))} 
                                                 placeholder="Sindicato" />
-                                        </Col6>
-                                    </Col12>
-
-                                    <Col12>
-                                        <Col6>
-                                            <DropdownItens 
-                                                $marginTop={'18px'}
-                                                camposVazios={classError}
-                                                name="periculosidade" 
-                                                valor={periculosidade}
-                                                setValor={setPericulosidade} 
-                                                options={listaPericulosidades} 
-                                                placeholder="Periculosidade" />
-                                        </Col6>
-                                        <Col6>
-                                            <CampoTexto
-                                                name="insalubridade"
-                                                valor={insalubridade}
-                                                setValor={setInsalubridade}
-                                                type="number"
-                                                label="Insalubridade (%)"
-                                                placeholder="Digite a porcentagem"
-                                            />
                                         </Col6>
                                     </Col12>
                                 </>
