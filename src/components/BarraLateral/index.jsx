@@ -378,7 +378,7 @@ function BarraLateral({ $sidebarOpened }) {
     else if(userGroups.includes('RH')) {
         userPermissions.push('view_folha')
     }
-    else if(userGroups.includes('Candidato') || userGroups.includes('Colaborador')) {
+    else if(userGroups.includes('Colaborador')) {
         userPermissions.push('view_cadastro')
     }
 
