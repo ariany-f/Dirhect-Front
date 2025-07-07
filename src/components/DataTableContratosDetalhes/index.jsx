@@ -343,11 +343,11 @@ function DataTableContratosDetalhes({ beneficios, onUpdate, contrato }) {
                 tipo_calculo: tipo_calculo,
                 tipo_desconto: tipo_desconto,
                 contrato_beneficio: parseInt(selectedBeneficio.id),
-                extensivel_dependente: extensivo_dependentes ?  true : false,
+                extensivel_dependente: false,
                 parametro_aplicacao: "I",
                 regra_elegibilidade: selectedItemBeneficio?.regra_elegibilidade ?? [],
                 numero_decimal: true,
-                herdado: herdado ? true : false,
+                herdado: true,
                 valor: converterParaNumero(valor),
                 valor_empresa: converterParaNumero(empresa),
                 valor_desconto: converterParaNumero(desconto)

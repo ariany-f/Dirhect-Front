@@ -339,21 +339,6 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                 </StyledInputContainer>
                             </Col6>
                         </Col12>
-                        <Col12>
-                            <Col6>
-                            
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                    <span style={{ fontSize: 14, color: 'var(--neutro-900)' }}>Extensível Dependente?</span>
-                                    <SwitchInput checked={extensivo_dependentes} onChange={() => setExtensivelDependente(!extensivo_dependentes)} color="var(--primaria)" />
-                                </div>
-                            </Col6>
-                            <Col6>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                    <span style={{ fontSize: 14, color: 'var(--neutro-900)' }}>Herdar regras de elegibilidade do Benefício?</span>
-                                    <SwitchInput checked={herdado} onChange={() => setHerdado(!herdado)} color="var(--primaria)" />
-                                </div>
-                            </Col6>
-                        </Col12>
                     </Frame>
                     <form method="dialog">
                         <div className={styles.containerBottom}>
