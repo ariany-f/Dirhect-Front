@@ -57,7 +57,6 @@ const TituloComIcone = styled.div`
 
 function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSucesso, aoSalvar, dadoAntigo, nomeBeneficio = '', iconeBeneficio = '', contrato = null }) {
     
-    const [alteravel, setAlteravel] = useState(dadoAntigo)
     const [classError, setClassError] = useState([])
     const [id, setId] = useState('')
     const [valor, setValor] = useState('')
@@ -89,7 +88,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
     
     useEffect(() => {
         /** Preenche os inputs com os dados atuais */
-        if(dadoAntigo)
+        if(dadoAntigo && opened)
         {
             setId(dadoAntigo.id)
             setValor(dadoAntigo.valor)
@@ -101,38 +100,60 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
             setHerdado(dadoAntigo.herdado)
 
              // Encontrar o objeto correspondente para o dropdown
-             setTipoCalculo(prev => tiposCalculo.find(item => item.code === dadoAntigo.tipo_calculo) || prev);
-             setTipoDesconto(prev => tiposDesconto.find(item => item.code === dadoAntigo.tipo_desconto) || prev);
+             setTipoCalculo(tiposCalculo.find(item => item.code === dadoAntigo.tipo_calculo) || '');
+             setTipoDesconto(tiposDesconto.find(item => item.code === dadoAntigo.tipo_desconto) || '');
+        } else if (opened && !dadoAntigo) {
+            // Modal aberto para adicionar novo item - limpar todos os campos
+            setId('')
+            setValor('')
+            setEmpresa('')
+            setDesconto('')
+            setTempoMinimo('')
+            setExtensivelDependente(false)
+            setDescricao('')
+            setHerdado(true)
+            setTipoCalculo('')
+            setTipoDesconto('')
+            setErroValor('')
+            setClassError([])
         }
 
-    }, [dadoAntigo, alteravel])
+    }, [dadoAntigo, opened, tiposCalculo, tiposDesconto])
+
+    // useEffect para limpar dados quando o modal é fechado
+    useEffect(() => {
+        if (!opened) {
+            // Limpar todos os campos quando o modal for fechado
+            setId('')
+            setValor('')
+            setEmpresa('')
+            setDesconto('')
+            setTempoMinimo('')
+            setExtensivelDependente(false)
+            setDescricao('')
+            setHerdado(true)
+            setTipoCalculo('')
+            setTipoDesconto('')
+            setErroValor('')
+            setClassError([])
+        }
+    }, [opened])
 
     const fecharModal = () => {
         aoFechar();
-        setHerdado(true)
-
-        setValor('')
-        setEmpresa('')
-        setDesconto('')
-        setDescricao('')
-        setTipoCalculo('')
+        // Não precisa limpar aqui pois o useEffect já faz isso quando opened = false
     }
 
     useEffect(() => {
-        setDropdownTiposCalculo((estadoAnterior) => {
-            const novosTiposCalculo = tiposCalculo.map((item) => ({
-                name: item.name,
-                code: item.code
-            }));
-            return [...estadoAnterior, ...novosTiposCalculo];
-        });
-        setDropdownTiposDesconto((estadoAnterior) => {
-            const novosTiposDesconto = tiposDesconto.map((item) => ({
-                name: item.name,
-                code: item.code
-            }));
-            return [...estadoAnterior, ...novosTiposDesconto];
-        });
+        // Inicializar dropdowns apenas uma vez
+        setDropdownTiposCalculo(tiposCalculo.map((item) => ({
+            name: item.name,
+            code: item.code
+        })));
+        setDropdownTiposDesconto(tiposDesconto.map((item) => ({
+            name: item.name,
+            code: item.code
+        })));
     }, [])
 
     const calcularValorEmpresa = (valorCompra, valorColaborador) => {
