@@ -343,7 +343,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate, contrato }) {
                 tipo_calculo: tipo_calculo,
                 tipo_desconto: tipo_desconto,
                 contrato_beneficio: parseInt(selectedBeneficio.id),
-                extensivel_depentende: extensivo_dependentes ?  true : false,
+                extensivel_dependente: extensivo_dependentes ?  true : false,
                 parametro_aplicacao: "I",
                 regra_elegibilidade: selectedItemBeneficio?.regra_elegibilidade ?? [],
                 numero_decimal: true,
@@ -619,7 +619,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate, contrato }) {
                             value={selectedItems} 
                         >
                             <Column body={representativeTemplate} field="descricao" header="Descrição" style={{ width: '15%' }} />
-                            <Column body={representativeExtensivelTemplate} field="extensivel_depentende" header="Extensível Dependente" style={{ width: '10%' }} />
+                            <Column body={representativeExtensivelTemplate} field="extensivel_dependente" header="Extensível Dependente" style={{ width: '10%' }} />
                             <Column body={representativeVersaoTemplate} field="versao" header="Versão" style={{ width: '10%' }} />
                             <Column body={representativeValorTemplate} field="valor" header="Valor" style={{ width: '12%' }} />
                             <Column body={representativeEmpresaTemplate} field="valor_empresa" header="Empresa" style={{ width: '15%' }} />
