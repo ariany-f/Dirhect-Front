@@ -14,6 +14,7 @@ import { Tooltip } from 'primereact/tooltip';
 import http from '@http';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { confirmDialog } from 'primereact/confirmdialog';
+import ModalEncaminharVaga from '@components/ModalEncaminharVaga';
 
 function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
     const[selectedCandidato, setSelectedCandidato] = useState(0)
@@ -23,6 +24,8 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
     })
     const navegar = useNavigate()
     const [listaCandidatos, setListaCandidatos] = useState(candidatos || []);
+    const [modalEncaminharAberto, setModalEncaminharAberto] = useState(false);
+    const [candidatoParaAprovar, setCandidatoParaAprovar] = useState(null);
 
     useEffect(() => {
         if (candidatos?.length > 0 && vagaId) {
@@ -174,41 +177,24 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
     }
 
     const handleAprovar = async (rowData) => {
-        const vagaConfigurada = rowData?.vagas_configuradas?.[0];
-        if (!vagaConfigurada) return;
+        setCandidatoParaAprovar(rowData);
+        setModalEncaminharAberto(true);
+    };
 
-        if (documentos.length === 0) {
-            confirmDialog({
-                message: 'A vaga não possui documentos requeridos. Por isso, não serão solicitados documentos ao candidato. Deseja continuar?',
-                header: 'Atenção',
-                icon: 'pi pi-info-circle',
-                acceptLabel: 'Sim',
-                rejectLabel: 'Não',
-                accept: async () => {
-                    try {
-                        await http.post(`vagas_candidatos/${vagaConfigurada.id}/seguir/`);
-                        setListaCandidatos(listaCandidatos.map(c =>
-                            c === rowData ? { 
-                                ...c, 
-                                vagas_configuradas: [{ ...c.vagas_configuradas[0], status: 'A' }]
-                            } : c
-                        ));
-                    } catch (error) {
-                        console.error('Erro ao aprovar candidato:', error);
-                    }
-                },
-                reject: () => {}
-            });
-            return;
-        }
+    const handleEnviarEncaminhamento = async (dados) => {
+        const vagaConfigurada = candidatoParaAprovar?.vagas_configuradas?.[0];
+        if (!vagaConfigurada) return;
         try {
+            // Aqui você pode enviar os dados do modal para o backend se necessário
             await http.post(`vagas_candidatos/${vagaConfigurada.id}/seguir/`);
             setListaCandidatos(listaCandidatos.map(c =>
-                c === rowData ? { 
+                c === candidatoParaAprovar ? { 
                     ...c, 
                     vagas_configuradas: [{ ...c.vagas_configuradas[0], status: 'A' }]
                 } : c
             ));
+            setModalEncaminharAberto(false);
+            setCandidatoParaAprovar(null);
         } catch (error) {
             console.error('Erro ao aprovar candidato:', error);
         }
@@ -354,6 +340,11 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
                 <Column body={actionTemplate} style={{ width: '10%' }} />
                 {/* <Column field="statusDeCandidato" header="Status Candidato" style={{ width: '10%' }}></Column> */}
             </DataTable>
+            <ModalEncaminharVaga
+                opened={modalEncaminharAberto}
+                aoFechar={() => setModalEncaminharAberto(false)}
+                aoSalvar={handleEnviarEncaminhamento}
+            />
         </>
     )
 }

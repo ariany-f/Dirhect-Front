@@ -62,9 +62,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   const [cpf, setCpf] = useState("");
   const [nascimento, setNascimento] = useState("");
   const [telefone, setTelefone] = useState("");
-  const [filial, setFilial] = useState("");
   const [dataInicio, setDataInicio] = useState("");
-  const [centroCusto, setCentroCusto] = useState("");
   const [salario, setSalario] = useState("");
   const [periculosidade, setPericulosidade] = useState(periculosidadeInicial || "");
   const [candidatoId, setCandidatoId] = useState(null);
@@ -99,9 +97,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
     { value: "{{nascimento}}", label: "Data de Nascimento" },
     { value: "{{cpf}}", label: "CPF" },
     { value: "{{telefone}}", label: "Telefone" },
-    { value: "{{filial}}", label: "Filial" },
     { value: "{{dataInicio}}", label: "Data de Início" },
-    { value: "{{centroCusto}}", label: "Centro de Custo" },
     { value: "{{salario}}", label: "Salário" },
     { value: "{{periculosidade}}", label: "Periculosidade" },
     { value: "{{dataExameMedico}}", label: "Data do Exame Médico" },
@@ -120,9 +116,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       "{{nascimento}}": formatDate(nascimento), 
       "{{cpf}}": cpf,
       "{{telefone}}": telefone,
-      "{{filial}}": filial,
       "{{dataInicio}}": formatDate(dataInicio),
-      "{{centroCusto}}": centroCusto,
       "{{salario}}": salario,
       "{{periculosidade}}": periculosidade.name ?? '',
       "{{dataExameMedico}}": formatDate(dataExameMedico),
@@ -154,9 +148,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
         cpf,
         nascimento,
         telefone,
-        filial,
         dataInicio,
-        centroCusto,
         salario,
         periculosidade,
         dataExameMedico
@@ -181,6 +173,13 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       }));
 
       setDropdownTemplates(dropdown);
+      
+      // Seleciona o primeiro template por padrão
+      if (dropdown.length > 0 && !selectedTemplate) {
+        const primeiroTemplate = templates[0];
+        setSelectedTemplate(dropdown[0]);
+        setEditorContent(primeiroTemplate.content);
+      }
     }
   }, [templates]);
 
@@ -206,8 +205,6 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
         setEmail(candidato.email || '');
         setTelefone(candidato.telefone || '');
         setNascimento(candidato.dt_nascimento || '');
-        setFilial(candidato.filial || '');
-        setCentroCusto(candidato.centro_custo || '');
         if (candidato.periculosidade) {
           const periculosidadeEncontrada = listaPericulosidades.find(
             p => p.code === candidato.periculosidade
@@ -256,21 +253,10 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
               {!showEditorContent ? (
                 <Col12>
                   <Col6>
-                    <CampoTexto 
-                      patternMask={['999.999.999-99']} 
-                      valor={cpf} 
-                      type="text" 
-                      setValor={handleCpfChange} 
-                      label="CPF" 
-                    />
-                    <CampoTexto valor={nome} type="text" setValor={setNome} label="Nome" />
-                    <CampoTexto valor={email} type="text" setValor={setEmail} label="E-mail" />
                     <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem" />
                     <DropdownItens width="280px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades" name="periculosidade" placeholder="Periculosidades"/> 
                   </Col6>
                   <Col6>
-                    <CampoTexto patternMask={['(99) 99999-9999']} valor={telefone} type="text" setValor={setTelefone} label="Telefone" />
-                    <CampoTexto valor={nascimento} type="date" setValor={setNascimento} label="Data de Nascimento" />
                     <CampoTexto valor={dataInicio} type="date" setValor={setDataInicio} label="Data de Início" />
                     <CampoTexto patternMask={'BRL'} valor={salario} type="text" setValor={setSalario} label="Salário" />
                     <CampoTexto valor={dataExameMedico} type="date" setValor={setDataExameMedico} label="Data do Exame Médico" />

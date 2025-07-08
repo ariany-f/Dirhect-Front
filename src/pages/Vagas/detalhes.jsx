@@ -28,6 +28,7 @@ import ModalVaga from '@components/ModalVaga'
 import ModalTransferirVaga from '@components/ModalTransferirVaga'
 // import documentos from '@json/documentos_requeridos.json'
 import { unformatCurrency } from '@utils/formats'
+import ModalAdicionarCandidato from '@components/ModalAdicionarCandidato';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -58,6 +59,7 @@ function DetalhesVaga() {
     const [documentoEditando, setDocumentoEditando] = useState(null);
     const [modalEditarAberto, setModalEditarAberto] = useState(false);
     const [modalTransferirAberto, setModalTransferirAberto] = useState(false);
+    const [modalAdicionarCandidatoAberto, setModalAdicionarCandidatoAberto] = useState(false);
 
     const listaPericulosidades = [
         { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
@@ -243,9 +245,7 @@ function DetalhesVaga() {
         cpf,
         nascimento,
         telefone,
-        filial,
         dataInicio,
-        centroCusto,
         salario,
         periculosidade,
         dataExameMedico
@@ -264,9 +264,7 @@ function DetalhesVaga() {
             cpf: cpfNumerico,
             dt_nascimento: nascimento,
             telefone,
-            filial,
             dt_inicio: dataInicio,
-            centroCusto,
             salario: salarioNumerico,
             periculosidade: periculosidade?.code,
             dt_exame_medico: dataExameMedico,
@@ -391,6 +389,50 @@ function DetalhesVaga() {
             });
     };
 
+    const handleAdicionarCandidato = (dados) => {
+        const {
+            nome,
+            email,
+            cpf,
+            nascimento,
+            telefone
+        } = dados;
+
+        const cpfNumerico = (cpf || '').replace(/\D/g, '');
+
+        const dadosCandidato = {
+            nome: nome || '',
+            email: email || '',
+            content: '',
+            cpf: cpfNumerico,
+            dt_nascimento: (nascimento || '2000-01-01'),
+            telefone: telefone || '',
+            dt_inicio: '2023-01-01',
+            salario: null,
+            periculosidade: undefined,
+            dt_exame_medico: '2023-01-01',
+            vaga_id: id
+        };
+
+        http.post(`candidato/`, dadosCandidato)
+            .then(response => {
+                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Candidato encaminhado com sucesso!', life: 3000 });
+                setModalAdicionarCandidatoAberto(false);
+                // Recarrega os dados da vaga
+                http.get(`vagas/${id}/?format=json`)
+                    .then(response => {
+                        setVaga(response);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao recarregar vaga:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('Erro ao adicionar candidato:', error);
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao encaminhar candidato', life: 3000 });
+            });
+    };
+
     return (
         <>
         <Frame>
@@ -420,7 +462,7 @@ function DetalhesVaga() {
                                     )}
                                     {vaga.status == 'A' && (
                                         <>
-                                            <FaPen style={{ cursor: 'pointer' }} size={16} onClick={() => setModalEditarAberto(true)} fill="var(--primaria)" />
+                                        <FaPen style={{ cursor: 'pointer' }} size={16} onClick={() => setModalEditarAberto(true)} fill="var(--primaria)" />
                                             <FaExchangeAlt style={{ cursor: 'pointer' }} size={16} onClick={() => setModalTransferirAberto(true)} fill="var(--primaria)" title="Transferir vaga" />
                                         </>
                                     )}
@@ -434,16 +476,16 @@ function DetalhesVaga() {
                                             <FaTrash /><Link onClick={cancelarVaga}>Cancelar vaga</Link>
                                         </BotaoSemBorda>
                                         <Botao 
-                                            aoClicar={abrirModal} 
+                                            aoClicar={() => setModalAdicionarCandidatoAberto(true)} 
                                             size="small"
                                             disabled={vagaAguardando() || vagaEncerrada()}
                                             title={
-                                                vagaAguardando() ? "Não é possível encaminhar candidatos enquanto a vaga estiver aguardando" :
-                                                vagaEncerrada() ? "Não é possível encaminhar candidatos para uma vaga encerrada" : ""
+                                                vagaAguardando() ? "Não é possível adicionar candidatos enquanto a vaga estiver aguardando" :
+                                                vagaEncerrada() ? "Não é possível adicionar candidatos para uma vaga encerrada" : ""
                                             }
                                         >
                                             <FaArrowAltCircleRight fill="white" />
-                                            Encaminhar para novo candidato
+                                            Adicionar Candidato
                                         </Botao>
                                     </>
                                 }
@@ -605,6 +647,11 @@ function DetalhesVaga() {
                 aoFechar={() => setModalTransferirAberto(false)}
                 vaga={vaga}
                 aoSalvar={handleTransferirVaga}
+            />
+            <ModalAdicionarCandidato
+                opened={modalAdicionarCandidatoAberto}
+                aoFechar={() => setModalAdicionarCandidatoAberto(false)}
+                aoSalvar={handleAdicionarCandidato}
             />
         </Container>
         </Frame>
