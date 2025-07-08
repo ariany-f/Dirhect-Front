@@ -52,8 +52,8 @@ function Publico() {
                         <BannerMini />
                     </>
                     }
-                {import.meta.env.VERCEL_ENV && <Analytics />}
-                {import.meta.env.VERCEL_ENV && <SpeedInsights />}
+                {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
+                {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
             </MainSectionPublico>
         </>
     )
