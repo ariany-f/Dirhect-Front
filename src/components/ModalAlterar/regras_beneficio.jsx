@@ -102,6 +102,12 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
              // Encontrar o objeto correspondente para o dropdown
              setTipoCalculo(tiposCalculo.find(item => item.code === dadoAntigo.tipo_calculo) || '');
              setTipoDesconto(tiposDesconto.find(item => item.code === dadoAntigo.tipo_desconto) || '');
+             
+             // Recalcular valor empresa apenas se necessário
+             if (dadoAntigo.valor && dadoAntigo.valor_desconto && !dadoAntigo.valor_empresa) {
+                 const novoValorEmpresa = calcularValorEmpresa(dadoAntigo.valor, dadoAntigo.valor_desconto)
+                 setEmpresa(novoValorEmpresa)
+             }
         } else if (opened && !dadoAntigo) {
             // Modal aberto para adicionar novo item - limpar todos os campos
             setId('')
@@ -156,21 +162,40 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
         })));
     }, [])
 
-    const calcularValorEmpresa = (valorCompra, valorColaborador) => {
-        const valorCompraNum = parseFloat(valorCompra.replace(/[^\d,]/g, '').replace(',', '.')) || 0
-        const valorColaboradorNum = parseFloat(valorColaborador.replace(/[^\d,]/g, '').replace(',', '.')) || 0
+    const normalizarValor = (valor) => {
+        if (typeof valor === 'number') return valor;
+        if (!valor) return 0;
+        // Remove prefixo R$, espaços e outros caracteres não numéricos exceto , e .
+        let limpo = valor.replace('R$', '').replace(/\s/g, '');
+        // Se já está formatado (ex: 2.100,00)
+        if (limpo.includes(',')) {
+            // Remove pontos de milhar e troca vírgula por ponto
+            return parseFloat(limpo.replace(/\./g, '').replace(',', '.'));
+        }
+        // Se é só número (ex: 209900), trata como centavos
+        if (/^\d+$/.test(limpo)) {
+            return parseFloat(limpo) / 100;
+        }
+        // Se for float em string (ex: "2100.00")
+        return parseFloat(limpo) || 0;
+    };
 
+    const calcularValorEmpresa = (valorCompra, valorColaborador) => {
+        const valorCompraNum = normalizarValor(valorCompra);
+        const valorColaboradorNum = normalizarValor(valorColaborador);
+        console.log(valorColaboradorNum, valorCompraNum)
         if (valorColaboradorNum > valorCompraNum) {
-            setErroValor('O valor do colaborador não pode ser maior que o valor da compra')
-            return ''
+            setErroValor('O valor do colaborador não pode ser maior que o valor da compra');
+            return '';
         } else {
-            setErroValor('')
-            return (valorCompraNum - valorColaboradorNum).toLocaleString('pt-BR', {
+            setErroValor('');
+            const valorEmpresaNum = valorCompraNum - valorColaboradorNum;
+            return valorEmpresaNum.toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
-            })
+            });
         }
-    }
+    };
 
     const handleValorCompraChange = (novoValor) => {
         setValor(novoValor)
