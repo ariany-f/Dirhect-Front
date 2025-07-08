@@ -752,17 +752,24 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
         setOpcoesSelecionadasDependente([]);
     };
 
+    // Atualizar os handlers dos switches:
     const handleExtensivelDependenteChange = (novoValor) => {
         setExtensivelDependente(novoValor);
-        if (!novoValor) {
-            setExclusivoDependente(false); // Desativa exclusivo se extensível for falso
+        if (novoValor) {
+            setExclusivoDependente(false);
+            setActiveIndex(1); // Vai para aba Dependentes
+        } else if (!novoValor && !exclusivoDependente) {
+            setActiveIndex(0); // Se ambos desmarcados, volta para Colaborador
         }
     };
 
     const handleExclusivoDependenteChange = (novoValor) => {
         setExclusivoDependente(novoValor);
         if (novoValor) {
-            setExtensivelDependente(false); // Desativa extensível se exclusivo for verdadeiro
+            setExtensivelDependente(false);
+            setActiveIndex(1); // Vai para aba Dependentes
+        } else if (!novoValor && !extensivelDependente) {
+            setActiveIndex(0); // Se ambos desmarcados, volta para Colaborador
         }
     };
 
@@ -808,10 +815,7 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                         <SwitchInput
                                             checked={extensivelDependente}
-                                            onChange={() => {
-                                                setExtensivelDependente(!extensivelDependente);
-                                                if (!extensivelDependente) setExclusivoDependente(false);
-                                            }}
+                                            onChange={() => handleExtensivelDependenteChange(!extensivelDependente)}
                                             color="var(--primaria)"
                                         />
                                         <span style={{ fontSize: 14, color: '#444' }}>Extensível a dependentes</span>
@@ -819,10 +823,7 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                         <SwitchInput
                                             checked={exclusivoDependente}
-                                            onChange={() => {
-                                                setExclusivoDependente(!exclusivoDependente);
-                                                if (!exclusivoDependente) setExtensivelDependente(false);
-                                            }}
+                                            onChange={() => handleExclusivoDependenteChange(!exclusivoDependente)}
                                             color="var(--primaria)"
                                         />
                                         <span style={{ fontSize: 14, color: '#444' }}>Exclusivo dependentes</span>
@@ -835,7 +836,7 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                                 <TabButton active={activeIndex === 0} onClick={() => setActiveIndex(0)}>
                                     <Texto color={activeIndex === 0 ? 'white' : '#000'}>Colaborador</Texto>
                                 </TabButton>
-                                {extensivelDependente && (
+                                {(extensivelDependente || exclusivoDependente) && (
                                     <TabButton active={activeIndex === 1} onClick={() => setActiveIndex(1)}>
                                         <Texto color={activeIndex === 1 ? 'white' : '#000'}>Dependentes</Texto>
                                     </TabButton>
@@ -956,7 +957,7 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                                     </Col6>
                                 </Col12>
                             )}
-                            {activeIndex === 1 && extensivelDependente && (
+                            {activeIndex === 1 && (extensivelDependente || exclusivoDependente) && (
                                 <Col12>
                                     <Col6>
                                         <Wrapper>
