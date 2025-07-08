@@ -17,11 +17,13 @@ import { RiCloseFill, RiDraggable, RiOrganizationChart } from "react-icons/ri"
 import { TfiSave } from "react-icons/tfi";
 import { GrAddCircle } from "react-icons/gr"
 import { MdArrowRight } from "react-icons/md"
-import { FaArrowRight } from "react-icons/fa"
+import { FaArrowRight, FaUser, FaUsers } from "react-icons/fa"
 import { Toast } from "primereact/toast"
 import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles'
 import SwitchInput from '@components/SwitchInput'
 import { TbTableOptions  } from "react-icons/tb"
+import { MdInfo } from "react-icons/md"
+import Texto from '@components/Texto';
 
 // Componente de Item Arrastável com novos estilos
 const DraggableItem = ({ grupo, index, moveItem, removerGrupo, toggleNegarGrupo }) => {
@@ -164,22 +166,38 @@ const Wrapper = styled.div`
     gap: 16px;
     align-self: stretch;
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
     margin-top: 16px;
+    box-sizing: border-box;
 `;
 
 const Col12 = styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     gap: 16px;
     width: 100%;
 `;
 
 const Col6 = styled.div`
     flex: 1 1 calc(50% - 8px);
+    flex-basis: calc(50% - 8px);
+    width: calc(50% - 8px);
     max-width: calc(50% - 8px);
+    min-width: calc(50% - 8px);
     max-height: 75vh;
     overflow-y: auto;
+`;
+
+const ContainerGrupos = styled.div`
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 24px;
+    overflow-y: auto;
+    padding: 24px 12px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    min-width: 0;
 `;
 
 const StyledMultiSelect = styled(MultiSelect)`
@@ -219,18 +237,42 @@ const StyledMultiSelect = styled(MultiSelect)`
     }
 `;
 
-const ContainerGrupos = styled.div`
-    width: 100%;
-    margin-bottom: 24px;
-    overflow-y: auto;
-    padding: 24px 12px;
-    border-radius: 8px;
+const TabPanel = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0;
+`;
+
+const TabButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: ${({ active }) => active ? 'linear-gradient(to left, #0c004c, #5d0b62)' : '#f5f5f5'};
+    color: ${({ active }) => active ? '#fff' : '#333'};
+    border: none;
+    border-radius: 8px 8px 0 0;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 22px;
+    cursor: pointer;
+    margin-right: 2px;
+    box-shadow: ${({ active }) => active ? '0 2px 8px #5d0b6240' : 'none'};
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+    border-bottom: ${({ active }) => active ? '2px solid #5d0b62' : '2px solid transparent'};
+    &:hover {
+        background: ${({ active }) => active ? 'linear-gradient(to left, #0c004c, #5d0b62)' : '#ececec'};
+    }
 `;
 
 function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar, aoSalvar, item, heranca }) {
 
     const { usuario } = useSessaoUsuarioContext();
     
+    // Estados para controle das abas
+    const [activeIndex, setActiveIndex] = useState(0);
+    
+    // Estados para colaborador (já existentes)
     const [tipoSelecionado, setTipoSelecionado] = useState(null);
     const [opcoesDisponiveis, setOpcoesDisponiveis] = useState([]);
     const [opcoesSelecionadas, setOpcoesSelecionadas] = useState([]);
@@ -239,6 +281,15 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
     const [modelosValidos, setModelosValidos] = useState({});
     const toast = useRef(null);
     const [herdar, setHerdar] = useState(false);
+    
+    // Estados para dependentes (novos)
+    const [tipoSelecionadoDependente, setTipoSelecionadoDependente] = useState(null);
+    const [opcoesDisponiveisDependente, setOpcoesDisponiveisDependente] = useState([]);
+    const [opcoesSelecionadasDependente, setOpcoesSelecionadasDependente] = useState([]);
+    const [carregandoDependente, setCarregandoDependente] = useState(false);
+    const [gruposAdicionadosDependente, setGruposAdicionadosDependente] = useState([]);
+    const [extensivelDependente, setExtensivelDependente] = useState(false);
+    const [exclusivoDependente, setExclusivoDependente] = useState(false);
     
     useEffect(() => {
         const carregarModelosValidos = async () => {
@@ -264,6 +315,37 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
         name: code.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
         model: data.model
     }));
+
+    // Tipos específicos para dependentes
+    const tiposDependentes = [
+        {
+            code: 'genero_dependente',
+            name: 'Gênero do Dependente',
+            model: 'custom',
+            options: [
+                { id: 'M', name: 'Masculino', textoCompleto: 'Masculino' },
+                { id: 'F', name: 'Feminino', textoCompleto: 'Feminino' }
+            ]
+        },
+        {
+            code: 'grau_parentesco',
+            name: 'Grau de Parentesco',
+            model: 'custom',
+            options: [
+                { id: 'conjuge', name: 'Cônjuge', textoCompleto: 'Cônjuge' },
+                { id: 'filho', name: 'Filho(a)', textoCompleto: 'Filho(a)' },
+                { id: 'pai', name: 'Pai', textoCompleto: 'Pai' },
+                { id: 'mae', name: 'Mãe', textoCompleto: 'Mãe' },
+                { id: 'irmao', name: 'Irmão(ã)', textoCompleto: 'Irmão(ã)' },
+                { id: 'neto', name: 'Neto(a)', textoCompleto: 'Neto(a)' },
+                { id: 'sogro', name: 'Sogro(a)', textoCompleto: 'Sogro(a)' },
+                { id: 'genro_nora', name: 'Genro/Nora', textoCompleto: 'Genro/Nora' }
+            ]
+        }
+    ];
+
+    // Combinar tipos para colaborador e dependentes
+    const tiposCombinados = [...tipos, ...tiposDependentes];
 
     // Template para o dropdown
     const tipoTemplate = (option, props) => {
@@ -337,8 +419,20 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
     useEffect(() => {
         if (opened) {
             setHerdar(item.herdado);
+            setExtensivelDependente(item.extensivel_dependente || false);
+            setExclusivoDependente(item.exclusivo_dependente || false);
+        } else {
+            // Limpar dados quando o modal for fechado
+            setActiveIndex(0);
+            setGruposAdicionadosDependente([]);
+            setTipoSelecionadoDependente(null);
+            setOpcoesSelecionadasDependente([]);
+            setOpcoesDisponiveisDependente([]);
+            setCarregandoDependente(false);
+            setExtensivelDependente(false);
+            setExclusivoDependente(false);
         }
-    }, [opened]);
+    }, [opened, item]);
 
     const adicionarGrupo = () => {
         if (!tipoSelecionado || (!tipoSelecionado.name) || opcoesSelecionadas.length === 0) {
@@ -487,16 +581,195 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
         aoSalvar({regra_elegibilidade, herdado: herdar});
     };
 
+    // Funções para dependentes (duplicadas e adaptadas)
+    const adicionarGrupoDependente = () => {
+        if (!tipoSelecionadoDependente || (!tipoSelecionadoDependente.name) || opcoesSelecionadasDependente.length === 0) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Selecione um tipo e pelo menos uma opção',
+                life: 3000
+            });
+            return;
+        }
+        
+        // Verifica se já existe um grupo deste tipo
+        const grupoExistenteIndex = gruposAdicionadosDependente.findIndex(g => g.tipo === tipoSelecionadoDependente.name);
+        const opcoesComNegar = opcoesSelecionadasDependente.map(o => ({ ...o }));
+        
+        if (grupoExistenteIndex >= 0) {
+            // Atualiza grupo existente
+            const novosGrupos = [...gruposAdicionadosDependente];
+            novosGrupos[grupoExistenteIndex] = {
+                ...novosGrupos[grupoExistenteIndex],
+                data: opcoesComNegar,
+                opcoes: opcoesComNegar.map(o => o.textoCompleto),
+                negar: false
+            };
+            
+            setGruposAdicionadosDependente(novosGrupos);
+        } else {
+            // Cria novo grupo
+            const novoGrupo = {
+                id: `${tipoSelecionadoDependente.name}-${Date.now()}`,
+                data: opcoesComNegar,
+                tipo: tipoSelecionadoDependente.name,
+                opcoes: opcoesComNegar.map(o => o.textoCompleto),
+                negar: false
+            };
+            
+            setGruposAdicionadosDependente([...gruposAdicionadosDependente, novoGrupo]);
+        }
+        
+        // Não limpa mais as seleções aqui
+        setTipoSelecionadoDependente(null);
+    };
+
+    const buscarOpcoesDependente = async (tipoCode, tipoObj) => {
+        setCarregandoDependente(true);
+        try {
+            // Verificar se é um tipo customizado para dependentes
+            const tipoCustomizado = tiposDependentes.find(t => t.code === tipoCode);
+            
+            if (tipoCustomizado) {
+                // Usar opções customizadas
+                setOpcoesDisponiveisDependente(tipoCustomizado.options);
+                
+                // Encontra o grupo existente do tipo selecionado
+                const grupoExistente = gruposAdicionadosDependente.find(g => g.tipo === tipoObj.name);
+                if (grupoExistente && grupoExistente.data) {
+                    const itensSelecionados = tipoCustomizado.options.filter(opcao => 
+                        grupoExistente.data.some(itemGrupo => itemGrupo.id === opcao.id)
+                    );
+                    setOpcoesSelecionadasDependente(itensSelecionados);
+                } else {
+                    setOpcoesSelecionadasDependente([]);
+                }
+            } else {
+                // Usar API para tipos do sistema
+                const modelInfo = modelosValidos[tipoCode];
+                let endpoint = tipoCode;
+                
+                if (modelInfo?.model?.startsWith('integracao.')) {
+                    endpoint = `tabela_dominio/${tipoCode.replace(/_/g, '_')}`;
+                }
+                
+                const response = await http.get(`${endpoint}/?format=json`);
+                const fieldDesc = modelInfo?.field_desc || 'nome';
+                
+                // Trata a resposta da tabela_dominio
+                const registros = response.registros || response;
+                
+                const opcoesFormatadas = registros.map(item => ({
+                    id: item.id,
+                    name: item[fieldDesc] || item.nome || item.descricao || item.name,
+                    textoCompleto: item[fieldDesc] || item.nome || item.descricao || item.name
+                }));
+                setOpcoesDisponiveisDependente(opcoesFormatadas);
+
+                // Encontra o grupo existente do tipo selecionado
+                const grupoExistente = gruposAdicionadosDependente.find(g => g.tipo === tipoObj.name);
+                if (grupoExistente && grupoExistente.data) {
+                    const itensSelecionados = opcoesFormatadas.filter(opcao => 
+                        grupoExistente.data.some(itemGrupo => itemGrupo.id === opcao.id)
+                    );
+                    setOpcoesSelecionadasDependente(itensSelecionados);
+                } else {
+                    setOpcoesSelecionadasDependente([]);
+                }
+            }
+        } catch (erro) {
+            console.error(`Erro ao buscar ${tipoCode}:`, erro);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: `Erro ao carregar opções de ${getTipoNome(tipoCode)}`,
+                life: 3000
+            });
+        } finally {
+            setCarregandoDependente(false);
+        }
+    };
+
+    const handleTipoChangeDependente = async (tipo) => {
+        if (tipo && tipo.code) {
+            setTipoSelecionadoDependente(tipo);
+            await buscarOpcoesDependente(tipo.code, tipo);
+        }
+    };
+
+    const handleMultiSelectChangeDependente = (e) => {
+        if (e.value.length === opcoesDisponiveisDependente.length) {
+            setOpcoesSelecionadasDependente(opcoesDisponiveisDependente);
+        } else if (opcoesSelecionadasDependente.length === opcoesDisponiveisDependente.length) {
+            setOpcoesSelecionadasDependente(e.value);
+        } else {
+            setOpcoesSelecionadasDependente(e.value);
+        }
+    };
+
+    const moveItemDependente = (dragIndex, hoverIndex) => {
+        const draggedItem = gruposAdicionadosDependente[dragIndex];
+        const newItems = [...gruposAdicionadosDependente];
+        newItems.splice(dragIndex, 1);
+        newItems.splice(hoverIndex, 0, draggedItem);
+        setGruposAdicionadosDependente(newItems);
+    };
+      
+    const removerGrupoDependente = (id) => {
+        setGruposAdicionadosDependente(gruposAdicionadosDependente.filter(grupo => grupo.id !== id));
+    };
+      
+    const toggleNegarGrupoDependente = (grupoId) => {
+        setGruposAdicionadosDependente(grupos =>
+            grupos.map(grupo =>
+                grupo.id === grupoId
+                    ? { ...grupo, negar: !grupo.negar }
+                    : grupo
+            )
+        );
+    };
+
+    const salvarGruposDependente = () => {
+        // Por enquanto não salva nada, apenas mostra mensagem
+        toast.current.show({
+            severity: 'info',
+            summary: 'Info',
+            detail: 'Regras de dependentes salvas localmente (não enviadas ao servidor ainda)',
+            life: 3000
+        });
+    };
+
     const limparRegras = () => {
         setGruposAdicionados([]);
         setTipoSelecionado(null);
         setOpcoesSelecionadas([]);
     };
 
+    const limparRegrasDependente = () => {
+        setGruposAdicionadosDependente([]);
+        setTipoSelecionadoDependente(null);
+        setOpcoesSelecionadasDependente([]);
+    };
+
+    const handleExtensivelDependenteChange = (novoValor) => {
+        setExtensivelDependente(novoValor);
+        if (!novoValor) {
+            setExclusivoDependente(false); // Desativa exclusivo se extensível for falso
+        }
+    };
+
+    const handleExclusivoDependenteChange = (novoValor) => {
+        setExclusivoDependente(novoValor);
+        if (novoValor) {
+            setExtensivelDependente(false); // Desativa extensível se exclusivo for verdadeiro
+        }
+    };
+
     return (
         <OverlayRight $opened={opened}>
             <Toast ref={toast} />
-            <DialogEstilizadoRight id="modal-cnpj" open={opened} $opened={opened}>
+            <DialogEstilizadoRight $width="80vw" id="modal-cnpj" open={opened} $opened={opened}>
                 <Frame>
                     <Titulo>
                         <BotaoGrupo align="space-between">
@@ -506,125 +779,291 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                             <button className="close" onClick={aoFechar} formMethod="dialog">
                                 <RiCloseFill size={20} className="fechar" />  
                             </button>
-                            {heranca && heranca.length > 0 &&
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                                    <span style={{ fontSize: 14, color: '#888' }}>Herdar do Benefício</span>
-                                    <SwitchInput checked={herdar} onChange={() => setHerdar(!herdar)} color="var(--primaria)" />
-                                </div>
-                            }
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+                                {heranca && heranca.length > 0 && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                        <span style={{ fontSize: 14, color: '#666', whiteSpace: 'nowrap' }}>Herdar do Benefício</span>
+                                        <SwitchInput checked={herdar} onChange={() => setHerdar(!herdar)} color="var(--primaria)" />
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </Titulo>
-                    <Col12>
-                        <Col6>
-                            <Wrapper style={herdar ? { opacity: 0.5, pointerEvents: 'none', filter: 'grayscale(1)' } : {}}>
-                                <DropdownItens 
-                                    valor={tipoSelecionado} 
-                                    setValor={handleTipoChange} 
-                                    options={tipos} 
-                                    label="Tipo de Grupo" 
-                                    name="tipo"
-                                    placeholder="Selecione o grupo"
-                                    optionTemplate={tipoTemplate}
-                                    disabled={herdar}
-                                />
-                                
-                                {tipoSelecionado && (
-                                    <div style={{ width: '100%' }}>
-                                        <label className={styles.label}>{tipoSelecionado.name}</label>
-                                        <StyledMultiSelect
-                                            value={opcoesSelecionadas}
-                                            onChange={handleMultiSelectChange}
-                                            options={opcoesDisponiveis}
-                                            optionLabel="name"
-                                            filter
-                                            display="chip"
-                                            placeholder={carregando ? "Carregando..." : `Selecione ${tipoSelecionado.name}`}
-                                            disabled={carregando || herdar}
-                                            showSelectAll={true}
-                                            panelClassName={styles.dropdownPanel}
-                                            filterPlaceholder="Buscar..."
-                                            selectedItemsLabel={`${opcoesSelecionadas.length} ${opcoesSelecionadas.length === 1 ? 'item' : 'itens'} selecionados`}
-                                            maxSelectedLabels={3}
+                    
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', width: '100%' }}>
+                        <div style={{ minWidth: 260, maxWidth: 320, marginRight: 32 }}>
+                            <div style={{
+                                border: '1px solid #e5e7eb',
+                                borderRadius: 8,
+                                padding: '16px 20px',
+                                background: '#fafbfc',
+                                marginBottom: 16,
+                                marginTop: 8,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 12,
+                            }}>
+                                <span style={{ color: '#888', fontWeight: 500, fontSize: 14, marginBottom: 4, letterSpacing: 0.2 }}>Dependentes:</span>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                        <SwitchInput
+                                            checked={extensivelDependente}
+                                            onChange={() => {
+                                                setExtensivelDependente(!extensivelDependente);
+                                                if (!extensivelDependente) setExclusivoDependente(false);
+                                            }}
+                                            color="var(--primaria)"
                                         />
+                                        <span style={{ fontSize: 14, color: '#444' }}>Extensível a dependentes</span>
                                     </div>
-                                )}
-                                {tipoSelecionado && tipoSelecionado?.name &&
-                                <BotaoGrupo align="end">
-                                    <Botao 
-                                        aoClicar={adicionarGrupo}
-                                        estilo="vermillion"
-                                        size="small"
-                                        filled
-                                        disabled={!tipoSelecionado || opcoesSelecionadas.length === 0 || herdar}
-                                    >
-                                        {tipoSelecionado && tipoSelecionado?.name &&
-                                            <>
-                                            {gruposAdicionados.some(g => g.tipo === tipoSelecionado.name) 
-                                                ? `Adicionar a ${tipoSelecionado.name.toLowerCase()}` 
-                                                : `Adicionar grupo ${tipoSelecionado.name.toLowerCase()}`}
-                                            <FaArrowRight size={12} />
-                                            </> 
-                                        }
-                                    </Botao>
-                                </BotaoGrupo>}
-                                {!herdar && (
-                                    <div style={{
-                                        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-                                        border: '1px solid #cbd5e1',
-                                        borderRadius: '8px',
-                                        textAlign: 'left',
-                                        padding: '16px',
-                                        marginTop: '24px',
-                                        color: '#475569',
-                                        fontSize: '14px',
-                                        lineHeight: '1.6'
-                                    }}>
-                                        <strong style={{ color: '#1e293b', fontSize: '15px', display: 'block', marginBottom: '8px' }}>
-                                            Como funciona o botão "Desconsiderar"
-                                        </strong>
-                                        • <strong>DESATIVADO (padrão):</strong> O grupo <strong>TEM ACESSO</strong> ao item<br />
-                                        • <strong>ATIVADO:</strong> O grupo <strong>PERDE O ACESSO</strong> ao item<br /><br />
-                                        
-                                        <strong>Exemplo prático:</strong><br />
-                                        1. Adicione "Filial SP" → todos da filial SP terão acesso<br />
-                                        2. Adicione "Estagiários" e ative "Desconsiderar" → estagiários perdem o acesso<br />
-                                        3. <strong>Resultado:</strong> todos da Filial SP têm acesso, <u>exceto os estagiários</u>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                        <SwitchInput
+                                            checked={exclusivoDependente}
+                                            onChange={() => {
+                                                setExclusivoDependente(!exclusivoDependente);
+                                                if (!exclusivoDependente) setExtensivelDependente(false);
+                                            }}
+                                            color="var(--primaria)"
+                                        />
+                                        <span style={{ fontSize: 14, color: '#444' }}>Exclusivo dependentes</span>
                                     </div>
-                                )}
-                            </Wrapper>
-                        </Col6>
-                        <Col6>
-                            <div style={herdar ? { opacity: 0.5, pointerEvents: 'none', filter: 'grayscale(1)' } : {}}>
-                                <DndProvider backend={HTML5Backend}>
-                                    <ContainerGrupos>
-                                        {gruposAdicionados.length > 0 ? (
-                                            <>
-                                                {gruposAdicionados.map((grupo, index) => (
-                                                    <DraggableItem
-                                                        key={grupo.id}
-                                                        grupo={grupo}
-                                                        index={index}
-                                                        moveItem={moveItem}
-                                                        removerGrupo={removerGrupo}
-                                                        toggleNegarGrupo={toggleNegarGrupo}
-                                                    />
-                                                ))}
-                                            </>
-                                        ) : (
-                                            <div style={{
-                                                textAlign: 'center',
-                                                padding: '20px',
-                                                color: '#9e9e9e',
-                                                fontStyle: 'italic'
-                                            }}>
-                                                Nenhum grupo adicionado ainda
-                                            </div>
-                                        )}
-                                    </ContainerGrupos>
-                                </DndProvider>
+                                </div>
                             </div>
-                        </Col6>
-                    </Col12>
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: 'flex', borderBottom: '2px solid #e9ecef', marginBottom: 0 }}>
+                                <TabButton active={activeIndex === 0} onClick={() => setActiveIndex(0)}>
+                                    <Texto color={activeIndex === 0 ? 'white' : '#000'}>Colaborador</Texto>
+                                </TabButton>
+                                {extensivelDependente && (
+                                    <TabButton active={activeIndex === 1} onClick={() => setActiveIndex(1)}>
+                                        <Texto color={activeIndex === 1 ? 'white' : '#000'}>Dependentes</Texto>
+                                    </TabButton>
+                                )}
+                            </div>
+                            {activeIndex === 0 && (
+                                <Col12>
+                                    <Col6>
+                                        <Wrapper style={herdar ? { opacity: 0.5, pointerEvents: 'none', filter: 'grayscale(1)' } : {}}>
+                                            <DropdownItens 
+                                                valor={tipoSelecionado} 
+                                                setValor={handleTipoChange} 
+                                                options={tipos} 
+                                                label="Tipo de Grupo" 
+                                                name="tipo"
+                                                placeholder="Selecione o grupo"
+                                                optionTemplate={tipoTemplate}
+                                                disabled={herdar}
+                                            />
+                                            
+                                            {tipoSelecionado && (
+                                                <div style={{ width: '100%' }}>
+                                                    <label className={styles.label}>{tipoSelecionado.name}</label>
+                                                    <StyledMultiSelect
+                                                        value={opcoesSelecionadas}
+                                                        onChange={handleMultiSelectChange}
+                                                        options={opcoesDisponiveis}
+                                                        optionLabel="name"
+                                                        filter
+                                                        display="chip"
+                                                        placeholder={carregando ? "Carregando..." : `Selecione ${tipoSelecionado.name}`}
+                                                        disabled={carregando || herdar}
+                                                        showSelectAll={true}
+                                                        panelClassName={styles.dropdownPanel}
+                                                        filterPlaceholder="Buscar..."
+                                                        selectedItemsLabel={`${opcoesSelecionadas.length} ${opcoesSelecionadas.length === 1 ? 'item' : 'itens'} selecionados`}
+                                                        maxSelectedLabels={3}
+                                                    />
+                                                </div>
+                                            )}
+                                            {tipoSelecionado && tipoSelecionado?.name &&
+                                            <BotaoGrupo align="end">
+                                                <Botao 
+                                                    aoClicar={adicionarGrupo}
+                                                    estilo="vermillion"
+                                                    size="small"
+                                                    filled
+                                                    disabled={!tipoSelecionado || opcoesSelecionadas.length === 0 || herdar}
+                                                >
+                                                    {tipoSelecionado && tipoSelecionado?.name &&
+                                                        <>
+                                                        {gruposAdicionados.some(g => g.tipo === tipoSelecionado.name) 
+                                                            ? `Adicionar a ${tipoSelecionado.name.toLowerCase()}` 
+                                                            : `Adicionar grupo ${tipoSelecionado.name.toLowerCase()}`}
+                                                        <FaArrowRight size={12} />
+                                                        </> 
+                                                    }
+                                                </Botao>
+                                            </BotaoGrupo>}
+                                            <div style={{
+                                                background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+                                                border: '1px solid #cbd5e1',
+                                                borderRadius: '8px',
+                                                textAlign: 'left',
+                                                padding: '16px',
+                                                marginTop: '24px',
+                                                color: '#475569',
+                                                fontSize: '14px',
+                                                lineHeight: '1.6',
+                                                width: '100%',
+                                                boxSizing: 'border-box',
+                                                wordWrap: 'break-word',
+                                                overflowWrap: 'break-word'
+                                            }}>
+                                                <strong style={{ color: '#1e293b', fontSize: '15px', display: 'block', marginBottom: '8px' }}>
+                                                    Como funciona o botão "Desconsiderar"
+                                                </strong>
+                                                • <strong>DESATIVADO (padrão):</strong> O grupo <strong>TEM ACESSO</strong> ao item<br />
+                                                • <strong>ATIVADO:</strong> O grupo <strong>PERDE O ACESSO</strong> ao item<br /><br />
+                                                
+                                                <strong>Exemplo prático:</strong><br />
+                                                1. Adicione "Filial SP" → todos da filial SP terão acesso<br />
+                                                2. Adicione "Estagiários" e ative "Desconsiderar" → estagiários perdem o acesso<br />
+                                                3. <strong>Resultado:</strong> todos da Filial SP têm acesso, <u>exceto os estagiários</u>
+                                            </div>
+                                        </Wrapper>
+                                    </Col6>
+                                    <Col6>
+                                        <div style={herdar ? { opacity: 0.5, pointerEvents: 'none', filter: 'grayscale(1)' } : {}}>
+                                            <DndProvider backend={HTML5Backend}>
+                                                <ContainerGrupos>
+                                                    {gruposAdicionados.length > 0 ? (
+                                                        <>
+                                                            {gruposAdicionados.map((grupo, index) => (
+                                                                <DraggableItem
+                                                                    key={grupo.id}
+                                                                    grupo={grupo}
+                                                                    index={index}
+                                                                    moveItem={moveItem}
+                                                                    removerGrupo={removerGrupo}
+                                                                    toggleNegarGrupo={toggleNegarGrupo}
+                                                                />
+                                                            ))}
+                                                        </>
+                                                    ) : (
+                                                        <div style={{
+                                                            textAlign: 'center',
+                                                            padding: '20px',
+                                                            color: '#9e9e9e',
+                                                            fontStyle: 'italic'
+                                                        }}>
+                                                            Nenhum grupo adicionado ainda
+                                                        </div>
+                                                    )}
+                                                </ContainerGrupos>
+                                            </DndProvider>
+                                        </div>
+                                    </Col6>
+                                </Col12>
+                            )}
+                            {activeIndex === 1 && extensivelDependente && (
+                                <Col12>
+                                    <Col6>
+                                        <Wrapper>
+                                            <DropdownItens 
+                                                valor={tipoSelecionadoDependente} 
+                                                setValor={handleTipoChangeDependente} 
+                                                options={tiposDependentes} 
+                                                label="Tipo de Grupo" 
+                                                name="tipo_dependente"
+                                                placeholder="Selecione o grupo"
+                                                optionTemplate={tipoTemplate}
+                                            />
+                                            
+                                            {tipoSelecionadoDependente && (
+                                                <div style={{ width: '100%' }}>
+                                                    <label className={styles.label}>{tipoSelecionadoDependente.name}</label>
+                                                    <StyledMultiSelect
+                                                        value={opcoesSelecionadasDependente}
+                                                        onChange={handleMultiSelectChangeDependente}
+                                                        options={opcoesDisponiveisDependente}
+                                                        optionLabel="name"
+                                                        filter
+                                                        display="chip"
+                                                        placeholder={carregandoDependente ? "Carregando..." : `Selecione ${tipoSelecionadoDependente.name}`}
+                                                        disabled={carregandoDependente}
+                                                        showSelectAll={true}
+                                                        panelClassName={styles.dropdownPanel}
+                                                        filterPlaceholder="Buscar..."
+                                                        selectedItemsLabel={`${opcoesSelecionadasDependente.length} ${opcoesSelecionadasDependente.length === 1 ? 'item' : 'itens'} selecionados`}
+                                                        maxSelectedLabels={3}
+                                                    />
+                                                </div>
+                                            )}
+                                            {tipoSelecionadoDependente && tipoSelecionadoDependente?.name &&
+                                            <BotaoGrupo align="end">
+                                                <Botao 
+                                                    aoClicar={adicionarGrupoDependente}
+                                                    estilo="vermillion"
+                                                    size="small"
+                                                    filled
+                                                    disabled={!tipoSelecionadoDependente || opcoesSelecionadasDependente.length === 0}
+                                                >
+                                                    {tipoSelecionadoDependente && tipoSelecionadoDependente?.name &&
+                                                        <>
+                                                        {gruposAdicionadosDependente.some(g => g.tipo === tipoSelecionadoDependente.name) 
+                                                            ? `Adicionar a ${tipoSelecionadoDependente.name.toLowerCase()}` 
+                                                            : `Adicionar grupo ${tipoSelecionadoDependente.name.toLowerCase()}`}
+                                                        <FaArrowRight size={12} />
+                                                        </> 
+                                                    }
+                                                </Botao>
+                                            </BotaoGrupo>}
+                                            <div style={{
+                                                background: 'linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%)',
+                                                border: '1px solid #93c5fd',
+                                                borderRadius: '8px',
+                                                textAlign: 'left',
+                                                padding: '16px',
+                                                marginTop: '24px',
+                                                color: '#1e40af',
+                                                fontSize: '14px',
+                                                lineHeight: '1.6',
+                                                width: '100%',
+                                                boxSizing: 'border-box',
+                                                wordWrap: 'break-word',
+                                                overflowWrap: 'break-word'
+                                            }}>
+                                                <strong>Exemplo:</strong><br />
+                                                1. Adicione "Cônjuge" → todos os cônjuges terão acesso<br />
+                                                2. Adicione "Filho(a)" → todos os filhos terão acesso<br />
+                                                3. Use "Desconsiderar" para excluir grupos específicos
+                                            </div>
+                                        </Wrapper>
+                                    </Col6>
+                                    <Col6>
+                                        <DndProvider backend={HTML5Backend}>
+                                            <ContainerGrupos>
+                                                {gruposAdicionadosDependente.length > 0 ? (
+                                                    <>
+                                                        {gruposAdicionadosDependente.map((grupo, index) => (
+                                                            <DraggableItem
+                                                                key={grupo.id}
+                                                                grupo={grupo}
+                                                                index={index}
+                                                                moveItem={moveItemDependente}
+                                                                removerGrupo={removerGrupoDependente}
+                                                                toggleNegarGrupo={toggleNegarGrupoDependente}
+                                                            />
+                                                        ))}
+                                                    </>
+                                                ) : (
+                                                    <div style={{
+                                                        textAlign: 'center',
+                                                        padding: '20px',
+                                                        color: '#9e9e9e',
+                                                        fontStyle: 'italic'
+                                                    }}>
+                                                        Nenhum grupo de dependentes adicionado ainda
+                                                    </div>
+                                                )}
+                                            </ContainerGrupos>
+                                        </DndProvider>
+                                    </Col6>
+                                </Col12>
+                            )}
+                        </div>
+                    </div>
                 </Frame>
                 <div style={{width: '100%'}}>
                     <BotaoGrupo align="end" gap="12px">
@@ -632,11 +1071,11 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                             size="small" 
                             estilo="neutro"
                             aoClicar={aoFechar}
-                            disabled={herdar}
+                            disabled={activeIndex === 0 && herdar}
                         >
                             Descartar Alterações
                         </Botao>
-                        {!herdar &&
+                        {activeIndex === 0 && !herdar &&
                             <Botao 
                                 aoClicar={limparRegras}
                                 estilo="neutro"
@@ -646,9 +1085,18 @@ function ModalAdicionarElegibilidadeBeneficioContrato({ opened = false, aoFechar
                                 Limpar Regras
                             </Botao>
                         }
+                        {activeIndex === 1 &&
+                            <Botao 
+                                aoClicar={limparRegrasDependente}
+                                estilo="neutro"
+                                size="small"
+                            >
+                                Limpar Regras
+                            </Botao>
+                        }
                         <Botao 
                             size="small" 
-                            aoClicar={salvarGrupos}
+                            aoClicar={activeIndex === 0 ? salvarGrupos : salvarGruposDependente}
                         >
                             Salvar
                         </Botao>
