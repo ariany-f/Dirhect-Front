@@ -211,8 +211,8 @@ function Autenticado() {
                     </MarginContainer>
                     {!isDesktop && <BottomMenu />}
                 </MainContainer>
-                <Analytics />
-                <SpeedInsights />
+                {process.env.VERCEL_ENV && <Analytics />}
+                {process.env.VERCEL_ENV && <SpeedInsights />}
             </MainSection>
             <ModalCnpj aoClicar={changeCompany} aoFechar={() => {setModalOpened(false); setLoading(false)}} opened={modalOpened} />
         </>

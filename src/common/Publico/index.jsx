@@ -52,8 +52,8 @@ function Publico() {
                         <BannerMini />
                     </>
                     }
-                <Analytics />
-                <SpeedInsights />
+                {process.env.VERCEL_ENV && <Analytics />}
+                {process.env.VERCEL_ENV && <SpeedInsights />}
             </MainSectionPublico>
         </>
     )
