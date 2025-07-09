@@ -115,6 +115,30 @@ const PreviewContainer = styled.div`
   }
 `;
 
+const ModalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+`;
+
+const ModalHeader = styled.div`
+  flex-shrink: 0;
+`;
+
+const ModalContent = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 0px;
+`;
+
+const ModalFooter = styled.div`
+  flex-shrink: 0;
+  padding: 16px;
+  border-top: 1px solid var(--neutro-200);
+  background-color: white;
+`;
+
 function gerarHtmlComEstilo(conteudoHtml) {
   return `
     <style>
@@ -587,89 +611,95 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   return (
     opened &&
     <Overlay>
-      <DialogEstilizado $width="95vw" $minWidth="80vw" open={opened}>
-        <Frame>
-          <Titulo>
-            <button className="close" onClick={aoFechar}>
-              <RiCloseFill size={20} className="fechar" />  
-            </button>
-            <h6>Encaminhar vaga para novo candidato</h6>
-          </Titulo>
-        </Frame>
-        <Frame padding="24px 0px">
-          <Col12>
-            <Col6>
-              {!showEditorContent ? (
-                <Col12>
-                  <Col6>
-                    <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem *" />
-                    <DropdownItens width="150px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades *" name="periculosidade" placeholder="Periculosidades"/> 
-                  </Col6>
-                  <Col6>
-                    <CampoTexto valor={dataInicio} type="date" setValor={setDataInicio} label="Data de Início *" />
-                    <CampoTexto patternMask={'BRL'} valor={salario} type="text" setValor={setSalario} label="Salário *" />
-                    <CampoTexto valor={dataExameMedico} type="date" setValor={setDataExameMedico} label="Data do Exame Médico *" />
-                  </Col6>
-                </Col12>
-              ) : (
-                <>
-                  <DropdownItens
-                    valor={selectedTemplate}
-                    setValor={handleTemplateChange}
-                    options={dropdownTemplates}
-                    label="Template"
-                    name="template"
-                    placeholder={loadingTemplates ? "Carregando templates..." : dropdownTemplates.length === 0 ? "Nenhum template disponível" : "Selecione um template"}
-                    disabled={loadingTemplates}
-                  />
-                  <Editor
-                    ref={editorRef}
-                    value={editorContent}
-                    onTextChange={(e) => setEditorContent(e.htmlValue)}
-                    style={{ height: '240px' }}
-                    onEditorReady={onEditorReady}
-                  />
-                  <VariaveisContainer>
-                    {variaveis.map((variavel, index) => {
-                      const VariavelComponent = variavel.obrigatoria ? VariavelItemObrigatoria : VariavelItem;
-                      return (
-                        <VariavelComponent
-                          key={index}
-                          onClick={() => handleAddVariable(variavel.value)}
-                        >
-                          {variavel.label}
-                        </VariavelComponent>
-                      );
-                    })}
-                  </VariaveisContainer>
-                </>
-              )}
-            </Col6>
-            <Col6>
-              <PreviewContainer dangerouslySetInnerHTML={{ __html: substituirVariaveis(editorContent) }} />
-            </Col6>
-          </Col12>
-        </Frame>
-        <div className={styles.containerBottom}>
-          <BotaoGrupo>
-            <Botao
-              aoClicar={toggleEditorContent}
-              estilo="neutro"
-              size="medium"
-              filled
-            >
-              {showEditorContent ? "Voltar para Dados" : "Editar Template"}
-            </Botao>
-            <Botao
-              aoClicar={handleEnviar}
-              estilo="vermilion"
-              size="medium"
-              filled
-            >
-              Enviar
-            </Botao>
-          </BotaoGrupo>
-        </div>
+      <DialogEstilizado $width="95vw" $minWidth="80vw" $maxHeight="90vh" open={opened}>
+        <ModalContainer>
+          <ModalHeader>
+            <Frame>
+              <Titulo>
+                <button className="close" onClick={aoFechar}>
+                  <RiCloseFill size={20} className="fechar" />  
+                </button>
+                <h6>Encaminhar vaga para novo candidato</h6>
+              </Titulo>
+            </Frame>
+          </ModalHeader>
+          
+          <ModalContent>
+            <Col12>
+              <Col6>
+                {!showEditorContent ? (
+                  <Col12>
+                    <Col6>
+                      <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem *" />
+                      <DropdownItens width="150px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades *" name="periculosidade" placeholder="Periculosidades"/> 
+                    </Col6>
+                    <Col6>
+                      <CampoTexto valor={dataInicio} type="date" setValor={setDataInicio} label="Data de Início *" />
+                      <CampoTexto patternMask={'BRL'} valor={salario} type="text" setValor={setSalario} label="Salário *" />
+                      <CampoTexto valor={dataExameMedico} type="date" setValor={setDataExameMedico} label="Data do Exame Médico *" />
+                    </Col6>
+                  </Col12>
+                ) : (
+                  <>
+                    <DropdownItens
+                      valor={selectedTemplate}
+                      setValor={handleTemplateChange}
+                      options={dropdownTemplates}
+                      label="Template"
+                      name="template"
+                      placeholder={loadingTemplates ? "Carregando templates..." : dropdownTemplates.length === 0 ? "Nenhum template disponível" : "Selecione um template"}
+                      disabled={loadingTemplates}
+                    />
+                    <Editor
+                      ref={editorRef}
+                      value={editorContent}
+                      onTextChange={(e) => setEditorContent(e.htmlValue)}
+                      style={{ height: '240px' }}
+                      onEditorReady={onEditorReady}
+                    />
+                    <VariaveisContainer>
+                      {variaveis.map((variavel, index) => {
+                        const VariavelComponent = variavel.obrigatoria ? VariavelItemObrigatoria : VariavelItem;
+                        return (
+                          <VariavelComponent
+                            key={index}
+                            onClick={() => handleAddVariable(variavel.value)}
+                          >
+                            {variavel.label}
+                          </VariavelComponent>
+                        );
+                      })}
+                    </VariaveisContainer>
+                  </>
+                )}
+              </Col6>
+              <Col6>
+                <PreviewContainer dangerouslySetInnerHTML={{ __html: substituirVariaveis(editorContent) }} />
+              </Col6>
+            </Col12>
+          </ModalContent>
+          
+          <ModalFooter>
+            <BotaoGrupo>
+              <Botao
+                aoClicar={toggleEditorContent}
+                estilo="neutro"
+                size="medium"
+                filled
+              >
+                {showEditorContent ? "Voltar para Dados" : "Editar Template"}
+              </Botao>
+              <Botao
+                aoClicar={handleEnviar}
+                estilo="vermilion"
+                size="medium"
+                filled
+              >
+                Enviar
+              </Botao>
+            </BotaoGrupo>
+          </ModalFooter>
+        </ModalContainer>
       </DialogEstilizado>
     </Overlay>
   );
