@@ -128,14 +128,6 @@ const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
     const toast = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
 
-    const [filiais, setFiliais] = useState([]);
-    const [centros_custo, setCentrosCusto] = useState([]);
-    const [departamentos, setDepartamentos] = useState([]);
-    const [secoes, setSecoes] = useState([]);
-    const [cargos, setCargos] = useState([]);
-    const [horarios, setHorarios] = useState([]);
-    const [funcoes, setFuncoes] = useState([]);
-    const [sindicatos, setSindicatos] = useState([]);
     const [estados, setEstados] = useState([]);
 
     const [listaPericulosidades, setListaPericulosidades] = useState([
@@ -179,28 +171,6 @@ const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
                     })
                 })
         }
-
-        // Carregar listas auxiliares
-        const listasAuxiliares = [
-            { endpoint: 'filial/?format=json', setter: setFiliais },
-            { endpoint: 'departamento/?format=json', setter: setDepartamentos },
-            { endpoint: 'secao/?format=json', setter: setSecoes },
-            { endpoint: 'cargo/?format=json', setter: setCargos },
-            { endpoint: 'horario/?format=json', setter: setHorarios },
-            { endpoint: 'funcao/?format=json', setter: setFuncoes },
-            { endpoint: 'sindicato/?format=json', setter: setSindicatos },
-            { endpoint: 'centro_custo/?format=json', setter: setCentrosCusto },
-        ];
-
-        listasAuxiliares.forEach(({ endpoint, setter }) => {
-            http.get(endpoint)
-                .then(response => {
-                    setter(response);
-                })
-                .catch(error => {
-                    console.error(`Erro ao carregar ${endpoint}:`, error);
-                });
-        });
     }, []);
 
     const ChangeCep = (value) => {
