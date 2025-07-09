@@ -167,6 +167,8 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   const [editorContent, setEditorContent] = useState("");
   const [showEditorContent, setShowEditorContent] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [quillInstance, setQuillInstance] = useState(null);
+  const editorRef = useRef(null);
 
   const variaveis = [
     { value: "{{nome}}", label: "Nome Completo" },
@@ -229,8 +231,159 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   };  
 
   const handleAddVariable = (variable) => {
-    const updatedContent = editorContent + variable;
-    setEditorContent(updatedContent);
+    console.log('handleAddVariable chamado com:', variable);
+    console.log('Modal aberto:', opened);
+    console.log('showEditorContent:', showEditorContent);
+    
+    // Verifica se o modal está aberto e o editor está visível
+    if (!opened || !showEditorContent) {
+      console.log('Modal não está aberto ou editor não está visível');
+      return;
+    }
+    
+    // Aguarda um momento para garantir que o DOM esteja renderizado
+    setTimeout(() => {
+      // Tenta usar a instância armazenada primeiro
+      if (quillInstance) {
+        console.log('Usando quillInstance armazenada');
+        insertVariableAtCursor(quillInstance, variable);
+        return;
+      }
+      
+      // Tenta usar a referência React do PrimeReact Editor
+      if (editorRef.current) {
+        console.log('Usando editorRef.current');
+        console.log('Métodos disponíveis em editorRef:', Object.getOwnPropertyNames(Object.getPrototypeOf(editorRef.current)));
+        
+        // Tenta diferentes métodos para obter a instância do Quill
+        let quill = null;
+        
+        if (editorRef.current.getQuill) {
+          quill = editorRef.current.getQuill();
+          console.log('Tentando getQuill()');
+        } else if (editorRef.current.quill) {
+          quill = editorRef.current.quill;
+          console.log('Tentando editorRef.current.quill');
+        } else if (editorRef.current.getEditor) {
+          quill = editorRef.current.getEditor();
+          console.log('Tentando getEditor()');
+        }
+        
+        if (quill) {
+          console.log('Quill encontrado via editorRef:', quill);
+          insertVariableAtCursor(quill, variable);
+          return;
+        } else {
+          console.log('Nenhum método encontrado para obter Quill via editorRef');
+        }
+      }
+      
+      // Se não tem instância armazenada, tenta buscar no DOM
+      // Tenta diferentes seletores para encontrar o editor
+      let editorElement = document.querySelector('.p-editor-content');
+      if (!editorElement) {
+        editorElement = document.querySelector('.ql-container');
+        console.log('Tentando .ql-container');
+      }
+      if (!editorElement) {
+        editorElement = document.querySelector('.ql-editor');
+        console.log('Tentando .ql-editor');
+      }
+      if (!editorElement) {
+        editorElement = document.querySelector('[data-pc-name="editor"]');
+        console.log('Tentando [data-pc-name="editor"]');
+      }
+      
+      if (!editorElement) {
+        console.log('Editor element não encontrado com nenhum seletor');
+        console.log('Elementos disponíveis:', document.querySelectorAll('.p-editor, .ql-container, .ql-editor, [data-pc-name="editor"]'));
+        return;
+      }
+      
+      console.log('Editor element encontrado:', editorElement);
+      console.log('Classes do editor:', editorElement.className);
+      
+      // Busca a instância do Quill do PrimeReact Editor
+      let quill = editorElement.__quill || editorElement.quill;
+      
+      // Se não encontrou no elemento direto, busca no parent
+      if (!quill && editorElement.parentElement) {
+        quill = editorElement.parentElement.__quill || editorElement.parentElement.quill;
+        console.log('Buscando no parent element');
+      }
+      
+      // Se ainda não encontrou, busca em todos os elementos filhos
+      if (!quill) {
+        const allElements = editorElement.querySelectorAll('*');
+        for (let element of allElements) {
+          if (element.__quill || element.quill) {
+            quill = element.__quill || element.quill;
+            console.log('Quill encontrado em elemento filho:', element);
+            break;
+          }
+        }
+      }
+      
+      if (!quill) {
+        console.log('Quill instance não encontrada no editor');
+        console.log('Propriedades do editor element:', Object.keys(editorElement));
+        return;
+      }
+      
+      console.log('Quill encontrado no DOM:', quill);
+      insertVariableAtCursor(quill, variable);
+    }, 200); // Aguarda 200ms para o DOM estar renderizado
+  };
+
+  const insertVariableAtCursor = (quill, variable) => {
+    // Foca no editor
+    quill.focus();
+    
+    // Aguarda um momento para o foco ser estabelecido
+    setTimeout(() => {
+      // Obtém a posição atual do cursor
+      const range = quill.getSelection();
+      console.log('Range atual:', range);
+      
+      if (range && range.index !== null) {
+        console.log('Inserindo na posição:', range.index);
+        // Usa insertText da API oficial do Quill para inserir na posição do cursor
+        quill.insertText(range.index, variable);
+        
+        // Move o cursor para depois da variável inserida
+        quill.setSelection(range.index + variable.length, 0);
+        
+        // Atualiza o estado com o novo conteúdo
+        const newContent = quill.root.innerHTML;
+        setEditorContent(newContent);
+      } else {
+        console.log('Sem seleção, inserindo no final');
+        // Se não há seleção, insere no final
+        const length = quill.getLength();
+        quill.insertText(length - 1, variable);
+        quill.setSelection(length - 1 + variable.length, 0);
+        
+        // Atualiza o estado com o novo conteúdo
+        const newContent = quill.root.innerHTML;
+        setEditorContent(newContent);
+      }
+    }, 100);
+  };
+
+  const onEditorReady = (quill) => {
+    console.log('onEditorReady chamado!');
+    console.log('Quill recebido:', quill);
+    console.log('Tipo do quill:', typeof quill);
+    console.log('Métodos disponíveis:', Object.getOwnPropertyNames(Object.getPrototypeOf(quill)));
+    
+    // Armazena a instância do Quill
+    setQuillInstance(quill);
+    
+    // Também armazena na referência para backup
+    if (editorRef.current) {
+      editorRef.current.quill = quill;
+      console.log('Quill armazenado na referência também');
+    }
   };
 
   const handleSave = () => {
@@ -470,9 +623,11 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
                     disabled={loadingTemplates}
                   />
                   <Editor
+                    ref={editorRef}
                     value={editorContent}
                     onTextChange={(e) => setEditorContent(e.htmlValue)}
                     style={{ height: '240px' }}
+                    onEditorReady={onEditorReady}
                   />
                   <VariaveisContainer>
                     {variaveis.map((variavel, index) => {
