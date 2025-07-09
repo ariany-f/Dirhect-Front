@@ -6,7 +6,7 @@ import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Real } from '@utils/formats'
 import { Tag } from 'primereact/tag';
 import { FaCheck, FaTimes, FaTrash } from 'react-icons/fa';
@@ -15,8 +15,9 @@ import http from '@http';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { confirmDialog } from 'primereact/confirmdialog';
 import ModalEncaminharVaga from '@components/ModalEncaminharVaga';
+import { Toast } from 'primereact/toast';
 
-function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
+function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCandidatosUpdate }) {
     const[selectedCandidato, setSelectedCandidato] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -26,6 +27,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
     const [listaCandidatos, setListaCandidatos] = useState(candidatos || []);
     const [modalEncaminharAberto, setModalEncaminharAberto] = useState(false);
     const [candidatoParaAprovar, setCandidatoParaAprovar] = useState(null);
+    const toast = useRef(null);
 
     useEffect(() => {
         if (candidatos?.length > 0 && vagaId) {
@@ -181,22 +183,40 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
         setModalEncaminharAberto(true);
     };
 
-    const handleEnviarEncaminhamento = async (dados) => {
-        const vagaConfigurada = candidatoParaAprovar?.vagas_configuradas?.[0];
-        if (!vagaConfigurada) return;
+    const handleModalSalvar = async (payload) => {
+        console.log(payload)
         try {
-            // Aqui você pode enviar os dados do modal para o backend se necessário
-            await http.post(`vagas_candidatos/${vagaConfigurada.id}/seguir/`);
+            await http.post(`vagas_candidato/${payload.candidato}/seguir/`, payload);
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Candidato encaminhado com sucesso!',
+                life: 3000
+            });
+
+            // Atualiza a lista local
             setListaCandidatos(listaCandidatos.map(c =>
                 c === candidatoParaAprovar ? { 
                     ...c, 
-                    vagas_configuradas: [{ ...c.vagas_configuradas[0], status: 'A' }]
+                    vagas_configuradas: [{ ...c.vagas_configuradas?.[0], status: 'S' }]
                 } : c
             ));
+
+            // Notifica o componente pai para atualizar os dados
+            if (onCandidatosUpdate) {
+                onCandidatosUpdate();
+            }
+
             setModalEncaminharAberto(false);
-            setCandidatoParaAprovar(null);
         } catch (error) {
-            console.error('Erro ao aprovar candidato:', error);
+            console.error('Erro ao encaminhar candidato:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao encaminhar candidato',
+                life: 3000
+            });
         }
     };
 
@@ -321,6 +341,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
 
     return (
         <>
+            <Toast ref={toast} />
             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
                 <span className="p-input-icon-left">
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar candidato" />
@@ -343,8 +364,9 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
             <ModalEncaminharVaga
                 opened={modalEncaminharAberto}
                 aoFechar={() => setModalEncaminharAberto(false)}
-                aoSalvar={handleEnviarEncaminhamento}
+                aoSalvar={handleModalSalvar}
                 candidato={candidatoParaAprovar}
+                vagaId={vagaId}
             />
         </>
     )

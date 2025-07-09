@@ -110,7 +110,7 @@ function gerarHtmlComEstilo(conteudoHtml) {
   `;
 }
 
-function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidadeInicial, candidato = null }) {
+function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidadeInicial, candidato = null, vagaId }) {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [mensagem, setMensagem] = useState("");
@@ -356,24 +356,17 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
     }
   };
 
-  const handleEnviar = async () => {
+  const handleEnviar = () => {
     if (!candidatoId || !editorContent) return;
     const html_content = gerarHtmlComEstilo(substituirVariaveis(editorContent));
     const payload = {
       html_content,
       dt_inscricao: new Date().toISOString().slice(0, 10),
-      status: "S", // ou outro valor do Enum conforme sua regra
+      status: "S",
       candidato: candidatoId,
-      vaga: vagaId // você precisa garantir que vagaId está disponível no componente
+      vaga: vagaId
     };
-    try {
-      await http.post(`vagas_candidato/${candidatoId}/seguir/`, payload);
-      // feedback de sucesso/erro...
-      if (aoSalvar) aoSalvar();
-    } catch (error) {
-      console.error('Erro ao enviar email:', error);
-      // feedback de erro...
-    }
+    if (aoSalvar) aoSalvar(payload); // Envia os dados para o pai
   };
 
   return (

@@ -16,23 +16,28 @@ import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import ModalDemissao from '../ModalDemissao';
 import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
 import ModalSelecionarColaborador from '../ModalSelecionarColaborador';
+import ModalEncaminharVaga from '@components/ModalEncaminharVaga';
 import { Tag } from 'primereact/tag';
-import { FaTrash, FaUserTimes, FaUmbrella, FaDownload, FaUmbrellaBeach } from 'react-icons/fa';
+import { FaTrash, FaUserTimes, FaUmbrella, FaDownload, FaUmbrellaBeach, FaCheck } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import { Dropdown } from 'primereact/dropdown';
 import { ArmazenadorToken } from '@utils';
+import { Toast } from 'primereact/toast';
 
-function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort, sortField, sortOrder }) {
+function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort, sortField, sortOrder, onColaboradoresUpdate }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalSelecionarColaboradorOpened] = useState(false)
+    const [modalEncaminharAberto, setModalEncaminharAberto] = useState(false);
+    const [colaboradorParaEncaminhar, setColaboradorParaEncaminhar] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filiais, setFiliais] = useState([]);
     const [funcoes, setFuncoes] = useState([]);
     const [key, setKey] = useState(0); // Chave para forçar re-renderização
     const [dadosCarregados, setDadosCarregados] = useState(false);
+    const toast = useRef(null);
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -147,6 +152,41 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         return situacao
     }
 
+    const handleEncaminhar = async (rowData) => {
+        setColaboradorParaEncaminhar(rowData);
+        setModalEncaminharAberto(true);
+    };
+
+    const handleModalSalvar = async (payload) => {
+        try {
+            // Aqui você pode usar o endpoint específico para colaboradores se existir
+            // Por enquanto, vou usar o mesmo endpoint de vagas como exemplo
+            await http.post(`vagas_candidato/${payload.candidato}/seguir/`, payload);
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Colaborador encaminhado com sucesso!',
+                life: 3000
+            });
+
+            // Notifica o componente pai para atualizar os dados
+            if (onColaboradoresUpdate) {
+                onColaboradoresUpdate();
+            }
+
+            setModalEncaminharAberto(false);
+        } catch (error) {
+            console.error('Erro ao encaminhar colaborador:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao encaminhar colaborador',
+                life: 3000
+            });
+        }
+    };
+
     const representativeActionsTemplate = (rowData) => {
         if (!ArmazenadorToken.hasPermission('view_funcionario')) {
             return null;
@@ -154,6 +194,21 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
 
         return (
             <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
+                <Tooltip target=".encaminhar" mouseTrack mouseTrackLeft={10} />
+                <FaCheck 
+                    className="encaminhar" 
+                    data-pr-tooltip="Encaminhar Colaborador" 
+                    size={16} 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleEncaminhar(rowData);
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        color: 'var(--primaria)'
+                    }}
+                />
+
                 <Tooltip target=".demissao" mouseTrack mouseTrackLeft={10} />
                 <FaUserTimes 
                     className="demissao" 
@@ -216,6 +271,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
 
     return (
         <>
+            <Toast ref={toast} />
             <BotaoGrupo align={showSearch ? 'space-between' : 'end'} wrap>
                 {showSearch && (
                     <>
@@ -280,6 +336,20 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             </DataTable>
             <ModalDemissao opened={modalOpened} aoFechar={() => setModalOpened(false)}/>
             <ModalSelecionarColaborador opened={modalFeriasOpened} aoFechar={() => setModalSelecionarColaboradorOpened(false)}/>
+            <ModalEncaminharVaga
+                opened={modalEncaminharAberto}
+                aoFechar={() => setModalEncaminharAberto(false)}
+                aoSalvar={handleModalSalvar}
+                candidato={colaboradorParaEncaminhar ? {
+                    id: colaboradorParaEncaminhar.id,
+                    nome: colaboradorParaEncaminhar.funcionario_pessoa_fisica?.nome,
+                    email: colaboradorParaEncaminhar.funcionario_pessoa_fisica?.email,
+                    cpf: colaboradorParaEncaminhar.funcionario_pessoa_fisica?.cpf,
+                    telefone: colaboradorParaEncaminhar.funcionario_pessoa_fisica?.telefone,
+                    dt_nascimento: colaboradorParaEncaminhar.funcionario_pessoa_fisica?.data_nascimento
+                } : null}
+                vagaId={null} // Você pode passar o vagaId se necessário
+            />
         </>
     )
 }

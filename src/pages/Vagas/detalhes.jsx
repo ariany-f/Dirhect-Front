@@ -17,7 +17,6 @@ import { useVagasContext } from '@contexts/VagasContext'; // Importando o contex
 import DataTableCandidatos from '@components/DataTableCandidatos'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
-import ModalEncaminharVaga from '@components/ModalEncaminharVaga'
 import { Real } from '@utils/formats'
 import { Tag } from 'primereact/tag'
 import DataTableDocumentosVaga from '@components/DataTableDocumentosVaga'
@@ -52,7 +51,6 @@ function DetalhesVaga() {
     let { id } = useParams()
     const location = useLocation();
     const [vaga, setVaga] = useState(null)
-    const [modalOpened, setModalOpened] = useState(false)
     const toast = useRef(null)
     const [documentos, setDocumentos] = useState([]);
     const [modalDocumentoAberto, setModalDocumentoAberto] = useState(false);
@@ -232,69 +230,16 @@ function DetalhesVaga() {
         });
     }
 
-    const abrirModal = () => {
-        setModalOpened(true)
-    }
-
-    const handleSalvarCandidato = (
-        candidatoId = null,
-        nome,
-        email,
-        mensagem,
-        content,
-        cpf,
-        nascimento,
-        telefone,
-        dataInicio,
-        salario,
-        periculosidade,
-        dataExameMedico
-    ) => {
-        // Remove caracteres não numéricos do CPF e salário
-        const cpfNumerico = cpf.replace(/\D/g, '');
-        const salarioNumerico = salario ? 
-            Math.floor(Number(unformatCurrency(salario)) / 100)
-            : null;
-
-        const dadosCandidato = {
-            nome,
-            email,
-            observacao: mensagem,
-            content,
-            cpf: cpfNumerico,
-            dt_nascimento: nascimento,
-            telefone,
-            dt_inicio: dataInicio,
-            salario: salarioNumerico,
-            periculosidade: periculosidade?.code,
-            dt_exame_medico: dataExameMedico,
-            vaga_id: id
-        };
-
-        // Se tiver candidatoId, faz PUT, senão faz POST
-        const method = candidatoId ? 'put' : 'post';
-        const url = candidatoId ? `candidato/${candidatoId}/` : 'candidato/';
-        const successMessage = candidatoId ? 'Candidato atualizado com sucesso!' : 'Candidato encaminhado com sucesso!';
-        const errorMessage = candidatoId ? 'Erro ao atualizar candidato' : 'Erro ao encaminhar candidato';
-
-        // Ao adicionar candidato precisa configurar a vaga_candidato para "S"
-        http[method](url, dadosCandidato)
-        .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: successMessage, life: 3000 });
-            setModalOpened(false);
-            // Recarrega os dados da vaga
-            http.get(`vagas/${id}/?format=json`)
-                .then(response => {
-                    setVaga(response);
-                })
-                .catch(error => {
-                    console.error('Erro ao recarregar vaga:', error);
-                });
-        })
-        .catch(error => {
-            console.error('Erro ao salvar candidato:', error);
-            toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
-        });
+    // Função para atualizar os candidatos quando necessário
+    const handleCandidatosUpdate = () => {
+        // Recarrega os dados da vaga (incluindo candidatos)
+        http.get(`vagas/${id}/?format=json`)
+            .then(response => {
+                setVaga(response);
+            })
+            .catch(error => {
+                console.error('Erro ao recarregar vaga:', error);
+            });
     };
 
     const handleSalvarDocumentoVaga = (documento_nome, obrigatorio, documento) => {
@@ -594,10 +539,15 @@ function DetalhesVaga() {
                 <Titulo>
                     <h5>Candidatos</h5>
                 </Titulo>
-                <DataTableCandidatos documentos={documentos} vagaId={vaga?.id} candidatos={vaga?.candidatos?.map(candidato => ({
-                    ...candidato,
-                    vaga: vaga
-                }))} />
+                <DataTableCandidatos 
+                    documentos={documentos} 
+                    vagaId={vaga?.id} 
+                    candidatos={vaga?.candidatos?.map(candidato => ({
+                        ...candidato,
+                        vaga: vaga
+                    }))} 
+                    onCandidatosUpdate={handleCandidatosUpdate}
+                />
                 <Titulo>
                     <h5>Documentos Requeridos da Vaga</h5>
                 </Titulo>
@@ -630,12 +580,6 @@ function DetalhesVaga() {
                     aoSalvar={handleSalvarDocumentoVaga}
                 />
             </ConteudoFrame>
-            <ModalEncaminharVaga 
-                aoSalvar={handleSalvarCandidato} 
-                opened={modalOpened} 
-                aoFechar={() => setModalOpened(false)}
-                periculosidadeInicial={vaga?.periculosidade ? listaPericulosidades.find(p => p.code === vaga.periculosidade) : null}
-            />
             <ModalVaga 
                 opened={modalEditarAberto}
                 aoFechar={() => setModalEditarAberto(false)}
