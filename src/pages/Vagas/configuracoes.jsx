@@ -10,6 +10,7 @@ import ModalEmail from '@components/ModalEmail';
 import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import { Toast } from 'primereact/toast';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const Container = styled.div`
     display: flex;
@@ -33,6 +34,7 @@ function ConfiguracoesVagas() {
     const [showModal, setShowModal] = useState(false);
     const [editingEmail, setEditingEmail] = useState(null);
     const [isViewMode, setIsViewMode] = useState(false);
+    const [emailToDelete, setEmailToDelete] = useState(null);
 
     const showSuccess = (message) => {
         toast.current.show({
@@ -138,22 +140,56 @@ function ConfiguracoesVagas() {
     };
 
     const handleDelete = async (email) => {
-        if (window.confirm('Tem certeza que deseja excluir este email?')) {
-            try {
-                await http.delete(`email_templates/${email.id}/`);
-                // Recarregar a lista após deletar
-                await fetchEmails();
-                showSuccess('Template de email excluído com sucesso!');
-            } catch (error) {
-                console.error('Erro ao excluir template de email:', error);
-                showError('Erro ao excluir template de email');
+        setEmailToDelete(email);
+        
+        let message = `Tem certeza que deseja excluir o template "${email.name}"?`;
+        if (email.is_active) {
+            message += '\n\n⚠️ Este template está ativo. A exclusão pode afetar emails em uso.';
+        }
+        
+        confirmDialog({
+            message: message,
+            header: 'Confirmar Exclusão',
+            icon: 'pi pi-exclamation-triangle',
+            acceptClassName: 'p-button-danger',
+            accept: () => confirmDelete(),
+            reject: () => setEmailToDelete(null)
+        });
+    };
+
+    const confirmDelete = async () => {
+        if (!emailToDelete) return;
+        
+        try {
+            console.log('Excluindo template:', emailToDelete);
+            const response = await http.delete(`email_templates/${emailToDelete.id}/`);
+            console.log('Resposta do DELETE:', response);
+            
+            // Recarregar a lista após deletar
+            await fetchEmails();
+            showSuccess(`Template "${emailToDelete.name}" excluído com sucesso!`);
+        } catch (error) {
+            console.error('Erro detalhado ao excluir template de email:', error);
+            console.error('Response data:', error.response?.data);
+            console.error('Response status:', error.response?.status);
+            
+            let errorMessage = 'Erro ao excluir template de email';
+            if (error.response?.data?.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
             }
+            
+            showError(errorMessage);
+        } finally {
+            setEmailToDelete(null);
         }
     };
 
     return (
         <Frame gap="16px">
             <Toast ref={toast} />
+            <ConfirmDialog />
             <BotaoVoltar linkFixo="/vagas" />
             <Container>
                 <Header>
