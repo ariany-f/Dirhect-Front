@@ -344,6 +344,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [] }) {
                 opened={modalEncaminharAberto}
                 aoFechar={() => setModalEncaminharAberto(false)}
                 aoSalvar={handleEnviarEncaminhamento}
+                candidato={candidatoParaAprovar}
             />
         </>
     )

@@ -28,21 +28,17 @@ const Select = styled(Dropdown)`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: ${ props => props.$width ?  props.$width : 'inherit' };
+        max-width: 100%;
     }
 
-    & .p-dropdown-label {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: ${ props => props.$width ?  props.$width : 'inherit' };
-    }
-
+    & .p-dropdown-label,
     & .p-dropdown-item {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: ${ props => props.$width ?  props.$width : 'inherit' };
+        max-width: 100%;
+        width: 100%;
+        display: block;
     }
 
     &.error {

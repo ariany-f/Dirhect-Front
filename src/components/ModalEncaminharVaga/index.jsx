@@ -9,7 +9,6 @@ import DropdownItens from "@components/DropdownItens";
 import Titulo from "@components/Titulo";
 import { RiCloseFill } from "react-icons/ri";
 import styles from "./ModalEncaminharVaga.module.css";
-import templates from "@json/templates-encaminhar-vaga.json";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { Real } from '@utils/formats'
 import http from '@http'
@@ -55,7 +54,63 @@ const VariavelItem = styled.div`
   }
 `;
 
-function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidadeInicial }) {
+const PreviewContainer = styled.div`
+  /* Alinhamento padrão à esquerda */
+  text-align: left;
+
+  /* Alinhamento do Quill */
+  .ql-align-center { text-align: center; }
+  .ql-align-right { text-align: right; }
+  .ql-align-justify { text-align: justify; }
+
+  /* Listas */
+  ol, ul {
+    margin-left: 1.5em;
+    padding-left: 1.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  ol { list-style-type: decimal; list-style-position: inside; }
+  ul { list-style-type: disc; list-style-position: inside; }
+
+  li {
+    margin-bottom: 0.2em;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  /* Parágrafos */
+  p {
+    margin: 0.2em 0 0.2em 0;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  /* Subheading */
+  h2 {
+    margin: 0.2em 0 0.2em 0;
+    text-align: left;
+    font-size: 19.5px;
+  }
+`;
+
+function gerarHtmlComEstilo(conteudoHtml) {
+  return `
+    <style>
+      body, p, li { font-size: 13px; }
+      h2 { font-size: 19.5px; }
+      ul { list-style-type: disc; list-style-position: inside; margin-left: 1.5em; padding-left: 1.5em; }
+      ol { list-style-type: decimal; list-style-position: inside; margin-left: 1.5em; padding-left: 1.5em; }
+      li { margin-bottom: 0.2em; text-align: left; }
+      .ql-align-center { text-align: center; }
+      .ql-align-right { text-align: right; }
+      .ql-align-justify { text-align: justify; }
+    </style>
+    <div>${conteudoHtml}</div>
+  `;
+}
+
+function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidadeInicial, candidato = null }) {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [mensagem, setMensagem] = useState("");
@@ -68,7 +123,9 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   const [candidatoId, setCandidatoId] = useState(null);
   const [ultimoCpfBuscado, setUltimoCpfBuscado] = useState(null);
   const [dropdownTemplates, setDropdownTemplates] = useState([]);
+  const [templates, setTemplates] = useState([]);
   const [dataExameMedico, setDataExameMedico] = useState("");
+  const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [listaPericulosidades, setListaPericulosidades] = useState([
     { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
     { code: 'MP', name: 'Atividades com Máquinas e Equipamentos Pesados' },
@@ -101,6 +158,12 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
     { value: "{{salario}}", label: "Salário" },
     { value: "{{periculosidade}}", label: "Periculosidade" },
     { value: "{{dataExameMedico}}", label: "Data do Exame Médico" },
+    // Variáveis do candidato
+    { value: "{{candidato_nome}}", label: "Nome do Candidato" },
+    { value: "{{candidato_email}}", label: "Email do Candidato" },
+    { value: "{{candidato_cpf}}", label: "CPF do Candidato" },
+    { value: "{{candidato_nascimento}}", label: "Nascimento do Candidato" },
+    { value: "{{candidato_telefone}}", label: "Telefone do Candidato" },
   ];
 
   const substituirVariaveis = (conteudo) => {
@@ -120,7 +183,15 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       "{{salario}}": salario,
       "{{periculosidade}}": periculosidade.name ?? '',
       "{{dataExameMedico}}": formatDate(dataExameMedico),
+      // Variáveis do candidato
+      "{{candidato_nome}}": candidato?.nome || nome,
+      "{{candidato_email}}": candidato?.email || email,
+      "{{candidato_cpf}}": candidato?.cpf ? candidato.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : cpf,
+      "{{candidato_nascimento}}": candidato?.dt_nascimento ? formatDate(candidato.dt_nascimento) : formatDate(nascimento),
+      "{{candidato_telefone}}": candidato?.telefone || telefone,
     };
+
+    console.log('Variáveis disponíveis para substituição:', variaveisMap);
   
     // Substituir todas as ocorrências das variáveis
     Object.keys(variaveisMap).forEach((variavel) => {
@@ -160,28 +231,49 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   };
 
   const handleTemplateChange = (e) => {
-    const selectedTemplate = templates.find((template) => template.id === e.code);
-    setSelectedTemplate(selectedTemplate);
-    setEditorContent(selectedTemplate.content);
+    const template = templates.find((template) => template.id === e.code);
+    if (template) {
+      setSelectedTemplate(e);
+      setEditorContent(template.body_html || template.content || '');
+    }
   };
 
   useEffect(() => {
-    if (templates) {
-      const dropdown = templates.map((item) => ({
-        name: item.name,
-        code: item.id
-      }));
-
-      setDropdownTemplates(dropdown);
-      
-      // Seleciona o primeiro template por padrão
-      if (dropdown.length > 0 && !selectedTemplate) {
-        const primeiroTemplate = templates[0];
-        setSelectedTemplate(dropdown[0]);
-        setEditorContent(primeiroTemplate.content);
+    const fetchTemplates = async () => {
+      try {
+        setLoadingTemplates(true);
+        console.log('Buscando templates da API...');
+        const response = await http.get('email_templates/');
+        console.log('Templates recebidos:', response);
+        
+        if (response && response.length > 0) {
+          setTemplates(response);
+          const dropdown = response.map((item) => ({
+            name: item.name,
+            code: item.id
+          }));
+          console.log('Dropdown criado:', dropdown);
+          setDropdownTemplates(dropdown);
+          
+          // Seleciona o primeiro template por padrão
+          if (dropdown.length > 0 && !selectedTemplate) {
+            const primeiroTemplate = response[0];
+            console.log('Primeiro template selecionado:', primeiroTemplate);
+            setSelectedTemplate(dropdown[0]);
+            setEditorContent(primeiroTemplate.body_html || primeiroTemplate.content || '');
+          }
+        } else {
+          console.log('Nenhum template encontrado');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar templates:', error);
+      } finally {
+        setLoadingTemplates(false);
       }
-    }
-  }, [templates]);
+    };
+
+    fetchTemplates();
+  }, []);
 
   // Atualiza a periculosidade quando a periculosidadeInicial mudar
   useEffect(() => {
@@ -189,6 +281,35 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       setPericulosidade(periculosidadeInicial);
     }
   }, [periculosidadeInicial]);
+
+  // Preenche os campos com os dados do candidato quando disponível
+  useEffect(() => {
+    if (candidato) {
+      console.log('Dados do candidato recebidos:', candidato);
+      setNome(candidato.nome || '');
+      setEmail(candidato.email || '');
+      setTelefone(candidato.telefone || '');
+      setNascimento(candidato.dt_nascimento || '');
+      setCandidatoId(candidato.id);
+      
+      // Formata o CPF se disponível
+      if (candidato.cpf) {
+        const cpfFormatado = candidato.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        setCpf(cpfFormatado);
+        console.log('CPF formatado:', cpfFormatado);
+      }
+      
+      // Define periculosidade se disponível
+      if (candidato.periculosidade) {
+        const periculosidadeEncontrada = listaPericulosidades.find(
+          p => p.code === candidato.periculosidade
+        );
+        if (periculosidadeEncontrada) {
+          setPericulosidade(periculosidadeEncontrada);
+        }
+      }
+    }
+  }, [candidato]);
 
   const buscarCandidatoPorCPF = async (cpfNumeros) => {
     // Se o CPF for igual ao último buscado, não faz a busca
@@ -235,6 +356,26 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
     }
   };
 
+  const handleEnviar = async () => {
+    if (!candidatoId || !editorContent) return;
+    const html_content = gerarHtmlComEstilo(substituirVariaveis(editorContent));
+    const payload = {
+      html_content,
+      dt_inscricao: new Date().toISOString().slice(0, 10),
+      status: "S", // ou outro valor do Enum conforme sua regra
+      candidato: candidatoId,
+      vaga: vagaId // você precisa garantir que vagaId está disponível no componente
+    };
+    try {
+      await http.post(`vagas_candidato/${candidatoId}/seguir/`, payload);
+      // feedback de sucesso/erro...
+      if (aoSalvar) aoSalvar();
+    } catch (error) {
+      console.error('Erro ao enviar email:', error);
+      // feedback de erro...
+    }
+  };
+
   return (
     opened &&
     <Overlay>
@@ -254,7 +395,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
                 <Col12>
                   <Col6>
                     <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem" />
-                    <DropdownItens width="280px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades" name="periculosidade" placeholder="Periculosidades"/> 
+                    <DropdownItens width="150px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades" name="periculosidade" placeholder="Periculosidades"/> 
                   </Col6>
                   <Col6>
                     <CampoTexto valor={dataInicio} type="date" setValor={setDataInicio} label="Data de Início" />
@@ -270,7 +411,8 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
                     options={dropdownTemplates}
                     label="Template"
                     name="template"
-                    placeholder="Selecione um template"
+                    placeholder={loadingTemplates ? "Carregando templates..." : dropdownTemplates.length === 0 ? "Nenhum template disponível" : "Selecione um template"}
+                    disabled={loadingTemplates}
                   />
                   <Editor
                     value={editorContent}
@@ -291,7 +433,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
               )}
             </Col6>
             <Col6>
-              <div dangerouslySetInnerHTML={{ __html: substituirVariaveis(editorContent) }} />
+              <PreviewContainer dangerouslySetInnerHTML={{ __html: substituirVariaveis(editorContent) }} />
             </Col6>
           </Col12>
         </Frame>
@@ -306,7 +448,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
               {showEditorContent ? "Voltar para Dados" : "Editar Template"}
             </Botao>
             <Botao
-              aoClicar={handleSave}
+              aoClicar={handleEnviar}
               estilo="vermilion"
               size="medium"
               filled
@@ -321,3 +463,4 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
 }
 
 export default ModalEncaminharVaga;
+
