@@ -29,9 +29,30 @@ const VariaveisContainer = styled.div`
   border: 1px solid #ddd;
   padding: 10px;
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #f9f9f9;
+`;
+
+const CategoriaContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const CategoriaTitulo = styled.h4`
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+`;
+
+const VariaveisGrid = styled.div`
+  display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  background-color: #f9f9f9;
 `;
 
 const VariavelItem = styled.div`
@@ -47,6 +68,51 @@ const VariavelItem = styled.div`
   }
 `;
 
+const VariavelItemObrigatoria = styled.div`
+  cursor: pointer;
+  background-color: #ffebee;
+  border: 2px solid #f44336;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #d32f2f;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #ffcdd2;
+  }
+
+  &::after {
+    content: " *";
+    color: #f44336;
+  }
+`;
+
+const ModalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+`;
+
+const ModalHeader = styled.div`
+  flex-shrink: 0;
+`;
+
+const ModalContent = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 0px;
+`;
+
+const ModalFooter = styled.div`
+  flex-shrink: 0;
+  padding: 16px;
+  border-top: 1px solid var(--neutro-200);
+  background-color: white;
+`;
+
 function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = false }) {
   const toast = useRef(null);
   const [name, setName] = useState("");
@@ -55,6 +121,7 @@ function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = fals
   const [bodyText, setBodyText] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [editorContent, setEditorContent] = useState("");
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState("geral");
 
   const showError = (message) => {
     toast.current.show({
@@ -65,15 +132,42 @@ function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = fals
     });
   };
 
-  const variaveis = [
-    { value: "{{nome}}", label: "Nome do Candidato" },
-    { value: "{{cargo}}", label: "Cargo" },
-    { value: "{{filial}}", label: "Filial" },
-    { value: "{{data}}", label: "Data" },
-    { value: "{{salario}}", label: "Salário" },
-    { value: "{{departamento}}", label: "Departamento" },
-    { value: "{{centro_custo}}", label: "Centro de Custo" },
+  const categorias = [
+    { code: "geral", name: "Geral" },
+    { code: "encaminhamento", name: "Encaminhamento de Vaga" },
   ];
+
+  const variaveisPorCategoria = {
+    geral: [
+      { value: "{{nome}}", label: "Nome do Candidato" },
+      { value: "{{cargo}}", label: "Cargo" },
+      { value: "{{filial}}", label: "Filial" },
+      { value: "{{data}}", label: "Data" },
+      { value: "{{salario}}", label: "Salário" },
+      { value: "{{departamento}}", label: "Departamento" },
+      { value: "{{centro_custo}}", label: "Centro de Custo" },
+    ],
+    encaminhamento: [
+      { value: "{{nome}}", label: "Nome Completo" },
+      { value: "{{email}}", label: "E-mail" },
+      { value: "{{mensagem}}", label: "Mensagem" },
+      { value: "{{nascimento}}", label: "Data de Nascimento" },
+      { value: "{{cpf}}", label: "CPF" },
+      { value: "{{telefone}}", label: "Telefone" },
+      { value: "{{dataInicio}}", label: "Data de Início" },
+      { value: "{{salario}}", label: "Salário" },
+      { value: "{{periculosidade}}", label: "Periculosidade" },
+      { value: "{{dataExameMedico}}", label: "Data do Exame Médico" },
+      { value: "{{candidato_nome}}", label: "Nome do Candidato" },
+      { value: "{{candidato_email}}", label: "Email do Candidato" },
+      { value: "{{candidato_cpf}}", label: "CPF do Candidato" },
+      { value: "{{candidato_nascimento}}", label: "Nascimento do Candidato" },
+      { value: "{{candidato_telefone}}", label: "Telefone do Candidato" },
+      { value: "{{link_acesso}}", label: "Link de Acesso", obrigatoria: true },
+    ]
+  };
+
+  const variaveisAtuais = variaveisPorCategoria[categoriaSelecionada] || [];
 
   useEffect(() => {
     if (email) {
@@ -140,107 +234,131 @@ function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = fals
     opened &&
     <Overlay>
       <Toast ref={toast} />
-      <DialogEstilizado $width="95vw" $minWidth="80vw" open={opened}>
-        <Frame>
-          <Titulo>
-            <button className="close" onClick={aoFechar}>
-              <RiCloseFill size={20} className="fechar" />  
-            </button>
-            <h6>{viewMode ? 'Visualizar Email' : (email ? 'Editar Email' : 'Novo Email')}</h6>
-          </Titulo>
-        </Frame>
-        <Frame padding="24px 0px">
-          <Col12>
-            <Col6>
-              <Col12>
-                <Col6>
-                  <CampoTexto 
-                    valor={name} 
-                    type="text" 
-                    setValor={setName} 
-                    label="Nome do Email" 
-                    placeholder="Digite o nome do email"
-                    disabled={viewMode}
-                    maxLength={100}
-                  />
-                </Col6>
-                <Col6>
-                  <CampoTexto 
-                    valor={subject} 
-                    type="text" 
-                    setValor={setSubject} 
-                    label="Assunto" 
-                    placeholder="Digite o assunto do email"
-                    disabled={viewMode}
-                    maxLength={255}
-                  />
-                </Col6>
-              </Col12>
-              <Editor
-                value={editorContent}
-                onTextChange={(e) => setEditorContent(e.htmlValue)}
-                style={{ height: '140px' }}
-                readOnly={viewMode}
-              />
-              {!viewMode && (
-                <VariaveisContainer>
-                  {variaveis.map((variavel, index) => (
-                    <VariavelItem
-                      key={index}
-                      onClick={() => handleAddVariable(variavel.value)}
-                    >
-                      {variavel.label}
-                    </VariavelItem>
-                  ))}
-                </VariaveisContainer>
-              )}
-              <CampoTexto 
-                valor={bodyText} 
-                type="textarea" 
-                setValor={setBodyText} 
-                label="Versão Texto Plano (Opcional)" 
-                placeholder="Digite a versão em texto plano do email"
-                disabled={viewMode}
-              />
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
-                <Checkbox
-                  inputId="isActive"
-                  checked={isActive}
-                  onChange={(e) => setIsActive(e.checked)}
+      <DialogEstilizado $width="95vw" $minWidth="80vw" $maxHeight="90vh" open={opened}>
+        <ModalContainer>
+          <ModalHeader>
+            <Frame>
+              <Titulo>
+                <button className="close" onClick={aoFechar}>
+                  <RiCloseFill size={20} className="fechar" />  
+                </button>
+                <h6>{viewMode ? 'Visualizar Email' : (email ? 'Editar Email' : 'Novo Email')}</h6>
+              </Titulo>
+            </Frame>
+          </ModalHeader>
+          
+          <ModalContent>
+            <Col12>
+              <Col6>
+                <Col12>
+                  <Col6>
+                    <CampoTexto 
+                      valor={name} 
+                      type="text" 
+                      setValor={setName} 
+                      label="Nome do Email" 
+                      placeholder="Digite o nome do email"
+                      disabled={viewMode}
+                      maxLength={100}
+                    />
+                  </Col6>
+                  <Col6>
+                    <CampoTexto 
+                      valor={subject} 
+                      type="text" 
+                      setValor={setSubject} 
+                      label="Assunto" 
+                      placeholder="Digite o assunto do email"
+                      disabled={viewMode}
+                      maxLength={255}
+                    />
+                  </Col6>
+                </Col12>
+                <Editor
+                  value={editorContent}
+                  onTextChange={(e) => setEditorContent(e.htmlValue)}
+                  style={{ height: '140px' }}
+                  readOnly={viewMode}
+                />
+                {!viewMode && (
+                  <VariaveisContainer>
+                    <DropdownItens
+                      valor={categorias.find(cat => cat.code === categoriaSelecionada)}
+                      setValor={(cat) => setCategoriaSelecionada(cat.code)}
+                      options={categorias}
+                      label="Categoria de Variáveis"
+                      name="categoria"
+                      placeholder="Selecione uma categoria"
+                    />
+                    <CategoriaContainer>
+                      <CategoriaTitulo>
+                        Variáveis - {categorias.find(cat => cat.code === categoriaSelecionada)?.name}
+                      </CategoriaTitulo>
+                      <VariaveisGrid>
+                        {variaveisAtuais.map((variavel, index) => {
+                          const VariavelComponent = variavel.obrigatoria ? VariavelItemObrigatoria : VariavelItem;
+                          return (
+                            <VariavelComponent
+                              key={index}
+                              onClick={() => handleAddVariable(variavel.value)}
+                            >
+                              {variavel.label}
+                            </VariavelComponent>
+                          );
+                        })}
+                      </VariaveisGrid>
+                    </CategoriaContainer>
+                  </VariaveisContainer>
+                )}
+                <CampoTexto 
+                  valor={bodyText} 
+                  type="textarea" 
+                  setValor={setBodyText} 
+                  label="Versão Texto Plano (Opcional)" 
+                  placeholder="Digite a versão em texto plano do email"
                   disabled={viewMode}
                 />
-                <label htmlFor="isActive" style={{ cursor: viewMode ? 'default' : 'pointer' }}>
-                  Template Ativo
-                </label>
-              </div>
-            </Col6>
-            <Col6>
-              <div dangerouslySetInnerHTML={{ __html: editorContent }} />
-            </Col6>
-          </Col12>
-        </Frame>
-        <div style={{ padding: '16px', borderTop: '1px solid var(--neutro-200)' }}>
-          <BotaoGrupo>
-            <Botao
-              aoClicar={aoFechar}
-              estilo="neutro"
-              size="medium"
-              filled
-            >
-              {viewMode ? 'Fechar' : 'Cancelar'}
-            </Botao>
-            {!viewMode && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
+                  <Checkbox
+                    inputId="isActive"
+                    checked={isActive}
+                    onChange={(e) => setIsActive(e.checked)}
+                    disabled={viewMode}
+                  />
+                  <label htmlFor="isActive" style={{ cursor: viewMode ? 'default' : 'pointer' }}>
+                    Template Ativo
+                  </label>
+                </div>
+              </Col6>
+              <Col6>
+                <div dangerouslySetInnerHTML={{ __html: editorContent }} />
+              </Col6>
+            </Col12>
+          </ModalContent>
+          
+          <ModalFooter>
+            <BotaoGrupo>
               <Botao
-                aoClicar={handleSave}
-                estilo="primaria"
+                aoClicar={aoFechar}
+                estilo="neutro"
                 size="medium"
                 filled
               >
-                {email ? 'Salvar' : 'Criar'}
+                {viewMode ? 'Fechar' : 'Cancelar'}
               </Botao>
-            )}
-          </BotaoGrupo>
-        </div>
+              {!viewMode && (
+                <Botao
+                  aoClicar={handleSave}
+                  estilo="primaria"
+                  size="medium"
+                  filled
+                >
+                  {email ? 'Salvar' : 'Criar'}
+                </Botao>
+              )}
+            </BotaoGrupo>
+          </ModalFooter>
+        </ModalContainer>
       </DialogEstilizado>
     </Overlay>
   );

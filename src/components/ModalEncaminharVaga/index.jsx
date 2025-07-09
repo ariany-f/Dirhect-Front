@@ -54,6 +54,27 @@ const VariavelItem = styled.div`
   }
 `;
 
+const VariavelItemObrigatoria = styled.div`
+  cursor: pointer;
+  background-color: #ffebee;
+  border: 2px solid #f44336;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #d32f2f;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #ffcdd2;
+  }
+
+  &::after {
+    content: " *";
+    color: #f44336;
+  }
+`;
+
 const PreviewContainer = styled.div`
   /* Alinhamento padrão à esquerda */
   text-align: left;
@@ -164,6 +185,8 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
     { value: "{{candidato_cpf}}", label: "CPF do Candidato" },
     { value: "{{candidato_nascimento}}", label: "Nascimento do Candidato" },
     { value: "{{candidato_telefone}}", label: "Telefone do Candidato" },
+    // Variável obrigatória
+    { value: "{{link_acesso}}", label: "Link de Acesso", obrigatoria: true },
   ];
 
   const substituirVariaveis = (conteudo) => {
@@ -189,6 +212,8 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       "{{candidato_cpf}}": candidato?.cpf ? candidato.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : cpf,
       "{{candidato_nascimento}}": candidato?.dt_nascimento ? formatDate(candidato.dt_nascimento) : formatDate(nascimento),
       "{{candidato_telefone}}": candidato?.telefone || telefone,
+      // Variável obrigatória - deve ser preenchida pelo usuário
+      "{{link_acesso}}": "LINK_DE_ACESSO_AQUI",
     };
 
     console.log('Variáveis disponíveis para substituição:', variaveisMap);
@@ -358,6 +383,43 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
 
   const handleEnviar = () => {
     if (!candidatoId || !editorContent) return;
+    
+    // Validações dos campos obrigatórios
+    const camposObrigatorios = [];
+    
+    if (!dataInicio || dataInicio.trim() === '') {
+      camposObrigatorios.push('Data de Início');
+    }
+    
+    if (!dataExameMedico || dataExameMedico.trim() === '') {
+      camposObrigatorios.push('Data do Exame Médico');
+    }
+    
+    if (!salario || salario.trim() === '') {
+      camposObrigatorios.push('Salário');
+    }
+    
+    if (!periculosidade || !periculosidade.code) {
+      camposObrigatorios.push('Periculosidade');
+    }
+    
+    if (!mensagem || mensagem.trim() === '') {
+      camposObrigatorios.push('Mensagem');
+    }
+    
+    // Se há campos obrigatórios não preenchidos, mostra erro
+    if (camposObrigatorios.length > 0) {
+      const camposStr = camposObrigatorios.join(', ');
+      alert(`Os seguintes campos são obrigatórios: ${camposStr}`);
+      return;
+    }
+    
+    // Verifica se a variável obrigatória link_acesso está presente
+    if (!editorContent.includes('{{link_acesso}}')) {
+      alert('A variável "Link de Acesso" é obrigatória. Por favor, adicione-a ao template antes de enviar.');
+      return;
+    }
+    
     const html_content = gerarHtmlComEstilo(substituirVariaveis(editorContent));
     const payload = {
       html_content,
@@ -387,13 +449,13 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
               {!showEditorContent ? (
                 <Col12>
                   <Col6>
-                    <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem" />
-                    <DropdownItens width="150px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades" name="periculosidade" placeholder="Periculosidades"/> 
+                    <CampoTexto valor={mensagem} type="text" setValor={setMensagem} label="Mensagem *" />
+                    <DropdownItens width="150px" valor={periculosidade} setValor={setPericulosidade} options={listaPericulosidades} label="Periculosidades *" name="periculosidade" placeholder="Periculosidades"/> 
                   </Col6>
                   <Col6>
-                    <CampoTexto valor={dataInicio} type="date" setValor={setDataInicio} label="Data de Início" />
-                    <CampoTexto patternMask={'BRL'} valor={salario} type="text" setValor={setSalario} label="Salário" />
-                    <CampoTexto valor={dataExameMedico} type="date" setValor={setDataExameMedico} label="Data do Exame Médico" />
+                    <CampoTexto valor={dataInicio} type="date" setValor={setDataInicio} label="Data de Início *" />
+                    <CampoTexto patternMask={'BRL'} valor={salario} type="text" setValor={setSalario} label="Salário *" />
+                    <CampoTexto valor={dataExameMedico} type="date" setValor={setDataExameMedico} label="Data do Exame Médico *" />
                   </Col6>
                 </Col12>
               ) : (
@@ -413,14 +475,17 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
                     style={{ height: '240px' }}
                   />
                   <VariaveisContainer>
-                    {variaveis.map((variavel, index) => (
-                      <VariavelItem
-                        key={index}
-                        onClick={() => handleAddVariable(variavel.value)}
-                      >
-                        {variavel.label}
-                      </VariavelItem>
-                    ))}
+                    {variaveis.map((variavel, index) => {
+                      const VariavelComponent = variavel.obrigatoria ? VariavelItemObrigatoria : VariavelItem;
+                      return (
+                        <VariavelComponent
+                          key={index}
+                          onClick={() => handleAddVariable(variavel.value)}
+                        >
+                          {variavel.label}
+                        </VariavelComponent>
+                      );
+                    })}
                   </VariaveisContainer>
                 </>
               )}
