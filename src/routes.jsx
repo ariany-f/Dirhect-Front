@@ -85,6 +85,7 @@ import Admissoes from '@pages/Admissoes'
 import CandidatoRegistro from '@pages/Admissoes/Registro'
 import ValidarAdmissoes from '@pages/Admissoes/validar'
 import DetalhesAdmissao from '@pages/Admissoes/detalhes'
+import AcessoCandidato from '@pages/AcessoCandidato'
 import FiliaisLista from '@pages/Estrutura/filiais'
 import CargosLista from '@pages/Estrutura/cargos'
 import SecoesLista from '@pages/Estrutura/secoes'
@@ -160,6 +161,7 @@ import SelecionarGrupo from '@pages/Login/selecionar-grupo'
 import Atividades from './pages/Tarefas/atividades'
 import AtividadesLista from './pages/Tarefas/lista_atividades'
 import AtividadesKanban from './pages/Tarefas/kanban_atividades'
+import Candidato from './common/Candidato'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
@@ -208,6 +210,10 @@ function AppRouter() {
               <Route path="seguranca" element={<Seguranca />} />
               <Route path="check-inbox" element={<RedefinirSenhaCheckInbox />} />
               <Route path="sucesso" element={<RedefinirSenhaSucesso />} />
+            </Route>
+
+            <Route path="/acesso-candidato/:token" element={<Candidato/>}>
+              <Route index element={<AcessoCandidato />} />
             </Route>
 
             <Route path="/" element={<Autenticado/>}>
