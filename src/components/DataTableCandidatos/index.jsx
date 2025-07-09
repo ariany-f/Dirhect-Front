@@ -179,8 +179,26 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
     }
 
     const handleAprovar = async (rowData) => {
-        setCandidatoParaAprovar(rowData);
-        setModalEncaminharAberto(true);
+        // Verifica se há documentos configurados para a vaga
+        if (!documentos || documentos.length === 0) {
+            confirmDialog({
+                message: 'Não há documentos configurados para esta vaga. Deseja continuar mesmo assim?',
+                header: 'Confirmação',
+                icon: 'pi pi-info-circle',
+                acceptLabel: 'Sim, continuar',
+                rejectLabel: 'Não, cancelar',
+                accept: () => {
+                    setCandidatoParaAprovar(rowData);
+                    setModalEncaminharAberto(true);
+                },
+                reject: () => {
+                    // Não faz nada se o usuário cancelar
+                }
+            });
+        } else {
+            setCandidatoParaAprovar(rowData);
+            setModalEncaminharAberto(true);
+        }
     };
 
     const handleModalSalvar = async (payload) => {
