@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Editor } from "primereact/editor";
 import Botao from "@components/Botao";
@@ -9,6 +9,8 @@ import DropdownItens from "@components/DropdownItens";
 import Titulo from "@components/Titulo";
 import { RiCloseFill } from "react-icons/ri";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { Checkbox } from 'primereact/checkbox';
+import { Toast } from 'primereact/toast';
 
 const Col12 = styled.div`
   display: flex;
@@ -46,19 +48,22 @@ const VariavelItem = styled.div`
 `;
 
 function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = false }) {
-  const [nome, setNome] = useState("");
-  const [assunto, setAssunto] = useState("");
-  const [corpo, setCorpo] = useState("");
-  const [gatilho, setGatilho] = useState(null);
+  const toast = useRef(null);
+  const [name, setName] = useState("");
+  const [subject, setSubject] = useState("");
+  const [bodyHtml, setBodyHtml] = useState("");
+  const [bodyText, setBodyText] = useState("");
+  const [isActive, setIsActive] = useState(true);
   const [editorContent, setEditorContent] = useState("");
 
-  const gatilhos = [
-    { name: 'Abertura de Vaga', code: 'Aberta' },
-    { name: 'Candidatura', code: 'CANDIDATURA' },
-    { name: 'Contratação', code: 'CONTRATADO' },
-    { name: 'Cancelamento', code: 'CANCELADA' },
-    { name: 'Reprovação', code: 'REPROVADO' },
-  ];
+  const showError = (message) => {
+    toast.current.show({
+      severity: 'error',
+      summary: 'Erro',
+      detail: message,
+      life: 5000
+    });
+  };
 
   const variaveis = [
     { value: "{{nome}}", label: "Nome do Candidato" },
@@ -72,17 +77,19 @@ function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = fals
 
   useEffect(() => {
     if (email) {
-      setNome(email.nome);
-      setAssunto(email.assunto);
-      setCorpo(email.corpo);
-      setGatilho(gatilhos.find(g => g.code === email.gatilho));
-      setEditorContent(email.corpo);
+      setName(email.name || '');
+      setSubject(email.subject || '');
+      setBodyHtml(email.body_html || '');
+      setBodyText(email.body_text || '');
+      setIsActive(email.is_active !== undefined ? email.is_active : true);
+      setEditorContent(email.body_html || '');
     } else {
       // Limpa os campos quando for criar novo
-      setNome("");
-      setAssunto("");
-      setCorpo("");
-      setGatilho(null);
+      setName("");
+      setSubject("");
+      setBodyHtml("");
+      setBodyText("");
+      setIsActive(true);
       setEditorContent("");
     }
   }, [email]);
@@ -93,23 +100,46 @@ function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = fals
   };
 
   const handleSave = () => {
-    if (!nome || !assunto || !editorContent || !gatilho) {
-      alert("Por favor, preencha todos os campos obrigatórios.");
+    // Validações conforme a especificação da API
+    if (!name || name.trim().length === 0) {
+      showError('Por favor, preencha o nome do template.');
+      return;
+    }
+    
+    if (name.trim().length > 100) {
+      showError('O nome deve ter no máximo 100 caracteres.');
+      return;
+    }
+
+    if (!subject || subject.trim().length === 0) {
+      showError('Por favor, preencha o assunto do email.');
+      return;
+    }
+
+    if (subject.trim().length > 255) {
+      showError('O assunto deve ter no máximo 255 caracteres.');
+      return;
+    }
+
+    if (!editorContent || editorContent.trim().length === 0) {
+      showError('Por favor, preencha o corpo do email.');
       return;
     }
 
     aoSalvar({
       id: email?.id,
-      nome,
-      assunto,
-      corpo: editorContent,
-      gatilho: gatilho?.code
+      name: (name || '').trim(),
+      subject: (subject || '').trim(),
+      body_html: editorContent || '',
+      body_text: bodyText ? bodyText.trim() : null,
+      is_active: isActive
     });
   };
 
   return (
     opened &&
     <Overlay>
+      <Toast ref={toast} />
       <DialogEstilizado $width="95vw" $minWidth="80vw" open={opened}>
         <Frame>
           <Titulo>
@@ -125,34 +155,27 @@ function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = fals
               <Col12>
                 <Col6>
                   <CampoTexto 
-                    valor={nome} 
+                    valor={name} 
                     type="text" 
-                    setValor={setNome} 
+                    setValor={setName} 
                     label="Nome do Email" 
                     placeholder="Digite o nome do email"
                     disabled={viewMode}
+                    maxLength={100}
                   />
                 </Col6>
                 <Col6>
                   <CampoTexto 
-                    valor={assunto} 
+                    valor={subject} 
                     type="text" 
-                    setValor={setAssunto} 
+                    setValor={setSubject} 
                     label="Assunto" 
                     placeholder="Digite o assunto do email"
                     disabled={viewMode}
+                    maxLength={255}
                   />
                 </Col6>
               </Col12>
-              <DropdownItens 
-                valor={gatilho} 
-                setValor={setGatilho} 
-                options={gatilhos} 
-                label="Gatilho" 
-                name="gatilho" 
-                placeholder="Selecione o gatilho"
-                disabled={viewMode}
-              />
               <Editor
                 value={editorContent}
                 onTextChange={(e) => setEditorContent(e.htmlValue)}
@@ -171,6 +194,25 @@ function ModalEmail({ opened = false, aoFechar, aoSalvar, email, viewMode = fals
                   ))}
                 </VariaveisContainer>
               )}
+              <CampoTexto 
+                valor={bodyText} 
+                type="textarea" 
+                setValor={setBodyText} 
+                label="Versão Texto Plano (Opcional)" 
+                placeholder="Digite a versão em texto plano do email"
+                disabled={viewMode}
+              />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
+                <Checkbox
+                  inputId="isActive"
+                  checked={isActive}
+                  onChange={(e) => setIsActive(e.checked)}
+                  disabled={viewMode}
+                />
+                <label htmlFor="isActive" style={{ cursor: viewMode ? 'default' : 'pointer' }}>
+                  Template Ativo
+                </label>
+              </div>
             </Col6>
             <Col6>
               <div dangerouslySetInnerHTML={{ __html: editorContent }} />

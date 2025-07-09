@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -7,8 +7,11 @@ import { Tooltip } from 'primereact/tooltip';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tag } from 'primereact/tag';
 import Texto from '@components/Texto';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Toast } from 'primereact/toast';
 
-const DataTableEmails = ({ emails, onEdit, onDelete, onView }) => {
+const DataTableEmails = ({ emails, onEdit, onDelete, onView, loading = false }) => {
+    const toast = useRef(null);
     const [selectedEmails, setSelectedEmails] = useState(null);
 
     const actionBodyTemplate = (rowData) => {
@@ -51,34 +54,35 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView }) => {
         );
     };
 
-    const statusBodyTemplate = (rowData) => {
-        const getGatilhoColor = (gatilho) => {
-            switch (gatilho.toLowerCase()) {
-                case 'aberta':
-                    return 'var(--green-500)';
-                case 'candidatura':
-                    return 'var(--primaria)';
-                case 'contratado':
-                    return 'var(--green-500)';
-                case 'cancelada':
-                    return 'var(--error)';
-                case 'reprovado':
-                    return 'var(--error)';
-                case 'encaminhada':
-                    return 'var(--primaria)';
-                case 'anexar exame médico':
-                    return 'var(--primaria)';
-                default:
-                    return 'var(--neutro-500)';
-            }
-        };
+    const corpoBodyTemplate = (rowData) => {
+        return (
+            <Texto weight={500}>{rowData.body_html || rowData.corpo || rowData.content || rowData.body || ''}</Texto>
+        );
+    };
 
+    const nomeBodyTemplate = (rowData) => {
+        return (
+            <div>
+                <Texto weight={700}>{rowData.name || rowData.nome || ''}</Texto>
+            </div>
+        );
+    };
+
+    const assuntoBodyTemplate = (rowData) => {
+        return (
+            <div>
+                <Texto weight={500}>{rowData.subject || rowData.assunto || ''}</Texto>
+            </div>
+        );
+    };
+
+    const statusBodyTemplate = (rowData) => {
         return (
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Tag 
-                    value={rowData.gatilho} 
+                    value={rowData.is_active ? 'Ativo' : 'Inativo'} 
                     style={{ 
-                        backgroundColor: getGatilhoColor(rowData.gatilho),
+                        backgroundColor: rowData.is_active ? 'var(--green-500)' : 'var(--error)',
                         color: 'white',
                         fontWeight: '600'
                     }} 
@@ -87,30 +91,9 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView }) => {
         );
     };
 
-    const corpoBodyTemplate = (rowData) => {
-        return (
-            <Texto weight={500}>{rowData.corpo}</Texto>
-        );
-    };
-
-    const nomeBodyTemplate = (rowData) => {
-        return (
-            <div>
-                <Texto weight={700}>{rowData.nome}</Texto>
-            </div>
-        );
-    };
-
-    const assuntoBodyTemplate = (rowData) => {
-        return (
-            <div>
-                <Texto weight={500}>{rowData.assunto}</Texto>
-            </div>
-        );
-    };
-
     return (
         <>
+            <Toast ref={toast} />
             <DataTable
                 value={emails}
                 paginator
@@ -122,37 +105,38 @@ const DataTableEmails = ({ emails, onEdit, onDelete, onView }) => {
                 onSelectionChange={(e) => setSelectedEmails(e.value)}
                 dataKey="id"
                 className="p-datatable-sm"
-                emptyMessage="Nenhum email encontrado."
+                emptyMessage={loading ? "Carregando..." : "Nenhum email encontrado."}
                 showGridlines
                 stripedRows
                 tableStyle={{ minWidth: '68vw' }}
+                loading={loading}
             >
                 <Column
-                    field="nome"
+                    field="name"
                     header="Nome"
                     body={nomeBodyTemplate}
                     sortable
-                    style={{ width: '15%' }}
+                    style={{ width: '20%' }}
                 />
                 <Column
-                    field="assunto"
+                    field="subject"
                     header="Assunto"
                     body={assuntoBodyTemplate}
                     sortable
-                    style={{ width: '15%' }}
+                    style={{ width: '25%' }}
                 />
                 <Column
-                    field="corpo"
+                    field="body_html"
                     header="Corpo"
                     body={corpoBodyTemplate}
-                    style={{ width: '20%', maxWidth: '200px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                    style={{ width: '25%', maxWidth: '200px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
                 />
                 <Column
-                    field="gatilho"
-                    header="Gatilho"
+                    field="is_active"
+                    header="Status"
                     body={statusBodyTemplate}
                     sortable
-                    style={{ width: '15%' }}
+                    style={{ width: '10%' }}
                 />
                 <Column
                     body={actionBodyTemplate}
