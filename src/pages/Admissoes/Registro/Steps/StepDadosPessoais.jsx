@@ -39,6 +39,8 @@ const StepDadosPessoais = ({ classError, estados }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
 
+    console.log(candidato)
+
     // Função para buscar endereço pelo CEP
     const handleCepChange = async (valor) => {
         // Atualiza o campo CEP normalmente
