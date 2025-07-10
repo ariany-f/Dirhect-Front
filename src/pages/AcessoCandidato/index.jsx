@@ -81,6 +81,7 @@ function AcessoCandidato() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [candidatoData, setCandidatoData] = useState(null);
+  const [tenant, setTenant] = useState(null);
 
   useEffect(() => {
     validarToken();
@@ -95,7 +96,8 @@ function AcessoCandidato() {
       const response = await http.get(`admissao/documentacao/validar/${token}/${uuid}/`);
       
       if (response) {
-        setCandidatoData(response);
+        setCandidatoData(response.admissao);
+        setTenant(response.tenant_info);
       } else {
         throw new Error('Token inválido ou expirado');
       }
