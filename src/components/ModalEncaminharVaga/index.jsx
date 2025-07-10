@@ -240,7 +240,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       "{{candidato_nascimento}}": candidato?.dt_nascimento ? formatDate(candidato.dt_nascimento) : formatDate(nascimento),
       "{{candidato_telefone}}": candidato?.telefone || telefone,
       // Variável obrigatória - deve ser preenchida pelo usuário
-      "{{link_acesso}}": "LINK_DE_ACESSO_AQUI",
+      "{{link_acesso}}": "{{link_acesso}}",
     };
 
     console.log('Variáveis disponíveis para substituição:', variaveisMap);
