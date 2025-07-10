@@ -212,7 +212,7 @@ function AppRouter() {
               <Route path="sucesso" element={<RedefinirSenhaSucesso />} />
             </Route>
 
-            <Route path="/acesso-candidato/:token" element={<Candidato/>}>
+            <Route path="/acesso-candidato/:token/:uuid" element={<Candidato/>}>
               <Route index element={<AcessoCandidato />} />
             </Route>
 

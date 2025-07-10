@@ -75,7 +75,7 @@ const ErrorContainer = styled.div`
 `;
 
 function AcessoCandidato() {
-  const { token } = useParams();
+  const { token, uuid } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
