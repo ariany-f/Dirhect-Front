@@ -6,6 +6,8 @@ import { Message } from 'primereact/message';
 import AcessoCandidatoRegistro from './Registro';
 import { HiArrowLeft } from 'react-icons/hi';
 import http from '@http';
+import { CandidatoProvider } from '@contexts/Candidato';
+import { ArmazenadorToken } from '@utils';
 
 const Logo = styled.img`
   height: 38px;
@@ -98,6 +100,13 @@ function AcessoCandidato() {
       if (response) {
         setCandidatoData(response.admissao);
         setTenant(response.tenant_info);
+        
+        ArmazenadorToken.definirCompany(
+          null, 
+          response.tenant_info.schema, 
+          null, 
+          null
+        );
       } else {
         throw new Error('Token inválido ou expirado');
       }
@@ -138,7 +147,9 @@ function AcessoCandidato() {
         <Logo src="/imagens/logo.png" alt="Dirhect" />
       </HeaderBar> */}
       <Content>
-        <AcessoCandidatoRegistro candidatoData={candidatoData} token={token} />
+        <CandidatoProvider>
+          <AcessoCandidatoRegistro candidatoData={candidatoData} token={token} />
+        </CandidatoProvider>
       </Content>
     </Wrapper>
   );
