@@ -67,9 +67,9 @@ const StepDadosBancarios = () => {
 
     // Tipos de conta
     const tiposConta = [
-        { code: 'corrente', name: 'Conta Corrente' },
-        { code: 'poupanca', name: 'Conta Poupança' },
-        { code: 'salario', name: 'Conta Salário' }
+        { code: 'C', name: 'Conta Corrente' },
+        { code: 'P', name: 'Conta Poupança' },
+        { code: 'S', name: 'Conta Salário' }
     ];
 
     // Tipos de PIX

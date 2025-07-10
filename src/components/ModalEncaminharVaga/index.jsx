@@ -166,6 +166,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   const [salario, setSalario] = useState("");
   const [periculosidade, setPericulosidade] = useState(periculosidadeInicial || "");
   const [candidatoId, setCandidatoId] = useState(null);
+  const [vagaCandidatoId, setVagaCandidatoId] = useState(null);
   const [ultimoCpfBuscado, setUltimoCpfBuscado] = useState(null);
   const [dropdownTemplates, setDropdownTemplates] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -493,7 +494,8 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       setTelefone(candidato.telefone || '');
       setNascimento(candidato.dt_nascimento || '');
       setCandidatoId(candidato.id);
-      
+      setVagaCandidatoId(candidato.vaga_candidato_id);
+
       // Formata o CPF se disponível
       if (candidato.cpf) {
         const cpfFormatado = candidato.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
@@ -524,6 +526,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       if (response && response.length > 0) {
         const candidato = response[0];
         setCandidatoId(candidato.id);
+        setVagaCandidatoId(candidato.vaga_candidato_id);
         setNome(candidato.nome || '');
         setEmail(candidato.email || '');
         setTelefone(candidato.telefone || '');
@@ -538,12 +541,14 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
         }
       } else {
         setCandidatoId(null);
+        setVagaCandidatoId(null);
       }
       // Atualiza o último CPF buscado
       setUltimoCpfBuscado(cpfNumeros);
     } catch (error) {
       console.error('Erro ao buscar candidato:', error);
       setCandidatoId(null);
+      setVagaCandidatoId(null);
       setUltimoCpfBuscado(null);
     }
   };
@@ -599,9 +604,11 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
     
     const html_content = gerarHtmlComEstilo(substituirVariaveis(editorContent));
     const payload = {
-      html_content,
+      html: html_content,
+      assunto: "Convite para Processo Seletivo",
       dt_inscricao: new Date().toISOString().slice(0, 10),
       status: "S",
+      vaga_candidato_id: vagaCandidatoId,
       candidato: candidatoId,
       vaga: vagaId
     };

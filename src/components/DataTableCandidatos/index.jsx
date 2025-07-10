@@ -41,7 +41,8 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                         if (vagaConfigurada) {
                             return {
                                 ...candidato,
-                                vagas_configuradas: [vagaConfigurada]
+                                vagas_configuradas: [vagaConfigurada],
+                                vaga_candidato_id: vagaConfigurada.id
                             };
                         }
                         return candidato;
@@ -204,7 +205,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
     const handleModalSalvar = async (payload) => {
         console.log(payload)
         try {
-            await http.post(`vagas_candidato/${payload.candidato}/seguir/`, payload);
+            await http.post(`vagas_candidatos/${payload.vaga_candidato_id}/seguir/`, payload);
             
             toast.current.show({
                 severity: 'success',
