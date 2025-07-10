@@ -55,10 +55,19 @@ http.interceptors.request.use(async (config) => {
 
     const token = ArmazenadorToken.AccessToken;
     const tempToken = ArmazenadorToken.TempToken;
+    const admissaoToken = ArmazenadorToken.AdmissaoToken;
+    const admissaoSecurityToken = ArmazenadorToken.AdmissaoSecurityToken;
     
     // Se for uma requisição para /token e não tiver access token mas tiver temp token
     if ((config.url === '/mfa/validate/' || config.url === '/mfa/generate/' || config.url === '/token/') && tempToken) {
         config.headers['X-Temp-Token'] = tempToken;
+        config.headers.Authorization = `Bearer ${token}`;
+    } else if (admissaoToken) {
+        // Se tiver admissao token, usa ele para endpoints de admissão
+        config.headers['X-Admissao-Token-Encoded'] = admissaoToken;
+        if (admissaoSecurityToken) {
+            config.headers['X-Admissao-Security-Token'] = admissaoSecurityToken;
+        }
         config.headers.Authorization = `Bearer ${token}`;
     } else if (token) {
         config.headers.Authorization = `Bearer ${token}`;

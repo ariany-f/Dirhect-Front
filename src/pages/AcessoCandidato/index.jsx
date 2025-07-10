@@ -86,6 +86,10 @@ function AcessoCandidato() {
   const [tenant, setTenant] = useState(null);
 
   useEffect(() => {
+    ArmazenadorToken.removerToken();
+    ArmazenadorToken.removerCompany();
+    ArmazenadorToken.removerAdmissaoToken();
+    ArmazenadorToken.removerAdmissaoSecurityToken();
     validarToken();
   }, [token]);
 
@@ -100,13 +104,17 @@ function AcessoCandidato() {
       if (response) {
         setCandidatoData(response.admissao);
         setTenant(response.tenant_info);
-        
+
         ArmazenadorToken.definirCompany(
           null, 
           response.tenant_info.schema, 
           null, 
           null
         );
+
+        ArmazenadorToken.definirAdmissaoToken(token);
+        ArmazenadorToken.definirAdmissaoSecurityToken(uuid);
+
       } else {
         throw new Error('Token inválido ou expirado');
       }

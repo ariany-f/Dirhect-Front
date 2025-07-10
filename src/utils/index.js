@@ -1,5 +1,7 @@
 const ACCESS_TOKEN = 'token_access'
 const TEMP_TOKEN = 'temp_token'
+const ADMISSAO_TOKEN = 'admissao_token'
+const ADMISSAO_SECURITY_TOKEN = 'admissao_security_token'
 const EXPIRATION = 'expires_at'
 const REFRESH_TOKEN = 'refresh_token'
 const PERMISSIONS = 'permissions'
@@ -40,6 +42,24 @@ export class ArmazenadorToken {
     }
     static removerTempToken() {
         sessionStorage.removeItem(TEMP_TOKEN)
+    }
+    static definirAdmissaoToken(admissaoToken) {
+        sessionStorage.setItem(ADMISSAO_TOKEN, admissaoToken)
+    }
+    static get AdmissaoToken() {
+        return sessionStorage.getItem(ADMISSAO_TOKEN)
+    }
+    static removerAdmissaoToken() {
+        sessionStorage.removeItem(ADMISSAO_TOKEN)
+    }
+    static definirAdmissaoSecurityToken(securityToken) {
+        sessionStorage.setItem(ADMISSAO_SECURITY_TOKEN, securityToken)
+    }
+    static get AdmissaoSecurityToken() {
+        return sessionStorage.getItem(ADMISSAO_SECURITY_TOKEN)
+    }
+    static removerAdmissaoSecurityToken() {
+        sessionStorage.removeItem(ADMISSAO_SECURITY_TOKEN)
     }
     static definirToken(accessToken, expiration = null, refreshToken = null, permissions = null) {
         if (!accessToken) {
@@ -101,6 +121,9 @@ export class ArmazenadorToken {
         sessionStorage.removeItem(USER_GROUPS)
         sessionStorage.removeItem(USER_PERMISSIONS)
         sessionStorage.removeItem(REFRESH_TOKEN)
+        sessionStorage.removeItem(TEMP_TOKEN)
+        sessionStorage.removeItem(ADMISSAO_TOKEN)
+        sessionStorage.removeItem(ADMISSAO_SECURITY_TOKEN)
         sessionStorage.removeItem(USER_NAME)
         sessionStorage.removeItem(USER_EMAIL)
         sessionStorage.removeItem(USER_CPF)
