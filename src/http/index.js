@@ -64,9 +64,11 @@ http.interceptors.request.use(async (config) => {
         config.headers.Authorization = `Bearer ${token}`;
     } else if (admissaoToken) {
         // Se tiver admissao token, usa ele para endpoints de admissão
-        config.headers['X-Admissao-Token-Encoded'] = admissaoToken;
+        //config.headers['X-Admissao-Token-Encoded'] = admissaoToken;
+        config.headers['X-Admissao-Token-Encoded'] = admissaoSecurityToken;
         if (admissaoSecurityToken) {
-            config.headers['X-Admissao-Security-Token'] = admissaoSecurityToken;
+            //config.headers['X-Admissao-Security-Token'] = admissaoSecurityToken; - desativado por enquanto (Edilson)
+            config.headers['X-Admissao-Security-Token'] = admissaoToken;
         }
         config.headers.Authorization = `Bearer ${token}`;
     } else if (token) {
