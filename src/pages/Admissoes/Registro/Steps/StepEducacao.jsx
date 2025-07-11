@@ -9,7 +9,7 @@ const StepEducacao = () => {
     const { candidato, addArrayItem, updateArrayItem, removeArrayItem } = useCandidatoContext();
     const [abertos, setAbertos] = useState(() => {
         // Se não houver itens, retorna array vazio
-        if (!candidato.educacao?.length) return [];
+        if (!Array.isArray(candidato.educacao) || candidato.educacao.length === 0) return [];
         // Retorna array com o índice do último item
         return [candidato.educacao.length - 1];
     });
@@ -36,8 +36,7 @@ const StepEducacao = () => {
     };
 
     const podeAdicionarEducacao = () => {
-        if (candidato.educacao.length === 0) return true;
-        
+        if (!Array.isArray(candidato.educacao) || candidato.educacao.length === 0) return true;
         const ultimaEducacao = candidato.educacao[candidato.educacao.length - 1];
         return ultimaEducacao.nivel &&
                ultimaEducacao.instituicao &&
@@ -72,7 +71,7 @@ const StepEducacao = () => {
 
     return (
         <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
-            {candidato.educacao.map((edu, idx) => (
+            {(Array.isArray(candidato.educacao) ? candidato.educacao : []).map((edu, idx) => (
                 <div key={idx} style={{ 
                     border: '1px solid #eee', 
                     borderRadius: 8, 

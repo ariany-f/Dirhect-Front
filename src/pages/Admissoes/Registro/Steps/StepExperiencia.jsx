@@ -36,8 +36,7 @@ const StepExperiencia = () => {
     };
 
     const podeAdicionarExperiencia = () => {
-        if (candidato.experiencia.length === 0) return true;
-        
+        if (!Array.isArray(candidato.experiencia) || candidato.experiencia.length === 0) return true;
         const ultimaExperiencia = candidato.experiencia[candidato.experiencia.length - 1];
         return ultimaExperiencia.cargo &&
                ultimaExperiencia.empresa &&
@@ -68,7 +67,7 @@ const StepExperiencia = () => {
 
     return (
         <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
-            {candidato.experiencia.map((exp, idx) => (
+            {(Array.isArray(candidato.experiencia) ? candidato.experiencia : []).map((exp, idx) => (
                 <div key={idx} style={{ 
                     border: '1px solid #eee', 
                     borderRadius: 8, 

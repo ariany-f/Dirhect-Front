@@ -32,8 +32,7 @@ const StepHabilidades = () => {
     };
 
     const podeAdicionarHabilidade = () => {
-        if (candidato.habilidades.length === 0) return true;
-        
+        if (!Array.isArray(candidato.habilidades) || candidato.habilidades.length === 0) return true;
         const ultimaHabilidade = candidato.habilidades[candidato.habilidades.length - 1];
         return ultimaHabilidade.nivel && ultimaHabilidade.descricao;
     };
@@ -60,7 +59,7 @@ const StepHabilidades = () => {
 
     return (
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
-            {candidato.habilidades.map((hab, idx) => (
+            {(Array.isArray(candidato.habilidades) ? candidato.habilidades : []).map((hab, idx) => (
                 <div key={idx} style={{ 
                     border: '1px solid #eee', 
                     borderRadius: 8, 

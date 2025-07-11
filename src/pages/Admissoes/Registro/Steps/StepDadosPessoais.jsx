@@ -6,14 +6,16 @@ import axios from 'axios';
 import styled from 'styled-components';
 
 const GridContainer = styled.div`
-    padding: 0 10px 10px 10px;
+    padding: 0 24px 24px 24px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0 16px;
+    gap: 16px 24px;
+    box-sizing: border-box;
+    width: 100%;
     
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
-        gap: 0;
+        gap: 12px 0;
     }
 `;
 

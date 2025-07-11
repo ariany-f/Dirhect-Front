@@ -27,103 +27,76 @@ const ConteudoFrame = styled.div`
     gap: 8px;
     width: 100%;
     position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+    height: 100vh;
 
     .custom-stepper {
         display: flex;
         flex-direction: column;
-        height: 500px; /* Altura fixa menor */
-        min-height: 400px; /* Altura mínima */
+        flex: 1;
+        min-height: 0;
+        height: 100%;
     }
 
     .custom-stepper .p-stepper-header {
         padding-top: 8px !important;
         padding-bottom: 8px !important;
-        flex-shrink: 0; /* Impede que o header encolha */
+        flex-shrink: 0;
         min-height: auto !important;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #fff;
     }
 
     .custom-stepper .p-stepper-content {
         padding-top: 10px !important;
-        flex: 1; /* Permite que o conteúdo use o espaço restante */
-        overflow: hidden; /* Evita overflow que pode esconder o header */
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 
     .custom-stepper .p-stepper-panels {
         flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
         overflow: hidden;
     }
 
     .custom-stepper .p-stepper-panel {
         height: 100%;
+        flex: 1;
+        min-height: 0;
         display: flex;
         flex-direction: column;
     }
 
-    /* Altura responsiva para o ScrollPanel principal */
     .responsive-scroll-panel {
         width: 100%;
-        height: 380px; /* Altura fixa menor */
-        min-height: 300px;
-        max-height: 380px;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+        flex: 1;
+        overflow-x: hidden;
+        box-sizing: border-box;
     }
 
-    /* Altura responsiva para ScrollPanels internos */
     .responsive-inner-scroll {
         width: 100%;
-        height: 340px; /* Altura fixa menor */
-        min-height: 260px;
-        max-height: 340px;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+        flex: 1;
+        overflow-x: hidden;
+        box-sizing: border-box;
         margin-bottom: 10px;
     }
 
-    /* Media query específica para detectar zoom/escala do Windows */
-    @media (min-resolution: 120dpi), (min-resolution: 1.25dppx) {
-        .custom-stepper {
-            height: 450px; /* Altura menor para zoom 125% */
-        }
-        .responsive-scroll-panel {
-            height: 330px; /* Altura menor para zoom 125% */
-            min-height: 280px;
-            max-height: 330px;
-        }
-        .responsive-inner-scroll {
-            height: 290px;
-            min-height: 240px;
-            max-height: 290px;
-        }
-    }
-
-    /* Para zoom ainda maior (150%+) */
-    @media (min-resolution: 144dpi), (min-resolution: 1.5dppx) {
-        .custom-stepper {
-            height: 400px;
-        }
-        .responsive-scroll-panel {
-            height: 280px;
-            min-height: 250px;
-            max-height: 280px;
-        }
-        .responsive-inner-scroll {
-            height: 240px;
-            min-height: 210px;
-            max-height: 240px;
-        }
-    }
-
-    /* Para telas muito pequenas */
-    @media (max-height: 600px) {
-        .custom-stepper {
-            height: 350px;
-        }
-        .responsive-scroll-panel {
-            height: 250px;
-            min-height: 200px;
-        }
-        .responsive-inner-scroll {
-            height: 210px;
-            min-height: 170px;
-        }
-    }
+    /* Removidas media queries que limitavam altura dos painéis */
 `;
 
 const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
@@ -134,6 +107,11 @@ const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
     const [activeIndex, setActiveIndex] = useState(0);
 
     const [estados, setEstados] = useState([]);
+
+    // Adicione constantes para as alturas
+    const ALTURA_HEADER = 64; // px
+    const ALTURA_STEPPER = 64; // px
+    const ALTURA_FOOTER = 80; // px
 
     // Inicializa os dados do contexto quando candidatoData mudar
     useEffect(() => {
@@ -456,6 +434,48 @@ const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     };
 
+    // Array com os componentes de cada step
+    const stepsContent = [
+        <StepDocumentos
+            candidato={candidato}
+            setCandidato={setCandidato}
+            admissao={admissao}
+            setAdmissao={setAdmissao}
+            handleFinalizarDocumentos={handleFinalizarDocumentos}
+            handleAceitarLGPD={handleAceitarLGPD}
+            token={token}
+        />,
+        <StepDadosPessoais
+            candidato={candidato}
+            setCandidato={setCandidato}
+            estados={estados}
+            ChangeCep={ChangeCep}
+        />,
+        <StepDadosBancarios
+            candidato={candidato}
+            setCandidato={setCandidato}
+        />,
+        <StepEducacao
+            candidato={candidato}
+            setCandidato={setCandidato}
+        />,
+        <StepHabilidades
+            candidato={candidato}
+            setCandidato={setCandidato}
+        />,
+        <StepExperiencia
+            candidato={candidato}
+            setCandidato={setCandidato}
+        />,
+        <StepLGPD
+            candidato={candidato}
+            setCandidato={setCandidato}
+            admissao={admissao}
+            setAdmissao={setAdmissao}
+            handleAceitarLGPD={handleAceitarLGPD}
+        />
+    ];
+
     return (
         <ConteudoFrame>
             <Toast ref={toast} style={{ zIndex: 9999 }} />
@@ -472,7 +492,7 @@ const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
                     boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
                     position: 'sticky',
                     top: 0,
-                    zIndex: 5
+                    zIndex: 20
                 }}>
                     <div style={{
                         display: 'flex',
@@ -561,109 +581,39 @@ const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
                 </div>
             )}
 
-            <div style={{ paddingBottom: '80px' }}> {/* Espaço para o footer fixo */}
-                <Stepper 
-                    headerPosition="top" 
-                    ref={stepperRef} 
+            {/* Stepper sticky logo abaixo do header do candidato */}
+            <div style={{
+                position: 'sticky',
+                top: 64, // altura aproximada do header do candidato
+                zIndex: 15,
+                background: '#fff',
+            }}>
+                <Stepper
+                    headerPosition="top"
+                    ref={stepperRef}
                     className="custom-stepper"
+                    activeIndex={activeIndex}
+                    onSelect={setActiveIndex}
                 >
-                    <StepperPanel header="Documentos Pessoais">
-                        <Container padding={'0'} gap="10px">
-                            <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
-                                <ScrollPanel className="responsive-scroll-panel">
-                                    <StepDocumentos
-                                        candidato={candidato}
-                                        setCandidato={setCandidato}
-                                        admissao={admissao}
-                                        setAdmissao={setAdmissao}
-                                        handleFinalizarDocumentos={handleFinalizarDocumentos}
-                                        handleAceitarLGPD={handleAceitarLGPD}
-                                        token={token}
-                                    />
-                                </ScrollPanel>
-                            </div>
-                        </Container>
-                    </StepperPanel>
-                    
-                    <StepperPanel header="Dados Pessoais">
-                        <Container padding={'0'} gap="10px">
-                            <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
-                                <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
-                                    <StepDadosPessoais
-                                        candidato={candidato}
-                                        setCandidato={setCandidato}
-                                        estados={estados}
-                                        ChangeCep={ChangeCep}
-                                    />
-                                </ScrollPanel>
-                            </div>
-                        </Container>
-                    </StepperPanel>
-                    
-                    <StepperPanel header="Dados Bancários">
-                        <Container padding={'0'} gap="10px">
-                            <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
-                                <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
-                                    <StepDadosBancarios
-                                        candidato={candidato}
-                                        setCandidato={setCandidato}
-                                    />
-                                </ScrollPanel>
-                            </div>
-                        </Container>
-                    </StepperPanel>
-                    
-                    <StepperPanel header="Educação">
-                        <ScrollPanel className="responsive-scroll-panel">
-                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
-                                <ScrollPanel className="responsive-inner-scroll">
-                                    <StepEducacao
-                                        candidato={candidato}
-                                        setCandidato={setCandidato}
-                                    />
-                                </ScrollPanel>
-                            </div>
-                        </ScrollPanel>
-                    </StepperPanel>
-                    
-                    <StepperPanel header="Habilidades">
-                        <ScrollPanel className="responsive-scroll-panel">
-                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
-                                <ScrollPanel className="responsive-inner-scroll">
-                                    <StepHabilidades
-                                        candidato={candidato}
-                                        setCandidato={setCandidato}
-                                    />
-                                </ScrollPanel>
-                            </div>
-                        </ScrollPanel>
-                    </StepperPanel>
-                    
-                    <StepperPanel header="Experiência Profissional">
-                        <ScrollPanel className="responsive-scroll-panel">
-                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
-                                <ScrollPanel className="responsive-inner-scroll">
-                                    <StepExperiencia
-                                        candidato={candidato}
-                                        setCandidato={setCandidato}
-                                    />
-                                </ScrollPanel>
-                            </div>
-                        </ScrollPanel>
-                    </StepperPanel>
-                    
-                    <StepperPanel header="LGPD">
-                        <ScrollPanel className="responsive-scroll-panel" style={{ textAlign: 'center' }}>
-                            <StepLGPD
-                                candidato={candidato}
-                                setCandidato={setCandidato}
-                                admissao={admissao}
-                                setAdmissao={setAdmissao}
-                                handleAceitarLGPD={handleAceitarLGPD}
-                            />
-                        </ScrollPanel>
-                    </StepperPanel>
+                    <StepperPanel header="Documentos Pessoais" />
+                    <StepperPanel header="Dados Pessoais" />
+                    <StepperPanel header="Dados Bancários" />
+                    <StepperPanel header="Educação" />
+                    <StepperPanel header="Habilidades" />
+                    <StepperPanel header="Experiência Profissional" />
+                    <StepperPanel header="LGPD" />
                 </Stepper>
+            </div>
+
+            {/* Painel rolável com conteúdo do step ativo */}
+            <div style={{
+                overflowY: 'auto',
+                height: 'calc(100vh - 64px - 64px - 80px)', // header + stepper + footer
+                padding: '24px',
+                paddingBottom: 80,
+                width: '100%'
+            }}>
+                {stepsContent[activeIndex]}
             </div>
 
             {/* Footer fixo com botões */}
