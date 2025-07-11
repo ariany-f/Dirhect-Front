@@ -392,6 +392,7 @@ function BarraLateral({ $sidebarOpened }) {
     // Ordem desejada conforme imagem
     const ordemDesejada = [
       'Home',
+      'Vagas',
       'Admissões',
       'Colaboradores',
       'Dependentes',
@@ -400,7 +401,6 @@ function BarraLateral({ $sidebarOpened }) {
       'Demissões',
       'Contratos',
       'Elegibilidade',
-      'Vagas',
       'Pedidos',
       'Movimentação',
       'Processos',
