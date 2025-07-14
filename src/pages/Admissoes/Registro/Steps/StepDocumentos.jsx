@@ -186,7 +186,7 @@ const StepDocumentos = ({ toast }) => {
     };
 
     return (
-        <div>
+        <div data-tour="panel-step-0">
             {(candidato?.documentos && candidato?.documentos.length > 0) ?
                 <div>
                     {candidato?.documentos?.map((documento) => (

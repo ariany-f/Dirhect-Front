@@ -77,7 +77,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
     };
 
     return (
-        <GridContainer>
+        <GridContainer data-tour="panel-step-1">
             <CampoTexto
                 camposVazios={classError}
                 name="nome"

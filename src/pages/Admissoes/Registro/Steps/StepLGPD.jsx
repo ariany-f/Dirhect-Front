@@ -32,7 +32,7 @@ const StepLGPD = ({ onAceiteChange }) => {
     };
 
     return (
-        <div>
+        <div data-tour="panel-step-6">
             <h3>Termo de Consentimento LGPD</h3>
             <div style={{ marginBottom: 16, fontSize: 15, color: '#444', lineHeight: 1.6, marginTop: 16 }}>
                 Declaro, para os devidos fins, que li e estou ciente de que, ao me candidatar a uma vaga nesta empresa, meus dados pessoais, incluindo, mas não se limitando a nome, CPF, endereço, telefone, e-mail, dados profissionais, acadêmicos, documentos, exames médicos e demais informações fornecidas, serão coletados, tratados e armazenados pela empresa exclusivamente para fins de recrutamento, seleção, análise de perfil, eventual contratação e cumprimento de obrigações legais e regulatórias.<br/><br/>

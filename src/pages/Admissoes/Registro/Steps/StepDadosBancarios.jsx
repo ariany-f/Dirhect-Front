@@ -81,7 +81,7 @@ const StepDadosBancarios = () => {
     ];
 
     return (
-        <GridContainer>
+        <GridContainer data-tour="panel-step-2">
             <InfoBox>
                 <strong>Informações importantes:</strong><br />
                 • Os dados bancários são utilizados para crédito de salário e benefícios<br />

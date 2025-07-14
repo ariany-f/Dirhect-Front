@@ -70,7 +70,7 @@ const StepEducacao = () => {
     );
 
     return (
-        <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
+        <div data-tour="panel-step-3" style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
             {(Array.isArray(candidato.educacao) ? candidato.educacao : []).map((edu, idx) => (
                 <div key={idx} style={{ 
                     border: '1px solid #eee', 

@@ -20,6 +20,7 @@ import Botao from '@components/Botao';
 import styles from '../../Admissoes/Candidatos.module.css';
 import { useCandidatoContext } from '@contexts/Candidato';
 import Container from '@components/Container';
+import { TourProvider, useTour } from '@reactour/tour';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -99,12 +100,15 @@ const ConteudoFrame = styled.div`
     /* Removidas media queries que limitavam altura dos painéis */
 `;
 
-const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
+// Componente interno que usa o contexto do tour
+const RegistroContent = ({ candidatoData, token, tourSteps }) => {
     const { candidato, setCandidato, admissao, setAdmissao, vaga, setVaga } = useCandidatoContext();
     const [classError, setClassError] = useState([]);
     const stepperRef = useRef(null);
     const toast = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [tourStepIndex, setTourStepIndex] = useState(0);
+    const { setCurrentStep, currentStep, setIsOpen } = useTour();
 
     const [estados, setEstados] = useState([]);
 
@@ -202,7 +206,7 @@ const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
             };
 
             // Enviar dados via token
-            const response = await http.put(`candidato/${candidato.id}/`, dadosParaEnviar);
+            const response = await http.put(`admissao/${admissao.id}/`, dadosParaEnviar);
             
             toast.current.show({
                 severity: 'success',
@@ -476,149 +480,352 @@ const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
         />
     ];
 
+    // Função para checar se há documentos
+    const temDocumentos = Array.isArray(candidato?.documentos) && candidato.documentos.length > 0;
+
+    // Função para scrollar para o topo do Stepper
+    const scrollToStepper = () => {
+      const stepperEl = document.querySelector('[data-tour="stepper"]');
+      if (stepperEl) {
+        stepperEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    // Sincronizar tour e step ativo
+    useEffect(() => {
+      if (typeof setCurrentStep === 'function') {
+        setCurrentStep(tourStepIndex);
+      }
+    }, [tourStepIndex, setCurrentStep]);
+
+    // Garante que o tutorial abre automaticamente ao montar a tela
+    useEffect(() => {
+      if (typeof setIsOpen === 'function') {
+        console.log('começa tutorial');
+        // Adiciona um pequeno delay para garantir que o DOM está pronto
+        setTimeout(() => {
+          // Verifica se os elementos existem antes de abrir o tour
+          const stepperElement = document.querySelector('[data-tour="stepper"]');
+          const firstStepElement = document.querySelector('[data-tour="stepper-step-0"]');
+          const firstPanelElement = document.querySelector('[data-tour="panel-step-0"]');
+          
+          console.log('Elementos encontrados:', {
+            stepper: !!stepperElement,
+            firstStep: !!firstStepElement,
+            firstPanel: !!firstPanelElement
+          });
+          
+          if (stepperElement && firstStepElement && firstPanelElement) {
+            console.log('Abrindo tour...');
+            setIsOpen(true);
+          } else {
+            console.log('Elementos não encontrados, tentando novamente em 1s...');
+            setTimeout(() => {
+              setIsOpen(true);
+            }, 1000);
+          }
+        }, 500);
+      }
+    }, [setIsOpen]);
+
+    // Função para abrir o tutorial manualmente
+    const handleAbrirTutorial = () => {
+      console.log('Abrindo tutorial manualmente...');
+      if (typeof setIsOpen === 'function') {
+        setIsOpen(true);
+      }
+    };
+
+    // Quando o usuário avança o tour, sincroniza o step ativo
+    useEffect(() => {
+      if (currentStep !== undefined && currentStep !== null) {
+        const idx = currentStep; // Corrigido: cada passo do tour corresponde a um painel
+        
+        // Clicar no botão do stepper correspondente
+        const stepperButton = document.querySelector(`[data-tour="stepper-step-${idx}"] .p-stepper-action`);
+        if (stepperButton) {
+          stepperButton.click();
+        }
+        
+        // Fallback: usar o método do stepper
+        if (stepperRef.current && typeof stepperRef.current.goToStep === 'function') {
+          stepperRef.current.goToStep(idx);
+        } else {
+          setActiveIndex(idx);
+        }
+        
+        setTimeout(() => {
+          scrollToStepper();
+          // Debug para verificar se o painel existe
+          const el = document.querySelector(`[data-tour="panel-step-${idx}"]`);
+          console.log('Painel existe?', !!el, `panel-step-${idx}`);
+        }, 200);
+      }
+    }, [currentStep]);
+
     return (
-        <ConteudoFrame>
-            <Toast ref={toast} style={{ zIndex: 9999 }} />
-            <ConfirmDialog />
-            
-            {/* Header com informações do candidato */}
-            {candidato?.dados_candidato?.nome && (
+      <ConteudoFrame>
+        <Toast ref={toast} style={{ zIndex: 9999 }} />
+        <ConfirmDialog />
+        {/* Header com informações do candidato */}
+        {candidato?.dados_candidato?.nome && (
+          <div style={{
+            background: 'linear-gradient(to bottom, #0c004c, #5d0b62)',
+            borderRadius: 8,
+            padding: '12px 16px',
+            marginBottom: 0,
+            color: '#fff',
+            boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
+            position: 'sticky',
+            top: 0,
+            zIndex: 20
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 10
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10
+              }}>
                 <div style={{
-                    background: 'linear-gradient(to bottom, #0c004c, #5d0b62)',
-                    borderRadius: 8,
-                    padding: '12px 16px',
-                    marginBottom: 0,
-                    color: '#fff',
-                    boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 20
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 16,
+                  fontWeight: 500,
+                  color: '#fff'
                 }}>
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        flexWrap: 'wrap',
-                        gap: 10
-                    }}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 10
-                        }}>
-                            <div style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: '50%',
-                                background: 'rgba(255, 255, 255, 0.2)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: 16,
-                                fontWeight: 500,
-                                color: '#fff'
-                            }}>
-                                {candidato?.dados_candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
-                            </div>
-                            <div>
-                                <h2 style={{
-                                    margin: 0,
-                                    fontSize: 16,
-                                    fontWeight: 700,
-                                    color: '#fff',
-                                    textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                                }}>
-                                    {candidato?.dados_candidato?.nome || 'Nome não informado'}
-                                </h2>
-                                <p style={{
-                                    margin: 0,
-                                    fontSize: 12,
-                                    color: '#fff',
-                                    opacity: 0.9,
-                                    fontWeight: 400
-                                }}>
-                                    CPF: {formatarCPF(candidato?.dados_candidato?.cpf) || 'CPF não informado'}
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 12
-                        }}>
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 6,
-                                background: 'rgba(255, 255, 255, 0.15)',
-                                padding: '4px 10px',
-                                borderRadius: 6,
-                                backdropFilter: 'blur(10px)'
-                            }}>
-                                <span style={{
-                                    fontSize: 11,
-                                    fontWeight: 600,
-                                    color: '#fff',
-                                    opacity: 0.9
-                                }}>
-                                    Vaga:
-                                </span>
-                                <span style={{
-                                    background: '#333',
-                                    color: '#fff',
-                                    padding: '4px 8px',
-                                    borderRadius: 12,
-                                    fontSize: 11,
-                                    fontWeight: 400,
-                                    textTransform: 'capitalize'
-                                }}>
-                                    {vaga?.titulo || 'Vaga não informada'}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                  {candidato?.dados_candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
                 </div>
-            )}
-
-            {/* Stepper sticky logo abaixo do header do candidato */}
-            <div style={{
-                position: 'sticky',
-                top: 64, // altura aproximada do header do candidato
-                zIndex: 15,
-                background: '#fff',
-            }}>
-                <Stepper
-                    headerPosition="top"
-                    ref={stepperRef}
-                    className="custom-stepper"
-                    activeIndex={activeIndex}
-                    onSelect={setActiveIndex}
+                <div>
+                  <h2 style={{
+                    margin: 0,
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: '#fff',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                  }}>
+                    {candidato?.dados_candidato?.nome || 'Nome não informado'}
+                  </h2>
+                  <p style={{
+                    margin: 0,
+                    fontSize: 12,
+                    color: '#fff',
+                    opacity: 0.9,
+                    fontWeight: 400
+                  }}>
+                    CPF: {formatarCPF(candidato?.dados_candidato?.cpf) || 'CPF não informado'}
+                  </p>
+                </div>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12
+              }}>
+                {/* Botão Ver Tutorial */}
+                <button
+                  onClick={handleAbrirTutorial}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    color: '#fff',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
                 >
-                    <StepperPanel header="Documentos Pessoais" />
-                    <StepperPanel header="Dados Pessoais" />
-                    <StepperPanel header="Dados Bancários" />
-                    <StepperPanel header="Educação" />
-                    <StepperPanel header="Habilidades" />
-                    <StepperPanel header="Experiência Profissional" />
-                    <StepperPanel header="LGPD" />
-                </Stepper>
+                  <HiEye fill="#fff" size={14} color="#fff" />
+                  Ver Tutorial
+                </button>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  padding: '4px 10px',
+                  borderRadius: 6,
+                  backdropFilter: 'blur(10px)'
+                }}>
+                  <span style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#fff',
+                    opacity: 0.9
+                  }}>
+                    Vaga:
+                  </span>
+                  <span style={{
+                    background: '#333',
+                    color: '#fff',
+                    padding: '4px 8px',
+                    borderRadius: 12,
+                    fontSize: 11,
+                    fontWeight: 400,
+                    textTransform: 'capitalize'
+                  }}>
+                    {vaga?.titulo || 'Vaga não informada'}
+                  </span>
+                </div>
+              </div>
             </div>
+          </div>
+        )}
 
-            {/* Painel rolável com conteúdo do step ativo */}
-            <div style={{
-                overflowY: 'auto',
-                height: 'calc(100vh - 64px - 64px - 80px)', // header + stepper + footer
-                padding: '24px',
-                paddingBottom: 80,
-                width: '100%'
-            }}>
-                {stepsContent[activeIndex]}
-            </div>
+        {/* Stepper sticky logo abaixo do header do candidato */}
+        <div
+          style={{
+            position: 'sticky',
+            top: 64, // altura aproximada do header do candidato
+            zIndex: 15,
+            background: '#fff',
+            borderBottom: '1px solid #e0e0e0',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+            padding: '0 24px',
+          }}
+          data-tour="stepper"
+        >
+          <Stepper
+            headerPosition="top"
+            ref={stepperRef}
+            className="custom-stepper"
+            onSelect={setActiveIndex}
+          >
+            <StepperPanel header="Documentos Pessoais" data-tour="stepper-step-0" />
+            <StepperPanel header="Dados Pessoais" data-tour="stepper-step-1" />
+            <StepperPanel header="Dados Bancários" data-tour="stepper-step-2" />
+            <StepperPanel header="Educação" data-tour="stepper-step-3" />
+            <StepperPanel header="Habilidades" data-tour="stepper-step-4" />
+            <StepperPanel header="Experiência Profissional" data-tour="stepper-step-5" />
+            <StepperPanel header="LGPD" data-tour="stepper-step-6" />
+          </Stepper>
+        </div>
 
-            {/* Footer fixo com botões */}
-            {renderFooterButtons()}
-        </ConteudoFrame>
+        {/* Painel rolável com conteúdo do step ativo */}
+        <div
+          style={{
+            overflowY: 'auto',
+            height: 'calc(100vh - 64px - 64px - 80px)', // header + stepper + footer
+            padding: '24px',
+            paddingBottom: 80,
+            width: '100%'
+          }}
+          data-tour={`panel-step-${activeIndex}`}
+        >
+          {stepsContent[activeIndex]}
+        </div>
+
+        {/* Footer fixo com botões */}
+        {renderFooterButtons()}
+      </ConteudoFrame>
+    );
+};
+
+const AcessoCandidatoRegistro = ({ candidatoData, token }) => {
+    // Passos do tutorial - um para cada etapa
+    const stepLabels = [
+      'Documentos Pessoais',
+      'Dados Pessoais',
+      'Dados Bancários',
+      'Educação',
+      'Habilidades',
+      'Experiência Profissional',
+      'LGPD'
+    ];
+    
+    // Função para checar se há documentos (baseado nos dados iniciais)
+    const temDocumentos = Array.isArray(candidatoData?.documentos) && candidatoData.documentos.length > 0;
+    
+    const stepContents = temDocumentos ? [
+      'Comece anexando os documentos solicitados. Só depois de anexar todos, você poderá avançar.',
+      'Preencha seus dados pessoais com atenção.',
+      'Informe seus dados bancários.',
+      'Informe sua formação acadêmica.',
+      'Adicione suas habilidades.',
+      'Adicione sua experiência profissional.',
+      'Leia e aceite o termo LGPD para finalizar.'
+    ] : [
+      'Comece preenchendo seus dados pessoais.',
+      'Preencha seus dados pessoais com atenção.',
+      'Informe seus dados bancários.',
+      'Informe sua formação acadêmica.',
+      'Adicione suas habilidades.',
+      'Adicione sua experiência profissional.',
+      'Leia e aceite o termo LGPD para finalizar.'
+    ];
+    
+    const tourSteps = stepLabels.map((label, idx) => [
+      {
+        selector: `[data-tour="stepper-step-${idx}"]`,
+        content: `Etapa ${idx + 1}: ${label}\n${stepContents[idx]}`,
+        position: 'bottom',
+        action: undefined,
+        actionAfter: undefined
+      }
+    ]).flat();
+
+    // Ajuste no styles.popover: setas mais visíveis e posicionamento melhor
+    const popoverStyle = (base, step) => {
+      return {
+        ...base,
+        zIndex: 2147483647,
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+        border: '1px solid #e0e0e0',
+        maxWidth: '400px',
+        padding: '16px'
+      };
+    };
+
+    return (
+      <TourProvider 
+        steps={tourSteps} 
+        showNavigation 
+        showBadge
+        styles={{
+          popover: popoverStyle,
+          mask: (base) => ({
+            ...base,
+            zIndex: 2147483646,
+            backgroundColor: 'rgba(0,0,0,0.5)'
+          }),
+          highlightedArea: (base) => ({
+            ...base,
+            zIndex: 2147483648
+          })
+        }}
+        onClickMask={({ setIsOpen }) => setIsOpen(false)}
+        disableInteraction={false}
+        disableDotsNavigation={false}
+        disableKeyboardNavigation={false}
+      >
+        <RegistroContent candidatoData={candidatoData} token={token} tourSteps={tourSteps} />
+      </TourProvider>
     );
 };
 

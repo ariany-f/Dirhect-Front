@@ -66,7 +66,7 @@ const StepExperiencia = () => {
     );
 
     return (
-        <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
+        <div data-tour="panel-step-5" style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
             {(Array.isArray(candidato.experiencia) ? candidato.experiencia : []).map((exp, idx) => (
                 <div key={idx} style={{ 
                     border: '1px solid #eee', 
