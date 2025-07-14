@@ -53,6 +53,16 @@ http.interceptors.request.use(async (config) => {
         await tentarRefreshToken();
     }
 
+    // Configurar Content-Type baseado no tipo de dados
+    if (config.data instanceof FormData) {
+        // Para FormData, não definir Content-Type - deixar o browser definir automaticamente
+        // Isso é necessário para que o boundary seja definido corretamente
+        delete config.headers['Content-Type'];
+    } else {
+        // Para JSON, manter o Content-Type padrão
+        config.headers['Content-Type'] = 'application/json';
+    }
+
     const token = ArmazenadorToken.AccessToken;
     const tempToken = ArmazenadorToken.TempToken;
     const admissaoToken = ArmazenadorToken.AdmissaoToken;
@@ -61,7 +71,9 @@ http.interceptors.request.use(async (config) => {
     // Se for uma requisição para /token e não tiver access token mas tiver temp token
     if ((config.url === '/mfa/validate/' || config.url === '/mfa/generate/' || config.url === '/token/') && tempToken) {
         config.headers['X-Temp-Token'] = tempToken;
-        config.headers.Authorization = `Bearer ${token}`;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
     } else if (admissaoToken) {
         // Se tiver admissao token, usa ele para endpoints de admissão
         config.headers['X-Admissao-Token-Encoded'] = admissaoToken;
@@ -70,7 +82,9 @@ http.interceptors.request.use(async (config) => {
             config.headers['X-Admissao-Security-Token'] = admissaoSecurityToken;
             //config.headers['X-Admissao-Security-Token'] = admissaoToken;
         }
-        config.headers.Authorization = `Bearer ${token}`;
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
     } else if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

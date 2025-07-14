@@ -197,11 +197,27 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
                 return valor.replace(/[^\d,]/g, '').replace(',', '.');
             };
 
+            // Função para formatar CPF (só números)
+            const formatarCPFNumeros = (cpf) => {
+                if (!cpf) return null;
+                return cpf.replace(/\D/g, ''); // Remove tudo que não é dígito
+            };
+
+            // Remover propriedades que não devem ser enviadas
+            // const { vagas_configurado, ...candidatoSemGenero } = candidato.dados_candidato;
+            // const { tarefas, log_tarefas, html_email, dados_candidato, documentos, documentos_status, vaga, processo, dados_vaga, ...admissaoLimpa } = admissao;
+
             const dadosParaEnviar = {
                 ...admissao,
+                candidato: {
+                    ...candidato,
+                    cpf: formatarCPFNumeros(candidato.dados_candidato.cpf),
+                    salario: removerMascaraBRL(candidato.dados_candidato.salario)
+                },
                 dados_candidato: {
                     ...candidato,
-                    salario: removerMascaraBRL(candidato.salario)
+                    cpf: formatarCPFNumeros(candidato.dados_candidato.cpf),
+                    salario: removerMascaraBRL(candidato.dados_candidato.salario)
                 }
             };
 
@@ -217,7 +233,11 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
 
             // Atualizar dados locais
             setAdmissao(response);
-            setCandidato(response.dados_candidato);
+            // Manter a estrutura correta do candidato para não quebrar o header
+            setCandidato(prev => ({
+                ...prev,
+                dados_candidato: response.dados_candidato || response.candidato
+            }));
 
         } catch (error) {
             console.error('Erro ao salvar:', error);

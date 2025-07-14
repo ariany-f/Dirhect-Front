@@ -7,7 +7,6 @@ import http from '@http';
 import { useRef } from 'react';
 import { FaCheck, FaFile, FaEye } from 'react-icons/fa';
 import Texto from '@components/Texto';
-import { ArmazenadorToken } from '@utils';
 
 const DocumentoContainer = styled.div`
     border: 1px solid var(--surface-border);
@@ -106,12 +105,7 @@ const StepDocumentos = ({ toast }) => {
                 formData.append('item', itemIndex + 1);
             }
 
-            const response = await http.post(`admissao/${candidato.id}/upload_documento/`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${ArmazenadorToken.AccessToken}`
-                }
-            });
+            const response = await http.post(`admissao/${candidato.id}/upload_documento/`, formData);
 
             const novosItens = [...documento.itens];
             novosItens[itemIndex] = {
