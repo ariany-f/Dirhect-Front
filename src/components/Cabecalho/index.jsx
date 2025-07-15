@@ -15,6 +15,7 @@ import LanguageSelector from "../LanguageSelector";
 import { useTranslation } from 'react-i18next';
 import CustomImage from '@components/CustomImage';
 import { ArmazenadorToken } from '@utils';
+import BrandColors from '@utils/brandColors';
 
 // MegaMenu Container
 const MegaMenuWrapper = styled.div`
@@ -264,7 +265,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
   }, []);
 
   const titulos = [
-    { "id": 1, "url": "", "pageTitulo": "Dirhect" },
+    { "id": 1, "url": "", "pageTitulo": BrandColors.getBrandName() },
     { "id": 2, "url": "extrato", "pageTitulo": "Extrato da conta" },
     { "id": 3, "url": "colaborador", "pageTitulo": "Colaboradores" },
     { "id": 4, "url": "estrutura", "pageTitulo": "Estrutura Organizacional" },
@@ -293,7 +294,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
 
   const titulo = titulos.find(item => 
     item.url === location.pathname.split("/")[1]
-  )?.pageTitulo || "Dirhect";
+  )?.pageTitulo || BrandColors.getBrandName();
 
   function toggleMenu() {
     setMenuOpened(!menuOpened);

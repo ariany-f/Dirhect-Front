@@ -8,7 +8,6 @@ import { BiBusSchool, BiCart, BiDrink, BiSolidDashboard } from "react-icons/bi"
 import { LuSparkles } from "react-icons/lu"
 import "./BarraLateral.css"
 import { Link, useLocation } from "react-router-dom"
-import logo from '@imagens/logo.png'
 import { useEffect, useRef, useState } from "react"
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { FaBuilding, FaBusAlt, FaUmbrellaBeach, FaUserTimes } from "react-icons/fa"
@@ -25,6 +24,7 @@ import { Ripple } from 'primereact/ripple'
 import { ArmazenadorToken } from "@utils"
 import http from "@http"
 import { FaExchangeAlt } from 'react-icons/fa'
+import BrandColors from '@utils/brandColors'
 
 const ListaEstilizada = styled.ul`
     list-style: none;
@@ -68,7 +68,7 @@ const BarraLateralEstilizada = styled.aside`
     transition: .5s cubic-bezier(.36,-0.01,0,.77);
     gap: 32px;
     flex-shrink: 0;
-    background: linear-gradient(to bottom, #0c004c, #5d0b62);
+    background: linear-gradient(to bottom, var(--primaria), var(--gradient-secundaria));
 
     @media screen and (max-width: 760px) {
         position: fixed;
@@ -196,10 +196,13 @@ function BarraLateral({ $sidebarOpened }) {
     }, [$sidebarOpened])
 
     useEffect(() => {
-        if(logo) {
-            setImage(true)
+        if(usuario.tipo) {
+            const logoPath = BrandColors.getBrandLogo();
+            if (logoPath) {
+                setImage(true);
+            }
         }
-    }, [logo])
+    }, [usuario.tipo]);
 
     useEffect(() => {
         const pathSegments = location.pathname.split('/').filter(Boolean)
@@ -465,7 +468,7 @@ function BarraLateral({ $sidebarOpened }) {
         <>
             {/* <Overlay $opened={$sidebarOpened} onClick={fecharMenu} /> */}
             <BarraLateralEstilizada $opened={$sidebarOpened}>
-                {image && <Logo src={logo} ref={ref} alt="Logo" />}
+                {image && <Logo src={BrandColors.getBrandLogo()} ref={ref} alt="Logo" />}
                 
                 <div style={{
                     display: 'flex',

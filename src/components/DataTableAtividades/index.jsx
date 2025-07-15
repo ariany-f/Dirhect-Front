@@ -565,65 +565,44 @@ function DataTableAtividades() {
         );
     };
 
-    const getTipoIcon = (tipo) => {
-        switch(tipo) {
-            case 'admissao': return <FaUserPlus fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
-            case 'demissao': return <FaSignOutAlt fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
-            case 'ferias': return <FaUmbrellaBeach fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
-            case 'envio_variaveis': return <FaFileInvoiceDollar fill="var(--white)" stroke="var(--white)" color="#fff" size={14} />;
-            default: return null;
-        }
-    };
-
     const formataCPF = (cpf) => {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
     const representativeTipoTemplate = (rowData) => {
-        let cor = '';
-        let background = '';
         let texto = '';
+        let icon = null;
+        let tagClass = 'tag-generico';
         
         switch(rowData.entidade_tipo) {
             case 'admissao':
-                background = '#1a73e8';
-                cor = '#fff';
                 texto = 'Admissão';
+                icon = <FaUserPlus fill="white" stroke="white" color="white" size={14} />;
+                tagClass = 'tag-admissao';
                 break;
             case 'demissao':
-                background = '#dc3545';
-                cor = '#fff';
                 texto = 'Rescisão';
+                icon = <FaSignOutAlt fill="white" stroke="white" color="white" size={14} />;
+                tagClass = 'tag-demissao';
                 break;
             case 'ferias':
-                background = '#ffa000';
-                cor = '#fff';
                 texto = 'Férias';
+                icon = <FaUmbrellaBeach fill="white" stroke="white" color="white" size={14} />;
+                tagClass = 'tag-ferias';
                 break;
             case 'envio_variaveis':
-                background = '#28a745';
-                cor = '#fff';
                 texto = 'Envio Variáveis';
+                icon = <FaFileInvoiceDollar fill="white" stroke="white" color="white" size={14} />;
+                tagClass = 'tag-envio-variaveis';
                 break;
             default:
-                background = '#666';
-                cor = '#fff';
                 texto = rowData.entidade_display;
+                tagClass = 'tag-generico';
         }
         
         return (
-            <div style={{
-                backgroundColor: background,
-                color: cor,
-                padding: '4px 12px',
-                borderRadius: '4px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '13px',
-                fontWeight: '400'
-            }}>
-                {getTipoIcon(rowData.entidade_tipo)}
+            <div className={`tag-processo ${tagClass}`}>
+                {icon}
                 {texto}
             </div>
         );

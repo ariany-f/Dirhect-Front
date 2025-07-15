@@ -590,7 +590,7 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
         {/* Header com informações do candidato */}
         {candidato?.dados_candidato?.nome && (
           <div style={{
-            background: 'linear-gradient(to bottom, #0c004c, #5d0b62)',
+            background: 'linear-gradient(to bottom, var(--primaria), var(--gradient-secundaria))',
             borderRadius: 8,
             padding: '12px 16px',
             marginBottom: 0,

@@ -318,8 +318,6 @@ const CandidatoRegistro = () => {
                 aceite_lgpd: candidato.aceite_lgpd,
                 salario: removerMascaraBRL(dadosCandidato?.salario ? dadosCandidato.salario : (dadosVaga?.salario ? dadosVaga.salario : candidato.salario)),
                 codigo_jornada: candidato.codigo_jornada,
-                agencia: candidato.agencia,
-                conta_corrente: candidato.conta_corrente,
                 pix: candidato.pix,
                 pix_tipo: candidato.pix_tipo,
                 estado_natal: candidato.estado_natal,
@@ -405,8 +403,6 @@ const CandidatoRegistro = () => {
                 conta_corrente: candidato.conta_corrente,
                 tipo_conta: candidato.tipo_conta,
                 operacao: candidato.operacao,
-                pix: candidato.pix,
-                pix_tipo: candidato.pix_tipo,
                 estado_civil: candidato.estado_civil,
                 genero: candidato.genero,
                 educacao: candidato.educacao,
@@ -750,7 +746,7 @@ const CandidatoRegistro = () => {
             {/* Header com informações do candidato */}
             {candidato?.dados_candidato && (
                 <div style={{
-                    background: 'linear-gradient(to bottom, #0c004c, #5d0b62)',
+                    background: 'linear-gradient(to bottom, var(--primaria), var(--gradient-secundaria))',
                     borderRadius: 8,
                     padding: '12px 16px',
                     marginBottom: 0,

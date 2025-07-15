@@ -84,10 +84,10 @@ const StatusTag = styled.span`
   background: ${({ $type }) => {
     if ($type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
     if ($type === 'solicitada') return 'linear-gradient(to right, #fbb034,rgb(211, 186, 22))';
-    if ($type === 'aprovada') return 'linear-gradient(to left, #0c004c, #5d0b62)';
+    if ($type === 'aprovada') return 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))';
     if ($type === 'acontecendo') return 'linear-gradient(to right,rgb(45, 126, 219),rgb(18, 37, 130))';
     if ($type === 'passada') return 'linear-gradient(to right, #bdbdbd, #757575)';
-    return 'linear-gradient(to left, #0c004c, #5d0b62)';
+    return 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))';
   }};
   color: #fff;
   border: none;

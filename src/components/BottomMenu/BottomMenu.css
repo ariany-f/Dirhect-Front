@@ -28,7 +28,7 @@
 }
 
 .bottom-menu a.active {
-  color: var(--primaria, #5d0b62);
+  color: var(--primaria, var(--gradient-secundaria));
   font-weight: bold;
 }
 

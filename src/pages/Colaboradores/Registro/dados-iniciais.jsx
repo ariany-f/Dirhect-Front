@@ -99,7 +99,6 @@ function ColaboradorDadosIniciais() {
         axios
             .get(`https://viacep.com.br/ws/${cep}/json`)
             .then((response) => {
-                console.log(response.data);
             if (response.data) {
                 setRua(response.data.logradouro);
                 setBairro(response.data.bairro);

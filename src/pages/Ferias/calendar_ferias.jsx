@@ -8,7 +8,7 @@ import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import colaboradoresFake from '@json/ferias.json';
 import DropdownItens from '@components/DropdownItens'
 
-const GRADIENT = 'linear-gradient(to left, #0c004c, #5d0b62)';
+const GRADIENT = 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))';
 
 const CalendarContainer = styled.div`
     width: 100%;
@@ -217,7 +217,7 @@ const ViewToggleSwitch = styled.div`
     background: #f5f5f5;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px #5d0b6210;
+    box-shadow: 0 2px 8px var(--gradient-secundaria)10;
 `;
 
 const FiltersContainer = styled.div`
@@ -230,7 +230,7 @@ const ViewToggleOption = styled.button`
     display: flex;
     align-items: center;
     gap: 8px;
-    background: ${({ active }) => active ? 'linear-gradient(to left, #0c004c, #5d0b62)' : 'transparent'};
+    background: ${({ active }) => active ? 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))' : 'transparent'};
     color: ${({ active }) => active ? '#fff' : '#333'};
     border: none;
     font-size: 15px;
@@ -305,7 +305,7 @@ const MonthSeparator = styled.div`
     top: 0;
     bottom: 0;
     width: 1px;
-    background: #5d0b62;
+    background: var(--gradient-secundaria);
     z-index: 3;
     pointer-events: none;
     opacity: 0.5;

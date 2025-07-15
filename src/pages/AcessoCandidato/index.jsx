@@ -43,7 +43,7 @@ const BotaoVoltar = styled.button`
   padding: 0;
   transition: color 0.2s;
   &:hover {
-    color: #5d0b62;
+    color: var(--gradient-secundaria);
   }
 `;
 

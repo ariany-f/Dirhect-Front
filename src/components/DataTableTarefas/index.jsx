@@ -348,53 +348,57 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     }
 
     const tipoTarefaTagTemplate = (rowData) => {
-    
-        let color = 'var(--neutro-400)';
         let label = '';
         let icon = '';
+        let tagClass = 'tag-generico';
+        
         switch(rowData.processo_codigo) {
             case 'admissao':
-                color = 'var(--info)';
                 label = 'Admissão';
                 icon = <FaUserPlus fill="white" stroke="white" color="white" size={16}/>;
+                tagClass = 'tag-admissao';
                 break;
             case 'demissao':
-                color = 'var(--error)';
                 label = 'Demissão';
                 icon = <FaUserMinus fill="white" stroke="white" color="white" size={16}/>;
+                tagClass = 'tag-demissao';
                 break;
             case 'ferias':
-                color = 'var(--green-500)';
                 label = 'Férias';
-                icon = <FaUmbrellaBeach fill="white" stroke="white" color="white" size={16}/>
+                icon = <FaUmbrellaBeach fill="white" stroke="white" color="white" size={16}/>;
+                tagClass = 'tag-ferias';
                 break;
             case 'envio_variaveis':
-                color = 'var(--primaria)';
                 label = 'Envio de Variáveis';
                 icon = <FaUserPlus fill="white" stroke="white" color="white" size={16}/>;
+                tagClass = 'tag-envio-variaveis';
                 break;
             case 'adiantamento':
-                color = 'var(--astra-500)';
                 label = 'Adiantamento';
                 icon = <FaDollarSign fill="white" stroke="white" color="white" size={16}/>;
+                tagClass = 'tag-adiantamento';
                 break;
             case 'encargos':
-                color = 'var(--green-400)';
                 label = 'Encargos';
                 icon = <FaDollarSign fill="white" stroke="white" color="white" size={16}/>;
+                tagClass = 'tag-encargos';
                 break;
             case 'folha':
-                color = 'var(--secundaria)';
                 label = 'Folha Mensal';
                 icon = <LuNewspaper fill="white" stroke="white" color="white" size={16}/>;
+                tagClass = 'tag-folha';
                 break;
             default:
                 label = rowData.processo_nome;
+                tagClass = 'tag-generico';
         }
-        if(icon) {
-            label = <div style={{display: 'flex', alignItems: 'center', gap: 8, color: 'white'}}>{icon} {label}</div>;
-        }
-        return <Tag value={label} style={{ backgroundColor: color, color: 'white', fontWeight: 600, fontSize: 13, borderRadius: 8, padding: '4px 12px' }} />;
+        
+        return (
+            <div className={`tag-processo ${tagClass}`}>
+                {icon}
+                {label}
+            </div>
+        );
     };
 
     const dataInicioTemplate = (rowData) => {

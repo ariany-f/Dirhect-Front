@@ -26,7 +26,6 @@ const Tarefas = () => {
     useEffect(() => {
         http.get('processos/?format=json')
             .then(response => {
-                console.log(response)
                 setListaTarefas(response)
             })
     }, [])

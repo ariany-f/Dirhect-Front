@@ -1,20 +1,30 @@
 import { createGlobalStyle } from 'styled-components'
+import BrandColors from '@utils/brandColors'
+
+const brandColors = BrandColors.getBrandColors();
+const colorVariations = BrandColors.generateColorVariations(brandColors.primary);
 
 const EstilosGlobais = createGlobalStyle`
   :root {
-      --primaria: #0c004c;
-      --vermilion-50: #F0F4FA;
-      --vermilion-100: #D6E0F0;
-      --vermilion-200: #B3C6E3;
-      --vermilion-300: #7D9FD1;
-      --vermilion-400: #192a4e;  /* Mantido */
-      --vermilion-500: #142244;  /* Azul mais escuro que o 400 */
-      --vermilion-600: #190742;  /* Mantido (azul-arroxeado) */
-      --vermilion-700: #0F052D;
-      --vermilion-800: #0A031F;
-      --vermilion-900: #050112;
-      --vermilion-950: #020008;
-      --secundaria: #fd95ff;
+      /* Cores da marca - configuráveis via .env */
+      --primaria: ${colorVariations['--primaria']};
+      --vermilion-50: ${colorVariations['--vermilion-50']};
+      --vermilion-100: ${colorVariations['--vermilion-100']};
+      --vermilion-200: ${colorVariations['--vermilion-200']};
+      --vermilion-300: ${colorVariations['--vermilion-300']};
+      --vermilion-400: ${colorVariations['--vermilion-400']};
+      --vermilion-500: ${colorVariations['--vermilion-500']};
+      --vermilion-600: ${colorVariations['--vermilion-600']};
+      --vermilion-700: ${colorVariations['--vermilion-700']};
+      --vermilion-800: ${colorVariations['--vermilion-800']};
+      --vermilion-900: ${colorVariations['--vermilion-900']};
+      --vermilion-950: ${colorVariations['--vermilion-950']};
+      
+      /* Cores secundárias - configuráveis via .env */
+      --gradient-secundaria: ${brandColors.secondary};
+      --secundaria: ${brandColors.accent};
+      
+      /* Cores fixas (não mudam com a marca) */
       --astra-50: #FCFBEA;
       --astra-100: #FAF3AE;
       --astra-200: #F6EC92;
@@ -430,6 +440,50 @@ template {
 }
 .text-left {
   text-align: left!important;
+}
+
+/* Classes para tags de processos/tarefas */
+.tag-processo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  color: white;
+}
+
+.tag-admissao {
+  background-color: #1a73e8;
+}
+
+.tag-demissao {
+  background-color: #dc3545;
+}
+
+.tag-ferias {
+  background-color: #ffa000;
+}
+
+.tag-envio-variaveis {
+  background-color: #28a745;
+}
+
+.tag-adiantamento {
+  background-color: #f39c12;
+}
+
+.tag-encargos {
+  background-color: #27ae60;
+}
+
+.tag-folha {
+  background-color: #9b59b6;
+}
+
+.tag-generico {
+  background-color: #666;
 }
   
 .Toastify__toast {

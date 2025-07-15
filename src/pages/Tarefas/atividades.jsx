@@ -30,7 +30,7 @@ const TabButton = styled.button`
     display: flex;
     align-items: center;
     gap: 8px;
-    background: ${({ active }) => active ? 'linear-gradient(to left, #0c004c, #5d0b62)' : '#f5f5f5'};
+    background: ${({ active }) => active ? 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))' : '#f5f5f5'};
     color: ${({ active }) => active ? '#fff' : '#333'};
     border: none;
     border-radius: 8px 8px 0 0;
@@ -39,13 +39,13 @@ const TabButton = styled.button`
     padding: 10px 22px;
     cursor: pointer;
     margin-right: 2px;
-    box-shadow: ${({ active }) => active ? '0 2px 8px #5d0b6240' : 'none'};
+    box-shadow: ${({ active }) => active ? '0 2px 8px var(--gradient-secundaria)40' : 'none'};
     transition: background 0.2s, color 0.2s;
     outline: none;
-    border-bottom: ${({ active }) => active ? '2px solid #5d0b62' : '2px solid transparent'};
+    border-bottom: ${({ active }) => active ? '2px solid var(--gradient-secundaria)' : '2px solid transparent'};
     
     &:hover {
-        background: ${({ active }) => active ? 'linear-gradient(to left, #0c004c, #5d0b62)' : '#ececec'};
+        background: ${({ active }) => active ? 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))' : '#ececec'};
     }
 
     svg {
@@ -64,7 +64,6 @@ const Atividades = () => {
     useEffect(() => {
         http.get('tarefas/?format=json')
             .then(response => {
-                console.log(response)
                 setListaTarefas(response)
             })
     }, [])

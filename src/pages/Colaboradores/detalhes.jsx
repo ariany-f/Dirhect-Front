@@ -378,7 +378,7 @@ function ColaboradorDetalhes() {
             {/* Header com informações do colaborador - similar ao da admissão */}
             {colaborador?.funcionario_pessoa_fisica && (
                 <div style={{
-                    background: 'linear-gradient(to bottom, #0c004c, #5d0b62)',
+                    background: 'linear-gradient(to bottom, var(--primaria), var(--gradient-secundaria))',
                     borderRadius: 8,
                     padding: '12px 16px',
                     marginBottom: 0,
