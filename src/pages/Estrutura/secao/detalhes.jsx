@@ -47,7 +47,6 @@ function SecaoDetalhes() {
         if(!departamento) {
             http.get(`secao/${id}/?format=json`)
             .then(response => {
-               console.log(response)
                 setDepartamento(response)
             })
             .catch(erro => console.log(erro))

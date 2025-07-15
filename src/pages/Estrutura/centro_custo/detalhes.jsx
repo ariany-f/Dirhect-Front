@@ -47,7 +47,6 @@ function CentroCustoDetalhes() {
         if(!departamento) {
             http.get(`centro_custo/${id}/?format=json`)
             .then(response => {
-               console.log(response)
                 setDepartamento(response)
             })
             .catch(erro => console.log(erro))

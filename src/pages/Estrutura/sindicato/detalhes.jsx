@@ -47,7 +47,6 @@ function SindicatoDetalhes() {
         if(!departamento) {
             http.get(`sindicato/${id}/?format=json`)
             .then(response => {
-               console.log(response)
                 setDepartamento(response)
             })
             .catch(erro => console.log(erro))
