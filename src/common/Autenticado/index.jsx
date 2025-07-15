@@ -15,6 +15,7 @@ import styled from "styled-components"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import BottomMenu from '@components/BottomMenu'
+import BrandColors from '@utils/brandColors'
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -40,6 +41,11 @@ function Autenticado() {
         {
             ArmazenadorToken.definirCompany('', query.get("tenant"))
         }
+    }, []);
+
+    // Aplicar cores da marca dinamicamente
+    useEffect(() => {
+        BrandColors.applyBrandColorsWhenReady();
     }, []);
 
     const {

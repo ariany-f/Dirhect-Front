@@ -9,23 +9,9 @@ export class BrandColors {
     
     // Obter cores do .env ou usar padrão
     static getBrandColors() {
-      console.log('🔍 DEBUG: Verificando variáveis após limpeza de cache');
-      console.log('import.meta.env completo:', import.meta.env);
-      console.log('VITE_BRAND_PRIMARY_COLOR:', import.meta.env.VITE_BRAND_PRIMARY_COLOR);
-      console.log('VITE_BRAND_SECONDARY_COLOR:', import.meta.env.VITE_BRAND_SECONDARY_COLOR);
-      console.log('VITE_BRAND_ACCENT_COLOR:', import.meta.env.VITE_BRAND_ACCENT_COLOR);
-      console.log('VITE_API_USER:', import.meta.env.VITE_API_USER);
-      console.log('VITE_API_PASS:', import.meta.env.VITE_API_PASS);
-      
       const envPrimary = import.meta.env.VITE_BRAND_PRIMARY_COLOR;
       const envSecondary = import.meta.env.VITE_BRAND_SECONDARY_COLOR;
       const envAccent = import.meta.env.VITE_BRAND_ACCENT_COLOR;
-      
-      console.log('🎨 Variáveis de ambiente carregadas:', {
-        primary: envPrimary,
-        secondary: envSecondary,
-        accent: envAccent
-      });
       
       return {
         primary: envPrimary || this.defaultColors.primary,
@@ -93,6 +79,11 @@ export class BrandColors {
   
     // Aplicar cores da marca dinamicamente (para mudanças em runtime)
     static applyBrandColors() {
+      // Verificar se o DOM está pronto
+      if (typeof document === 'undefined') {
+        return;
+      }
+
       const brandColors = this.getBrandColors();
       const colorVariations = this.generateColorVariations(brandColors.primary);
       
@@ -106,8 +97,28 @@ export class BrandColors {
       // Aplicar cores secundárias
       root.style.setProperty('--gradient-secundaria', brandColors.secondary);
       root.style.setProperty('--secundaria', brandColors.accent);
+
+      // Log apenas em desenvolvimento
+      if (import.meta.env.DEV) {
+        console.log('🎨 Cores da marca aplicadas:', {
+          primary: brandColors.primary,
+          secondary: brandColors.secondary,
+          accent: brandColors.accent
+        });
+      }
     }
   
+    // Aplicar cores da marca quando o DOM estiver pronto
+    static applyBrandColorsWhenReady() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          this.applyBrandColors();
+        });
+      } else {
+        this.applyBrandColors();
+      }
+    }
+
     // Obter logo da marca
     static getBrandLogo() {
       return import.meta.env.VITE_BRAND_LOGO_URL || '/imagens/logo.png';

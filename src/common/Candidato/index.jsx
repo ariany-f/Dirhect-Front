@@ -11,6 +11,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react"
 import { useLocation } from "react-router-dom";
 import { ArmazenadorToken } from "@utils"
 import { useEffect, useState } from "react"
+import BrandColors from '@utils/brandColors'
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -24,6 +25,11 @@ function Candidato() {
         {
             ArmazenadorToken.definirCompany('', query.get("tenant"))
         }
+    }, []);
+
+    // Aplicar cores da marca dinamicamente
+    useEffect(() => {
+        BrandColors.applyBrandColorsWhenReady();
     }, []);
 
     const [isMobile, setIsMobile] = useState(false);
