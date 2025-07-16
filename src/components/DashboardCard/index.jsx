@@ -999,6 +999,16 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         }]
     };
 
+    // Gráfico de distribuição por filial
+    const chartDataFiliais = {
+        labels: ['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Curitiba', 'Porto Alegre'],
+        datasets: [{
+            data: [28, 17, 12, 8, 6],
+            backgroundColor: ['#5472d4', '#66BB6A', '#FFA726', '#FF6384', '#8884d8'],
+            borderWidth: 0
+        }]
+    };
+
     // Gráfico de motivos de demissão
     const chartDataMotivos = {
         labels: Object.keys(dadosRH.motivosDemissao),
@@ -1567,10 +1577,21 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     </div>
 
                     <Frame estilo="spaced">
-                        <Titulo><h6>Distribuição por Departamento</h6></Titulo>
+                        <Titulo><h6>Distribuição</h6></Titulo>
                     </Frame>
-                    <div className="chart-container" style={{width: '100%', height: '250px'}}>
-                        <Chart type="bar" data={chartDataDepartamentos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
+                    <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 24}}>
+                        <div>
+                            <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Por Departamento</div>
+                            <div className="chart-container" style={{width: '100%', height: '180px'}}>
+                                <Chart type="bar" data={chartDataDepartamentos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
+                            </div>
+                        </div>
+                        <div>
+                            <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Por Filial</div>
+                            <div className="chart-container" style={{width: '100%', height: '180px'}}>
+                                <Chart type="bar" data={chartDataFiliais} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1631,7 +1652,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                             <span style={{
                                                 width: 12, height: 12, borderRadius: '50%', background: etapa.cor, display: 'inline-block', flexShrink: 0
                                             }} />
-                                            <span style={{fontWeight: 700, fontSize: 16, color: '#222', lineHeight: 1.1}}>{etapa.etapa}</span>
+                                            <span style={{fontWeight: 700, fontSize: 14, color: '#222', lineHeight: 1.1}}>{etapa.etapa}</span>
                                         </div>
                                         <span style={{fontSize: 13, color: '#888', fontWeight: 500, marginLeft: 20}}>Concluída</span>
                                     </div>
@@ -1834,7 +1855,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                             <span style={{
                                                 width: 12, height: 12, borderRadius: '50%', background: etapa.cor, display: 'inline-block', flexShrink: 0
                                             }} />
-                                            <span style={{fontWeight: 700, fontSize: 16, color: '#222', lineHeight: 1.1}}>{etapa.etapa}</span>
+                                            <span style={{fontWeight: 700, fontSize: 14, color: '#222', lineHeight: 1.1}}>{etapa.etapa}</span>
                                         </div>
                                         <span style={{fontSize: 13, color: '#888', fontWeight: 500, marginLeft: 20}}>Concluída</span>
                                     </div>
