@@ -536,7 +536,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             return {
                 demissoesMes: 0,
                 demissoesProcessamento: 0,
-                motivosDemissao: {}
+                demissoesConcluidas: 0,
+                motivosDemissao: {},
+                tempoMedioDemissao: 0
             };
         }
 
@@ -552,16 +554,67 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             return dataDemissao >= inicioMes && dataDemissao <= fimMes;
         }).length;
 
-        // Contar demissões em processamento (demissões recentes ou sem data de demissão)
-        const demissoesProcessamento = demissoesData.filter(demissao => {
-            // Se não tem data de demissão, está em processamento
-            if (!demissao.dt_demissao) return true;
-            
-            // Se tem data de demissão, verificar se é recente (últimos 30 dias)
-            const dataDemissao = new Date(demissao.dt_demissao);
-            const trintaDiasAtras = new Date(hoje.getTime() - (30 * 24 * 60 * 60 * 1000));
-            return dataDemissao >= trintaDiasAtras;
-        }).length;
+        // Contar demissões em processamento usando etapas do processo de demissão
+        const calcularDemissoesProcessamento = () => {
+            if (!tarefasData || tarefasData.length === 0) {
+                return 0;
+            }
+
+            // Filtrar tarefas de demissão
+            const tarefasDemissao = tarefasData.filter(tarefa => 
+                tarefa.entidade_tipo === 'demissao' || tarefa.entidade_display === 'demissao'
+            );
+
+            if (tarefasDemissao.length === 0) {
+                return 0;
+            }
+
+            // Agrupar tarefas por tipo_display (etapa) e contar processos únicos
+            const processosPorEtapa = tarefasDemissao.reduce((acc, tarefa) => {
+                const tipoDisplay = tarefa.tipo_display || 'Etapa do Processo';
+                const entidadeId = tarefa.entidade_id || tarefa.entidade;
+                
+                if (!acc[tipoDisplay]) {
+                    acc[tipoDisplay] = new Set();
+                }
+                acc[tipoDisplay].add(entidadeId);
+                return acc;
+            }, {});
+
+            // Contar total de processos únicos em todas as etapas
+            const todosProcessos = new Set();
+            Object.values(processosPorEtapa).forEach(processos => {
+                processos.forEach(processo => todosProcessos.add(processo));
+            });
+
+            return todosProcessos.size;
+        };
+
+        const demissoesProcessamento = calcularDemissoesProcessamento();
+
+        // Contar demissões concluídas (total de funcionários com situação = D)
+        const demissoesConcluidas = demissoesData.length;
+
+        // Calcular tempo médio de demissão (em dias)
+        const demissoesComTempo = demissoesData.filter(demissao => 
+            demissao.dt_demissao // Se tem dt_demissao, está concluída
+        );
+
+        let tempoMedioDemissao = 0;
+        if (demissoesComTempo.length > 0) {
+            const temposDemissao = demissoesComTempo.map(demissao => {
+                if (demissao.processo_demissao && demissao.dt_demissao) {
+                    const inicio = new Date(demissao.processo_demissao);
+                    const fim = new Date(demissao.dt_demissao);
+                    return Math.ceil((fim - inicio) / (1000 * 60 * 60 * 24));
+                }
+                return 0;
+            }).filter(tempo => tempo > 0);
+
+            if (temposDemissao.length > 0) {
+                tempoMedioDemissao = Math.round(temposDemissao.reduce((a, b) => a + b, 0) / temposDemissao.length);
+            }
+        }
 
         // Contar por tipo de demissão
         const motivosDemissao = demissoesData.reduce((acc, demissao) => {
@@ -574,13 +627,32 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         console.log('Resultado do processamento de demissões:', {
             demissoesMes,
             demissoesProcessamento,
+            demissoesConcluidas,
+            tempoMedioDemissao,
             motivosDemissao
         });
+
+        // Calcular SLA baseado no tempo médio
+        let slaDemissao = 0;
+        if (tempoMedioDemissao > 0) {
+            if (tempoMedioDemissao <= 10) {
+                slaDemissao = 95; // Excelente: até 10 dias
+            } else if (tempoMedioDemissao <= 20) {
+                slaDemissao = 85; // Bom: até 20 dias
+            } else if (tempoMedioDemissao <= 30) {
+                slaDemissao = 70; // Médio: até 30 dias
+            } else {
+                slaDemissao = 50; // Ruim: acima de 30 dias
+            }
+        }
 
         return {
             demissoesMes,
             demissoesProcessamento,
-            motivosDemissao
+            demissoesConcluidas,
+            tempoMedioDemissao,
+            motivosDemissao,
+            slaDemissao
         };
     };
 
@@ -813,9 +885,12 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Demissões - usando dados reais
         demissoesProcessamento: dadosDemissoesReais.demissoesProcessamento,
-        tempoMedioRescisao: 8, // dias
+        demissoesConcluidas: dadosDemissoesReais.demissoesConcluidas,
+        tempoMedioRescisao: dadosDemissoesReais.tempoMedioDemissao, // dias
         motivosDemissao: dadosDemissoesReais.motivosDemissao,
         etapasDemissao: etapasDemissao,
+        slaDemissao: dadosDemissoesReais.slaDemissao,
+        vagasAbertas,
 
         // Eficiência Operacional
         refacaoAdmissao: 12,
@@ -824,8 +899,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         tarefasVencidas: 7,
         slaAdmissao: dadosAdmissoesReais.slaAdmissao,
         slaFerias: 92,
-        slaDemissao: 78,
-        vagasAbertas,
     };
 
     // Dados mockados para Benefícios
@@ -1056,7 +1129,13 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     // Gráfico de motivos de demissão
     const chartDataMotivos = {
-        labels: Object.keys(dadosRH.motivosDemissao),
+        labels: Object.keys(dadosRH.motivosDemissao).map(label => {
+            // Encurtar labels muito longos
+            if (label === 'Não informado') return 'Não informado';
+            if (label === 'Pedido do Colaborador') return 'Pedido Colaborador';
+            if (label === 'Fim de Contrato') return 'Fim Contrato';
+            return label;
+        }),
         datasets: [{
             data: Object.values(dadosRH.motivosDemissao),
             backgroundColor: ['#5472d4', '#e53935', '#FFA726', '#66BB6A', '#9c27b0', '#ff5722', '#607d8b', '#795548', '#009688', '#ff9800'],
@@ -1098,7 +1177,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     font: { size: 13, weight: 500 },
                     padding: 10,
                     usePointStyle: true,
-                    pointStyle: 'circle'
+                    pointStyle: 'circle',
+                    boxWidth: 12,
+                    boxHeight: 12
                 }
             },
             tooltip: {
@@ -1112,7 +1193,12 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             }
         },
         layout: {
-            padding: 10
+            padding: {
+                right: 80,
+                left: 10,
+                top: 10,
+                bottom: 10
+            }
         },
         elements: {
             arc: { borderRadius: 8 },
@@ -1270,6 +1356,47 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     };
 
     const checklistsPendentes = calcularChecklistsPendentes();
+
+    const pieChartOptions = {
+        plugins: {
+            legend: {
+                display: true,
+                position: 'right',
+                align: 'start',
+                labels: {
+                    color: '#222',
+                    font: { size: 11, weight: 500 },
+                    padding: 4,
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    boxWidth: 8,
+                    boxHeight: 8
+                }
+            },
+            tooltip: {
+                backgroundColor: '#fff',
+                titleColor: '#222',
+                bodyColor: '#222',
+                borderColor: 'var(--primaria)',
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 8,
+            }
+        },
+        layout: {
+            padding: {
+                right: 25,
+                left: 5,
+                top: 5,
+                bottom: 5
+            }
+        },
+        elements: {
+            arc: { borderRadius: 6 }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+    };
 
     // Renderizar dashboard de Benefícios
     if (tipoUsuario === 'Benefícios') {
@@ -1877,21 +2004,19 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             </div>
                             <div className="metric-label">Em Processamento</div>
                         </div>
-                        <div className="metric-item mock-data-element">
-                            <div className="soon-badge">Em Breve</div>
+                        <div className="metric-item">
+                            <div className="metric-value metric-success">
+                                <FaCheckCircle /> {dadosRH.demissoesConcluidas}
+                            </div>
+                            <div className="metric-label">Concluídas</div>
+                        </div>
+                        <div className="metric-item">
                             <div className="metric-value metric-warning">
                                 <FaClock /> {dadosRH.tempoMedioRescisao}d
                             </div>
                             <div className="metric-label">Tempo Médio</div>
                         </div>
                         <div className="metric-item">
-                            <div className="metric-value metric-danger">
-                                <FaClipboardList /> {checklistsPendentes}
-                            </div>
-                            <div className="metric-label">Checklists Pendentes</div>
-                        </div>
-                        <div className="metric-item mock-data-element">
-                            <div className="soon-badge">Em Breve</div>
                             <div className="metric-value metric-success">
                                 <FaChartLine /> {dadosRH.slaDemissao}%
                             </div>
@@ -1902,8 +2027,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <Frame estilo="spaced">
                         <Titulo><h6>Motivos de Demissão</h6></Titulo>
                     </Frame>
-                    <div className="chart-container-with-legend">
-                        <Chart type="pie" data={chartDataMotivos} options={getChartOptions()} />
+                    <div className="chart-container" style={{height: '250px', width: '100%'}}>
+                        <Chart type="bar" data={chartDataMotivos} options={chartOptionsNoLegend} />
                     </div>
 
                     <Frame estilo="spaced">
