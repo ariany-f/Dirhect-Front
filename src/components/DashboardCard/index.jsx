@@ -38,7 +38,23 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const [admissoesData, setAdmissoesData] = useState([]);
     const [vagasData, setVagasData] = useState([]);
     const [demissoesData, setDemissoesData] = useState([]);
+    const [processosData, setProcessosData] = useState([]);
+    const [tarefasData, setTarefasData] = useState([]);
     const { t } = useTranslation('common');
+
+    // Array de cores para as etapas (cores que combinam com o sistema)
+    const coresEtapas = [
+        '#5472d4', // Azul primário
+        '#66BB6A', // Verde sucesso
+        '#FFA726', // Laranja warning
+        '#e53935', // Vermelho danger
+        '#9c27b0', // Roxo
+        '#ff5722', // Laranja escuro
+        '#607d8b', // Azul acinzentado
+        '#795548', // Marrom
+        '#009688', // Verde água
+        '#ff9800'  // Laranja claro
+    ];
 
     useEffect(() => {
         setIsVisible(true);
@@ -150,11 +166,65 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 setDemissoesData([]);
             }
         };
+
+        // Carregar dados reais de processos
+        const carregarProcessos = async () => {
+            try {
+                console.log('Carregando dados de processos da API...');
+                const response = await http.get('processos/?format=json');
+                console.log('Resposta da API de processos:', response);
+                
+                // Verificar se a resposta tem a estrutura esperada
+                let dadosProcessos = response;
+                if (response && response.results) {
+                    dadosProcessos = response.results;
+                } else if (Array.isArray(response)) {
+                    dadosProcessos = response;
+                } else {
+                    console.log('Estrutura inesperada da resposta de processos:', response);
+                    dadosProcessos = [];
+                }
+                
+                console.log('Dados de processos processados:', dadosProcessos);
+                setProcessosData(dadosProcessos);
+            } catch (error) {
+                console.log('Erro ao carregar processos:', error);
+                setProcessosData([]);
+            }
+        };
+
+        // Carregar dados reais de tarefas
+        const carregarTarefas = async () => {
+            try {
+                console.log('Carregando dados de tarefas da API...');
+                const response = await http.get('tarefas/?format=json');
+                console.log('Resposta da API de tarefas:', response);
+                
+                // Verificar se a resposta tem a estrutura esperada
+                let dadosTarefas = response;
+                if (response && response.results) {
+                    dadosTarefas = response.results;
+                } else if (Array.isArray(response)) {
+                    dadosTarefas = response;
+                } else {
+                    console.log('Estrutura inesperada da resposta de tarefas:', response);
+                    dadosTarefas = [];
+                }
+                
+                console.log('Dados de tarefas processados:', dadosTarefas);
+                setTarefasData(dadosTarefas);
+            } catch (error) {
+                console.log('Erro ao carregar tarefas:', error);
+                setTarefasData([]);
+            }
+        };
         
         carregarFerias();
         carregarAdmissoes();
         carregarVagas();
         carregarDemissoes();
+        carregarProcessos();
+        carregarTarefas();
         
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
@@ -307,18 +377,96 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             }
         }
 
-        // Etapas do processo (mockado por enquanto, pode ser expandido com dados reais)
-        const etapasAdmissao = [
-            { etapa: 'Documentação', tempo: 3, status: 'concluida' },
-            { etapa: 'Exame Médico', tempo: 5, status: 'em_andamento' },
-            { etapa: 'Assinatura Contrato', tempo: 2, status: 'pendente' },
-            { etapa: 'Integração', tempo: 2, status: 'pendente' }
-        ];
+        // Processar etapas do processo usando dados reais de tarefas
+        const processarEtapasAdmissao = () => {
+            if (!tarefasData || tarefasData.length === 0) {
+                console.log('Nenhum dado de tarefas encontrado');
+                return [];
+            }
+
+            console.log('Processando etapas de admissão com dados reais de tarefas:', tarefasData.length, 'tarefas');
+
+            // Filtrar tarefas de admissão
+            const tarefasAdmissao = tarefasData.filter(tarefa => 
+                tarefa.entidade_tipo === 'admissao' || 
+                tarefa.entidade_display === 'admissao'
+            );
+
+            console.log('Tarefas de admissão encontradas:', tarefasAdmissao.length);
+
+            if (tarefasAdmissao.length === 0) {
+                console.log('Nenhuma tarefa de admissão encontrada');
+                return [];
+            }
+
+            // Agrupar tarefas por tipo_display (etapa)
+            const etapasAgrupadas = tarefasAdmissao.reduce((acc, tarefa) => {
+                const tipoDisplay = tarefa.tipo_display || 'Etapa do Processo';
+                
+                if (!acc[tipoDisplay]) {
+                    acc[tipoDisplay] = [];
+                }
+                acc[tipoDisplay].push(tarefa);
+                return acc;
+            }, {});
+
+            console.log('Etapas agrupadas:', Object.keys(etapasAgrupadas));
+
+            // Mapear etapas agrupadas para o formato esperado
+            const etapas = Object.entries(etapasAgrupadas).map(([tipoDisplay, tarefas], index) => {
+                // Determinar status baseado na situação mais recente das tarefas
+                const statusCounts = tarefas.reduce((counts, tarefa) => {
+                    const status = tarefa.status || 'pendente';
+                    counts[status] = (counts[status] || 0) + 1;
+                    return counts;
+                }, {});
+
+                // Determinar status predominante
+                let status = 'pendente';
+                if (statusCounts['concluida'] > 0) {
+                    status = 'concluida';
+                } else if (statusCounts['em_andamento'] > 0) {
+                    status = 'em_andamento';
+                }
+
+                return {
+                    etapa: tipoDisplay,
+                    status: status,
+                    quantidade: tarefas.length,
+                    tarefas: tarefas,
+                    cor: coresEtapas[index % coresEtapas.length] // Distribuir cores ciclicamente
+                };
+            });
+
+            // Ordenar etapas por ordem lógica (se possível)
+            const ordemEtapas = [
+                'Documentação',
+                'Exame Médico', 
+                'Assinatura Contrato',
+                'Integração',
+                'Upload',
+                'Aguardar',
+                'Email',
+                'LGPD'
+            ];
+
+            etapas.sort((a, b) => {
+                const indexA = ordemEtapas.findIndex(etapa => a.etapa.includes(etapa));
+                const indexB = ordemEtapas.findIndex(etapa => b.etapa.includes(etapa));
+                return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+            });
+
+            console.log('Etapas processadas:', etapas);
+            return etapas.slice(0, 4); // Limitar a 4 etapas para não ficar muito grande
+        };
+
+        const etapasAdmissao = processarEtapasAdmissao();
 
         console.log('Resultado do processamento de admissões:', {
             admissoesAndamento,
             tempoMedioAdmissao,
-            totalAdmissoes: admissoesData.length
+            totalAdmissoes: admissoesData.length,
+            etapasProcessadas: etapasAdmissao.length
         });
 
         return {
@@ -479,6 +627,89 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         return turnover.toFixed(1);
     };
 
+    // Processar etapas do processo de demissão usando dados reais de tarefas
+    const processarEtapasDemissao = () => {
+        if (!tarefasData || tarefasData.length === 0) {
+            console.log('Nenhum dado de tarefas encontrado para demissão');
+            return [];
+        }
+
+        console.log('Processando etapas de demissão com dados reais de tarefas');
+
+        // Filtrar tarefas de demissão
+        const tarefasDemissao = tarefasData.filter(tarefa => 
+            tarefa.entidade_tipo === 'demissao' || 
+            tarefa.entidade_display === 'demissao'
+        );
+
+        console.log('Tarefas de demissão encontradas:', tarefasDemissao.length);
+
+        if (tarefasDemissao.length === 0) {
+            console.log('Nenhuma tarefa de demissão encontrada');
+            return [];
+        }
+
+        // Agrupar tarefas por tipo_display (etapa)
+        const etapasAgrupadas = tarefasDemissao.reduce((acc, tarefa) => {
+            const tipoDisplay = tarefa.tipo_display || 'Etapa do Processo';
+            
+            if (!acc[tipoDisplay]) {
+                acc[tipoDisplay] = [];
+            }
+            acc[tipoDisplay].push(tarefa);
+            return acc;
+        }, {});
+
+        console.log('Etapas de demissão agrupadas:', Object.keys(etapasAgrupadas));
+
+        // Mapear etapas agrupadas para o formato esperado
+        const etapas = Object.entries(etapasAgrupadas).map(([tipoDisplay, tarefas], index) => {
+            // Determinar status baseado na situação mais recente das tarefas
+            const statusCounts = tarefas.reduce((counts, tarefa) => {
+                const status = tarefa.status || 'pendente';
+                counts[status] = (counts[status] || 0) + 1;
+                return counts;
+            }, {});
+
+            // Determinar status predominante
+            let status = 'pendente';
+            if (statusCounts['concluida'] > 0) {
+                status = 'concluida';
+            } else if (statusCounts['em_andamento'] > 0) {
+                status = 'em_andamento';
+            }
+
+            return {
+                etapa: tipoDisplay,
+                status: status,
+                quantidade: tarefas.length,
+                tarefas: tarefas,
+                cor: coresEtapas[index % coresEtapas.length] // Distribuir cores ciclicamente
+            };
+        });
+
+        // Ordenar etapas por ordem lógica para demissão
+        const ordemEtapas = [
+            'Documentação',
+            'Aviso Prévio',
+            'Rescisão', 
+            'Entrega',
+            'Upload',
+            'Aguardar'
+        ];
+
+        etapas.sort((a, b) => {
+            const indexA = ordemEtapas.findIndex(etapa => a.etapa.includes(etapa));
+            const indexB = ordemEtapas.findIndex(etapa => b.etapa.includes(etapa));
+            return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+        });
+
+        console.log('Etapas de demissão processadas:', etapas);
+        return etapas.slice(0, 4); // Limitar a 4 etapas
+    };
+
+    const etapasDemissao = processarEtapasDemissao();
+
     // Dados mockados para demonstração - em produção viriam da API
     const dadosRH = {
         // Gestão de Colaboradores
@@ -539,6 +770,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         tempoMedioRescisao: 8, // dias
         checklistsPendentes: 3,
         motivosDemissao: dadosDemissoesReais.motivosDemissao,
+        etapasDemissao: etapasDemissao,
 
         // Eficiência Operacional
         refacaoAdmissao: 12,
@@ -829,7 +1061,11 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         },
         elements: {
             arc: { borderRadius: 8 },
-            bar: { borderRadius: 4 }
+            bar: { 
+                borderRadius: 4,
+                borderSkipped: false,
+                borderWidth: 0
+            }
         },
         responsive: true,
         maintainAspectRatio: false,
@@ -840,13 +1076,19 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 },
                 ticks: {
                     maxRotation: 45,
-                    minRotation: 0
-                }
+                    minRotation: 0,
+                    padding: 8
+                },
+                barPercentage: 0.8,
+                categoryPercentage: 0.9
             },
             y: {
                 beginAtZero: true,
                 grid: {
                     color: '#f0f0f0'
+                },
+                ticks: {
+                    padding: 8
                 }
             }
         }
@@ -1327,9 +1569,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <Frame estilo="spaced">
                         <Titulo><h6>Distribuição por Departamento</h6></Titulo>
                     </Frame>
-                    <div className="chart-container mock-data-element" style={{width: '100%', height: '250px'}}>
-                        <div className="soon-badge">Em Breve</div>
-                        <Chart type="bar" data={chartDataDepartamentos} options={chartOptions} />
+                    <div className="chart-container" style={{width: '100%', height: '250px'}}>
+                        <Chart type="bar" data={chartDataDepartamentos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
                     </div>
                 </div>
 
@@ -1369,16 +1610,48 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <Frame estilo="spaced">
                         <Titulo><h6>Etapas do Processo</h6></Titulo>
                     </Frame>
-                    <div className="etapas-list mock-data-element">
-                        <div className="soon-badge">Em Breve</div>
-                        {dadosRH.etapasAdmissao.map((etapa, index) => (
-                            <div key={index} className="etapa-item">
-                                <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                                    <Tag severity={getSeverity(etapa.status)} value={etapa.etapa} />
+                    <div className="etapas-list" style={{display: 'flex', flexDirection: 'column', gap: 12}}>
+                        {dadosRH.etapasAdmissao.length > 0 ? (
+                            dadosRH.etapasAdmissao.map((etapa, index) => (
+                                <div key={index} className="etapa-item" style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    padding: '12px 18px',
+                                    borderRadius: '16px',
+                                    background: '#fff',
+                                    border: `1.5px solid ${etapa.cor}22`,
+                                    boxShadow: '0 1px 4px 0 rgba(60,60,60,0.04)',
+                                    minHeight: 0,
+                                    margin: 0,
+                                    gap: 12
+                                }}>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 2}}>
+                                        <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                                            <span style={{
+                                                width: 12, height: 12, borderRadius: '50%', background: etapa.cor, display: 'inline-block', flexShrink: 0
+                                            }} />
+                                            <span style={{fontWeight: 700, fontSize: 16, color: '#222', lineHeight: 1.1}}>{etapa.etapa}</span>
+                                        </div>
+                                        <span style={{fontSize: 13, color: '#888', fontWeight: 500, marginLeft: 20}}>Concluída</span>
+                                    </div>
+                                    <span style={{
+                                        background: `${etapa.cor}10`,
+                                        color: etapa.cor,
+                                        fontWeight: 700,
+                                        borderRadius: 20,
+                                        padding: '4px 18px',
+                                        fontSize: 16,
+                                        border: `1.5px solid ${etapa.cor}22`,
+                                        display: 'flex', alignItems: 'center', gap: 4
+                                    }}>
+                                        {etapa.quantidade} <span style={{fontWeight: 400, fontSize: 14, color: etapa.cor, marginLeft: 2}}>processos</span>
+                                    </span>
                                 </div>
-                                <Texto weight={600} color={'var(--neutro-500)'}>{etapa.tempo} dias</Texto>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <div style={{textAlign: 'center', color: '#888', fontSize: 14, fontStyle: 'italic', padding: '18px 0'}}>Nenhum processo em andamento</div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -1535,6 +1808,53 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     </Frame>
                     <div className="chart-container-with-legend">
                         <Chart type="pie" data={chartDataMotivos} options={getChartOptions()} />
+                    </div>
+
+                    <Frame estilo="spaced">
+                        <Titulo><h6>Etapas do Processo</h6></Titulo>
+                    </Frame>
+                    <div className="etapas-list" style={{display: 'flex', flexDirection: 'column', gap: 12}}>
+                        {dadosRH.etapasDemissao.length > 0 ? (
+                            dadosRH.etapasDemissao.map((etapa, index) => (
+                                <div key={index} className="etapa-item" style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    padding: '12px 18px',
+                                    borderRadius: '16px',
+                                    background: '#fff',
+                                    border: `1.5px solid ${etapa.cor}22`,
+                                    boxShadow: '0 1px 4px 0 rgba(60,60,60,0.04)',
+                                    minHeight: 0,
+                                    margin: 0,
+                                    gap: 12
+                                }}>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 2}}>
+                                        <div style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                                            <span style={{
+                                                width: 12, height: 12, borderRadius: '50%', background: etapa.cor, display: 'inline-block', flexShrink: 0
+                                            }} />
+                                            <span style={{fontWeight: 700, fontSize: 16, color: '#222', lineHeight: 1.1}}>{etapa.etapa}</span>
+                                        </div>
+                                        <span style={{fontSize: 13, color: '#888', fontWeight: 500, marginLeft: 20}}>Concluída</span>
+                                    </div>
+                                    <span style={{
+                                        background: `${etapa.cor}10`,
+                                        color: etapa.cor,
+                                        fontWeight: 700,
+                                        borderRadius: 20,
+                                        padding: '4px 18px',
+                                        fontSize: 16,
+                                        border: `1.5px solid ${etapa.cor}22`,
+                                        display: 'flex', alignItems: 'center', gap: 4
+                                    }}>
+                                        {etapa.quantidade} <span style={{fontWeight: 400, fontSize: 14, color: etapa.cor, marginLeft: 2}}>processos</span>
+                                    </span>
+                                </div>
+                            ))
+                        ) : (
+                            <div style={{textAlign: 'center', color: '#888', fontSize: 14, fontStyle: 'italic', padding: '18px 0'}}>Nenhum processo em andamento</div>
+                        )}
                     </div>
                 </div>
             </div>

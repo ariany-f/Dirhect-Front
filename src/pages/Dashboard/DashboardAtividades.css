@@ -369,13 +369,14 @@
   align-items: center;
   margin: 16px 0;
   position: relative;
+  width: 100%;
 }
 
 .chart-container canvas {
-  max-width: 300px;
-  max-height: 300px;
-  min-width: 200px;
-  min-height: 200px;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* Container específico para gráficos com legenda */
