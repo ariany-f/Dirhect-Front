@@ -2,6 +2,7 @@ import http from '@http'
 import { useEffect, useState } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
+import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Contratos.module.css'
 import styled from "styled-components"
@@ -111,6 +112,7 @@ const localizer = momentLocalizer(moment);
 function FeriasListagem() {
 
     const [ferias, setFerias] = useState(null)
+    const [loading, setLoading] = useState(true)
     const context = useOutletContext()
     const [modalSelecaoColaboradorOpened, setModalSelecaoColaboradorOpened] = useState(false)
     const [eventoSelecionado, setEventoSelecionado] = useState(null)
@@ -118,20 +120,19 @@ function FeriasListagem() {
     const [tab, setTab] = useState('calendario') // 'lista' ou 'calendario'
 
     useEffect(() => {
-        if(!ferias)
-        {
-             http.get('ferias/?format=json')
-             .then(response => {
+        if(!ferias) {
+            setLoading(true)
+            http.get('ferias/?format=json')
+            .then(response => {
                 setFerias(response)
-             })
-             .catch(erro => {
- 
-             })
-             .finally(function() {
-             })
+                setLoading(false)
+            })
+            .catch(erro => {
+                console.log(erro)
+                setLoading(false)
+            })
         }
-        
-     }, [ferias, context])
+    }, [ferias, context])
 
     const handleColaboradorSelecionado = (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
@@ -151,6 +152,10 @@ function FeriasListagem() {
             tipo: 'aSolicitar'
         };
         setEventoSelecionado(evento);
+    }
+
+    if (loading) {
+        return <Loading opened={loading} />
     }
 
     return (
