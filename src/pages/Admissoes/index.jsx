@@ -2,6 +2,7 @@ import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Titulo from '@components/Titulo'
 import BotaoVoltar from '@components/BotaoVoltar'
+import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import styled from "styled-components"
 import { Link, Outlet, useLocation } from "react-router-dom"
@@ -23,13 +24,18 @@ const Admissoes = () => {
 
     const location = useLocation();
     const [admissoes, setAdmissoes] = useState([])
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
+        setLoading(true)
         http.get('admissao/?format=json')
             .then(response => {
                 setAdmissoes(response)
+                setLoading(false)
             })
             .catch(error => {   
                 console.log(error)
+                setLoading(false)
             })
     }, [])
    
@@ -69,6 +75,10 @@ const Admissoes = () => {
             // adicionarCandidatos(vagas, "Aberta");
         }
     }, [])
+
+    if (loading) {
+        return <Loading opened={loading} />
+    }
 
     return (
         <ConteudoFrame>

@@ -2,6 +2,7 @@ import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Titulo from '@components/Titulo'
 import BotaoVoltar from '@components/BotaoVoltar'
+import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import styled from "styled-components"
 import http from '@http'
@@ -25,6 +26,7 @@ const Demissoes = () => {
     const [demissoes, setDemissoes] = useState(null)
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
+    const [loading, setLoading] = useState(true);
    
     const { 
         vagas
@@ -38,6 +40,7 @@ const Demissoes = () => {
     }, [demissoes, sortField, sortOrder])
 
     const carregarDemissoes = (sort = '', order = '') => {
+        setLoading(true);
         let url = 'funcionario/?format=json&situacao=D';
         if (sort && order) {
             url += `&ordering=${order === 'desc' ? '-' : ''}${sort}`;
@@ -45,8 +48,12 @@ const Demissoes = () => {
         http.get(url)
             .then(response => {
                 setDemissoes(response);
+                setLoading(false);
             })
-            .catch(erro => console.log(erro))
+            .catch(erro => {
+                console.log(erro);
+                setLoading(false);
+            })
     }
 
     const onSort = ({ field, order }) => {
@@ -55,6 +62,10 @@ const Demissoes = () => {
         setDemissoes(null);
         carregarDemissoes(field, order);
     };
+
+    if (loading) {
+        return <Loading opened={loading} />
+    }
 
     return (
         <ConteudoFrame>

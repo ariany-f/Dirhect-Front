@@ -23,28 +23,30 @@ const ConteudoFrame = styled.div`
 
 function Ausencias() {
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [ausencias, setAusencias] = useState(null)
     const location = useLocation();
 
     useEffect(() => {
-       
+        setLoading(true)
         http.get('historico_ausencia/?format=json')
         .then(response => {
             setAusencias(response)
+            setLoading(false)
         })
         .catch(erro => {
-
+            console.log(erro)
+            setLoading(false)
         })
-        .finally(function() {
-        })
-       
     }, [])
+
+    if (loading) {
+        return <Loading opened={loading} />
+    }
 
     return (
         <ContratosProvider>
              <ConteudoFrame>
-                <Loading opened={loading} />
                 <BotaoGrupo align="start">
                     <BotaoGrupo>
                         {/* <Link className={styles.link} to="/ferias">

@@ -22,30 +22,32 @@ const ConteudoFrame = styled.div`
 
 function Ferias() {
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [ausencias, setAusencias] = useState(null)
     const location = useLocation();
 
     useEffect(() => {
-       if(!ausencias)
-       {
+        if(!ausencias) {
+            setLoading(true)
             http.get('ferias/?format=json')
             .then(response => {
                 setAusencias(response)
+                setLoading(false)
             })
             .catch(erro => {
-
+                console.log(erro)
+                setLoading(false)
             })
-            .finally(function() {
-            })
-       }
-       
+        }
     }, [ausencias])
+
+    if (loading) {
+        return <Loading opened={loading} />
+    }
 
     return (
         <ContratosProvider>
              <ConteudoFrame>
-                <Loading opened={loading} />
                 <Outlet context={ausencias} />
                 <CalendarFerias ausencias={ausencias} />
             </ConteudoFrame>
