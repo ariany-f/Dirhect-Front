@@ -164,12 +164,12 @@ import AtividadesKanban from './pages/Tarefas/kanban_atividades'
 import Candidato from './common/Candidato'
 
 function AppRouter() {
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
 
   useEffect(() => {
     
     const handleResize = () => {
-      setIsDesktop(window.innerWidth > 1024);
+      setIsDesktop(window.innerWidth > 768);
     };
 
     window.addEventListener("resize", handleResize);

@@ -1,15 +1,25 @@
 .container {
     display: flex;
-    max-height: 100vh;
-    min-height: 100vh;
+    height: 100vh; /* Altura fixa da viewport */
+    min-height: 100vh; /* Altura mínima */
     width: 100%;
+    transition: all 0.3s ease;
+    overflow: hidden; /* Evita scroll desnecessário */
 }
 
+/* Breakpoint único e bem definido */
 @media screen and (max-width: 768px) {
     .container {
         flex-direction: column;
         overflow-y: auto;
-        max-height: none;
+        height: auto; /* Permite altura dinâmica em mobile */
         min-height: 100vh;
+    }
+}
+
+/* Breakpoint adicional para tablets */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        /* Mantém layout desktop mas com ajustes para tablets */
     }
 }

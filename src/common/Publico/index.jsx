@@ -10,8 +10,9 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { useLocation } from "react-router-dom";
 import { ArmazenadorToken } from "@utils"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import BrandColors from '@utils/brandColors'
+import { useResponsive } from '@hooks/useResponsive'
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -19,6 +20,7 @@ function useQuery() {
 
 function Publico() {
     const query = useQuery();
+    const { isMobile } = useResponsive();
 
     useEffect(() => {
         if(query.get("tenant"))
@@ -32,24 +34,14 @@ function Publico() {
         BrandColors.applyBrandColorsWhenReady();
     }, []);
 
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-        window.addEventListener('resize', handleResize);
-        handleResize();
-    }, []);
-    
-
     return (
         <>
             <EstilosGlobais />
             <MainSectionPublico>
-                    {isMobile ? 
-                        <Outlet />
-                    : <>
+                {isMobile ? 
+                    <Outlet />
+                : (
+                    <>
                         <RightContainer>
                             <MainContainer>
                                 <Outlet />
@@ -57,7 +49,7 @@ function Publico() {
                         </RightContainer>
                         <BannerMini />
                     </>
-                    }
+                )}
                 {import.meta.env.VITE_VERCEL_ENV && <Analytics />}
                 {import.meta.env.VITE_VERCEL_ENV && <SpeedInsights />}
             </MainSectionPublico>

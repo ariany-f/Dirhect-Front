@@ -3,4 +3,17 @@
     flex-direction: column;
     width: -webkit-fill-available;
     flex: 1 1 50%;
+    transition: all 0.3s ease;
+    height: 100vh; /* Garante altura completa */
+    min-height: 100vh; /* Altura mínima */
+}
+
+/* Breakpoint único e bem definido */
+@media screen and (max-width: 768px) {
+    .container {
+        flex: 1 1 100%;
+        width: 100%;
+        height: auto; /* Permite altura dinâmica em mobile */
+        min-height: 100vh;
+    }
 }

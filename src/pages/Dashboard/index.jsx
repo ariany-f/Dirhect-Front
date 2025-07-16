@@ -636,7 +636,12 @@ function Dashboard() {
                 </div>
             )}
             {usuario?.tipo !== 'Outsourcing' && (
-                <DashboardCard dashboardData={dadosDashboard} colaboradores={colaboradores} />
+                <DashboardCard 
+                    dashboardData={dadosDashboard} 
+                    colaboradores={colaboradores} 
+                    atividadesRaw={atividadesRaw}
+                    tipoUsuario={usuario?.tipo}
+                />
             )}
             {cardsExtras.length > 0 && (
                 <div style={{marginTop: 32, display: 'flex', gap: 24, flexWrap: 'wrap'}}>

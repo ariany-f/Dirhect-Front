@@ -3,23 +3,40 @@
     flex: 1 1 50%;
     justify-content: center;
     position: relative;
+    transition: all 0.3s ease;
+    height: 100vh; /* Garante altura completa */
+    min-height: 100vh; /* Altura mínima */
 }
+
 .banner {
     margin: 0;
     padding: 0;
-    max-height: 50vw;
+    height: 100%; /* Ocupa toda a altura do container */
+    width: 100%; /* Ocupa toda a largura do container */
     object-fit: cover;
     object-position: center;
     min-width: -webkit-fill-available;
-    @media screen and (max-width:768px) {
+    transition: all 0.3s ease;
+}
+
+/* Breakpoint único e bem definido */
+@media screen and (max-width: 768px) {
+    .container {
+        display: none; /* Esconde completamente em mobile */
+    }
+    
+    .banner {
         height: initial;
     }
 }
+
 .logo {
     position: absolute;
     bottom: 40px;
     width: 192px;
+    transition: all 0.3s ease;
 }
+
 .bottomBanner {
     position: absolute;
     top: 88px;

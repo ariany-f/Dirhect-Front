@@ -22,58 +22,68 @@ export class BrandColors {
   
     // Gerar variações de cores baseadas na cor primária
     static generateColorVariations(primaryColor) {
-      // Função auxiliar para converter hex para HSL
-      const hexToHsl = (hex) => {
-        const r = parseInt(hex.slice(1, 3), 16) / 255;
-        const g = parseInt(hex.slice(3, 5), 16) / 255;
-        const b = parseInt(hex.slice(5, 7), 16) / 255;
-        
-        const max = Math.max(r, g, b);
-        const min = Math.min(r, g, b);
-        let h, s, l = (max + min) / 2;
-  
-        if (max === min) {
-          h = s = 0;
-        } else {
-          const d = max - min;
-          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-          switch (max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-          }
-          h /= 6;
-        }
-        return [h * 360, s * 100, l * 100];
+      // Função auxiliar para converter hex para RGB
+      const hexToRgb = (hex) => {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return [r, g, b];
       };
-  
-      // Função auxiliar para converter HSL para hex
-      const hslToHex = (h, s, l) => {
-        l /= 100;
-        const a = s * Math.min(l, 1 - l) / 100;
-        const f = n => {
-          const k = (n + h / 30) % 12;
-          const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-          return Math.round(255 * color).toString(16).padStart(2, '0');
+
+      // Função auxiliar para converter RGB para hex
+      const rgbToHex = (r, g, b) => {
+        const toHex = (n) => {
+          const hex = Math.round(Math.max(0, Math.min(255, n))).toString(16);
+          return hex.length === 1 ? '0' + hex : hex;
         };
-        return `#${f(0)}${f(8)}${f(4)}`;
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
       };
-  
-      const [h, s, l] = hexToHsl(primaryColor);
+
+      // Função para ajustar luminosidade mantendo a saturação
+      const adjustBrightness = (color, factor) => {
+        const [r, g, b] = hexToRgb(color);
+        
+        // Calcular o brilho atual
+        const brightness = Math.sqrt(0.299 * r * r + 0.587 * g * g + 0.114 * b * b);
+        
+        // Ajustar cada canal proporcionalmente
+        const newR = r + (255 - r) * factor;
+        const newG = g + (255 - g) * factor;
+        const newB = b + (255 - b) * factor;
+        
+        return rgbToHex(newR, newG, newB);
+      };
+
+      // Função para escurecer mantendo a saturação
+      const adjustDarkness = (color, factor) => {
+        const [r, g, b] = hexToRgb(color);
+        
+        // Ajustar cada canal proporcionalmente para escurecer
+        const newR = r * (1 - factor);
+        const newG = g * (1 - factor);
+        const newB = b * (1 - factor);
+        
+        return rgbToHex(newR, newG, newB);
+      };
+
+      // Calcular o brilho da cor original
+      const [r, g, b] = hexToRgb(primaryColor);
+      const brightness = Math.sqrt(0.299 * r * r + 0.587 * g * g + 0.114 * b * b);
+      const isDark = brightness < 128;
       
       return {
         '--primaria': primaryColor,
-        '--vermilion-50': hslToHex(h, s, 98),
-        '--vermilion-100': hslToHex(h, s, 92),
-        '--vermilion-200': hslToHex(h, s, 85),
-        '--vermilion-300': hslToHex(h, s, 75),
-        '--vermilion-400': hslToHex(h, s, 65),
-        '--vermilion-500': hslToHex(h, s, 55),
-        '--vermilion-600': hslToHex(h, s, 45),
-        '--vermilion-700': hslToHex(h, s, 35),
-        '--vermilion-800': hslToHex(h, s, 25),
-        '--vermilion-900': hslToHex(h, s, 15),
-        '--vermilion-950': hslToHex(h, s, 8),
+        '--vermilion-50': isDark ? adjustBrightness(primaryColor, 0.95) : adjustDarkness(primaryColor, 0.05),
+        '--vermilion-100': isDark ? adjustBrightness(primaryColor, 0.90) : adjustDarkness(primaryColor, 0.10),
+        '--vermilion-200': isDark ? adjustBrightness(primaryColor, 0.80) : adjustDarkness(primaryColor, 0.20),
+        '--vermilion-300': isDark ? adjustBrightness(primaryColor, 0.70) : adjustDarkness(primaryColor, 0.30),
+        '--vermilion-400': isDark ? adjustBrightness(primaryColor, 0.60) : adjustDarkness(primaryColor, 0.40),
+        '--vermilion-500': isDark ? adjustBrightness(primaryColor, 0.50) : adjustDarkness(primaryColor, 0.50),
+        '--vermilion-600': isDark ? adjustBrightness(primaryColor, 0.40) : adjustDarkness(primaryColor, 0.60),
+        '--vermilion-700': isDark ? adjustBrightness(primaryColor, 0.30) : adjustDarkness(primaryColor, 0.70),
+        '--vermilion-800': isDark ? adjustBrightness(primaryColor, 0.20) : adjustDarkness(primaryColor, 0.80),
+        '--vermilion-900': isDark ? adjustBrightness(primaryColor, 0.10) : adjustDarkness(primaryColor, 0.90),
+        '--vermilion-950': isDark ? adjustBrightness(primaryColor, 0.05) : adjustDarkness(primaryColor, 0.95),
       };
     }
   
@@ -105,6 +115,7 @@ export class BrandColors {
           secondary: brandColors.secondary,
           accent: brandColors.accent
         });
+        console.log('🎨 Variações geradas:', colorVariations);
       }
     }
   

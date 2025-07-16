@@ -24,6 +24,7 @@ export default defineConfig({
       { find: '@http', replacement: path.resolve(__dirname, './src/http') },
       { find: '@utils', replacement: path.resolve(__dirname, './src/utils') },
       { find: '@locales', replacement: path.resolve(__dirname, './src/locales') },
+      { find: '@hooks', replacement: path.resolve(__dirname, './src/hooks') },
     ]
   }
 })

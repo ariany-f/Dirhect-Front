@@ -78,14 +78,42 @@ function DataTableFerias({ ferias, colaborador = null }) {
         let tag = rowData?.situacaoferias;
         switch(rowData?.situacaoferias)
         {
-            case 'P':
-                tag = <Tag severity="success" value="Paga"></Tag>;
+            case 'G': // Aguardando Aprovação do Gestor
+                tag = <Tag severity="warning" value="Aguardando Gestor"></Tag>;
                 break;
-            case 'M':
-                tag = <Tag severity="warning" value="Marcada"></Tag>;
+            case 'D': // Aguardando Aprovação do DP
+                tag = <Tag severity="info" value="Aguardando DP"></Tag>;
                 break;
-            case 'F':
-                tag = <Tag severity="danger" value="Finalizada"></Tag>;
+            case 'M': // Marcadas
+                tag = <Tag severity="success" value="Marcadas"></Tag>;
+                break;
+            case 'P': // Pagas
+                tag = <Tag severity="success" value="Pagas"></Tag>;
+                break;
+            case 'F': // Finalizadas
+                tag = <Tag severity="danger" value="Finalizadas"></Tag>;
+                break;
+            case 'X': // Finalizadas para o próximo mês
+                tag = <Tag severity="danger" value="Finalizadas Próximo Mês"></Tag>;
+                break;
+            // Status antigos (mantidos para compatibilidade)
+            case 'A': // Aprovada
+                tag = <Tag severity="success" value="Aprovada"></Tag>;
+                break;
+            case 'S': // Solicitada
+                tag = <Tag severity="info" value="Solicitada"></Tag>;
+                break;
+            case 'E': // Em Andamento
+                tag = <Tag severity="info" value="Em Andamento"></Tag>;
+                break;
+            case 'C': // Cancelada
+                tag = <Tag severity="danger" value="Cancelada"></Tag>;
+                break;
+            case 'R': // Rejeitada
+                tag = <Tag severity="danger" value="Rejeitada"></Tag>;
+                break;
+            default:
+                tag = <Tag severity="info" value={rowData?.situacaoferias || 'N/A'}></Tag>;
                 break;
         }
         return <p style={{fontWeight: '400'}}>{tag}</p>

@@ -5,6 +5,8 @@
     gap: 5vh;
     width: inherit;
     flex: 1;
+    height: 100%; /* Garante altura completa */
+    min-height: 100vh; /* Altura mínima */
         
     @-moz-document url-prefix() {
         width: -moz-available;
