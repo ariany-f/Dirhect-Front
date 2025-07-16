@@ -351,22 +351,20 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         console.log('Processando dados de admissões:', admissoesData.length, 'registros');
         
-        // Contar admissões em andamento (status pendente/em_andamento)
-        const admissoesAndamento = admissoesData.filter(admissao => 
-            admissao.status === 'pendente' || admissao.status === 'em_andamento'
-        ).length;
+        // Contar todas as admissões como "em andamento" (sem validar status)
+        const admissoesAndamento = admissoesData.length;
 
         // Calcular tempo médio de admissão (em dias)
         const admissoesConcluidas = admissoesData.filter(admissao => 
-            admissao.status === 'concluida' || admissao.status === 'aprovada'
+            admissao.dt_admissao // Se tem dt_admissao, está concluída
         );
 
         let tempoMedioAdmissao = 0;
         if (admissoesConcluidas.length > 0) {
             const temposAdmissao = admissoesConcluidas.map(admissao => {
-                if (admissao.data_inicio && admissao.data_fim) {
-                    const inicio = new Date(admissao.data_inicio);
-                    const fim = new Date(admissao.data_fim);
+                if (admissao.dados_candidato?.created_at && admissao.dt_admissao) {
+                    const inicio = new Date(admissao.dados_candidato.created_at);
+                    const fim = new Date(admissao.dt_admissao);
                     return Math.ceil((fim - inicio) / (1000 * 60 * 60 * 24));
                 }
                 return 0;
@@ -469,10 +467,25 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             etapasProcessadas: etapasAdmissao.length
         });
 
+        // Calcular SLA baseado no tempo médio
+        let slaAdmissao = 0;
+        if (tempoMedioAdmissao > 0) {
+            if (tempoMedioAdmissao <= 15) {
+                slaAdmissao = 95; // Excelente: até 15 dias
+            } else if (tempoMedioAdmissao <= 30) {
+                slaAdmissao = 85; // Bom: até 30 dias
+            } else if (tempoMedioAdmissao <= 45) {
+                slaAdmissao = 70; // Médio: até 45 dias
+            } else {
+                slaAdmissao = 50; // Ruim: acima de 45 dias
+            }
+        }
+
         return {
             admissoesAndamento,
             tempoMedioAdmissao,
-            etapasAdmissao
+            etapasAdmissao,
+            slaAdmissao
         };
     };
 
@@ -710,6 +723,39 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     const etapasDemissao = processarEtapasDemissao();
 
+    // Calcular distribuição por filial usando dados reais
+    const calcularDistribuicaoFilial = () => {
+        if (!colaboradores || colaboradores.length === 0) {
+            return {};
+        }
+
+        const distribuicao = colaboradores.reduce((acc, colaborador) => {
+            const filial = colaborador.filial_nome || 'Não informado';
+            acc[filial] = (acc[filial] || 0) + 1;
+            return acc;
+        }, {});
+
+        return distribuicao;
+    };
+
+    // Calcular distribuição por tipo de funcionário usando dados reais
+    const calcularDistribuicaoTipoFuncionario = () => {
+        if (!colaboradores || colaboradores.length === 0) {
+            return {};
+        }
+
+        const distribuicao = colaboradores.reduce((acc, colaborador) => {
+            const tipo = colaborador.tipo_funcionario_descricao || 'Não informado';
+            acc[tipo] = (acc[tipo] || 0) + 1;
+            return acc;
+        }, {});
+
+        return distribuicao;
+    };
+
+    const distribuicaoFilial = calcularDistribuicaoFilial();
+    const distribuicaoTipoFuncionario = calcularDistribuicaoTipoFuncionario();
+
     // Dados mockados para demonstração - em produção viriam da API
     const dadosRH = {
         // Gestão de Colaboradores
@@ -768,7 +814,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         // Demissões - usando dados reais
         demissoesProcessamento: dadosDemissoesReais.demissoesProcessamento,
         tempoMedioRescisao: 8, // dias
-        checklistsPendentes: 3,
         motivosDemissao: dadosDemissoesReais.motivosDemissao,
         etapasDemissao: etapasDemissao,
 
@@ -777,7 +822,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         refacaoFerias: 8,
         refacaoDemissao: 5,
         tarefasVencidas: 7,
-        slaAdmissao: 85,
+        slaAdmissao: dadosAdmissoesReais.slaAdmissao,
         slaFerias: 92,
         slaDemissao: 78,
         vagasAbertas,
@@ -991,9 +1036,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     // Gráfico de distribuição por departamento
     const chartDataDepartamentos = {
-        labels: Object.keys(dadosRH.distribuicaoDepartamentos),
+        labels: Object.keys(distribuicaoTipoFuncionario),
         datasets: [{
-            data: Object.values(dadosRH.distribuicaoDepartamentos),
+            data: Object.values(distribuicaoTipoFuncionario),
             backgroundColor: ['#5472d4', '#66BB6A', '#FFA726', '#FF6384', '#8884d8', '#ffb347'],
             borderWidth: 0
         }]
@@ -1001,9 +1046,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     // Gráfico de distribuição por filial
     const chartDataFiliais = {
-        labels: ['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Curitiba', 'Porto Alegre'],
+        labels: Object.keys(distribuicaoFilial),
         datasets: [{
-            data: [28, 17, 12, 8, 6],
+            data: Object.values(distribuicaoFilial),
             backgroundColor: ['#5472d4', '#66BB6A', '#FFA726', '#FF6384', '#8884d8'],
             borderWidth: 0
         }]
@@ -1208,6 +1253,23 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 return "#8884d8";
         }
     }
+
+    // Calcular checklists pendentes de demissão usando dados reais
+    const calcularChecklistsPendentes = () => {
+        if (!tarefasData || tarefasData.length === 0) {
+            return 0;
+        }
+
+        // Filtrar tarefas de demissão que estão pendentes
+        const tarefasDemissaoPendentes = tarefasData.filter(tarefa => 
+            (tarefa.entidade_tipo === 'demissao' || tarefa.entidade_display === 'demissao') &&
+            (tarefa.status === 'pendente' || tarefa.status === 'em_andamento')
+        );
+
+        return tarefasDemissaoPendentes.length;
+    };
+
+    const checklistsPendentes = calcularChecklistsPendentes();
 
     // Renderizar dashboard de Benefícios
     if (tipoUsuario === 'Benefícios') {
@@ -1581,16 +1643,28 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     </Frame>
                     <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 24}}>
                         <div>
-                            <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Por Departamento</div>
-                            <div className="chart-container" style={{width: '100%', height: '180px'}}>
-                                <Chart type="bar" data={chartDataDepartamentos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
-                            </div>
+                            <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Tipo de Funcionário</div>
+                            {Object.keys(distribuicaoTipoFuncionario).length > 0 ? (
+                                <div className="chart-container" style={{width: '100%', height: '180px'}}>
+                                    <Chart type="bar" data={chartDataDepartamentos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
+                                </div>
+                            ) : (
+                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
+                                    Sem dados
+                                </div>
+                            )}
                         </div>
                         <div>
                             <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Por Filial</div>
-                            <div className="chart-container" style={{width: '100%', height: '180px'}}>
-                                <Chart type="bar" data={chartDataFiliais} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
-                            </div>
+                            {Object.keys(distribuicaoFilial).length > 0 ? (
+                                <div className="chart-container" style={{width: '100%', height: '180px'}}>
+                                    <Chart type="bar" data={chartDataFiliais} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
+                                </div>
+                            ) : (
+                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
+                                    Sem dados
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -1619,8 +1693,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             </div>
                             <div className="metric-label">Tempo Médio</div>
                         </div>
-                        <div className="metric-item mock-data-element">
-                            <div className="soon-badge">Em Breve</div>
+                        <div className="metric-item">
                             <div className="metric-value metric-success">
                                 <FaChartLine /> {dadosRH.slaAdmissao}%
                             </div>
@@ -1804,7 +1877,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             </div>
                             <div className="metric-label">Em Processamento</div>
                         </div>
-                        <div className="metric-item">
+                        <div className="metric-item mock-data-element">
+                            <div className="soon-badge">Em Breve</div>
                             <div className="metric-value metric-warning">
                                 <FaClock /> {dadosRH.tempoMedioRescisao}d
                             </div>
@@ -1812,11 +1886,12 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         </div>
                         <div className="metric-item">
                             <div className="metric-value metric-danger">
-                                <FaClipboardList /> {dadosRH.checklistsPendentes}
+                                <FaClipboardList /> {checklistsPendentes}
                             </div>
                             <div className="metric-label">Checklists Pendentes</div>
                         </div>
-                        <div className="metric-item">
+                        <div className="metric-item mock-data-element">
+                            <div className="soon-badge">Em Breve</div>
                             <div className="metric-value metric-success">
                                 <FaChartLine /> {dadosRH.slaDemissao}%
                             </div>
