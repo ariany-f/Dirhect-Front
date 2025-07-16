@@ -2,6 +2,7 @@ import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Titulo from '@components/Titulo'
 import BotaoVoltar from '@components/BotaoVoltar'
+import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import styled from "styled-components"
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
@@ -60,12 +61,19 @@ const Atividades = () => {
     const [listaTarefas, setListaTarefas] = useState([]);
     const [filtroAtivo, setFiltroAtivo] = useState('total');
     const [activeTab, setActiveTab] = useState('lista'); // 'lista' ou 'kanban'
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         http.get('tarefas/?format=json')
             .then(response => {
-                setListaTarefas(response)
+                setListaTarefas(response);
+                setLoading(false);
             })
+            .catch(error => {
+                console.log(error);
+                setLoading(false);
+            });
     }, [])
 
     const atualizarTarefa = (tarefaId, novosDados) => {
@@ -90,6 +98,10 @@ const Atividades = () => {
         setActiveTab(tab);
         navigate(tab === 'lista' ? '/atividades' : '/atividades/kanban');
     };
+
+    if (loading) {
+        return <Loading opened={loading} />
+    }
 
     return (
         <ConteudoFrame>
