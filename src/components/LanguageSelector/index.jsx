@@ -1,6 +1,9 @@
 import { Dropdown } from 'primereact/dropdown';
 import { useTranslation } from 'react-i18next';
 import { styled } from 'styled-components';
+import { useState } from 'react';
+import brFlag from '@assets/br.svg';
+import usFlag from '@assets/us.svg';
 
 const StyledDropdown = styled(Dropdown)`
   .p-dropdown {
@@ -32,6 +35,16 @@ const StyledDropdown = styled(Dropdown)`
     background-size: cover;
   }
 
+  .flag-emoji {
+    font-size: 20px;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+
   &.p-dropdown {
     border: none;
     background: transparent;
@@ -48,6 +61,16 @@ const StyledDropdown = styled(Dropdown)`
           border-radius: 50%;
           object-fit: cover;
         }
+        
+        .flag-emoji {
+          font-size: 20px;
+          margin-right: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+        }
       }
     }
   }
@@ -55,26 +78,38 @@ const StyledDropdown = styled(Dropdown)`
 
 function LanguageSelector() {
   const { i18n } = useTranslation();
+  const [imageErrors, setImageErrors] = useState({});
   
   const languages = [
-    { code: 'en', name: 'English', flag: 'https://flagcdn.com/us.svg' },
-    { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/br.svg' },
+    { code: 'en', name: 'English', flag: usFlag, emoji: '🇺🇸' },
+    { code: 'pt', name: 'Português', flag: brFlag, emoji: '🇧🇷' },
   ];
   
   const changeLanguage = (code) => {
     i18n.changeLanguage(code);
   };
 
+  const handleImageError = (code) => {
+    setImageErrors(prev => ({ ...prev, [code]: true }));
+  };
+
   const selectedLanguageTemplate = (option) => {
     if (option) {
+      const showEmoji = imageErrors[option.code];
+      
       return (
         <div className="flex align-items-center">
-          <img 
-            alt={option.name} 
-            src={option.flag}
-            className={`flag flag-${option.code}`}
-            style={{ background: '#fff', border: '1px solid #eee', width: 24, height: 24, objectFit: 'contain', borderRadius: '50%' }}
-          />
+          {showEmoji ? (
+            <span className="flag-emoji">{option.emoji}</span>
+          ) : (
+            <img 
+              alt={option.name} 
+              src={option.flag}
+              className={`flag flag-${option.code}`}
+              style={{ background: '#fff', border: '1px solid #eee', width: 24, height: 24, objectFit: 'contain', borderRadius: '50%' }}
+              onError={() => handleImageError(option.code)}
+            />
+          )}
         </div>
       );
     }
@@ -82,14 +117,21 @@ function LanguageSelector() {
   };
 
   const languageOptionTemplate = (option) => {
+    const showEmoji = imageErrors[option.code];
+    
     return (
       <div className="flex align-items-center">
-        <img 
-          alt={option.name} 
-          src={option.flag}
-          className={`flag flag-${option.code}`}
-          style={{ background: '#fff', border: '1px solid #eee', width: 24, height: 24, objectFit: 'contain', borderRadius: '50%' }}
-        />
+        {showEmoji ? (
+          <span className="flag-emoji">{option.emoji}</span>
+        ) : (
+          <img 
+            alt={option.name} 
+            src={option.flag}
+            className={`flag flag-${option.code}`}
+            style={{ background: '#fff', border: '1px solid #eee', width: 24, height: 24, objectFit: 'contain', borderRadius: '50%' }}
+            onError={() => handleImageError(option.code)}
+          />
+        )}
         <span style={{ marginLeft: 8 }}>{option.name}</span>
       </div>
     );
