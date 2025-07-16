@@ -6,19 +6,26 @@ import { Link, useOutletContext } from 'react-router-dom'
 
 function VagasTransferidas() {
     
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [vagas, setVagas] = useState([])
     const context = useOutletContext();
 
     useEffect(() => {
+        setLoading(true)
         http.get('vagas/?format=json&status=T')
             .then(response => {
                 setVagas(response)
+                setLoading(false)
             })
             .catch(error => {   
                 console.log(error)
+                setLoading(false)
             })
     }, [])
+    
+    if (loading) {
+        return <Loading opened={loading} />
+    }
     
     return (
         <DataTableVagas vagas={vagas} />
