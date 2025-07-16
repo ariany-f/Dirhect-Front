@@ -450,13 +450,42 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     };
     const vagasAbertas = contarVagasAbertas();
 
+    // Função para calcular o turnover real
+    const calcularTurnover = () => {
+        if (!colaboradores || colaboradores.length === 0) {
+            return 0;
+        }
+
+        const hoje = new Date();
+        const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+        const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+
+        // Contar demissões do mês atual
+        const demissoesMes = demissoesData.filter(demissao => {
+            if (!demissao.dt_demissao) return false;
+            const dataDemissao = new Date(demissao.dt_demissao);
+            return dataDemissao >= inicioMes && dataDemissao <= fimMes;
+        }).length;
+
+        // Calcular turnover: (Demissões do mês / Total de colaboradores) * 100
+        const turnover = (demissoesMes / colaboradores.length) * 100;
+        
+        console.log('Cálculo do turnover:', {
+            demissoesMes,
+            totalColaboradores: colaboradores.length,
+            turnover: turnover.toFixed(1)
+        });
+
+        return turnover.toFixed(1);
+    };
+
     // Dados mockados para demonstração - em produção viriam da API
     const dadosRH = {
         // Gestão de Colaboradores
         totalColaboradores: colaboradores.length,
         novosContratadosMes: novosColaboradoresMes,
         demissoesMes: dadosDemissoesReais.demissoesMes,
-        turnover: ((dadosDemissoesReais.demissoesMes) / (colaboradores.length || 1) * 100).toFixed(1),
+        turnover: calcularTurnover(),
         
         // Distribuição por departamento
         distribuicaoDepartamentos: {
@@ -1281,8 +1310,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             </div>
                             <div className="metric-label">Saídas (Mês)</div>
                         </div>
-                        <div className="metric-item mock-data-element">
-                            <div className="soon-badge">Em Breve</div>
+                        <div className="metric-item">
                             <div className="metric-value metric-warning">
                                 <MdTrendingUp /> {dadosRH.turnover}%
                             </div>
@@ -1507,92 +1535,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     </Frame>
                     <div className="chart-container-with-legend">
                         <Chart type="pie" data={chartDataMotivos} options={getChartOptions()} />
-                    </div>
-                </div>
-            </div>
-
-            {/* 📈 Eficiência Operacional */}
-            <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
-                <Frame estilo="spaced">
-                    <Titulo><h6>Eficiência Operacional</h6></Titulo>
-                    <Link to="/atividades">
-                        <Texto weight={500} color={'var(--neutro-500)'}>
-                            Ver todas <FaArrowRight />
-                        </Texto>
-                    </Link>
-                </Frame>
-                
-                <div className="metric-grid">
-                    <div className="metric-item mock-data-element">
-                        <div className="soon-badge">Em Breve</div>
-                        <div className="metric-value metric-danger">
-                            <FaRegFileAlt /> {dadosRH.refacaoAdmissao}%
-                        </div>
-                        <div className="metric-label">Refação Admissão</div>
-                    </div>
-                    <div className="metric-item mock-data-element">
-                        <div className="soon-badge">Em Breve</div>
-                        <div className="metric-value metric-warning">
-                            <FaRegFileAlt /> {dadosRH.refacaoFerias}%
-                        </div>
-                        <div className="metric-label">Refação Férias</div>
-                    </div>
-                    <div className="metric-item mock-data-element">
-                        <div className="soon-badge">Em Breve</div>
-                        <div className="metric-value metric-info">
-                            <FaRegFileAlt /> {dadosRH.refacaoDemissao}%
-                        </div>
-                        <div className="metric-label">Refação Demissão</div>
-                    </div>
-                    <div className="metric-item mock-data-element">
-                        <div className="soon-badge">Em Breve</div>
-                        <div className="metric-value metric-danger">
-                            <FaExclamationTriangle /> {dadosRH.tarefasVencidas}
-                        </div>
-                        <div className="metric-label">Tarefas Vencidas</div>
-                    </div>
-                </div>
-
-                <Frame estilo="spaced">
-                    <Titulo><h6>SLA por Tipo de Processo</h6></Titulo>
-                </Frame>
-                <div className="sla-progress mock-data-element">
-                    <div className="soon-badge">Em Breve</div>
-                    <div className="sla-item">
-                        <div className="sla-header">
-                            <span className="sla-label">Admissão</span>
-                            <span className="sla-value">{dadosRH.slaAdmissao}%</span>
-                        </div>
-                        <div className="sla-bar">
-                            <div 
-                                className={`sla-fill ${dadosRH.slaAdmissao >= 90 ? 'success' : dadosRH.slaAdmissao >= 70 ? 'warning' : 'danger'}`}
-                                style={{width: `${dadosRH.slaAdmissao}%`}}
-                            />
-                        </div>
-                    </div>
-                    <div className="sla-item">
-                        <div className="sla-header">
-                            <span className="sla-label">Férias</span>
-                            <span className="sla-value">{dadosRH.slaFerias}%</span>
-                        </div>
-                        <div className="sla-bar">
-                            <div 
-                                className={`sla-fill ${dadosRH.slaFerias >= 90 ? 'success' : dadosRH.slaFerias >= 70 ? 'warning' : 'danger'}`}
-                                style={{width: `${dadosRH.slaFerias}%`}}
-                            />
-                        </div>
-                    </div>
-                    <div className="sla-item">
-                        <div className="sla-header">
-                            <span className="sla-label">Demissão</span>
-                            <span className="sla-value">{dadosRH.slaDemissao}%</span>
-                        </div>
-                        <div className="sla-bar">
-                            <div 
-                                className={`sla-fill ${dadosRH.slaDemissao >= 90 ? 'success' : dadosRH.slaDemissao >= 70 ? 'warning' : 'danger'}`}
-                                style={{width: `${dadosRH.slaDemissao}%`}}
-                            />
-                        </div>
                     </div>
                 </div>
             </div>
