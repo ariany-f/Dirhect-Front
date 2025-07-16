@@ -1248,10 +1248,11 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 gridTemplateColumns: '2fr 1fr',
                 gap: '24px',
                 marginBottom: '24px',
-                width: '100%'
+                width: '100%',
+                alignItems: 'stretch'
             }}>
                 {/* Coluna 1: Métricas principais */}
-                <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
+                <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
                     <Frame estilo="spaced">
                         <Titulo><h6>Gestão de Colaboradores</h6></Titulo>
                         <Link to="/colaborador">
@@ -1305,7 +1306,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 </div>
 
                 {/* Coluna 2: Admissões */}
-                <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
+                <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
                     <Frame estilo="spaced">
                         <Titulo><h6>Admissões</h6></Titulo>
                         <Link to="/admissao">
@@ -1360,10 +1361,11 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 gridTemplateColumns: '1fr 1fr',
                 gap: '24px',
                 marginBottom: '24px',
-                width: '100%'
+                width: '100%',
+                alignItems: 'stretch'
             }}>
                 {/* Coluna 1: Férias */}
-                <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
+                <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
                     <Frame estilo="spaced">
                         <Titulo><h6>Férias</h6></Titulo>
                         <Link to="/ferias">
@@ -1463,7 +1465,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 </div>
 
                 {/* Coluna 2: Demissões */}
-                <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`}>
+                <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
                     <Frame estilo="spaced">
                         <Titulo><h6>Demissões</h6></Titulo>
                         <Link to="/demissao">
@@ -1510,7 +1512,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             </div>
 
             {/* 📈 Eficiência Operacional */}
-            <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{width: '100%'}}>
+            <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
                 <Frame estilo="spaced">
                     <Titulo><h6>Eficiência Operacional</h6></Titulo>
                     <Link to="/atividades">

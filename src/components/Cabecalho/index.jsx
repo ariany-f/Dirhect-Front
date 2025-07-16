@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import CustomImage from '@components/CustomImage';
 import { ArmazenadorToken } from '@utils';
 import BrandColors from '@utils/brandColors';
+import { FaUser } from 'react-icons/fa';
 
 // MegaMenu Container
 const MegaMenuWrapper = styled.div`
@@ -396,6 +397,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                 <BsArrowLeftRight />
               </ItemEmpresa>
             )}
+            <ItemEmpresa onClick={() => window.location.href = '/login/selecionar-grupo'}>
+              <FaUser size={16} />
+              {usuario.tipo || 'Perfil'}
+              <BsArrowLeftRight />
+            </ItemEmpresa>
             <LanguageSelector />
             <ItemUsuario onClick={toggleMenu}>
               <div className="user">{usuario.name?.charAt(0) || 'U'}</div>
