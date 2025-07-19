@@ -329,7 +329,6 @@ function ColaboradorDetalhes() {
             // Se está na rota base, redireciona para primeira aba disponível
             if (location.pathname === `/colaborador/detalhes/${id}`) {
                 const primeiraAba = getPrimeiraAbaDisponivel();
-                console.log('Redirecionando da rota base para:', primeiraAba);
                 if (primeiraAba !== location.pathname) {
                     navegar(primeiraAba, { replace: true });
                 }
@@ -337,7 +336,6 @@ function ColaboradorDetalhes() {
             // Se está em uma aba inválida, redireciona para primeira aba disponível
             else if (!isAbaValida(location.pathname)) {
                 const primeiraAba = getPrimeiraAbaDisponivel();
-                console.log('Redirecionando de aba inválida para:', primeiraAba);
                 if (primeiraAba !== location.pathname) {
                     navegar(primeiraAba, { replace: true });
                 }

@@ -5,7 +5,7 @@ import { ptBR } from 'date-fns/locale';
 import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
-import colaboradoresFake from '@json/ferias.json';
+import colaboradoresFake from '@json/ferias.json'; // Dados fake para exemplos de renderização
 import DropdownItens from '@components/DropdownItens'
 
 const GRADIENT = 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))';
@@ -395,50 +395,72 @@ const CalendarFerias = ({ colaboradores }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Função para normalizar os dados recebidos (fake ou API)
+    // Função para normalizar os dados recebidos (API)
     function normalizarColaboradores(colaboradores) {
-        if (colaboradores.length && colaboradores[0].ausencias) return colaboradores;
+        if (!colaboradores || !Array.isArray(colaboradores)) return [];
+        
+        // Se já está no formato esperado (com ausencias), retorna como está
+        if (colaboradores.length > 0 && colaboradores[0].ausencias) {
+            return colaboradores;
+        }
+        
+        // Normaliza dados da API de férias
         const colaboradoresMap = {};
         colaboradores.forEach(item => {
             const funcionario = item.funcionario;
             if (!funcionario) return;
+            
             const id = funcionario.id;
             if (!colaboradoresMap[id]) {
                 colaboradoresMap[id] = {
                     id: id,
-                    nome: item.funcionario_nome || funcionario.nome,
-                    gestor: '', // Se quiser, preencha aqui
+                    nome: item.funcionario_nome || funcionario.nome || funcionario.funcionario_pessoa_fisica?.nome || 'Colaborador',
+                    gestor: item.gestor || '', 
                     ausencias: [],
-                    feriasARequisitar: []
+                    feriasARequisitar: [] // Mantido para dados fake
                 };
             }
+            
+            // Adiciona férias como ausências
             if (item.dt_inicio && item.dt_fim) {
                 colaboradoresMap[id].ausencias.push({
                     data_inicio: item.dt_inicio,
                     data_fim: item.dt_fim,
-                    status: item.situacaoferias
+                    status: item.situacaoferias || item.status || 'A'
                 });
             }
         });
+        
         return Object.values(colaboradoresMap);
     }
 
     // Usa a função para garantir o formato correto
-    const colabsReais = normalizarColaboradores(colaboradores);
-    const colabsFake = normalizarColaboradores(colaboradoresFake);
-    const allColabs = [...colabsReais, ...colabsFake];
+    const colabsReais = normalizarColaboradores(colaboradores || []);
+    const colabsFake = normalizarColaboradores(colaboradoresFake); // Dados fake para exemplos de renderização
+    
+    // Para usar dados fake em demonstrações, mude para: const allColabs = [...colabsReais, ...colabsFake];
+    // Para usar apenas dados reais: const allColabs = colabsReais;
+    const allColabs = colabsReais;
 
     // Encontrar a menor data de início e maior data de fim entre todos os eventos
     let minDate = null;
     let maxDate = null;
-    allColabs.forEach(colab => {
-        colab.ausencias.forEach(aus => {
-            const ini = new Date(aus.data_inicio);
-            const fim = new Date(aus.data_fim);
-            if (!minDate || ini < minDate) minDate = ini;
-            // if (!maxDate || fim > maxDate) maxDate = fim;
+    
+    if (allColabs.length > 0) {
+        allColabs.forEach(colab => {
+            if (colab.ausencias && colab.ausencias.length > 0) {
+                colab.ausencias.forEach(aus => {
+                    if (aus.data_inicio && aus.data_fim) {
+                        const ini = new Date(aus.data_inicio);
+                        const fim = new Date(aus.data_fim);
+                        if (!minDate || ini < minDate) minDate = ini;
+                        if (!maxDate || fim > maxDate) maxDate = fim;
+                    }
+                });
+            }
         });
-    });
+    }
+    
     // Se não houver dados, usa o ano atual
     const currentDate = new Date();
     if (!minDate) minDate = new Date(currentDate.getFullYear(), 0, 1);
@@ -591,7 +613,22 @@ const CalendarFerias = ({ colaboradores }) => {
                 </ViewToggleBar>
             </FixedHeader>
             <CalendarScrollArea ref={scrollRef} style={{ cursor: isDragging ? 'grabbing' : 'auto' }}>
-                <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative'}}>
+                {colabsFiltrados.length === 0 ? (
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '400px',
+                        color: '#666',
+                        fontSize: '16px'
+                    }}>
+                        <FaCalendarCheck size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
+                        <p>Não há dados de férias disponíveis para exibir no calendário.</p>
+                        <p style={{ fontSize: '14px', marginTop: '8px' }}>Os dados aparecerão aqui quando houver férias registradas.</p>
+                    </div>
+                ) : (
+                    <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative'}}>
                     {/* Linhas roxas de separação dos meses */}
                     {monthsArray.map((m, idx) => {
                         if (idx === 0) return null; // não desenha antes do primeiro mês
@@ -724,7 +761,8 @@ const CalendarFerias = ({ colaboradores }) => {
                                             </EventBar>
                                         );
                                     })}
-                                {colab.feriasARequisitar.map((feria, i) => {
+                                {/* Férias a requisitar - funciona com dados fake */}
+                                {colab.feriasARequisitar && colab.feriasARequisitar.map((feria, i) => {
                                     const dataFim = new Date(feria.limite);
                                     const dataInicio = addDays(dataFim, -29);
                                     const { startPercent, widthPercent } = getBarPosition(dataInicio, dataFim, startDate, totalDays);
@@ -750,6 +788,7 @@ const CalendarFerias = ({ colaboradores }) => {
                         </EmployeeRow>
                     ))}
                 </CalendarGrid>
+                )}
             </CalendarScrollArea>
             <ModalDetalhesFerias
                 opened={!!modalEvento}
