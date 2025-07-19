@@ -106,25 +106,28 @@ function SelecionarGrupo() {
     } = useSessaoUsuarioContext()
 
     const [serversOut, setServersOut] = useState(false)
-    const [grupos, setGrupos] = useState(ArmazenadorToken.UserGroups ?? null)
-    const [selected, setSelected] = useState(ArmazenadorToken.UserTipo ?? ArmazenadorToken.UserTipo ?? '')
+    const [grupos, setGrupos] = useState(null)
+    const [selected, setSelected] = useState('')
     const [loading, setLoading] = useState(false)
     const toast = useRef(null)
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
     useEffect(() => {
-        if (grupos && grupos.length > 0) {
+        // Pegar os grupos do ArmazenadorToken apenas uma vez
+        const gruposOriginais = ArmazenadorToken.UserGroups ?? null;
+        
+        if (gruposOriginais && gruposOriginais.length > 0) {
             // Filtrar grupos que não começam com "_"
-            const gruposFiltrados = grupos.filter(grupo => !grupo.startsWith('_'));
+            const gruposFiltrados = gruposOriginais.filter(grupo => !grupo.startsWith('_'));
             setGrupos(gruposFiltrados);
             
-            // Selecionar o primeiro grupo válido
-            if (gruposFiltrados.length > 0) {
+            // Selecionar o primeiro grupo válido apenas se não houver seleção atual
+            if (gruposFiltrados.length > 0 && !selected) {
                 setSelected(gruposFiltrados[0]);
             }
         }
-    }, [usuario, grupos])
+    }, []) // Executar apenas uma vez na montagem do componente
 
     function handleSelectChange(value) {
         setSelected(value);
