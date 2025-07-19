@@ -29,10 +29,23 @@ function ColaboradorDependentes() {
         if(!dep_pess) {
             carregarDependentes(sortField, sortOrder);
         }
-        if(!pessoasfisicas) {
+    }, [dep_pess, sortField, sortOrder])
+
+    useEffect(() => {
+        // Só carrega pessoas físicas se há dependentes
+        if(dependentes && dependentes.length > 0 && !pessoasfisicas) {
             carregarPessoasFisicas();
         }
-        if (pessoasfisicas && dependentes && !dep_pess) {
+        // Se não há dependentes, finaliza o loading diretamente
+        else if(dependentes && dependentes.length === 0) {
+            setDepPess([]);
+            setLoading(false);
+        }
+    }, [dependentes, pessoasfisicas])
+
+    useEffect(() => {
+        // Só processa se há dependentes e pessoas físicas
+        if (pessoasfisicas && dependentes && dependentes.length > 0 && !dep_pess) {
             const processados = dependentes.map(item => {
                 const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
                 return { 
@@ -42,9 +55,9 @@ function ColaboradorDependentes() {
                 };
             });
             setDepPess(processados);
-            setLoading(false)
+            setLoading(false);
         }
-    }, [dependentes, pessoasfisicas, dep_pess, sortField, sortOrder])
+    }, [dependentes, pessoasfisicas, dep_pess])
 
     const carregarDependentes = (sort = '', order = '') => {
         setLoading(true);
@@ -55,22 +68,22 @@ function ColaboradorDependentes() {
         http.get(url)
             .then(response => {
                 setDependentes(response)
+                // Não seta loading false aqui, será feito no useEffect
             })
-            .catch(erro => {})
-            .finally(function() {
-                setLoading(false)
+            .catch(erro => {
+                setLoading(false); // Só seta false em caso de erro
             })
     };
 
     const carregarPessoasFisicas = () => {
-        setLoading(true);
+        // Não seta loading true aqui pois já está true do carregarDependentes
         http.get('pessoa_fisica/?format=json')
             .then(response => {
                 setPessoasFisicas(response)
+                // Não seta loading false aqui, será feito no useEffect
             })
-            .catch(erro => {})
-            .finally(function() {
-                setLoading(false)
+            .catch(erro => {
+                setLoading(false); // Só seta false em caso de erro
             })
     };
 
@@ -79,6 +92,7 @@ function ColaboradorDependentes() {
         setSortOrder(order);
         setDepPess(null);
         setDependentes(null);
+        setPessoasFisicas(null); // Reset também pessoas físicas para forçar nova busca se necessário
         carregarDependentes(field, order);
     };
 
