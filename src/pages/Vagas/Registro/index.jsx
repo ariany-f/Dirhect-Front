@@ -61,7 +61,7 @@ const VagasRegistro = () => {
     const [horario, setHorario] = useState(null);
     const [funcao, setFuncao] = useState(null);
     const [sindicato, setSindicato] = useState(null);
-    const [periculosidade, setPericulosidade] = useState('');
+    const [periculosidade, setPericulosidade] = useState(null);
     const [insalubridade, setInsalubridade] = useState('');
     const [status, setStatus] = useState('Ativa');
     const toast = useRef(null)
@@ -239,7 +239,7 @@ const VagasRegistro = () => {
                     setQtdVagas('');
                     setInclusao(false);
                     setInclusaoPara('');
-                    setPericulosidade('');
+                    setPericulosidade(null);
                     setInsalubridade('');
                     setSecao(null);
                     setCargo(null);
@@ -331,7 +331,7 @@ const VagasRegistro = () => {
                             label="Periculosidade"
                             placeholder="Selecione a periculosidade"
                             disabled={!!insalubridade}
-                            allowClear
+                            allowClear={true}
                         />
                     </Col6>
                     <Col6>

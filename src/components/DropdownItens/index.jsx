@@ -95,6 +95,26 @@ const Select = styled(Dropdown)`
         outline-color: var(--primaria);
         background: var(--white);
     }
+
+    /* Esconde o ícone de dropdown quando há valor selecionado */
+    &.p-dropdown-has-value .p-dropdown-trigger {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+    }
+
+    /* Esconde o ícone de dropdown quando há botão de limpar visível */
+    & .p-dropdown-clear-icon ~ .p-dropdown-trigger {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+    }
+
+    /* Ajusta a posição do botão de limpar */
+    & .p-dropdown-clear-icon {
+        top: 55% !important;
+        transform: translateY(-50%) !important;
+    }
 `
 
 function DropdownItens({ 
@@ -170,7 +190,7 @@ function DropdownItens({
                             itemTemplate={optionTemplate} // Template para os itens da lista
                             valueTemplate={optionTemplate} // Template para o valor selecionado
                             disabled={disabled}
-                            showClear={allowClear}
+                            showClear={allowClear && valor}
                         />
                     :
                     <Select 
@@ -187,7 +207,7 @@ function DropdownItens({
                         itemTemplate={optionTemplate} // Template para os itens da lista
                         valueTemplate={optionTemplate} // Template para o valor selecionado
                         disabled={disabled}
-                        showClear={allowClear}
+                        showClear={allowClear && valor}
                     />
                 }
             </div>
