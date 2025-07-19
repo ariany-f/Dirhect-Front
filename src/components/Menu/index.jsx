@@ -168,12 +168,10 @@ function Menu({ opened = false, aoFechar }){
 
     function Sair() {
         if(opened) {
-            const data = {  
-                refresh: ArmazenadorToken.RefreshToken
-            }
-            http.post(`token/blacklist/`, data).then(() => {
-                ArmazenadorToken.removerToken()
-            }).finally(() => {
+            submeterLogout().then(() => {
+                aoFechar()
+                navegar('/login')
+            }).catch(() => {
                 aoFechar()
                 navegar('/login')
             })

@@ -81,6 +81,16 @@ function Autenticado() {
         return () => window.removeEventListener('resize', handleResize)
     }, [])
 
+    useEffect(() => {
+        // Limpar dados antigos de empresas ao montar o componente
+        setEmpresas(null)
+        setTenants(null)
+        setSelected('')
+        setEmpresa('')
+        setSimbolo('')
+        setLogo('')
+    }, [])
+
     useEffect(() => {        
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {

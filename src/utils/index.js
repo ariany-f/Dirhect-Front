@@ -113,6 +113,21 @@ export class ArmazenadorToken {
         sessionStorage.removeItem(COMPANY_SYMBOL)
         sessionStorage.removeItem(COMPANY_LOGO)
     }
+
+    static limparEmpresas() {
+        // Limpar dados de empresas do sessionStorage
+        if (typeof window !== 'undefined' && window.sessionStorage) {
+            const keysToRemove = [];
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                if (key && (key.includes('company') || key.includes('empresa') || key.includes('tenant') || key.includes('cliente'))) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => sessionStorage.removeItem(key));
+        }
+    }
+
     static removerToken() {
         sessionStorage.removeItem(ACCESS_TOKEN)
         sessionStorage.removeItem(MFA_REQUIRED)
@@ -129,6 +144,11 @@ export class ArmazenadorToken {
         sessionStorage.removeItem(USER_CPF)
         sessionStorage.removeItem(USER_PUBLIC_ID)
         sessionStorage.removeItem(USER_TYPE)
+        
+        // Limpar dados de empresa
+        this.removerCompany()
+        this.limparEmpresas()
+        
         return true;
     }
     static get AccessToken() {

@@ -457,11 +457,21 @@ export const SessaoUsuarioProvider = ({ children }) => {
     }
 
     const submeterLogout = () => {
-        return http.post('api/auth/logout')
+        // Limpar empresas do contexto antes de fazer logout
+        setCompanies(null)
+        
+        const data = {  
+            refresh: ArmazenadorToken.RefreshToken
+        }
+        
+        return http.post('token/blacklist/', data)
             .then((response) => {
+                ArmazenadorToken.removerToken()
                 return response
             })
             .catch(erro => {
+                // Mesmo se der erro, remove o token localmente
+                ArmazenadorToken.removerToken()
                 return erro
             })
     }

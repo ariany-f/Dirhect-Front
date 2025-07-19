@@ -114,6 +114,12 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     useEffect(() => {
         if(opened)
         {
+            // Limpar dados antigos quando o modal for aberto
+            setEmpresas(null)
+            setTenants(null)
+            setSelected('')
+            setBusca('')
+            
             if((!tenants) && ((!empresas) || empresas.length == 0))
             {
                 // Buscar clientes

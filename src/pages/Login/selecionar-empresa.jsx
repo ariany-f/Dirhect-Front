@@ -92,6 +92,14 @@ function SelecionarEmpresa() {
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
+    useEffect(() => {
+        // Limpar dados antigos de empresas ao montar o componente
+        setEmpresas(null)
+        setTenants(null)
+        setSelected('')
+        setBusca('')
+    }, [])
+
     useEffect(() => {        
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {
