@@ -584,9 +584,10 @@ function ColaboradorDetalhes() {
                 {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                 <Col8Vertical>
                 <BotaoGrupo tabs gap="8px">
+                    {ArmazenadorToken.hasPermission('view_pedido') &&
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Benefícios</Botao>
-                    </Link>
+                    </Link>}
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-contratuais`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-contratuais` ? 'black':''} size="small" tab>Dados Contratuais</Botao>
                     </Link>
@@ -603,12 +604,14 @@ function ColaboradorDetalhes() {
                             Dependentes
                         </Botao>
                     </Link>}
+                    {ArmazenadorToken.hasPermission('view_ferias') &&
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
-                    </Link>
+                    </Link>}
+                    {ArmazenadorToken.hasPermission('view_ausencia') &&
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
-                    </Link>
+                    </Link>}
                     {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') &&
                         <>
                         <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
