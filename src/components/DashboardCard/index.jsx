@@ -31,7 +31,7 @@ import { useTranslation } from 'react-i18next';
 import http from '@http'
 
 function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], tipoUsuario = 'RH' }){
-    console.log(tipoUsuario)
+   
     const [isVisible, setIsVisible] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [feriasData, setFeriasData] = useState([]);
@@ -40,6 +40,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const [demissoesData, setDemissoesData] = useState([]);
     const [processosData, setProcessosData] = useState([]);
     const [tarefasData, setTarefasData] = useState([]);
+    const [dadosProntos, setDadosProntos] = useState(false);
     const { t } = useTranslation('common');
 
     // Array de cores para as etapas (cores que combinam com o sistema)
@@ -67,167 +68,132 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         checkMobile();
         window.addEventListener('resize', checkMobile);
         
-        // Carregar dados reais de férias
-        const carregarFerias = async () => {
+        // Função para carregar todos os dados de uma vez
+        const carregarTodosOsDados = async () => {
             try {
-                console.log('Carregando dados de férias da API...');
-                const response = await http.get('ferias/?format=json');
-                console.log('Resposta da API de férias:', response);
+                console.log('Iniciando carregamento de todos os dados...');
                 
-                // Verificar se a resposta tem a estrutura esperada
-                let dadosFerias = response;
-                if (response && response.results) {
-                    dadosFerias = response.results;
-                } else if (Array.isArray(response)) {
-                    dadosFerias = response;
-                } else {
-                    console.log('Estrutura inesperada da resposta:', response);
-                    dadosFerias = [];
-                }
-                
-                console.log('Dados de férias processados:', dadosFerias);
-                setFeriasData(dadosFerias);
-            } catch (error) {
-                console.log('Erro ao carregar férias:', error);
-                setFeriasData([]);
-            }
-        };
+                // Carregar todos os dados em paralelo
+                const [feriasResponse, admissoesResponse, vagasResponse, demissoesResponse, processosResponse, tarefasResponse] = await Promise.allSettled([
+                    http.get('ferias/?format=json'),
+                    http.get('admissao/?format=json'),
+                    http.get('vagas/?format=json'),
+                    http.get('funcionario/?format=json&situacao=D'),
+                    http.get('processos/?format=json'),
+                    http.get('tarefas/?format=json')
+                ]);
 
-        // Carregar dados reais de admissões
-        const carregarAdmissoes = async () => {
-            try {
-                console.log('Carregando dados de admissões da API...');
-                const response = await http.get('admissao/?format=json');
-                console.log('Resposta da API de admissões:', response);
-                
-                // Verificar se a resposta tem a estrutura esperada
-                let dadosAdmissoes = response;
-                if (response && response.results) {
-                    dadosAdmissoes = response.results;
-                } else if (Array.isArray(response)) {
-                    dadosAdmissoes = response;
+                // Processar resposta de férias
+                if (feriasResponse.status === 'fulfilled') {
+                    let dadosFerias = feriasResponse.value;
+                    if (dadosFerias && dadosFerias.results) {
+                        dadosFerias = dadosFerias.results;
+                    } else if (!Array.isArray(dadosFerias)) {
+                        dadosFerias = [];
+                    }
+                    setFeriasData(dadosFerias);
+                    console.log('Dados de férias carregados:', dadosFerias.length);
                 } else {
-                    console.log('Estrutura inesperada da resposta de admissões:', response);
-                    dadosAdmissoes = [];
+                    setFeriasData([]);
+                    console.log('Erro ao carregar férias:', feriasResponse.reason);
                 }
+
+                // Processar resposta de admissões
+                if (admissoesResponse.status === 'fulfilled') {
+                    let dadosAdmissoes = admissoesResponse.value;
+                    if (dadosAdmissoes && dadosAdmissoes.results) {
+                        dadosAdmissoes = dadosAdmissoes.results;
+                    } else if (!Array.isArray(dadosAdmissoes)) {
+                        dadosAdmissoes = [];
+                    }
+                    setAdmissoesData(dadosAdmissoes);
+                    console.log('Dados de admissões carregados:', dadosAdmissoes.length);
+                } else {
+                    setAdmissoesData([]);
+                    console.log('Erro ao carregar admissões:', admissoesResponse.reason);
+                }
+
+                // Processar resposta de vagas
+                if (vagasResponse.status === 'fulfilled') {
+                    let dadosVagas = vagasResponse.value;
+                    if (dadosVagas && dadosVagas.results) {
+                        dadosVagas = dadosVagas.results;
+                    } else if (!Array.isArray(dadosVagas)) {
+                        dadosVagas = [];
+                    }
+                    setVagasData(dadosVagas);
+                    console.log('Dados de vagas carregados:', dadosVagas.length);
+                } else {
+                    setVagasData([]);
+                    console.log('Erro ao carregar vagas:', vagasResponse.reason);
+                }
+
+                // Processar resposta de demissões
+                if (demissoesResponse.status === 'fulfilled') {
+                    let dadosDemissoes = demissoesResponse.value;
+                    if (dadosDemissoes && dadosDemissoes.results) {
+                        dadosDemissoes = dadosDemissoes.results;
+                    } else if (!Array.isArray(dadosDemissoes)) {
+                        dadosDemissoes = [];
+                    }
+                    setDemissoesData(dadosDemissoes);
+                    console.log('Dados de demissões carregados:', dadosDemissoes.length);
+                } else {
+                    setDemissoesData([]);
+                    console.log('Erro ao carregar demissões:', demissoesResponse.reason);
+                }
+
+                // Processar resposta de processos
+                if (processosResponse.status === 'fulfilled') {
+                    let dadosProcessos = processosResponse.value;
+                    if (dadosProcessos && dadosProcessos.results) {
+                        dadosProcessos = dadosProcessos.results;
+                    } else if (!Array.isArray(dadosProcessos)) {
+                        dadosProcessos = [];
+                    }
+                    setProcessosData(dadosProcessos);
+                    console.log('Dados de processos carregados:', dadosProcessos.length);
+                } else {
+                    setProcessosData([]);
+                    console.log('Erro ao carregar processos:', processosResponse.reason);
+                }
+
+                // Processar resposta de tarefas (último para otimizar gráficos)
+                if (tarefasResponse.status === 'fulfilled') {
+                    let dadosTarefas = tarefasResponse.value;
+                    if (dadosTarefas && dadosTarefas.results) {
+                        dadosTarefas = dadosTarefas.results;
+                    } else if (!Array.isArray(dadosTarefas)) {
+                        dadosTarefas = [];
+                    }
+                    setTarefasData(dadosTarefas);
+                    console.log('Dados de tarefas carregados:', dadosTarefas.length);
+                } else {
+                    setTarefasData([]);
+                    console.log('Erro ao carregar tarefas:', tarefasResponse.reason);
+                }
+
+                console.log('Todos os dados carregados com sucesso!');
                 
-                console.log('Dados de admissões processados:', dadosAdmissoes);
-                setAdmissoesData(dadosAdmissoes);
+                // Marcar dados como prontos após um pequeno delay para garantir que todos os estados foram atualizados
+                setTimeout(() => {
+                    setDadosProntos(true);
+                    console.log('Dados marcados como prontos');
+                }, 100);
+
             } catch (error) {
-                console.log('Erro ao carregar admissões:', error);
-                setAdmissoesData([]);
+                console.error('Erro geral ao carregar dados:', error);
+                setDadosProntos(true); // Marcar como pronto mesmo com erro para não travar a interface
             }
         };
         
-        // Carregar dados reais de vagas
-        const carregarVagas = async () => {
-            try {
-                console.log('Carregando dados de vagas da API...');
-                const response = await http.get('vagas/?format=json');
-                console.log('Resposta da API de vagas:', response);
-                let dadosVagas = response;
-                if (response && response.results) {
-                    dadosVagas = response.results;
-                } else if (Array.isArray(response)) {
-                    dadosVagas = response;
-                } else {
-                    console.log('Estrutura inesperada da resposta de vagas:', response);
-                    dadosVagas = [];
-                }
-                setVagasData(dadosVagas);
-            } catch (error) {
-                console.log('Erro ao carregar vagas:', error);
-                setVagasData([]);
-            }
-        };
-
-        // Carregar dados reais de demissões
-        const carregarDemissoes = async () => {
-            try {
-                console.log('Carregando dados de demissões da API...');
-                const response = await http.get('funcionario/?format=json&situacao=D');
-                console.log('Resposta da API de demissões:', response);
-                
-                // Verificar se a resposta tem a estrutura esperada
-                let dadosDemissoes = response;
-                if (response && response.results) {
-                    dadosDemissoes = response.results;
-                } else if (Array.isArray(response)) {
-                    dadosDemissoes = response;
-                } else {
-                    console.log('Estrutura inesperada da resposta de demissões:', response);
-                    dadosDemissoes = [];
-                }
-                
-                console.log('Dados de demissões processados:', dadosDemissoes);
-                setDemissoesData(dadosDemissoes);
-            } catch (error) {
-                console.log('Erro ao carregar demissões:', error);
-                setDemissoesData([]);
-            }
-        };
-
-        // Carregar dados reais de processos
-        const carregarProcessos = async () => {
-            try {
-                console.log('Carregando dados de processos da API...');
-                const response = await http.get('processos/?format=json');
-                console.log('Resposta da API de processos:', response);
-                
-                // Verificar se a resposta tem a estrutura esperada
-                let dadosProcessos = response;
-                if (response && response.results) {
-                    dadosProcessos = response.results;
-                } else if (Array.isArray(response)) {
-                    dadosProcessos = response;
-                } else {
-                    console.log('Estrutura inesperada da resposta de processos:', response);
-                    dadosProcessos = [];
-                }
-                
-                console.log('Dados de processos processados:', dadosProcessos);
-                setProcessosData(dadosProcessos);
-            } catch (error) {
-                console.log('Erro ao carregar processos:', error);
-                setProcessosData([]);
-            }
-        };
-
-        // Carregar dados reais de tarefas
-        const carregarTarefas = async () => {
-            try {
-                console.log('Carregando dados de tarefas da API...');
-                const response = await http.get('tarefas/?format=json');
-                console.log('Resposta da API de tarefas:', response);
-                
-                // Verificar se a resposta tem a estrutura esperada
-                let dadosTarefas = response;
-                if (response && response.results) {
-                    dadosTarefas = response.results;
-                } else if (Array.isArray(response)) {
-                    dadosTarefas = response;
-                } else {
-                    console.log('Estrutura inesperada da resposta de tarefas:', response);
-                    dadosTarefas = [];
-                }
-                
-                console.log('Dados de tarefas processados:', dadosTarefas);
-                setTarefasData(dadosTarefas);
-            } catch (error) {
-                console.log('Erro ao carregar tarefas:', error);
-                setTarefasData([]);
-            }
-        };
+        // Executar carregamento apenas uma vez
+        carregarTodosOsDados();
         
-        carregarFerias();
-        carregarAdmissoes();
-        carregarVagas();
-        carregarDemissoes();
-        carregarProcessos();
-        carregarTarefas();
-        
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+        return () => {
+            window.removeEventListener('resize', checkMobile);
+        };
+    }, []); // Dependências vazias para executar apenas uma vez
 
     // Usar opções apropriadas baseadas no tamanho da tela
     const getChartOptions = () => {
@@ -1475,7 +1441,13 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         </Frame>
                         <div className="chart-container-with-legend mock-data-element">
                             <div className="soon-badge">Em Breve</div>
-                            <Chart type="doughnut" data={chartDataBeneficios} options={getChartOptions()} />
+                            {dadosProntos ? (
+                                <Chart type="doughnut" data={chartDataBeneficios} options={getChartOptions()} />
+                            ) : (
+                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px', color: '#888', fontSize: '14px'}}>
+                                    Carregando...
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -1606,7 +1578,13 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         </Frame>
                         <div className="chart-container mock-data-element">
                             <div className="soon-badge">Em Breve</div>
-                            <Chart type="line" data={chartDataEvolucao} options={lineChartOptions} />
+                            {dadosProntos ? (
+                                <Chart type="line" data={chartDataEvolucao} options={lineChartOptions} />
+                            ) : (
+                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px', color: '#888', fontSize: '14px'}}>
+                                    Carregando...
+                                </div>
+                            )}
                         </div>
                         
                         {/* Análise de tendência */}
@@ -1771,25 +1749,33 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 24}}>
                         <div>
                             <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Tipo de Funcionário</div>
-                            {Object.keys(distribuicaoTipoFuncionario).length > 0 ? (
+                            {dadosProntos && Object.keys(distribuicaoTipoFuncionario).length > 0 ? (
                                 <div className="chart-container" style={{width: '100%', height: '180px'}}>
                                     <Chart type="bar" data={chartDataDepartamentos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
                                 </div>
-                            ) : (
+                            ) : dadosProntos ? (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
                                     Sem dados
+                                </div>
+                            ) : (
+                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px'}}>
+                                    Carregando...
                                 </div>
                             )}
                         </div>
                         <div>
                             <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Por Filial</div>
-                            {Object.keys(distribuicaoFilial).length > 0 ? (
+                            {dadosProntos && Object.keys(distribuicaoFilial).length > 0 ? (
                                 <div className="chart-container" style={{width: '100%', height: '180px'}}>
                                     <Chart type="bar" data={chartDataFiliais} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
                                 </div>
-                            ) : (
+                            ) : dadosProntos ? (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
                                     Sem dados
+                                </div>
+                            ) : (
+                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px'}}>
+                                    Carregando...
                                 </div>
                             )}
                         </div>
@@ -2028,7 +2014,17 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         <Titulo><h6>Motivos de Demissão</h6></Titulo>
                     </Frame>
                     <div className="chart-container" style={{height: '250px', width: '100%'}}>
-                        <Chart type="bar" data={chartDataMotivos} options={chartOptionsNoLegend} />
+                        {dadosProntos && Object.keys(dadosRH.motivosDemissao).length > 0 ? (
+                            <Chart type="bar" data={chartDataMotivos} options={chartOptionsNoLegend} />
+                        ) : dadosProntos ? (
+                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
+                                Sem dados
+                            </div>
+                        ) : (
+                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#888', fontSize: '14px'}}>
+                                Carregando...
+                            </div>
+                        )}
                     </div>
 
                     <Frame estilo="spaced">

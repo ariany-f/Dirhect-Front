@@ -1,5 +1,5 @@
 import http from '@http'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import DashboardCard from '@components/DashboardCard'
 import Loading from '@components/Loading'
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario'
@@ -49,11 +49,101 @@ function Dashboard() {
         'Admissão': <FaUserPlus size={14} style={{marginRight: 4, color: '#fff'}} />,
     };
 
+    // Mapeamento de cor por status
+    const statusColorMap = {
+        'Concluída': '#43a047', // verde
+        'Concluido': '#43a047',
+        'concluida': '#43a047',
+        'Em Andamento': '#FFA726', // amarelo/laranja
+        'em_andamento': '#FFA726',
+        'Pendente': '#5472d4', // azul
+        'pendente': '#5472d4'
+    };
+
+    // Paleta de cores para os gráficos
+    const chartColors = [
+        '#5472d4', '#66BB6A', '#FFA726', '#FF6384', '#8884d8', '#ffb347', '#20c997', '#1a73e8', '#dc3545', '#ffa000', '#28a745', '#6f42c1', '#fd7e14'
+    ];
+
+    // Mapeamento de cor para SLA
+    const slaColorMap = {
+        'Concluído': '#5472d4',        // azul/cinza
+        'Dentro do Prazo': '#43a047', // verde
+        'Próximo do Prazo': '#FFA726',// amarelo/laranja
+        'Atrasado': '#e53935',        // vermelho
+    };
+
+    // Função para verificar se uma data é desta semana
+    function isThisWeek(dateString) {
+        const now = new Date();
+        const date = new Date(dateString);
+        const firstDayOfWeek = new Date(now);
+        firstDayOfWeek.setDate(now.getDate() - now.getDay());
+        firstDayOfWeek.setHours(0,0,0,0);
+        const lastDayOfWeek = new Date(firstDayOfWeek);
+        lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+        lastDayOfWeek.setHours(23,59,59,999);
+        return date >= firstDayOfWeek && date <= lastDayOfWeek;
+    }
+
+    // Função para verificar se uma data é hoje
+    function isToday(dateString) {
+        const now = new Date();
+        const date = new Date(dateString);
+        return date.getDate() === now.getDate() &&
+               date.getMonth() === now.getMonth() &&
+               date.getFullYear() === now.getFullYear();
+    }
+
+    // Calcular dados derivados com useMemo
+    const dadosCalculados = useMemo(() => {
+        // Contar abertas criadas esta semana
+        const abertasEstaSemana = atividadesRaw.filter(
+            atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && isThisWeek(atv.criado_em)
+        ).length;
+
+        // Contar abertas com prazo final hoje
+        const abertasPrazoHoje = atividadesRaw.filter(
+            atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && atv.agendado_para && isToday(atv.agendado_para)
+        ).length;
+
+        // Contar abertas com prioridade alta
+        const abertasPrioridadeAlta = atividadesRaw.filter(
+            atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && (atv.prioridade === 1)
+        ).length;
+
+        // Calcular atividades concluídas
+        const atividadesConcluidas = atividadesPorStatus['concluida'] || atividadesPorStatus['Concluída'] || 0;
+
+        // Calcular atividades abertas por entidade
+        const abertasPorEntidade = {};
+        if (Array.isArray(atividadesRaw)) {
+            atividadesRaw.forEach(atividade => {
+                if (atividade.status !== 'concluida' && atividade.status !== 'Concluída') {
+                    const entidade = entidadeDisplayMap?.[atividade.entidade_display || atividade.entidade_tipo] || atividade.entidade_display || atividade.entidade_tipo;
+                    abertasPorEntidade[entidade] = (abertasPorEntidade[entidade] || 0) + 1;
+                }
+            });
+        }
+
+        const totalAtividades = atividadesRaw.length;
+
+        return {
+            abertasEstaSemana,
+            abertasPrazoHoje,
+            abertasPrioridadeAlta,
+            atividadesConcluidas,
+            abertasPorEntidade,
+            totalAtividades
+        };
+    }, [atividadesRaw, atividadesPorStatus, entidadeDisplayMap]);
+
     // Função para buscar todos os dados do dashboard
     const carregarDashboard = async () => {
         setRefreshing(true);
         try {
             if(usuarioEstaLogado) {
+                // Carregar colaboradores apenas se não existirem
                 if(!colaboradores) {
                     await http.get('funcionario/?format=json')
                     .then(response => {
@@ -63,6 +153,8 @@ function Dashboard() {
                         setLoadingOpened(false)
                     })
                 }
+                
+                // Carregar outras informações apenas se necessário
                 await http.get('tarefas/?format=json')
                     .then(response => {
                         setAtividadesRaw(response)
@@ -130,7 +222,7 @@ function Dashboard() {
         isMounted.current = true;
         carregarDashboard();
         return () => { isMounted.current = false; };
-    }, [usuarioEstaLogado, colaboradores]);
+    }, [usuarioEstaLogado]); // Removido colaboradores das dependências
 
     const getSLAInfo = (atividade) => {
         if (atividade.status === 'concluida') {
@@ -191,100 +283,66 @@ function Dashboard() {
         return tipos[tipo] || tipo;
     }
 
-    // Função para verificar se uma data é desta semana
-    function isThisWeek(dateString) {
-        const now = new Date();
-        const date = new Date(dateString);
-        const firstDayOfWeek = new Date(now);
-        firstDayOfWeek.setDate(now.getDate() - now.getDay());
-        firstDayOfWeek.setHours(0,0,0,0);
-        const lastDayOfWeek = new Date(firstDayOfWeek);
-        lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
-        lastDayOfWeek.setHours(23,59,59,999);
-        return date >= firstDayOfWeek && date <= lastDayOfWeek;
-    }
-
-    // Função para verificar se uma data é hoje
-    function isToday(dateString) {
-        const now = new Date();
-        const date = new Date(dateString);
-        return date.getDate() === now.getDate() &&
-               date.getMonth() === now.getMonth() &&
-               date.getFullYear() === now.getFullYear();
-    }
-
-    // Contar abertas criadas esta semana
-    const abertasEstaSemana = atividadesRaw.filter(
-        atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && isThisWeek(atv.criado_em)
-    ).length;
-
-    // Contar abertas com prazo final hoje
-    const abertasPrazoHoje = atividadesRaw.filter(
-        atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && atv.agendado_para && isToday(atv.agendado_para)
-    ).length;
-
-    // Contar abertas com prioridade alta
-    const abertasPrioridadeAlta = atividadesRaw.filter(
-        atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && (atv.prioridade === 1)
-    ).length;
-
     // Função para recarregar os dados
     const recarregarDashboard = () => {
         window.location.reload(); // Simples: recarrega a página inteira
         // Para um refresh mais elegante, pode-se refazer as chamadas dos useEffect
     };
 
-    if (!colaboradores) {
-        return <Loading opened={loadingOpened} />
-    }
-
     // Monta dados diferentes conforme o tipo de usuário
-    let dadosDashboard = {}
-    let cardsExtras = []
-    if (usuario?.tipo === 'RH') {
-        dadosDashboard = {
-            ...dashboardData,
-            destaque: 'Bem-vindo RH!',
-            totalAdmissoes: totalAdmissoes,
-            totalDemissoes: totalDemissoes,
-            totalFerias: totalFerias,
-            totalVagas: totalVagas,
+    const dadosDashboard = useMemo(() => {
+        if (usuario?.tipo === 'RH') {
+            return {
+                ...dashboardData,
+                destaque: 'Bem-vindo RH!',
+                totalAdmissoes: totalAdmissoes,
+                totalDemissoes: totalDemissoes,
+                totalFerias: totalFerias,
+                totalVagas: totalVagas,
+            };
+        } else if (usuario?.tipo === 'Benefícios') {
+            return {
+                ...dashboardData,
+                destaque: 'Bem-vindo ao módulo de Benefícios!',
+                saldoBeneficios: 15000,
+                pedidosPendentes: 4,
+                totalColaboradores: colaboradores?.length || 0,
+            };
+        } else if (usuario?.tipo === 'Outsourcing') {
+            return {
+                ...dashboardData,
+                destaque: 'Bem-vindo Outsourcing!',
+                projetosAtivos: 5,
+                totalColaboradores: colaboradores?.length || 0,
+            };
+        } else {
+            return {
+                ...dashboardData,
+                totalColaboradores: colaboradores?.length || 0,
+            };
         }
-    } else if (usuario?.tipo === 'Benefícios') {
-        dadosDashboard = {
-            ...dashboardData,
-            destaque: 'Bem-vindo ao módulo de Benefícios!',
-            saldoBeneficios: 15000,
-            pedidosPendentes: 4,
-            totalColaboradores: colaboradores.length,
-        }
-    } else if (usuario?.tipo === 'Outsourcing') {
-        dadosDashboard = {
-            ...dashboardData,
-            destaque: 'Bem-vindo Outsourcing!',
-            projetosAtivos: 5,
-            totalColaboradores: colaboradores.length,
-        }
-    } else {
-        dadosDashboard = {
-            ...dashboardData,
-            totalColaboradores: colaboradores.length,
-        }
-    }
+    }, [dashboardData, usuario?.tipo, totalAdmissoes, totalDemissoes, totalFerias, totalVagas, colaboradores?.length]);
+
+    // Otimizar DashboardCard com useMemo
+    const dashboardCardMemo = useMemo(() => {
+        if (usuario?.tipo === 'Outsourcing') return null;
+        
+        return (
+            <DashboardCard 
+                dashboardData={dadosDashboard} 
+                colaboradores={colaboradores} 
+                atividadesRaw={atividadesRaw}
+                tipoUsuario={usuario?.tipo}
+            />
+        );
+    }, [dadosDashboard, colaboradores, atividadesRaw, usuario?.tipo]);
 
     // Gráficos de atividades (só para RH ou Outsourcing)
     const mostrarAtividades = usuario?.tipo === 'Outsourcing';
-    
-    // Mapeamento de cor por status
-    const statusColorMap = {
-        'Concluída': '#43a047', // verde
-        'Concluido': '#43a047',
-        'concluida': '#43a047',
-        'Em Andamento': '#FFA726', // amarelo/laranja
-        'em_andamento': '#FFA726',
-        'Pendente': '#5472d4', // azul
-        'pendente': '#5472d4'
-    };
+
+    if (!colaboradores) {
+        return <Loading opened={loadingOpened} />
+    }
 
     const chartDataStatus = {
         labels: Object.keys(atividadesPorStatus).map(status => {
@@ -342,18 +400,6 @@ function Dashboard() {
         ]
     };
 
-    // Paleta de cores para os gráficos
-    const chartColors = [
-        '#5472d4', '#66BB6A', '#FFA726', '#FF6384', '#8884d8', '#ffb347', '#20c997', '#1a73e8', '#dc3545', '#ffa000', '#28a745', '#6f42c1', '#fd7e14'
-    ];
-
-    // Mapeamento de cor para SLA
-    const slaColorMap = {
-        'Concluído': '#5472d4',        // azul/cinza
-        'Dentro do Prazo': '#43a047', // verde
-        'Próximo do Prazo': '#FFA726',// amarelo/laranja
-        'Atrasado': '#e53935',        // vermelho
-    };
     const slaLabels = chartDataSLA.labels;
     const slaColors = slaLabels.map(label => slaColorMap[label] || '#8884d8');
 
@@ -395,24 +441,8 @@ function Dashboard() {
         }
     };
 
-    // Calcular atividades concluídas
-    const atividadesConcluidas = atividadesPorStatus['concluida'] || atividadesPorStatus['Concluída'] || 0;
-
-    // Calcular atividades abertas por entidade
-    const abertasPorEntidade = {};
-    if (Array.isArray(atividadesRaw)) {
-        atividadesRaw.forEach(atividade => {
-            if (atividade.status !== 'concluida' && atividade.status !== 'Concluída') {
-                const entidade = entidadeDisplayMap?.[atividade.entidade_display || atividade.entidade_tipo] || atividade.entidade_display || atividade.entidade_tipo;
-                abertasPorEntidade[entidade] = (abertasPorEntidade[entidade] || 0) + 1;
-            }
-        });
-    }
-
     // Atualizar os cards extras para usar ícones e visual moderno
-    cardsExtras = [];
-
-    const totalAtividades = atividadesRaw.length;
+    const cardsExtras = [];
 
     return (
         <>
@@ -442,7 +472,7 @@ function Dashboard() {
                         <div style={{display: 'flex', width: '100%', gap: 16, alignItems: 'flex-end', marginBottom: 8, justifyContent: 'space-between'}}>
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start', minWidth: 70}}>
                                 <span style={{fontSize: 20, fontWeight: 900, color: '#222', display: 'flex', alignItems: 'center', gap: 2}}>
-                                    {totalAtividades}
+                                    {dadosCalculados.totalAtividades}
                                 </span>
                                 <span style={{fontWeight: 400, fontSize: 12, marginTop: 2}}>Total</span>
                             </div>
@@ -454,19 +484,19 @@ function Dashboard() {
                             </div>
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start', minWidth: 70}}>
                                 <span style={{fontSize: 20, fontWeight: 900, display: 'flex', alignItems: 'center', gap: 2}}>
-                                    {atividadesConcluidas}
+                                    {dadosCalculados.atividadesConcluidas}
                                 </span>
                                 <span style={{fontWeight: 400, fontSize: 12, marginTop: 2}}>Concluídas</span>
                             </div>
                         </div>
                         <div className="progress-bar-area" style={{width: '100%'}}>
                             <div className="progress-bar-bg">
-                                <div className="progress-bar-fg" style={{width: `${totalAtividades ? (atividadesConcluidas/totalAtividades*100) : 0}%`}} />
+                                <div className="progress-bar-fg" style={{width: `${dadosCalculados.totalAtividades ? (dadosCalculados.atividadesConcluidas/dadosCalculados.totalAtividades*100) : 0}%`}} />
                             </div>
-                            <span className="progress-label">{totalAtividades ? ((atividadesConcluidas/totalAtividades*100).toFixed(1)) : 0}% concluídas</span>
+                            <span className="progress-label">{dadosCalculados.totalAtividades ? ((dadosCalculados.atividadesConcluidas/dadosCalculados.totalAtividades*100).toFixed(1)) : 0}% concluídas</span>
                         </div>
                         <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', margin: '10px 0 0 0'}}>
-                            {abertasEstaSemana > 0 && (
+                            {dadosCalculados.abertasEstaSemana > 0 && (
                                 <span style={{
                                     background: '#e3eafd',
                                     color: '#27408b',
@@ -477,10 +507,10 @@ function Dashboard() {
                                     minWidth: 0,
                                     textAlign: 'center'
                                 }}>
-                                    <b style={{color: '#27408b', fontSize: 14}}>{abertasEstaSemana}</b> abertas esta semana
+                                    <b style={{color: '#27408b', fontSize: 14}}>{dadosCalculados.abertasEstaSemana}</b> abertas esta semana
                                 </span>
                             )}
-                            {abertasPrazoHoje > 0 && (
+                            {dadosCalculados.abertasPrazoHoje > 0 && (
                                 <span style={{
                                     background: '#ffeaea',
                                     color: '#b71c1c',
@@ -491,10 +521,10 @@ function Dashboard() {
                                     minWidth: 0,
                                     textAlign: 'center'
                                 }}>
-                                    <b style={{color: '#b71c1c', fontSize: 14}}>{abertasPrazoHoje}</b> com prazo final hoje
+                                    <b style={{color: '#b71c1c', fontSize: 14}}>{dadosCalculados.abertasPrazoHoje}</b> com prazo final hoje
                                 </span>
                             )}
-                            {abertasPrioridadeAlta > 0 && (
+                            {dadosCalculados.abertasPrioridadeAlta > 0 && (
                                 <span style={{
                                     background: '#fff4e5',
                                     color: '#b26a00',
@@ -505,10 +535,10 @@ function Dashboard() {
                                     minWidth: 0,
                                     textAlign: 'center'
                                 }}>
-                                    <b style={{color: '#b26a00', fontSize: 14}}>{abertasPrioridadeAlta}</b> com prioridade alta
+                                    <b style={{color: '#b26a00', fontSize: 14}}>{dadosCalculados.abertasPrioridadeAlta}</b> com prioridade alta
                                 </span>
                             )}
-                            {(abertasEstaSemana === 0 && abertasPrazoHoje === 0 && abertasPrioridadeAlta === 0) && (
+                            {(dadosCalculados.abertasEstaSemana === 0 && dadosCalculados.abertasPrazoHoje === 0 && dadosCalculados.abertasPrioridadeAlta === 0) && (
                                 <span style={{
                                     color: '#888',
                                     fontWeight: 500,
@@ -525,7 +555,7 @@ function Dashboard() {
                         </div>
                         <hr style={{width: '100%', border: 'none', borderTop: '1px solid #f0f0f0', margin: '10px 0 8px 0'}} />
                         <div className="tags-entidade" style={{width: '100%'}}>
-                            {Object.entries(abertasPorEntidade).map(([entidade, qtd], idx) => (
+                            {Object.entries(dadosCalculados.abertasPorEntidade).map(([entidade, qtd], idx) => (
                                 <span key={entidade}
                                     style={{
                                         display: 'flex',
@@ -636,12 +666,7 @@ function Dashboard() {
                 </div>
             )}
             {usuario?.tipo !== 'Outsourcing' && (
-                <DashboardCard 
-                    dashboardData={dadosDashboard} 
-                    colaboradores={colaboradores} 
-                    atividadesRaw={atividadesRaw}
-                    tipoUsuario={usuario?.tipo}
-                />
+                dashboardCardMemo
             )}
             {cardsExtras.length > 0 && (
                 <div style={{marginTop: 32, display: 'flex', gap: 24, flexWrap: 'wrap'}}>
