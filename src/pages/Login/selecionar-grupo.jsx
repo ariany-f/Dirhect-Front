@@ -115,7 +115,14 @@ function SelecionarGrupo() {
 
     useEffect(() => {
         if (grupos && grupos.length > 0) {
-            setSelected(ArmazenadorToken.UserGroups[0])
+            // Filtrar grupos que não começam com "_"
+            const gruposFiltrados = grupos.filter(grupo => !grupo.startsWith('_'));
+            setGrupos(gruposFiltrados);
+            
+            // Selecionar o primeiro grupo válido
+            if (gruposFiltrados.length > 0) {
+                setSelected(gruposFiltrados[0]);
+            }
         }
     }, [usuario, grupos])
 
