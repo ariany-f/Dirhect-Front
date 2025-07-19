@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { InputText} from 'primereact/inputtext';
 import { InputMask } from 'primereact/inputmask';
@@ -43,6 +43,14 @@ const Input = ({
   ...props
 }) => {
   const { t } = useTranslation('common');
+  const [userTyped, setUserTyped] = useState(false);
+
+  // Função para detectar quando o usuário digita
+  const handleUserTyping = () => {
+    if (type === 'password' && !userTyped) {
+      setUserTyped(true);
+    }
+  };
 
   // Configura regras de validação padrão baseadas no tipo
   const getDefaultValidationRules = () => {
@@ -148,7 +156,7 @@ const Input = ({
           <Password
             {...commonProps}
             feedback={showPasswordFeedback}
-            toggleMask={toggleMask}
+            toggleMask={userTyped && toggleMask}
             promptLabel={t('password_prompt', 'Digite sua senha')}
             weakLabel={t('password_weak', 'Fraca')}
             mediumLabel={t('password_medium', 'Média')}
@@ -156,6 +164,10 @@ const Input = ({
             style={{ width: '100%', minWidth: '100%', display: 'block' }}
             inputStyle={{ width: '100%', minWidth: '100%', display: 'block' }}
             invalid={invalid}
+            onChange={(e) => {
+              onChange(e);
+              handleUserTyping();
+            }}
           />
         );
       case 'textarea':
