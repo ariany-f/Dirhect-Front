@@ -266,6 +266,85 @@ function ColaboradorDetalhes() {
         reject: 'Não'
     })
 
+    // Função para verificar se uma aba é válida para o usuário
+    const isAbaValida = (pathname) => {
+        const abas = [
+            { url: `/colaborador/detalhes/${id}`, permission: 'view_pedido' },
+            { url: `/colaborador/detalhes/${id}/dados-contratuais`, permission: null },
+            { url: `/colaborador/detalhes/${id}/dados-pessoais`, permission: null },
+            { url: `/colaborador/detalhes/${id}/dependentes`, permission: 'view_dependente', useStartsWith: true },
+            { url: `/colaborador/detalhes/${id}/ferias`, permission: 'view_ferias' },
+            { url: `/colaborador/detalhes/${id}/ausencias`, permission: 'view_ausencia' },
+            { url: `/colaborador/detalhes/${id}/ciclos`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
+            { url: `/colaborador/detalhes/${id}/esocial`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
+            { url: `/colaborador/detalhes/${id}/pedidos`, permission: null, condition: () => usuario.tipo === 'grupo_rh' || usuario.tipo === 'global' },
+            { url: `/colaborador/detalhes/${id}/movimentos`, permission: null, condition: () => usuario.tipo === 'grupo_rh' || usuario.tipo === 'global' }
+        ];
+
+        const abaAtual = abas.find(aba => {
+            if (aba.useStartsWith) {
+                return pathname.startsWith(aba.url);
+            }
+            return pathname === aba.url;
+        });
+        
+        if (!abaAtual) return false;
+
+        const temPermissao = !abaAtual.permission || ArmazenadorToken.hasPermission(abaAtual.permission);
+        const atendeCondicao = !abaAtual.condition || abaAtual.condition();
+        
+        return temPermissao && atendeCondicao;
+    };
+
+    // Função para obter a primeira aba disponível
+    const getPrimeiraAbaDisponivel = () => {
+        const abas = [
+            { url: `/colaborador/detalhes/${id}`, permission: 'view_pedido' },
+            { url: `/colaborador/detalhes/${id}/dados-contratuais`, permission: null },
+            { url: `/colaborador/detalhes/${id}/dados-pessoais`, permission: null },
+            { url: `/colaborador/detalhes/${id}/dependentes`, permission: 'view_dependente' },
+            { url: `/colaborador/detalhes/${id}/ferias`, permission: 'view_ferias' },
+            { url: `/colaborador/detalhes/${id}/ausencias`, permission: 'view_ausencia' },
+            { url: `/colaborador/detalhes/${id}/ciclos`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
+            { url: `/colaborador/detalhes/${id}/esocial`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
+            { url: `/colaborador/detalhes/${id}/pedidos`, permission: null, condition: () => usuario.tipo === 'grupo_rh' || usuario.tipo === 'global' },
+            { url: `/colaborador/detalhes/${id}/movimentos`, permission: null, condition: () => usuario.tipo === 'grupo_rh' || usuario.tipo === 'global' }
+        ];
+
+        for (const aba of abas) {
+            const temPermissao = !aba.permission || ArmazenadorToken.hasPermission(aba.permission);
+            const atendeCondicao = !aba.condition || aba.condition();
+            
+            if (temPermissao && atendeCondicao) {
+                return aba.url;
+            }
+        }
+        
+        return `/colaborador/detalhes/${id}/dados-contratuais`; // Fallback
+    };
+
+    // Redirecionar para primeira aba disponível se estiver na rota base ou em uma aba inválida
+    useEffect(() => {
+        if (colaborador && !modalDemissaoAberto) { // Evitar redirecionamento durante modal
+            // Se está na rota base, redireciona para primeira aba disponível
+            if (location.pathname === `/colaborador/detalhes/${id}`) {
+                const primeiraAba = getPrimeiraAbaDisponivel();
+                console.log('Redirecionando da rota base para:', primeiraAba);
+                if (primeiraAba !== location.pathname) {
+                    navegar(primeiraAba, { replace: true });
+                }
+            }
+            // Se está em uma aba inválida, redireciona para primeira aba disponível
+            else if (!isAbaValida(location.pathname)) {
+                const primeiraAba = getPrimeiraAbaDisponivel();
+                console.log('Redirecionando de aba inválida para:', primeiraAba);
+                if (primeiraAba !== location.pathname) {
+                    navegar(primeiraAba, { replace: true });
+                }
+            }
+        }
+    }, [colaborador, location.pathname, id, usuario.tipo, modalDemissaoAberto]);
+
     const handleSalvarDemissao = (dadosDemissao) => {
         http.post(`funcionario/${id}/solicita_demissao/`, {
             ...dadosDemissao
