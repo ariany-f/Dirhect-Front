@@ -197,14 +197,14 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         if(comp.length > 0 && comp[0].id_tenant)
         {
             setCompanyDomain(comp[0].domain)
-            setCompanySymbol(comp[0].tenant.simbolo)
-            setCompanyLogo(comp[0].tenant.logo)
+            setCompanySymbol(comp[0].tenant?.simbolo || '')
+            setCompanyLogo(comp[0].tenant?.logo || '')
 
             ArmazenadorToken.definirCompany(
                 selected,
-                comp[0].domain.split('.')[0],
-                comp[0].tenant.simbolo,
-                comp[0].tenant.logo
+                comp[0].domain?.split('.')[0] || '',
+                comp[0].tenant?.simbolo || '',
+                comp[0].tenant?.logo || ''
             )
         }
 
@@ -223,7 +223,8 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     }
 
     function formataCNPJ(cnpj) {
-        cnpj = cnpj.replace(/[^\d]/g, "");
+        if (!cnpj) return '';
+        cnpj = cnpj.toString().replace(/[^\d]/g, "");
         return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
     }
 
@@ -271,15 +272,15 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                                             $active={selected === empresa.id_tenant}
                                             onClick={id => handleSelectChange(empresa.id_tenant)}>
                                             <div className={styles.cardEmpresa}>
-                                                {empresa.tenant.simbolo ?
-                                                    <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant.nome} width={50} height={50} borderRadius={16} />
+                                                {empresa.tenant?.simbolo ?
+                                                    <CustomImage src={empresa.tenant.simbolo} title={empresa.tenant?.nome || 'Empresa'} width={50} height={50} borderRadius={16} />
                                                 : (selected === empresa.id_tenant) ?
                                                     <RiBuildingLine className={styles.buildingIcon + ' ' + styles.vermilion} size={20} />
                                                     : <RiBuildingLine className={styles.buildingIcon} size={20} />
                                                 }
                                                 <div className={styles.DadosEmpresa}>
-                                                    <h6>{empresa.tenant.nome.toUpperCase()}</h6>
-                                                    <div>{formataCNPJ(empresa.pessoaJuridica.cnpj)}</div>
+                                                    <h6>{empresa.tenant?.nome?.toUpperCase() || 'Empresa'}</h6>
+                                                    <div>{formataCNPJ(empresa.pessoaJuridica?.cnpj || empresa.pessoa_juridica?.cnpj || '')}</div>
                                                 </div>
                                             </div>
                                             <RadioButton
