@@ -157,6 +157,11 @@ function BarraLateral({ $sidebarOpened }) {
         usuarioEstaLogado
     } = useSessaoUsuarioContext()
 
+    // Verificar se o usuário tem apenas um perfil
+    const gruposValidos = ArmazenadorToken.UserGroups ? 
+        ArmazenadorToken.UserGroups.filter(grupo => !grupo.startsWith('_')) : [];
+    const temApenasUmPerfil = gruposValidos.length <= 1;
+
     
     useEffect(() => {
         if(usuario.tipo) {
@@ -440,9 +445,11 @@ function BarraLateral({ $sidebarOpened }) {
                 }}>
                     <NavEstilizada>
                         <NavTitulo>{capitalizeTipo(usuario.tipo)}</NavTitulo>
-                        <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                            <FaExchangeAlt size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
-                        </Link>
+                        {!temApenasUmPerfil && (
+                            <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                                <FaExchangeAlt size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
+                            </Link>
+                        )}
                         <ListaEstilizada>
                             {alwaysVisible.map((item) => (
                                 <StyledLink 
@@ -480,9 +487,11 @@ function BarraLateral({ $sidebarOpened }) {
                     <NavEstilizada>
                         <NavTitulo>
                             {usuario.tipo}
-                            <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                                <FaExchangeAlt fill="white" size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
-                            </Link>
+                            {!temApenasUmPerfil && (
+                                <Link to="/login/selecionar-grupo" style={{ color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                                    <FaExchangeAlt fill="white" size={18} style={{ marginLeft: 6, opacity: 0.7 }} />
+                                </Link>
+                            )}
                         </NavTitulo>
                         <ListaEstilizada>
                             {menusOrdenados.map((item) => (

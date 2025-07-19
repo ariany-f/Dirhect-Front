@@ -129,7 +129,11 @@ function Login() {
                 } else {
 
                     setUsuarioEstaLogado(true);
-                    if(response.groups.length > 1) {
+                    
+                    // Filtrar grupos que não começam com "_" (grupos válidos)
+                    const gruposValidos = response.groups.filter(grupo => !grupo.startsWith('_'));
+                    
+                    if(gruposValidos.length > 1) {
 
                         setGroups(response.groups);
 
@@ -151,13 +155,15 @@ function Login() {
                         navegar('/login/selecionar-grupo');
                     } else {
 
-                        setTipo(response.groups[0]);
+                        // Usar o primeiro grupo válido
+                        const grupoSelecionado = gruposValidos[0] || response.groups[0];
+                        setTipo(grupoSelecionado);
                         ArmazenadorToken.definirUsuario(
                             response.user.first_name + ' ' + response.user.last_name,
                             response.user.email,
                             response.user.cpf ?? '',
                             response.user.id,
-                            response.groups[0],
+                            grupoSelecionado,
                             '', 
                             '', 
                             '', 
@@ -168,8 +174,8 @@ function Login() {
                         ArmazenadorToken.removerTempToken();
 
                         // Navegação conforme tipo de usuário
-                        if(response.groups[0] !== 'funcionario') {
-                            if(response.groups[0] !== 'candidato') {
+                        if(grupoSelecionado !== 'funcionario') {
+                            if(grupoSelecionado !== 'candidato') {
 
                                 navegar('/login/selecionar-empresa');
                             } else {

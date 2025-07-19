@@ -188,6 +188,12 @@ const ItemEmpresa = styled.button`
   min-width: 150px;
   justify-content: center;
 
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+    background-color: var(--neutro-50);
+  }
+
   @media screen and (max-width: 768px) {
     min-width: unset;
     padding: 8px;
@@ -238,6 +244,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
   const menuRef = useRef(null);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   const { t } = useTranslation('common');
+
+  // Verificar se o usuário tem apenas um perfil
+  const gruposValidos = ArmazenadorToken.UserGroups ? 
+    ArmazenadorToken.UserGroups.filter(grupo => !grupo.startsWith('_')) : [];
+  const temApenasUmPerfil = gruposValidos.length <= 1;
 
 
   useEffect(() => {
@@ -397,10 +408,13 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                 <BsArrowLeftRight />
               </ItemEmpresa>
             )}
-            <ItemEmpresa onClick={() => window.location.href = '/login/selecionar-grupo'}>
+            <ItemEmpresa 
+              onClick={temApenasUmPerfil ? undefined : () => window.location.href = '/login/selecionar-grupo'}
+              disabled={temApenasUmPerfil}
+            >
               <FaUser size={16} />
               {usuario.tipo || 'Perfil'}
-              <BsArrowLeftRight />
+              {!temApenasUmPerfil && <BsArrowLeftRight />}
             </ItemEmpresa>
             <LanguageSelector />
             <ItemUsuario onClick={toggleMenu}>
