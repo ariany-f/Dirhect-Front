@@ -26,18 +26,19 @@ const Select = styled(Dropdown)`
         align-items: center;
         justify-content: start;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
+        overflow: visible;
+        text-overflow: unset;
+        max-width: none;
+        width: auto;
     }
 
     & .p-dropdown-label,
     & .p-dropdown-item {
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-        width: 100%;
+        overflow: visible;
+        text-overflow: unset;
+        max-width: none;
+        width: auto;
         display: block;
     }
 
