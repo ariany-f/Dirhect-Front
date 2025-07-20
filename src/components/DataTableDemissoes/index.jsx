@@ -42,6 +42,7 @@ function DataTableDemissao({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const [tiposDemissao, setTiposDemissao] = useState({});
+    const [loadingTipos, setLoadingTipos] = useState(true);
     const navegar = useNavigate()
 
     const [modalSelecaoAberto, setModalSelecaoAberto] = useState(false);
@@ -50,20 +51,60 @@ function DataTableDemissao({
 
     // Buscar tipos de demissão
     useEffect(() => {
+        setLoadingTipos(true);
         http.get('tabela_dominio/tipo_demissao/')
             .then(response => {
                 const tipos = {};
-                if (response.registros) {
-                    response.registros.forEach(tipo => {
-                        tipos[tipo.id_origem] = tipo.descricao;
+                
+                // Verificar diferentes estruturas possíveis da resposta
+                const registros = response.registros || response.results || response.data || response;
+                
+                if (Array.isArray(registros)) {
+                    registros.forEach((tipo, index) => {
+                        if (tipo.id_origem && tipo.descricao) {
+                            tipos[tipo.id_origem] = tipo.descricao;
+                        }
                     });
                 }
+                
                 setTiposDemissao(tipos);
             })
             .catch(error => {
                 console.error('Erro ao buscar tipos de demissão:', error);
+            })
+            .finally(() => {
+                setLoadingTipos(false);
             });
     }, []);
+
+    // Monitorar quando os dados de demissão chegam
+    useEffect(() => {
+        if (demissoes && demissoes.length > 0) {
+            console.log('Dados de demissão recebidos:', demissoes);
+            console.log('Primeira demissão:', demissoes[0]);
+            console.log('Tipo demissão da primeira:', demissoes[0].tipo_demissao, typeof demissoes[0].tipo_demissao);
+        }
+    }, [demissoes]);
+
+    const representativeTipoDemissaoTemplate = (rowData) => {
+        console.log('Template chamado - Loading:', loadingTipos, 'Tipos:', Object.keys(tiposDemissao).length);
+        
+        if (loadingTipos) {
+            return 'Carregando...';
+        }
+        
+        const tipoCodigo = String(rowData.tipo_demissao); // Converter para string
+        const tipoDescricao = tiposDemissao[tipoCodigo];
+        
+        console.log('Tipo código:', tipoCodigo, 'Descrição:', tipoDescricao);
+        
+        if (tipoDescricao) {
+            return tipoDescricao;
+        }
+        
+        // Fallback: mostrar o código se não encontrar a descrição
+        return tipoCodigo || 'Não definido';
+    }
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
@@ -123,18 +164,6 @@ function DataTableDemissao({
 
     const representativeDataDemissaoTemplate = (rowData) => {
         return new Date(rowData.dt_demissao).toLocaleDateString("pt-BR")
-    }
-
-    const representativeTipoDemissaoTemplate = (rowData) => {
-        const tipoCodigo = rowData.tipo_demissao;
-        const tipoDescricao = tiposDemissao[tipoCodigo];
-        
-        if (tipoDescricao) {
-            return tipoDescricao;
-        }
-        
-        // Fallback: mostrar o código se não encontrar a descrição
-        return tipoCodigo || 'Não definido';
     }
 
     const representativeChapaTemplate = (rowData) => {

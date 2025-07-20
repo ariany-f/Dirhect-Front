@@ -64,8 +64,8 @@ const ListaColaboradores = styled.div`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
     margin-top: 16px;
-    padding-right: 8px;
 
     &::-webkit-scrollbar {
         width: 6px;
@@ -77,12 +77,14 @@ const ListaColaboradores = styled.div`
 `;
 
 const ItemColaborador = styled.div`
+    width: 90%;
     padding: 12px 16px;
     border: 1px solid ${({ $selecionado }) => $selecionado ? 'var(--vermilion-principal)' : '#ddd'};
     background-color: ${({ $selecionado }) => $selecionado ? 'var(--vermilion-100)' : '#fff'};
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    margin: 0 auto;
 
     &:hover {
         background-color: #f9f9f9;
@@ -298,7 +300,7 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
                             </Titulo>
                         </Frame>
 
-                        <Frame padding="12px 24px">
+                        <Frame padding="12px 16px">
                             <SearchContainer>
                                <CampoTexto
                                     valor={busca}

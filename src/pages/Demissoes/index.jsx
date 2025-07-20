@@ -88,6 +88,10 @@ const Demissoes = () => {
         loadData(page, pageSize, searchTerm, `${order === 'desc' ? '-' : ''}${field}`);
     };
 
+    const aoAtualizar = () => {
+        loadData(page, pageSize, searchTerm, getSortParam());
+    };
+
     if (loading && !demissoes) {
         return <Loading opened={loading} />
     }
@@ -106,6 +110,7 @@ const Demissoes = () => {
                 onSort={onSort}
                 sortField={sortField}
                 sortOrder={sortOrder}
+                aoAtualizar={aoAtualizar}
             />
         </ConteudoFrame>
     );
