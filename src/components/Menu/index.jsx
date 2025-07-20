@@ -189,10 +189,31 @@ function Menu({ opened = false, aoFechar }){
                 <nav style={{ width: '100%' }}>
                     <ul>
                         {/* Menu Items - Apenas no Mobile */}
-                        {!isDesktop && menuItems.map((section, sectionIndex) => (
+                        {!isDesktop && menuItems
+                            .filter(section => {
+                                // Filtrar seção de Benefícios apenas se tiver permissão
+                                if (section.title === "Benefícios") {
+                                    return ArmazenadorToken.hasPermission('view_contrato');
+                                }
+                                return true; // Mostrar outras seções normalmente
+                            })
+                            .map((section, sectionIndex) => (
                             <div key={sectionIndex} style={{ width: '100%' }}>
                                 <div className="section-title">{section.title}</div>
-                                {section.items.map((item, itemIndex) => (
+                                {section.items
+                                    .filter(item => {
+                                        // Filtrar itens da seção Benefícios baseado na permissão
+                                        if (section.title === "Benefícios") {
+                                            // Operadoras também precisa da permissão view_pedido
+                                            if (item.label === 'Operadoras') {
+                                                return ArmazenadorToken.hasPermission('view_contrato');
+                                            }
+                                            // Outros itens da seção Benefícios
+                                            return ArmazenadorToken.hasPermission('view_contrato');
+                                        }
+                                        return true; // Mostrar outros itens normalmente
+                                    })
+                                    .map((item, itemIndex) => (
                                     <li key={itemIndex} onClick={() => FecharMenu()}>
                                         <Link className="link" to={item.url}>
                                             <div className="group">
@@ -202,7 +223,12 @@ function Menu({ opened = false, aoFechar }){
                                         </Link>
                                     </li>
                                 ))}
-                                {sectionIndex < menuItems.length - 1 && <div className="divider" />}
+                                {sectionIndex < menuItems.filter(section => {
+                                    if (section.title === "Benefícios") {
+                                        return ArmazenadorToken.hasPermission('view_contrato');
+                                    }
+                                    return true;
+                                }).length - 1 && <div className="divider" />}
                             </div>
                         ))}
 
