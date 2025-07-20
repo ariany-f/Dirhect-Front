@@ -841,59 +841,63 @@ const CandidatoRegistro = () => {
                             
                             {/* Botão Visão do Candidato/Empresa movido para o header */}
                             {!self ? 
-                                <button
-                                    onClick={() => navegar(`/admissao/registro/${id}/true`)}
-                                    style={{
-                                        background: 'rgba(255, 255, 255, 0.2)',
-                                        border: '1px solid rgba(255, 255, 255, 0.3)',
-                                        borderRadius: 6,
-                                        padding: '6px 12px',
-                                        color: '#fff',
-                                        fontSize: 12,
-                                        fontWeight: 500,
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 4,
-                                        transition: 'all 0.2s ease',
-                                        backdropFilter: 'blur(10px)'
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                                    }}
-                                >
-                                    <HiEye fill="white" size={14}/> Visão do Candidato
-                                </button>
+                                (import.meta.env.MODE === 'development' && (
+                                    <button
+                                        onClick={() => navegar(`/admissao/registro/${id}/true`)}
+                                        style={{
+                                            background: 'rgba(255, 255, 255, 0.2)',
+                                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                                            borderRadius: 6,
+                                            padding: '6px 12px',
+                                            color: '#fff',
+                                            fontSize: 12,
+                                            fontWeight: 500,
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 4,
+                                            transition: 'all 0.2s ease',
+                                            backdropFilter: 'blur(10px)'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                        }}
+                                    >
+                                        <HiEye fill="white" size={14}/> Visão do Candidato
+                                    </button>
+                                ))
                                 :
-                                <button
-                                    onClick={() => navegar(`/admissao/registro/${id}`)}
-                                    style={{
-                                        background: 'rgba(255, 255, 255, 0.2)',
-                                        border: '1px solid rgba(255, 255, 255, 0.3)',
-                                        borderRadius: 6,
-                                        padding: '6px 12px',
-                                        color: '#fff',
-                                        fontSize: 12,
-                                        fontWeight: 500,
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 4,
-                                        transition: 'all 0.2s ease',
-                                        backdropFilter: 'blur(10px)'
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                                    }}
-                                >
-                                    <HiEye fill="white" size={14}/> Visão da Empresa
-                                </button>
+                                (import.meta.env.MODE === 'development' && (
+                                    <button
+                                        onClick={() => navegar(`/admissao/registro/${id}`)}
+                                        style={{
+                                            background: 'rgba(255, 255, 255, 0.2)',
+                                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                                            borderRadius: 6,
+                                            padding: '6px 12px',
+                                            color: '#fff',
+                                            fontSize: 12,
+                                            fontWeight: 500,
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 4,
+                                            transition: 'all 0.2s ease',
+                                            backdropFilter: 'blur(10px)'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                        }}
+                                    >
+                                        <HiEye fill="white" size={14}/> Visão da Empresa
+                                    </button>
+                                ))
                             }
                         </div>
                     </div>
