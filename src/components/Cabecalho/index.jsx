@@ -202,6 +202,19 @@ const ItemEmpresa = styled.button`
   }
 `;
 
+// ItemEmpresa mais fino para o perfil selecionado
+const ItemPerfil = styled(ItemEmpresa)`
+  min-width: 100px;
+  padding: 8px 12px;
+  gap: 6px;
+  
+  @media screen and (max-width: 768px) {
+    min-width: unset;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+`;
+
 const ItemUsuario = styled.div`
   font-family: var(--fonte-secundaria);
   color: var(--black);
@@ -336,11 +349,13 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           url: '/estrutura',
           icon: <RiOrganizationChart size={18}/>
         },
-        { 
-          label: 'Linhas de Transporte', 
-          url: '/linhas-transporte',
-          icon: <FaBusAlt size={16} />
-        }
+        ...(import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true' ? [
+          { 
+            label: 'Linhas de Transporte', 
+            url: '/linhas-transporte',
+            icon: <FaBusAlt size={16} />
+          }
+        ] : [])
       ]
     }
   ];
@@ -424,14 +439,14 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                 <BsArrowLeftRight />
               </ItemEmpresa>
             )}
-            <ItemEmpresa 
+            <ItemPerfil 
               onClick={temApenasUmPerfil ? undefined : () => window.location.href = '/login/selecionar-grupo'}
               disabled={temApenasUmPerfil}
             >
               <FaUser size={16} />
               {usuario.tipo || 'Perfil'}
               {!temApenasUmPerfil && <BsArrowLeftRight />}
-            </ItemEmpresa>
+            </ItemPerfil>
             <LanguageSelector />
             <ItemUsuario onClick={toggleMenu}>
               <div className="user">{usuario.name?.charAt(0) || 'U'}</div>

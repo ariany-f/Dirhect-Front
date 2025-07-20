@@ -122,11 +122,13 @@ const menuItems = [
                 url: '/operadoras',
                 icon: <FaBuilding size={16} />
             }, 
-            { 
-                label: 'Linhas de Transporte', 
-                url: '/linhas-transporte',
-                icon: <FaBusAlt size={16} />
-            }
+            ...(import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true' ? [
+                { 
+                    label: 'Linhas de Transporte', 
+                    url: '/linhas-transporte',
+                    icon: <FaBusAlt size={16} />
+                }
+            ] : [])
         ]
     },
     {
