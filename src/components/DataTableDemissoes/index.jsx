@@ -77,26 +77,13 @@ function DataTableDemissao({
             });
     }, []);
 
-    // Monitorar quando os dados de demissão chegam
-    useEffect(() => {
-        if (demissoes && demissoes.length > 0) {
-            console.log('Dados de demissão recebidos:', demissoes);
-            console.log('Primeira demissão:', demissoes[0]);
-            console.log('Tipo demissão da primeira:', demissoes[0].tipo_demissao, typeof demissoes[0].tipo_demissao);
-        }
-    }, [demissoes]);
-
     const representativeTipoDemissaoTemplate = (rowData) => {
-        console.log('Template chamado - Loading:', loadingTipos, 'Tipos:', Object.keys(tiposDemissao).length);
-        
         if (loadingTipos) {
             return 'Carregando...';
         }
         
         const tipoCodigo = String(rowData.tipo_demissao); // Converter para string
         const tipoDescricao = tiposDemissao[tipoCodigo];
-        
-        console.log('Tipo código:', tipoCodigo, 'Descrição:', tipoDescricao);
         
         if (tipoDescricao) {
             return tipoDescricao;
@@ -198,44 +185,51 @@ function DataTableDemissao({
                     </BotaoGrupo>
                 }
             </div>}
-            <DataTable 
-                value={demissoes} 
-                emptyMessage="Não foram encontradas demissões pendentes" 
-                selection={selectedVaga} 
-                onSelectionChange={(e) => verDetalhes(e.value)} 
-                selectionMode="single" 
-                paginator={paginator}
-                lazy={paginator}
-                rows={rows} 
-                totalRecords={totalRecords}
-                first={first}
-                onPage={onPage}
-                tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
-                sortField={sortField}
-                sortOrder={sortOrder === 'desc' ? -1 : 1}
-                onSort={handleSort}
-                removableSort
-                showGridlines
-                stripedRows
-                footerColumnGroup={
-                    paginator ? (
-                        <ColumnGroup>
-                            <Row>
-                                <Column footer={totalDemissoesTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
-                            </Row>
-                        </ColumnGroup>
-                    ) : null
-                }
-            >
-                {!colaborador &&
-                    <Column body={representativeChapaTemplate} header="Matrícula" sortable field="chapa" style={{ width: '10%' }}></Column>
-                }
-                {!colaborador &&
-                    <Column body={representativeColaboradorTemplate} header="Colaborador"  field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" sortable style={{ width: '30%' }}></Column>
-                }
-                <Column body={representativeDataDemissaoTemplate} field="dt_demissao" header="Data Demissão" sortable style={{ width: '30%' }}></Column>
-                <Column body={representativeTipoDemissaoTemplate} field="tipo_demissao" header="Tipo Demissão" sortable style={{ width: '30%' }}></Column>
-            </DataTable>
+            {!loadingTipos && (
+                <DataTable 
+                    value={demissoes} 
+                    emptyMessage="Não foram encontradas demissões pendentes" 
+                    selection={selectedVaga} 
+                    onSelectionChange={(e) => verDetalhes(e.value)} 
+                    selectionMode="single" 
+                    paginator={paginator}
+                    lazy={paginator}
+                    rows={rows} 
+                    totalRecords={totalRecords}
+                    first={first}
+                    onPage={onPage}
+                    tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
+                    sortField={sortField}
+                    sortOrder={sortOrder === 'desc' ? -1 : 1}
+                    onSort={handleSort}
+                    removableSort
+                    showGridlines
+                    stripedRows
+                    footerColumnGroup={
+                        paginator ? (
+                            <ColumnGroup>
+                                <Row>
+                                    <Column footer={totalDemissoesTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                                </Row>
+                            </ColumnGroup>
+                        ) : null
+                    }
+                >
+                    {!colaborador &&
+                        <Column body={representativeChapaTemplate} header="Matrícula" sortable field="chapa" style={{ width: '10%' }}></Column>
+                    }
+                    {!colaborador &&
+                        <Column body={representativeColaboradorTemplate} header="Colaborador"  field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" sortable style={{ width: '30%' }}></Column>
+                    }
+                    <Column body={representativeDataDemissaoTemplate} field="dt_demissao" header="Data Demissão" sortable style={{ width: '30%' }}></Column>
+                    <Column body={representativeTipoDemissaoTemplate} field="tipo_demissao" header="Tipo Demissão" sortable style={{ width: '30%' }}></Column>
+                </DataTable>
+            )}
+            {loadingTipos && (
+                <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                    Carregando tipos de demissão...
+                </div>
+            )}
             <ModalSelecionarColaborador 
                 opened={modalSelecaoAberto}
                 aoFechar={() => setModalSelecaoAberto(false)}
