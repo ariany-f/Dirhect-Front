@@ -151,7 +151,7 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
     const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(10);
+    const [pageSize] = useState(6);
     const [totalRecords, setTotalRecords] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
@@ -287,7 +287,7 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
         <>
             {opened &&
                 <Overlay onClick={aoFechar}>
-                    <DialogEstilizado open={opened} onClick={e => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+                    <DialogEstilizado open={opened} onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', maxHeight: '90vh' }}>
                         <Loading opened={loading} />
                         <Frame>
                             <Titulo>
