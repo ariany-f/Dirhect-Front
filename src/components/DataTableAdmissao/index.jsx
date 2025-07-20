@@ -1,6 +1,8 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
@@ -27,7 +29,20 @@ import styles from '@pages/Colaboradores/Colaboradores.module.css'
 import { formatCurrency, formatNumber } from '@utils/formats';
 import http from '@http';
 
-function DataTableAdmissao({ vagas }) {
+function DataTableAdmissao({ 
+    vagas,
+    // Props para paginação via servidor
+    paginator = false,
+    rows = 10,
+    totalRecords = 0,
+    first = 0,
+    onPage,
+    onSearch,
+    onSort,
+    sortField,
+    sortOrder,
+    showSearch = true
+}) {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -49,10 +64,10 @@ function DataTableAdmissao({ vagas }) {
     };
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-        _filters['global'].value = value;
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        if (onSearch) {
+            onSearch(value);
+        }
     };
 
     function verDetalhes(value) {
@@ -328,14 +343,29 @@ function DataTableAdmissao({ vagas }) {
         </div>
     );
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
+    const totalAdmissoesTemplate = () => {
+        return 'Total de Admissões: ' + (totalRecords ?? 0);
+    };
+
     return (
         <>
             <BotaoGrupo align="space-between">
-                <div className="flex justify-content-end">
-                    <span className="p-input-icon-left">
-                        <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
-                    </span>
-                </div>
+                {showSearch &&
+                    <div className="flex justify-content-end">
+                        <span className="p-input-icon-left">
+                            <CampoTexto width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
+                        </span>
+                    </div>
+                }
                 {/* <BotaoGrupo align="end" gap="8px">
                     <BotaoSemBorda color="var(--primaria)">
                         <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
@@ -349,12 +379,29 @@ function DataTableAdmissao({ vagas }) {
            
             <DataTable 
                 value={vagas} 
-                filters={filters} 
-                globalFilterFields={['id']}  
                 emptyMessage="Não foram encontradas admissões pendentes" 
-                paginator 
-                rows={10}  
+                paginator={paginator}
+                lazy={paginator}
+                rows={rows} 
+                totalRecords={totalRecords}
+                first={first}
+                onPage={onPage}
                 tableStyle={{ minWidth: '68vw' }}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
+                showGridlines
+                stripedRows
+                footerColumnGroup={
+                    paginator ? (
+                        <ColumnGroup>
+                            <Row>
+                                <Column footer={totalAdmissoesTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                            </Row>
+                        </ColumnGroup>
+                    ) : null
+                }
             >
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '16%' }}></Column>
                 <Column body={vagaTemplate} header="Vaga" style={{ width: '14%' }}></Column>
