@@ -12,6 +12,7 @@ import ModalEditarFilial from '../ModalEditarFilial';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { ArmazenadorToken } from '@utils';
 
 function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows, totalRecords, first, onPage, totalPages, onSearch, selected = null, setSelected = () => { }, onUpdate, sortField, sortOrder, onSort }) {
 
@@ -161,19 +162,21 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
                 justifyContent: 'center'
             }}>
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                <RiDeleteBin6Line 
-                    className="delete" 
-                    data-pr-tooltip="Excluir Filial" 
-                    size={16} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        excluirFilial(rowData.id);
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--error)'
-                    }}
-                />
+                {ArmazenadorToken.hasPermission('delete_filial') && (
+                    <RiDeleteBin6Line 
+                        className="delete" 
+                        data-pr-tooltip="Excluir Filial" 
+                        size={16} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            excluirFilial(rowData.id);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--error)'
+                        }}
+                    />
+                )}
             </div>
         );
     };

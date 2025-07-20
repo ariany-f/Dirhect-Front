@@ -16,6 +16,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import http from '@http';
+import { ArmazenadorToken } from '@utils';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -133,19 +134,21 @@ function DataTableHorarios({
                 justifyContent: 'center'
             }}>
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                <RiDeleteBin6Line 
-                    className="delete" 
-                    data-pr-tooltip="Excluir Horário" 
-                    size={16} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        excluirHorario(rowData.id);
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--error)'
-                    }}
-                />
+                {ArmazenadorToken.hasPermission('delete_horario') && (
+                    <RiDeleteBin6Line 
+                        className="delete" 
+                        data-pr-tooltip="Excluir Horário" 
+                        size={16} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            excluirHorario(rowData.id);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--error)'
+                        }}
+                    />
+                )}
             </div>
         );
     };

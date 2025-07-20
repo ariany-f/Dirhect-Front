@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Tooltip } from 'primereact/tooltip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { ArmazenadorToken } from '@utils';
 
 const NumeroColaboradores = styled.p`
     color: var(--base-black);
@@ -141,19 +142,21 @@ function DataTableSindicatos({
                 justifyContent: 'center'
             }}>
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-                <RiDeleteBin6Line 
-                    className="delete" 
-                    data-pr-tooltip="Excluir Sindicato" 
-                    size={16} 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        excluirSindicato(rowData.id);
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--error)'
-                    }}
-                />
+                {ArmazenadorToken.hasPermission('delete_sindicato') && (
+                    <RiDeleteBin6Line 
+                        className="delete" 
+                        data-pr-tooltip="Excluir Sindicato" 
+                        size={16} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            excluirSindicato(rowData.id);
+                        }}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--error)'
+                        }}
+                    />
+                )}
             </div>
         );
     };
