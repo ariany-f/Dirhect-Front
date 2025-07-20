@@ -290,7 +290,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
   }, []);
 
   const titulos = [
-    { "id": 1, "url": "", "pageTitulo": BrandColors.getBrandName() },
+    { "id": 1, "url": "", "pageTitulo": 'Home' },
     { "id": 2, "url": "extrato", "pageTitulo": "Extrato da conta" },
     { "id": 3, "url": "colaborador", "pageTitulo": "Colaboradores" },
     { "id": 4, "url": "estrutura", "pageTitulo": "Estrutura Organizacional" },
