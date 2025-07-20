@@ -1,6 +1,8 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +12,20 @@ import { FaUserAlt } from 'react-icons/fa';
 import { Tag } from 'primereact/tag';
 import http from '@http';
 
-function DataTableVagas({ vagas: initialVagas }) {
+function DataTableVagas({ 
+    vagas: initialVagas,
+    // Props para paginação via servidor
+    paginator = false,
+    rows = 10,
+    totalRecords = 0,
+    first = 0,
+    onPage,
+    onSearch,
+    onSort,
+    sortField,
+    sortOrder,
+    showSearch = true
+}) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -18,37 +33,17 @@ function DataTableVagas({ vagas: initialVagas }) {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
     const [vagas, setVagas] = useState(initialVagas || []);
-    const [sortField, setSortField] = useState(null);
-    const [sortOrder, setSortOrder] = useState(null);
     const navegar = useNavigate()
 
     useEffect(() => {
         setVagas(initialVagas || []);
     }, [initialVagas]);
 
-    const fetchVagas = (field = null, order = null) => {
-        let ordering = '';
-        if (field) {
-            ordering = order === 1 ? field : `-${field}`;
-        }
-        http.get(`vagas/?ordering=${ordering}`)
-            .then(response => setVagas(response))
-            .catch(() => setVagas([]));
-    };
-
-    const onSort = (e) => {
-        setSortField(e.sortField);
-        setSortOrder(e.sortOrder);
-        fetchVagas(e.sortField, e.sortOrder);
-    };
-
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        if (onSearch) {
+            onSearch(value);
+        }
     };
 
     function verDetalhes(value)
@@ -104,6 +99,10 @@ function DataTableVagas({ vagas: initialVagas }) {
                     status = 'Fechada';
                     color = 'var(--error)';
                     break;
+                case 'T':
+                    status = 'Transferida';
+                    color = 'var(--warning)';
+                    break;
             }
         }
 
@@ -114,27 +113,56 @@ function DataTableVagas({ vagas: initialVagas }) {
         );
     }
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
+    const totalVagasTemplate = () => {
+        return 'Total de Vagas: ' + (totalRecords ?? 0);
+    };
+
     return (
         <>
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar vaga" />
-                </span>
-            </div>
+            {showSearch &&
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar vaga" />
+                    </span>
+                </div>
+            }
             <DataTable
                 value={vagas}
-                filters={filters}
-                globalFilterFields={['titulo']}
                 emptyMessage="Não foram encontradas vagas"
                 selection={selectedVaga}
                 onSelectionChange={(e) => verDetalhes(e.value)}
                 selectionMode="single"
-                paginator
-                rows={10}
+                paginator={paginator}
+                lazy={paginator}
+                rows={rows}
+                totalRecords={totalRecords}
+                first={first}
+                onPage={onPage}
                 tableStyle={{ minWidth: '68vw' }}
                 sortField={sortField}
-                sortOrder={sortOrder}
-                onSort={onSort}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
+                showGridlines
+                stripedRows
+                footerColumnGroup={
+                    paginator ? (
+                        <ColumnGroup>
+                            <Row>
+                                <Column footer={totalVagasTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                            </Row>
+                        </ColumnGroup>
+                    ) : null
+                }
             >
                 <Column body={representativeTituloTemplate} field="titulo" header="Titulo" style={{ width: '20%' }} sortable></Column>
                 <Column field="descricao" header="Descrição" style={{ width: '25%' }} sortable></Column>

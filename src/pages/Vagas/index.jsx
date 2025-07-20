@@ -57,7 +57,7 @@ const Vagas = () => {
         
                 </BotaoGrupo>
             </BotaoGrupo>
-            <Outlet context={vagas.vagas} />
+            <Outlet context={{ vagas: vagas.vagas }} />
             <ModalImportarPlanilha opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </ConteudoFrame>
     );
