@@ -11,7 +11,7 @@ import styles from './../Candidatos.module.css'
 import { Stepper } from 'primereact/stepper';
 import { StepperPanel } from 'primereact/stepperpanel';
 import { ScrollPanel } from 'primereact/scrollpanel';
-import { HiArrowLeft, HiArrowRight, HiEye } from 'react-icons/hi';
+import { HiArrowLeft, HiArrowRight, HiEye, HiCheckCircle, HiX } from 'react-icons/hi';
 import { FaTrash, FaSave, FaEye, FaUpload } from 'react-icons/fa';
 import { Toast } from 'primereact/toast';
 import { CandidatoProvider, useCandidatoContext } from '@contexts/Candidato';
@@ -25,6 +25,208 @@ import StepExperiencia from './Steps/StepExperiencia';
 import StepLGPD from './Steps/StepLGPD';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { RiExchangeFill } from 'react-icons/ri';
+
+// Modal customizado estilizado
+const ModalOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease-out;
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+`;
+
+const ModalContainer = styled.div`
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: slideIn 0.3s ease-out;
+    
+    @keyframes slideIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(-20px) scale(0.95);
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1);
+        }
+    }
+`;
+
+const ModalHeader = styled.div`
+    background: linear-gradient(135deg, var(--primaria), var(--gradient-secundaria));
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    }
+`;
+
+const ModalTitle = styled.h2`
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    svg {
+        color: white;
+    }
+`;
+
+const CloseButton = styled.button`
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    svg {
+        color: white;
+    }
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+`;
+
+const ModalContent = styled.div`
+    padding: 24px;
+    text-align: center;
+`;
+
+const IconContainer = styled.div`
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #059669);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+    
+    svg {
+        width: 36px;
+        height: 36px;
+        color: white;
+    }
+`;
+
+const ModalMessage = styled.p`
+    font-size: 16px;
+    line-height: 1.6;
+    color: #374151;
+    margin: 0 0 24px;
+    text-align: left;
+    
+    strong {
+        color: var(--primaria);
+        font-weight: 600;
+    }
+`;
+
+const ModalFooter = styled.div`
+    padding: 20px 24px;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+`;
+
+const ModalButton = styled.button`
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    &.secondary {
+        background: #f3f4f6;
+        color: #6b7280;
+        border: 1px solid #d1d5db;
+        
+        svg {
+            color: #6b7280;
+        }
+        
+        &:hover {
+            background: #e5e7eb;
+            color: #374151;
+            
+            svg {
+                color: #374151;
+            }
+        }
+    }
+    
+    &.primary {
+        background: linear-gradient(135deg, var(--primaria), var(--gradient-secundaria));
+        color: white;
+        box-shadow: 0 4px 12px rgba(12, 0, 76, 0.3);
+        
+        svg {
+            color: white;
+        }
+        
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(12, 0, 76, 0.4);
+        }
+        
+        &:active {
+            transform: translateY(0);
+        }
+    }
+    
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+`;
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -154,6 +356,7 @@ const CandidatoRegistro = () => {
     const [estados, setEstados] = useState([]);
     const toast = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [showModalConfirmacao, setShowModalConfirmacao] = useState(false);
 
     const [listaPericulosidades, setListaPericulosidades] = useState([
         { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
@@ -216,6 +419,20 @@ const CandidatoRegistro = () => {
                 .finally(() => {});
         });
     }, [])
+
+    // Fechar modal com ESC
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape' && showModalConfirmacao) {
+                setShowModalConfirmacao(false);
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [showModalConfirmacao]);
 
     const ChangeCep = (value) => 
     {
@@ -523,12 +740,122 @@ const CandidatoRegistro = () => {
         return true;
     };
 
-    const handleFinalizarDocumentos = async () => {
-        const validacao = await validarDocumentos();
-        if (!validacao) return;
+    // Função para validar campos obrigatórios dos dados pessoais
+    const validarCamposObrigatorios = () => {
+        const dadosCandidato = candidato.dados_candidato || {};
+        const dadosVaga = candidato.dados_vaga || {};
+        const camposObrigatorios = [];
+        
+        // Validação de dados pessoais obrigatórios
+        if (!dadosCandidato.nome?.trim()) {
+            camposObrigatorios.push('Nome completo');
+        }
+        if (!dadosCandidato.cpf?.trim()) {
+            camposObrigatorios.push('CPF');
+        }
+        if (!dadosCandidato.email?.trim()) {
+            camposObrigatorios.push('E-mail');
+        }
+        if (!dadosCandidato.telefone?.trim()) {
+            camposObrigatorios.push('Telefone');
+        }
+        if (!dadosCandidato.dt_nascimento) {
+            camposObrigatorios.push('Data de nascimento');
+        }
+        
+        // Validação de dados bancários obrigatórios
+        if (!candidato.banco?.trim()) {
+            camposObrigatorios.push('Banco');
+        }
+        if (!candidato.agencia?.trim()) {
+            camposObrigatorios.push('Agência');
+        }
+        if (!candidato.conta_corrente?.trim()) {
+            camposObrigatorios.push('Conta corrente');
+        }
+        
+        // Validação de dados cadastrais obrigatórios (apenas se não for self)
+        if (!self) {
+            if (!dadosVaga.filial_id) {
+                camposObrigatorios.push('Filial');
+            }
+            if (!dadosVaga.departamento_id) {
+                camposObrigatorios.push('Departamento');
+            }
+            if (!dadosVaga.cargo_id) {
+                camposObrigatorios.push('Cargo');
+            }
+            if (!dadosVaga.centro_custo_id) {
+                camposObrigatorios.push('Centro de custo');
+            }
+            if (!dadosVaga.salario?.trim()) {
+                camposObrigatorios.push('Salário');
+            }
+        }
+        
+        if (camposObrigatorios.length > 0) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Campos obrigatórios não preenchidos',
+                detail: `Os seguintes campos são obrigatórios: ${camposObrigatorios.join(', ')}`,
+                life: 5000
+            });
+            return false;
+        }
+        
+        return true;
+    };
 
-        await handleSalvarAdmissao();
-        await concluirTarefa('aguardar_documento');
+    const handleFinalizarDocumentos = async () => {
+        // Validação de documentos
+        const validacaoDocumentos = await validarDocumentos();
+        if (!validacaoDocumentos) return;
+
+        // Validação de campos obrigatórios
+        // const validacaoCampos = validarCamposObrigatorios();
+        // if (!validacaoCampos) return;
+
+        // Se for visão candidato (self = true), finaliza diretamente
+        if (self) {
+            await handleSalvarAdmissao();
+            await concluirTarefa('aguardar_documento');
+            return;
+        }
+
+        // Se for visão empresa (self = false), mostra modal de confirmação
+        setShowModalConfirmacao(true);
+    };
+
+    const handleConfirmarFinalizacao = async () => {
+        try {
+            setShowModalConfirmacao(false);
+            await handleSalvarAdmissao();
+            await concluirTarefa('aguardar_documento');
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Processo finalizado',
+                detail: 'Documentos aprovados e integração iniciada com sucesso!',
+                life: 4000
+            });
+        } catch (error) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro na finalização',
+                detail: 'Ocorreu um erro ao finalizar o processo.',
+                life: 4000
+            });
+        }
+    };
+
+    const handleCancelarFinalizacao = () => {
+        setShowModalConfirmacao(false);
+    };
+
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            setShowModalConfirmacao(false);
+        }
     };
 
     const handleAceitarLGPD = async () => {
@@ -1023,6 +1350,48 @@ const CandidatoRegistro = () => {
 
             {/* Footer fixo com botões */}
             {renderFooterButtons()}
+
+            {/* Modal de confirmação */}
+            {showModalConfirmacao && (
+                <ModalOverlay onClick={handleOverlayClick}>
+                    <ModalContainer>
+                        <ModalHeader>
+                            <ModalTitle>
+                                <HiCheckCircle fill="white" /> Confirmação de Finalização
+                            </ModalTitle>
+                            <CloseButton onClick={handleCancelarFinalizacao}>
+                                <HiX />
+                            </CloseButton>
+                        </ModalHeader>
+                        <ModalContent>
+                            <IconContainer>
+                                <HiCheckCircle />
+                            </IconContainer>
+                            <ModalMessage>
+                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato.dados_candidato?.nome || 'Candidato'}</strong> ao sistema.
+                                <br /><br />
+                                Esta ação irá:
+                                <br />
+                                • Aprovar a tarefa de preenchimento de documentos
+                                <br />
+                                • Iniciar o processo de integração
+                                <br />
+                                • Incluir o colaborador no sistema
+                                <br /><br />
+                                Deseja continuar com a finalização?
+                            </ModalMessage>
+                        </ModalContent>
+                        <ModalFooter>
+                            <ModalButton className="secondary" onClick={handleCancelarFinalizacao}>
+                                <HiX /> Cancelar
+                            </ModalButton>
+                            <ModalButton className="primary" onClick={handleConfirmarFinalizacao}>
+                                <HiCheckCircle fill="white" /> Sim, finalizar e integrar
+                            </ModalButton>
+                        </ModalFooter>
+                    </ModalContainer>
+                </ModalOverlay>
+            )}
         </ConteudoFrame>
     );
 };
