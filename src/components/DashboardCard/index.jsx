@@ -1916,29 +1916,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                 </div>
                             ))
                         ) : (
-                            <div className="mock-data-element" style={{position: 'relative'}}>
-                                <div className="soon-badge">Em Breve</div>
-                                <div className="ferias-item">
-                                    <div className="ferias-info">
-                                        <div className="ferias-colaborador">ALTAMIRO CARRILHO</div>
-                                        <div className="ferias-periodo">03/04/2017 - 02/05/2017 (30 dias)</div>
-                                    </div>
-                                    <Tag severity="danger" value="Finalizadas" />
-                                </div>
-                                <div className="ferias-item">
-                                    <div className="ferias-info">
-                                        <div className="ferias-colaborador">MARIA SANTOS</div>
-                                        <div className="ferias-periodo">10/04/2025 - 25/04/2025 (30 dias)</div>
-                                    </div>
-                                    <Tag severity="warning" value="Aguardando Gestor" />
-                                </div>
-                                <div className="ferias-item">
-                                    <div className="ferias-info">
-                                        <div className="ferias-colaborador">PEDRO COSTA</div>
-                                        <div className="ferias-periodo">05/05/2025 - 20/05/2025 (30 dias)</div>
-                                    </div>
-                                    <Tag severity="success" value="Marcadas" />
-                                </div>
+                            <div style={{textAlign: 'center', color: '#888', fontSize: '14px', fontStyle: 'italic', padding: '18px 0'}}>
+                                Nenhuma férias agendada
                             </div>
                         )}
                     </div>
