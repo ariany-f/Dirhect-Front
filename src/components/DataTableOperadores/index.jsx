@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { ArmazenadorToken } from '@utils';
 
 function DataTableOperadores({ operadores, onDelete, sortField, sortOrder, onSort }) {
 
@@ -62,16 +63,18 @@ function DataTableOperadores({ operadores, onDelete, sortField, sortOrder, onSor
     const representativeActionsTemplate = (rowData) => {
         return (
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end' }}>
-                <RiDeleteBin6Line 
-                    className="delete" 
-                    data-pr-tooltip="Excluir Operador" 
-                    size={18} 
-                    onClick={e => {
-                        e.stopPropagation();
-                        if (onDelete) onDelete(rowData.id, toast, confirmDialog);
-                    }}
-                    style={{ cursor: 'pointer', color: 'var(--erro)' }}
-                />
+                {ArmazenadorToken.hasPermission('delete_user') && (
+                    <RiDeleteBin6Line 
+                        className="delete" 
+                        data-pr-tooltip="Excluir Operador" 
+                        size={18} 
+                        onClick={e => {
+                            e.stopPropagation();
+                            if (onDelete) onDelete(rowData.id, toast, confirmDialog);
+                        }}
+                        style={{ cursor: 'pointer', color: 'var(--erro)' }}
+                    />
+                )}
             </div>
         );
     };
@@ -96,9 +99,11 @@ function DataTableOperadores({ operadores, onDelete, sortField, sortOrder, onSor
                     </span>
                 </div>
                 <BotaoGrupo align="end">
-                    <Link to="/operador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> {t('add')} operador</Botao>
-                    </Link>
+                    {ArmazenadorToken.hasPermission('add_user') && (
+                        <Link to="/operador/registro">
+                            <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> {t('add')} operador</Botao>
+                        </Link>
+                    )}
                 </BotaoGrupo>
             </BotaoGrupo>
             <DataTable 
