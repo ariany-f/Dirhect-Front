@@ -812,8 +812,8 @@ const CandidatoRegistro = () => {
         if (!validacaoDocumentos) return;
 
         // Validação de campos obrigatórios
-        // const validacaoCampos = validarCamposObrigatorios();
-        // if (!validacaoCampos) return;
+        const validacaoCampos = validarCamposObrigatorios();
+        if (!validacaoCampos) return;
 
         // Se for visão candidato (self = true), finaliza diretamente
         if (self) {
