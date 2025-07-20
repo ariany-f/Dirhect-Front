@@ -7,11 +7,17 @@ import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 
 function Dependentes() {
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [dependentes, setDependentes] = useState(null)
     const [pessoasfisicas, setPessoasFisicas] = useState(null)
     const [funcionarios, setFuncionarios] = useState(null)
     const [dep_pess, setDepPess] = useState(null)
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [first, setFirst] = useState(0);
+    const [searchTerm, setSearchTerm] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
 
@@ -19,55 +25,85 @@ function Dependentes() {
         usuario
     } = useSessaoUsuarioContext()
 
-    useEffect(() => {
-        if(!dependentes)
-        {
-            setLoading(true)
-            if(usuario.tipo == 'funcionario')
-            {
-                carregarDependentes(usuario.public_id, sortField, sortOrder)
-            }
-            else
-            {
-                carregarDependentes(null, sortField, sortOrder)
-            }
+    const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
+        setLoading(true);
+        let url = `dependente/?format=json&page=${currentPage}&page_size=${currentPageSize}`;
+        
+        if (usuario.tipo === 'funcionario') {
+            url += `&id_funcionario=${usuario.public_id}`;
         }
-    }, [dependentes])
+        
+        if (search) {
+            url += `&search=${search}`;
+        }
+        
+        if (sort && sort !== '-null') {
+            url += `&ordering=${sort}`;
+        }
 
-    const carregarDependentes = (idFuncionario = null, sort = '', order = '') => {
-        let url = 'dependente/?format=json';
-        if (idFuncionario) {
-            url += `&id_funcionario=${idFuncionario}`;
-        }
-        if (sort && order) {
-            url += `&ordering=${order === 'desc' ? '-' : ''}${sort}`;
-        }
         http.get(url)
             .then(response => {
-                setDependentes(response.results || response)
+                setDependentes(response.results || response);
+                setTotalRecords(response.count || 0);
+                setTotalPages(response.total_pages || 0);
             })
             .catch(erro => {
-                setLoading(false)
+                console.log(erro);
             })
-            .finally(function() {
-                setLoading(false)
-            })
-    }
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
+    useEffect(() => {
+        loadData(page, pageSize, searchTerm);
+    }, []);
+
+    const onPage = (event) => {
+        const newPage = event.page + 1;
+        const newPageSize = event.rows;
+        
+        setFirst(event.first);
+        setPage(newPage);
+        setPageSize(newPageSize);
+        
+        loadData(newPage, newPageSize, searchTerm, getSortParam());
+    };
+
+    const onSearch = (search) => {
+        setSearchTerm(search);
+        setPage(1);
+        setFirst(0);
+        loadData(1, pageSize, search, getSortParam());
+    };
+
+    const getSortParam = () => {
+        if (!sortField) return '';
+        return `${sortOrder === 'desc' ? '-' : ''}${sortField}`;
+    };
 
     const onSort = ({ field, order }) => {
         setSortField(field);
         setSortOrder(order);
-        if(usuario.tipo == 'funcionario') {
-            carregarDependentes(usuario.public_id, field, order);
-        } else {
-            carregarDependentes(null, field, order);
-        }
+        loadData(page, pageSize, searchTerm, `${order === 'desc' ? '-' : ''}${field}`);
     };
 
     return (
         <DependentesProvider>
-            <Loading opened={loading} />
-            <Outlet context={{ dependentes, sortField, sortOrder, onSort }} />
+            <Loading opened={loading && !dependentes} />
+            <Outlet context={{ 
+                dependentes, 
+                sortField, 
+                sortOrder, 
+                onSort,
+                // Props para paginação via servidor
+                paginator: true,
+                rows: pageSize,
+                totalRecords,
+                first,
+                onPage,
+                onSearch
+            }} />
         </DependentesProvider>
     )
 }

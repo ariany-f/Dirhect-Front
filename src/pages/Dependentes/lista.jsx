@@ -43,6 +43,12 @@ function DependentesListagem() {
     const sortField = context?.sortField;
     const sortOrder = context?.sortOrder;
     const onSort = context?.onSort;
+    const paginator = context?.paginator;
+    const rows = context?.rows;
+    const totalRecords = context?.totalRecords;
+    const first = context?.first;
+    const onPage = context?.onPage;
+    const onSearch = context?.onSearch;
     
     useEffect(() => {
         if(context && (!dependentes))
@@ -56,7 +62,18 @@ function DependentesListagem() {
         <ConteudoFrame>
             {
                 dependentes ?
-                    <DataTableDependentes dependentes={dependentes} sortField={sortField} sortOrder={sortOrder} onSort={onSort} />
+                    <DataTableDependentes 
+                        dependentes={dependentes} 
+                        sortField={sortField} 
+                        sortOrder={sortOrder} 
+                        onSort={onSort}
+                        paginator={paginator}
+                        rows={rows}
+                        totalRecords={totalRecords}
+                        first={first}
+                        onPage={onPage}
+                        onSearch={onSearch}
+                    />
                 :
                 <ContainerSemRegistro>
                 <section className={styles.container}>

@@ -1,6 +1,8 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import './DataTable.css'
 import Texto from '@components/Texto';
 import Botao from '@components/Botao';
@@ -16,7 +18,21 @@ import ModalAdicionarDependente from '@components/ModalAdicionarDependente';
 import { DependenteProvider } from '@contexts/Dependente';
 import { useTranslation } from 'react-i18next';
 
-function DataTableDependentes({ dependentes, search = true, sortField, sortOrder, onSort }) {
+function DataTableDependentes({ 
+    dependentes, 
+    search = true, 
+    sortField, 
+    sortOrder, 
+    onSort,
+    // Props para paginação via servidor
+    paginator = false,
+    rows = 10,
+    totalRecords = 0,
+    first = 0,
+    onPage,
+    onSearch,
+    showSearch = true
+}) {
 
     const[selectedDependente, setSelectedDependente] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
@@ -28,12 +44,10 @@ function DataTableDependentes({ dependentes, search = true, sortField, sortOrder
     const { t } = useTranslation('common');
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        if (onSearch) {
+            onSearch(value);
+        }
     };
 
     function verDetalhes(value)
@@ -120,6 +134,11 @@ function DataTableDependentes({ dependentes, search = true, sortField, sortOrder
 
     const representativeParentescoTemplate = (rowData) => {
         let grau_parentesco = rowData?.grau_parentesco;
+        
+        if (!grau_parentesco) {
+            return <Tag severity="secondary" value="Não definido"></Tag>;
+        }
+        
         switch(rowData?.grau_parentesco)
         {
             case 'Filho':
@@ -127,9 +146,6 @@ function DataTableDependentes({ dependentes, search = true, sortField, sortOrder
             default:
                 return <Tag severity="primary" value={rowData?.grau_parentesco}></Tag>;
         }
-        return (
-            <Tag severity="primary" value={grau_parentesco}></Tag>
-        )
     }
 
     const handleSort = (event) => {
@@ -141,10 +157,14 @@ function DataTableDependentes({ dependentes, search = true, sortField, sortOrder
         }
     };
 
+    const totalDependentesTemplate = () => {
+        return 'Total de Dependentes: ' + (totalRecords ?? 0);
+    };
+
     return (
         <>
             <BotaoGrupo align="space-between">
-                {search &&
+                {search && showSearch &&
                     <div className="flex justify-content-end">
                         <span className="p-input-icon-left">
                             <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
@@ -155,19 +175,32 @@ function DataTableDependentes({ dependentes, search = true, sortField, sortOrder
             
             <DataTable 
                 value={dependentes} 
-                filters={filters} 
-                globalFilterFields={['nome_depend', 'cpf']}  
                 emptyMessage="Não foram encontrados dependentes" 
                 selection={selectedDependente} 
                 onSelectionChange={(e) => verDetalhes(e.value)} 
                 selectionMode="single" 
-                paginator 
-                rows={10}  
+                paginator={paginator}
+                lazy={paginator}
+                rows={rows} 
+                totalRecords={totalRecords}
+                first={first}
+                onPage={onPage}
                 tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}
                 sortField={sortField}
                 sortOrder={sortOrder === 'desc' ? -1 : 1}
                 onSort={handleSort}
                 removableSort
+                showGridlines
+                stripedRows
+                footerColumnGroup={
+                    paginator ? (
+                        <ColumnGroup>
+                            <Row>
+                                <Column footer={totalDependentesTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                            </Row>
+                        </ColumnGroup>
+                    ) : null
+                }
             >
                 {search &&  <Column body={representativeFuncNomeTemplate} sortField="id_funcionario_id" header="Funcionário" sortable field="funcionario_pessoa_fisica__nome" style={{ width: '30%' }}></Column>}
                 <Column body={representativeNomeTemplate} header="Nome Completo" sortable field="nome_depend" style={{ width: '30%' }}></Column>
