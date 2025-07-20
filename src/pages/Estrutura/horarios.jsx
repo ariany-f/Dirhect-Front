@@ -11,6 +11,7 @@ import Management from '@assets/Management.svg'
 import { Link } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 import ModalAdicionarHorario from '@components/ModalAdicionarHorario'
+import { ArmazenadorToken } from '@utils'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -149,7 +150,9 @@ function HorariosLista() {
                         <Botao estilo={'black'} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um horário</Botao>
+                {ArmazenadorToken.hasPermission('add_horario') &&
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um horário</Botao>
+                }
             </BotaoGrupo>
             
             {horarios && horarios.length > 0 ?

@@ -11,6 +11,7 @@ import Management from '@assets/Management.svg'
 import ModalAdicionarCentroCusto from '@components/ModalAdicionarCentroCusto'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
+import { ArmazenadorToken } from '@utils'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -164,9 +165,11 @@ function CentrosCustoLista() {
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
-                    <GrAddCircle className={styles.icon}/> Criar um centro de custo
-                </Botao>
+                {ArmazenadorToken.hasPermission('add_centrocusto') &&
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
+                        <GrAddCircle className={styles.icon}/> Criar um centro de custo
+                    </Botao>
+                }
             </BotaoGrupo>
             
             {centros_custo && centros_custo.length > 0 ?

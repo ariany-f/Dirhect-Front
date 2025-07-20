@@ -11,6 +11,7 @@ import Management from '@assets/Management.svg'
 import ModalAdicionarDepartamento from '@components/ModalAdicionarDepartamento'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
+import { ArmazenadorToken } from '@utils'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -131,7 +132,9 @@ function CargosLista() {
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um cargo</Botao>
+                {ArmazenadorToken.hasPermission('add_cargo') &&
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar um cargo</Botao>
+                }
             </BotaoGrupo>
             {
                 cargos && cargos.length > 0 ?

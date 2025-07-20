@@ -14,6 +14,7 @@ import ModalAdicionarFilial from '@components/ModalAdicionarFilial'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
 import DataTableFiliais from '@components/DataTableFiliais'
+import { ArmazenadorToken } from '@utils'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -159,7 +160,9 @@ function FiliaisLista() {
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar uma filial</Botao>
+                {ArmazenadorToken.hasPermission('add_filial') &&
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> Criar uma filial</Botao>
+                }
             </BotaoGrupo>
             
             {

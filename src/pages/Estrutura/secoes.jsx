@@ -12,6 +12,7 @@ import Management from '@assets/Management.svg'
 import ModalAdicionarSecao from '@components/ModalAdicionarSecao'
 import { Link } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
+import { ArmazenadorToken } from '@utils'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -167,9 +168,11 @@ function SecoesLista() {
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
-                    <GrAddCircle className={styles.icon}/> Criar uma seção
-                </Botao>
+                {ArmazenadorToken.hasPermission('add_secao') &&
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
+                        <GrAddCircle className={styles.icon}/> Criar uma seção
+                    </Botao>
+                }
             </BotaoGrupo>
             
             {secoes && secoes.length > 0 ?

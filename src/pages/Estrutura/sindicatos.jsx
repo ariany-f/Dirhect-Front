@@ -11,6 +11,7 @@ import Management from '@assets/Management.svg'
 import ModalAdicionarSindicato from '@components/ModalAdicionarSindicato'
 import { Link } from 'react-router-dom'
 import { Toast } from 'primereact/toast'
+import { ArmazenadorToken } from '@utils'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -168,9 +169,11 @@ function SindicatosLista() {
                         <Botao estilo={''} size="small" tab>Horários</Botao>
                     </Link>
                 </BotaoGrupo>
-                <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
-                    <GrAddCircle className={styles.icon}/> Criar um sindicato
-                </Botao>
+                {ArmazenadorToken.hasPermission('add_sindicato') &&
+                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
+                        <GrAddCircle className={styles.icon}/> Criar um sindicato
+                    </Botao>
+                }
             </BotaoGrupo>
             
             {sindicatos && sindicatos.length > 0 ?
