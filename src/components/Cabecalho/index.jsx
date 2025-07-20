@@ -449,7 +449,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
             </ItemPerfil>
             <LanguageSelector />
             <ItemUsuario onClick={toggleMenu}>
-              <div className="user">{(usuario && usuario?.name && usuario?.name !== null && usuario?.name !== undefined && usuario?.name !== '') ? usuario?.name?.charAt(0) : 'U'}</div>
+              <div className="user">{(usuario && usuario?.name && usuario?.name !== null && usuario?.name !== undefined && usuario?.name !== '' && usuario?.name.trim() !== '') ? usuario?.name?.charAt(0) : 'U'}</div>
               <MdOutlineKeyboardArrowDown />
             </ItemUsuario>
           </div>
