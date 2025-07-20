@@ -143,6 +143,7 @@ import DetalhesOperadoras from '@pages/Operadoras/detalhes'
 import FuncoesLista from '@pages/Estrutura/funcoes'
 import ColaboradorDependentesDetalhes from '@pages/Colaboradores/Detalhes/Dependentes/detalhes'
 import FilialDetalhes from '@pages/Estrutura/filial/detalhes'
+import EstruturaColaboradorDetalhes from '@pages/Estrutura/colaborador/detalhes'
 import CargoDetalhes from '@pages/Estrutura/cargo/detalhes'
 import FuncaoDetalhes from '@pages/Estrutura/funcao/detalhes'
 import SecaoDetalhes from '@pages/Estrutura/secao/detalhes'
@@ -281,6 +282,9 @@ function AppRouter() {
                 <Route path="filial/detalhes/:id" element={<FilialDetalhes />} >
                     <Route index element={<EstruturaConfiguracaoBeneficios type="filial" />} />
                     <Route  path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />
+                </Route>
+                <Route path="colaborador/detalhes/:id" element={<EstruturaColaboradorDetalhes />} >
+                    <Route index element={<EstruturaConfiguracaoBeneficios type="funcionario" />} />
                 </Route>
                 <Route path="cargo/detalhes/:id" element={<CargoDetalhes />} >
                     <Route path="adicionar-colaboradores" element={<EstruturaListaColaboradores />} />

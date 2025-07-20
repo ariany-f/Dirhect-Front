@@ -53,7 +53,7 @@ function DataTableColaboradorElegibilidade({ colaboradores = [], showSearch = tr
 
     function verDetalhes(value) {
         setSelectedFilial(value); // Atualiza o estado
-        navegar(`/estrutura/filial/detalhes/${value.id}`);
+        navegar(`/colaborador/detalhes/${value.id}`);
         // setTimeout(() => setModalOpened(true), 0); // Aguarda a atualização do estado
     }
 
