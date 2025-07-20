@@ -246,7 +246,7 @@ function Menu({ opened = false, aoFechar }){
                                 </div>
                             </Link>
                         </li>
-                        {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && (
+                        {usuario.tipo !== "candidato" && usuario.tipo !== "funcionario" && ArmazenadorToken.hasPermission('view_user') && (
                             <li onClick={() => FecharMenu()}>
                                 <Link className="link" to="/operador">
                                     <div className="group">
