@@ -1,18 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import BotaoSemBorda from '@components/BotaoSemBorda';
 import { GrAddCircle } from 'react-icons/gr';
 import { FaTrash, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { Dropdown } from 'primereact/dropdown';
+import http from '@http';
 
 const StepEducacao = () => {
-    const { candidato, addArrayItem, updateArrayItem, removeArrayItem } = useCandidatoContext();
+    const { candidato, addArrayItem, updateArrayItem, removeArrayItem, setCandidato } = useCandidatoContext();
     const [abertos, setAbertos] = useState(() => {
         // Se não houver itens, retorna array vazio
         if (!Array.isArray(candidato.educacao) || candidato.educacao.length === 0) return [];
         // Retorna array com o índice do último item
         return [candidato.educacao.length - 1];
     });
+    const [grausInstrucao, setGrausInstrucao] = useState([]);
+
+    // Carregar graus de instrução da API
+    useEffect(() => {
+        const carregarGrausInstrucao = async () => {
+            try {
+                const response = await http.get('tabela_dominio/grau_instrucao/');
+                // Verifica se a resposta tem a estrutura esperada
+                if (response && response.registros && Array.isArray(response.registros)) {
+                    setGrausInstrucao(response.registros);
+                } else if (Array.isArray(response)) {
+                    setGrausInstrucao(response);
+                } else {
+                    console.error('Estrutura de dados inesperada:', response);
+                    setGrausInstrucao([]);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar graus de instrução:', error);
+                setGrausInstrucao([]);
+            }
+        };
+
+        carregarGrausInstrucao();
+    }, []);
 
     const toggleAcordeon = (idx) => {
         const educacao = candidato.educacao[idx];
@@ -54,7 +80,13 @@ const StepEducacao = () => {
             }
             
             // Adiciona novo item e abre ele
-            addArrayItem('educacao', { nivel: '', instituicao: '', curso: '', dataInicio: '', dataConclusao: '' });
+            addArrayItem('educacao', { 
+                nivel: '', 
+                instituicao: '', 
+                curso: '', 
+                dataInicio: '', 
+                dataConclusao: ''
+            });
             setAbertos([candidato.educacao.length]); // Abre o novo item
         }
     };
@@ -71,6 +103,42 @@ const StepEducacao = () => {
 
     return (
         <div data-tour="panel-step-3" style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
+            {/* Campo de Grau de Instrução - separado dos itens de educação */}
+            <div style={{ 
+                border: '1px solid #eee', 
+                borderRadius: 8, 
+                marginBottom: 12, 
+                padding: 16,
+                width: '100%',
+                backgroundColor: '#fafafa'
+            }}>
+                <label style={{ 
+                    display: 'block', 
+                    marginBottom: '12px', 
+                    fontWeight: '600', 
+                    color: 'var(--text-color)',
+                    fontSize: '14px'
+                }}>
+                    Grau de Instrução *
+                </label>
+                <Dropdown
+                    value={candidato.grau_instrucao}
+                    options={Array.isArray(grausInstrucao) ? grausInstrucao : []}
+                    onChange={(e) => {
+                        setCandidato(prev => ({
+                            ...prev,
+                            grau_instrucao: e.value
+                        }));
+                    }}
+                    placeholder="Selecione o grau de instrução"
+                    optionLabel="descricao"
+                    optionValue="id"
+                    style={{ width: '100%' }}
+                    className="p-inputtext-sm"
+                />
+            </div>
+
+            {/* Itens de Educação */}
             {(Array.isArray(candidato.educacao) ? candidato.educacao : []).map((edu, idx) => (
                 <div key={idx} style={{ 
                     border: '1px solid #eee', 
