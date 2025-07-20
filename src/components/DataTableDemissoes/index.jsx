@@ -1,6 +1,8 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
@@ -17,7 +19,22 @@ import ModalDemissao from '@components/ModalDemissao';
 import http from '@http';
 import { FaUserTimes } from 'react-icons/fa';
 
-function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder, onSort, aoAtualizar }) {
+function DataTableDemissao({ 
+    demissoes, 
+    colaborador = null, 
+    sortField, 
+    sortOrder, 
+    onSort, 
+    aoAtualizar,
+    // Props para paginação via servidor
+    paginator = false,
+    rows = 10,
+    totalRecords = 0,
+    first = 0,
+    onPage,
+    onSearch,
+    showSearch = true
+}) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -31,12 +48,10 @@ function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder
     const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-
-        _filters['global'].value = value;
-
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        if (onSearch) {
+            onSearch(value);
+        }
     };
 
     function verDetalhes(value)
@@ -111,9 +126,13 @@ function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder
         }
     };
 
+    const totalDemissoesTemplate = () => {
+        return 'Total de Demissões: ' + (totalRecords ?? 0);
+    };
+
     return (
         <>
-            {!colaborador &&
+            {!colaborador && showSearch &&
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
                 <span className="p-input-icon-left">
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por candidato" />
@@ -124,11 +143,34 @@ function DataTableDemissao({ demissoes, colaborador = null, sortField, sortOrder
                     </BotaoGrupo>
                 }
             </div>}
-            <DataTable value={demissoes} filters={filters} globalFilterFields={['titulo']}  emptyMessage="Não foram encontradas demissões pendentes" selection={selectedVaga} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10}  tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
+            <DataTable 
+                value={demissoes} 
+                emptyMessage="Não foram encontradas demissões pendentes" 
+                selection={selectedVaga} 
+                onSelectionChange={(e) => verDetalhes(e.value)} 
+                selectionMode="single" 
+                paginator={paginator}
+                lazy={paginator}
+                rows={rows} 
+                totalRecords={totalRecords}
+                first={first}
+                onPage={onPage}
+                tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
                 sortField={sortField}
                 sortOrder={sortOrder === 'desc' ? -1 : 1}
                 onSort={handleSort}
                 removableSort
+                showGridlines
+                stripedRows
+                footerColumnGroup={
+                    paginator ? (
+                        <ColumnGroup>
+                            <Row>
+                                <Column footer={totalDemissoesTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                            </Row>
+                        </ColumnGroup>
+                    ) : null
+                }
             >
                 {!colaborador &&
                     <Column body={representativeChapaTemplate} header="Matrícula" sortable field="chapa" style={{ width: '10%' }}></Column>

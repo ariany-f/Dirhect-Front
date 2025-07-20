@@ -6,10 +6,7 @@ import { Row } from 'primereact/row';
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
-import styles from '@pages/Colaboradores/Colaboradores.module.css'
 import BotaoGrupo from '@components/BotaoGrupo';
-import Botao from '@components/Botao';
-import BotaoSemBorda from '@components/BotaoSemBorda';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
