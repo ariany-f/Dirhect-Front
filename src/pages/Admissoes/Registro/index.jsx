@@ -524,7 +524,7 @@ const CandidatoRegistro = () => {
         if (!validacao) return;
 
         await handleSalvarAdmissao();
-        await concluirTarefa('documentos_pendentes');
+        await concluirTarefa('aguardar_documento');
     };
 
     const handleAceitarLGPD = async () => {
@@ -542,10 +542,10 @@ const CandidatoRegistro = () => {
             });
 
             // Após confirmar que o aceite foi salvo, conclui a tarefa
-            await concluirTarefa('aceite_lgpd');
+            await concluirTarefa('aguardar_lgpd');
             
             // Atualiza o contexto com a tarefa concluída
-            const tarefaLGPD = candidato.tarefas.find(t => t.tipo_codigo === 'aceite_lgpd');
+            const tarefaLGPD = candidato.tarefas.find(t => t.tipo_codigo === 'aguardar_lgpd');
             if (tarefaLGPD) {
                 const novasTarefas = candidato.tarefas.map(t => {
                     if (t.id === tarefaLGPD.id) {

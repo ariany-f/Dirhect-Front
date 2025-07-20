@@ -46,9 +46,9 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         { label: 'Pendente', value: 'Pendente' },
     ];
     const tipoTarefaOptions = [
-        { label: 'Aceite LGPD', value: 'aceite_lgpd' },
-        { label: 'Documentos Pendentes', value: 'documentos_pendentes' },
-        { label: 'Integração ERP', value: 'integracao_erp' },
+        { label: 'Aceite LGPD', value: 'aguardar_lgpd' },
+        { label: 'Documentos Pendentes', value: 'aguardar_documento' },
+        { label: 'Integração ERP', value: 'aprovar_admissao' },
     ];
 
     const onGlobalFilterChange = (value) => {
@@ -112,13 +112,13 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         if (!option.value) return <span>{option.label}</span>;
         let icon = null;
         switch(option.value) {
-            case 'aceite_lgpd':
+            case 'aguardar_lgpd':
                 icon = <FaUserPlus fill="var(--info)" stroke="white" color="var(--info)" size={16}/>;
                 break;
-            case 'documentos_pendentes':
+            case 'aguardar_documento':
                 icon = <FaUserMinus fill="var(--error)" stroke="white" color="var(--error)" size={16}/>;
                 break;
-            case 'integracao_erp':
+            case 'aprovar_admissao':
                 icon = <FaPaperPlane fill="var(--green-500)" stroke="white" color="var(--green-500)" size={16}/>;
                 break;
             default:

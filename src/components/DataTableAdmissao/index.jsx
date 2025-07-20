@@ -83,6 +83,22 @@ function DataTableAdmissao({ vagas }) {
     }
 
     const representativeLgpdTemplate = (rowData) => {
+        // Verifica se tem tarefa de LGPD
+        const temTarefaLGPD = rowData?.tarefas?.some(tarefa => tarefa.tipo_codigo === 'aguardar_lgpd');
+        
+        if (!temTarefaLGPD) {
+            return (
+                <span style={{ 
+                    color: '#888', 
+                    fontStyle: 'italic',
+                    fontSize: 13,
+                    fontWeight: 500
+                }}>
+                    N/A
+                </span>
+            );
+        }
+        
         const aceito = rowData?.aceite_lgpd;
         return (
             <Tag
