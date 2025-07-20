@@ -33,6 +33,7 @@ function Dashboard() {
     const [totalAdmissoes, setTotalAdmissoes] = useState(0)
     const [atividadesRaw, setAtividadesRaw] = useState([])
     const [refreshing, setRefreshing] = useState(false)
+    const [funcionariosDashboard, setFuncionariosDashboard] = useState(null)
     const isMounted = useRef(true)
 
     // Mapeamento deve vir logo no início do componente
@@ -134,25 +135,36 @@ function Dashboard() {
             abertasPrioridadeAlta,
             atividadesConcluidas,
             abertasPorEntidade,
-            totalAtividades
+            totalAtividades,
+            // Dados do dashboard de funcionários
+            totalFuncionarios: funcionariosDashboard?.total_funcionarios || 0,
+            funcionariosAtivos: funcionariosDashboard?.funcionarios_ativos || 0,
+            funcionariosFerias: funcionariosDashboard?.funcionarios_ferias || 0,
+            funcionariosMasculino: funcionariosDashboard?.funcionarios_masculino || 0,
+            funcionariosFeminino: funcionariosDashboard?.funcionarios_feminino || 0,
+            funcionariosOutrosGeneros: funcionariosDashboard?.funcionarios_outros_generos || 0,
+            admitidosNoMes: funcionariosDashboard?.admitidos_no_mes || 0
         };
-    }, [atividadesRaw, atividadesPorStatus, entidadeDisplayMap]);
+    }, [atividadesRaw, atividadesPorStatus, entidadeDisplayMap, funcionariosDashboard]);
 
     // Função para buscar todos os dados do dashboard
     const carregarDashboard = async () => {
         setRefreshing(true);
         try {
             if(usuarioEstaLogado) {
-                // Carregar colaboradores apenas se não existirem
-                if(!colaboradores) {
-                    await http.get('funcionario/?format=json')
+                // Carregar dados do dashboard de funcionários
+                await http.get('funcionario/dashboard/')
                     .then(response => {
-                        setColaboradores(response)
+                        console.log('Dados do dashboard de funcionários:', response);
+                        setFuncionariosDashboard(response);
+                        // Usar total_funcionarios como colaboradores para manter compatibilidade
+                        setColaboradores(Array(response.total_funcionarios).fill(null));
                     })
-                    .catch(erro => {
-                        setLoadingOpened(false)
-                    })
-                }
+                    .catch(error => {
+                        console.error('Erro ao carregar dashboard de funcionários:', error);
+                        setFuncionariosDashboard(null);
+                        setColaboradores(null);
+                    });
                 
                 // Carregar outras informações apenas se necessário
                 await http.get('tarefas/?format=json')
@@ -299,6 +311,13 @@ function Dashboard() {
                 totalDemissoes: totalDemissoes,
                 totalFerias: totalFerias,
                 totalVagas: totalVagas,
+                // Dados do dashboard de funcionários
+                totalColaboradores: dadosCalculados.totalFuncionarios,
+                funcionariosAtivos: dadosCalculados.funcionariosAtivos,
+                funcionariosMasculino: dadosCalculados.funcionariosMasculino,
+                funcionariosFeminino: dadosCalculados.funcionariosFeminino,
+                funcionariosOutrosGeneros: dadosCalculados.funcionariosOutrosGeneros,
+                admitidosNoMes: dadosCalculados.admitidosNoMes
             };
         } else if (usuario?.tipo === 'Benefícios') {
             return {
@@ -306,22 +325,22 @@ function Dashboard() {
                 destaque: 'Bem-vindo ao módulo de Benefícios!',
                 saldoBeneficios: 15000,
                 pedidosPendentes: 4,
-                totalColaboradores: colaboradores?.length || 0,
+                totalColaboradores: dadosCalculados.totalFuncionarios,
             };
         } else if (usuario?.tipo === 'Outsourcing') {
             return {
                 ...dashboardData,
                 destaque: 'Bem-vindo Outsourcing!',
                 projetosAtivos: 5,
-                totalColaboradores: colaboradores?.length || 0,
+                totalColaboradores: dadosCalculados.totalFuncionarios,
             };
         } else {
             return {
                 ...dashboardData,
-                totalColaboradores: colaboradores?.length || 0,
+                totalColaboradores: dadosCalculados.totalFuncionarios,
             };
         }
-    }, [dashboardData, usuario?.tipo, totalAdmissoes, totalDemissoes, totalFerias, totalVagas, colaboradores?.length]);
+    }, [dashboardData, usuario?.tipo, totalAdmissoes, totalDemissoes, totalFerias, totalVagas, dadosCalculados]);
 
     // Otimizar DashboardCard com useMemo
     const dashboardCardMemo = useMemo(() => {
