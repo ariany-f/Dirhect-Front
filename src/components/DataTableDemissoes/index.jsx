@@ -41,11 +41,29 @@ function DataTableDemissao({
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
+    const [tiposDemissao, setTiposDemissao] = useState({});
     const navegar = useNavigate()
 
     const [modalSelecaoAberto, setModalSelecaoAberto] = useState(false);
     const [modalDemissaoAberto, setModalDemissaoAberto] = useState(false);
     const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
+
+    // Buscar tipos de demissão
+    useEffect(() => {
+        http.get('tabela_dominio/tipo_demissao/')
+            .then(response => {
+                const tipos = {};
+                if (response.registros) {
+                    response.registros.forEach(tipo => {
+                        tipos[tipo.id_origem] = tipo.descricao;
+                    });
+                }
+                setTiposDemissao(tipos);
+            })
+            .catch(error => {
+                console.error('Erro ao buscar tipos de demissão:', error);
+            });
+    }, []);
 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
@@ -108,7 +126,15 @@ function DataTableDemissao({
     }
 
     const representativeTipoDemissaoTemplate = (rowData) => {
-        return rowData.tipo_demissao
+        const tipoCodigo = rowData.tipo_demissao;
+        const tipoDescricao = tiposDemissao[tipoCodigo];
+        
+        if (tipoDescricao) {
+            return tipoDescricao;
+        }
+        
+        // Fallback: mostrar o código se não encontrar a descrição
+        return tipoCodigo || 'Não definido';
     }
 
     const representativeChapaTemplate = (rowData) => {

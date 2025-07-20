@@ -109,26 +109,85 @@ const SearchContainer = styled.div`
     }
 `;
 
+const PaginationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+`;
+
+const PaginationButton = styled.button`
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background: ${({ $active }) => $active ? 'var(--primaria)' : '#fff'};
+    color: ${({ $active }) => $active ? '#fff' : '#333'};
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+
+    &:hover {
+        background: ${({ $active }) => $active ? 'var(--primaria)' : '#f5f5f5'};
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+`;
+
+const PaginationInfo = styled.span`
+    font-size: 12px;
+    color: #666;
+    margin: 0 8px;
+`;
+
 function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) {
     const [colaboradores, setColaboradores] = useState([]);
     const [busca, setBusca] = useState('');
     const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(10);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
+    const loadColaboradores = (currentPage, searchTerm = '') => {
+        setLoading(true);
+        const searchParam = searchTerm ? `&search=${searchTerm}` : '';
+        http.get(`funcionario/?format=json&page=${currentPage}&page_size=${pageSize}${searchParam}`)
+            .then(response => {
+                setColaboradores(response.results || response);
+                setTotalRecords(response.count || 0);
+                setTotalPages(response.total_pages || 0);
+            })
+            .catch(erro => console.error("Erro ao buscar colaboradores", erro))
+            .finally(() => setLoading(false));
+    };
 
     useEffect(() => {
         if (opened) {
-            setLoading(true);
-            http.get('funcionario/?format=json')
-                .then(response => {
-                    setColaboradores(response);
-                })
-                .catch(erro => console.error("Erro ao buscar colaboradores", erro))
-                .finally(() => setLoading(false));
-        } else {
+            setPage(1);
             setBusca('');
             setColaboradorSelecionado(null);
+            loadColaboradores(1);
         }
     }, [opened]);
+
+    // Debounce para busca
+    useEffect(() => {
+        if (!opened) return;
+
+        const timeoutId = setTimeout(() => {
+            setPage(1);
+            loadColaboradores(1, busca);
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
+    }, [busca, opened]);
 
     const handleSelecionar = () => {
         if (colaboradorSelecionado) {
@@ -138,12 +197,91 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
         }
     };
 
-    const colaboradoresFiltrados = busca.length > 0
-        ? colaboradores.filter(colab =>
-            (colab.chapa && colab.chapa.toLowerCase().includes(busca.toLowerCase())) ||
-            (colab.funcionario_pessoa_fisica?.nome && colab.funcionario_pessoa_fisica.nome.toLowerCase().includes(busca.toLowerCase()))
-        )
-        : colaboradores;
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+        loadColaboradores(newPage, busca);
+        setColaboradorSelecionado(null); // Reset selection when changing page
+    };
+
+    const renderPagination = () => {
+        if (totalPages <= 1) return null;
+
+        const pages = [];
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        // Botão anterior
+        pages.push(
+            <PaginationButton
+                key="prev"
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1}
+            >
+                Anterior
+            </PaginationButton>
+        );
+
+        // Primeira página
+        if (startPage > 1) {
+            pages.push(
+                <PaginationButton
+                    key="1"
+                    onClick={() => handlePageChange(1)}
+                >
+                    1
+                </PaginationButton>
+            );
+            if (startPage > 2) {
+                pages.push(<span key="dots1">...</span>);
+            }
+        }
+
+        // Páginas do meio
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(
+                <PaginationButton
+                    key={i}
+                    $active={page === i}
+                    onClick={() => handlePageChange(i)}
+                >
+                    {i}
+                </PaginationButton>
+            );
+        }
+
+        // Última página
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                pages.push(<span key="dots2">...</span>);
+            }
+            pages.push(
+                <PaginationButton
+                    key={totalPages}
+                    onClick={() => handlePageChange(totalPages)}
+                >
+                    {totalPages}
+                </PaginationButton>
+            );
+        }
+
+        // Botão próximo
+        pages.push(
+            <PaginationButton
+                key="next"
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page === totalPages}
+            >
+                Próximo
+            </PaginationButton>
+        );
+
+        return pages;
+    };
 
     return (
         <>
@@ -169,7 +307,7 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
                                 />
                             </SearchContainer>
                             <ListaColaboradores>
-                                {colaboradoresFiltrados.map(colab => (
+                                {colaboradores.map(colab => (
                                     <ItemColaborador
                                         key={colab.id}
                                         $selecionado={colaboradorSelecionado?.id === colab.id}
@@ -179,7 +317,21 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
                                         <ChapaColaborador>Chapa: {colab.chapa}</ChapaColaborador>
                                     </ItemColaborador>
                                 ))}
+                                {colaboradores.length === 0 && !loading && (
+                                    <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                                        Nenhum colaborador encontrado
+                                    </div>
+                                )}
                             </ListaColaboradores>
+                            
+                            {totalRecords > 0 && (
+                                <PaginationContainer>
+                                    <PaginationInfo>
+                                        {((page - 1) * pageSize) + 1} - {Math.min(page * pageSize, totalRecords)} de {totalRecords}
+                                    </PaginationInfo>
+                                    {renderPagination()}
+                                </PaginationContainer>
+                            )}
                         </Frame>
                         <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '16px 24px', borderTop: '1px solid #eee', gap: '12px' }}>
                             <Botao
