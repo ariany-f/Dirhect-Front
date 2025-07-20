@@ -139,6 +139,10 @@ const CandidatoRegistro = () => {
     const stepperRef = useRef(null);
     const navegar = useNavigate()
  
+    // Verificar se os steps devem ser exibidos baseado nas variáveis de ambiente
+    const mostrarHabilidades = import.meta.env.VITE_OPTION_HABILIDADES === 'true';
+    const mostrarExperiencia = import.meta.env.VITE_OPTION_EXPERIENCIA === 'true';
+ 
     const [filiais, setFiliais] = useState([]);
     const [centros_custo, setCentrosCusto] = useState([]);
     const [departamentos, setDepartamentos] = useState([]);
@@ -606,8 +610,27 @@ const CandidatoRegistro = () => {
     // Função para renderizar os botões baseado no step atual
     const renderFooterButtons = () => {
         const isFirstStep = activeIndex === 0;
-        // Ajustado para o novo step de dados bancários
-        const isLastStep = (self && activeIndex === 7) || (!self && activeIndex === 6);
+        
+        // Calcular o último step dinamicamente baseado nas variáveis de ambiente
+        let totalSteps = 4; // Documentos, Dados Pessoais, Dados Bancários, Educação
+        
+        if (!self) {
+            totalSteps += 1; // Dados Cadastrais
+        }
+        
+        if (mostrarHabilidades) {
+            totalSteps += 1; // Habilidades
+        }
+        
+        if (mostrarExperiencia) {
+            totalSteps += 1; // Experiência Profissional
+        }
+        
+        if (self) {
+            totalSteps += 1; // LGPD
+        }
+        
+        const isLastStep = activeIndex === totalSteps - 1;
         
         return (
             <div style={{
@@ -641,8 +664,8 @@ const CandidatoRegistro = () => {
                         </Botao>
                     )}
                     
-                    {/* Steps intermediários com salvar (Dados Pessoais, Dados Bancários, Vaga, Educação, Habilidades) */}
-                    {(activeIndex >= 1 && activeIndex <= (self ? 5 : 5)) && (
+                    {/* Steps intermediários com salvar */}
+                    {(activeIndex >= 1 && activeIndex < totalSteps - 1) && (
                         <>
                             <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
                                 <FaSave fill="white"/> Salvar
@@ -653,15 +676,19 @@ const CandidatoRegistro = () => {
                         </>
                     )}
                     
-                    {/* Step Experiência - último step antes da finalização */}
-                    {activeIndex === (self ? 6 : 6) && (
+                    {/* Último step */}
+                    {isLastStep && (
                         <>
                             <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
                                 <FaSave fill="white"/> Salvar
                             </Botao>
                             {self ? (
-                                <Botao size="small" label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}>
-                                    <HiArrowRight fill="white"/> Salvar e Continuar
+                                <Botao 
+                                    iconPos="right" 
+                                    aoClicar={handleAceitarLGPD}
+                                    disabled={candidato.aceite_lgpd}
+                                >
+                                    <FaSave fill="white"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Finalizar'}
                                 </Botao>
                             ) : (
                                 <Botao size="small" label="Next" iconPos="right" aoClicar={handleFinalizarDocumentos}>
@@ -669,17 +696,6 @@ const CandidatoRegistro = () => {
                                 </Botao>
                             )}
                         </>
-                    )}
-                    
-                    {/* Step LGPD - só para candidatos */}
-                    {self && activeIndex === 7 && (
-                        <Botao 
-                            iconPos="right" 
-                            aoClicar={handleAceitarLGPD}
-                            disabled={candidato.aceite_lgpd}
-                        >
-                            <FaSave fill="white"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Finalizar'}
-                        </Botao>
                     )}
                 </div>
             </div>
@@ -971,25 +987,29 @@ const CandidatoRegistro = () => {
                         </ScrollPanel>
                     </StepperPanel>
                     
-                    <StepperPanel header="Habilidades">
-                        <ScrollPanel className="responsive-scroll-panel">
-                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
-                                <ScrollPanel className="responsive-inner-scroll">
-                                    <StepHabilidades />
-                                </ScrollPanel>
-                            </div>
-                        </ScrollPanel>
-                    </StepperPanel>
+                    {mostrarHabilidades && (
+                        <StepperPanel header="Habilidades">
+                            <ScrollPanel className="responsive-scroll-panel">
+                                <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+                                    <ScrollPanel className="responsive-inner-scroll">
+                                        <StepHabilidades />
+                                    </ScrollPanel>
+                                </div>
+                            </ScrollPanel>
+                        </StepperPanel>
+                    )}
                     
-                    <StepperPanel header="Experiência Profissional">
-                        <ScrollPanel className="responsive-scroll-panel">
-                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
-                                <ScrollPanel className="responsive-inner-scroll">
-                                    <StepExperiencia />
-                                </ScrollPanel>
-                            </div>
-                        </ScrollPanel>
-                    </StepperPanel>
+                    {mostrarExperiencia && (
+                        <StepperPanel header="Experiência Profissional">
+                            <ScrollPanel className="responsive-scroll-panel">
+                                <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+                                    <ScrollPanel className="responsive-inner-scroll">
+                                        <StepExperiencia />
+                                    </ScrollPanel>
+                                </div>
+                            </ScrollPanel>
+                        </StepperPanel>
+                    )}
                     
                     {self && (
                         <StepperPanel header="LGPD">
