@@ -132,7 +132,8 @@ function DropdownItens({
     camposVazios = [],
     optionTemplate, // Nova prop para o template personalizado
     disabled = false, // Adiciona a prop disabled
-    allowClear = false // Adiciona a prop allowClear
+    allowClear = false, // Adiciona a prop allowClear
+    required = false // Adiciona a prop required
 }) {
 
     const [erro, setErro] = useState('')
@@ -171,7 +172,9 @@ function DropdownItens({
         <>
             <div className={styles.inputContainer}>
                 {(label) ?
-                <label htmlFor={name} className={styles.label}>{label}</label>
+                <label htmlFor={name} className={styles.label}>
+                    {label}{required && <span style={{color: 'var(--error)'}}> *</span>}
+                </label>
                 : ''}
                 {
                     filter ?  

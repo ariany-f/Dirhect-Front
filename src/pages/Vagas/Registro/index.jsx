@@ -67,6 +67,11 @@ const VagasRegistro = () => {
     const toast = useRef(null)
     const [erroPeriInsa, setErroPeriInsa] = useState(false);
 
+    // Função para verificar se um campo é obrigatório baseado na lista
+    const isCampoObrigatorio = (lista) => {
+        return lista && lista.length > 0;
+    };
+
     const converterData = (data) => {
         if (!data) return null;
         const [dia, mes, ano] = data.split('/');
@@ -415,7 +420,8 @@ const VagasRegistro = () => {
                                     code: filial.id
                                 }))} 
                                 placeholder="Filial"
-                                required />
+                                required={isCampoObrigatorio(filiais)}
+                                allowClear={true} />
                         </Col6>
                         <Col6>
                             <DropdownItens 
@@ -427,7 +433,9 @@ const VagasRegistro = () => {
                                     name: cc.nome,
                                     code: cc.id
                                 }))} 
-                                placeholder="Centro de Custo" />
+                                placeholder="Centro de Custo"
+                                required={isCampoObrigatorio(centros_custo)}
+                                allowClear={true} />
                         </Col6>
                     </Col12>
 
@@ -443,7 +451,8 @@ const VagasRegistro = () => {
                                     code: dep.id
                                 }))} 
                                 placeholder="Departamento"
-                                required />
+                                required={isCampoObrigatorio(departamentos)}
+                                allowClear={true} />
                         </Col6>
                         <Col6>
                             <DropdownItens 
@@ -455,7 +464,9 @@ const VagasRegistro = () => {
                                     name: sec.nome,
                                     code: sec.id
                                 }))} 
-                                placeholder="Seção" />
+                                placeholder="Seção"
+                                required={isCampoObrigatorio(secoes)}
+                                allowClear={true} />
                         </Col6>
                     </Col12>
 
@@ -471,7 +482,8 @@ const VagasRegistro = () => {
                                     code: cargo.id
                                 }))} 
                                 placeholder="Cargo"
-                                required />
+                                required={isCampoObrigatorio(cargos)}
+                                allowClear={true} />
                         </Col6>
                         <Col6>
                             <DropdownItens 
@@ -484,7 +496,8 @@ const VagasRegistro = () => {
                                     code: horario.id
                                 }))} 
                                 placeholder="Horário"
-                                required />
+                                required={isCampoObrigatorio(horarios)}
+                                allowClear={true} />
                         </Col6>
                     </Col12>
 
@@ -499,7 +512,9 @@ const VagasRegistro = () => {
                                     name: funcao.nome,
                                     code: funcao.id
                                 }))} 
-                                placeholder="Função" />
+                                placeholder="Função"
+                                required={isCampoObrigatorio(funcoes)}
+                                allowClear={true} />
                         </Col6>
                         <Col6>
                             <DropdownItens 
@@ -511,7 +526,9 @@ const VagasRegistro = () => {
                                     name: `${sindicato.codigo} - ${sindicato.descricao}`,
                                     code: sindicato.id
                                 }))} 
-                                placeholder="Sindicato" />
+                                placeholder="Sindicato"
+                                required={isCampoObrigatorio(sindicatos)}
+                                allowClear={true} />
                         </Col6>
                     </Col12>
                 </div>

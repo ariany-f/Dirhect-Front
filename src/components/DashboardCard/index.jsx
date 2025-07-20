@@ -311,7 +311,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             return {
                 admissoesAndamento: 0,
                 tempoMedioAdmissao: 0,
-                etapasAdmissao: []
+                etapasAdmissao: [],
+                slaAdmissao: 0
             };
         }
 
@@ -821,33 +822,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         feriasVencidas: dadosFeriasReais.feriasVencidas,
         feriasProximas: dadosFeriasReais.feriasProximas,
         pedidosFeriasAberto: dadosFeriasReais.pedidosFeriasAberto,
-        feriasAgendadas: dadosFeriasReais.feriasAgendadas.length > 0 ? dadosFeriasReais.feriasAgendadas : [
-            // Dados fake apenas se não houver dados reais
-            { 
-                colaborador: 'ALTAMIRO CARRILHO', 
-                inicio: '03/04/2017', 
-                fim: '02/05/2017', 
-                status: 'F', // F = Finalizadas
-                nrodiasferias: 30,
-                situacaoferias: 'F'
-            },
-            { 
-                colaborador: 'MARIA SANTOS', 
-                inicio: '10/04/2025', 
-                fim: '25/04/2025', 
-                status: 'G', // G = Aguardando Aprovação do Gestor
-                nrodiasferias: 30,
-                situacaoferias: 'G'
-            },
-            { 
-                colaborador: 'PEDRO COSTA', 
-                inicio: '05/05/2025', 
-                fim: '20/05/2025', 
-                status: 'M', // M = Marcadas
-                nrodiasferias: 30,
-                situacaoferias: 'M'
-            }
-        ],
+        feriasAgendadas: dadosFeriasReais.feriasAgendadas,
 
         // Demissões - usando dados reais
         demissoesProcessamento: dadosDemissoesReais.demissoesProcessamento,
@@ -860,11 +835,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Eficiência Operacional
         refacaoAdmissao: 12,
-        refacaoFerias: 8,
         refacaoDemissao: 5,
         tarefasVencidas: 7,
         slaAdmissao: dadosAdmissoesReais.slaAdmissao,
-        slaFerias: 92,
     };
 
     // Dados mockados para Benefícios

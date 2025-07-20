@@ -27,6 +27,11 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
         }));
     };
 
+    // Função para verificar se um campo é obrigatório baseado na lista
+    const isCampoObrigatorio = (lista) => {
+        return lista && lista.length > 0;
+    };
+
     // Função para obter o valor selecionado no formato {name, code}
     const getValorSelecionado = (campo, lista) => {
         // Primeiro tenta pegar do dados_vaga
@@ -96,6 +101,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 }}
                 options={formatarOpcoes(filiais)}
                 label="Filial"
+                required={isCampoObrigatorio(filiais)}
             />
             <DropdownItens
                 $margin={'15px'}
@@ -110,6 +116,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 }}
                 options={formatarOpcoes(departamentos)}
                 label="Departamento"
+                required={isCampoObrigatorio(departamentos)}
             />
             <DropdownItens
                 $margin={'15px'}
@@ -124,6 +131,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 }}
                 options={formatarOpcoes(secoes)}
                 label="Seção"
+                required={isCampoObrigatorio(secoes)}
             />
             <DropdownItens
                 $margin={'15px'}
@@ -138,6 +146,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 }}
                 options={formatarOpcoes(cargos)}
                 label="Cargo"
+                required={isCampoObrigatorio(cargos)}
             />
             <DropdownItens
                 $margin={'15px'}
@@ -152,6 +161,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 }}
                 options={formatarOpcoes(centros_custo)}
                 label="Centro de Custo"
+                required={isCampoObrigatorio(centros_custo)}
             />
             <DropdownItens
                 $margin={'15px'}
@@ -166,6 +176,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 }}
                 options={formatarOpcoes(horarios, true)}
                 label="Horário"
+                required={isCampoObrigatorio(horarios)}
             />
             <DropdownItens
                 $margin={'15px'}
@@ -180,6 +191,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 }}
                 options={formatarOpcoes(funcoes)}
                 label="Função"
+                required={isCampoObrigatorio(funcoes)}
             />
             <DropdownItens
                 $margin={'15px'}
@@ -194,6 +206,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 }}
                 options={formatarOpcoes(sindicatos, true)}
                 label="Sindicato"
+                required={isCampoObrigatorio(sindicatos)}
             />
             <CampoTexto
                 patternMask={'BRL'}
