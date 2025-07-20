@@ -45,7 +45,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     // Definições de variáveis do dashboard de funcionários
     const totalColaboradores = funcionariosDashboard.total_funcionarios || 0;
-    const novosColaboradoresMes = funcionariosDashboard.admissoes_mes_que_vem || funcionariosDashboard.novos_colaboradores_mes || 0;
+    const novosColaboradoresMes = funcionariosDashboard.admitidos_no_mes || 0;
     const demitidos = funcionariosDashboard.funcionarios_demitidos || [];
 
     // Array de cores para as etapas (cores que combinam com o sistema)
@@ -754,42 +754,34 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     const etapasDemissao = processarEtapasDemissao();
 
-    // Calcular distribuição por filial usando dados reais
+    // Calcular distribuição por filial usando dados do dashboard
     const calcularDistribuicaoFilial = () => {
-        if (!colaboradores || colaboradores.length === 0) {
+        if (!funcionariosDashboard.funcionarios_por_filial || funcionariosDashboard.funcionarios_por_filial.length === 0) {
             return {};
         }
 
-        const distribuicao = colaboradores.reduce((acc, colaborador) => {
-            // Validar se o colaborador não é null/undefined
-            if (!colaborador) {
-                return acc;
+        const distribuicao = {};
+        funcionariosDashboard.funcionarios_por_filial.forEach(item => {
+            if (item && item.filial__nome) {
+                distribuicao[item.filial__nome] = parseInt(item.total) || 0;
             }
-            
-            const filial = colaborador.filial_nome || 'Não informado';
-            acc[filial] = (acc[filial] || 0) + 1;
-            return acc;
-        }, {});
+        });
 
         return distribuicao;
     };
 
-    // Calcular distribuição por tipo de funcionário usando dados reais
+    // Calcular distribuição por tipo de funcionário usando dados do dashboard
     const calcularDistribuicaoTipoFuncionario = () => {
-        if (!colaboradores || colaboradores.length === 0) {
+        if (!funcionariosDashboard.funcionarios_por_tipo || funcionariosDashboard.funcionarios_por_tipo.length === 0) {
             return {};
         }
 
-        const distribuicao = colaboradores.reduce((acc, colaborador) => {
-            // Validar se o colaborador não é null/undefined
-            if (!colaborador) {
-                return acc;
+        const distribuicao = {};
+        funcionariosDashboard.funcionarios_por_tipo.forEach(item => {
+            if (item && item.tipo_funcionario__descricao) {
+                distribuicao[item.tipo_funcionario__descricao] = parseInt(item.total) || 0;
             }
-            
-            const tipo = colaborador.tipo_funcionario_descricao || 'Não informado';
-            acc[tipo] = (acc[tipo] || 0) + 1;
-            return acc;
-        }, {});
+        });
 
         return distribuicao;
     };
