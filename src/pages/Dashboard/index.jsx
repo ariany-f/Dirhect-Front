@@ -352,9 +352,10 @@ function Dashboard() {
                 colaboradores={colaboradores} 
                 atividadesRaw={atividadesRaw}
                 tipoUsuario={usuario?.tipo}
+                funcionariosDashboard={funcionariosDashboard}
             />
         );
-    }, [dadosDashboard, colaboradores, atividadesRaw, usuario?.tipo]);
+    }, [dadosDashboard, colaboradores, atividadesRaw, usuario?.tipo, funcionariosDashboard]);
 
     // Gráficos de atividades (só para RH ou Outsourcing)
     const mostrarAtividades = usuario?.tipo === 'Outsourcing';

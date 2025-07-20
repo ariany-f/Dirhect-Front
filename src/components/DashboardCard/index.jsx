@@ -30,7 +30,7 @@ import { Real } from '@utils/formats'
 import { useTranslation } from 'react-i18next';
 import http from '@http'
 
-function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], tipoUsuario = 'RH' }){
+function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], tipoUsuario = 'RH', funcionariosDashboard = {} }){
    
     const [isVisible, setIsVisible] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -323,7 +323,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Calcular tempo médio de admissão (em dias)
         const admissoesConcluidas = admissoesData.filter(admissao => 
-            admissao.dt_admissao // Se tem dt_admissao, está concluída
+            admissao && admissao.dt_admissao // Validar se a admissão não é null e tem dt_admissao
         );
 
         let tempoMedioAdmissao = 0;
@@ -353,8 +353,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
             // Filtrar tarefas de admissão
             const tarefasAdmissao = tarefasData.filter(tarefa => 
-                tarefa.entidade_tipo === 'admissao' || 
-                tarefa.entidade_display === 'admissao'
+                tarefa && (tarefa.entidade_tipo === 'admissao' || tarefa.entidade_display === 'admissao')
             );
 
             console.log('Tarefas de admissão encontradas:', tarefasAdmissao.length);
@@ -473,7 +472,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         });
 
         const novosColaboradores = colaboradores.filter(colaborador => {
-            if (!colaborador.dt_admissao) {
+            // Validar se o colaborador não é null/undefined
+            if (!colaborador || !colaborador.dt_admissao) {
                 return false;
             }
 
@@ -516,7 +516,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Contar demissões do mês atual
         const demissoesMes = demissoesData.filter(demissao => {
-            if (!demissao.dt_demissao) return false;
+            if (!demissao || !demissao.dt_demissao) return false;
             const dataDemissao = new Date(demissao.dt_demissao);
             return dataDemissao >= inicioMes && dataDemissao <= fimMes;
         }).length;
@@ -529,7 +529,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
             // Filtrar tarefas de demissão
             const tarefasDemissao = tarefasData.filter(tarefa => 
-                tarefa.entidade_tipo === 'demissao' || tarefa.entidade_display === 'demissao'
+                tarefa && (tarefa.entidade_tipo === 'demissao' || tarefa.entidade_display === 'demissao')
             );
 
             if (tarefasDemissao.length === 0) {
@@ -538,6 +538,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
             // Agrupar tarefas por tipo_display (etapa) e contar processos únicos
             const processosPorEtapa = tarefasDemissao.reduce((acc, tarefa) => {
+                if (!tarefa) return acc;
+                
                 const tipoDisplay = tarefa.tipo_display || 'Etapa do Processo';
                 const entidadeId = tarefa.entidade_id || tarefa.entidade;
                 
@@ -564,13 +566,13 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Calcular tempo médio de demissão (em dias)
         const demissoesComTempo = demissoesData.filter(demissao => 
-            demissao.dt_demissao // Se tem dt_demissao, está concluída
+            demissao && demissao.dt_demissao // Validar se a demissão não é null e tem dt_demissao
         );
 
         let tempoMedioDemissao = 0;
         if (demissoesComTempo.length > 0) {
             const temposDemissao = demissoesComTempo.map(demissao => {
-                if (demissao.processo_demissao && demissao.dt_demissao) {
+                if (demissao && demissao.processo_demissao && demissao.dt_demissao) {
                     const inicio = new Date(demissao.processo_demissao);
                     const fim = new Date(demissao.dt_demissao);
                     return Math.ceil((fim - inicio) / (1000 * 60 * 60 * 24));
@@ -585,6 +587,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Contar por tipo de demissão
         const motivosDemissao = demissoesData.reduce((acc, demissao) => {
+            if (!demissao) return acc;
+            
             const tipoDemissao = demissao.tipo_demissao || 'Não informado';
             const motivo = getMotivoDemissao(tipoDemissao);
             acc[motivo] = (acc[motivo] || 0) + 1;
@@ -646,37 +650,20 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const contarVagasAbertas = () => {
         if (!vagasData || vagasData.length === 0) return 0;
         // Ajuste o filtro conforme o status real de vaga aberta
-        return vagasData.filter(vaga => vaga.status === 'A' || vaga.status === 'aberta' || vaga.status === 'Aberta').length;
+        return vagasData.filter(vaga => vaga && (vaga.status === 'A' || vaga.status === 'aberta' || vaga.status === 'Aberta')).length;
     };
     const vagasAbertas = contarVagasAbertas();
 
     // Função para calcular o turnover real
     const calcularTurnover = () => {
-        if (!colaboradores || colaboradores.length === 0) {
-            return 0;
-        }
-
+        if (!totalColaboradores || totalColaboradores === 0) return 0;
         const hoje = new Date();
-        const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-        const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
-
-        // Contar demissões do mês atual
-        const demissoesMes = demissoesData.filter(demissao => {
-            if (!demissao.dt_demissao) return false;
-            const dataDemissao = new Date(demissao.dt_demissao);
-            return dataDemissao >= inicioMes && dataDemissao <= fimMes;
+        const demissoesMes = demitidos.filter(d => {
+            if (!d || !d.dt_demissao) return false;
+            const dataDemissao = new Date(d.dt_demissao);
+            return dataDemissao.getMonth() === hoje.getMonth() && dataDemissao.getFullYear() === hoje.getFullYear();
         }).length;
-
-        // Calcular turnover: (Demissões do mês / Total de colaboradores) * 100
-        const turnover = (demissoesMes / colaboradores.length) * 100;
-        
-        console.log('Cálculo do turnover:', {
-            demissoesMes,
-            totalColaboradores: colaboradores.length,
-            turnover: turnover.toFixed(1)
-        });
-
-        return turnover.toFixed(1);
+        return ((demissoesMes / totalColaboradores) * 100).toFixed(1);
     };
 
     // Processar etapas do processo de demissão usando dados reais de tarefas
@@ -690,8 +677,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Filtrar tarefas de demissão
         const tarefasDemissao = tarefasData.filter(tarefa => 
-            tarefa.entidade_tipo === 'demissao' || 
-            tarefa.entidade_display === 'demissao'
+            tarefa && (tarefa.entidade_tipo === 'demissao' || tarefa.entidade_display === 'demissao')
         );
 
         console.log('Tarefas de demissão encontradas:', tarefasDemissao.length);
@@ -703,6 +689,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Agrupar tarefas por tipo_display (etapa)
         const etapasAgrupadas = tarefasDemissao.reduce((acc, tarefa) => {
+            if (!tarefa) return acc;
+            
             const tipoDisplay = tarefa.tipo_display || 'Etapa do Processo';
             
             if (!acc[tipoDisplay]) {
@@ -769,6 +757,11 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         }
 
         const distribuicao = colaboradores.reduce((acc, colaborador) => {
+            // Validar se o colaborador não é null/undefined
+            if (!colaborador) {
+                return acc;
+            }
+            
             const filial = colaborador.filial_nome || 'Não informado';
             acc[filial] = (acc[filial] || 0) + 1;
             return acc;
@@ -784,6 +777,11 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         }
 
         const distribuicao = colaboradores.reduce((acc, colaborador) => {
+            // Validar se o colaborador não é null/undefined
+            if (!colaborador) {
+                return acc;
+            }
+            
             const tipo = colaborador.tipo_funcionario_descricao || 'Não informado';
             acc[tipo] = (acc[tipo] || 0) + 1;
             return acc;
@@ -798,9 +796,14 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     // Dados mockados para demonstração - em produção viriam da API
     const dadosRH = {
         // Gestão de Colaboradores
-        totalColaboradores: colaboradores.length,
+        totalColaboradores: totalColaboradores,
         novosContratadosMes: novosColaboradoresMes,
-        demissoesMes: dadosDemissoesReais.demissoesMes,
+        demissoesMes: demitidos.filter(d => {
+            if (!d || !d.dt_demissao) return false;
+            const dataDemissao = new Date(d.dt_demissao);
+            const hoje = new Date();
+            return dataDemissao.getMonth() === hoje.getMonth() && dataDemissao.getFullYear() === hoje.getFullYear();
+        }).length,
         turnover: calcularTurnover(),
         
         // Distribuição por departamento
@@ -1287,7 +1290,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Filtrar tarefas de demissão que estão pendentes
         const tarefasDemissaoPendentes = tarefasData.filter(tarefa => 
-            (tarefa.entidade_tipo === 'demissao' || tarefa.entidade_display === 'demissao') &&
+            tarefa && (tarefa.entidade_tipo === 'demissao' || tarefa.entidade_display === 'demissao') &&
             (tarefa.status === 'pendente' || tarefa.status === 'em_andamento')
         );
 
