@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
+import SwitchInput from '@components/SwitchInput';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -118,6 +119,78 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, dt_nascimento: valor })}
                 label="Data de Nascimento"
                 type="date"
+            />
+            
+            <SectionTitle>Filiação</SectionTitle>
+            
+            {/* Mãe - Obrigatório */}
+            <CampoTexto
+                camposVazios={classError}
+                name="nome_mae"
+                valor={candidato?.nome_mae ?? ''}
+                setValor={valor => setCampo('nome_mae', valor)}
+                type="text"
+                label="Nome da Mãe *"
+                placeholder="Digite o nome da mãe"
+            />
+            <CampoTexto
+                camposVazios={classError}
+                name="sobrenome_mae"
+                valor={candidato?.sobrenome_mae ?? ''}
+                setValor={valor => setCampo('sobrenome_mae', valor)}
+                type="text"
+                label="Sobrenome da Mãe *"
+                placeholder="Digite o sobrenome da mãe"
+            />
+            
+            {/* Pai - Com switch para desconhecido */}
+            <div style={{ 
+                gridColumn: '1 / -1', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '12px',
+                marginBottom: '8px'
+            }}>
+                <SwitchInput
+                    checked={candidato?.pai_desconhecido ?? false}
+                    onChange={(value) => {
+                        setCampo('pai_desconhecido', value);
+                        if (value) {
+                            setCampo('nome_pai', 'DESCONHECIDO');
+                            setCampo('sobrenome_pai', 'DESCONHECIDO');
+                        } else {
+                            setCampo('nome_pai', '');
+                            setCampo('sobrenome_pai', '');
+                        }
+                    }}
+                />
+                <label style={{ 
+                    fontSize: '14px', 
+                    fontWeight: '500', 
+                    color: 'var(--text-color)',
+                    cursor: 'pointer'
+                }}>
+                    Pai desconhecido
+                </label>
+            </div>
+            
+            <CampoTexto
+                name="nome_pai"
+                valor={candidato?.nome_pai ?? ''}
+                setValor={valor => setCampo('nome_pai', valor)}
+                type="text"
+                label="Nome do Pai"
+                placeholder="Digite o nome do pai"
+                disabled={candidato?.pai_desconhecido}
+            />
+            <CampoTexto
+                name="sobrenome_pai"
+                valor={candidato?.sobrenome_pai ?? ''}
+                setValor={valor => setCampo('sobrenome_pai', valor)}
+                type="text"
+                label="Sobrenome do Pai"
+                placeholder="Digite o sobrenome do pai"
+                disabled={candidato?.pai_desconhecido}
             />
             
             <SectionTitle>Endereço</SectionTitle>
