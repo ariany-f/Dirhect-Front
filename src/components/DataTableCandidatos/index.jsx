@@ -183,6 +183,87 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
         // Verifica se deve abrir o modal baseado na variável de ambiente
         const deveAbrirModal = import.meta.env.VITE_OPTIONS_ACESSO_CANDIDATO === 'true';
         
+        // Verifica se há documentos configurados para a vaga (sempre verifica)
+        if (!documentos || documentos.length === 0) {
+            confirmDialog({
+                message: 'Não há documentos configurados para esta vaga. Deseja continuar mesmo assim?',
+                header: 'Confirmação',
+                icon: 'pi pi-info-circle',
+                acceptLabel: 'Sim, continuar',
+                rejectLabel: 'Não, cancelar',
+                accept: () => {
+                    if (!deveAbrirModal) {
+                        // Se não deve abrir modal, mostra confirmação antes de enviar
+                        confirmDialog({
+                            message: 'Tem certeza que deseja aprovar este candidato?',
+                            header: 'Confirmação',
+                            icon: 'pi pi-info-circle',
+                            acceptLabel: 'Sim, aprovar',
+                            rejectLabel: 'Não, cancelar',
+                            accept: async () => {
+                                try {
+                                    const vagaConfigurada = rowData?.vagas_configuradas?.[0];
+                                    if (!vagaConfigurada) return;
+                                    
+                                    const payload = {
+                                        html: '',
+                                        assunto: "",
+                                        dt_inscricao: new Date().toISOString().slice(0, 10),
+                                        status: "S",
+                                        vaga_candidato_id: vagaConfigurada.id,
+                                        candidato: rowData.id,
+                                        vaga: vagaId
+                                    };
+                                    
+                                    await http.post(`vagas_candidatos/${payload.vaga_candidato_id}/seguir/`, payload);
+                                    
+                                    toast.current.show({
+                                        severity: 'success',
+                                        summary: 'Sucesso',
+                                        detail: 'Candidato encaminhado com sucesso!',
+                                        life: 3000
+                                    });
+
+                                    // Atualiza a lista local
+                                    setListaCandidatos(listaCandidatos.map(c =>
+                                        c === rowData ? { 
+                                            ...c, 
+                                            vagas_configuradas: [{ ...c.vagas_configuradas?.[0], status: 'S' }]
+                                        } : c
+                                    ));
+
+                                    // Notifica o componente pai para atualizar os dados
+                                    if (onCandidatosUpdate) {
+                                        onCandidatosUpdate();
+                                    }
+                                } catch (error) {
+                                    console.error('Erro ao encaminhar candidato:', error);
+                                    toast.current.show({
+                                        severity: 'error',
+                                        summary: 'Erro',
+                                        detail: 'Erro ao encaminhar candidato',
+                                        life: 3000
+                                    });
+                                }
+                            },
+                            reject: () => {
+                                // Não faz nada se o usuário cancelar
+                            }
+                        });
+                    } else {
+                        // Se deve abrir modal, abre normalmente
+                        setCandidatoParaAprovar(rowData);
+                        setModalEncaminharAberto(true);
+                    }
+                },
+                reject: () => {
+                    // Não faz nada se o usuário cancelar
+                }
+            });
+            return;
+        }
+
+        // Se há documentos configurados
         if (!deveAbrirModal) {
             // Se não deve abrir modal, mostra confirmação antes de enviar
             confirmDialog({
@@ -241,27 +322,8 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                     // Não faz nada se o usuário cancelar
                 }
             });
-            return;
-        }
-
-        // Se deve abrir modal, continua com a lógica original
-        // Verifica se há documentos configurados para a vaga
-        if (!documentos || documentos.length === 0) {
-            confirmDialog({
-                message: 'Não há documentos configurados para esta vaga. Deseja continuar mesmo assim?',
-                header: 'Confirmação',
-                icon: 'pi pi-info-circle',
-                acceptLabel: 'Sim, continuar',
-                rejectLabel: 'Não, cancelar',
-                accept: () => {
-                    setCandidatoParaAprovar(rowData);
-                    setModalEncaminharAberto(true);
-                },
-                reject: () => {
-                    // Não faz nada se o usuário cancelar
-                }
-            });
         } else {
+            // Se deve abrir modal, abre normalmente
             setCandidatoParaAprovar(rowData);
             setModalEncaminharAberto(true);
         }
