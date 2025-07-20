@@ -23,6 +23,8 @@ import StepEducacao from './Steps/StepEducacao';
 import StepHabilidades from './Steps/StepHabilidades';
 import StepExperiencia from './Steps/StepExperiencia';
 import StepLGPD from './Steps/StepLGPD';
+import StepDependentes from './Steps/StepDependentes';
+import StepAnotacoes from './Steps/StepAnotacoes';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { RiExchangeFill } from 'react-icons/ri';
 
@@ -497,7 +499,9 @@ const CandidatoRegistro = () => {
                         ...data,
                         educacao: data.educacao || [],
                         habilidades: data.habilidades || [],
-                        experiencia: data.experiencia || []
+                        experiencia: data.experiencia || [],
+                        dependentes: data.dependentes || [],
+                        anotacoes: data.anotacoes || ''
                     });
                     setVaga(data.dados_vaga || {});
                     setAdmissao(data);
@@ -628,7 +632,9 @@ const CandidatoRegistro = () => {
                 genero: candidato.genero,
                 educacao: candidato.educacao,
                 habilidades: candidato.habilidades,
-                experiencia: candidato.experiencia
+                experiencia: candidato.experiencia,
+                dependentes: candidato.dependentes,
+                anotacoes: candidato.anotacoes
             };
 
             await http.put(`admissao/${admissao.id}/`, payload);
@@ -953,9 +959,15 @@ const CandidatoRegistro = () => {
             totalSteps += 1; // Experiência Profissional
         }
         
+        // Adicionar step de dependentes
+        totalSteps += 1; // Dependentes
+        
         if (self) {
             totalSteps += 1; // LGPD
         }
+        
+        // Adicionar step de anotações como último
+        totalSteps += 1; // Anotações
         
         const isLastStep = activeIndex === totalSteps - 1;
         
@@ -1003,7 +1015,7 @@ const CandidatoRegistro = () => {
                         </>
                     )}
                     
-                    {/* Último step */}
+                    {/* Último step (Anotações) */}
                     {isLastStep && (
                         <>
                             <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
@@ -1338,6 +1350,16 @@ const CandidatoRegistro = () => {
                         </StepperPanel>
                     )}
                     
+                    <StepperPanel header="Dependentes">
+                        <ScrollPanel className="responsive-scroll-panel">
+                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+                                <ScrollPanel className="responsive-inner-scroll">
+                                    <StepDependentes />
+                                </ScrollPanel>
+                            </div>
+                        </ScrollPanel>
+                    </StepperPanel>
+                    
                     {self && (
                         <StepperPanel header="LGPD">
                             <ScrollPanel className="responsive-scroll-panel" style={{ textAlign: 'center' }}>
@@ -1345,6 +1367,12 @@ const CandidatoRegistro = () => {
                             </ScrollPanel>
                         </StepperPanel>
                     )}
+                    
+                    <StepperPanel header="Anotações">
+                        <ScrollPanel className="responsive-scroll-panel">
+                            <StepAnotacoes />
+                        </ScrollPanel>
+                    </StepperPanel>
                 </Stepper>
             </div>
 

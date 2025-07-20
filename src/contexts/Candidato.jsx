@@ -146,7 +146,9 @@ const candidatoInicial = {
     genero: null,
     educacao: [],
     habilidades: [],
-    experiencia: []
+    experiencia: [],
+    dependentes: [],
+    anotacoes: ''
 };
 
 export const CandidatoContext = createContext({
