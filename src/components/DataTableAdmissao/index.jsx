@@ -41,6 +41,13 @@ function DataTableAdmissao({ vagas }) {
 
     const navegar = useNavigate()
 
+    // Função para verificar se alguma admissão tem tarefa de LGPD
+    const algumaAdmissaoTemLGPD = () => {
+        return vagas?.some(admissao => 
+            admissao?.tarefas?.some(tarefa => tarefa.tipo_codigo === 'aguardar_lgpd')
+        );
+    };
+
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
         _filters['global'].value = value;
@@ -354,8 +361,10 @@ function DataTableAdmissao({ vagas }) {
                 <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: '13%' }}></Column>
                 <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '14%' }}></Column>
                 <Column body={representativeFilialTemplate} header="Filial" style={{ width: '12%' }}></Column>
-                <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '11%' }}></Column>
-                <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
+                {algumaAdmissaoTemLGPD() && (
+                    <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '11%' }}></Column>
+                )}
+                <Column body={representativeActionsTemplate} header="" style={{ width: algumaAdmissaoTemLGPD() ? '10%' : '21%' }}></Column>
             </DataTable>
 
             <ModalHistoricoAdmissao 
