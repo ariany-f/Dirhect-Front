@@ -204,7 +204,7 @@ function Menu({ opened = false, aoFechar }){
                                     .filter(item => {
                                         // Filtrar itens da seção Benefícios baseado na permissão
                                         if (section.title === "Benefícios") {
-                                            // Operadoras também precisa da permissão view_pedido
+                                            // Operadoras também precisa da permissão view_contrato
                                             if (item.label === 'Operadoras') {
                                                 return ArmazenadorToken.hasPermission('view_contrato');
                                             }

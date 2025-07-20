@@ -369,9 +369,25 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                   
                   <MegaMenuPanel $isOpen={menuAberto}>
                     <MenuGrid>
-                      {menuItems.map((column, index) => (
+                      {menuItems
+                        .filter(section => {
+                          // Filtrar seção de Benefícios apenas se tiver permissão
+                          if (section.title === "Benefícios") {
+                            return ArmazenadorToken.hasPermission('view_contrato');
+                          }
+                          return true; // Mostrar outras seções normalmente
+                        })
+                        .map((column, index) => (
                         <MenuColumn key={index}>
-                          {column.items.map((item, itemIndex) => (
+                          {column.items
+                            .filter(item => {
+                              // Filtrar itens da seção Benefícios baseado na permissão
+                              if (column.title === "Benefícios") {
+                                return ArmazenadorToken.hasPermission('view_contrato');
+                              }
+                              return true; // Mostrar outros itens normalmente
+                            })
+                            .map((item, itemIndex) => (
                             <MenuItem 
                               key={itemIndex} 
                               to={item.url}
