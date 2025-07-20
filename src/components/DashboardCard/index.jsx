@@ -43,6 +43,11 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const [dadosProntos, setDadosProntos] = useState(false);
     const { t } = useTranslation('common');
 
+    // Definições de variáveis do dashboard de funcionários
+    const totalColaboradores = funcionariosDashboard.total_funcionarios || 0;
+    const novosColaboradoresMes = funcionariosDashboard.admissoes_mes_que_vem || funcionariosDashboard.novos_colaboradores_mes || 0;
+    const demitidos = funcionariosDashboard.funcionarios_demitidos || [];
+
     // Array de cores para as etapas (cores que combinam com o sistema)
     const coresEtapas = [
         '#5472d4', // Azul primário
@@ -494,7 +499,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     };
 
     const dadosAdmissoesReais = processarDadosAdmissoes();
-    const novosColaboradoresMes = calcularNovosColaboradores();
 
     // Processar dados de demissões
     const processarDadosDemissoes = () => {
