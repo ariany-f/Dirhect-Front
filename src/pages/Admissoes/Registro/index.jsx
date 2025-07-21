@@ -27,6 +27,7 @@ import StepDependentes from './Steps/StepDependentes';
 import StepAnotacoes from './Steps/StepAnotacoes';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { RiExchangeFill } from 'react-icons/ri';
+import { ArmazenadorToken } from '@utils';
 
 // Modal customizado estilizado
 const ModalOverlay = styled.div`
@@ -359,6 +360,50 @@ const CandidatoRegistro = () => {
     const toast = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [showModalConfirmacao, setShowModalConfirmacao] = useState(false);
+    const [modoLeitura, setModoLeitura] = useState(false);
+
+    // Funções para verificar permissões baseadas no perfil
+    const verificarPermissaoTarefa = (tipoTarefa) => {
+        const perfil = ArmazenadorToken.UserProfile;
+        
+        switch (tipoTarefa) {
+            case 'aguardar_documento':
+                return perfil === 'analista_tenant' || perfil === null;
+            case 'aprovar_admissao':
+                return ['analista', 'supervisor', 'gestor'].includes(perfil);
+            default:
+                return false;
+        }
+    };
+
+    const verificarTarefaConcluida = (tipoTarefa) => {
+        return candidato?.tarefas?.some(tarefa => 
+            tarefa.tipo_codigo === tipoTarefa && tarefa.status === 'concluida'
+        );
+    };
+
+    const obterTarefaPendente = () => {
+        if (!candidato?.tarefas) return null;
+        
+        const tarefasPendentes = candidato.tarefas.filter(tarefa => 
+            tarefa.status === 'pendente' && verificarPermissaoTarefa(tarefa.tipo_codigo)
+        );
+        
+        return tarefasPendentes.length > 0 ? tarefasPendentes[0] : null;
+    };
+
+    // Verificar se deve estar em modo leitura
+    useEffect(() => {
+        const tarefaDocumentosConcluida = verificarTarefaConcluida('aguardar_documento');
+        const perfil = ArmazenadorToken.UserProfile;
+        
+        // Se a tarefa de documentos está concluída e o usuário não tem permissão para aprovar admissão
+        if (tarefaDocumentosConcluida && !verificarPermissaoTarefa('aprovar_admissao')) {
+            setModoLeitura(true);
+        } else {
+            setModoLeitura(false);
+        }
+    }, [candidato?.tarefas]);
 
     const [listaPericulosidades, setListaPericulosidades] = useState([
         { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
@@ -515,6 +560,17 @@ const CandidatoRegistro = () => {
     const handleSalvarAdmissao = async () => {
        
         if (!admissao?.id) return;
+        
+        if (modoLeitura) {
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Modo de leitura',
+                detail: 'Os dados estão em modo de leitura. Não é possível salvar alterações.',
+                life: 3000
+            });
+            return;
+        }
+        
         try {
             // Monta o payload seguindo o padrão correto
             const dadosCandidato = candidato.dados_candidato || {};
@@ -759,6 +815,17 @@ const CandidatoRegistro = () => {
 
     const concluirTarefa = async (tipoCodigo) => {
         try {
+            // Verificar se o usuário tem permissão para concluir esta tarefa
+            if (!verificarPermissaoTarefa(tipoCodigo)) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Permissão negada',
+                    detail: 'Você não tem permissão para concluir esta tarefa.',
+                    life: 3000
+                });
+                return;
+            }
+
             const tarefa = candidato?.tarefas?.find(t => t.tipo_codigo === tipoCodigo);
             if (!tarefa) {
                 toast.current.show({
@@ -926,6 +993,19 @@ const CandidatoRegistro = () => {
             return;
         }
 
+        // Obter a tarefa pendente que o usuário pode concluir
+        const tarefaPendente = obterTarefaPendente();
+        
+        if (!tarefaPendente) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Nenhuma tarefa disponível',
+                detail: 'Não há tarefas pendentes que você possa concluir.',
+                life: 3000
+            });
+            return;
+        }
+
         // Se for visão empresa (self = false), mostra modal de confirmação
         setShowModalConfirmacao(true);
     };
@@ -934,12 +1014,31 @@ const CandidatoRegistro = () => {
         try {
             setShowModalConfirmacao(false);
             await handleSalvarAdmissao();
-            await concluirTarefa('aguardar_documento');
+            
+            // Obter a tarefa pendente que o usuário pode concluir
+            const tarefaPendente = obterTarefaPendente();
+            
+            if (tarefaPendente) {
+                await concluirTarefa(tarefaPendente.tipo_codigo);
+            }
+            
+            // Mensagem baseada no tipo de tarefa concluída
+            const perfil = ArmazenadorToken.UserProfile;
+            const tarefaDocumentosConcluida = verificarTarefaConcluida('aguardar_documento');
+            
+            let mensagem = '';
+            if (tarefaPendente?.tipo_codigo === 'aguardar_documento' && (perfil === 'analista_tenant' || perfil === null)) {
+                mensagem = 'Documentos aprovados e encaminhados para aprovação da admissão!';
+            } else if (tarefaPendente?.tipo_codigo === 'aprovar_admissao') {
+                mensagem = 'Admissão aprovada e integração iniciada com sucesso!';
+            } else {
+                mensagem = 'Processo finalizado com sucesso!';
+            }
             
             toast.current.show({
                 severity: 'success',
                 summary: 'Processo finalizado',
-                detail: 'Documentos aprovados e integração iniciada com sucesso!',
+                detail: mensagem,
                 life: 4000
             });
         } catch (error) {
@@ -1023,6 +1122,16 @@ const CandidatoRegistro = () => {
     };
 
     const handleSalvarEContinuar = async () => {
+        if (modoLeitura) {
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Modo de leitura',
+                detail: 'Os dados estão em modo de leitura. Não é possível salvar alterações.',
+                life: 3000
+            });
+            return;
+        }
+        
         await handleSalvarAdmissao();
         stepperRef.current.nextCallback();
         setActiveIndex(prev => prev + 1);
@@ -1069,6 +1178,10 @@ const CandidatoRegistro = () => {
         
         const isLastStep = activeIndex === totalSteps - 1;
         
+        // Verificar se há tarefa pendente que o usuário pode concluir
+        const tarefaPendente = obterTarefaPendente();
+        const podeFinalizar = !self && tarefaPendente && !modoLeitura;
+        
         return (
             <div style={{
                 position: 'fixed',
@@ -1104,10 +1217,21 @@ const CandidatoRegistro = () => {
                     {/* Steps intermediários com salvar */}
                     {(activeIndex >= 1 && activeIndex < totalSteps - 1) && (
                         <>
-                            <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
+                            <Botao 
+                                size="small" 
+                                iconPos="right" 
+                                aoClicar={handleSalvarAdmissao}
+                                disabled={modoLeitura}
+                            >
                                 <FaSave fill="white"/> Salvar
                             </Botao>
-                            <Botao size="small" label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}>
+                            <Botao 
+                                size="small" 
+                                label="Next" 
+                                iconPos="right" 
+                                aoClicar={handleSalvarEContinuar}
+                                disabled={modoLeitura}
+                            >
                                 <HiArrowRight fill="white"/> Salvar e Continuar
                             </Botao>
                         </>
@@ -1116,19 +1240,30 @@ const CandidatoRegistro = () => {
                     {/* Último step (Anotações) */}
                     {isLastStep && (
                         <>
-                            <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
+                            <Botao 
+                                size="small" 
+                                iconPos="right" 
+                                aoClicar={handleSalvarAdmissao}
+                                disabled={modoLeitura}
+                            >
                                 <FaSave fill="white"/> Salvar
                             </Botao>
                             {self ? (
                                 <Botao 
                                     iconPos="right" 
                                     aoClicar={handleAceitarLGPD}
-                                    disabled={candidato.aceite_lgpd}
+                                    disabled={candidato.aceite_lgpd || modoLeitura}
                                 >
                                     <FaSave fill="white"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Finalizar'}
                                 </Botao>
                             ) : (
-                                <Botao size="small" label="Next" iconPos="right" aoClicar={handleFinalizarDocumentos}>
+                                <Botao 
+                                    size="small" 
+                                    label="Next" 
+                                    iconPos="right" 
+                                    aoClicar={handleFinalizarDocumentos}
+                                    disabled={!podeFinalizar}
+                                >
                                     <RiExchangeFill fill="white"/> Finalizar
                                 </Botao>
                             )}
@@ -1262,6 +1397,29 @@ const CandidatoRegistro = () => {
                             alignItems: 'center',
                             gap: 12
                         }}>
+                            {/* Indicador de modo leitura */}
+                            {modoLeitura && (
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                    background: 'rgba(255, 193, 7, 0.2)',
+                                    border: '1px solid rgba(255, 193, 7, 0.4)',
+                                    padding: '4px 10px',
+                                    borderRadius: 6,
+                                    backdropFilter: 'blur(10px)'
+                                }}>
+                                    <span style={{
+                                        fontSize: 11,
+                                        fontWeight: 600,
+                                        color: '#fff',
+                                        opacity: 0.9
+                                    }}>
+                                        📖 Modo Leitura
+                                    </span>
+                                </div>
+                            )}
+                            
                             <div style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -1367,7 +1525,7 @@ const CandidatoRegistro = () => {
                         <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel">
-                                    <StepDocumentos toast={toast} />
+                                    <StepDocumentos toast={toast} modoLeitura={modoLeitura} />
                                 </ScrollPanel>
                             </div>
                         </Container>
@@ -1377,7 +1535,7 @@ const CandidatoRegistro = () => {
                         <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
-                                    <StepDadosPessoais classError={classError} estados={estados} />
+                                    <StepDadosPessoais classError={classError} estados={estados} modoLeitura={modoLeitura} />
                                 </ScrollPanel>
                             </div>
                         </Container>
@@ -1387,7 +1545,7 @@ const CandidatoRegistro = () => {
                         <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
-                                    <StepDadosBancarios />
+                                    <StepDadosBancarios modoLeitura={modoLeitura} />
                                 </ScrollPanel>
                             </div>
                         </Container>
@@ -1407,6 +1565,7 @@ const CandidatoRegistro = () => {
                                             horarios={horarios}
                                             funcoes={funcoes}
                                             sindicatos={sindicatos}
+                                            modoLeitura={modoLeitura}
                                         />
                                     </ScrollPanel>
                                 </div>
@@ -1418,7 +1577,7 @@ const CandidatoRegistro = () => {
                         <ScrollPanel className="responsive-scroll-panel">
                             <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
                                 <ScrollPanel className="responsive-inner-scroll">
-                                    <StepEducacao />
+                                    <StepEducacao modoLeitura={modoLeitura} />
                                 </ScrollPanel>
                             </div>
                         </ScrollPanel>
@@ -1429,7 +1588,7 @@ const CandidatoRegistro = () => {
                             <ScrollPanel className="responsive-scroll-panel">
                                 <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
                                     <ScrollPanel className="responsive-inner-scroll">
-                                        <StepHabilidades />
+                                        <StepHabilidades modoLeitura={modoLeitura} />
                                     </ScrollPanel>
                                 </div>
                             </ScrollPanel>
@@ -1441,7 +1600,7 @@ const CandidatoRegistro = () => {
                             <ScrollPanel className="responsive-scroll-panel">
                                 <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
                                     <ScrollPanel className="responsive-inner-scroll">
-                                        <StepExperiencia />
+                                        <StepExperiencia modoLeitura={modoLeitura} />
                                     </ScrollPanel>
                                 </div>
                             </ScrollPanel>
@@ -1452,7 +1611,7 @@ const CandidatoRegistro = () => {
                         <ScrollPanel className="responsive-scroll-panel">
                             <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
                                 <ScrollPanel className="responsive-inner-scroll">
-                                    <StepDependentes />
+                                    <StepDependentes modoLeitura={modoLeitura} />
                                 </ScrollPanel>
                             </div>
                         </ScrollPanel>
@@ -1461,14 +1620,14 @@ const CandidatoRegistro = () => {
                     {self && (
                         <StepperPanel header="LGPD">
                             <ScrollPanel className="responsive-scroll-panel" style={{ textAlign: 'center' }}>
-                                <StepLGPD />
+                                <StepLGPD modoLeitura={modoLeitura} />
                             </ScrollPanel>
                         </StepperPanel>
                     )}
                     
                     <StepperPanel header="Anotações">
                         <ScrollPanel className="responsive-scroll-panel">
-                            <StepAnotacoes />
+                            <StepAnotacoes modoLeitura={modoLeitura} />
                         </ScrollPanel>
                     </StepperPanel>
                 </Stepper>
@@ -1494,17 +1653,60 @@ const CandidatoRegistro = () => {
                                 <HiCheckCircle />
                             </IconContainer>
                             <ModalMessage>
-                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato.dados_candidato?.nome || 'Candidato'}</strong> ao sistema.
-                                <br /><br />
-                                Esta ação irá:
-                                <br />
-                                • Aprovar a tarefa de preenchimento de documentos
-                                <br />
-                                • Iniciar o processo de integração
-                                <br />
-                                • Incluir o colaborador no sistema
-                                <br /><br />
-                                Deseja continuar com a finalização?
+                                {(() => {
+                                    const tarefaPendente = obterTarefaPendente();
+                                    const perfil = ArmazenadorToken.UserProfile;
+                                    
+                                    if (tarefaPendente?.tipo_codigo === 'aguardar_documento' && (perfil === 'analista_tenant' || perfil === null)) {
+                                        return (
+                                            <>
+                                                Após esta confirmação, os <strong>documentos do candidato</strong> <strong>{candidato.dados_candidato?.nome || 'Candidato'}</strong> serão aprovados e encaminhados para aprovação da admissão.
+                                                <br /><br />
+                                                Esta ação irá:
+                                                <br />
+                                                • Aprovar a tarefa de preenchimento de documentos
+                                                <br />
+                                                • Encaminhar para aprovação da admissão
+                                                <br />
+                                                • Aguardar aprovação de analista/supervisor/gestor
+                                                <br /><br />
+                                                Deseja continuar com a finalização?
+                                            </>
+                                        );
+                                    } else if (tarefaPendente?.tipo_codigo === 'aprovar_admissao') {
+                                        return (
+                                            <>
+                                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato.dados_candidato?.nome || 'Candidato'}</strong> ao sistema.
+                                                <br /><br />
+                                                Esta ação irá:
+                                                <br />
+                                                • Aprovar a admissão do candidato
+                                                <br />
+                                                • Iniciar o processo de integração
+                                                <br />
+                                                • Incluir o colaborador no sistema
+                                                <br /><br />
+                                                Deseja continuar com a finalização?
+                                            </>
+                                        );
+                                    } else {
+                                        return (
+                                            <>
+                                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato.dados_candidato?.nome || 'Candidato'}</strong> ao sistema.
+                                                <br /><br />
+                                                Esta ação irá:
+                                                <br />
+                                                • Aprovar a tarefa de preenchimento de documentos
+                                                <br />
+                                                • Iniciar o processo de integração
+                                                <br />
+                                                • Incluir o colaborador no sistema
+                                                <br /><br />
+                                                Deseja continuar com a finalização?
+                                            </>
+                                        );
+                                    }
+                                })()}
                             </ModalMessage>
                         </ModalContent>
                         <ModalFooter>
@@ -1512,7 +1714,7 @@ const CandidatoRegistro = () => {
                                 <HiX /> Cancelar
                             </ModalButton>
                             <ModalButton className="primary" onClick={handleConfirmarFinalizacao}>
-                                <HiCheckCircle fill="white" /> Sim, finalizar e integrar
+                                <HiCheckCircle fill="white" /> Sim, finalizar
                             </ModalButton>
                         </ModalFooter>
                     </ModalContainer>
