@@ -17,6 +17,7 @@ const MFA_REQUIRED = 'mfa_required'
 const USER_TYPE = 'tipo'
 const USER_GROUPS = 'groups'
 const USER_PERMISSIONS = 'group_permissions'
+const USER_PROFILE = 'profile'
 
 export class ArmazenadorToken {
     static definirGrupos(groups) {
@@ -33,6 +34,15 @@ export class ArmazenadorToken {
     }
     static get UserPermissions() {
         return JSON.parse(sessionStorage.getItem(USER_PERMISSIONS))
+    }
+    static definirProfile(profile) {
+        sessionStorage.setItem(USER_PROFILE, profile)
+    }
+    static get UserProfile() {
+        return sessionStorage.getItem(USER_PROFILE)
+    }
+    static removerProfile() {
+        sessionStorage.removeItem(USER_PROFILE)
     }
     static definirTempToken(tempToken) {
         sessionStorage.setItem(TEMP_TOKEN, tempToken)
@@ -87,7 +97,7 @@ export class ArmazenadorToken {
         sessionStorage.setItem(COMPANY_SYMBOL, company_symbol)
         sessionStorage.setItem(COMPANY_LOGO, company_logo)
     }
-    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo, mfa_required) {
+    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo, mfa_required, profile = 'analista') {
         if (!email) {
             throw new Error('Email é obrigatório')
         }
@@ -102,6 +112,7 @@ export class ArmazenadorToken {
             sessionStorage.setItem(COMPANY_SYMBOL, company_symbol || '')
             sessionStorage.setItem(COMPANY_LOGO, company_logo || '')
             sessionStorage.setItem(MFA_REQUIRED, mfa_required || false)
+            sessionStorage.setItem(USER_PROFILE, profile || 'analista')
         } catch (error) {
             console.error('Erro ao armazenar dados do usuário:', error)
             throw new Error('Falha ao armazenar dados do usuário')
@@ -144,7 +155,7 @@ export class ArmazenadorToken {
         sessionStorage.removeItem(USER_CPF)
         sessionStorage.removeItem(USER_PUBLIC_ID)
         sessionStorage.removeItem(USER_TYPE)
-        
+        sessionStorage.removeItem(USER_PROFILE)
         // Limpar dados de empresa
         this.removerCompany()
         this.limparEmpresas()

@@ -147,7 +147,8 @@ function Login() {
                             '', 
                             '', 
                             '', 
-                            response.mfa_required
+                            response.mfa_required,
+                            response.user.perfil
                         );
                         ArmazenadorToken.removerTempToken();
 
@@ -168,7 +169,8 @@ function Login() {
                             '', 
                             '', 
                             '', 
-                            response.mfa_required
+                            response.mfa_required,
+                            response.user.perfil
                         );
 
                         ArmazenadorToken.removerTempToken();

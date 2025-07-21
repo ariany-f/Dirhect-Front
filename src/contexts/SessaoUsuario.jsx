@@ -28,6 +28,7 @@ const usuarioInicial = {
     companies: null,
     code: [],
     mfa_required: false,
+    profile: sessionStorage.getItem('profile') ?? null,
     tipo: sessionStorage.getItem('tipo') ?? '',
     groups: sessionStorage.getItem('groups') ?? null
 }
@@ -101,6 +102,7 @@ export const SessaoUsuarioProvider = ({ children }) => {
         const logoSalvo = sessionStorage.getItem('logo');
         const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
         const mfaRequiredSalvo = sessionStorage.getItem('mfa_required');
+        const profileSalvo = sessionStorage.getItem('profile');
         usuarioSalvo = {
             cpf: cpfSalvo ?? '',
             email: emailSalvo ?? '',
@@ -113,7 +115,8 @@ export const SessaoUsuarioProvider = ({ children }) => {
             company_public_id: companyPublicIdSalvo ?? '',
             companies: [],
             company_symbol: simboloSalvo ?? '',
-            company_logo: logoSalvo ?? ''
+            company_logo: logoSalvo ?? '',
+            profile: profileSalvo ?? null
         }
 
         return usuarioSalvo ? usuarioSalvo : usuarioInicial;

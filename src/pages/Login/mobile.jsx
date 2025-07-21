@@ -124,7 +124,8 @@ function LoginMobile() {
                             '', 
                             '', 
                             '', 
-                            response.mfa_required
+                            response.mfa_required,
+                            response.user.perfil
                         );
                         ArmazenadorToken.removerTempToken();
 
@@ -147,7 +148,8 @@ function LoginMobile() {
                             '', 
                             '', 
                             '', 
-                            response.mfa_required
+                            response.mfa_required,
+                            response.user.perfil
                         );
 
                         ArmazenadorToken.removerTempToken();

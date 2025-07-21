@@ -106,7 +106,8 @@ function Mfa() {
                         '', 
                         '', 
                         '', 
-                        response.mfa_required
+                        response.mfa_required,
+                        response.user.perfil
                     );
                     ArmazenadorToken.removerTempToken();   
                     ArmazenadorToken.definirGrupos(response.groups);
@@ -127,7 +128,8 @@ function Mfa() {
                         '', 
                         '', 
                         '', 
-                        response.mfa_required
+                        response.mfa_required,
+                        response.user.perfil
                     );
                     ArmazenadorToken.removerTempToken();   
                     
@@ -177,7 +179,8 @@ function Mfa() {
                         '', 
                         '', 
                         '', 
-                        response.mfa_required
+                        response.mfa_required,
+                        response.user.perfil
                     );
                     ArmazenadorToken.removerTempToken();
                     ArmazenadorToken.definirGrupos(response.groups);
@@ -196,7 +199,8 @@ function Mfa() {
                         '', 
                         '', 
                         '', 
-                        response.mfa_required
+                        response.mfa_required,
+                        response.user.perfil
                     );
                     ArmazenadorToken.removerTempToken();   
                     navegar('/login/selecionar-empresa');
