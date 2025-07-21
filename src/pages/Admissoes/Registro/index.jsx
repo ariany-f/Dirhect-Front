@@ -550,6 +550,7 @@ const CandidatoRegistro = () => {
                     telefone: dadosCandidato.telefone,
                     cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
                     dt_nascimento: dadosCandidato.dt_nascimento,
+                    salario: removerMascaraBRL(dadosCandidato?.salario ? dadosCandidato.salario : (dadosVaga?.salario ? dadosVaga.salario : candidato.salario)),
                 },
 
                 
@@ -667,34 +668,58 @@ const CandidatoRegistro = () => {
 
             await http.put(`admissao/${admissao.id}/`, payload);
             
-            // Salva dependentes no endpoint específico se houver dependentes
+            // Salva dependentes no endpoint específico se houver dependentes novos
             if (candidato.dependentes && candidato.dependentes.length > 0) {
-                try {
-                    // Mapeia os dependentes para o formato da API
-                    const dependentesParaEnviar = candidato.dependentes.map((dep, index) => ({
-                        nrodepend: index + 1,
-                        nome_depend: dep.nome || '',
-                        cpf: dep.cpf ? dep.cpf.replace(/\D/g, '') : null, // Remove formatação do CPF
-                        dtnascimento: dep.data_nascimento || null,
-                        cartorio: dep.cartorio || null,
-                        nroregistro: dep.nroregistro || null,
-                        nrolivro: dep.nrolivro || null,
-                        nrofolha: dep.nrofolha || null,
-                        cartao_vacina: dep.cartao_vacina || null,
-                        nrosus: dep.nrosus || null,
-                        nronascidovivo: dep.nronascidovivo || null,
-                        nome_mae: dep.nome_mae || null,
-                        id_admissao: candidato.id,
-                        genero: dep.genero || null,
-                        estadocivil: dep.estadocivil || null,
-                        grau_parentesco: dep.grau_parentesco || null
-                    }));
+                // Filtra apenas dependentes novos (que não existem na API)
+                const dependentesNovos = candidato.dependentes.filter(dep => {
+                    // Se tem ID, já existe na API
+                    if (dep.id) return false;
+                    
+                    // Se não tem CPF, é novo
+                    if (!dep.cpf) return true;
+                    
+                    // Remove máscara do CPF para comparação
+                    const cpfLimpo = dep.cpf.replace(/\D/g, '');
+                    
+                    // Verifica se já existe um dependente com este CPF na API
+                    const dependenteExistente = candidato.dependentes.find(d => 
+                        d.id && d.cpf && d.cpf.replace(/\D/g, '') === cpfLimpo
+                    );
+                    
+                    // Se não encontrou dependente existente com este CPF, é novo
+                    return !dependenteExistente;
+                });
+                
+                if (dependentesNovos.length > 0) {
+                    try {
+                        // Mapeia os dependentes novos para o formato da API
+                        const dependentesParaEnviar = dependentesNovos.map((dep, index) => ({
+                            nrodepend: index + 1,
+                            nome_depend: dep.nome || '',
+                            cpf: dep.cpf ? dep.cpf.replace(/\D/g, '') : null, // Remove formatação do CPF
+                            dtnascimento: dep.data_nascimento || null,
+                            cartorio: dep.cartorio || null,
+                            nroregistro: dep.nroregistro || null,
+                            nrolivro: dep.nrolivro || null,
+                            nrofolha: dep.nrofolha || null,
+                            cartao_vacina: dep.cartao_vacina || null,
+                            nrosus: dep.nrosus || null,
+                            nronascidovivo: dep.nronascidovivo || null,
+                            nome_mae: dep.nome_mae || null,
+                            id_admissao: candidato.id,
+                            genero: dep.genero || null,
+                            estadocivil: dep.estadocivil || null,
+                            grau_parentesco: dep.grau_parentesco || null
+                        }));
 
-                    await http.post(`admissao/${candidato.id}/adiciona_dependentes/`, dependentesParaEnviar);
-                    console.log('Dependentes salvos com sucesso no endpoint específico');
-                } catch (error) {
-                    console.error('Erro ao salvar dependentes no endpoint específico:', error);
-                    // Não interrompe o fluxo principal se falhar ao salvar dependentes
+                        await http.post(`admissao/${candidato.id}/adiciona_dependentes/`, dependentesParaEnviar);
+                        console.log('Dependentes novos salvos com sucesso no endpoint específico');
+                    } catch (error) {
+                        console.error('Erro ao salvar dependentes novos no endpoint específico:', error);
+                        // Não interrompe o fluxo principal se falhar ao salvar dependentes
+                    }
+                } else {
+                    console.log('Nenhum dependente novo para salvar');
                 }
             }
             

@@ -83,6 +83,7 @@ const StepDependentes = () => {
             if (primeiroDependente && primeiroDependente.nome_depend && !primeiroDependente.nome) {
                 // Mapeia os dados da API para o formato do frontend
                 const dependentesMapeados = candidato.dependentes.map(dep => ({
+                    id: dep.id, // Preserva o ID da API
                     nome: dep.nome_depend || '',
                     cpf: dep.cpf || '',
                     data_nascimento: dep.dtnascimento || '',
