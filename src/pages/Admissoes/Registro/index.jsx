@@ -516,21 +516,26 @@ const CandidatoRegistro = () => {
        
         if (!admissao?.id) return;
         try {
-            // Função para remover a máscara BRL do salário
-            const removerMascaraBRL = (valor) => {
-                if (!valor) return '';
-                return valor.replace(/[R$\s.]/g, '').replace(',', '.');
-            };
-
             // Monta o payload seguindo o padrão correto
             const dadosCandidato = candidato.dados_candidato || {};
             const dadosVaga = candidato.dados_vaga || {};
+            
+            // Função para formatar salário corretamente
+            const formatarSalario = (valor) => {
+                if (!valor) return '';
+                // Remove formatação BRL e converte para formato decimal
+                const valorLimpo = valor.replace(/[R$\s.]/g, '').replace(',', '.');
+                // Converte para número e formata com 2 casas decimais
+                const numero = parseFloat(valorLimpo);
+                if (isNaN(numero)) return '';
+                return numero.toFixed(2);
+            };
             
             const payload = {
                 // Dados básicos da admissão
                 chapa: candidato.chapa,
                 dt_admissao: candidato.dt_admissao,
-                salario: removerMascaraBRL(dadosCandidato?.salario ? dadosCandidato.salario : (dadosVaga?.salario ? dadosVaga.salario : candidato.salario)),
+                salario: formatarSalario(dadosCandidato?.salario ? dadosCandidato.salario : (dadosVaga?.salario ? dadosVaga.salario : candidato.salario)),
                 status: candidato.status,
                 grau_instrucao: candidato.grau_instrucao,
                 
@@ -550,7 +555,7 @@ const CandidatoRegistro = () => {
                     telefone: dadosCandidato.telefone,
                     cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
                     dt_nascimento: dadosCandidato.dt_nascimento,
-                    salario: removerMascaraBRL(dadosCandidato?.salario ? dadosCandidato.salario : (dadosVaga?.salario ? dadosVaga.salario : candidato.salario)),
+                    salario: formatarSalario(dadosCandidato?.salario ? dadosCandidato.salario : (dadosVaga?.salario ? dadosVaga.salario : candidato.salario)),
                 },
 
                 
@@ -643,11 +648,19 @@ const CandidatoRegistro = () => {
                 tipo_situacao: candidato.tipo_situacao,
                 aceite_lgpd: candidato.aceite_lgpd,
                 
-                // Arrays
+                // Arrays - Remove dependentes duplicados
                 educacao: candidato.educacao || [],
                 habilidades: candidato.habilidades || [],
                 experiencia: candidato.experiencia || [],
-                dependentes: candidato.dependentes || [],
+                dependentes: (candidato.dependentes || []).filter((dep, index, arr) => {
+                    // Remove dependentes duplicados baseado no CPF
+                    if (!dep.cpf) return true;
+                    const cpfLimpo = dep.cpf.replace(/\D/g, '');
+                    const primeiroIndex = arr.findIndex(d => 
+                        d.cpf && d.cpf.replace(/\D/g, '') === cpfLimpo
+                    );
+                    return index === primeiroIndex;
+                }),
                 anotacoes: candidato.anotacoes || '',
                 
                 // Dados de controle
