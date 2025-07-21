@@ -522,46 +522,38 @@ const CandidatoRegistro = () => {
                 return valor.replace(/[R$\s.]/g, '').replace(',', '.');
             };
 
-            // Monta o payload com todos os dados da admissão, sincronizando campos duplicados
+            // Monta o payload seguindo o padrão correto
             const dadosCandidato = candidato.dados_candidato || {};
             const dadosVaga = candidato.dados_vaga || {};
+            
             const payload = {
-                id: candidato.id,
-                tarefas: candidato.tarefas,
-                log_tarefas: candidato.log_tarefas,
-                documentos_status: candidato.documentos_status,
-                documentos: candidato.documentos,
-                dados_vaga: candidato.dados_vaga,
-                dados_candidato: dadosCandidato,
-                created_at: candidato.created_at,
-                updated_at: candidato.updated_at,
+                // Dados básicos da admissão
                 chapa: candidato.chapa,
-                codigo_ficha_registro: candidato.codigo_ficha_registro,
-                tipo_admissao: candidato.tipo_admissao,
                 dt_admissao: candidato.dt_admissao,
-                status: candidato.status,
-                aceite_lgpd: candidato.aceite_lgpd,
                 salario: removerMascaraBRL(dadosCandidato?.salario ? dadosCandidato.salario : (dadosVaga?.salario ? dadosVaga.salario : candidato.salario)),
-                codigo_jornada: candidato.codigo_jornada,
-                pix: candidato.pix,
-                pix_tipo: candidato.pix_tipo,
-                estado_natal: candidato.estado_natal,
-                naturalidade: candidato.naturalidade,
-                apelido: candidato.apelido,
-                sexo: candidato.sexo,
-                nacionalidade: candidato.nacionalidade,
+                status: candidato.status,
+                grau_instrucao: candidato.grau_instrucao,
+                
+                // Endereço
+                cep: candidato.cep,
                 rua: candidato.rua,
                 numero: candidato.numero,
                 complemento: candidato.complemento,
                 bairro: candidato.bairro,
-                estado: candidato.estado,
                 cidade: candidato.cidade,
-                cep: candidato.cep,
+                estado: candidato.estado,
                 pais: candidato.pais,
-                registro_profissional: candidato.registro_profissional,
-                imagem_id: candidato.imagem_id,
-                telefone1: dadosCandidato?.telefone ? dadosCandidato.telefone : candidato.telefone1,
-                telefone2: dadosCandidato?.telefone ? dadosCandidato.telefone : candidato.telefone2,
+                // Dados do candidato
+                candidato: {
+                    nome: dadosCandidato.nome,
+                    email: dadosCandidato.email,
+                    telefone: dadosCandidato.telefone,
+                    cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
+                    dt_nascimento: dadosCandidato.dt_nascimento,
+                },
+
+                
+                // Documentos
                 identidade: candidato.identidade,
                 uf_identidade: candidato.uf_identidade,
                 orgao_emissor_ident: candidato.orgao_emissor_ident,
@@ -581,7 +573,6 @@ const CandidatoRegistro = () => {
                 naturalizado: candidato.naturalizado,
                 data_venc_ctps: candidato.data_venc_ctps,
                 tipo_visto: candidato.tipo_visto,
-                email_pessoal: dadosCandidato?.email ? dadosCandidato.email : candidato.email_pessoal,
                 cor_raca: candidato.cor_raca,
                 deficiente_fisico: candidato.deficiente_fisico,
                 numero_passaporte: candidato.numero_passaporte,
@@ -599,45 +590,114 @@ const CandidatoRegistro = () => {
                 tipo_sanguineo: candidato.tipo_sanguineo,
                 id_biometria: candidato.id_biometria,
                 imagem: candidato.imagem,
-                primeiro_nome: dadosCandidato.nome.split(' ')[0], // Sincroniza com dados_candidato
-                sobrenome_pai: candidato.sobrenome_pai,
-                sobrenome_mae: candidato.sobrenome_mae,
-                nome: dadosCandidato.nome,
-                cpf: dadosCandidato.cpf,
-                email: dadosCandidato.email,
-                telefone: dadosCandidato.telefone,
-                dt_nascimento: dadosCandidato.dt_nascimento,
+                primeiro_nome: dadosCandidato.nome ? dadosCandidato.nome.split(' ')[0] : '',
                 uf_registro_profissional: candidato.uf_registro_profissional,
                 data_emissao_cnh: candidato.data_emissao_cnh,
                 data_naturalizacao: candidato.data_naturalizacao,
                 id_pais: candidato.id_pais,
                 nome_social: candidato.nome_social,
-                candidato: candidato.candidato,
-                vaga: candidato.vaga,
-                processo: candidato.processo,
-                funcionario: candidato.funcionario,
-                centro_custo: dadosVaga?.centro_custo_id ? dadosVaga.centro_custo_id : candidato.centro_custo,
-                filial: dadosVaga?.filial_id ? dadosVaga.filial_id : candidato.filial,
-                departamento: dadosVaga?.departamento_id ? dadosVaga.departamento_id : candidato.departamento,
-                id_secao: dadosVaga?.secao_id ? dadosVaga.secao_id : candidato.id_secao,
-                id_funcao: dadosVaga?.funcao_id ? dadosVaga.funcao_id : candidato.id_funcao,
-                tipo_funcionario: candidato.tipo_funcionario,
-                tipo_situacao: candidato.tipo_situacao,
+                estado_natal: candidato.estado_natal,
+                naturalidade: candidato.naturalidade,
+                apelido: candidato.apelido,
+                sexo: candidato.sexo,
+                nacionalidade: candidato.nacionalidade,
+                registro_profissional: candidato.registro_profissional,
+                imagem_id: candidato.imagem_id,
+                estado_civil: candidato.estado_civil,
+                genero: candidato.genero,
+                
+                // Dados pessoais adicionais
+                nome_mae: candidato.nome_mae,
+                sobrenome_mae: candidato.sobrenome_mae,
+                nome_pai: candidato.nome_pai,
+                sobrenome_pai: candidato.sobrenome_pai,
+                pai_desconhecido: candidato.pai_desconhecido,
+
+                // Dados bancários
                 banco: candidato.banco,
                 agencia: candidato.agencia,
                 conta_corrente: candidato.conta_corrente,
                 tipo_conta: candidato.tipo_conta,
                 operacao: candidato.operacao,
-                estado_civil: candidato.estado_civil,
-                genero: candidato.genero,
-                educacao: candidato.educacao,
-                habilidades: candidato.habilidades,
-                experiencia: candidato.experiencia,
-                dependentes: candidato.dependentes,
-                anotacoes: candidato.anotacoes
+                pix: candidato.pix,
+                pix_tipo: candidato.pix_tipo,
+                
+                // Dados da vaga (apenas se não for self)
+                ...(self ? {} : {
+                    centro_custo: dadosVaga?.centro_custo_id ? dadosVaga.centro_custo_id : candidato.centro_custo,
+                    filial: dadosVaga?.filial_id ? dadosVaga.filial_id : candidato.filial,
+                    departamento: dadosVaga?.departamento_id ? dadosVaga.departamento_id : candidato.departamento,
+                    id_secao: dadosVaga?.secao_id ? dadosVaga.secao_id : candidato.id_secao,
+                    id_funcao: dadosVaga?.funcao_id ? dadosVaga.funcao_id : candidato.id_funcao,
+                    cargo: dadosVaga?.cargo_id ? dadosVaga.cargo_id : candidato.cargo,
+                    horario: dadosVaga?.horario_id ? dadosVaga.horario_id : candidato.horario,
+                    sindicato: dadosVaga?.sindicato_id ? dadosVaga.sindicato_id : candidato.sindicato,
+                }),
+                
+                // Dados adicionais
+                tipo_admissao: candidato.tipo_admissao,
+                codigo_ficha_registro: candidato.codigo_ficha_registro,
+                codigo_jornada: candidato.codigo_jornada,
+                tipo_funcionario: candidato.tipo_funcionario,
+                tipo_situacao: candidato.tipo_situacao,
+                aceite_lgpd: candidato.aceite_lgpd,
+                
+                // Arrays
+                educacao: candidato.educacao || [],
+                habilidades: candidato.habilidades || [],
+                experiencia: candidato.experiencia || [],
+                dependentes: candidato.dependentes || [],
+                anotacoes: candidato.anotacoes || '',
+                
+                // Dados de controle
+                tarefas: candidato.tarefas,
+                log_tarefas: candidato.log_tarefas,
+                documentos_status: candidato.documentos_status,
+                documentos: candidato.documentos,
+                dados_vaga: candidato.dados_vaga,
+                created_at: candidato.created_at,
+                updated_at: candidato.updated_at,
+                candidato_id: candidato.candidato,
+                vaga_id: candidato.vaga,
+                processo_id: candidato.processo,
+                funcionario_id: candidato.funcionario,
+
+                email_pessoal: dadosCandidato.email,
             };
 
             await http.put(`admissao/${admissao.id}/`, payload);
+            
+            // Salva dependentes no endpoint específico se houver dependentes
+            if (candidato.dependentes && candidato.dependentes.length > 0) {
+                try {
+                    // Mapeia os dependentes para o formato da API
+                    const dependentesParaEnviar = candidato.dependentes.map((dep, index) => ({
+                        nrodepend: index + 1,
+                        nome_depend: dep.nome || '',
+                        cpf: dep.cpf ? dep.cpf.replace(/\D/g, '') : null, // Remove formatação do CPF
+                        dtnascimento: dep.data_nascimento || null,
+                        cartorio: dep.cartorio || null,
+                        nroregistro: dep.nroregistro || null,
+                        nrolivro: dep.nrolivro || null,
+                        nrofolha: dep.nrofolha || null,
+                        cartao_vacina: dep.cartao_vacina || null,
+                        nrosus: dep.nrosus || null,
+                        nronascidovivo: dep.nronascidovivo || null,
+                        nome_mae: dep.nome_mae || null,
+                        id_admissao: candidato.id,
+                        genero: dep.genero || null,
+                        estadocivil: dep.estadocivil || null,
+                        grau_parentesco: dep.grau_parentesco || null
+                    }));
+
+                    await http.post(`admissao/${candidato.id}/adiciona_dependentes/`, dependentesParaEnviar);
+                    console.log('Dependentes salvos com sucesso no endpoint específico');
+                } catch (error) {
+                    console.error('Erro ao salvar dependentes no endpoint específico:', error);
+                    // Não interrompe o fluxo principal se falhar ao salvar dependentes
+                }
+            }
+            
             if (toast && toast.current) {
                 toast.current.show({
                     severity: 'success',

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
@@ -43,6 +43,13 @@ const StepDadosPessoais = ({ classError, estados }) => {
     const lastCepRef = useRef('');
 
     console.log(candidato)
+
+    // Verifica se o nome do pai é "DESCONHECIDO" e ativa o switch automaticamente
+    useEffect(() => {
+        if (candidato?.nome_pai === 'DESCONHECIDO' && !candidato?.pai_desconhecido) {
+            setCampo('pai_desconhecido', true);
+        }
+    }, [candidato?.nome_pai, candidato?.pai_desconhecido, setCampo]);
 
     // Função para buscar endereço pelo CEP
     const handleCepChange = async (valor) => {
