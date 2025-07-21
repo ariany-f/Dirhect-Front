@@ -368,9 +368,13 @@ const CandidatoRegistro = () => {
         
         switch (tipoTarefa) {
             case 'aguardar_documento':
-                return perfil === 'analista_tenant' || perfil === null;
+                // Permite que qualquer perfil aprovado possa aprovar documentos
+                return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === null;
             case 'aprovar_admissao':
                 return ['analista', 'supervisor', 'gestor'].includes(perfil);
+            case 'aguardar_lgpd':
+                // Permite que qualquer perfil aprovado possa aceitar LGPD
+                return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === null;
             default:
                 return false;
         }
@@ -378,16 +382,20 @@ const CandidatoRegistro = () => {
 
     const verificarTarefaConcluida = (tipoTarefa) => {
         return candidato?.tarefas?.some(tarefa => 
-            tarefa.tipo_codigo === tipoTarefa && tarefa.status === 'concluida'
+            tarefa.tipo_codigo === tipoTarefa && 
+            (tarefa.status === 'concluida' || tarefa.status === 'concluído')
         );
     };
 
     const obterTarefaPendente = () => {
         if (!candidato?.tarefas) return null;
         
-        const tarefasPendentes = candidato.tarefas.filter(tarefa => 
-            tarefa.status === 'pendente' && verificarPermissaoTarefa(tarefa.tipo_codigo)
-        );
+        const tarefasPendentes = candidato.tarefas.filter(tarefa => {
+            const temPermissao = verificarPermissaoTarefa(tarefa.tipo_codigo);
+            const statusValido = tarefa.status === 'pendente' || tarefa.status === 'em_andamento';
+            
+            return statusValido && temPermissao;
+        });
         
         return tarefasPendentes.length > 0 ? tarefasPendentes[0] : null;
     };
@@ -1283,7 +1291,6 @@ const CandidatoRegistro = () => {
             const stepHeader = event.target.closest('.p-stepper-header');
             if (stepHeader) {
                 const stepIndex = Array.from(stepHeader.parentElement.children).indexOf(stepHeader);
-                console.log('Header clicado, step:', stepIndex);
                 setActiveIndex(stepIndex);
             }
         };
@@ -1297,7 +1304,6 @@ const CandidatoRegistro = () => {
                     const activeHeader = stepperElement.querySelector('.p-stepper-header.p-highlight');
                     if (activeHeader) {
                         const stepIndex = Array.from(activeHeader.parentElement.children).indexOf(activeHeader);
-                        console.log('MutationObserver detectou step ativo:', stepIndex);
                         setActiveIndex(stepIndex);
                     }
                 }
