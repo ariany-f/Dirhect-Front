@@ -93,15 +93,62 @@ function DataTableAdmissao({
     }
 
     const representativeCandidatoTemplate = (rowData) => {
-        const nome = rowData?.dados_candidato?.nome;
-        return <div key={rowData?.id}>
-            <Texto weight={700} width={'100%'}>
-                {nome}
-            </Texto>
-            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData?.dados_candidato?.cpf ? formataCPF(rowData?.dados_candidato?.cpf) : '---'}</p>
+        const cpf = rowData?.dados_candidato?.cpf ?
+            formataCPF(rowData?.dados_candidato?.cpf)
+            : '---';
+        
+        return (
+            <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* Imagem ou Avatar */}
+                <div style={{ flexShrink: 0 }}>
+                    {rowData.imagem ? (
+                        <img 
+                            src={rowData.imagem}
+                            alt={`Foto de ${rowData.dados_candidato?.nome}`}
+                            style={{
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '50%',
+                                objectFit: 'cover',
+                                border: '2px solid #f1f5f9',
+                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                            }}
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                            }}
+                        />
+                    ) : null}
+                    {/* Fallback com letra inicial */}
+                    <div style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
+                        background: '#6b7280',
+                        display: rowData.imagem ? 'none' : 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        color: '#ffffff',
+                        border: '2px solid #f1f5f9',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                    }}>
+                        {rowData?.dados_candidato?.nome?.charAt(0)?.toUpperCase() || 'C'}
+                    </div>
+                </div>
+                
+                {/* Nome e CPF */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <Texto weight={700} width={'100%'}>
+                        {rowData?.dados_candidato?.nome}
+                    </Texto>
+                    <div style={{marginTop: '6px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                        CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
+                    </div>
+                </div>
             </div>
-        </div>
+        );
     }
 
     const representativeLgpdTemplate = (rowData) => {
@@ -386,7 +433,7 @@ function DataTableAdmissao({
                 totalRecords={totalRecords}
                 first={first}
                 onPage={onPage}
-                tableStyle={{ minWidth: '68vw' }}
+                tableStyle={{ minWidth: '68vw', maxWidth: '98%' }}
                 sortField={sortField}
                 sortOrder={sortOrder === 'desc' ? -1 : 1}
                 onSort={handleSort}
@@ -403,15 +450,15 @@ function DataTableAdmissao({
                     ) : null
                 }
             >
-                <Column body={representativeCandidatoTemplate} header="Candidato"></Column>
-                <Column body={vagaTemplate} header="Vaga"></Column>
-                <Column body={representativeStatusTemplate} header="Preenchimento"></Column>
-                <Column body={representativeSalarioTemplate} header="Salário"></Column>
-                <Column body={representativeFilialTemplate} header="Filial"></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
+                <Column body={vagaTemplate} header="Vaga" style={{ width: '15%' }}></Column>
+                <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: '12%' }}></Column>
+                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '15%' }}></Column>
+                <Column body={representativeFilialTemplate} header="Filial" style={{ width: '15%' }}></Column>
                 {algumaAdmissaoTemLGPD() && (
-                    <Column body={representativeLgpdTemplate} header="LGPD"></Column>
+                    <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '8%' }}></Column>
                 )}
-                <Column body={representativeActionsTemplate} header="Ações"></Column>
+                <Column body={representativeActionsTemplate} header="Ações" style={{ width: '10%' }}></Column>
             </DataTable>
 
             <ModalHistoricoAdmissao 

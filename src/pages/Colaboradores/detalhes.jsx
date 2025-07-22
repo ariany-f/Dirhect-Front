@@ -741,49 +741,6 @@ function ColaboradorDetalhes() {
                             alignItems: 'center',
                             gap: 10
                         }}>
-                            {colaborador.imagem ? (
-                                <img 
-                                    src={colaborador.imagem}
-                                    alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`}
-                                    style={{
-                                        width: 36,
-                                        height: 36,
-                                        borderRadius: '50%',
-                                        objectFit: 'cover',
-                                        cursor: 'pointer',
-                                        border: '2px solid rgba(255, 255, 255, 0.3)',
-                                        transition: 'all 0.2s ease'
-                                    }}
-                                    onClick={() => setShowImageModal(true)}
-                                    onMouseEnter={(e) => {
-                                        e.target.style.transform = 'scale(1.1)';
-                                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.target.style.transform = 'scale(1)';
-                                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                                    }}
-                                    onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        e.target.nextSibling.style.display = 'flex';
-                                    }}
-                                />
-                            ) : null}
-                            {/* Fallback para quando não há imagem ou quando a imagem falha ao carregar */}
-                            <div style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: '50%',
-                                background: 'rgba(255, 255, 255, 0.2)',
-                                display: colaborador.imagem ? 'none' : 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: 16,
-                                fontWeight: 500,
-                                color: '#fff'
-                            }}>
-                                {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
-                            </div>
                             <div>
                                 <h2 style={{
                                     margin: 0,

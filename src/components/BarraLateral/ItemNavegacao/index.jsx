@@ -8,10 +8,13 @@ const ItemEstilizado = styled.li`
     cursor: pointer;
     color: var(--white);
     font-weight: 500;
-    font-size: 14px;
+    font-size: ${props => props.$isLongText ? '13px' : '14px'};
     line-height: 150%;
     background-color: ${props => props.$ativo ? 'rgba(255, 255, 255, 0.1)' : 'transparent'};
     transition: background-color 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &:hover {
         background-color: rgba(255, 255, 255, 0.1);
@@ -25,8 +28,13 @@ const ItemEstilizado = styled.li`
 `
 
 function ItemNavegacao({ children, ativo = false }) {
+    // Verifica se algum texto filho é muito longo
+    const isLongText = Array.isArray(children) && children.some(child => 
+        typeof child === 'string' && child.length > 18
+    );
+    
     return (
-        <ItemEstilizado $ativo={ativo}>
+        <ItemEstilizado $ativo={ativo} $isLongText={isLongText}>
             {children}
         </ItemEstilizado>
     )
