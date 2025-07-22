@@ -21,7 +21,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 import { addLocale } from 'primereact/api'
 import { Tag } from 'primereact/tag';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
-import { RiFileCopy2Line, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
+import { RiFileCopy2Line, RiGasStationFill, RiShoppingCartFill, RiUpload2Fill } from 'react-icons/ri';
 import { MdOutlineFastfood } from 'react-icons/md';
 import { IoCopyOutline } from 'react-icons/io5';
 import styled from 'styled-components';
@@ -138,7 +138,7 @@ const InfoItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 0;
+    padding: 4px 0;
     border-bottom: 1px solid #f1f5f9;
     transition: all 0.2s ease;
     
@@ -148,7 +148,7 @@ const InfoItem = styled.div`
     
     &:hover {
         margin: 0 -12px;
-        padding: 12px;
+        padding: 8px 12px;
         border-radius: 8px;
         border-bottom: 1px solid transparent;
     }
@@ -243,6 +243,50 @@ const CustomTag = styled.div`
     text-transform: uppercase;
 `;
 
+const UploadArea = styled.label`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    border: 2px dashed var(--primaria);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--neutro-50);
+    &:hover {
+        border-color: var(--primaria-escuro);
+        background-color: var(--neutro-100);
+    }
+`;
+
+const UploadIcon = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--primaria);
+    & svg {
+        font-size: 24px;
+        margin-bottom: 4px;
+    }
+`;
+
+const UploadText = styled.span`
+    text-align: center;
+    color: var(--neutro-600);
+    padding: 0 8px;
+    font-size: 10px;
+`;
+
+// Adiciona a animação do spinner
+const GlobalStyle = styled.div`
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+
 function ColaboradorDetalhes() {
 
     let { id } = useParams()
@@ -256,8 +300,10 @@ function ColaboradorDetalhes() {
     const [departamento, setDepartamento] = useState(null)
     const [centroCusto, setCentroCusto] = useState(null)
     const [modalDemissaoAberto, setModalDemissaoAberto] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const navegar = useNavigate()
     const toast = useRef(null)
+    const fileInputRef = useRef(null)
 
     const {usuario} = useSessaoUsuarioContext()
 
@@ -363,6 +409,52 @@ function ColaboradorDetalhes() {
         });
     };
 
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+            setUploading(true);
+            
+            const formData = new FormData();
+            formData.append('imagem', file);
+            
+            http.put(`funcionario/${id}/`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then(response => {
+                setColaborador(prev => ({ ...prev, imagem: response.imagem }));
+                toast.current.show({ 
+                    severity: 'success', 
+                    summary: 'Sucesso', 
+                    detail: 'Imagem do colaborador atualizada com sucesso!', 
+                    life: 3000 
+                });
+            })
+            .catch(erro => {
+                console.error("Erro ao fazer upload da imagem:", erro);
+                const errorMessage = erro.response?.data?.detail || 'Falha ao fazer upload da imagem.';
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: errorMessage, 
+                    life: 3000 
+                });
+            })
+            .finally(() => {
+                setUploading(false);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+            });
+        } else {
+            toast.current.show({ 
+                severity: 'warn', 
+                summary: 'Atenção', 
+                detail: 'Por favor, selecione um arquivo de imagem válido.', 
+                life: 3000 
+            });
+        }
+    };
+
     useEffect(() => {
         if(!colaborador)
         {
@@ -442,6 +534,7 @@ function ColaboradorDetalhes() {
 
     return (
         <Frame>
+            <GlobalStyle />
             <Toast ref={toast} />
             <ConfirmDialog />
             
@@ -545,7 +638,7 @@ function ColaboradorDetalhes() {
                                 </span>
                             </div>
                             
-                            {colaborador?.tipo_situacao_descricao == 'Ativo' && (
+                            {colaborador?.tipo_situacao_descricao == 'Ativo' && ArmazenadorToken.hasPermission('add_demissao') && (
                                 <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="vermilion" size="small">
                                     <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> 
                                     Solicitar Demissão
@@ -571,6 +664,108 @@ function ColaboradorDetalhes() {
             <Col12Vertical>
                 {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
                     <Col4Vertical>
+                        {/* Imagem do Colaborador */}
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginBottom: '8px',
+                            paddingBottom: '8px',
+                            borderBottom: '1px solid #f1f5f9'
+                        }}>
+                            {colaborador.imagem ? (
+                                <img 
+                                    src={colaborador.imagem}
+                                    alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`}
+                                    style={{
+                                        width: '120px',
+                                        height: '120px',
+                                        borderRadius: '50%',
+                                        objectFit: 'cover',
+                                        border: '4px solid #f8fafc',
+                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                                    }}
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                />
+                            ) : (
+                                // Se não tem imagem e usuário tem permissão, mostra área de upload
+                                ArmazenadorToken.hasPermission('change_funcionario') ? (
+                                    <>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            ref={fileInputRef}
+                                            style={{ display: 'none' }}
+                                            id="colaborador-image-upload"
+                                        />
+                                        <UploadArea htmlFor="colaborador-image-upload">
+                                            {uploading ? (
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    color: 'var(--primaria)'
+                                                }}>
+                                                    <div style={{
+                                                        border: '2px solid var(--primaria)',
+                                                        borderTop: '2px solid transparent',
+                                                        borderRadius: '50%',
+                                                        width: '24px',
+                                                        height: '24px',
+                                                        animation: 'spin 1s linear infinite'
+                                                    }}></div>
+                                                    <UploadText style={{ marginTop: '8px' }}>Enviando...</UploadText>
+                                                </div>
+                                            ) : (
+                                                <UploadIcon>
+                                                    <RiUpload2Fill />
+                                                    <UploadText>Adicionar foto</UploadText>
+                                                    <UploadText>PNG, JPG</UploadText>
+                                                </UploadIcon>
+                                            )}
+                                        </UploadArea>
+                                    </>
+                                ) : (
+                                    // Se não tem permissão, mostra apenas o avatar com inicial
+                                    <div style={{
+                                        width: '120px',
+                                        height: '120px',
+                                        borderRadius: '50%',
+                                        background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '48px',
+                                        fontWeight: 'bold',
+                                        color: '#64748b',
+                                        border: '4px solid #f8fafc',
+                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                    </div>
+                                )
+                            )}
+                            {/* Fallback para quando a imagem falha ao carregar */}
+                            <div style={{
+                                width: '120px',
+                                height: '120px',
+                                borderRadius: '50%',
+                                background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
+                                display: 'none',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '48px',
+                                fontWeight: 'bold',
+                                color: '#64748b',
+                                border: '4px solid #f8fafc',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                            }}>
+                                {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
+                            </div>
+                        </div>
                         
                         <InfoItem>
                             <InfoLabel>
