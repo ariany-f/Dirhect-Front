@@ -46,10 +46,14 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false }) => {
 
     // Verifica se o nome do pai é "DESCONHECIDO" e ativa o switch automaticamente
     useEffect(() => {
-        if (candidato?.nome_pai === 'DESCONHECIDO' && !candidato?.pai_desconhecido) {
+        // Só atualiza se o nome do pai for "DESCONHECIDO" mas o switch não estiver ativo
+        // E se os dados já foram carregados (para evitar execução na primeira renderização)
+        if (candidato?.nome_pai === 'DESCONHECIDO' && 
+            candidato?.pai_desconhecido !== true && 
+            candidato?.dados_candidato?.nome) { // Verifica se os dados já foram carregados
             setCampo('pai_desconhecido', true);
         }
-    }, [candidato?.nome_pai, candidato?.pai_desconhecido, setCampo]);
+    }, [candidato?.nome_pai, candidato?.pai_desconhecido, candidato?.dados_candidato?.nome, setCampo]);
 
     // Função para buscar endereço pelo CEP
     const handleCepChange = async (valor) => {

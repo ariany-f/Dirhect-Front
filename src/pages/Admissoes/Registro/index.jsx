@@ -559,13 +559,21 @@ const CandidatoRegistro = () => {
                         habilidades: data.habilidades || [],
                         experiencia: data.experiencia || [],
                         dependentes: data.dependentes || [],
-                        anotacoes: data.anotacoes || ''
+                        anotacoes: data.anotacoes || '',
+                        // Normalizar estruturas que podem ser criadas pelos componentes
+                        dados_candidato: data.dados_candidato || {},
+                        dados_vaga: data.dados_vaga || {}
                     };
+                    
                     // Atualiza o candidato com todos os dados
                     setCandidato(fullCandidatoData);
-                    setInitialCandidato(JSON.parse(JSON.stringify(fullCandidatoData))); // Cria um snapshot profundo
                     setVaga(data.dados_vaga || {});
                     setAdmissao(data);
+                    
+                    // Aguarda um tick para garantir que os componentes processaram os dados
+                    setTimeout(() => {
+                        setInitialCandidato(JSON.parse(JSON.stringify(fullCandidatoData)));
+                    }, 100);
                 })
                 .catch((err) => {
                     console.error('Erro ao buscar admissão:', err);
@@ -673,8 +681,29 @@ const CandidatoRegistro = () => {
             }
         }
         
+        // Normaliza os dados para comparação (remove propriedades que podem ser undefined/null)
+        const normalizarObjeto = (obj) => {
+            if (!obj || typeof obj !== 'object') return obj;
+            
+            const normalizado = {};
+            Object.keys(obj).forEach(key => {
+                const valor = obj[key];
+                if (valor !== undefined && valor !== null && valor !== '') {
+                    if (typeof valor === 'object' && !Array.isArray(valor)) {
+                        normalizado[key] = normalizarObjeto(valor);
+                    } else {
+                        normalizado[key] = valor;
+                    }
+                }
+            });
+            return normalizado;
+        };
+        
+        const candidatoNormalizado = normalizarObjeto(candidato);
+        const initialNormalizado = normalizarObjeto(initialCandidato);
+        
         // Compara o estado atual com o inicial
-        if (JSON.stringify(candidato) === JSON.stringify(initialCandidato)) {
+        if (JSON.stringify(candidatoNormalizado) === JSON.stringify(initialNormalizado)) {
             toast.current.show({
                 severity: 'info',
                 summary: 'Informação',
@@ -977,7 +1006,10 @@ const CandidatoRegistro = () => {
             });
             
             // Atualiza o snapshot inicial com os novos dados salvos
-            setInitialCandidato(JSON.parse(JSON.stringify(candidato)));
+            setTimeout(() => {
+                const candidatoAtualizado = JSON.parse(JSON.stringify(candidato));
+                setInitialCandidato(candidatoAtualizado);
+            }, 100);
 
         } catch (error) {
             console.error('Erro ao salvar:', error);

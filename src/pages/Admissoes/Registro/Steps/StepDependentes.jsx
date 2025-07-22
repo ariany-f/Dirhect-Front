@@ -77,7 +77,8 @@ const StepDependentes = ({ modoLeitura = false }) => {
             .then(response => {
                 const formattedOptions = response.registros?.map(item => ({
                     code: item.id_origem,
-                    name: item.descricao
+                    name: item.descricao,
+                    id_origem: item.id_origem // Mantém também o id_origem para comparação
                 })) || [];
                 setGrausParentesco(formattedOptions);
             })
@@ -318,7 +319,7 @@ const StepDependentes = ({ modoLeitura = false }) => {
 
     const getGrausParentescoDisponiveis = (dependenteAtual) => {
         const dependentesExistentes = (candidato.dependentes || []).filter(dep => 
-            dep.id && (dep.id || dep.temp_id) !== (dependenteAtual.id || dependenteAtual.temp_id)
+            (dep.id || dep.temp_id) !== (dependenteAtual.id || dependenteAtual.temp_id)
         );
         
         const grausJaUsados = dependentesExistentes.map(dep => dep.grau_parentesco).filter(Boolean);
@@ -431,7 +432,7 @@ const StepDependentes = ({ modoLeitura = false }) => {
         <>
             <StyledToast ref={toast} />
             <ConfirmDialog />
-            <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center'}}>
+            <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', paddingTop: '10px'}}>
                 {(candidato.dependentes || []).map((dependente, idx) => {
                     const id = dependente.id || dependente.temp_id;
                     const isOpen = abertos.includes(idx);
@@ -499,9 +500,24 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                         />
                                         <DropdownItens
                                             label="Grau de Parentesco *"
-                                            valor={grausParentesco.find(g => g.code === dependente.grau_parentesco) || ''}
+                                            valor={(() => {
+                                                // Para dependentes salvos, sempre busca na lista completa
+                                                if (dependente.id) {
+                                                    const valorEncontrado = grausParentesco.find(g => {
+                                                        // Tenta buscar por code (number) e id_origem (string)
+                                                        return g.code == dependente.grau_parentesco || g.id_origem == dependente.grau_parentesco;
+                                                    });
+                                                    return valorEncontrado || '';
+                                                }
+                                                // Para dependentes novos, busca na lista filtrada
+                                                const opcoesDisponiveis = getGrausParentescoDisponiveis(dependente);
+                                                const valorEncontrado = opcoesDisponiveis.find(g => {
+                                                    return g.code == dependente.grau_parentesco || g.id_origem == dependente.grau_parentesco;
+                                                });
+                                                return valorEncontrado || '';
+                                            })()}
                                             setValor={(valor) => handleUpdateDependente(id, 'grau_parentesco', valor.code)}
-                                            options={getGrausParentescoDisponiveis(dependente)}
+                                            options={dependente.id ? grausParentesco : getGrausParentescoDisponiveis(dependente)}
                                             $margin="23px"
                                             disabled={modoLeitura || isSaved}
                                         />
