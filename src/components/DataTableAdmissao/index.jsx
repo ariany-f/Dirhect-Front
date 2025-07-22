@@ -403,15 +403,15 @@ function DataTableAdmissao({
                     ) : null
                 }
             >
-                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '16%' }}></Column>
-                <Column body={vagaTemplate} header="Vaga" style={{ width: '14%' }}></Column>
-                <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: '13%' }}></Column>
-                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '14%' }}></Column>
-                <Column body={representativeFilialTemplate} header="Filial" style={{ width: '12%' }}></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato"></Column>
+                <Column body={vagaTemplate} header="Vaga"></Column>
+                <Column body={representativeStatusTemplate} header="Preenchimento"></Column>
+                <Column body={representativeSalarioTemplate} header="Salário"></Column>
+                <Column body={representativeFilialTemplate} header="Filial"></Column>
                 {algumaAdmissaoTemLGPD() && (
-                    <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '11%' }}></Column>
+                    <Column body={representativeLgpdTemplate} header="LGPD"></Column>
                 )}
-                <Column body={representativeActionsTemplate} header="" style={{ width: algumaAdmissaoTemLGPD() ? '10%' : '21%' }}></Column>
+                <Column body={representativeActionsTemplate} header="Ações"></Column>
             </DataTable>
 
             <ModalHistoricoAdmissao 
