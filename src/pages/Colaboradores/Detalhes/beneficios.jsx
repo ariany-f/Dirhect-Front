@@ -12,7 +12,7 @@ import styled from "styled-components"
 import { Real } from '@utils/formats'
 import IconeBeneficio from "@components/IconeBeneficio"
 import Dashboard from '@assets/Dashboard.svg'
-import { useParams } from "react-router-dom"
+import { useParams, useLocation } from "react-router-dom"
 import { FaChevronDown, FaCheck, FaTimes, FaClock, FaInfoCircle } from 'react-icons/fa'
 import ModalInfoElegibilidade from '@components/ModalInfoElegibilidade'
 import { Dropdown } from "primereact/dropdown"
@@ -569,6 +569,7 @@ const StatusIconCard = styled.div`
 
 function ColaboradorBeneficios() {
     let { id } = useParams()
+    const location = useLocation()
     const [beneficios, setBeneficios] = useState([])
     const [loading, setLoading] = useState(true)
     const toast = useRef(null)
@@ -584,10 +585,14 @@ function ColaboradorBeneficios() {
     ]
 
     useEffect(() => {
-        if (id) {
+        // Verifica se a aba de benefícios está ativa antes de carregar
+        const currentPath = location.pathname;
+        const isBeneficiosTab = currentPath === `/colaborador/detalhes/${id}` || currentPath.endsWith('/beneficios');
+        
+        if (id && isBeneficiosTab) {
             carregarBeneficios()
         }
-    }, [id])
+    }, [id, location.pathname])
 
     const carregarBeneficios = async () => {
         try {
