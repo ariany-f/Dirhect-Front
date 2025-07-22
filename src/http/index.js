@@ -34,6 +34,12 @@ export const getConnectionErrorStatus = () => {
     };
 };
 
+// Função para resetar a flag de refresh (útil para debugging)
+export const resetRefreshFlag = () => {
+    refreshInProgress = false;
+    console.log('Flag de refresh resetada');
+};
+
 // Função para identificar erros de conexão com a API
 function isConnectionError(error) {
     const connectionErrorCodes = [
@@ -100,18 +106,39 @@ function tokenExpiraEmMenosDeUmMinuto() {
     if (!expiration) return true;
     const expiresAt = new Date(expiration).getTime();
     const agora = Date.now();
-    return (expiresAt - agora) < 60000;
+    const tempoRestante = expiresAt - agora;
+    
+    // Retorna true se faltar menos de 2 minutos para expirar
+    // Isso dá uma margem de segurança para evitar refreshes desnecessários
+    return tempoRestante < 120000; // 2 minutos
 }
 
 async function tentarRefreshToken() {
+    // Se já há um refresh em andamento, aguarda
+    if (refreshInProgress) {
+        console.log('Refresh já em andamento, aguardando...');
+        // Aguarda até 5 segundos pelo refresh em andamento
+        let attempts = 0;
+        while (refreshInProgress && attempts < 50) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            attempts++;
+        }
+        return !tokenExpiraEmMenosDeUmMinuto(); // Retorna true se o token ainda é válido
+    }
+
     const refreshToken = ArmazenadorToken.RefreshToken;
     if (!refreshToken) return false;
+
+    refreshInProgress = true;
+    console.log('Iniciando refresh do token...');
+
     try {
         const response = await axios.post(
             `${PROTOCOL}://${sessionStorage.getItem("company_domain") || 'dirhect'}.${API_BASE_DOMAIN}/api/token/refresh/`,
             { refresh: refreshToken },
             { headers: { "Content-Type": "application/json" } }
         );
+        
         // Atualiza o token e a expiração
         const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
         ArmazenadorToken.definirToken(
@@ -119,11 +146,16 @@ async function tentarRefreshToken() {
             expiration,
             response.data.refresh
         );
+        
+        console.log('Refresh do token realizado com sucesso');
         return true;
     } catch (error) {
+        console.error('Erro ao fazer refresh do token:', error);
         // ArmazenadorToken.removerToken();
         // window.location.href = '/login';
         return false;
+    } finally {
+        refreshInProgress = false;
     }
 }
 
@@ -217,8 +249,8 @@ http.interceptors.response.use(
                 originalRequest.headers['Authorization'] = `Bearer ${ArmazenadorToken.AccessToken}`;
                 return http(originalRequest);
             } else {
-                ArmazenadorToken.removerToken();
-                window.location.href = '/login';
+                // ArmazenadorToken.removerToken();
+                // window.location.href = '/login';
                 return Promise.reject(error.response?.data || error);
             }
         }
