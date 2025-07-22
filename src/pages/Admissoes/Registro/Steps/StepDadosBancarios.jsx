@@ -43,7 +43,7 @@ const InfoBox = styled.div`
     }
 `;
 
-const StepDadosBancarios = () => {
+const StepDadosBancarios = ({ modoLeitura = false }) => {
     const { candidato, setCampo } = useCandidatoContext();
 
     // Lista de bancos mais comuns
@@ -100,6 +100,7 @@ const StepDadosBancarios = () => {
                 name="banco"
                 label="Banco"
                 placeholder="Selecione o banco"
+                disabled={modoLeitura}
             />
 
             <DropdownItens
@@ -110,6 +111,7 @@ const StepDadosBancarios = () => {
                 name="tipo_conta"
                 label="Tipo de Conta"
                 placeholder="Selecione o tipo de conta"
+                disabled={modoLeitura}
             />
 
             <CampoTexto
@@ -119,6 +121,7 @@ const StepDadosBancarios = () => {
                 label="Agência"
                 placeholder="Digite a agência (sem dígito)"
                 patternMask="9999"
+                disabled={modoLeitura}
             />
 
             <CampoTexto
@@ -127,6 +130,7 @@ const StepDadosBancarios = () => {
                 setValor={valor => setCampo('conta_corrente', valor)}
                 label="Número da Conta"
                 placeholder="Digite o número da conta (com dígito)"
+                disabled={modoLeitura}
             />
 
             <CampoTexto
@@ -135,6 +139,7 @@ const StepDadosBancarios = () => {
                 setValor={valor => setCampo('operacao', valor)}
                 label="Operação (se houver)"
                 placeholder="Digite a operação"
+                disabled={modoLeitura}
             />
 
             <SectionTitle>PIX (Opcional)</SectionTitle>
@@ -145,6 +150,7 @@ const StepDadosBancarios = () => {
                 setValor={valor => setCampo('pix', valor)}
                 label="Chave PIX"
                 placeholder="Digite a chave PIX"
+                disabled={modoLeitura}
             />
 
             <InfoBox>

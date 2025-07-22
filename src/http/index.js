@@ -25,7 +25,7 @@ async function tentarRefreshToken() {
     if (!refreshToken) return false;
     try {
         const response = await axios.post(
-            `${PROTOCOL}://${sessionStorage.getItem("company_domain") || 'geral'}.${API_BASE_DOMAIN}/api/token/refresh/`,
+            `${PROTOCOL}://${sessionStorage.getItem("company_domain") || 'dirhect'}.${API_BASE_DOMAIN}/api/token/refresh/`,
             { refresh: refreshToken },
             { headers: { "Content-Type": "application/json" } }
         );
@@ -45,7 +45,7 @@ async function tentarRefreshToken() {
 
 // Interceptor para definir a baseURL dinamicamente antes de cada requisição
 http.interceptors.request.use(async (config) => {
-    const companyDomain = sessionStorage.getItem("company_domain") || 'geral';
+    const companyDomain = sessionStorage.getItem("company_domain") || 'dirhect';
     config.baseURL = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
 
     // Se faltar menos de 1 min para expirar, tenta refresh

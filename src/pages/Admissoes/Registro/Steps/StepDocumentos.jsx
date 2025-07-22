@@ -176,7 +176,7 @@ const StepDocumentos = ({ toast }) => {
         
         // Remove a primeira barra se existir
         const caminhoLimpo = arquivo.startsWith('/') ? arquivo.substring(1) : arquivo;
-        return `https://geral.dirhect.net/${caminhoLimpo}`;
+        return `https://dirhect.dirhect.net/${caminhoLimpo}`;
     };
 
     return (

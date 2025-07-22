@@ -361,6 +361,10 @@ const CandidatoRegistro = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [showModalConfirmacao, setShowModalConfirmacao] = useState(false);
     const [modoLeitura, setModoLeitura] = useState(false);
+    const [showConfirmacaoFinalizacao, setShowConfirmacaoFinalizacao] = useState(false);
+    const [showConfirmacaoDependentes, setShowConfirmacaoDependentes] = useState(false);
+    const [dependentesParaAdicionar, setDependentesParaAdicionar] = useState([]);
+    const [acaoSalvamento, setAcaoSalvamento] = useState(null); // 'salvar' ou 'salvar_continuar'
 
     // Funções para verificar permissões baseadas no perfil
     const verificarPermissaoTarefa = (tipoTarefa) => {
@@ -402,11 +406,10 @@ const CandidatoRegistro = () => {
 
     // Verificar se deve estar em modo leitura
     useEffect(() => {
-        const tarefaDocumentosConcluida = verificarTarefaConcluida('aguardar_documento');
-        const perfil = ArmazenadorToken.UserProfile;
+        const tarefaPendente = obterTarefaPendente();
         
-        // Se a tarefa de documentos está concluída e o usuário não tem permissão para aprovar admissão
-        if (tarefaDocumentosConcluida && !verificarPermissaoTarefa('aprovar_admissao')) {
+        // Se não há tarefa pendente que o usuário pode concluir, ativa modo leitura
+        if (!tarefaPendente) {
             setModoLeitura(true);
         } else {
             setModoLeitura(false);
@@ -566,7 +569,80 @@ const CandidatoRegistro = () => {
     }, []);
 
     const handleSalvarAdmissao = async () => {
-       
+        // Se estiver em modo leitura, apenas mostra mensagem
+        if (modoLeitura) {
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Modo de leitura',
+                detail: 'Os dados estão em modo de leitura. Não é possível salvar alterações.',
+                life: 3000
+            });
+            return;
+        }
+
+        // Verifica se há dependentes novos para adicionar
+        if (candidato.dependentes && candidato.dependentes.length > 0) {
+            const dependentesNovos = candidato.dependentes.filter(dep => !dep.id);
+            
+            if (dependentesNovos.length > 0) {
+                setDependentesParaAdicionar(dependentesNovos);
+                setAcaoSalvamento('salvar');
+                setShowConfirmacaoDependentes(true);
+                return;
+            }
+        }
+        
+        // Se não há dependentes novos, salva normalmente
+        await executarSalvamento();
+    };
+
+    const handleSalvarEContinuar = async () => {
+        // Se estiver em modo leitura, apenas avança para o próximo step
+        if (modoLeitura) {
+            stepperRef.current.nextCallback();
+            setActiveIndex(prev => prev + 1);
+            return;
+        }
+
+        // Verifica se há dependentes novos para adicionar
+        if (candidato.dependentes && candidato.dependentes.length > 0) {
+            const dependentesNovos = candidato.dependentes.filter(dep => !dep.id);
+            
+            if (dependentesNovos.length > 0) {
+                setDependentesParaAdicionar(dependentesNovos);
+                setAcaoSalvamento('salvar_continuar');
+                setShowConfirmacaoDependentes(true);
+                return;
+            }
+        }
+        
+        // Se não há dependentes novos, salva e continua normalmente
+        await executarSalvamento();
+        stepperRef.current.nextCallback();
+        setActiveIndex(prev => prev + 1);
+    };
+
+    // Função para calcular o índice do step de dependentes
+    const getStepDependentesIndex = () => {
+        let index = 4; // Base: Documentos, Dados Pessoais, Dados Bancários, Educação
+        
+        if (!self) {
+            index += 1; // Dados Cadastrais
+        }
+        
+        if (mostrarHabilidades) {
+            index += 1; // Habilidades
+        }
+        
+        if (mostrarExperiencia) {
+            index += 1; // Experiência Profissional
+        }
+        
+        return index; // Dependentes
+    };
+
+    // Função que executa o salvamento real
+    const executarSalvamento = async () => {
         if (!admissao?.id) return;
         
         if (modoLeitura) {
@@ -578,6 +654,19 @@ const CandidatoRegistro = () => {
             });
             return;
         }
+
+        // Verifica se está no step de dependentes
+        const stepDependentesIndex = getStepDependentesIndex();
+        const isStepDependentes = activeIndex === stepDependentesIndex;
+        
+        // Se está no step de dependentes e não há dependentes novos, não faz PUT de admissão
+        if (isStepDependentes) {
+            const dependentesNovos = candidato.dependentes?.filter(dep => !dep.id) || [];
+            if (dependentesNovos.length === 0) {
+                console.log('Step de dependentes: nenhum dependente novo para salvar');
+                return;
+            }
+        }
         
         try {
             // Monta o payload seguindo o padrão correto
@@ -586,20 +675,62 @@ const CandidatoRegistro = () => {
             
             // Função para formatar salário corretamente
             const formatarSalario = (valor) => {
+                console.log('formatarSalario - valor recebido:', valor, 'tipo:', typeof valor);
+                
                 if (!valor) return '';
-                // Remove formatação BRL e converte para formato decimal
-                const valorLimpo = valor.replace(/[R$\s.]/g, '').replace(',', '.');
-                // Converte para número e formata com 2 casas decimais
+                
+                // Se já é um número, retorna formatado
+                if (typeof valor === 'number') {
+                    console.log('formatarSalario - é número, retornando:', valor.toFixed(2));
+                    return valor.toFixed(2);
+                }
+                
+                // Se é string, remove formatação e converte
+                let valorLimpo = valor.toString();
+                console.log('formatarSalario - valor como string:', valorLimpo);
+                
+                // Remove R$, espaços e outros caracteres não numéricos
+                valorLimpo = valorLimpo.replace(/[R$\s]/g, '');
+                console.log('formatarSalario - após remover R$ e espaços:', valorLimpo);
+                
+                // Se tem vírgula (formato brasileiro: 15.000,00)
+                if (valorLimpo.includes(',')) {
+                    // Remove pontos de milhar e troca vírgula por ponto
+                    valorLimpo = valorLimpo.replace(/\./g, '').replace(',', '.');
+                    console.log('formatarSalario - após tratar vírgula:', valorLimpo);
+                }
+                
+                // Converte para número
                 const numero = parseFloat(valorLimpo);
+                console.log('formatarSalario - número convertido:', numero);
+                
                 if (isNaN(numero)) return '';
-                return numero.toFixed(2);
+                
+                const resultado = numero.toFixed(2);
+                console.log('formatarSalario - resultado final:', resultado);
+                return resultado;
             };
             
             const payload = {
                 // Dados básicos da admissão
                 chapa: candidato.chapa,
                 dt_admissao: candidato.dt_admissao,
-                salario: formatarSalario(dadosCandidato?.salario ? dadosCandidato.salario : (dadosVaga?.salario ? dadosVaga.salario : candidato.salario)),
+                salario: (() => {
+                    const salarioCandidato = dadosCandidato?.salario;
+                    const salarioVaga = dadosVaga?.salario;
+                    const salarioPrincipal = candidato.salario;
+                    
+                    console.log('Salários disponíveis:', {
+                        dadosCandidato: salarioCandidato,
+                        dadosVaga: salarioVaga,
+                        candidato: salarioPrincipal
+                    });
+                    
+                    const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
+                    console.log('Salário selecionado para formatar:', salarioParaFormatar);
+                    
+                    return formatarSalario(salarioParaFormatar);
+                })(),
                 status: candidato.status,
                 grau_instrucao: candidato.grau_instrucao,
                 
@@ -619,9 +750,42 @@ const CandidatoRegistro = () => {
                     telefone: dadosCandidato.telefone,
                     cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
                     dt_nascimento: dadosCandidato.dt_nascimento,
-                    salario: formatarSalario(dadosCandidato?.salario ? dadosCandidato.salario : (dadosVaga?.salario ? dadosVaga.salario : candidato.salario)),
+                    salario: (() => {
+                        const salarioCandidato = dadosCandidato?.salario;
+                        const salarioVaga = dadosVaga?.salario;
+                        const salarioPrincipal = candidato.salario;
+                        
+                        console.log('Salário para objeto candidato:', {
+                            dadosCandidato: salarioCandidato,
+                            dadosVaga: salarioVaga,
+                            candidato: salarioPrincipal
+                        });
+                        
+                        const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
+                        console.log('Salário candidato selecionado para formatar:', salarioParaFormatar);
+                        
+                        return formatarSalario(salarioParaFormatar);
+                    })(),
                 },
-
+                
+                // Dados pessoais
+                nome_mae: candidato.nome_mae,
+                sobrenome_mae: candidato.sobrenome_mae,
+                nome_pai: candidato.nome_pai,
+                sobrenome_pai: candidato.sobrenome_pai,
+                naturalidade: candidato.naturalidade,
+                estado_natal: candidato.estado_natal,
+                nacionalidade: candidato.nacionalidade,
+                cor_raca: candidato.cor_raca,
+                deficiente_fisico: candidato.deficiente_fisico,
+                naturalizado: candidato.naturalizado,
+                data_naturalizacao: candidato.data_naturalizacao,
+                pais_origem: candidato.pais_origem,
+                tipo_visto: candidato.tipo_visto,
+                data_venc_visto: candidato.data_venc_visto,
+                nome_social: candidato.nome_social,
+                genero: candidato.genero,
+                estado_civil: candidato.estado_civil,
                 
                 // Documentos
                 identidade: candidato.identidade,
@@ -631,58 +795,36 @@ const CandidatoRegistro = () => {
                 titulo_eleitor: candidato.titulo_eleitor,
                 zona_titulo_eleitor: candidato.zona_titulo_eleitor,
                 secao_titulo_eleitor: candidato.secao_titulo_eleitor,
+                data_titulo_eleitor: candidato.data_titulo_eleitor,
+                estado_emissor_tit_eleitor: candidato.estado_emissor_tit_eleitor,
                 carteira_trabalho: candidato.carteira_trabalho,
                 serie_carteira_trab: candidato.serie_carteira_trab,
                 uf_carteira_trab: candidato.uf_carteira_trab,
                 data_emissao_ctps: candidato.data_emissao_ctps,
+                data_venc_ctps: candidato.data_venc_ctps,
                 nit: candidato.nit,
                 carteira_motorista: candidato.carteira_motorista,
                 tipo_carteira_habilit: candidato.tipo_carteira_habilit,
                 data_venc_habilit: candidato.data_venc_habilit,
+                data_emissao_cnh: candidato.data_emissao_cnh,
                 certificado_reservista: candidato.certificado_reservista,
-                naturalizado: candidato.naturalizado,
-                data_venc_ctps: candidato.data_venc_ctps,
-                tipo_visto: candidato.tipo_visto,
-                cor_raca: candidato.cor_raca,
-                deficiente_fisico: candidato.deficiente_fisico,
                 numero_passaporte: candidato.numero_passaporte,
-                pais_origem: candidato.pais_origem,
                 data_emissao_passaporte: candidato.data_emissao_passaporte,
                 data_validade_passaporte: candidato.data_validade_passaporte,
-                observacoes_pessoa: candidato.observacoes_pessoa,
-                codigo_municipio: candidato.codigo_municipio,
+                registro_profissional: candidato.registro_profissional,
+                uf_registro_profissional: candidato.uf_registro_profissional,
+                data_emissao_registro_profissional: candidato.data_emissao_registro_profissional,
+                tipo_sanguineo: candidato.tipo_sanguineo,
                 circunscricao_militar: candidato.circunscricao_militar,
                 orgao_expedicao: candidato.orgao_expedicao,
                 regiao_militar: candidato.regiao_militar,
                 situacao_militar: candidato.situacao_militar,
-                data_titulo_eleitor: candidato.data_titulo_eleitor,
-                estado_emissor_tit_eleitor: candidato.estado_emissor_tit_eleitor,
-                tipo_sanguineo: candidato.tipo_sanguineo,
-                id_biometria: candidato.id_biometria,
-                imagem: candidato.imagem,
-                primeiro_nome: dadosCandidato.nome ? dadosCandidato.nome.split(' ')[0] : '',
-                uf_registro_profissional: candidato.uf_registro_profissional,
-                data_emissao_cnh: candidato.data_emissao_cnh,
-                data_naturalizacao: candidato.data_naturalizacao,
-                id_pais: candidato.id_pais,
-                nome_social: candidato.nome_social,
-                estado_natal: candidato.estado_natal,
-                naturalidade: candidato.naturalidade,
-                apelido: candidato.apelido,
-                sexo: candidato.sexo,
-                nacionalidade: candidato.nacionalidade,
-                registro_profissional: candidato.registro_profissional,
-                imagem_id: candidato.imagem_id,
-                estado_civil: candidato.estado_civil,
-                genero: candidato.genero,
                 
-                // Dados pessoais adicionais
-                nome_mae: candidato.nome_mae,
-                sobrenome_mae: candidato.sobrenome_mae,
-                nome_pai: candidato.nome_pai,
-                sobrenome_pai: candidato.sobrenome_pai,
-                pai_desconhecido: candidato.pai_desconhecido,
-
+                // Contatos
+                telefone1: candidato.telefone1,
+                telefone2: candidato.telefone2,
+                email_pessoal: candidato.email_pessoal,
+                
                 // Dados bancários
                 banco: candidato.banco,
                 agencia: candidato.agencia,
@@ -712,65 +854,53 @@ const CandidatoRegistro = () => {
                 tipo_situacao: candidato.tipo_situacao,
                 aceite_lgpd: candidato.aceite_lgpd,
                 
-                // Arrays - Remove dependentes duplicados
+                // Arrays - Não incluir dependentes no payload principal (serão salvos separadamente)
                 educacao: candidato.educacao || [],
                 habilidades: candidato.habilidades || [],
                 experiencia: candidato.experiencia || [],
-                dependentes: (candidato.dependentes || []).filter((dep, index, arr) => {
-                    // Remove dependentes duplicados baseado no CPF
-                    if (!dep.cpf) return true;
-                    const cpfLimpo = dep.cpf.replace(/\D/g, '');
-                    const primeiroIndex = arr.findIndex(d => 
-                        d.cpf && d.cpf.replace(/\D/g, '') === cpfLimpo
-                    );
-                    return index === primeiroIndex;
-                }),
                 anotacoes: candidato.anotacoes || '',
-                
-                // Dados de controle
-                tarefas: candidato.tarefas,
-                log_tarefas: candidato.log_tarefas,
-                documentos_status: candidato.documentos_status,
-                documentos: candidato.documentos,
-                dados_vaga: candidato.dados_vaga,
-                created_at: candidato.created_at,
-                updated_at: candidato.updated_at,
-                candidato_id: candidato.candidato,
-                vaga_id: candidato.vaga,
-                processo_id: candidato.processo,
-                funcionario_id: candidato.funcionario,
-
-                email_pessoal: dadosCandidato.email,
             };
 
             await http.put(`admissao/${admissao.id}/`, payload);
             
-            // Salva dependentes no endpoint específico se houver dependentes novos
+            // Salvar dependentes separadamente se houver dependentes
             if (candidato.dependentes && candidato.dependentes.length > 0) {
-                // Filtra apenas dependentes novos (que não existem na API)
-                const dependentesNovos = candidato.dependentes.filter(dep => {
-                    // Se tem ID, já existe na API
-                    if (dep.id) return false;
+                try {
+                    // Filtra apenas dependentes novos (que não existem na API)
+                    const dependentesNovos = candidato.dependentes.filter(dep => {
+                        // Se tem ID, já existe na API
+                        if (dep.id) return false;
+                        
+                        // Se não tem CPF, é novo
+                        if (!dep.cpf) return true;
+                        
+                        // Remove máscara do CPF para comparação
+                        const cpfLimpo = dep.cpf.replace(/\D/g, '');
+                        
+                        // Verifica se já existe um dependente com este CPF na API (com ID)
+                        const dependenteExistente = candidato.dependentes.find(d => 
+                            d.id && d.cpf && d.cpf.replace(/\D/g, '') === cpfLimpo
+                        );
+                        
+                        // Se não encontrou dependente existente com este CPF, é novo
+                        return !dependenteExistente;
+                    });
                     
-                    // Se não tem CPF, é novo
-                    if (!dep.cpf) return true;
+                    // Remove dependentes duplicados baseado no CPF (sem ID)
+                    const dependentesUnicos = dependentesNovos.filter((dep, index, arr) => {
+                        if (!dep.cpf) return true;
+                        
+                        const cpfLimpo = dep.cpf.replace(/\D/g, '');
+                        const primeiroIndex = arr.findIndex(d => 
+                            d.cpf && d.cpf.replace(/\D/g, '') === cpfLimpo
+                        );
+                        
+                        return index === primeiroIndex;
+                    });
                     
-                    // Remove máscara do CPF para comparação
-                    const cpfLimpo = dep.cpf.replace(/\D/g, '');
-                    
-                    // Verifica se já existe um dependente com este CPF na API
-                    const dependenteExistente = candidato.dependentes.find(d => 
-                        d.id && d.cpf && d.cpf.replace(/\D/g, '') === cpfLimpo
-                    );
-                    
-                    // Se não encontrou dependente existente com este CPF, é novo
-                    return !dependenteExistente;
-                });
-                
-                if (dependentesNovos.length > 0) {
-                    try {
+                    if (dependentesUnicos.length > 0) {
                         // Mapeia os dependentes novos para o formato da API
-                        const dependentesParaEnviar = dependentesNovos.map((dep, index) => ({
+                        const dependentesParaEnviar = dependentesUnicos.map((dep, index) => ({
                             nrodepend: index + 1,
                             nome_depend: dep.nome || '',
                             cpf: dep.cpf ? dep.cpf.replace(/\D/g, '') : null, // Remove formatação do CPF
@@ -791,33 +921,30 @@ const CandidatoRegistro = () => {
 
                         await http.post(`admissao/${candidato.id}/adiciona_dependentes/`, dependentesParaEnviar);
                         console.log('Dependentes novos salvos com sucesso no endpoint específico');
-                    } catch (error) {
-                        console.error('Erro ao salvar dependentes novos no endpoint específico:', error);
-                        // Não interrompe o fluxo principal se falhar ao salvar dependentes
+                    } else {
+                        console.log('Nenhum dependente novo para salvar');
                     }
-                } else {
-                    console.log('Nenhum dependente novo para salvar');
+                } catch (error) {
+                    console.error('Erro ao salvar dependentes no endpoint específico:', error);
+                    // Não interrompe o fluxo principal se falhar ao salvar dependentes
                 }
             }
             
-            if (toast && toast.current) {
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Admissão atualizada',
-                    detail: 'Dados salvos com sucesso!',
-                    life: 3000
-                });
-            }
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Dados salvos com sucesso!',
+                life: 3000
+            });
+            
         } catch (error) {
-            if (toast && toast.current) {
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Erro ao salvar',
-                    detail: 'Não foi possível salvar os dados.',
-                    life: 4000
-                });
-            }
-            console.error('Erro ao salvar admissão:', error);
+            console.error('Erro ao salvar:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao salvar dados. Tente novamente.',
+                life: 3000
+            });
         }
     };
 
@@ -1129,21 +1256,7 @@ const CandidatoRegistro = () => {
         }
     };
 
-    const handleSalvarEContinuar = async () => {
-        if (modoLeitura) {
-            toast.current.show({
-                severity: 'warn',
-                summary: 'Modo de leitura',
-                detail: 'Os dados estão em modo de leitura. Não é possível salvar alterações.',
-                life: 3000
-            });
-            return;
-        }
-        
-        await handleSalvarAdmissao();
-        stepperRef.current.nextCallback();
-        setActiveIndex(prev => prev + 1);
-    };
+
 
     const handleVoltar = () => {
         stepperRef.current.prevCallback();
@@ -1238,9 +1351,8 @@ const CandidatoRegistro = () => {
                                 label="Next" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarEContinuar}
-                                disabled={modoLeitura}
                             >
-                                <HiArrowRight fill="white"/> Salvar e Continuar
+                                <HiArrowRight fill="white"/> Próximo
                             </Botao>
                         </>
                     )}
@@ -1282,45 +1394,45 @@ const CandidatoRegistro = () => {
         );
     };
 
-    // Detectar cliques nos headers do stepper
-    useEffect(() => {
-        const stepperElement = stepperRef.current?.getElement?.();
-        if (!stepperElement) return;
+    // Detectar cliques nos headers do stepper - DESABILITADO TEMPORARIAMENTE
+    // useEffect(() => {
+    //     const stepperElement = stepperRef.current?.getElement?.();
+    //     if (!stepperElement) return;
 
-        const handleStepHeaderClick = (event) => {
-            const stepHeader = event.target.closest('.p-stepper-header');
-            if (stepHeader) {
-                const stepIndex = Array.from(stepHeader.parentElement.children).indexOf(stepHeader);
-                setActiveIndex(stepIndex);
-            }
-        };
+    //     const handleStepHeaderClick = (event) => {
+    //         const stepHeader = event.target.closest('.p-stepper-header');
+    //         if (stepHeader) {
+    //             const stepIndex = Array.from(stepHeader.parentElement.children).indexOf(stepHeader);
+    //             setActiveIndex(stepIndex);
+    //         }
+    //     };
 
-        stepperElement.addEventListener('click', handleStepHeaderClick);
+    //     stepperElement.addEventListener('click', handleStepHeaderClick);
         
-        // Fallback: usar MutationObserver para detectar mudanças no stepper
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    const activeHeader = stepperElement.querySelector('.p-stepper-header.p-highlight');
-                    if (activeHeader) {
-                        const stepIndex = Array.from(activeHeader.parentElement.children).indexOf(activeHeader);
-                        setActiveIndex(stepIndex);
-                    }
-                }
-            });
-        });
+    //     // Fallback: usar MutationObserver para detectar mudanças no stepper
+    //     const observer = new MutationObserver((mutations) => {
+    //         mutations.forEach((mutation) => {
+    //             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+    //                 const activeHeader = stepperElement.querySelector('.p-stepper-header.p-highlight');
+    //                 if (activeHeader) {
+    //                     const stepIndex = Array.from(activeHeader.parentElement.children).indexOf(activeHeader);
+    //                     setActiveIndex(stepIndex);
+    //                 }
+    //             }
+    //         });
+    //     });
 
-        // Observar mudanças nos headers
-        const headers = stepperElement.querySelectorAll('.p-stepper-header');
-        headers.forEach(header => {
-            observer.observe(header, { attributes: true, attributeFilter: ['class'] });
-        });
+    //     // Observar mudanças nos headers
+    //     const headers = stepperElement.querySelectorAll('.p-stepper-header');
+    //     headers.forEach(header => {
+    //         observer.observe(header, { attributes: true, attributeFilter: ['class'] });
+    //     });
         
-        return () => {
-            stepperElement.removeEventListener('click', handleStepHeaderClick);
-            observer.disconnect();
-        };
-    }, []);
+    //     return () => {
+    //         stepperElement.removeEventListener('click', handleStepHeaderClick);
+    //         observer.disconnect();
+    //     };
+    // }, []);
 
     const formatarCPF = (cpf) => {
         if (!cpf) return 'CPF não informado';
@@ -1331,6 +1443,72 @@ const CandidatoRegistro = () => {
         <ConteudoFrame>
             <Toast ref={toast} style={{ zIndex: 9999 }} />
             <ConfirmDialog />
+            
+            {/* Estilo para desabilitar navegação pelo header do stepper */}
+            <style>
+                {`
+                    .p-stepper-header {
+                        pointer-events: none !important;
+                        cursor: default !important;
+                    }
+                    .p-stepper-header * {
+                        pointer-events: none !important;
+                    }
+                    .p-stepper-header:hover {
+                        background-color: inherit !important;
+                    }
+                    
+                    /* Estilos para modo leitura */
+                    .modo-leitura input,
+                    .modo-leitura select,
+                    .modo-leitura textarea {
+                        background-color: #f5f5f5 !important;
+                        color: #666 !important;
+                        cursor: not-allowed !important;
+                        opacity: 0.7 !important;
+                    }
+                    
+                    .modo-leitura input:disabled,
+                    .modo-leitura select:disabled,
+                    .modo-leitura textarea:disabled {
+                        background-color: #f5f5f5 !important;
+                        color: #666 !important;
+                        cursor: not-allowed !important;
+                        opacity: 0.7 !important;
+                    }
+                    
+                    .modo-leitura .p-dropdown {
+                        background-color: #f5f5f5 !important;
+                        opacity: 0.7 !important;
+                        pointer-events: none !important;
+                    }
+                    
+                    .modo-leitura .p-dropdown-label {
+                        color: #666 !important;
+                    }
+                    
+                    .modo-leitura .p-calendar {
+                        opacity: 0.7 !important;
+                        pointer-events: none !important;
+                    }
+                    
+                    .modo-leitura .p-calendar input {
+                        background-color: #f5f5f5 !important;
+                        color: #666 !important;
+                        cursor: not-allowed !important;
+                    }
+                    
+                    .modo-leitura .p-checkbox {
+                        opacity: 0.7 !important;
+                        pointer-events: none !important;
+                    }
+                    
+                    .modo-leitura .p-switch {
+                        opacity: 0.7 !important;
+                        pointer-events: none !important;
+                    }
+                `}
+            </style>
             
             {/* Botão Voltar */}
             {candidato?.dados_candidato?.nome && (
@@ -1521,7 +1699,7 @@ const CandidatoRegistro = () => {
                 </div>
             )}
 
-            <div style={{ paddingBottom: '80px' }}> {/* Espaço para o footer fixo */}
+            <div style={{ paddingBottom: '80px' }} className={modoLeitura ? 'modo-leitura' : ''}> {/* Espaço para o footer fixo */}
                 <Stepper 
                     headerPosition="top" 
                     ref={stepperRef} 
@@ -1721,6 +1899,112 @@ const CandidatoRegistro = () => {
                             </ModalButton>
                             <ModalButton className="primary" onClick={handleConfirmarFinalizacao}>
                                 <HiCheckCircle fill="white" /> Sim, finalizar
+                            </ModalButton>
+                        </ModalFooter>
+                    </ModalContainer>
+                </ModalOverlay>
+            )}
+
+            {/* Modal de confirmação para salvar dependentes */}
+            {showConfirmacaoDependentes && (
+                <ModalOverlay onClick={handleOverlayClick}>
+                    <ModalContainer>
+                        <ModalHeader>
+                            <ModalTitle>
+                                <HiCheckCircle fill="white" /> Confirmação de Salvamento de Dependentes
+                            </ModalTitle>
+                            <CloseButton onClick={handleCancelarDependentes}>
+                                <HiX />
+                            </CloseButton>
+                        </ModalHeader>
+                        <ModalContent>
+                            <IconContainer>
+                                <HiCheckCircle />
+                            </IconContainer>
+                            <ModalMessage>
+                                <div style={{ marginBottom: '16px' }}>
+                                    {acaoSalvamento === 'salvar' ? (
+                                        <>
+                                            Você tem <strong>{dependentesParaAdicionar.length}</strong> dependente(s) pendente(s) de salvar.
+                                            <br /><br />
+                                            Deseja salvar estes dependentes agora?
+                                        </>
+                                    ) : (
+                                        <>
+                                            Você tem <strong>{dependentesParaAdicionar.length}</strong> dependente(s) pendente(s) de salvar.
+                                            <br /><br />
+                                            Deseja salvar estes dependentes agora e continuar para o próximo passo?
+                                        </>
+                                    )}
+                                </div>
+                                
+                                <div style={{ 
+                                    background: '#fef3c7', 
+                                    border: '1px solid #fde68a', 
+                                    borderRadius: '8px', 
+                                    padding: '12px', 
+                                    marginTop: '16px' 
+                                }}>
+                                    <div style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: '8px', 
+                                        marginBottom: '8px',
+                                        color: '#d97706',
+                                        fontWeight: '600'
+                                    }}>
+                                        <i className="pi pi-exclamation-triangle" style={{ fontSize: '16px' }}></i>
+                                        <span>Importante</span>
+                                    </div>
+                                    <p style={{ 
+                                        margin: 0, 
+                                        fontSize: '14px', 
+                                        color: '#92400e', 
+                                        lineHeight: '1.5' 
+                                    }}>
+                                        <strong>Dependentes já salvos não podem ser editados.</strong> Para fazer alterações, será necessário excluir o dependente e adicionar um novo.
+                                    </p>
+                                </div>
+                                
+                                {dependentesParaAdicionar.length > 0 && (
+                                    <div style={{ 
+                                        background: '#f8fafc', 
+                                        border: '1px solid #e2e8f0', 
+                                        borderRadius: '8px', 
+                                        padding: '12px', 
+                                        marginTop: '16px' 
+                                    }}>
+                                        <div style={{ 
+                                            fontWeight: '600', 
+                                            marginBottom: '8px',
+                                            color: '#374151'
+                                        }}>
+                                            Dependentes que serão salvos:
+                                        </div>
+                                        <div style={{ maxHeight: '120px', overflowY: 'auto' }}>
+                                            {dependentesParaAdicionar.map((dep, index) => (
+                                                <div key={index} style={{ 
+                                                    padding: '6px 0', 
+                                                    borderBottom: index < dependentesParaAdicionar.length - 1 ? '1px solid #e5e7eb' : 'none',
+                                                    fontSize: '14px',
+                                                    color: '#6b7280'
+                                                }}>
+                                                    <strong>{dep.nome || 'Sem nome'}</strong>
+                                                    {dep.cpf && ` - CPF: ${dep.cpf}`}
+                                                    {dep.data_nascimento && ` - Nasc: ${dep.data_nascimento}`}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </ModalMessage>
+                        </ModalContent>
+                        <ModalFooter>
+                            <ModalButton className="secondary" onClick={handleCancelarDependentes}>
+                                <HiX /> Cancelar
+                            </ModalButton>
+                            <ModalButton className="primary" onClick={handleConfirmarDependentes}>
+                                <HiCheckCircle fill="white" /> Sim, salvar dependentes
                             </ModalButton>
                         </ModalFooter>
                     </ModalContainer>

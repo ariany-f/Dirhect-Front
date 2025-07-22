@@ -38,7 +38,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepDadosPessoais = ({ classError, estados }) => {
+const StepDadosPessoais = ({ classError, estados, modoLeitura = false }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
 
@@ -94,6 +94,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 type="text"
                 label="Nome"
                 placeholder="Digite o nome"
+                disabled={modoLeitura}
             />
             <CampoTexto
                 camposVazios={classError}
@@ -103,7 +104,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 patternMask="999.999.999-99"
                 label="CPF"
                 placeholder="Digite o CPF"
-                disabled={candidato?.dados_candidato?.cpf && candidato.dados_candidato.cpf.trim() !== ''}
+                disabled={modoLeitura || (candidato?.dados_candidato?.cpf && candidato.dados_candidato.cpf.trim() !== '')}
             />
             <CampoTexto
                 camposVazios={classError}
@@ -113,12 +114,14 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 type="text"
                 label="E-mail"
                 placeholder="Digite o email"
+                disabled={modoLeitura}
             />
             <CampoTexto
                 name="telefone"
                 valor={candidato?.dados_candidato?.telefone ?? ''}
                 setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, telefone: valor })}
                 label="Telefone"
+                disabled={modoLeitura}
             />
             <CampoTexto
                 name="dt_nascimento"
@@ -126,6 +129,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, dt_nascimento: valor })}
                 label="Data de Nascimento"
                 type="date"
+                disabled={modoLeitura}
             />
             
             <SectionTitle>Filiação</SectionTitle>
@@ -139,6 +143,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 type="text"
                 label="Nome da Mãe *"
                 placeholder="Digite o nome da mãe"
+                disabled={modoLeitura}
             />
             <CampoTexto
                 camposVazios={classError}
@@ -148,6 +153,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 type="text"
                 label="Sobrenome da Mãe *"
                 placeholder="Digite o sobrenome da mãe"
+                disabled={modoLeitura}
             />
             
             {/* Pai - Com switch para desconhecido */}
@@ -170,12 +176,13 @@ const StepDadosPessoais = ({ classError, estados }) => {
                             setCampo('sobrenome_pai', '');
                         }
                     }}
+                    disabled={modoLeitura}
                 />
                 <label style={{ 
                     fontSize: '14px', 
                     fontWeight: '500', 
                     color: 'var(--text-color)',
-                    cursor: 'pointer'
+                    cursor: modoLeitura ? 'not-allowed' : 'pointer'
                 }}>
                     Pai desconhecido
                 </label>
@@ -188,7 +195,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 type="text"
                 label="Nome do Pai"
                 placeholder="Digite o nome do pai"
-                disabled={candidato?.pai_desconhecido}
+                disabled={modoLeitura || candidato?.pai_desconhecido}
             />
             <CampoTexto
                 name="sobrenome_pai"
@@ -197,7 +204,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 type="text"
                 label="Sobrenome do Pai"
                 placeholder="Digite o sobrenome do pai"
-                disabled={candidato?.pai_desconhecido}
+                disabled={modoLeitura || candidato?.pai_desconhecido}
             />
             
             <SectionTitle>Endereço</SectionTitle>
@@ -208,36 +215,42 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 valor={candidato?.cep ?? ''}
                 setValor={handleCepChange}
                 label="CEP"
+                disabled={modoLeitura}
             />
             <CampoTexto
                 name="rua"
                 valor={candidato?.rua ?? ''}
                 setValor={valor => setCampo('rua', valor)}
                 label="Logradouro"
+                disabled={modoLeitura}
             />
             <CampoTexto
                 name="bairro"
                 valor={candidato?.bairro ?? ''}
                 setValor={valor => setCampo('bairro', valor)}
                 label="Bairro"
+                disabled={modoLeitura}
             />
             <CampoTexto
                 name="numero"
                 valor={candidato?.numero ?? ''}
                 setValor={valor => setCampo('numero', valor)}
                 label="Número"
+                disabled={modoLeitura}
             />
             <CampoTexto
                 name="complemento"
                 valor={candidato?.complemento ?? ''}
                 setValor={valor => setCampo('complemento', valor)}
                 label="Complemento"
+                disabled={modoLeitura}
             />
             <CampoTexto
                 name="cidade"
                 valor={candidato?.cidade ?? ''}
                 setValor={valor => setCampo('cidade', valor)}
                 label="Cidade"
+                disabled={modoLeitura}
             />
             <DropdownItens
                 $margin={'10px'}
@@ -247,6 +260,7 @@ const StepDadosPessoais = ({ classError, estados }) => {
                 name="state"
                 label="Estado"
                 placeholder="Selecione o estado"
+                disabled={modoLeitura}
             />
         </GridContainer>
     );
