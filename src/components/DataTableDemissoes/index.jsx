@@ -222,7 +222,7 @@ function DataTableDemissao({
                         <Column body={representativeColaboradorTemplate} header="Colaborador"  field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" sortable style={{ width: '30%' }}></Column>
                     }
                     <Column body={representativeDataDemissaoTemplate} field="dt_demissao" header="Data Demissão" sortable style={{ width: '30%' }}></Column>
-                    <Column body={representativeTipoDemissaoTemplate} field="tipo_demissao" header="Tipo Demissão" sortable style={{ width: '30%' }}></Column>
+                    <Column body={representativeTipoDemissaoTemplate} field="tipo_demissao_descricao" header="Tipo Demissão" sortable style={{ width: '30%' }}></Column>
                 </DataTable>
             )}
             {loadingTipos && (
