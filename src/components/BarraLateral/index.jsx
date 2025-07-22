@@ -292,7 +292,7 @@ function BarraLateral({ $sidebarOpened }) {
         {
             id: 13,
             url: '/ferias',
-            pageTitulo: 'Férias',
+            pageTitulo: 'Programação de Férias',
             icone: <FaUmbrellaBeach size={20} fill="white"/>,
             itemTitulo: 'Programação de Férias',
             permission: 'view_ferias',
@@ -404,7 +404,7 @@ function BarraLateral({ $sidebarOpened }) {
       'Admissões',
       'Colaboradores',
       'Dependentes',
-      'Férias',
+      'Programação de Férias',
       'Ausências',
       'Demissões',
       'Contratos',
