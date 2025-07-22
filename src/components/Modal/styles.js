@@ -31,7 +31,8 @@ export const DialogEstilizado = styled.dialog`
     position: relative;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
+    overscroll-behavior: contain;   
+    transition: all 0.3s ease-in-out;
 
     & > * {
         width: 100%;

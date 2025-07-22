@@ -12,7 +12,8 @@ import styles from './ModalSelecionarColaborador.module.css'
 import { useDepartamentoContext } from "@contexts/Departamento"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 import http from '@http'
-import Loading from '@components/Loading'
+import InlineLoader from '@components/InlineLoader'
+import { Tag } from "primereact/tag"
 
 const Col12 = styled.div`
     display: flex;
@@ -59,7 +60,7 @@ const Item = styled.div`
 `;
 
 const ListaColaboradores = styled.div`
-    max-height: 400px;
+    max-height: 280px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -77,14 +78,17 @@ const ListaColaboradores = styled.div`
 `;
 
 const ItemColaborador = styled.div`
-    width: 90%;
-    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 16px;
     border: 1px solid ${({ $selecionado }) => $selecionado ? 'var(--vermilion-principal)' : '#ddd'};
     background-color: ${({ $selecionado }) => $selecionado ? 'var(--vermilion-100)' : '#fff'};
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    margin: 0 auto;
+    box-sizing: border-box;
 
     &:hover {
         background-color: #f9f9f9;
@@ -92,15 +96,33 @@ const ItemColaborador = styled.div`
     }
 `;
 
-const NomeColaborador = styled.span`
+const InfoColaborador = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+`;
+
+const MatriculaInfo = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+`;
+
+const MatriculaValor = styled.span`
     font-weight: 600;
     color: #333;
 `;
 
-const ChapaColaborador = styled.span`
+const NomeColaborador = styled.span`
+    font-weight: 600;
+    color: #333;
+    text-transform: uppercase;
+`;
+
+const CPFColaborador = styled.span`
     font-size: 12px;
     color: #777;
-    margin-left: 8px;
 `;
 
 const SearchContainer = styled.div`
@@ -113,12 +135,18 @@ const SearchContainer = styled.div`
 
 const PaginationContainer = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 16px;
+    padding: 16px 0;
+    border-top: 1px solid #eee;
+`;
+
+const PaginationButtonsWrapper = styled.div`
+    display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 16px;
-    padding: 8px 0;
-    border-top: 1px solid #eee;
 `;
 
 const PaginationButton = styled.button`
@@ -146,6 +174,12 @@ const PaginationInfo = styled.span`
     color: #666;
     margin: 0 8px;
 `;
+
+const formataCPF = (cpf) => {
+    if (!cpf) return '';
+    cpf = cpf.replace(/[^\d]/g, "");
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+};
 
 function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) {
     const [colaboradores, setColaboradores] = useState([]);
@@ -175,7 +209,7 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
             setPage(1);
             setBusca('');
             setColaboradorSelecionado(null);
-            loadColaboradores(1);
+            setColaboradores([]);
         }
     }, [opened]);
 
@@ -184,8 +218,14 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
         if (!opened) return;
 
         const timeoutId = setTimeout(() => {
-            setPage(1);
-            loadColaboradores(1, busca);
+            if (busca.trim()) {
+                setPage(1);
+                loadColaboradores(1, busca);
+            } else {
+                setColaboradores([]);
+                setTotalRecords(0);
+                setTotalPages(0);
+            }
         }, 500);
 
         return () => clearTimeout(timeoutId);
@@ -290,7 +330,7 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
             {opened &&
                 <Overlay onClick={aoFechar}>
                     <DialogEstilizado open={opened} onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', maxHeight: '90vh' }}>
-                        <Loading opened={loading} />
+                        
                         <Frame>
                             <Titulo>
                                 <button className="close" onClick={aoFechar}>
@@ -305,24 +345,38 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
                                <CampoTexto
                                     valor={busca}
                                     setValor={setBusca}
-                                    placeholder="Buscar por nome ou chapa..."
+                                    placeholder="Buscar por nome, chapa ou CPF..."
                                 />
                             </SearchContainer>
                             <ListaColaboradores>
-                                {colaboradores.map(colab => (
-                                    <ItemColaborador
-                                        key={colab.id}
-                                        $selecionado={colaboradorSelecionado?.id === colab.id}
-                                        onClick={() => setColaboradorSelecionado(colab)}
-                                    >
-                                        <NomeColaborador>{colab.funcionario_pessoa_fisica?.nome}</NomeColaborador>
-                                        <ChapaColaborador>Chapa: {colab.chapa}</ChapaColaborador>
-                                    </ItemColaborador>
-                                ))}
-                                {colaboradores.length === 0 && !loading && (
-                                    <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
-                                        Nenhum colaborador encontrado
-                                    </div>
+                                {loading ? (
+                                    <InlineLoader />
+                                ) : (
+                                    <>
+                                        {colaboradores.map(colab => (
+                                            <ItemColaborador
+                                                key={colab.id}
+                                                $selecionado={colaboradorSelecionado?.id === colab.id}
+                                                onClick={() => setColaboradorSelecionado(colab)}
+                                            >
+                                                <MatriculaInfo>
+                                                    <CPFColaborador>Matrícula</CPFColaborador>
+                                                    <MatriculaValor>{colab.chapa}</MatriculaValor>
+                                                </MatriculaInfo>
+                                                <InfoColaborador>
+                                                    <NomeColaborador>{colab.funcionario_pessoa_fisica?.nome}</NomeColaborador>
+                                                    {colab.funcionario_pessoa_fisica?.cpf &&
+                                                        <CPFColaborador>CPF: {formataCPF(colab.funcionario_pessoa_fisica.cpf)}</CPFColaborador>
+                                                    }
+                                                </InfoColaborador>
+                                            </ItemColaborador>
+                                        ))}
+                                        {colaboradores.length === 0 && (
+                                            <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                                                {busca.trim() ? 'Nenhum colaborador encontrado' : 'Digite para buscar um colaborador.'}
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </ListaColaboradores>
                             
@@ -331,7 +385,9 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
                                     <PaginationInfo>
                                         {((page - 1) * pageSize) + 1} - {Math.min(page * pageSize, totalRecords)} de {totalRecords}
                                     </PaginationInfo>
-                                    {renderPagination()}
+                                    <PaginationButtonsWrapper>
+                                        {renderPagination()}
+                                    </PaginationButtonsWrapper>
                                 </PaginationContainer>
                             )}
                         </Frame>
