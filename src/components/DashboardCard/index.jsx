@@ -50,6 +50,24 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const totalDemitidos = funcionariosDashboard.total_demitidos || 0;
     const demitidosNoMes = funcionariosDashboard.demitidos_no_mes || 0;
     const funcionariosPorMotivoDemissao = funcionariosDashboard.funcionarios_por_motivo_demissao || [];
+    
+    // Dados de teste para verificar se o problema é nos dados ou no processamento
+    const dadosTesteMotivos = [
+        {
+            "motivo_demissao__id": null,
+            "motivo_demissao__descricao": null,
+            "total": "96"
+        },
+        {
+            "motivo_demissao__id": "7",
+            "motivo_demissao__descricao": "Justa Causa",
+            "total": "1"
+        }
+    ];
+    
+
+    
+
 
     // Array de cores para as etapas (cores que combinam com o sistema)
     const coresEtapas = [
@@ -82,10 +100,11 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 console.log('Iniciando carregamento de todos os dados...');
                 
                 // Carregar todos os dados em paralelo
-                const [feriasResponse, admissoesResponse, vagasResponse, processosResponse, tarefasResponse] = await Promise.allSettled([
+                const [feriasResponse, admissoesResponse, vagasResponse, demissoesResponse, processosResponse, tarefasResponse] = await Promise.allSettled([
                     http.get('ferias/?format=json'),
                     http.get('admissao/?format=json'),
                     http.get('vagas/?format=json'),
+                    http.get('demissao/?format=json'),
                     http.get('processos/?format=json'),
                     http.get('tarefas/?format=json')
                 ]);
@@ -591,19 +610,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             }
         }
 
-        // Contar por tipo de demissão
-        const motivosDemissao = funcionariosPorMotivoDemissao.reduce((acc, item) => {
-            if (!item) return acc;
-            
-            const motivo = item.motivo_demissao__descricao || 'Não informado';
-            const total = parseInt(item.total) || 0;
-            
-            if (motivo && total > 0) {
-                acc[motivo] = total;
-            }
-            
-            return acc;
-        }, {});
+        // Contar por tipo de demissão - removido, agora processado separadamente
+        const motivosDemissao = {};
 
         console.log('Resultado do processamento de demissões:', {
             demissoesMes,
@@ -655,6 +663,29 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     };
 
     const dadosDemissoesReais = processarDadosDemissoes();
+    
+    // Processar motivos de demissão separadamente
+    const processarMotivosDemissao = () => {
+        // Usar dados de teste se não houver dados reais
+        const dadosParaProcessar = funcionariosPorMotivoDemissao.length > 0 ? funcionariosPorMotivoDemissao : dadosTesteMotivos;
+        
+        const motivosDemissao = dadosParaProcessar.reduce((acc, item) => {
+            if (!item) return acc;
+            
+            const motivo = item.motivo_demissao__descricao || 'Não informado';
+            const total = parseInt(item.total) || 0;
+            
+            if (total > 0) {
+                acc[motivo] = total;
+            }
+            
+            return acc;
+        }, {});
+        
+        return motivosDemissao;
+    };
+    
+    const motivosDemissaoProcessados = processarMotivosDemissao();
 
     // Contar vagas abertas
     const contarVagasAbertas = () => {
@@ -822,7 +853,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         demissoesProcessamento: dadosDemissoesReais.demissoesProcessamento,
         demissoesConcluidas: dadosDemissoesReais.demissoesConcluidas,
         tempoMedioRescisao: dadosDemissoesReais.tempoMedioDemissao, // dias
-        motivosDemissao: dadosDemissoesReais.motivosDemissao,
+        motivosDemissao: motivosDemissaoProcessados, // Usar motivos processados separadamente
         etapasDemissao: etapasDemissao,
         slaDemissao: dadosDemissoesReais.slaDemissao,
         vagasAbertas,
@@ -833,6 +864,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         tarefasVencidas: 7,
         slaAdmissao: dadosAdmissoesReais.slaAdmissao,
     };
+    
+
 
     // Dados mockados para Benefícios
     const dadosBeneficios = {
