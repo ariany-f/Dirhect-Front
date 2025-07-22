@@ -93,6 +93,12 @@ function DataTableDemissao({
         return tipoCodigo || 'Não definido';
     }
 
+    const representativeMotivoDemissaoTemplate = (rowData) => {
+        const motivo = rowData?.motivo_demissao_descricao;
+        // Fallback: mostrar o código se não encontrar a descrição
+        return motivo || 'Não definido';
+    }
+
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
         if (onSearch) {
@@ -221,8 +227,9 @@ function DataTableDemissao({
                     {!colaborador &&
                         <Column body={representativeColaboradorTemplate} header="Colaborador"  field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" sortable style={{ width: '30%' }}></Column>
                     }
-                    <Column body={representativeDataDemissaoTemplate} field="dt_demissao" header="Data Demissão" sortable style={{ width: '30%' }}></Column>
-                    <Column body={representativeTipoDemissaoTemplate} field="tipo_demissao_descricao" header="Tipo Demissão" sortable style={{ width: '30%' }}></Column>
+                    <Column body={representativeDataDemissaoTemplate} field="dt_demissao" header="Data Demissão" sortable style={{ width: '20%' }}></Column>
+                    <Column body={representativeTipoDemissaoTemplate} field="tipo_demissao_descricao" header="Tipo Demissão" sortable style={{ width: '20%' }}></Column>
+                    <Column body={representativeMotivoDemissaoTemplate} field="motivo_demissao" header="Motivo" sortable style={{ width: '20%' }}></Column>
                 </DataTable>
             )}
             {loadingTipos && (
