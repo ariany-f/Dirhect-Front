@@ -126,13 +126,24 @@ http.interceptors.response.use(
     async function (error) {
         const originalRequest = error.config;
 
-        // Verificar se é um timeout de conexão
-        if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        // Verificar se é um erro de conexão (timeout, DNS, rede, etc.)
+        if (error.code === 'ECONNABORTED' || 
+            error.message?.includes('timeout') || 
+            error.code === 'ERR_NAME_NOT_RESOLVED' ||
+            error.message?.includes('ERR_NAME_NOT_RESOLVED') ||
+            error.code === 'ERR_NETWORK' ||
+            error.message?.includes('ERR_NETWORK') ||
+            error.code === 'ERR_INTERNET_DISCONNECTED' ||
+            error.message?.includes('ERR_INTERNET_DISCONNECTED') ||
+            error.code === 'ERR_CONNECTION_REFUSED' ||
+            error.message?.includes('ERR_CONNECTION_REFUSED') ||
+            error.code === 'ERR_CONNECTION_TIMED_OUT' ||
+            error.message?.includes('ERR_CONNECTION_TIMED_OUT')) {
             timeoutCount++;
-            console.warn(`Timeout de conexão (${timeoutCount}/${MAX_TIMEOUTS})`);
+            console.warn(`Erro de conexão (${timeoutCount}/${MAX_TIMEOUTS}): ${error.code || error.message}`);
             
             if (timeoutCount >= MAX_TIMEOUTS) {
-                console.error(`Máximo de timeouts atingido (${MAX_TIMEOUTS}). Redirecionando para login.`);
+                console.error(`Máximo de erros de conexão atingido (${MAX_TIMEOUTS}). Redirecionando para login.`);
                 ArmazenadorToken.removerToken();
                 window.location.href = '/login';
                 return Promise.reject(error);
