@@ -30,6 +30,7 @@ import { ArmazenadorToken } from '@utils';
 import ModalDemissao from '@components/ModalDemissao';
 import { TiUserDelete } from "react-icons/ti";
 import { FaUser, FaIdCard, FaBirthdayCake, FaBuilding, FaBriefcase, FaUserTie } from 'react-icons/fa';
+import { HiX } from 'react-icons/hi';
 
 
 const Col12 = styled.div`
@@ -248,10 +249,10 @@ const UploadArea = styled.label`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 120px;
-    height: 120px;
+    width: 160px;
+    height: 150px;
     border: 2px dashed var(--primaria);
-    border-radius: 50%;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
     background-color: var(--neutro-50);
@@ -287,6 +288,131 @@ const GlobalStyle = styled.div`
     }
 `;
 
+const ImageModal = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease-out;
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+`;
+
+const ImageModalContent = styled.div`
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+`;
+
+const ImageModalImage = styled.img`
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+`;
+
+const ImageModalButton = styled.button`
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-1px);
+    }
+`;
+
+const ImageActionButton = styled.button`
+    background: ${props => props.variant === 'danger' ? '#ef4444' : 'var(--primaria)'};
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    margin: 0 4px;
+    
+    &:hover {
+        background: ${props => props.variant === 'danger' ? '#dc2626' : 'var(--primaria-escuro)'};
+        transform: translateY(-1px);
+    }
+    
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+`;
+
+const ImageContainer = styled.div`
+    position: relative;
+    display: inline-block;
+    
+    .hover-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(4px);
+        
+        svg {
+            color: white !important;
+        }
+
+        svg * {
+            fill: white !important;
+        }
+    }
+    
+    &:hover .hover-button {
+        opacity: 1;
+    }
+    
+    &:hover img {
+        filter: brightness(0.7);
+    }
+`;
+
 function ColaboradorDetalhes() {
 
     let { id } = useParams()
@@ -301,6 +427,7 @@ function ColaboradorDetalhes() {
     const [centroCusto, setCentroCusto] = useState(null)
     const [modalDemissaoAberto, setModalDemissaoAberto] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [showImageModal, setShowImageModal] = useState(false);
     const navegar = useNavigate()
     const toast = useRef(null)
     const fileInputRef = useRef(null)
@@ -389,6 +516,20 @@ function ColaboradorDetalhes() {
         }
     }, [colaborador, location.pathname, id, usuario.tipo, modalDemissaoAberto]);
 
+    // Fechar modal de imagem com ESC
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape' && showImageModal) {
+                setShowImageModal(false);
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [showImageModal]);
+
     const handleSalvarDemissao = (dadosDemissao) => {
         http.post(`funcionario/${id}/solicita_demissao/`, {
             ...dadosDemissao
@@ -453,6 +594,35 @@ function ColaboradorDetalhes() {
                 life: 3000 
             });
         }
+    };
+
+    const handleRemoveImage = () => {
+        const formData = new FormData();
+        formData.append('imagem', ''); // Envia string vazia para remover
+        
+        http.put(`funcionario/${id}/`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then(() => {
+            setColaborador(prev => ({ ...prev, imagem: null }));
+            toast.current.show({ 
+                severity: 'success', 
+                summary: 'Sucesso', 
+                detail: 'Imagem removida com sucesso!', 
+                life: 3000 
+            });
+        })
+        .catch(erro => {
+            console.error("Erro ao remover imagem:", erro);
+            toast.current.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Falha ao remover a imagem.', 
+                life: 3000 
+            });
+        });
     };
 
     useEffect(() => {
@@ -571,12 +741,41 @@ function ColaboradorDetalhes() {
                             alignItems: 'center',
                             gap: 10
                         }}>
+                            {colaborador.imagem ? (
+                                <img 
+                                    src={colaborador.imagem}
+                                    alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`}
+                                    style={{
+                                        width: 36,
+                                        height: 36,
+                                        borderRadius: '50%',
+                                        objectFit: 'cover',
+                                        cursor: 'pointer',
+                                        border: '2px solid rgba(255, 255, 255, 0.3)',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    onClick={() => setShowImageModal(true)}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.transform = 'scale(1.1)';
+                                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.transform = 'scale(1)';
+                                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                                    }}
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                />
+                            ) : null}
+                            {/* Fallback para quando não há imagem ou quando a imagem falha ao carregar */}
                             <div style={{
                                 width: 36,
                                 height: 36,
                                 borderRadius: '50%',
                                 background: 'rgba(255, 255, 255, 0.2)',
-                                display: 'flex',
+                                display: colaborador.imagem ? 'none' : 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 fontSize: 16,
@@ -667,104 +866,173 @@ function ColaboradorDetalhes() {
                         {/* Imagem do Colaborador */}
                         <div style={{
                             display: 'flex',
-                            justifyContent: 'center',
-                            marginBottom: '8px',
-                            paddingBottom: '8px',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            marginBottom: '4px',
+                            paddingBottom: '0',
                             borderBottom: '1px solid #f1f5f9'
                         }}>
-                            {colaborador.imagem ? (
-                                <img 
-                                    src={colaborador.imagem}
-                                    alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`}
-                                    style={{
-                                        width: '120px',
-                                        height: '120px',
-                                        borderRadius: '50%',
-                                        objectFit: 'cover',
-                                        border: '4px solid #f8fafc',
-                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                                    }}
-                                    onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        e.target.nextSibling.style.display = 'flex';
-                                    }}
-                                />
-                            ) : (
-                                // Se não tem imagem e usuário tem permissão, mostra área de upload
-                                ArmazenadorToken.hasPermission('change_funcionario') ? (
-                                    <>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleImageUpload}
-                                            ref={fileInputRef}
-                                            style={{ display: 'none' }}
-                                            id="colaborador-image-upload"
+                            <div style={{ marginBottom: colaborador.imagem && ArmazenadorToken.hasPermission('change_funcionario') ? '12px' : '0' }}>
+                                {colaborador.imagem ? (
+                                    <ImageContainer>
+                                        <img 
+                                            src={colaborador.imagem}
+                                            alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`}
+                                            style={{
+                                                width: '160px',
+                                                height: '150px',
+                                                borderRadius: '12px',
+                                                objectFit: 'cover',
+                                                border: '2px solid #f8fafc',
+                                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                                                cursor: 'pointer',
+                                                transition: 'filter 0.3s ease'
+                                            }}
+                                            onClick={() => setShowImageModal(true)}
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                e.target.nextSibling.style.display = 'flex';
+                                            }}
                                         />
-                                        <UploadArea htmlFor="colaborador-image-upload">
-                                            {uploading ? (
-                                                <div style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    alignItems: 'center',
-                                                    color: 'var(--primaria)'
-                                                }}>
-                                                    <div style={{
-                                                        border: '2px solid var(--primaria)',
-                                                        borderTop: '2px solid transparent',
-                                                        borderRadius: '50%',
-                                                        width: '24px',
-                                                        height: '24px',
-                                                        animation: 'spin 1s linear infinite'
-                                                    }}></div>
-                                                    <UploadText style={{ marginTop: '8px' }}>Enviando...</UploadText>
-                                                </div>
-                                            ) : (
-                                                <UploadIcon>
-                                                    <RiUpload2Fill />
-                                                    <UploadText>Adicionar foto</UploadText>
-                                                    <UploadText>PNG, JPG</UploadText>
-                                                </UploadIcon>
-                                            )}
-                                        </UploadArea>
-                                    </>
+                                        {ArmazenadorToken.hasPermission('change_funcionario') && (
+                                            <>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleImageUpload}
+                                                    style={{ display: 'none' }}
+                                                    id="colaborador-image-change-hover"
+                                                />
+                                                <button
+                                                    className="hover-button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        document.getElementById('colaborador-image-change-hover').click();
+                                                    }}
+                                                    disabled={uploading}
+                                                    title="Alterar imagem"
+                                                >
+                                                    <RiUpload2Fill size={20} />
+                                                </button>
+                                            </>
+                                        )}
+                                    </ImageContainer>
                                 ) : (
-                                    // Se não tem permissão, mostra apenas o avatar com inicial
-                                    <div style={{
-                                        width: '120px',
-                                        height: '120px',
-                                        borderRadius: '50%',
-                                        background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '48px',
-                                        fontWeight: 'bold',
-                                        color: '#64748b',
-                                        border: '4px solid #f8fafc',
-                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                                    }}>
-                                        {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
-                                    </div>
-                                )
-                            )}
-                            {/* Fallback para quando a imagem falha ao carregar */}
-                            <div style={{
-                                width: '120px',
-                                height: '120px',
-                                borderRadius: '50%',
-                                background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
-                                display: 'none',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: '48px',
-                                fontWeight: 'bold',
-                                color: '#64748b',
-                                border: '4px solid #f8fafc',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                            }}>
-                                {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                    // Se não tem imagem e usuário tem permissão, mostra área de upload
+                                    ArmazenadorToken.hasPermission('change_funcionario') ? (
+                                        <>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                ref={fileInputRef}
+                                                style={{ display: 'none' }}
+                                                id="colaborador-image-upload"
+                                            />
+                                            <UploadArea htmlFor="colaborador-image-upload">
+                                                {uploading ? (
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        alignItems: 'center',
+                                                        color: 'var(--primaria)'
+                                                    }}>
+                                                        <div style={{
+                                                            border: '2px solid var(--primaria)',
+                                                            borderTop: '2px solid transparent',
+                                                            borderRadius: '50%',
+                                                            width: '24px',
+                                                            height: '24px',
+                                                            animation: 'spin 1s linear infinite'
+                                                        }}></div>
+                                                        <UploadText style={{ marginTop: '8px' }}>Enviando...</UploadText>
+                                                    </div>
+                                                ) : (
+                                                    <UploadIcon>
+                                                        <RiUpload2Fill />
+                                                        <UploadText>Adicionar foto</UploadText>
+                                                        <UploadText>PNG, JPG</UploadText>
+                                                    </UploadIcon>
+                                                )}
+                                            </UploadArea>
+                                        </>
+                                    ) : (
+                                        // Se não tem permissão, mostra apenas o avatar com inicial
+                                        <div style={{
+                                            width: '160px',
+                                            height: '150px',
+                                            borderRadius: '12px',
+                                            background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: '52px',
+                                            fontWeight: 'bold',
+                                            color: '#64748b',
+                                            border: '2px solid #f8fafc',
+                                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                                        }}>
+                                            {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                        </div>
+                                    )
+                                )}
+                                {/* Fallback para quando a imagem falha ao carregar */}
+                                <div style={{
+                                    width: '160px',
+                                    height: '150px',
+                                    borderRadius: '12px',
+                                    background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
+                                    display: 'none',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '52px',
+                                    fontWeight: 'bold',
+                                    color: '#64748b',
+                                    border: '2px solid #f8fafc',
+                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                                }}>
+                                    {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                </div>
                             </div>
+
+                            {/* Botão de remover quando há imagem e usuário tem permissão */}
+                            {colaborador.imagem && ArmazenadorToken.hasPermission('change_funcionario') && (
+                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                    <button
+                                        onClick={handleRemoveImage}
+                                        disabled={uploading}
+                                        style={{
+                                            background: 'transparent',
+                                            border: 'none',
+                                            color: '#64748b',
+                                            fontSize: '12px',
+                                            fontWeight: '500',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            padding: '4px 8px',
+                                            borderRadius: '4px',
+                                            transition: 'all 0.2s ease',
+                                            opacity: uploading ? 0.6 : 1
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (!uploading) {
+                                                e.target.style.color = '#ef4444';
+                                                e.target.style.background = '#fef2f2';
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (!uploading) {
+                                                e.target.style.color = '#64748b';
+                                                e.target.style.background = 'transparent';
+                                            }
+                                        }}
+                                    >
+                                        <HiX size={12} /> Remover
+                                    </button>
+                                </div>
+                            )}
                         </div>
                         
                         <InfoItem>
@@ -921,6 +1189,25 @@ function ColaboradorDetalhes() {
             aoSalvar={handleSalvarDemissao}
             mostrarColaborador={false}
         />
+
+        {/* Modal de visualização da imagem */}
+        {showImageModal && colaborador.imagem && (
+            <ImageModal onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                    setShowImageModal(false);
+                }
+            }}>
+                <ImageModalContent>
+                    <ImageModalImage 
+                        src={colaborador.imagem} 
+                        alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`} 
+                    />
+                    <ImageModalButton onClick={() => setShowImageModal(false)}>
+                        <HiX /> Fechar
+                    </ImageModalButton>
+                </ImageModalContent>
+            </ImageModal>
+        )}
     </Frame>
 )
 }

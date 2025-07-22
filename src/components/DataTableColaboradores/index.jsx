@@ -124,14 +124,59 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         const cpf = rowData?.funcionario_pessoa_fisica?.cpf ?
         formataCPF(rowData?.funcionario_pessoa_fisica?.cpf)
         : '---';
-        return <div key={rowData.id}>
-            <Texto weight={700} width={'100%'}>
-                {rowData?.funcionario_pessoa_fisica?.nome}
-            </Texto>
-            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
+        
+        return (
+            <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {/* Imagem ou Avatar */}
+                <div style={{ flexShrink: 0 }}>
+                    {rowData.imagem ? (
+                        <img 
+                            src={rowData.imagem}
+                            alt={`Foto de ${rowData.funcionario_pessoa_fisica?.nome}`}
+                            style={{
+                                width: '36px',
+                                height: '36px',
+                                borderRadius: '50%',
+                                objectFit: 'cover',
+                                border: '2px solid #f1f5f9',
+                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                            }}
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                            }}
+                        />
+                    ) : null}
+                    {/* Fallback com letra inicial */}
+                    <div style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '50%',
+                        background: '#6b7280',
+                        display: rowData.imagem ? 'none' : 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        color: '#ffffff',
+                        border: '2px solid #f1f5f9',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                    }}>
+                        {rowData?.funcionario_pessoa_fisica?.nome?.charAt(0)?.toUpperCase() || 'C'}
+                    </div>
+                </div>
+                
+                {/* Nome e CPF */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <Texto weight={700} width={'100%'}>
+                        {rowData?.funcionario_pessoa_fisica?.nome}
+                    </Texto>
+                    <div style={{marginTop: '6px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
+                        CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
+                    </div>
+                </div>
             </div>
-        </div>
+        );
     }
 
     const representativSituacaoTemplate = (rowData) => {
