@@ -9,7 +9,8 @@ import { MdOutlineKeyboardArrowDown, MdShoppingCart } from 'react-icons/md';
 import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
-import { FaBars, FaBuilding, FaBusAlt } from "react-icons/fa";
+import { FaBuilding, FaBusAlt } from "react-icons/fa";
+import { FaBars } from "react-icons/fa6";
 import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
 import { LuSparkles } from "react-icons/lu";
 import LanguageSelector from "../LanguageSelector";
@@ -365,7 +366,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     <HeaderEstilizado>
       <HeaderTop>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <TbLayoutSidebarLeftCollapseFilled  style={{ cursor: 'pointer' }} size={24} onClick={() => setSidebarOpened(!sidebarOpened)} />
+          {isDesktop ? ( 
+            <TbLayoutSidebarLeftCollapseFilled  style={{ cursor: 'pointer' }} size={24} onClick={() => setSidebarOpened(!sidebarOpened)} />
+          ) : (
+            <FaBars style={{ cursor: 'pointer' }} size={24} onClick={() => setSidebarOpened(!sidebarOpened)} />
+          )}
           {isDesktop ? <h6>{titulo}</h6> : <>&nbsp;</>}
         </div>
         <RightItems>
