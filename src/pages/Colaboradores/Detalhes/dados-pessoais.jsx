@@ -15,7 +15,7 @@ import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
 import ModalAlterarEmail from '@components/ModalAlterar/email'
 import styled from "styled-components"
 import { Real } from '@utils/formats'
-import ArmazenadorToken from "@utils/ArmazenadorToken"
+import ArmazenadorToken from "@utils"
 
 const Col12 = styled.div`
     display: flex;
