@@ -11,6 +11,7 @@ import styles from '@pages/Colaboradores/Colaboradores.module.css'
 import BotaoGrupo from '@components/BotaoGrupo'
 import Botao from '@components/Botao'
 import { useTranslation } from 'react-i18next'
+import { ArmazenadorToken } from '@utils'
 
 function ColaboradorDependentes() {
 
@@ -58,11 +59,13 @@ function ColaboradorDependentes() {
                         <AiFillQuestionCircle className="question-icon" size={20} />
                     </QuestionCard>
                 </Titulo>
-                    
+                
                 <BotaoGrupo align="end">
-                    <Link to={`/colaborador/detalhes/${id}/dependentes/adicionar`}>
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> {t('add')} Dependente</Botao>
-                    </Link>
+                    {ArmazenadorToken.hasPermission('add_dependente') &&
+                        <Link to={`/colaborador/detalhes/${id}/dependentes/adicionar`}>
+                            <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> {t('add')} Dependente</Botao>
+                        </Link>
+                    }
                 </BotaoGrupo>
             </BotaoGrupo>
             <DataTableDependentes 
