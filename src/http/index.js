@@ -4,9 +4,9 @@ import { ArmazenadorToken } from "@utils";
 const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net"; // Para Vite
 const PROTOCOL = import.meta.env.VITE_MODE === 'development' ? 'http' : 'https';
 
-// Contador de timeouts para redirecionar após 3 tentativas
-let timeoutCount = 0;
-const MAX_TIMEOUTS = 3;
+// Contador de erros de conexão para redirecionar após 3 tentativas
+let connectionErrorCount = 0;
+const MAX_CONNECTION_ERRORS = 3;
 
 const http = axios.create({
     timeout: 30000, // 30 segundos de timeout padrão
@@ -16,20 +16,81 @@ const http = axios.create({
     }
 });
 
-// Função para resetar o contador de timeouts
-export const resetTimeoutCount = () => {
-    timeoutCount = 0;
-    console.log('Contador de timeouts resetado');
+// Função para resetar o contador de erros de conexão
+export const resetConnectionErrorCount = () => {
+    connectionErrorCount = 0;
+    console.log('Contador de erros de conexão resetado');
 };
 
-// Função para obter o status atual do contador de timeouts
-export const getTimeoutStatus = () => {
+// Função para obter o status atual do contador de erros
+export const getConnectionErrorStatus = () => {
     return {
-        current: timeoutCount,
-        max: MAX_TIMEOUTS,
-        remaining: MAX_TIMEOUTS - timeoutCount
+        current: connectionErrorCount,
+        max: MAX_CONNECTION_ERRORS,
+        remaining: MAX_CONNECTION_ERRORS - connectionErrorCount
     };
 };
+
+// Função para identificar erros de conexão com a API
+function isConnectionError(error) {
+    const connectionErrorCodes = [
+        'ECONNABORTED',           // Timeout do Axios
+        'ERR_NAME_NOT_RESOLVED',  // DNS não consegue resolver o nome
+        'ERR_NETWORK',            // Erro geral de rede
+        'ERR_INTERNET_DISCONNECTED', // Internet desconectada
+        'ERR_CONNECTION_REFUSED', // Conexão recusada pelo servidor
+        'ERR_CONNECTION_TIMED_OUT', // Timeout de conexão
+        'ERR_EMPTY_RESPONSE',     // Resposta vazia do servidor
+        'ERR_FR_TOO_MANY_REDIRECTS', // Muitos redirecionamentos
+        'ERR_BAD_OPTION_VALUE',   // Valor de opção inválido
+        'ERR_BAD_OPTION',         // Opção inválida
+        'ECONNRESET',             // Conexão resetada pelo servidor
+        'ENOTFOUND',              // Host não encontrado
+        'ETIMEDOUT',              // Timeout de conexão
+        'ECONNREFUSED'            // Conexão recusada
+    ];
+
+    const connectionErrorMessages = [
+        'timeout',
+        'ERR_NAME_NOT_RESOLVED',
+        'ERR_NETWORK',
+        'ERR_INTERNET_DISCONNECTED',
+        'ERR_CONNECTION_REFUSED',
+        'ERR_CONNECTION_TIMED_OUT',
+        'ERR_EMPTY_RESPONSE',
+        'ERR_FR_TOO_MANY_REDIRECTS',
+        'ERR_BAD_OPTION_VALUE',
+        'ERR_BAD_OPTION',
+        'ECONNRESET',
+        'ENOTFOUND',
+        'ETIMEDOUT',
+        'ECONNREFUSED',
+        'Network Error',
+        'Connection refused',
+        'Connection timeout',
+        'DNS resolution failed',
+        'No internet connection'
+    ];
+
+    // Verificar se o código do erro está na lista
+    if (error.code && connectionErrorCodes.includes(error.code)) {
+        return true;
+    }
+
+    // Verificar se a mensagem do erro contém algum dos termos
+    if (error.message) {
+        return connectionErrorMessages.some(msg => 
+            error.message.toLowerCase().includes(msg.toLowerCase())
+        );
+    }
+
+    // Verificar se é um erro sem resposta (sem status HTTP)
+    if (!error.response && error.request) {
+        return true;
+    }
+
+    return false;
+}
 
 function tokenExpiraEmMenosDeUmMinuto() {
     const expiration = ArmazenadorToken.ExpirationToken;
@@ -111,39 +172,26 @@ http.interceptors.request.use(async (config) => {
 
     return config;
 }, (error) => {
-    ArmazenadorToken.removerToken();
-    window.location.href = '/login';
     return Promise.reject(error);
 });
 
 // Interceptor para tratar respostas
 http.interceptors.response.use(
     (response) => {
-        // Reset timeout count on successful response
-        timeoutCount = 0;
+        // Reset connection error count on successful response
+        connectionErrorCount = 0;
         return response.data ? response.data : response;
     },
     async function (error) {
         const originalRequest = error.config;
 
-        // Verificar se é um erro de conexão (timeout, DNS, rede, etc.)
-        if (error.code === 'ECONNABORTED' || 
-            error.message?.includes('timeout') || 
-            error.code === 'ERR_NAME_NOT_RESOLVED' ||
-            error.message?.includes('ERR_NAME_NOT_RESOLVED') ||
-            error.code === 'ERR_NETWORK' ||
-            error.message?.includes('ERR_NETWORK') ||
-            error.code === 'ERR_INTERNET_DISCONNECTED' ||
-            error.message?.includes('ERR_INTERNET_DISCONNECTED') ||
-            error.code === 'ERR_CONNECTION_REFUSED' ||
-            error.message?.includes('ERR_CONNECTION_REFUSED') ||
-            error.code === 'ERR_CONNECTION_TIMED_OUT' ||
-            error.message?.includes('ERR_CONNECTION_TIMED_OUT')) {
-            timeoutCount++;
-            console.warn(`Erro de conexão (${timeoutCount}/${MAX_TIMEOUTS}): ${error.code || error.message}`);
+        // Verificar se é um erro de conexão com a API
+        if (isConnectionError(error)) {
+            connectionErrorCount++;
+            console.warn(`Erro de conexão com a API (${connectionErrorCount}/${MAX_CONNECTION_ERRORS}): ${error.code || error.message}`);
             
-            if (timeoutCount >= MAX_TIMEOUTS) {
-                console.error(`Máximo de erros de conexão atingido (${MAX_TIMEOUTS}). Redirecionando para login.`);
+            if (connectionErrorCount >= MAX_CONNECTION_ERRORS) {
+                console.error(`Máximo de erros de conexão atingido (${MAX_CONNECTION_ERRORS}). Redirecionando para login.`);
                 ArmazenadorToken.removerToken();
                 window.location.href = '/login';
                 return Promise.reject(error);
@@ -152,8 +200,8 @@ http.interceptors.response.use(
             return Promise.reject(error.response?.data || error);
         }
 
-        // Reset timeout count for non-timeout errors
-        timeoutCount = 0;
+        // Reset connection error count for non-connection errors
+        connectionErrorCount = 0;
 
         if (
             error.response?.status === 401 &&
@@ -166,7 +214,8 @@ http.interceptors.response.use(
                 originalRequest.headers['Authorization'] = `Bearer ${ArmazenadorToken.AccessToken}`;
                 return http(originalRequest);
             } else {
-                // ArmazenadorToken.removerToken();
+                ArmazenadorToken.removerToken();
+                window.location.href = '/login';
                 return Promise.reject(error.response?.data || error);
             }
         }
