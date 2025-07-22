@@ -8,6 +8,9 @@ const PROTOCOL = import.meta.env.VITE_MODE === 'development' ? 'http' : 'https';
 let connectionErrorCount = 0;
 const MAX_CONNECTION_ERRORS = 3;
 
+// Flag para controlar refresh em andamento
+let refreshInProgress = false;
+
 const http = axios.create({
     timeout: 30000, // 30 segundos de timeout padrão
     headers: {
@@ -118,8 +121,8 @@ async function tentarRefreshToken() {
         );
         return true;
     } catch (error) {
-        ArmazenadorToken.removerToken();
-        window.location.href = '/login';
+        // ArmazenadorToken.removerToken();
+        // window.location.href = '/login';
         return false;
     }
 }
