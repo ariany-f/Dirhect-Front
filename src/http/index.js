@@ -130,9 +130,9 @@ http.interceptors.request.use(async (config) => {
     config.baseURL = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
 
     // Se faltar menos de 1 min para expirar, tenta refresh
-    if (tokenExpiraEmMenosDeUmMinuto()) {
-        await tentarRefreshToken();
-    }
+    // if (tokenExpiraEmMenosDeUmMinuto()) {
+    //     await tentarRefreshToken();
+    // }
 
     // Configurar Content-Type baseado no tipo de dados
     if (config.data instanceof FormData) {
