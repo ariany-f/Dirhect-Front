@@ -133,7 +133,7 @@ function DataTableDependentes({
     
 
     const representativeParentescoTemplate = (rowData) => {
-        let grau_parentesco = rowData?.grau_parentesco;
+        let grau_parentesco = rowData?.grau_parentesco_descricao;
         
         if (!grau_parentesco) {
             return <Tag severity="secondary" value="Não definido"></Tag>;
