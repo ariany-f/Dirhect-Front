@@ -29,7 +29,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
 
     // Função para verificar se um campo é obrigatório baseado na lista
     const isCampoObrigatorio = (lista) => {
-        return lista && lista.length > 0;
+        // Campo só é obrigatório se houver dados disponíveis na lista
+        return lista && Array.isArray(lista) && lista.length > 0;
     };
 
     // Função para obter o valor selecionado no formato {name, code}

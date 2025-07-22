@@ -1082,16 +1082,17 @@ const CandidatoRegistro = () => {
         
         // Validação de dados cadastrais obrigatórios (apenas se não for self)
         if (!self) {
-            if (!dadosVaga.filial_id) {
+            // Só valida campos se houver dados disponíveis nos dropdowns
+            if (filiais && filiais.length > 0 && !dadosVaga.filial_id) {
                 camposObrigatorios.push('Filial');
             }
-            if (!dadosVaga.departamento_id) {
+            if (departamentos && departamentos.length > 0 && !dadosVaga.departamento_id) {
                 camposObrigatorios.push('Departamento');
             }
-            if (!dadosVaga.cargo_id) {
+            if (cargos && cargos.length > 0 && !dadosVaga.cargo_id) {
                 camposObrigatorios.push('Cargo');
             }
-            if (!dadosVaga.centro_custo_id) {
+            if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
                 camposObrigatorios.push('Centro de custo');
             }
             if (!dadosVaga.salario?.trim()) {
