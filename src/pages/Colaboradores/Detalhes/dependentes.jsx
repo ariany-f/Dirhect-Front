@@ -1,7 +1,6 @@
 import Titulo from '@components/Titulo'
 import QuestionCard from '@components/QuestionCard'
 import { AiFillQuestionCircle } from 'react-icons/ai'
-import styled from 'styled-components'
 import { Link, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import http from '@http'
@@ -17,83 +16,36 @@ function ColaboradorDependentes() {
 
     let { id } = useParams()
     const [loading, setLoading] = useState(false)
-    const [dependentes, setDependentes] = useState(null)
-    const [pessoasfisicas, setPessoasFisicas] = useState(null)
-    const [funcionarios, setFuncionarios] = useState(null)
-    const [dep_pess, setDepPess] = useState(null)
+    const [dependentes, setDependentes] = useState([])
     const [sortField, setSortField] = useState('');
-    const [sortOrder, setSortOrder] = useState('');
+    const [sortOrder, setSortOrder] = useState(1);
     const { t } = useTranslation('common');
 
     useEffect(() => {
-        if(!dep_pess) {
-            carregarDependentes(sortField, sortOrder);
-        }
-    }, [dep_pess, sortField, sortOrder])
-
-    useEffect(() => {
-        // Só carrega pessoas físicas se há dependentes
-        if(dependentes && dependentes.length > 0 && !pessoasfisicas) {
-            carregarPessoasFisicas();
-        }
-        // Se não há dependentes, finaliza o loading diretamente
-        else if(dependentes && dependentes.length === 0) {
-            setDepPess([]);
-            setLoading(false);
-        }
-    }, [dependentes, pessoasfisicas])
-
-    useEffect(() => {
-        // Só processa se há dependentes e pessoas físicas
-        if (pessoasfisicas && dependentes && dependentes.length > 0 && !dep_pess) {
-            const processados = dependentes.map(item => {
-                const pessoa = pessoasfisicas.find(pessoa => pessoa.id === item.id_pessoafisica);
-                return { 
-                    ...item, 
-                    dados_pessoa_fisica: pessoa || null,
-                    funcionario: item.id_funcionario || null
-                };
-            });
-            setDepPess(processados);
-            setLoading(false);
-        }
-    }, [dependentes, pessoasfisicas, dep_pess])
-
-    const carregarDependentes = (sort = '', order = '') => {
         setLoading(true);
         let url = `dependente/?format=json&id_funcionario=${id}`;
-        if (sort && order) {
-            url += `&ordering=${order === 'desc' ? '-' : ''}${sort}`;
+
+        if (sortField) {
+            const orderPrefix = sortOrder === -1 ? '-' : '';
+            url += `&ordering=${orderPrefix}${sortField}`;
         }
+
         http.get(url)
             .then(response => {
-                setDependentes(response)
-                // Não seta loading false aqui, será feito no useEffect
+                setDependentes(response || []);
             })
             .catch(erro => {
-                setLoading(false); // Só seta false em caso de erro
+                console.error("Erro ao carregar dependentes:", erro);
+                setDependentes([]);
             })
-    };
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [id, sortField, sortOrder]);
 
-    const carregarPessoasFisicas = () => {
-        // Não seta loading true aqui pois já está true do carregarDependentes
-        http.get('pessoa_fisica/?format=json')
-            .then(response => {
-                setPessoasFisicas(response)
-                // Não seta loading false aqui, será feito no useEffect
-            })
-            .catch(erro => {
-                setLoading(false); // Só seta false em caso de erro
-            })
-    };
-
-    const onSort = ({ field, order }) => {
-        setSortField(field);
-        setSortOrder(order);
-        setDepPess(null);
-        setDependentes(null);
-        setPessoasFisicas(null); // Reset também pessoas físicas para forçar nova busca se necessário
-        carregarDependentes(field, order);
+    const onSort = (event) => {
+        setSortField(event.sortField);
+        setSortOrder(event.sortOrder);
     };
 
     return (
@@ -108,12 +60,18 @@ function ColaboradorDependentes() {
                 </Titulo>
                     
                 <BotaoGrupo align="end">
-                    <Link to="/colaborador/registro">
+                    <Link to={`/colaborador/detalhes/${id}/dependentes/adicionar`}>
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon}/> {t('add')} Dependente</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>
-            <DataTableDependentes search={false} dependentes={dep_pess} sortField={sortField} sortOrder={sortOrder} onSort={onSort}/>
+            <DataTableDependentes 
+                search={false} 
+                dependentes={dependentes} 
+                sortField={sortField} 
+                sortOrder={sortOrder} 
+                onSort={onSort}
+            />
         </>
     )
 }
