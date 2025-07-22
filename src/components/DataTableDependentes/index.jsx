@@ -144,7 +144,7 @@ function DataTableDependentes({
             case 'Filho':
                 return <Tag severity="success" value="Filho"></Tag>;
             default:
-                return <Tag severity="primary" value={rowData?.grau_parentesco}></Tag>;
+                return <Tag severity="primary" value={rowData?.grau_parentesco_descricao}></Tag>;
         }
     }
 
