@@ -60,7 +60,7 @@ function ColaboradorDadosPessoais() {
       
         let obj = {}
         obj['email'] = email
-        http.put(`funcionario/${id}/`, obj)
+        http.put(`pessoa_fisica/${colaborador.funcionario_pessoa_fisica.id}/`, obj)
         .then(response => {
             if(response)
             {
@@ -73,12 +73,9 @@ function ColaboradorDadosPessoais() {
 
     function editarTelefone(telefone) {
         let obj = {}
-        const phoneCode = telefone.substring(0, 2);
-        const phoneNumber = telefone.substring(2).trim();
-        obj['phone_code'] = phoneCode
-        obj['phone_number'] = phoneNumber
+        obj['telefone1'] = telefone
       
-        http.put(`funcionario/${id}/`, obj)
+        http.put(`pessoa_fisica/${colaborador.funcionario_pessoa_fisica.id}/`, obj)
         .then(response => {
            if(response)
             {
