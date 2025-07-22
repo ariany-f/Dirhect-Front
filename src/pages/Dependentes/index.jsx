@@ -102,7 +102,8 @@ function Dependentes() {
                 totalRecords,
                 first,
                 onPage,
-                onSearch
+                onSearch,
+                searchValue: searchTerm
             }} />
         </DependentesProvider>
     )

@@ -24,27 +24,22 @@ function DataTableDependentes({
     sortField, 
     sortOrder, 
     onSort,
-    // Props para paginação via servidor
     paginator = false,
     rows = 10,
     totalRecords = 0,
     first = 0,
     onPage,
     onSearch,
-    showSearch = true
+    showSearch = true,
+    searchValue
 }) {
 
     const[selectedDependente, setSelectedDependente] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
-    const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
     const onGlobalFilterChange = (value) => {
-        setGlobalFilterValue(value);
         if (onSearch) {
             onSearch(value);
         }
@@ -148,15 +143,6 @@ function DataTableDependentes({
         }
     }
 
-    const handleSort = (event) => {
-        if (onSort) {
-            onSort({
-                field: event.sortField,
-                order: event.sortOrder === 1 ? 'asc' : 'desc'
-            });
-        }
-    };
-
     const totalDependentesTemplate = () => {
         return 'Total de Dependentes: ' + (totalRecords ?? 0);
     };
@@ -167,7 +153,7 @@ function DataTableDependentes({
                 {search && showSearch &&
                     <div className="flex justify-content-end">
                         <span className="p-input-icon-left">
-                            <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
+                            <CampoTexto  width={'320px'} valor={searchValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar dependente" />
                         </span>
                     </div>
                 }
@@ -187,8 +173,8 @@ function DataTableDependentes({
                 onPage={onPage}
                 tableStyle={{ minWidth: (search ? '68vw' : '48vw') }}
                 sortField={sortField}
-                sortOrder={sortOrder === 'desc' ? -1 : 1}
-                onSort={handleSort}
+                sortOrder={sortOrder}
+                onSort={onSort}
                 removableSort
                 showGridlines
                 stripedRows

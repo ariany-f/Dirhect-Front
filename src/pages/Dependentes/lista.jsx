@@ -39,40 +39,23 @@ const ContainerSemRegistro = styled.div`
 function DependentesListagem() {
 
     const context = useOutletContext()
-    const dependentes = context?.dependentes;
-    const sortField = context?.sortField;
-    const sortOrder = context?.sortOrder;
-    const onSort = context?.onSort;
-    const paginator = context?.paginator;
-    const rows = context?.rows;
-    const totalRecords = context?.totalRecords;
-    const first = context?.first;
-    const onPage = context?.onPage;
-    const onSearch = context?.onSearch;
-    
-    useEffect(() => {
-        if(context && (!dependentes))
-        {
-            // setDependentes(context)
-        }
-    }, [dependentes, context])
-
     
     return (
         <ConteudoFrame>
             {
-                dependentes ?
+                context?.dependentes ?
                     <DataTableDependentes 
-                        dependentes={dependentes} 
-                        sortField={sortField} 
-                        sortOrder={sortOrder} 
-                        onSort={onSort}
-                        paginator={paginator}
-                        rows={rows}
-                        totalRecords={totalRecords}
-                        first={first}
-                        onPage={onPage}
-                        onSearch={onSearch}
+                        dependentes={context.dependentes} 
+                        sortField={context.sortField} 
+                        sortOrder={context.sortOrder} 
+                        onSort={context.onSort}
+                        paginator={context.paginator}
+                        rows={context.rows}
+                        totalRecords={context.totalRecords}
+                        first={context.first}
+                        onPage={context.onPage}
+                        onSearch={context.onSearch}
+                        searchValue={context.searchValue}
                     />
                 :
                 <ContainerSemRegistro>
