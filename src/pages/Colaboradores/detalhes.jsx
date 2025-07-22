@@ -799,7 +799,8 @@ function ColaboradorDetalhes() {
                                     fontSize: 12,
                                     color: '#fff',
                                     opacity: 0.9,
-                                    fontWeight: 400
+                                    fontWeight: 400,
+                                    textAlign: 'left'
                                 }}>
                                     CPF: {formatarCPF(colaborador.funcionario_pessoa_fisica.cpf)}
                                 </p>
