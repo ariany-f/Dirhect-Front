@@ -47,6 +47,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const totalColaboradores = funcionariosDashboard.total_funcionarios || 0;
     const novosColaboradoresMes = funcionariosDashboard.admitidos_no_mes || 0;
     const demitidos = funcionariosDashboard.funcionarios_demitidos || [];
+    const totalDemitidos = funcionariosDashboard.total_demitidos || 0;
+    const demitidosNoMes = funcionariosDashboard.demitidos_no_mes || 0;
+    const funcionariosPorMotivoDemissao = funcionariosDashboard.funcionarios_por_motivo_demissao || [];
 
     // Array de cores para as etapas (cores que combinam com o sistema)
     const coresEtapas = [
@@ -79,11 +82,10 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 console.log('Iniciando carregamento de todos os dados...');
                 
                 // Carregar todos os dados em paralelo
-                const [feriasResponse, admissoesResponse, vagasResponse, demissoesResponse, processosResponse, tarefasResponse] = await Promise.allSettled([
+                const [feriasResponse, admissoesResponse, vagasResponse, processosResponse, tarefasResponse] = await Promise.allSettled([
                     http.get('ferias/?format=json'),
                     http.get('admissao/?format=json'),
                     http.get('vagas/?format=json'),
-                    http.get('funcionario/?format=json&situacao=D'),
                     http.get('processos/?format=json'),
                     http.get('tarefas/?format=json')
                 ]);
@@ -505,9 +507,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         if (!demissoesData || demissoesData.length === 0) {
             console.log('Nenhum dado de demissões encontrado');
             return {
-                demissoesMes: 0,
+                demissoesMes: demitidosNoMes,
                 demissoesProcessamento: 0,
-                demissoesConcluidas: 0,
+                demissoesConcluidas: totalDemitidos,
                 motivosDemissao: {},
                 tempoMedioDemissao: 0
             };
@@ -590,12 +592,16 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         }
 
         // Contar por tipo de demissão
-        const motivosDemissao = demissoesData.reduce((acc, demissao) => {
-            if (!demissao) return acc;
+        const motivosDemissao = funcionariosPorMotivoDemissao.reduce((acc, item) => {
+            if (!item) return acc;
             
-            const tipoDemissao = demissao.tipo_demissao || 'Não informado';
-            const motivo = getMotivoDemissao(tipoDemissao);
-            acc[motivo] = (acc[motivo] || 0) + 1;
+            const motivo = item.motivo_demissao__descricao || 'Não informado';
+            const total = parseInt(item.total) || 0;
+            
+            if (motivo && total > 0) {
+                acc[motivo] = total;
+            }
+            
             return acc;
         }, {});
 
@@ -661,13 +667,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     // Função para calcular o turnover real
     const calcularTurnover = () => {
         if (!totalColaboradores || totalColaboradores === 0) return 0;
-        const hoje = new Date();
-        const demissoesMes = demitidos.filter(d => {
-            if (!d || !d.dt_demissao) return false;
-            const dataDemissao = new Date(d.dt_demissao);
-            return dataDemissao.getMonth() === hoje.getMonth() && dataDemissao.getFullYear() === hoje.getFullYear();
-        }).length;
-        return ((demissoesMes / totalColaboradores) * 100).toFixed(1);
+        return ((demitidosNoMes / totalColaboradores) * 100).toFixed(1);
     };
 
     // Processar etapas do processo de demissão usando dados reais de tarefas
@@ -794,12 +794,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         // Gestão de Colaboradores
         totalColaboradores: totalColaboradores,
         novosContratadosMes: novosColaboradoresMes,
-        demissoesMes: demitidos.filter(d => {
-            if (!d || !d.dt_demissao) return false;
-            const dataDemissao = new Date(d.dt_demissao);
-            const hoje = new Date();
-            return dataDemissao.getMonth() === hoje.getMonth() && dataDemissao.getFullYear() === hoje.getFullYear();
-        }).length,
+        demissoesMes: demitidosNoMes,
         turnover: calcularTurnover(),
         
         // Distribuição por departamento
