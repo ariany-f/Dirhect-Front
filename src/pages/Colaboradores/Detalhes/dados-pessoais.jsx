@@ -15,6 +15,7 @@ import ModalAlterarTelefone from '@components/ModalAlterar/telefone'
 import ModalAlterarEmail from '@components/ModalAlterar/email'
 import styled from "styled-components"
 import { Real } from '@utils/formats'
+import ArmazenadorToken from "@utils/ArmazenadorToken"
 
 const Col12 = styled.div`
     display: flex;
@@ -59,7 +60,7 @@ function ColaboradorDadosPessoais() {
       
         let obj = {}
         obj['email'] = email
-        http.put(`usuario/${id}/`, obj)
+        http.put(`funcionario/${id}/`, obj)
         .then(response => {
             if(response)
             {
@@ -77,7 +78,7 @@ function ColaboradorDadosPessoais() {
         obj['phone_code'] = phoneCode
         obj['phone_number'] = phoneNumber
       
-        http.put(`usuario/${id}/`, obj)
+        http.put(`funcionario/${id}/`, obj)
         .then(response => {
            if(response)
             {
@@ -133,15 +134,21 @@ function ColaboradorDadosPessoais() {
                             colaborador.funcionario_pessoa_fisica?.email ?
                             <>
                                 <Texto weight="800">{colaborador.funcionario_pessoa_fisica.email}</Texto>
+                                {ArmazenadorToken.hasPermission('change_funcionario') && (
+                                    <BotaoSemBorda>
+                                        <RiEditBoxFill size={18} />
+                                        <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
+                                    </BotaoSemBorda>
+                                )}
+                            </>
+                            : (
+                                ArmazenadorToken.hasPermission('change_funcionario') ?
                                 <BotaoSemBorda>
                                     <RiEditBoxFill size={18} />
-                                    <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
+                                    <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Adicionar</Link>
                                 </BotaoSemBorda>
-                            </>
-                            : <BotaoSemBorda>
-                                <RiEditBoxFill size={18} />
-                                <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Adicionar</Link>
-                            </BotaoSemBorda>
+                                : <Texto weight="800">---</Texto>
+                            )
                         )
                     }
                     <Texto>Telefone</Texto>
@@ -151,15 +158,21 @@ function ColaboradorDadosPessoais() {
                             colaborador.funcionario_pessoa_fisica?.telefone1 ?
                             <>
                                 <Texto weight="800">{colaborador.funcionario_pessoa_fisica.telefone1}</Texto>
+                                {ArmazenadorToken.hasPermission('change_funcionario') && (
+                                    <BotaoSemBorda>
+                                        <RiEditBoxFill size={18} />
+                                        <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Alterar</Link>
+                                    </BotaoSemBorda>
+                                )}
+                            </>
+                            : (
+                                ArmazenadorToken.hasPermission('change_funcionario') ?
                                 <BotaoSemBorda>
                                     <RiEditBoxFill size={18} />
-                                    <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Alterar</Link>
+                                    <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Adicionar</Link>
                                 </BotaoSemBorda>
-                            </>
-                            : <BotaoSemBorda>
-                                <RiEditBoxFill size={18} />
-                                <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Adicionar</Link>
-                            </BotaoSemBorda>
+                                : <Texto weight="800">---</Texto>
+                            )
                         )
                     }
                 </Col3>
