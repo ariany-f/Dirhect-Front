@@ -115,6 +115,12 @@ const Select = styled(Dropdown)`
         top: 55% !important;
         transform: translateY(-50%) !important;
     }
+
+    /* Centraliza o ícone de busca no filtro */
+    & .p-dropdown-filter-icon {
+        top: 50%;
+        transform: translateY(-50%);
+    }
 `
 
 function DropdownItens({ 
@@ -133,7 +139,10 @@ function DropdownItens({
     optionTemplate, // Nova prop para o template personalizado
     disabled = false, // Adiciona a prop disabled
     allowClear = false, // Adiciona a prop allowClear
-    required = false // Adiciona a prop required
+    required = false, // Adiciona a prop required
+    onFilter,
+    emptyFilterMessage,
+    emptyMessage
 }) {
 
     const [erro, setErro] = useState('')
@@ -194,6 +203,9 @@ function DropdownItens({
                             valueTemplate={optionTemplate} // Template para o valor selecionado
                             disabled={disabled}
                             showClear={allowClear && valor}
+                            onFilter={onFilter}
+                            emptyFilterMessage={emptyFilterMessage}
+                            emptyMessage={emptyMessage}
                         />
                     :
                     <Select 

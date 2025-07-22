@@ -94,7 +94,7 @@ const ModalHeader = styled.div`
 
 const ModalTitle = styled.h2`
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: white;
     display: flex;
@@ -132,6 +132,8 @@ const CloseButton = styled.button`
 const ModalContent = styled.div`
     padding: 24px;
     text-align: center;
+    max-height: 60vh;
+    overflow-y: auto;
 `;
 
 const IconContainer = styled.div`
@@ -360,6 +362,7 @@ const CandidatoRegistro = () => {
     const toast = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [showModalConfirmacao, setShowModalConfirmacao] = useState(false);
+    const [initialCandidato, setInitialCandidato] = useState(null);
     const [modoLeitura, setModoLeitura] = useState(false);
     const [showConfirmacaoFinalizacao, setShowConfirmacaoFinalizacao] = useState(false);
     const [showConfirmacaoDependentes, setShowConfirmacaoDependentes] = useState(false);
@@ -550,15 +553,17 @@ const CandidatoRegistro = () => {
         if (id) {
             http.get(`admissao/${id}/`)
                 .then((data) => {
-                    // Atualiza o candidato com todos os dados
-                    setCandidato({
+                    const fullCandidatoData = {
                         ...data,
                         educacao: data.educacao || [],
                         habilidades: data.habilidades || [],
                         experiencia: data.experiencia || [],
                         dependentes: data.dependentes || [],
                         anotacoes: data.anotacoes || ''
-                    });
+                    };
+                    // Atualiza o candidato com todos os dados
+                    setCandidato(fullCandidatoData);
+                    setInitialCandidato(JSON.parse(JSON.stringify(fullCandidatoData))); // Cria um snapshot profundo
                     setVaga(data.dados_vaga || {});
                     setAdmissao(data);
                 })
@@ -668,6 +673,18 @@ const CandidatoRegistro = () => {
             }
         }
         
+        // Compara o estado atual com o inicial
+        if (JSON.stringify(candidato) === JSON.stringify(initialCandidato)) {
+            toast.current.show({
+                severity: 'info',
+                summary: 'Informação',
+                detail: 'Nenhuma alteração para salvar.',
+                life: 3000
+            });
+            console.log('Nenhuma alteração detectada, salvamento pulado.');
+            return;
+        }
+
         try {
             // Monta o payload seguindo o padrão correto
             const dadosCandidato = candidato.dados_candidato || {};
@@ -828,6 +845,7 @@ const CandidatoRegistro = () => {
                 // Dados bancários
                 banco: candidato.banco,
                 agencia: candidato.agencia,
+                agencia_nova: candidato.agencia_nova,
                 conta_corrente: candidato.conta_corrente,
                 tipo_conta: candidato.tipo_conta,
                 operacao: candidato.operacao,
@@ -900,11 +918,11 @@ const CandidatoRegistro = () => {
                     
                     if (dependentesUnicos.length > 0) {
                         // Mapeia os dependentes novos para o formato da API
-                        const dependentesParaEnviar = dependentesUnicos.map((dep, index) => ({
-                            nrodepend: index + 1,
-                            nome_depend: dep.nome || '',
-                            cpf: dep.cpf ? dep.cpf.replace(/\D/g, '') : null, // Remove formatação do CPF
-                            dtnascimento: dep.data_nascimento || null,
+                        const dependentesParaEnviar = dependentesUnicos.map((dep) => ({
+                            nome_depend: dep.nome_depend || null,
+                            nrodepend: dep.nrodepend || null,
+                            cpf: dep.cpf ? dep.cpf.replace(/\D/g, '') : null,
+                            dt_nascimento: dep.dt_nascimento || null,
                             cartorio: dep.cartorio || null,
                             nroregistro: dep.nroregistro || null,
                             nrolivro: dep.nrolivro || null,
@@ -919,8 +937,29 @@ const CandidatoRegistro = () => {
                             grau_parentesco: dep.grau_parentesco || null
                         }));
 
-                        await http.post(`admissao/${candidato.id}/adiciona_dependentes/`, dependentesParaEnviar);
-                        console.log('Dependentes novos salvos com sucesso no endpoint específico');
+                        try {
+                            const dependentesSalvos = await http.post(`admissao/${candidato.id}/adiciona_dependentes/`, dependentesParaEnviar);
+                            console.log('Dependentes novos salvos com sucesso no endpoint específico');
+
+                            // Atualiza o estado para refletir os dependentes salvos
+                            if (dependentesSalvos && Array.isArray(dependentesSalvos)) {
+                                setCandidato(prev => {
+                                    const dependentesJaExistentes = prev.dependentes.filter(d => d.id);
+                                    const listaAtualizada = [...dependentesJaExistentes, ...dependentesSalvos];
+                                    return { ...prev, dependentes: listaAtualizada };
+                                });
+                            }
+                        } catch (error) {
+                            console.error('Erro ao salvar dependentes no endpoint específico:', error);
+                            toast.current.show({
+                                severity: 'error',
+                                summary: 'Erro ao Salvar Dependentes',
+                                detail: 'Não foi possível salvar os dependentes. Verifique os dados e tente novamente.',
+                                life: 4000
+                            });
+                            throw error; // Re-lança o erro para interromper o fluxo de salvamento
+                        }
+
                     } else {
                         console.log('Nenhum dependente novo para salvar');
                     }
@@ -937,6 +976,9 @@ const CandidatoRegistro = () => {
                 life: 3000
             });
             
+            // Atualiza o snapshot inicial com os novos dados salvos
+            setInitialCandidato(JSON.parse(JSON.stringify(candidato)));
+
         } catch (error) {
             console.error('Erro ao salvar:', error);
             toast.current.show({
@@ -1194,6 +1236,7 @@ const CandidatoRegistro = () => {
     const handleOverlayClick = (e) => {
         if (e.target === e.currentTarget) {
             setShowModalConfirmacao(false);
+            setShowConfirmacaoDependentes(false);
         }
     };
 
@@ -1438,6 +1481,24 @@ const CandidatoRegistro = () => {
     const formatarCPF = (cpf) => {
         if (!cpf) return 'CPF não informado';
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    };
+
+    const handleConfirmarDependentes = async () => {
+        try {
+            setShowConfirmacaoDependentes(false);
+            await executarSalvamento(); // Se ocorrer um erro aqui, o catch abaixo será acionado
+            if (acaoSalvamento === 'salvar_continuar') {
+                stepperRef.current.nextCallback();
+                setActiveIndex(prev => prev + 1);
+            }
+        } catch (error) {
+            console.log("O salvamento foi interrompido devido a um erro ao adicionar dependentes.");
+            // O toast de erro já foi exibido na função executarSalvamento
+        }
+    };
+
+    const handleCancelarDependentes = () => {
+        setShowConfirmacaoDependentes(false);
     };
 
     return (
@@ -1990,9 +2051,9 @@ const CandidatoRegistro = () => {
                                                     fontSize: '14px',
                                                     color: '#6b7280'
                                                 }}>
-                                                    <strong>{dep.nome || 'Sem nome'}</strong>
+                                                    <strong>{dep.nome_depend || 'Sem nome'}</strong>
                                                     {dep.cpf && ` - CPF: ${dep.cpf}`}
-                                                    {dep.data_nascimento && ` - Nasc: ${dep.data_nascimento}`}
+                                                    {dep.dt_nascimento && ` - Nasc: ${dep.dt_nascimento}`}
                                                 </div>
                                             ))}
                                         </div>

@@ -103,6 +103,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={formatarOpcoes(filiais)}
                 label="Filial"
                 required={isCampoObrigatorio(filiais)}
+                search
+                filter
             />
             <DropdownItens
                 $margin={'15px'}
@@ -118,6 +120,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={formatarOpcoes(departamentos)}
                 label="Departamento"
                 required={isCampoObrigatorio(departamentos)}
+                search
+                filter
             />
             <DropdownItens
                 $margin={'15px'}
@@ -133,6 +137,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={formatarOpcoes(secoes)}
                 label="Seção"
                 required={isCampoObrigatorio(secoes)}
+                search
+                filter
             />
             <DropdownItens
                 $margin={'15px'}
@@ -148,6 +154,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={formatarOpcoes(cargos)}
                 label="Cargo"
                 required={isCampoObrigatorio(cargos)}
+                search
+                filter
             />
             <DropdownItens
                 $margin={'15px'}
@@ -163,6 +171,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={formatarOpcoes(centros_custo)}
                 label="Centro de Custo"
                 required={isCampoObrigatorio(centros_custo)}
+                search
+                filter
             />
             <DropdownItens
                 $margin={'15px'}
@@ -178,6 +188,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={formatarOpcoes(horarios, true)}
                 label="Horário"
                 required={isCampoObrigatorio(horarios)}
+                search
+                filter
             />
             <DropdownItens
                 $margin={'15px'}
@@ -193,6 +205,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={formatarOpcoes(funcoes)}
                 label="Função"
                 required={isCampoObrigatorio(funcoes)}
+                search
+                filter
             />
             <DropdownItens
                 $margin={'15px'}
@@ -208,6 +222,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={formatarOpcoes(sindicatos, true)}
                 label="Sindicato"
                 required={isCampoObrigatorio(sindicatos)}
+                search
+                filter
             />
             <CampoTexto
                 patternMask={'BRL'}

@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
 import styled from 'styled-components';
+import http from '@http';
+import Botao from '@components/Botao';
+import BotaoSemBorda from '@components/BotaoSemBorda';
 
 const GridContainer = styled.div`
     padding: 0 10px 10px 10px;
@@ -45,25 +48,62 @@ const InfoBox = styled.div`
 
 const StepDadosBancarios = ({ modoLeitura = false }) => {
     const { candidato, setCampo } = useCandidatoContext();
+    const [bancos, setBancos] = useState([]);
+    const [loadingBancos, setLoadingBancos] = useState(false);
+    const [agencias, setAgencias] = useState([]);
+    const [loadingAgencias, setLoadingAgencias] = useState(false);
+    const [filtroAgencia, setFiltroAgencia] = useState('');
+    const [adicionandoAgencia, setAdicionandoAgencia] = useState(false);
 
-    // Lista de bancos mais comuns
-    const bancos = [
-        { code: '001', name: '001 - Banco do Brasil' },
-        { code: '104', name: '104 - Caixa Econômica Federal' },
-        { code: '341', name: '341 - Itaú Unibanco' },
-        { code: '033', name: '033 - Santander' },
-        { code: '237', name: '237 - Bradesco' },
-        { code: '260', name: '260 - Nubank' },
-        { code: '290', name: '290 - PagSeguro' },
-        { code: '336', name: '336 - C6 Bank' },
-        { code: '077', name: '077 - Inter' },
-        { code: '212', name: '212 - Original' },
-        { code: '756', name: '756 - Sicoob' },
-        { code: '748', name: '748 - Sicredi' },
-        { code: '070', name: '070 - BRB' },
-        { code: '085', name: '085 - Via Credi' },
-        { code: '364', name: '364 - Gerencianet' }
-    ];
+    useEffect(() => {
+        // Se o candidato já tem uma agencia_nova, entra no modo de adição
+        if (candidato?.agencia_nova) {
+            setAdicionandoAgencia(true);
+        }
+    }, [candidato?.agencia_nova]);
+
+    useEffect(() => {
+        setLoadingBancos(true);
+        http.get('banco/')
+            .then(response => {
+                const formattedBancos = response.map(b => ({
+                    code: b.id,
+                    name: `${b.id} - ${b.nome_completo || b.nome}`
+                }));
+                setBancos(formattedBancos);
+            })
+            .catch(error => {
+                console.error("Erro ao buscar bancos:", error);
+                setBancos([]);
+            })
+            .finally(() => {
+                setLoadingBancos(false);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (candidato?.banco && !adicionandoAgencia) {
+            setLoadingAgencias(true);
+            setAgencias([]);
+            http.get(`agencia/?banco=${candidato.banco}`)
+                .then(response => {
+                    const formattedAgencias = response.map(ag => ({
+                        code: ag.numero,
+                        name: `${ag.numero} - ${ag.nome || 'Agência'}`
+                    }));
+                    setAgencias(formattedAgencias);
+                })
+                .catch(error => {
+                    console.error("Erro ao buscar agências:", error);
+                    setAgencias([]);
+                })
+                .finally(() => {
+                    setLoadingAgencias(false);
+                });
+        } else {
+            setAgencias([]);
+        }
+    }, [candidato?.banco, adicionandoAgencia]);
 
     // Tipos de conta
     const tiposConta = [
@@ -90,39 +130,93 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
             </InfoBox>
 
             <DropdownItens
-                $margin={'10px'}
+                $margin={'28px'}
                 valor={candidato?.banco ? bancos.find(b => b.code === candidato.banco) || '' : ''}
                 setValor={valor => {
                     setCampo('banco', valor.code);
                     setCampo('banco_codigo', valor.code);
+                    setCampo('agencia', '');
+                    setCampo('agencia_nova', '');
+                    setAdicionandoAgencia(false);
                 }}
                 options={bancos}
                 name="banco"
                 label="Banco"
-                placeholder="Selecione o banco"
-                disabled={modoLeitura}
+                placeholder={loadingBancos ? "Carregando..." : "Selecione o banco"}
+                disabled={modoLeitura || loadingBancos}
+                search
+                filter
             />
 
-            <DropdownItens
-                $margin={'10px'}
-                valor={candidato?.tipo_conta ? tiposConta.find(t => t.code === candidato.tipo_conta) || '' : ''}
-                setValor={valor => setCampo('tipo_conta', valor.code)}
-                options={tiposConta}
-                name="tipo_conta"
-                label="Tipo de Conta"
-                placeholder="Selecione o tipo de conta"
-                disabled={modoLeitura}
-            />
-
-            <CampoTexto
-                name="agencia"
-                valor={candidato?.agencia ?? ''}
-                setValor={valor => setCampo('agencia', valor)}
-                label="Agência"
-                placeholder="Digite a agência (sem dígito)"
-                patternMask="9999"
-                disabled={modoLeitura}
-            />
+            {adicionandoAgencia ? (
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
+                    <div style={{ flex: 1, marginTop: '30px' }}>
+                        <CampoTexto
+                            name="agencia_nova"
+                            valor={candidato?.agencia_nova || filtroAgencia}
+                            setValor={valor => setCampo('agencia_nova', valor)}
+                            label="Nova Agência"
+                            placeholder="Digite o número da agência"
+                        />
+                    </div>
+                     <BotaoSemBorda aoClicar={() => {
+                        setAdicionandoAgencia(false);
+                        setCampo('agencia_nova', '');
+                    }}>
+                        Cancelar
+                    </BotaoSemBorda>
+                </div>
+            ) : (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <DropdownItens
+                        $margin={'10px'}
+                        valor={candidato?.agencia ? agencias.find(a => a.code === candidato.agencia) || '' : ''}
+                        setValor={valor => setCampo('agencia', valor.code)}
+                        options={agencias}
+                        name="agencia"
+                        label="Agência"
+                        placeholder={
+                            loadingAgencias ? "Carregando..." 
+                            : !candidato?.banco ? "Selecione um banco"
+                            : agencias.length === 0 ? "Nenhuma agência para este banco"
+                            : "Selecione a agência"
+                        }
+                        disabled={modoLeitura || !candidato?.banco || loadingAgencias}
+                        search
+                        filter
+                        onFilter={(e) => setFiltroAgencia(e.filter)}
+                        emptyFilterMessage={
+                            <div style={{ padding: '10px', textAlign: 'center' }}>
+                                <span>Nenhuma agência encontrada.</span>
+                                <Botao 
+                                    estilo="vermilion" 
+                                    size="small" 
+                                    filled 
+                                    aoClicar={() => {
+                                        setAdicionandoAgencia(true);
+                                        setCampo('agencia', ''); // Limpa a seleção da agência existente
+                                    }}
+                                    style={{ marginTop: '10px', width: '100%' }}
+                                >
+                                    Adicionar Nova Agência
+                                </Botao>
+                            </div>
+                        }
+                        emptyMessage={
+                            <div 
+                                style={{ padding: '10px', textAlign: 'center', cursor: 'pointer' }}
+                                onClick={() => {
+                                    setAdicionandoAgencia(true);
+                                    setCampo('agencia', '');
+                                }}
+                            >
+                                <span style={{ marginRight: '8px', fontWeight: 'bold' }}>+</span>
+                                Adicionar Nova Agência
+                            </div>
+                        }
+                    />
+                </div>
+            )}
 
             <CampoTexto
                 name="conta_corrente"
@@ -139,6 +233,17 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
                 setValor={valor => setCampo('operacao', valor)}
                 label="Operação (se houver)"
                 placeholder="Digite a operação"
+                disabled={modoLeitura}
+            />
+
+            <DropdownItens
+                $margin={'10px'}
+                valor={candidato?.tipo_conta ? tiposConta.find(t => t.code === candidato.tipo_conta) || '' : ''}
+                setValor={valor => setCampo('tipo_conta', valor.code)}
+                options={tiposConta}
+                name="tipo_conta"
+                label="Tipo de Conta"
+                placeholder="Selecione o tipo de conta"
                 disabled={modoLeitura}
             />
 
