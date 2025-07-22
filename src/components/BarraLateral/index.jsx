@@ -294,7 +294,7 @@ function BarraLateral({ $sidebarOpened }) {
             url: '/ferias',
             pageTitulo: 'Férias',
             icone: <FaUmbrellaBeach size={20} fill="white"/>,
-            itemTitulo: 'Férias',
+            itemTitulo: 'Programação de Férias',
             permission: 'view_ferias',
         },
         {
