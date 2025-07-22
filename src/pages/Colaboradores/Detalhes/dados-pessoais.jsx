@@ -101,140 +101,155 @@ function ColaboradorDadosPessoais() {
             <Col12>
                 <Col3>
                     <Texto>Naturalidade</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.naturalidade ?
-                        <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.naturalidade}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.naturalidade || '---'}</Texto>
                     }
                     <Texto>Estado Civil</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.estado_civil && colaborador?.funcionario_pessoa_fisica?.estado_civil_descricao ?
-                        <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.estado_civil_descricao}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.estado_civil_descricao || '---'}</Texto>
                     }
                     <Texto>Cor/Raça</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.cor_raca ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.cor_raca}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.cor_raca || '---'}</Texto>
                     }
                     
                     <Texto>Identidade</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.identidade ?
-                        <Texto weight="800">{(colaborador?.funcionario_pessoa_fisica.identidade)}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.identidade || '---'}</Texto>
                     }
                     <Texto>Data Emissão Identidade</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.data_emissao_ident ?
-                        <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_emissao_ident).toLocaleDateString('pt-BR')}</Texto>
-                        : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.data_emissao_ident ? new Date(colaborador.funcionario_pessoa_fisica.data_emissao_ident).toLocaleDateString('pt-BR') : '---'}</Texto>
                     }
                     <Texto>Email</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.email ?
-                        <>
-                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.email}</Texto>
-                            <BotaoSemBorda>
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : (
+                            colaborador.funcionario_pessoa_fisica?.email ?
+                            <>
+                                <Texto weight="800">{colaborador.funcionario_pessoa_fisica.email}</Texto>
+                                <BotaoSemBorda>
+                                    <RiEditBoxFill size={18} />
+                                    <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
+                                </BotaoSemBorda>
+                            </>
+                            : <BotaoSemBorda>
                                 <RiEditBoxFill size={18} />
-                                <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
+                                <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Adicionar</Link>
                             </BotaoSemBorda>
-                        </>
-                        : <BotaoSemBorda>
-                            <RiEditBoxFill size={18} />
-                            <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Adicionar</Link>
-                        </BotaoSemBorda>
+                        )
                     }
                     <Texto>Telefone</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.telefone1 ?
-                        <>
-                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.telefone1}</Texto>
-                            <BotaoSemBorda>
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : (
+                            colaborador.funcionario_pessoa_fisica?.telefone1 ?
+                            <>
+                                <Texto weight="800">{colaborador.funcionario_pessoa_fisica.telefone1}</Texto>
+                                <BotaoSemBorda>
+                                    <RiEditBoxFill size={18} />
+                                    <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Alterar</Link>
+                                </BotaoSemBorda>
+                            </>
+                            : <BotaoSemBorda>
                                 <RiEditBoxFill size={18} />
-                                <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Alterar</Link>
+                                <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Adicionar</Link>
                             </BotaoSemBorda>
-                        </>
-                        : <BotaoSemBorda>
-                            <RiEditBoxFill size={18} />
-                            <Link onClick={() => setModalTelefoneOpened(true)} className={styles.link}>Adicionar</Link>
-                        </BotaoSemBorda>
+                        )
                     }
                 </Col3>
                 <Col3>
                    
                 <Texto>Carteira de Motorista</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.carteira_motorista ?
+                {!colaborador
+                    ? <Skeleton variant="rectangular" width={200} height={25} />
+                    : (
+                        colaborador.funcionario_pessoa_fisica?.carteira_motorista ?
                         <>
-                        <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.carteira_motorista}</Texto>
-                        { colaborador?.funcionario_pessoa_fisica?.tipo_carteira_habilit ?
-                            <Texto weight="800">({colaborador?.funcionario_pessoa_fisica?.tipo_carteira_habilit})</Texto>
-                        : null }
+                            <Texto weight="800">{colaborador.funcionario_pessoa_fisica.carteira_motorista}</Texto>
+                            { colaborador.funcionario_pessoa_fisica.tipo_carteira_habilit &&
+                                <Texto weight="800">({colaborador.funcionario_pessoa_fisica.tipo_carteira_habilit})</Texto>
+                            }
                         </>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
-                    }
+                        : <Texto weight="800">---</Texto>
+                    )
+                }
                     <Texto>Data Emissão CNH</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.data_emissao_cnh ?
-                    <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_emissao_cnh).toLocaleDateString('pt-BR')}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.data_emissao_cnh ? new Date(colaborador.funcionario_pessoa_fisica.data_emissao_cnh).toLocaleDateString('pt-BR') : '---'}</Texto>
                     }
                     <Texto>Data de Validade CNH</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.data_venc_habilit ?
-                    <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_venc_habilitacao).toLocaleDateString('pt-BR')}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.data_venc_habilit ? new Date(colaborador.funcionario_pessoa_fisica.data_venc_habilit).toLocaleDateString('pt-BR') : '---'}</Texto>
                     }
                     
                     <Texto>Circunscrição Militar</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.circunscricao_militar ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.circunscricao_militar}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.circunscricao_militar || '---'}</Texto>
                     }
                     <Texto>Certificado de Reservista</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.certificado_reservista ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.certificado_reservista}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.certificado_reservista || '---'}</Texto>
                     }
                     <Texto>Situação Militar</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.situacao_militar ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.situacao_militar}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.situacao_militar || '---'}</Texto>
                     }
                 </Col3>
                 <Col3>
                     <Texto>Titulo de Eleitor</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.titulo_eleitor ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.titulo_eleitor}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.titulo_eleitor || '---'}</Texto>
                     }
                     <Texto>Zona Eleitoral</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.zona_titulo_eleitor ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.zona_titulo_eleitor}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.zona_titulo_eleitor || '---'}</Texto>
                     }
                     <Texto>Secao Eleitoral</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.secao_titulo_eleitor ?
-                    <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.secao_titulo_eleitor}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.secao_titulo_eleitor || '---'}</Texto>
                     }
                     <Texto>Data Emissão Titulo Eleitor</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.data_titulo_eleitor ?
-                    <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_titulo_eleitor).toLocaleDateString('pt-BR')}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.data_titulo_eleitor ? new Date(colaborador.funcionario_pessoa_fisica.data_titulo_eleitor).toLocaleDateString('pt-BR') : '---'}</Texto>
                     }
                     <Texto>Carteira de Trabalho</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.carteira_trabalho ?
-                        <>
-                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.carteira_trabalho}</Texto>
-                            {colaborador?.funcionario_pessoa_fisica?.serie_carteira_trab ?
-                            <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.serie_carteira_trab}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                        </>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : (
+                            colaborador.funcionario_pessoa_fisica?.carteira_trabalho ?
+                            <>
+                                <Texto weight="800">{colaborador.funcionario_pessoa_fisica.carteira_trabalho}</Texto>
+                                {colaborador.funcionario_pessoa_fisica.serie_carteira_trab &&
+                                    <Texto weight="800">{colaborador.funcionario_pessoa_fisica.serie_carteira_trab}</Texto>
+                                }
+                            </>
+                            : <Texto weight="800">---</Texto>
+                        )
                     }
                     <Texto>Data de Emissão CTPS</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.data_emissao_ctps ?
-                    <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_emissao_ctps).toLocaleDateString('pt-BR')}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.data_emissao_ctps ? new Date(colaborador.funcionario_pessoa_fisica.data_emissao_ctps).toLocaleDateString('pt-BR') : '---'}</Texto>
                     }
                     <Texto>Data de Validade CTPS</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.data_venc_ctps ?
-                    <Texto weight="800">{new Date(colaborador?.funcionario_pessoa_fisica?.data_venc_ctps).toLocaleDateString('pt-BR')}</Texto>
-                    : <Skeleton variant="rectangular" width={200} height={25} />
+                    {!colaborador
+                        ? <Skeleton variant="rectangular" width={200} height={25} />
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisca?.data_venc_ctps ? new Date(colaborador.funcionario_pessoa_fisica.data_venc_ctps).toLocaleDateString('pt-BR') : '---'}</Texto>
                     }
                 </Col3>
             </Col12>

@@ -141,37 +141,38 @@ function ColaboradorDadosContratuais() {
                     <Col12>
                         <Col3>
                             <Texto>Data Admissão</Texto>
-                            {colaborador?.dt_admissao ?
-                                <Texto weight="800">{new Date(colaborador?.dt_admissao).toLocaleDateString('pt-BR')}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            {!colaborador
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">{colaborador.dt_admissao ? new Date(colaborador.dt_admissao).toLocaleDateString('pt-BR') : '---'}</Texto>
                             }
                             <Texto>Tipo de Admissão</Texto>
-                            {colaborador?.tipo_admissao && colaborador?.tipo_admissao_descricao ?
-                                <Texto weight="800">{colaborador?.tipo_admissao_descricao}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            {!colaborador
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">{colaborador.tipo_admissao_descricao || '---'}</Texto>
                             }
                             <Texto>Salário</Texto>
-                            {colaborador?.salario ?
-                                <Texto weight="800">{Real.format(colaborador?.salario)}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            {!colaborador
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">{colaborador.salario ? Real.format(colaborador.salario) : '---'}</Texto>
                             }
                             <Texto>Deficiente Físico</Texto>
-                            {colaborador?.funcionario_pessoa_fisica?.deficiente_fisico ?
-                                <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.deficiente_fisico}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            {!colaborador
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">
+                                    {
+                                        colaborador.funcionario_pessoa_fisica?.deficiente_fisico === true ? 'Sim'
+                                        : colaborador.funcionario_pessoa_fisica?.deficiente_fisico === false ? 'Não'
+                                        : '---'
+                                    }
+                                  </Texto>
                             }
-                            {colaborador?.situacao && colaborador?.situacao == 'D' && colaborador?.dt_demissao &&
+                            {colaborador && colaborador.situacao === 'D' &&
                                 <>
                                     <Texto>Data de Demissão</Texto>
-                                    <Texto weight="800">{new Date(colaborador?.dt_demissao).toLocaleDateString('pt-BR')}</Texto>
+                                    <Texto weight="800">{colaborador.dt_demissao ? new Date(colaborador.dt_demissao).toLocaleDateString('pt-BR') : '---'}</Texto>
                                
-                                {colaborador?.tipo_demissao && colaborador?.tipo_demissao_descricao ?
-                                    <>
-                                        <Texto>Tipo de Demissão</Texto>
-                                        <Texto weight="800">{colaborador?.tipo_demissao_descricao}</Texto>
-                                    </>   
-                                    : <Skeleton variant="rectangular" width={200} height={25} />
-                                }
+                                    <Texto>Tipo de Demissão</Texto>
+                                    <Texto weight="800">{colaborador.tipo_demissao_descricao || '---'}</Texto>
                                 </>                    
                             }
                         </Col3>
@@ -181,26 +182,36 @@ function ColaboradorDadosContratuais() {
             <Col6>    
                 <Titulo><h6>Informações de Localização</h6></Titulo>   
                 <div className={styles.card_dashboard}>
-                    <Frame gap="2px" alinhamento="start">
-                        <Texto size={'14px'} weight={600}>Seção</Texto>
-                        <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                            <Tag severity="info" value={secao?.nome ?? 'Não definida'}></Tag>
-                        </div>
-                    </Frame>
-                    
-                    <Frame gap="2px" alinhamento="start">
-                        <Texto size={'14px'} weight={600}>Departamento</Texto>
-                        <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                            <Tag severity="info" value={departamento?.nome ?? 'Não definida'}></Tag>
-                        </div>
-                    </Frame>
+                    {!colaborador ? (
+                        <>
+                            <Skeleton width="100%" height={25} style={{ marginBottom: '1rem' }} />
+                            <Skeleton width="100%" height={25} style={{ marginBottom: '1rem' }} />
+                            <Skeleton width="100%" height={25} />
+                        </>
+                    ) : (
+                        <>
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Seção</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Tag severity="info" value={secao?.nome ?? 'Não definida'}></Tag>
+                                </div>
+                            </Frame>
+                            
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Departamento</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Tag severity="info" value={departamento?.nome ?? 'Não definida'}></Tag>
+                                </div>
+                            </Frame>
 
-                    <Frame gap="2px" alinhamento="start">
-                        <Texto size={'14px'} weight={600}>Centro de Custo</Texto>
-                        <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                            <Tag severity="info" value={centroCusto?.nome ?? 'Não definida'}></Tag>
-                        </div>
-                    </Frame>
+                            <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Centro de Custo</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Tag severity="info" value={centroCusto?.nome ?? 'Não definida'}></Tag>
+                                </div>
+                            </Frame>
+                        </>
+                    )}
                 </div>
             </Col6>
         </Col12>
