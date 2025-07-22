@@ -39,6 +39,7 @@ async function tentarRefreshToken() {
         return true;
     } catch (error) {
         ArmazenadorToken.removerToken();
+        window.location.href = '/login';
         return false;
     }
 }
@@ -91,6 +92,8 @@ http.interceptors.request.use(async (config) => {
 
     return config;
 }, (error) => {
+    ArmazenadorToken.removerToken();
+    window.location.href = '/login';
     return Promise.reject(error);
 });
 
