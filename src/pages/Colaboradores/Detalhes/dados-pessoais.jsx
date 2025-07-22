@@ -106,8 +106,8 @@ function ColaboradorDadosPessoais() {
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                     <Texto>Estado Civil</Texto>
-                    {colaborador?.funcionario_pessoa_fisica?.estado_civil ?
-                        <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.estado_civil}</Texto>
+                    {colaborador?.funcionario_pessoa_fisica?.estado_civil && colaborador?.funcionario_pessoa_fisica?.estado_civil_descricao ?
+                        <Texto weight="800">{colaborador?.funcionario_pessoa_fisica?.estado_civil_descricao}</Texto>
                         : <Skeleton variant="rectangular" width={200} height={25} />
                     }
                     <Texto>Cor/Raça</Texto>
