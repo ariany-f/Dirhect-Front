@@ -81,15 +81,34 @@ function ColaboradorDependenteDetalhes() {
     }
 
     const representativeParentescoTemplate = (dependente) => {
-        let grau_parentesco = dependente?.grau_parentesco;
-        switch(dependente?.grau_parentesco)
-        {
-            case 'Filho':
-                return <Tag severity="success" value="Filho"></Tag>;
-            default:
-                return <Tag severity="primary" value={dependente?.grau_parentesco}></Tag>;
+        const grau = dependente?.grau_parentesco_descricao;
+        if (!grau) {
+            return null;
         }
+        
+        let severity = "primary";
+        if (grau.toLowerCase().includes('filho')) {
+            severity = "success";
+        } else if (grau.toLowerCase().includes('cônjuge')) {
+            severity = "info";
+        }
+    
+        return <Tag severity={severity} value={grau}></Tag>;
     }
+
+    const calcularIdade = (dataNascimento) => {
+        if (!dataNascimento) return '---';
+        const hoje = new Date();
+        const nascimento = new Date(dataNascimento);
+        let idade = hoje.getFullYear() - nascimento.getFullYear();
+        const mes = hoje.getMonth() - nascimento.getMonth();
+
+        if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+            idade--;
+        }
+
+        return `${idade} anos`;
+    };
 
 
     return (
@@ -98,145 +117,68 @@ function ColaboradorDependenteDetalhes() {
             <Loading opened={loading} />
             <ConfirmDialog />
             <Container gap="32px">
-                {dependente && dependente?.nome_depend ?
+                {!dependente ?
+                    <Skeleton variant="rectangular" width={300} height={40} />
+                :
                     <BotaoGrupo align="space-between">
                         <Titulo align="left">
                             <Container gap="32px">
                                 <BotaoVoltar/>
                                 <BotaoGrupo align="space-between">
-                                    <h5>{dependente?.nome_depend}</h5>
+                                    <h5>{dependente.nome_depend}</h5>
                                     <small>{representativeParentescoTemplate(dependente)}</small>
                                 </BotaoGrupo>
                             </Container>
                         </Titulo>
                     </BotaoGrupo>
-                : <Skeleton variant="rectangular" width={300} height={40} />
                 }
-                  <Titulo><h6>Identificação</h6></Titulo>
+                <Titulo><h6>Identificação</h6></Titulo>
                 <div className={styles.card_dashboard}>
                     <Col12>
                         <Col3>
                             <Texto>Nome completo</Texto>
-                            {dependente?.nome_depend ?
-                                <Texto weight="800">{dependente?.nome_depend}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            {!dependente
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">{dependente.nome_depend || '---'}</Texto>
                             }
                             <Texto>Estado Civil</Texto>
-                            {dependente?.estadocivil ?
-                                <Texto weight="800">{dependente?.estadocivil}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            {!dependente
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">{dependente.estadocivil_descricao || '---'}</Texto>
                             }
                         </Col3>
                         <Col3>
                             <Texto>Nascimento</Texto>
-                            {dependente?.dtnascimento ?
-                                <Texto weight="800">{new Date(dependente?.dtnascimento).toLocaleDateString('pt-BR')}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            {!dependente
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">{dependente.dtnascimento ? new Date(dependente.dtnascimento).toLocaleDateString('pt-BR') : '---'}</Texto>
                             }
-                            <Texto>Sexo</Texto>
-                            {dependente?.sexo ?
-                                <Texto weight="800">{dependente?.sexo}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            <Texto>Idade</Texto>
+                             {!dependente
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">{calcularIdade(dependente.dtnascimento)}</Texto>
                             }
                         </Col3>
                         <Col3>
                             <Texto>CPF</Texto>
-                            {dependente?.cpf ?
-                                <Texto weight="800">{formataCPF(dependente?.cpf)}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                             {!dependente
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">{dependente.cpf ? formataCPF(dependente.cpf) : '---'}</Texto>
                             }
-                            <Texto>Identidade</Texto>
-                            {dependente?.nroregistro ?
-                                <Texto weight="800">{(dependente?.nroregistro)}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                            <Texto>Sexo</Texto>
+                            {!dependente
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">
+                                    {
+                                        dependente.genero === 'M' ? 'Masculino'
+                                        : dependente.genero === 'F' ? 'Feminino'
+                                        : '---'
+                                    }
+                                  </Texto>
                             }
                         </Col3>
                     </Col12>
                 </div>
-                {/* <Titulo><h6>Informações gerais</h6></Titulo>
-                <div className={styles.card_dashboard}>
-                    <Col12>
-                        <Col3>
-                            <Texto>Naturalidade</Texto>
-                            {dependente?.dependente_pessoa_fisica?.naturalidade ?
-                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.naturalidade}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Estado Civil</Texto>
-                            {dependente?.dependente_pessoa_fisica?.estado_civil ?
-                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.estado_civil}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Cor/Raça</Texto>
-                            {dependente?.dependente_pessoa_fisica?.cor_raca ?
-                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.cor_raca}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                        </Col3>
-                        <Col3>
-                        
-                        <Texto>Carteira de Motorista</Texto>
-                            {dependente?.dependente_pessoa_fisica?.carteira_motorista ?
-                                <>
-                                <Texto weight="800">{dependente?.dependente_pessoa_fisica?.carteira_motorista}</Texto>
-                                { dependente?.dependente_pessoa_fisica?.tipo_carteira_habilit ?
-                                    <Texto weight="800">({dependente?.dependente_pessoa_fisica?.tipo_carteira_habilit})</Texto>
-                                : null }
-                                </>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Data Emissão CNH</Texto>
-                            {dependente?.dependente_pessoa_fisica?.data_emissao_cnh ?
-                            <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_emissao_cnh).toLocaleDateString('pt-BR')}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Data de Validade CNH</Texto>
-                            {dependente?.dependente_pessoa_fisica?.data_venc_habilit ?
-                            <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_venc_habilitacao).toLocaleDateString('pt-BR')}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                        </Col3>
-                        <Col3>
-                            <Texto>Titulo de Eleitor</Texto>
-                            {dependente?.dependente_pessoa_fisica?.titulo_eleitor ?
-                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.titulo_eleitor}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Zona Eleitoral</Texto>
-                            {dependente?.dependente_pessoa_fisica?.zona_titulo_eleitor ?
-                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.zona_titulo_eleitor}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Secao Eleitoral</Texto>
-                            {dependente?.dependente_pessoa_fisica?.secao_titulo_eleitor ?
-                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.secao_titulo_eleitor}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Data Emissão Titulo Eleitor</Texto>
-                            {dependente?.dependente_pessoa_fisica?.data_titulo_eleitor ?
-                            <Texto weight="800">{new Date(dependente?.dependente_pessoa_fisica?.data_titulo_eleitor).toLocaleDateString('pt-BR')}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                        </Col3>
-                        <Col3>
-                            <Texto>Circunscrição Militar</Texto>
-                            {dependente?.dependente_pessoa_fisica?.circunscricao_militar ?
-                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.circunscricao_militar}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Certificado de Reservista</Texto>
-                            {dependente?.dependente_pessoa_fisica?.certificado_reservista ?
-                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.certificado_reservista}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                            <Texto>Situação Militar</Texto>
-                            {dependente?.dependente_pessoa_fisica?.situacao_militar ?
-                            <Texto weight="800">{dependente?.dependente_pessoa_fisica?.situacao_militar}</Texto>
-                            : <Skeleton variant="rectangular" width={200} height={25} />
-                            }
-                        </Col3>
-                    </Col12>
-                </div> */}
             </Container>
         </Frame>
     )
