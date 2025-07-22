@@ -242,8 +242,6 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       // Variável obrigatória - deve ser preenchida pelo usuário
       "{{link_acesso}}": "{{link_acesso}}",
     };
-
-    console.log('Variáveis disponíveis para substituição:', variaveisMap);
   
     // Substituir todas as ocorrências das variáveis
     Object.keys(variaveisMap).forEach((variavel) => {
@@ -256,9 +254,6 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   };  
 
   const handleAddVariable = (variable) => {
-    console.log('handleAddVariable chamado com:', variable);
-    console.log('Modal aberto:', opened);
-    console.log('showEditorContent:', showEditorContent);
     
     // Verifica se o modal está aberto e o editor está visível
     if (!opened || !showEditorContent) {
@@ -277,9 +272,6 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       
       // Tenta usar a referência React do PrimeReact Editor
       if (editorRef.current) {
-        console.log('Usando editorRef.current');
-        console.log('Métodos disponíveis em editorRef:', Object.getOwnPropertyNames(Object.getPrototypeOf(editorRef.current)));
-        
         // Tenta diferentes métodos para obter a instância do Quill
         let quill = null;
         
@@ -445,9 +437,7 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
     const fetchTemplates = async () => {
       try {
         setLoadingTemplates(true);
-        console.log('Buscando templates da API...');
         const response = await http.get('email_templates/');
-        console.log('Templates recebidos:', response);
         
         if (response && response.length > 0) {
           setTemplates(response);
@@ -455,13 +445,11 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
             name: item.name,
             code: item.id
           }));
-          console.log('Dropdown criado:', dropdown);
           setDropdownTemplates(dropdown);
           
           // Seleciona o primeiro template por padrão
           if (dropdown.length > 0 && !selectedTemplate) {
             const primeiroTemplate = response[0];
-            console.log('Primeiro template selecionado:', primeiroTemplate);
             setSelectedTemplate(dropdown[0]);
             setEditorContent(primeiroTemplate.body_html || primeiroTemplate.content || '');
           }
@@ -488,7 +476,6 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
   // Preenche os campos com os dados do candidato quando disponível
   useEffect(() => {
     if (candidato) {
-      console.log('Dados do candidato recebidos:', candidato);
       setNome(candidato.nome || '');
       setEmail(candidato.email || '');
       setTelefone(candidato.telefone || '');
@@ -500,7 +487,6 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
       if (candidato.cpf) {
         const cpfFormatado = candidato.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         setCpf(cpfFormatado);
-        console.log('CPF formatado:', cpfFormatado);
       }
       
       // Define periculosidade se disponível

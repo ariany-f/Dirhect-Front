@@ -245,8 +245,6 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
         return nome.includes(buscaNome);
     }) || [];
 
-    console.log(busca)
-    console.log(empresasFiltradas)
     return(
         <>
             {opened &&
