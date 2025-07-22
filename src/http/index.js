@@ -4,13 +4,32 @@ import { ArmazenadorToken } from "@utils";
 const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net"; // Para Vite
 const PROTOCOL = import.meta.env.VITE_MODE === 'development' ? 'http' : 'https';
 
+// Contador de timeouts para redirecionar após 3 tentativas
+let timeoutCount = 0;
+const MAX_TIMEOUTS = 3;
+
 const http = axios.create({
-    
+    timeout: 30000, // 30 segundos de timeout padrão
     headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
     }
 });
+
+// Função para resetar o contador de timeouts
+export const resetTimeoutCount = () => {
+    timeoutCount = 0;
+    console.log('Contador de timeouts resetado');
+};
+
+// Função para obter o status atual do contador de timeouts
+export const getTimeoutStatus = () => {
+    return {
+        current: timeoutCount,
+        max: MAX_TIMEOUTS,
+        remaining: MAX_TIMEOUTS - timeoutCount
+    };
+};
 
 function tokenExpiraEmMenosDeUmMinuto() {
     const expiration = ArmazenadorToken.ExpirationToken;
@@ -99,9 +118,31 @@ http.interceptors.request.use(async (config) => {
 
 // Interceptor para tratar respostas
 http.interceptors.response.use(
-    (response) => response.data ? response.data : response,
+    (response) => {
+        // Reset timeout count on successful response
+        timeoutCount = 0;
+        return response.data ? response.data : response;
+    },
     async function (error) {
         const originalRequest = error.config;
+
+        // Verificar se é um timeout de conexão
+        if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+            timeoutCount++;
+            console.warn(`Timeout de conexão (${timeoutCount}/${MAX_TIMEOUTS})`);
+            
+            if (timeoutCount >= MAX_TIMEOUTS) {
+                console.error(`Máximo de timeouts atingido (${MAX_TIMEOUTS}). Redirecionando para login.`);
+                ArmazenadorToken.removerToken();
+                window.location.href = '/login';
+                return Promise.reject(error);
+            }
+            
+            return Promise.reject(error.response?.data || error);
+        }
+
+        // Reset timeout count for non-timeout errors
+        timeoutCount = 0;
 
         if (
             error.response?.status === 401 &&
