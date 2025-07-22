@@ -83,7 +83,7 @@ function DataTableDemissao({
         }
         
         const tipoCodigo = String(rowData.tipo_demissao); // Converter para string
-        const tipoDescricao = tiposDemissao[tipoCodigo];
+        const tipoDescricao = tiposDemissao[tipoCodigo] || rowData.tipo_demissao_descricao;
         
         if (tipoDescricao) {
             return tipoDescricao;
