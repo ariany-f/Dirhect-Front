@@ -29,7 +29,6 @@ function Dashboard() {
     const [atividadesPorEntidade, setAtividadesPorEntidade] = useState({})
     const [totalVagas, setTotalVagas] = useState(0)
     const [totalFerias, setTotalFerias] = useState(0)
-    const [totalDemissoes, setTotalDemissoes] = useState(0)
     const [totalAdmissoes, setTotalAdmissoes] = useState(0)
     const [atividadesRaw, setAtividadesRaw] = useState([])
     const [refreshing, setRefreshing] = useState(false)
@@ -143,7 +142,9 @@ function Dashboard() {
             funcionariosMasculino: funcionariosDashboard?.funcionarios_masculino || 0,
             funcionariosFeminino: funcionariosDashboard?.funcionarios_feminino || 0,
             funcionariosOutrosGeneros: funcionariosDashboard?.funcionarios_outros_generos || 0,
-            admitidosNoMes: funcionariosDashboard?.admitidos_no_mes || 0
+            admitidosNoMes: funcionariosDashboard?.admitidos_no_mes || 0,
+            totalDemitidos: funcionariosDashboard?.total_demitidos || 0,
+            demitidosNoMes: funcionariosDashboard?.demitidos_no_mes || 0
         };
     }, [atividadesRaw, atividadesPorStatus, entidadeDisplayMap, funcionariosDashboard]);
 
@@ -218,9 +219,8 @@ function Dashboard() {
                 await http.get('ferias/').then(response => {
                     setTotalFerias(Array.isArray(response) ? response.length : (response.count || 0));
                 }).catch(() => setTotalFerias(0));
-                await http.get('funcionario/?format=json&situacao=D').then(response => {
-                    setTotalDemissoes(Array.isArray(response) ? response.length : (response.count || 0));
-                }).catch(() => setTotalDemissoes(0));
+                // Total de demissões agora vem do dashboard de funcionários
+                // setTotalDemissoes será calculado usando dados do funcionariosDashboard
                 await http.get('admissao/').then(response => {
                     setTotalAdmissoes(Array.isArray(response) ? response.length : (response.count || 0));
                 }).catch(() => setTotalAdmissoes(0));
@@ -308,7 +308,7 @@ function Dashboard() {
                 ...dashboardData,
                 destaque: 'Bem-vindo RH!',
                 totalAdmissoes: totalAdmissoes,
-                totalDemissoes: totalDemissoes,
+                totalDemissoes: dadosCalculados.totalDemitidos,
                 totalFerias: totalFerias,
                 totalVagas: totalVagas,
                 // Dados do dashboard de funcionários
@@ -317,7 +317,8 @@ function Dashboard() {
                 funcionariosMasculino: dadosCalculados.funcionariosMasculino,
                 funcionariosFeminino: dadosCalculados.funcionariosFeminino,
                 funcionariosOutrosGeneros: dadosCalculados.funcionariosOutrosGeneros,
-                admitidosNoMes: dadosCalculados.admitidosNoMes
+                admitidosNoMes: dadosCalculados.admitidosNoMes,
+                demitidosNoMes: dadosCalculados.demitidosNoMes
             };
         } else if (usuario?.tipo === 'Benefícios') {
             return {
@@ -340,7 +341,7 @@ function Dashboard() {
                 totalColaboradores: dadosCalculados.totalFuncionarios,
             };
         }
-    }, [dashboardData, usuario?.tipo, totalAdmissoes, totalDemissoes, totalFerias, totalVagas, dadosCalculados]);
+    }, [dashboardData, usuario?.tipo, totalAdmissoes, totalFerias, totalVagas, dadosCalculados]);
 
     // Otimizar DashboardCard com useMemo
     const dashboardCardMemo = useMemo(() => {
