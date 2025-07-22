@@ -410,7 +410,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         <Label>Colaborador</Label>
                                         <NomeStatusContainer>
                                             <Valor>
-                                                <Link to={`/colaboradores/detalhes/${eventoCompletado.colab?.id}`}>
+                                                <Link to={`/colaborador/detalhes/${eventoCompletado.colab?.id}`}>
                                                     {eventoCompletado.colab?.nome}
                                                 </Link>
                                             </Valor>
