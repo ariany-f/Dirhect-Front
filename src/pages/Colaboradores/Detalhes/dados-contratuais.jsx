@@ -165,10 +165,10 @@ function ColaboradorDadosContratuais() {
                                     <Texto>Data de Demissão</Texto>
                                     <Texto weight="800">{new Date(colaborador?.dt_demissao).toLocaleDateString('pt-BR')}</Texto>
                                
-                                {colaborador?.tipo_demissao ?
+                                {colaborador?.tipo_demissao && colaborador?.tipo_demissao_descricao ?
                                     <>
                                         <Texto>Tipo de Demissão</Texto>
-                                        <Texto weight="800">{colaborador?.tipo_demissao}</Texto>
+                                        <Texto weight="800">{colaborador?.tipo_demissao_descricao}</Texto>
                                     </>   
                                     : <Skeleton variant="rectangular" width={200} height={25} />
                                 }
