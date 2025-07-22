@@ -26,7 +26,7 @@ import StepLGPD from './Steps/StepLGPD';
 import StepDependentes from './Steps/StepDependentes';
 import StepAnotacoes from './Steps/StepAnotacoes';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { RiExchangeFill } from 'react-icons/ri';
+import { RiExchangeFill, RiUpload2Fill } from 'react-icons/ri';
 import { ArmazenadorToken } from '@utils';
 
 // Modal customizado estilizado
@@ -336,7 +336,110 @@ const ConteudoFrame = styled.div`
             min-height: 170px;
         }
     }
-`
+`;
+
+const ImageModal = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease-out;
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+`;
+
+const ImageModalContent = styled.div`
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+`;
+
+const ImageModalImage = styled.img`
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+`;
+
+const ImageModalControls = styled.div`
+    display: flex;
+    gap: 12px;
+    align-items: center;
+`;
+
+const ImageModalButton = styled.button`
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-1px);
+    }
+    
+    &.danger {
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        
+        &:hover {
+            background: rgba(239, 68, 68, 1);
+        }
+    }
+`;
+
+const UploadDropzone = styled.label`
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 2px dashed var(--primaria);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    
+    &:hover {
+        border-color: var(--primaria-escuro);
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+    }
+`;
+
+const UploadIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    
+    svg {
+        font-size: 16px;
+    }
+`;
 
 const CandidatoRegistro = () => {
 
@@ -368,6 +471,9 @@ const CandidatoRegistro = () => {
     const [showConfirmacaoDependentes, setShowConfirmacaoDependentes] = useState(false);
     const [dependentesParaAdicionar, setDependentesParaAdicionar] = useState([]);
     const [acaoSalvamento, setAcaoSalvamento] = useState(null); // 'salvar' ou 'salvar_continuar'
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
     // Funções para verificar permissões baseadas no perfil
     const verificarPermissaoTarefa = (tipoTarefa) => {
@@ -484,8 +590,13 @@ const CandidatoRegistro = () => {
     // Fechar modal com ESC
     useEffect(() => {
         const handleKeyDown = (event) => {
-            if (event.key === 'Escape' && showModalConfirmacao) {
-                setShowModalConfirmacao(false);
+            if (event.key === 'Escape') {
+                if (showModalConfirmacao) {
+                    setShowModalConfirmacao(false);
+                }
+                if (showImageModal) {
+                    setShowImageModal(false);
+                }
             }
         };
 
@@ -493,7 +604,7 @@ const CandidatoRegistro = () => {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [showModalConfirmacao]);
+    }, [showModalConfirmacao, showImageModal]);
 
     const ChangeCep = (value) => 
     {
@@ -1533,6 +1644,82 @@ const CandidatoRegistro = () => {
         setShowConfirmacaoDependentes(false);
     };
 
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+            setUploading(true);
+            
+            const formData = new FormData();
+            formData.append('imagem', file);
+            
+            http.put(`admissao/${id}/`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then(response => {
+                setCandidato(prev => ({ ...prev, imagem: response.imagem }));
+                toast.current.show({ 
+                    severity: 'success', 
+                    summary: 'Sucesso', 
+                    detail: 'Imagem do candidato atualizada com sucesso!', 
+                    life: 3000 
+                });
+            })
+            .catch(erro => {
+                console.error("Erro ao fazer upload da imagem:", erro);
+                const errorMessage = erro.response?.data?.detail || 'Falha ao fazer upload da imagem.';
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: errorMessage, 
+                    life: 3000 
+                });
+            })
+            .finally(() => {
+                setUploading(false);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+            });
+        } else {
+            toast.current.show({ 
+                severity: 'warn', 
+                summary: 'Atenção', 
+                detail: 'Por favor, selecione um arquivo de imagem válido.', 
+                life: 3000 
+            });
+        }
+    };
+
+    const handleRemoveImage = () => {
+        const formData = new FormData();
+        formData.append('imagem', ''); // Envia string vazia para remover
+        
+        http.put(`admissao/${id}/`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then(() => {
+            setCandidato(prev => ({ ...prev, imagem: null }));
+            setShowImageModal(false);
+            toast.current.show({ 
+                severity: 'success', 
+                summary: 'Sucesso', 
+                detail: 'Imagem removida com sucesso!', 
+                life: 3000 
+            });
+        })
+        .catch(erro => {
+            console.error("Erro ao remover imagem:", erro);
+            toast.current.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Falha ao remover a imagem.', 
+                life: 3000 
+            });
+        });
+    };
+
     return (
         <ConteudoFrame>
             <Toast ref={toast} style={{ zIndex: 9999 }} />
@@ -1601,6 +1788,11 @@ const CandidatoRegistro = () => {
                         opacity: 0.7 !important;
                         pointer-events: none !important;
                     }
+                    
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
                 `}
             </style>
             
@@ -1634,12 +1826,87 @@ const CandidatoRegistro = () => {
                             alignItems: 'center',
                             gap: 10
                         }}>
+                            {candidato.imagem ? (
+                                <img 
+                                    src={candidato.imagem}
+                                    alt={`Foto de ${candidato.dados_candidato.nome}`}
+                                    style={{
+                                        width: 36,
+                                        height: 36,
+                                        borderRadius: '50%',
+                                        objectFit: 'cover',
+                                        cursor: 'pointer',
+                                        border: '2px solid rgba(255, 255, 255, 0.3)',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    onClick={() => setShowImageModal(true)}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.transform = 'scale(1.1)';
+                                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.transform = 'scale(1)';
+                                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                                    }}
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                />
+                            ) : (
+                                // Se não tem imagem e usuário tem permissão, mostra área de upload
+                                ArmazenadorToken.hasPermission('change_admissao') && !modoLeitura ? (
+                                    <>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            ref={fileInputRef}
+                                            style={{ display: 'none' }}
+                                            id="candidato-image-upload"
+                                        />
+                                        <UploadDropzone htmlFor="candidato-image-upload">
+                                            {uploading ? (
+                                                <div style={{
+                                                    border: '2px solid white',
+                                                    borderTop: '2px solid transparent',
+                                                    borderRadius: '50%',
+                                                    width: '20px',
+                                                    height: '20px',
+                                                    animation: 'spin 1s linear infinite'
+                                                }}></div>
+                                            ) : (
+                                                <UploadIcon>
+                                                    <RiUpload2Fill />
+                                                </UploadIcon>
+                                            )}
+                                        </UploadDropzone>
+                                    </>
+                                ) : (
+                                    // Se não tem permissão ou está em modo leitura, mostra apenas o avatar com inicial
+                                    <div style={{
+                                        width: 36,
+                                        height: 36,
+                                        borderRadius: '50%',
+                                        background: 'rgba(255, 255, 255, 0.2)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: 16,
+                                        fontWeight: 500,
+                                        color: '#fff'
+                                    }}>
+                                        {candidato.dados_candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                    </div>
+                                )
+                            )}
+                            {/* Fallback para quando a imagem falha ao carregar */}
                             <div style={{
                                 width: 36,
                                 height: 36,
                                 borderRadius: '50%',
                                 background: 'rgba(255, 255, 255, 0.2)',
-                                display: 'flex',
+                                display: 'none',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 fontSize: 16,
@@ -2103,6 +2370,44 @@ const CandidatoRegistro = () => {
                         </ModalFooter>
                     </ModalContainer>
                 </ModalOverlay>
+            )}
+
+            {/* Modal de visualização da imagem */}
+            {showImageModal && candidato.imagem && (
+                <ImageModal onClick={(e) => {
+                    if (e.target === e.currentTarget) {
+                        setShowImageModal(false);
+                    }
+                }}>
+                    <ImageModalContent>
+                        <ImageModalImage 
+                            src={candidato.imagem} 
+                            alt={`Foto de ${candidato.dados_candidato.nome}`} 
+                        />
+                        <ImageModalControls>
+                            {ArmazenadorToken.hasPermission('change_admissao') && !modoLeitura && (
+                                <>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        style={{ display: 'none' }}
+                                        id="candidato-image-change"
+                                    />
+                                    <ImageModalButton onClick={() => document.getElementById('candidato-image-change').click()}>
+                                        <RiUpload2Fill /> Alterar Imagem
+                                    </ImageModalButton>
+                                    <ImageModalButton className="danger" onClick={handleRemoveImage}>
+                                        <HiX /> Remover Imagem
+                                    </ImageModalButton>
+                                </>
+                            )}
+                            <ImageModalButton onClick={() => setShowImageModal(false)}>
+                                <HiX /> Fechar
+                            </ImageModalButton>
+                        </ImageModalControls>
+                    </ImageModalContent>
+                </ImageModal>
             )}
         </ConteudoFrame>
     );
