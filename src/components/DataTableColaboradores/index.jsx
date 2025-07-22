@@ -16,14 +16,17 @@ import ModalSelecionarColaborador from '../ModalSelecionarColaborador';
 import ModalEncaminharVaga from '@components/ModalEncaminharVaga';
 import { Tag } from 'primereact/tag';
 import { FaTrash, FaUserTimes, FaUmbrella, FaDownload, FaUmbrellaBeach, FaCheck } from 'react-icons/fa';
+import { MdFilterAltOff } from 'react-icons/md';
 import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
 import http from '@http';
 import { Dropdown } from 'primereact/dropdown';
 import { ArmazenadorToken } from '@utils';
 import { Toast } from 'primereact/toast';
+import CheckboxContainer from '@components/CheckboxContainer';
+import { RadioButton } from 'primereact/radiobutton';
 
-function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort, sortField, sortOrder, onColaboradoresUpdate }) {
+function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort, sortField, sortOrder, onFilter, filters, situacoesUnicas }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
     const [modalFeriasOpened, setModalSelecionarColaboradorOpened] = useState(false)
@@ -35,10 +38,6 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const [key, setKey] = useState(0); // Chave para forçar re-renderização
     const [dadosCarregados, setDadosCarregados] = useState(false);
     const toast = useRef(null);
-
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    });
 
     const navegar = useNavigate()
     const {usuario} = useSessaoUsuarioContext()
@@ -248,15 +247,6 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         );
     };
 
-    const handleSort = (event) => {
-        if (onSort) {
-            onSort({
-                field: event.sortField,
-                order: event.sortOrder === 1 ? 'asc' : 'desc'
-            });
-        }
-    };
-
     const totalColaboradoresTemplate = () => {
         return 'Total de Colaboradores: ' + (totalRecords ?? 0);
     };
@@ -274,6 +264,110 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             style={{ minWidth: '12rem' }}
         />
     );
+
+    const filterClearTemplate = (options) => {
+        return (
+            <button 
+                type="button" 
+                onClick={options.filterClearCallback} 
+                style={{
+                    width: '2.5rem', 
+                    height: '2.5rem', 
+                    color: 'var(--white)',
+                    backgroundColor: 'var(--surface-600)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <MdFilterAltOff fill="var(--white)" />
+            </button>
+        );
+    };
+
+    const filterApplyTemplate = (options) => {
+        return (
+            <button 
+                type="button" 
+                onClick={options.filterApplyCallback} 
+                style={{
+                    width: '2.5rem', 
+                    height: '2.5rem', 
+                    color: 'var(--white)',
+                    backgroundColor: 'var(--green-500)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <FaCheck fill="var(--white)" />
+            </button>
+        );
+    };
+
+    const SituacaoFilterContent = ({ options, situacoesUnicas }) => {
+        const [filtroSituacao, setFiltroSituacao] = useState('');
+
+        const onSituacaoChange = (e) => {
+            options.filterCallback(e.value);
+        };
+
+        const situacoesOrdenadas = [...(situacoesUnicas || [])].sort((a, b) => a.label.localeCompare(b.label));
+
+        const situacoesFiltradas = situacoesOrdenadas.filter(situacao => 
+            situacao.label.toLowerCase().includes(filtroSituacao.toLowerCase())
+        );
+
+        return (
+            <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <CampoTexto
+                    valor={filtroSituacao}
+                    setValor={setFiltroSituacao}
+                    placeholder="Buscar situação..."
+                    width="100%"
+                />
+                <div style={{ maxHeight: '250px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.75rem', paddingRight: '10px' }}>
+                    <div className="flex align-items-center">
+                        <RadioButton
+                            inputId="situacao-nenhuma"
+                            name="situacao"
+                            value={null}
+                            onChange={onSituacaoChange}
+                            checked={options.value === null}
+                        />
+                        <label htmlFor="situacao-nenhuma" style={{ marginLeft: '8px', cursor: 'pointer' }}>Nenhuma</label>
+                    </div>
+                    {situacoesFiltradas.map(situacao => (
+                        <div key={situacao.value} className="flex align-items-center">
+                            <RadioButton
+                                inputId={`situacao-${situacao.value}`}
+                                name="situacao"
+                                value={situacao.value}
+                                onChange={onSituacaoChange}
+                                checked={options.value === situacao.value}
+                            />
+                            <label 
+                                htmlFor={`situacao-${situacao.value}`} 
+                                style={{ marginLeft: '8px', cursor: 'pointer' }}
+                            >
+                                {situacao.label}
+                            </label>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
+    const situacaoFilterTemplate = (options) => {
+        return <SituacaoFilterContent options={options} situacoesUnicas={situacoesUnicas} />;
+    };
 
     return (
         <>
@@ -295,6 +389,8 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 onSelectionChange={(e) => verDetalhes(e.value)}
                 selectionMode="single"
                 value={colaboradores} 
+                filters={filters}
+                onFilter={onFilter}
                 emptyMessage="Não foram encontrados colaboradores" 
                 paginator={paginator}
                 lazy
@@ -303,7 +399,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 globalfilterfields={['funcionario_pessoa_fisica.nome', 'chapa', 'filial']}
                 first={first} 
                 onPage={onPage} 
-                onSort={handleSort}
+                onSort={onSort}
                 removableSort 
                 tableStyle={{ minWidth: '68vw' }}
                 showGridlines
@@ -335,7 +431,22 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '25%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '10%' }}></Column>
                 <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '10%' }}></Column>
-                <Column body={representativSituacaoTemplate} field="situacao" header="Situação" style={{ width: '15%' }}></Column>
+                <Column 
+                    body={representativSituacaoTemplate} 
+                    field="situacao" 
+                    header="Situação" 
+                    style={{ width: '15%' }}
+                    filter
+                    filterField="situacao"
+                    showFilterMenu={true}
+                    filterElement={situacaoFilterTemplate}
+                    filterMatchMode="custom"
+                    showFilterMatchModes={false}
+                    showFilterOperator={false}
+                    showAddButton={false}
+                    filterClear={filterClearTemplate}
+                    filterApply={filterApplyTemplate}
+                ></Column>
                 {usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' && 
                     <Column header="" style={{ width: '15%' }} body={representativeActionsTemplate}></Column>
                 }

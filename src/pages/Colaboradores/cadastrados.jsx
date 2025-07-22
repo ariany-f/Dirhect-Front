@@ -1,7 +1,7 @@
 import DataTableColaboradores from '@components/DataTableColaboradores'
 import http from '@http'
 import Loading from '@components/Loading'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import styles from './Colaboradores.module.css'
 import { useOutletContext } from 'react-router-dom';
 import styled from "styled-components"
@@ -44,18 +44,35 @@ function ColaboradoresCadastrados() {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
+    const [situacoesUnicas, setSituacoesUnicas] = useState([]);
+    const [filters, setFilters] = useState({
+        'situacao': { value: null, matchMode: 'custom' }
+    });
 
-    const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '', currentFilters) => {
         setLoading(true);
+        let url = `funcionario/?format=json&page=${currentPage}&page_size=${currentPageSize}`;
+        
+        if (search) {
+            url += `&search=${search}`;
+        }
+        
         const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
-        http.get(`funcionario/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
+        url += orderParam;
+
+        const situacaoFilter = currentFilters?.['situacao']?.value;
+        if (situacaoFilter) {
+            url += `&situacao=${encodeURIComponent(situacaoFilter)}`;
+        }
+
+        http.get(url)
             .then(response => {
                 setColaboradores(response.results);
                 setTotalRecords(response.count);
                 setTotalPages(response.total_pages);
             })
             .catch(erro => {
-                // Tratar erro
+                console.error("Erro ao carregar dados", erro);
             })
             .finally(() => {
                 setLoading(false);
@@ -63,9 +80,20 @@ function ColaboradoresCadastrados() {
     };
 
     useEffect(() => {
-        loadData(page, pageSize, searchTerm);
+        const fetchSituacoes = async () => {
+            try {
+                const response = await http.get('tabela_dominio/tipo_situacao/');
+                const registros = response.registros || [];
+                const unicas = registros.map(s => ({ label: s.descricao, value: s.id_origem }));
+                setSituacoesUnicas(unicas);
+            } catch (error) {
+                console.error("Erro ao buscar situações:", error);
+            }
+        };
+        fetchSituacoes();
+        loadData(page, pageSize, searchTerm, getSortParam(), filters);
     }, []);
-
+     
     const onPage = (event) => {
         const newPage = event.page + 1;
         const newPageSize = event.rows;
@@ -74,14 +102,14 @@ function ColaboradoresCadastrados() {
         setPage(newPage);
         setPageSize(newPageSize);
         
-        loadData(newPage, newPageSize, searchTerm, getSortParam());
+        loadData(newPage, newPageSize, searchTerm, getSortParam(), filters);
     };
 
     const onSearch = (search) => {
         setSearchTerm(search);
         setPage(1);
         setFirst(0);
-        loadData(1, pageSize, search, getSortParam());
+        loadData(1, pageSize, search, getSortParam(), filters);
     };
 
     const getSortParam = () => {
@@ -92,7 +120,16 @@ function ColaboradoresCadastrados() {
     const onSort = ({ field, order }) => {
         setSortField(field);
         setSortOrder(order);
-        loadData(page, pageSize, searchTerm, `${order === 'desc' ? '-' : ''}${field}`);
+        loadData(page, pageSize, searchTerm, `${order === 'desc' ? '-' : ''}${field}`, filters);
+    };
+    
+    const onFilter = (event) => {
+        console.log("Filtro aplicado:", event.filters);
+        const newFilters = { ...event.filters };
+        setFilters(newFilters);
+        setPage(1);
+        setFirst(0);
+        loadData(1, pageSize, searchTerm, getSortParam(), newFilters);
     };
 
     return (
@@ -113,6 +150,9 @@ function ColaboradoresCadastrados() {
                     onSort={onSort}
                     sortField={sortField}
                     sortOrder={sortOrder}
+                    onFilter={onFilter}
+                    filters={filters}
+                    situacoesUnicas={situacoesUnicas}
                 />
                 :
                 <ContainerSemRegistro>
