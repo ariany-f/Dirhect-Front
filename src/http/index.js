@@ -38,7 +38,7 @@ async function tentarRefreshToken() {
         );
         return true;
     } catch (error) {
-        // ArmazenadorToken.removerToken();
+        ArmazenadorToken.removerToken();
         return false;
     }
 }
