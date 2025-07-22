@@ -10,6 +10,7 @@ import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 import { FaBars, FaBuilding, FaBusAlt } from "react-icons/fa";
+import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
 import { LuSparkles } from "react-icons/lu";
 import LanguageSelector from "../LanguageSelector";
 import { useTranslation } from 'react-i18next';
@@ -364,7 +365,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     <HeaderEstilizado>
       <HeaderTop>
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <FaBars style={{ cursor: 'pointer' }} size={24} onClick={() => setSidebarOpened(!sidebarOpened)} />
+          <TbLayoutSidebarLeftCollapseFilled  style={{ cursor: 'pointer' }} size={24} onClick={() => setSidebarOpened(!sidebarOpened)} />
           {isDesktop ? <h6>{titulo}</h6> : <>&nbsp;</>}
         </div>
         <RightItems>
