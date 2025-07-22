@@ -140,6 +140,15 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         let situacao = rowData?.tipo_situacao_descricao;
         let cor = rowData?.tipo_situacao_cor_tag;
         
+        if(!rowData?.tipo_situacao_descricao) {
+            return (
+                <>
+                    <Texto weight={600}><Tag severity={null} style={{backgroundColor: cor}} value={'Não informado'}></Tag></Texto>
+                    <small>{rowData?.dependentes.length} dependente(s)</small>
+                </>
+            );
+        }
+        
         situacao = (
             <>
             <Texto weight={600}><Tag severity={null} style={{backgroundColor: cor}} value={situacao}></Tag></Texto>
