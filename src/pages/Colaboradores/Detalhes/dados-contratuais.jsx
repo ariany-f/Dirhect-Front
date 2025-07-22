@@ -146,8 +146,8 @@ function ColaboradorDadosContratuais() {
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Tipo de Admissão</Texto>
-                            {colaborador?.tipo_admissao ?
-                                <Texto weight="800">{colaborador?.tipo_admissao}</Texto>
+                            {colaborador?.tipo_admissao && colaborador?.tipo_admissao_descricao ?
+                                <Texto weight="800">{colaborador?.tipo_admissao_descricao}</Texto>
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Salário</Texto>
