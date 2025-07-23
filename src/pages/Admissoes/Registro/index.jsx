@@ -1877,7 +1877,7 @@ const CandidatoRegistro = () => {
                                                 }}></div>
                                             ) : (
                                                 <UploadIcon>
-                                                    <RiUpload2Fill />
+                                                    <RiUpload2Fill fill="white"/>
                                                 </UploadIcon>
                                             )}
                                         </UploadDropzone>
@@ -2398,7 +2398,7 @@ const CandidatoRegistro = () => {
                                         <RiUpload2Fill /> Alterar Imagem
                                     </ImageModalButton>
                                     <ImageModalButton className="danger" onClick={handleRemoveImage}>
-                                        <HiX /> Remover Imagem
+                                        <HiX fill="white" /> Remover Imagem
                                     </ImageModalButton>
                                 </>
                             )}
