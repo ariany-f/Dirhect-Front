@@ -1,8 +1,9 @@
 import axios from "axios";
 import { ArmazenadorToken } from "@utils";
+import * as Sentry from "@sentry/react";
 
 const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net"; // Para Vite
-const PROTOCOL = import.meta.env.VITE_MODE === 'development' ? 'http' : 'https';
+const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
 
 // Contador de erros de conexão para redirecionar após 3 tentativas
 let connectionErrorCount = 0;
@@ -151,6 +152,22 @@ async function tentarRefreshToken() {
         return true;
     } catch (error) {
         console.error('Erro ao fazer refresh do token:', error);
+        
+        // Capturar erro no Sentry apenas se habilitado
+        if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
+            Sentry.captureException(error, {
+                tags: {
+                    section: 'auth',
+                    action: 'token_refresh'
+                },
+                extra: {
+                    refreshToken: refreshToken ? 'present' : 'missing',
+                    errorCode: error.code,
+                    errorMessage: error.message
+                }
+            });
+        }
+        
         // ArmazenadorToken.removerToken();
         // window.location.href = '/login';
         return false;
@@ -207,6 +224,21 @@ http.interceptors.request.use(async (config) => {
 
     return config;
 }, (error) => {
+    // Capturar erros no interceptor de request no Sentry apenas se habilitado
+    if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
+        Sentry.captureException(error, {
+            tags: {
+                section: 'api',
+                action: 'request_interceptor_error',
+                severity: 'error'
+            },
+            extra: {
+                errorMessage: error.message,
+                errorCode: error.code
+            }
+        });
+    }
+    
     return Promise.reject(error);
 });
 
@@ -224,6 +256,25 @@ http.interceptors.response.use(
         if (isConnectionError(error)) {
             connectionErrorCount++;
             console.warn(`Erro de conexão com a API (${connectionErrorCount}/${MAX_CONNECTION_ERRORS}): ${error.code || error.message}`);
+            
+            // Capturar erro de conexão no Sentry apenas se habilitado
+            if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
+                Sentry.captureException(error, {
+                    tags: {
+                        section: 'api',
+                        action: 'connection_error',
+                        severity: connectionErrorCount >= MAX_CONNECTION_ERRORS ? 'fatal' : 'warning'
+                    },
+                    extra: {
+                        connectionErrorCount,
+                        maxConnectionErrors: MAX_CONNECTION_ERRORS,
+                        errorCode: error.code,
+                        errorMessage: error.message,
+                        requestUrl: originalRequest?.url,
+                        requestMethod: originalRequest?.method
+                    }
+                });
+            }
             
             if (connectionErrorCount >= MAX_CONNECTION_ERRORS) {
                 console.error(`Máximo de erros de conexão atingido (${MAX_CONNECTION_ERRORS}). Redirecionando para login.`);
@@ -249,9 +300,48 @@ http.interceptors.response.use(
                 originalRequest.headers['Authorization'] = `Bearer ${ArmazenadorToken.AccessToken}`;
                 return http(originalRequest);
             } else {
+                // Capturar erro de autenticação no Sentry apenas se habilitado
+                if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
+                    Sentry.captureException(error, {
+                        tags: {
+                            section: 'auth',
+                            action: 'authentication_failed',
+                            severity: 'error'
+                        },
+                        extra: {
+                            statusCode: error.response?.status,
+                            errorCode: error.response?.data?.code,
+                            requestUrl: originalRequest?.url,
+                            requestMethod: originalRequest?.method,
+                            tokenRefreshAttempted: true
+                        }
+                    });
+                }
+                
                 // ArmazenadorToken.removerToken();
                 // window.location.href = '/login';
                 return Promise.reject(error.response?.data || error);
+            }
+        }
+
+        // Capturar outros erros de API no Sentry apenas se habilitado
+        if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
+            // Só capturar erros 500+ (erros do servidor) para evitar spam
+            if (error.response?.status >= 500) {
+                Sentry.captureException(error, {
+                    tags: {
+                        section: 'api',
+                        action: 'server_error',
+                        severity: 'error'
+                    },
+                    extra: {
+                        statusCode: error.response?.status,
+                        statusText: error.response?.statusText,
+                        requestUrl: originalRequest?.url,
+                        requestMethod: originalRequest?.method,
+                        responseData: error.response?.data
+                    }
+                });
             }
         }
         
