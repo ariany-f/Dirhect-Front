@@ -16,6 +16,7 @@
     "@editorjs/list": "^2.0.6",
     "@editorjs/paragraph": "^2.11.7",
     "@reactour/tour": "^3.8.0",
+    "@sentry/react": "^9.40.0",
     "@tinymce/tinymce-react": "^6.0.0",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.1.0",
