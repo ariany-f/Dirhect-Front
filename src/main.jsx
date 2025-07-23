@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import AppRouter from './routes.jsx'
 import 'primeicons/primeicons.css';
 import * as Sentry from "@sentry/react";
+import { createBrowserRouter } from "react-router-dom";
 
 const app = (
   <Sentry.ErrorBoundary 
