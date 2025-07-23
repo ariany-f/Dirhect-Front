@@ -11,7 +11,7 @@ import styles from './ModalEditarFilial.module.css'
 import { useDepartamentoContext } from "@contexts/Departamento"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { Col12, Col6, Col4 } from '@components/Colunas';
-
+import { ArmazenadorToken } from "@utils"
 
 function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSucesso, aoSalvar }) {
     
@@ -62,10 +62,7 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
                                         <RiCloseFill size={20} className="fechar" />  
                                     </button>
                                 </form>
-                                <h6>Editar filial</h6>
-                                <SubTitulo>
-                                    Digite o nome da filial:
-                                </SubTitulo>
+                                <h6>{nome || 'Filial'}</h6>
                             </Titulo>
                         </Frame>
                         
@@ -173,7 +170,9 @@ function ModalEditarFilial({ opened = false, filial, aoClicar, aoFechar, aoSuces
                         <form method="dialog">
                             <div className={styles.containerBottom}>
                                 <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                                <Botao aoClicar={() => aoSalvar(nome, cnpj, id)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                {ArmazenadorToken.hasPermission('change_filial') &&
+                                    <Botao aoClicar={() => aoSalvar(nome, cnpj, id)} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                                }
                             </div>
                         </form>
                     </DialogEstilizado>
