@@ -5,10 +5,12 @@ import 'primeicons/primeicons.css';
 import * as Sentry from "@sentry/react";
 
 const app = (
-  <AppRouter />
+  <Sentry.ErrorBoundary fallback={<p>Algo deu errado.</p>}>
+    <AppRouter />
+  </Sentry.ErrorBoundary>
 );
 
-if (import.meta.env.MODE === 'production') {
+if (import.meta.env.MODE !== 'development') {
   Sentry.init({
     dsn: "https://87f4b21d4a2b4070937882709e03efa0@o4509715042402304.ingest.us.sentry.io/4509715044958208",
     // Setting this option to true will send default PII data to Sentry.
