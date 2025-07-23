@@ -589,7 +589,7 @@ function ColaboradorBeneficios() {
         const currentPath = location.pathname;
         const isBeneficiosTab = currentPath === `/colaborador/detalhes/${id}` || currentPath.endsWith('/beneficios');
         
-        if (id && isBeneficiosTab) {
+        if (id && ArmazenadorToken.hasPermission('view_contrato') && isBeneficiosTab) {
             carregarBeneficios()
         }
     }, [id, location.pathname])
