@@ -157,6 +157,11 @@ function Menu({ opened = false, aoFechar }){
     const navegar = useNavigate()
     const { t } = useTranslation('common');
 
+    // Verificar se o usuário tem apenas um perfil
+    const gruposValidos = ArmazenadorToken.UserGroups ? 
+        ArmazenadorToken.UserGroups.filter(grupo => !grupo.startsWith('_')) : [];
+    const temApenasUmPerfil = gruposValidos.length <= 1;
+
     useEffect(() => {
         const handleResize = () => {
             setIsDesktop(window.innerWidth > 768);
@@ -266,14 +271,16 @@ function Menu({ opened = false, aoFechar }){
                                 </Link>
                             </li>
                         )}
-                        <li onClick={() => FecharMenu()}>
-                            <Link className="link" to="/login/selecionar-grupo">
-                                <div className="group">
-                                    Alterar perfil
-                                    <MdOutlineChevronRight size={20} className="icon"/>
-                                </div>
-                            </Link>
-                        </li>
+                        {!temApenasUmPerfil && (
+                            <li onClick={() => FecharMenu()}>
+                                <Link className="link" to="/login/selecionar-grupo">
+                                    <div className="group">
+                                        Alterar perfil
+                                        <MdOutlineChevronRight size={20} className="icon"/>
+                                    </div>
+                                </Link>
+                            </li>
+                        )}
                         <div className="divider" />
                         <li onClick={Sair}>
                             <Link className="link">
