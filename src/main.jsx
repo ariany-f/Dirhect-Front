@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import AppRouter from './routes.jsx'
 import 'primeicons/primeicons.css';
 import * as Sentry from "@sentry/react";
-import { createBrowserRouter } from "react-router-dom";
+
 
 const app = (
   <Sentry.ErrorBoundary 
@@ -65,19 +65,14 @@ if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
     
     // Integrações para captura avançada
     integrations: [
-      // Monitoramento de performance e navegação
-      Sentry.browserTracingIntegration({
-        // Captura cliques automáticos
-        enableInp: true,
-        // Captura transições de rota
-        routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-          React.useEffect,
-          React.useLocation,
-          React.useNavigationType,
-          React.createRoutesFromChildren,
-          React.matchRoutes
-        ),
-      }),
+             // Monitoramento de performance e navegação
+       Sentry.browserTracingIntegration({
+         // Captura cliques automáticos
+         enableInp: true,
+         // Instrumentação manual para React Router (simplificada)
+         enableLongTask: true,
+         enableInteractions: true,
+       }),
       
       // Captura replay de sessões com erros
       Sentry.replayIntegration({
@@ -170,25 +165,72 @@ if (import.meta.env.VITE_ENABLE_SENTRY === 'true') {
     normalizeDepth: 6,
   });
   
-  // Configurar contexto do usuário (quando disponível)
-  if (typeof window !== 'undefined') {
-    // Capturar informações básicas do browser
-    Sentry.setContext('browser', {
-      name: navigator.userAgent,
-      language: navigator.language,
-      cookieEnabled: navigator.cookieEnabled,
-      onLine: navigator.onLine,
-      platform: navigator.platform,
-    });
-    
-    // Capturar informações da tela
-    Sentry.setContext('screen', {
-      width: screen.width,
-      height: screen.height,
-      colorDepth: screen.colorDepth,
-      pixelDepth: screen.pixelDepth,
-    });
-  }
+     // Configurar contexto do usuário (quando disponível)
+   if (typeof window !== 'undefined') {
+     // Capturar informações básicas do browser
+     Sentry.setContext('browser', {
+       name: navigator.userAgent,
+       language: navigator.language,
+       cookieEnabled: navigator.cookieEnabled,
+       onLine: navigator.onLine,
+       platform: navigator.platform,
+     });
+     
+     // Capturar informações da tela
+     Sentry.setContext('screen', {
+       width: screen.width,
+       height: screen.height,
+       colorDepth: screen.colorDepth,
+       pixelDepth: screen.pixelDepth,
+     });
+     
+     // Capturar mudanças de rota manualmente
+     let currentPath = window.location.pathname;
+     const originalPushState = window.history.pushState;
+     const originalReplaceState = window.history.replaceState;
+     
+     window.history.pushState = function(...args) {
+       const newPath = args[2] || window.location.pathname;
+       if (newPath !== currentPath) {
+         Sentry.addBreadcrumb({
+           category: 'navigation',
+           message: `Navigated from ${currentPath} to ${newPath}`,
+           level: 'info',
+           data: { from: currentPath, to: newPath }
+         });
+         currentPath = newPath;
+       }
+       return originalPushState.apply(this, args);
+     };
+     
+     window.history.replaceState = function(...args) {
+       const newPath = args[2] || window.location.pathname;
+       if (newPath !== currentPath) {
+         Sentry.addBreadcrumb({
+           category: 'navigation',
+           message: `Replaced route from ${currentPath} to ${newPath}`,
+           level: 'info',
+           data: { from: currentPath, to: newPath }
+         });
+         currentPath = newPath;
+       }
+       return originalReplaceState.apply(this, args);
+     };
+     
+     // Capturar eventos de popstate (botão voltar/avançar)
+     window.addEventListener('popstate', () => {
+       const newPath = window.location.pathname;
+       if (newPath !== currentPath) {
+         Sentry.addBreadcrumb({
+           category: 'navigation',
+           message: `Navigated via browser controls from ${currentPath} to ${newPath}`,
+           level: 'info',
+           data: { from: currentPath, to: newPath, trigger: 'popstate' }
+         });
+         currentPath = newPath;
+       }
+     });
+   }
 }
 
 const container = document.getElementById('root');
