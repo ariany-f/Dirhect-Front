@@ -48,19 +48,27 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
             http.get('/documento_requerido/?format=json')
                 .then(response => {
                     setDocumentosRequeridos(response);
+                    // Se estiver editando um documento, preenche os campos
+                    if (documento) {
+                        // O nome pode ser um override específico para a vaga, ou o nome do documento padrão
+                        setDocumentoNome(documento.documento_nome || documento.documento_detalhes?.nome || '');
+                        setObrigatorio(!!documento.obrigatorio);
+                        // Encontra o objeto completo do documento para o Dropdown usando o ID de documento_detalhes
+                        const docCompleto = response.find(d => d.id === documento.documento_detalhes?.id);
+                        setDocumentoSelecionado(docCompleto || null);
+                    } else {
+                        // Se for um novo documento, reseta os campos
+                        setDocumentoNome('');
+                        setObrigatorio(true);
+                        setDocumentoSelecionado(null);
+                        setClassError([]);
+                    }
                 })
                 .catch(error => {
                     console.error('Erro ao buscar documentos requeridos:', error);
                 });
-        }
-    }, [opened]);
-
-    useEffect(() => {
-        if (documento && opened) {
-            setDocumentoNome(documento.documento_nome || '');
-            setObrigatorio(!!documento.obrigatorio);
-            setDocumentoSelecionado(documento.documento || null);
-        } else if (!opened) {
+        } else {
+            // Limpa o estado quando o modal é fechado
             setDocumentoNome('');
             setObrigatorio(true);
             setDocumentoSelecionado(null);

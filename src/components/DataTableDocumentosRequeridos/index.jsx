@@ -25,7 +25,7 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
     );
 
     const nomeTemplate = (rowData) => (
-        <Texto weight={700}>{rowData.nome}</Texto>
+        <Texto width="100%" weight={700}>{rowData.nome}</Texto>
     );
 
     const actionTemplate = (rowData) => (
@@ -62,7 +62,7 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
             rows={10}
             rowsPerPageOptions={[5, 10, 25, 50]}
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} emails"
+            currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} documentos"
             dataKey="id"
             className="p-datatable-sm"
             emptyMessage="Nenhum documento requerido encontrado."
@@ -75,7 +75,7 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
                 header="Nome" 
                 body={nomeTemplate}
                 sortable 
-                style={{ width: '15%' }} 
+                style={{ width: '30%' }} 
             />
             <Column 
                 body={extPermitidasTemplate} 
@@ -96,7 +96,7 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
                 field="instrucao" 
                 header="Instrução" 
                 sortable
-                style={{ width: '20%' }} 
+                style={{ width: '30%' }} 
             />
             <Column 
                 body={actionTemplate} 

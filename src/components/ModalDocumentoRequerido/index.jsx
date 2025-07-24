@@ -142,8 +142,11 @@ function ModalDocumentoRequerido({ opened = false, aoFechar, aoSalvar, documento
                                             setValor={setExtPermitidas}
                                             type="text"
                                             label="Extensões Permitidas*"
-                                            placeholder="Digite as extensões permitidas"
+                                            placeholder="Ex: pdf,png,jpg"
                                         />
+                                        <small style={{ color: '#6c757d', marginTop: '4px', display: 'block' }}>
+                                            Separe as extensões por vírgula, sem espaços.
+                                        </small>
                                     </Col6>
                                 </Col12>
                                 <Col12>

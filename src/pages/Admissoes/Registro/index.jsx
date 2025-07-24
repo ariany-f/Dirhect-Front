@@ -2414,7 +2414,7 @@ const CandidatoRegistro = () => {
                     ref={stepperRef} 
                     className="custom-stepper"
                 >
-                    <StepperPanel header="Documentos Pessoais">
+                    <StepperPanel header="Anexos">
                         <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel">

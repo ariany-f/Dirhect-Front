@@ -243,30 +243,37 @@ function DetalhesVaga() {
     };
 
     const handleSalvarDocumentoVaga = (documento_nome, obrigatorio, documento) => {
-        // Verifica se a vaga foi transferida
         if (vaga?.status === 'T') {
             toast.current.show({ 
                 severity: 'warn', 
                 summary: 'Ação não permitida', 
-                detail: 'Não é possível adicionar documentos a vagas transferidas.', 
+                detail: 'Não é possível adicionar ou editar documentos em vagas transferidas.', 
                 life: 3000 
             });
             return;
         }
-
-        http.post('/vagas_documentos/', {
+    
+        const payload = {
             documento_nome: documento_nome,
             obrigatorio: obrigatorio,
             documento: documento?.id,
             vaga: id
-        })
-        .then(response => {
+        };
+    
+        const isEditing = !!documentoEditando;
+    
+        const request = isEditing
+            ? http.put(`/vagas_documentos/${documentoEditando.id}/`, payload)
+            : http.post('/vagas_documentos/', payload);
+    
+        request.then(response => {
             fetchDocumentosVaga();
             setModalDocumentoAberto(false);
+            setDocumentoEditando(null); // Limpa o estado de edição
             toast.current.show({ 
                 severity: 'success', 
                 summary: 'Sucesso', 
-                detail: 'Documento adicionado à vaga com sucesso!', 
+                detail: `Documento ${isEditing ? 'atualizado' : 'adicionado'} com sucesso!`, 
                 life: 3000 
             });
         })
@@ -275,7 +282,7 @@ function DetalhesVaga() {
             toast.current.show({ 
                 severity: 'error', 
                 summary: 'Erro', 
-                detail: 'Erro ao adicionar documento à vaga.', 
+                detail: `Erro ao ${isEditing ? 'atualizar' : 'adicionar'} documento à vaga.`, 
                 life: 3000 
             });
         });
@@ -569,7 +576,7 @@ function DetalhesVaga() {
                     documentos={documentos}
                     vaga={vaga}
                     onEdit={doc => { setDocumentoEditando(doc); setModalDocumentoAberto(true); }}
-                    onDelete={doc => setDocumentos(documentos.filter(d => d !== doc))}
+                    onDelete={fetchDocumentosVaga}
                     toastRef={toast}
                 />
                 <ModalDocumentoVaga

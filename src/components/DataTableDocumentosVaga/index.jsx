@@ -55,6 +55,15 @@ function DataTableDocumentosVaga({ documentos = [], vaga = null, onEdit, onDelet
         
         return (
             <div style={{ display: 'flex', gap: 12 }}>
+                <FaEdit
+                    style={{
+                        cursor: vagaTransferida ? 'not-allowed' : 'pointer',
+                        color: vagaTransferida ? 'var(--neutro-400)' : 'var(--primaria)',
+                        opacity: vagaTransferida ? 0.5 : 1
+                    }}
+                    onClick={() => !vagaTransferida && onEdit(rowData)}
+                    title={vagaTransferida ? "Não é possível editar documentos de vagas transferidas" : "Editar documento"}
+                />
                 <RiDeleteBin6Line 
                     style={{ 
                         cursor: vagaTransferida ? 'not-allowed' : 'pointer', 

@@ -728,7 +728,7 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
             className="custom-stepper"
             onSelect={setActiveIndex}
           >
-            <StepperPanel header="Documentos Pessoais" data-tour="stepper-step-0" />
+            <StepperPanel header="Anexos" data-tour="stepper-step-0" />
             <StepperPanel header="Dados Pessoais" data-tour="stepper-step-1" />
             <StepperPanel header="Dados Bancários" data-tour="stepper-step-2" />
             <StepperPanel header="Educação" data-tour="stepper-step-3" />
