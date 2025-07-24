@@ -18,6 +18,7 @@ import ModalInfoElegibilidade from '@components/ModalInfoElegibilidade'
 import { Dropdown } from "primereact/dropdown"
 import { IoInformationCircleOutline } from "react-icons/io5"
 import SwitchInput from "@components/SwitchInput"
+import { ArmazenadorToken } from '@utils'
 
 const StatusTag = styled.div`
     padding: 6px 12px;
