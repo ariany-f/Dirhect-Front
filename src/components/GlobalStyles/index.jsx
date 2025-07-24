@@ -431,6 +431,7 @@ template {
 .p-inputtext, .p-icon-field {
   width: 100% !important;
   height: 46px !important;
+  line-height: 30px !important;
 }
 .w-full {
   width: 100% !important;

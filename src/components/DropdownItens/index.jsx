@@ -1,8 +1,19 @@
 import { useState } from 'react'
 import styles from './DropdownItens.module.css'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import * as Yup from 'yup'
 import {Dropdown} from 'primereact/dropdown'
+
+const GlobalPanelStyle = createGlobalStyle`
+    .dropdown-panel-wrapping {
+        max-width: 550px;
+    }
+    .dropdown-panel-wrapping .p-dropdown-item,
+    .dropdown-panel-wrapping .p-dropdown-item span {
+        white-space: normal !important;
+        word-break: break-word !important;
+    }
+`
 
 const Select = styled(Dropdown)`
     border-radius: 4px;
@@ -19,27 +30,13 @@ const Select = styled(Dropdown)`
     font-size: 14px;
     width: ${ props => props.$width ?  props.$width : 'inherit' };
     height: ${ props => props.$height ?  props.$height : '46px' };
+    max-width: ${ props => props.$maxWidth ?  props.$maxWidth : '40vw' };
     margin-bottom: ${ props => props.$margin ?  props.$margin : '0px' };
 
-    & span {
-        display: flex;
-        align-items: center;
-        justify-content: start;
+    & .p-dropdown-label {
         white-space: nowrap;
-        overflow: visible;
-        text-overflow: unset;
-        max-width: none;
-        width: auto;
-    }
-
-    & .p-dropdown-label,
-    & .p-dropdown-item {
-        white-space: nowrap;
-        overflow: visible;
-        text-overflow: unset;
-        max-width: none;
-        width: auto;
-        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     &.error {
@@ -179,6 +176,7 @@ function DropdownItens({
 
     return (
         <>
+            <GlobalPanelStyle />
             <div className={styles.inputContainer}>
                 {(label) ?
                 <label htmlFor={name} className={styles.label}>
@@ -206,6 +204,7 @@ function DropdownItens({
                             onFilter={onFilter}
                             emptyFilterMessage={emptyFilterMessage}
                             emptyMessage={emptyMessage}
+                            panelClassName="dropdown-panel-wrapping"
                         />
                     :
                     <Select 
@@ -223,6 +222,7 @@ function DropdownItens({
                         valueTemplate={optionTemplate} // Template para o valor selecionado
                         disabled={disabled}
                         showClear={allowClear && valor}
+                        panelClassName="dropdown-panel-wrapping"
                     />
                 }
             </div>
