@@ -30,8 +30,8 @@ import ColaboradorSaldo from '@pages/Colaboradores/Detalhes/saldo'
 import ColaboradorCarteiras from '@pages/Colaboradores/Detalhes/carteiras'
 import ColaboradorRegistro from '@pages/Colaboradores/Registro/registro'
 import ColaboradorRegistroSucesso from '@pages/Colaboradores/Registro/sucesso'
-import Departamentos from '@pages/Estrutura'
-import DepartamentoLista from '@pages/Estrutura/lista'
+import EstruturaOrganizacional from '@pages/Estrutura'
+import DepartamentoLista from '@pages/Estrutura/departamentos'
 import DepartamentoDetalhes from '@pages/Estrutura/departamento/detalhes'
 import DepartamentoAdicionarColaboradores from '@pages/Estrutura/adicionar-colaboradores'
 import DepartamentoColaboradores from '@pages/Estrutura/colaboradores-sem-departamento'
@@ -163,6 +163,30 @@ import Atividades from './pages/Tarefas/atividades'
 import AtividadesLista from './pages/Tarefas/lista_atividades'
 import AtividadesKanban from './pages/Tarefas/kanban_atividades'
 import Candidato from './common/Candidato'
+import TabelasSistema from './pages/TabelasSistema'
+import EstadoCivil from './pages/TabelasSistema/estado_civil'
+import Genero from './pages/TabelasSistema/genero'
+import Nacionalidade from './pages/TabelasSistema/nacionalidade'
+import CorRaca from './pages/TabelasSistema/cor_raca'
+import TipoSanguineo from './pages/TabelasSistema/tipo_sanguineo'
+import GrauInstrucao from './pages/TabelasSistema/grau_instrucao'
+import GrauParentesco from './pages/TabelasSistema/grau_parentesco'
+import TipoRua from './pages/TabelasSistema/tipo_rua'
+import TipoBairro from './pages/TabelasSistema/tipo_bairro'
+import TipoFuncionario from './pages/TabelasSistema/tipo_funcionario'
+import CodigoCategoriaEsocial from './pages/TabelasSistema/codigo_categoria_esocial'
+import TipoRecebimento from './pages/TabelasSistema/tipo_recebimento'
+import TipoSituacao from './pages/TabelasSistema/tipo_situacao'
+import MotivoAdmissao from './pages/TabelasSistema/motivo_admissao'
+import TipoAdmissao from './pages/TabelasSistema/tipo_admissao'
+import MotivoDemissao from './pages/TabelasSistema/motivo_demissao'
+import TipoDemissao from './pages/TabelasSistema/tipo_demissao'
+import CodigoOcorrenciaSefip from './pages/TabelasSistema/codigo_ocorrencia_sefip'
+import CodigoCategoriaSefip from './pages/TabelasSistema/codigo_categoria_sefip'
+import CodigoSituacaoFgts from './pages/TabelasSistema/codigo_situacao_fgts'
+import CodigoVinculoRais from './pages/TabelasSistema/codigo_vinculo_rais'
+import CodigoSituacaoRais from './pages/TabelasSistema/codigo_situacao_rais'
+import DePara from './pages/TabelasSistema/depara'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -262,8 +286,34 @@ function AppRouter() {
                 <Route path="adicionar-saldo" element={<ExtratoAdicionarSaldo />} />
                 <Route path="adicionar-saldo/pagamento/:id" element={<ExtratoPagamento />} />
               </Route>
+              
+              <Route path="tabelas-de-sistema" element={<TabelasSistema />} >
+                <Route index element={<DePara />} />
+                <Route path="estado-civil" element={<EstadoCivil />} />
+                <Route path="genero" element={<Genero />} />
+                <Route path="nacionalidade" element={<Nacionalidade />} />
+                <Route path="cor-raca" element={<CorRaca />} />
+                <Route path="tipo-sanguineo" element={<TipoSanguineo />} />
+                <Route path="grau-instrucao" element={<GrauInstrucao />} />
+                <Route path="grau-parentesco" element={<GrauParentesco />} />
+                <Route path="tipo-rua" element={<TipoRua />} />
+                <Route path="tipo-bairro" element={<TipoBairro />} />
+                <Route path="tipo-funcionario" element={<TipoFuncionario />} />
+                <Route path="codigo-categoria-esocial" element={<CodigoCategoriaEsocial />} />
+                <Route path="tipo-recebimento" element={<TipoRecebimento />} />
+                <Route path="tipo-situacao" element={<TipoSituacao />} />
+                <Route path="motivo-admissao" element={<MotivoAdmissao />} />
+                <Route path="tipo-admissao" element={<TipoAdmissao />} />
+                <Route path="motivo-demissao" element={<MotivoDemissao />} />
+                <Route path="tipo-demissao" element={<TipoDemissao />} />
+                <Route path="codigo-ocorrencia-sefip" element={<CodigoOcorrenciaSefip />} />
+                <Route path="codigo-categoria-sefip" element={<CodigoCategoriaSefip />} />
+                <Route path="codigo-situacao-fgts" element={<CodigoSituacaoFgts />} />
+                <Route path="codigo-vinculo-rais" element={<CodigoVinculoRais />} />
+                <Route path="codigo-situacao-rais" element={<CodigoSituacaoRais />} />
+              </Route>
             
-              <Route path="estrutura" element={<Departamentos />} >
+              <Route path="estrutura" element={<EstruturaOrganizacional />} >
                 <Route index element={<FiliaisLista />} />
                 <Route path="departamentos" element={<DepartamentoLista />} />
                 <Route path="cargos" element={<CargosLista />} />

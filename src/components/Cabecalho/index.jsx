@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import { RiHandCoinFill, RiOrganizationChart } from "react-icons/ri";
+import { RiHandCoinFill, RiOrganizationChart, RiTable2 } from "react-icons/ri";
 import styles from './Cabecalho.module.css';
 import Frame from "@components/Frame";
 import Texto from "@components/Texto";
@@ -316,7 +316,8 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 22, "url": "operadoras", "pageTitulo": "Operadoras" },
     { "id": 23, "url": "tipos-beneficio", "pageTitulo": "Tipos de Benefício" },
     { "id": 24, "url": "vagas", "pageTitulo": "Vagas" },
-    { "id": 25, "url": "atividades", "pageTitulo": "Atividades" }
+    { "id": 25, "url": "atividades", "pageTitulo": "Atividades" },
+    { "id": 26, "url": "tabelas-de-sistema", "pageTitulo": "Tabelas de Sistema" }
   ];
 
   const titulo = titulos.find(item => 
@@ -350,6 +351,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           label: 'Estrutura Organizacional', 
           url: '/estrutura',
           icon: <RiOrganizationChart size={18}/>
+        },
+        { 
+          label: 'Tabelas de Sistema', 
+          url: '/tabelas-de-sistema',
+          icon: <RiTable2 size={18}/>
         },
         ...(import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true' ? [
           { 
