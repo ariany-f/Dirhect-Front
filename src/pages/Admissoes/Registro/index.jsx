@@ -897,12 +897,6 @@ const CandidatoRegistro = () => {
                     const salarioVaga = dadosVaga?.salario;
                     const salarioPrincipal = candidato.salario;
                     
-                    console.log('Salários disponíveis:', {
-                        dadosCandidato: salarioCandidato,
-                        dadosVaga: salarioVaga,
-                        candidato: salarioPrincipal
-                    });
-                    
                     const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
                     console.log('Salário selecionado para formatar:', salarioParaFormatar);
                     
@@ -921,7 +915,7 @@ const CandidatoRegistro = () => {
                 estado: candidato.estado,
                 pais: candidato.pais,
                 // Dados do candidato
-                candidato: {
+                // candidato: {
                     nome: dadosCandidato.nome,
                     email: dadosCandidato.email,
                     telefone: dadosCandidato.telefone,
@@ -932,18 +926,12 @@ const CandidatoRegistro = () => {
                         const salarioVaga = dadosVaga?.salario;
                         const salarioPrincipal = candidato.salario;
                         
-                        console.log('Salário para objeto candidato:', {
-                            dadosCandidato: salarioCandidato,
-                            dadosVaga: salarioVaga,
-                            candidato: salarioPrincipal
-                        });
-                        
                         const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
                         console.log('Salário candidato selecionado para formatar:', salarioParaFormatar);
                         
                         return formatarSalario(salarioParaFormatar);
                     })(),
-                },
+                // },
                 
                 // Dados pessoais
                 nome_mae: candidato.nome_mae,
