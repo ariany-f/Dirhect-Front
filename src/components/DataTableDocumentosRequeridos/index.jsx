@@ -5,6 +5,7 @@ import { Tag } from 'primereact/tag';
 import { Tooltip } from 'primereact/tooltip';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Texto from '@components/Texto';
+import { ArmazenadorToken } from '@utils';
 
 function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
 
@@ -30,28 +31,36 @@ function DataTableDocumentosRequeridos({ documentos = [], onEdit, onDelete }) {
 
     const actionTemplate = (rowData) => (
         <div style={{ display: 'flex', gap: '8px' }}>
-            <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
-            <FaEdit
-                className="edit"
-                data-pr-tooltip="Editar Documento"
-                size={16}
-                onClick={() => onEdit(rowData)}
-                style={{
-                    cursor: 'pointer',
-                    color: 'var(--primaria)',
-                }}
-            />
-            <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
-            <RiDeleteBin6Line 
-                className="delete" 
-                data-pr-tooltip="Excluir Documento" 
-                size={16} 
-                onClick={() => onDelete(rowData)}
-                style={{
-                    cursor: 'pointer',
-                    color: 'var(--erro)',
-                }}
-            />
+            {ArmazenadorToken.hasPermission('change_documentorequerido') &&
+                <>
+                    <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
+                    <FaEdit
+                        className="edit"
+                        data-pr-tooltip="Editar Documento"
+                        size={16}
+                        onClick={() => onEdit(rowData)}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--primaria)',
+                        }}
+                    />
+                </>
+            }
+            {ArmazenadorToken.hasPermission('delete_documentorequerido') &&
+                <>
+                    <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
+                    <RiDeleteBin6Line 
+                        className="delete" 
+                        data-pr-tooltip="Excluir Documento" 
+                        size={16} 
+                        onClick={() => onDelete(rowData)}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'var(--erro)',
+                        }}
+                    />
+                </>
+            }
         </div>
     );
 

@@ -11,6 +11,7 @@ import BotaoVoltar from '@components/BotaoVoltar';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { addLocale } from 'primereact/api';
+import { ArmazenadorToken } from '@utils';
 
 const Container = styled.div`
     display: flex;
@@ -95,11 +96,15 @@ function DocumentosConfiguracoes() {
             <Container>
                 <Header>
                     <h3>Configurações de Documentos</h3>
-                    <BotaoGrupo>
-                        <Botao size="small" aoClicar={() => { setDocumentoEditando(null); setModalAberto(true); }}>
-                            <GrAddCircle stroke="white" /> Novo Documento
-                        </Botao>
-                    </BotaoGrupo>
+
+                    {ArmazenadorToken.hasPermission('add_documentorequerido') && 
+                    
+                        <BotaoGrupo>
+                            <Botao size="small" aoClicar={() => { setDocumentoEditando(null); setModalAberto(true); }}>
+                                <GrAddCircle stroke="white" /> Novo Documento
+                            </Botao>
+                        </BotaoGrupo>
+                    }
                 </Header>
                 <DataTableDocumentosRequeridos
                     documentos={documentos}

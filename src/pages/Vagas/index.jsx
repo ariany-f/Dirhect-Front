@@ -11,6 +11,7 @@ import React, { createContext, useContext } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
 import { CiSettings } from 'react-icons/ci';
 import http from '@http';
+import { ArmazenadorToken } from '@utils';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -50,10 +51,11 @@ const Vagas = () => {
                     <BotaoSemBorda color="var(--primaria)">
                         <CiSettings size={16}/> <Link to={'/vagas/configuracoes'} className={styles.link}>Configurações de Emails</Link>
                     </BotaoSemBorda>
-                    
-                    <BotaoSemBorda color="var(--primaria)">
-                        <CiSettings size={16}/> <Link to={'/documentos/configuracoes'} className={styles.link}>Configurações de Documentos</Link>
-                    </BotaoSemBorda>
+                    {ArmazenadorToken.hasPermission('view_documentorequerido') &&
+                        <BotaoSemBorda color="var(--primaria)">
+                            <CiSettings size={16}/> <Link to={'/documentos/configuracoes'} className={styles.link}>Configurações de Documentos</Link>
+                        </BotaoSemBorda>
+                    }
         
                 </BotaoGrupo>
             </BotaoGrupo>

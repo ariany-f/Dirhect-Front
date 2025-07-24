@@ -160,7 +160,7 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
                                         <label style={{ fontWeight: 600, marginRight: 8 }}>Obrigatório</label>
                                         <SwitchInput 
                                             checked={obrigatorio} 
-                                            onChange={e => setObrigatorio(e.value)} 
+                                            onChange={valor => setObrigatorio(valor)} 
                                             disabled={vagaTransferida}
                                         />
                                     </Col6Centered>
