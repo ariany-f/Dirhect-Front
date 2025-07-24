@@ -1031,11 +1031,6 @@ const CandidatoRegistro = () => {
                 tipo_funcionario: candidato.tipo_funcionario,
                 tipo_situacao: candidato.tipo_situacao,
                 aceite_lgpd: candidato.aceite_lgpd,
-                
-                // Arrays - Não incluir dependentes no payload principal (serão salvos separadamente)
-                educacao: candidato.educacao || [],
-                habilidades: candidato.habilidades || [],
-                experiencia: candidato.experiencia || [],
                 anotacoes: candidato.anotacoes || '',
             };
 
