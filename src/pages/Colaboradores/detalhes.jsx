@@ -31,6 +31,9 @@ import ModalDemissao from '@components/ModalDemissao';
 import { TiUserDelete } from "react-icons/ti";
 import { FaUser, FaIdCard, FaBirthdayCake, FaBuilding, FaBriefcase, FaUserTie } from 'react-icons/fa';
 import { HiX } from 'react-icons/hi';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import imageCompression from 'browser-image-compression';
 
 
 const Col12 = styled.div`
@@ -428,9 +431,26 @@ function ColaboradorDetalhes() {
     const [modalDemissaoAberto, setModalDemissaoAberto] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [showImageModal, setShowImageModal] = useState(false);
+    const [showCropModal, setShowCropModal] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [crop, setCrop] = useState({
+        unit: '%',
+        width: 50,
+        height: 50,
+        x: 25,
+        y: 25,
+        aspect: 1,
+    });
+    const [imageSrc, setImageSrc] = useState('');
+    const [imageRef, setImageRef] = useState(null);
+    const [croppedImageSrc, setCroppedImageSrc] = useState('');
+    const [isCropped, setIsCropped] = useState(false);
+    const [hasCropChanged, setHasCropChanged] = useState(false);
+    const [showCropSelection, setShowCropSelection] = useState(false);
     const navegar = useNavigate()
     const toast = useRef(null)
     const fileInputRef = useRef(null)
+    const modalFileInputRef = useRef(null);
 
     const {usuario} = useSessaoUsuarioContext()
 
@@ -553,39 +573,18 @@ function ColaboradorDetalhes() {
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file && file.type.match('image.*')) {
-            setUploading(true);
-            
-            const formData = new FormData();
-            formData.append('imagem', file);
-            
-            http.put(`funcionario/${id}/`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-            .then(response => {
-                setColaborador(prev => ({ ...prev, imagem: response.imagem }));
-                toast.current.show({ 
-                    severity: 'success', 
-                    summary: 'Sucesso', 
-                    detail: 'Imagem do colaborador atualizada com sucesso!', 
-                    life: 3000 
-                });
-            })
-            .catch(erro => {
-                console.error("Erro ao fazer upload da imagem:", erro);
-                const errorMessage = erro.response?.data?.detail || 'Falha ao fazer upload da imagem.';
-                toast.current.show({ 
-                    severity: 'error', 
-                    summary: 'Erro', 
-                    detail: errorMessage, 
-                    life: 3000 
-                });
-            })
-            .finally(() => {
-                setUploading(false);
-                if (fileInputRef.current) fileInputRef.current.value = '';
-            });
+            setSelectedFile(file);
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImageSrc(reader.result);
+                setShowCropModal(true);
+                setShowImageModal(false); // Fechar o modal de visualização
+                setShowCropSelection(false);
+                setIsCropped(false);
+                setCroppedImageSrc('');
+                setHasCropChanged(false);
+            };
+            reader.readAsDataURL(file);
         } else {
             toast.current.show({ 
                 severity: 'warn', 
@@ -624,6 +623,164 @@ function ColaboradorDetalhes() {
             });
         });
     };
+
+    const compressImage = async (file) => {
+        try {
+            const options = {
+                maxSizeMB: 2,
+                maxWidthOrHeight: 1920,
+                useWebWorker: true,
+                fileType: file.name.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg',
+                quality: 0.8
+            };
+            const compressedFile = await imageCompression(file, options);
+            return new File([compressedFile], file.name, {
+                type: compressedFile.type,
+                lastModified: Date.now(),
+            });
+        } catch (error) {
+            console.error('Erro ao compactar imagem:', error);
+            return file;
+        }
+    };
+
+    const handleCropChange = (crop, percentCrop) => {
+        setCrop(percentCrop);
+        setHasCropChanged(true);
+    };
+
+    const handleCropComplete = (crop, percentCrop) => {
+        if (crop && crop.width && crop.height) {
+            const size = Math.min(crop.width, crop.height);
+            const squareCrop = {
+                ...crop,
+                width: size,
+                height: size,
+            };
+            setCrop(squareCrop);
+        } else {
+            setCrop(percentCrop);
+        }
+    };
+
+    const applyCrop = async () => {
+        if (!hasCropChanged) {
+            toast.current.show({ 
+                severity: 'info', 
+                summary: 'Aviso', 
+                detail: 'Mova ou redimensione a seleção para aplicar o corte.', 
+                life: 3000 
+            });
+            return;
+        }
+
+        if (!imageRef || !crop.width || !crop.height) {
+            return;
+        }
+
+        try {
+            const outputSize = 400;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = outputSize;
+            canvas.height = outputSize;
+            
+            await new Promise((resolve) => {
+                if (imageRef.complete) resolve();
+                else imageRef.onload = resolve;
+            });
+            
+            const scaleX = imageRef.naturalWidth / imageRef.offsetWidth;
+            const scaleY = imageRef.naturalHeight / imageRef.offsetHeight;
+            
+            ctx.drawImage(
+                imageRef,
+                crop.x * scaleX,
+                crop.y * scaleY,
+                crop.width * scaleX,
+                crop.height * scaleY,
+                0, 0, outputSize, outputSize
+            );
+            
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    setCroppedImageSrc(URL.createObjectURL(blob));
+                    setIsCropped(true);
+                    setShowCropSelection(false);
+                }
+            }, selectedFile.type, 0.9);
+            
+        } catch (erro) {
+            console.error("Erro ao aplicar corte:", erro);
+        }
+    };
+
+    const handleCropImage = async () => {
+        setUploading(true);
+        try {
+            let fileToUpload;
+            if (isCropped && croppedImageSrc) {
+                const response = await fetch(croppedImageSrc);
+                const blob = await response.blob();
+                fileToUpload = new File([blob], selectedFile.name, { type: selectedFile.type });
+            } else {
+                fileToUpload = selectedFile;
+            }
+            
+            const compressedFile = await compressImage(fileToUpload);
+            
+            const formData = new FormData();
+            formData.append('imagem', compressedFile);
+            
+            const uploadResponse = await http.put(`funcionario/${id}/`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            
+            setColaborador(prev => ({ ...prev, imagem: uploadResponse.imagem }));
+            
+            toast.current.show({ 
+                severity: 'success', 
+                summary: 'Sucesso', 
+                detail: 'Imagem atualizada com sucesso!', 
+                life: 4000 
+            });
+            
+            setShowCropModal(false);
+        } catch (erro) {
+            console.error("Erro no upload:", erro);
+            toast.current.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Falha no upload da imagem.', 
+                life: 5000 
+            });
+        } finally {
+            setUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+            if (modalFileInputRef.current) modalFileInputRef.current.value = '';
+        }
+    };
+
+    const handleCancelCrop = () => {
+        setShowCropModal(false);
+        // Limpar ambos os inputs de arquivo para permitir a mesma seleção novamente
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        if (modalFileInputRef.current) modalFileInputRef.current.value = '';
+    };
+
+    useEffect(() => {
+        if (showCropSelection && !isCropped) {
+            setCrop({
+                unit: '%',
+                width: 50,
+                height: 50, // Adicionado para garantir que a altura esteja definida
+                x: 25,
+                y: 25,
+                aspect: 1,
+            });
+        }
+    }, [showCropSelection, isCropped]);
 
     useEffect(() => {
         if(!colaborador)
@@ -1160,11 +1317,183 @@ function ColaboradorDetalhes() {
                         src={colaborador.imagem} 
                         alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`} 
                     />
-                    <ImageModalButton onClick={() => setShowImageModal(false)}>
-                        <HiX /> Fechar
-                    </ImageModalButton>
+                    <div style={{display: 'flex', gap: '12px'}}>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            ref={modalFileInputRef}
+                            onChange={handleImageUpload}
+                            style={{ display: 'none' }}
+                            id="colaborador-image-change-modal"
+                        />
+                         <ImageModalButton onClick={() => modalFileInputRef.current.click()}>
+                            <RiUpload2Fill /> Alterar Imagem
+                        </ImageModalButton>
+                        <ImageModalButton onClick={handleRemoveImage} style={{background: '#ef4444', color: 'white'}}>
+                            <FaTrash /> Remover Imagem
+                        </ImageModalButton>
+                        <ImageModalButton onClick={() => setShowImageModal(false)}>
+                            <HiX /> Fechar
+                        </ImageModalButton>
+                    </div>
                 </ImageModalContent>
             </ImageModal>
+        )}
+
+        {/* Modal de Corte de Imagem */}
+        {showCropModal && (
+            <div style={{
+                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                zIndex: 10001, padding: '20px'
+            }} onClick={(e) => e.target === e.currentTarget && handleCancelCrop()}>
+                <div style={{
+                    background: '#fff', borderRadius: '12px',
+                    maxWidth: '90vw', maxHeight: '90vh', width: '800px',
+                    display: 'flex', flexDirection: 'column', overflow: 'hidden'
+                }}>
+                    {/* Header */}
+                    <div style={{
+                        padding: '16px 20px', borderBottom: '1px solid #e5e7eb',
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                    }}>
+                        <h3 style={{ margin: 0, color: '#374151', fontSize: '18px' }}>Cortar Imagem</h3>
+                        <button onClick={handleCancelCrop} style={{
+                            background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer',
+                            color: '#6b7280'
+                        }}>×</button>
+                    </div>
+
+                    {/* Content */}
+                    <div style={{
+                        padding: '20px', display: 'flex', gap: '20px',
+                        flex: 1, minHeight: 0
+                    }}>
+                        {/* Imagem Original ou Cortada */}
+                        <div style={{
+                            flex: showCropSelection && !isCropped ? 0.5 : 1,
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                            background: '#f9fafb', borderRadius: '8px', padding: '20px', minHeight: '400px'
+                        }}>
+                             {isCropped ? (
+                                <img src={croppedImageSrc} alt="Cortada" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                            ) : (
+                                <img ref={setImageRef} src={imageSrc} alt="Original" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                            )}
+                        </div>
+                        
+                        {/* Área de Seleção */}
+                        {showCropSelection && !isCropped && (
+                            <div style={{
+                                flex: 0.5, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                background: '#f0f9ff', borderRadius: '8px', padding: '20px', minHeight: '400px',
+                                border: '2px dashed #0ea5e9'
+                            }}>
+                                <ReactCrop
+                                    crop={crop}
+                                    onChange={handleCropChange}
+                                    onComplete={handleCropComplete}
+                                    aspect={1}
+                                    minWidth={30}
+                                    minHeight={30}
+                                    keepSelection
+                                    ruleOfThirds
+                                >
+                                    <img src={imageSrc} alt="Para Cortar" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                </ReactCrop>
+                            </div>
+                        )}
+
+                        {/* Controles */}
+                        <div style={{
+                            width: '250px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '16px'
+                        }}>
+                           {!isCropped ? (
+                                <>
+                                    {!showCropSelection ? (
+                                        <button
+                                            onClick={() => setShowCropSelection(true)}
+                                            style={{ width: '100%', background: '#374151', border: 'none', borderRadius: '6px', padding: '12px', cursor: 'pointer', fontSize: '14px', color: '#fff', transition: 'all 0.2s ease' }}
+                                            onMouseEnter={(e) => e.target.style.background = '#1f2937'}
+                                            onMouseLeave={(e) => e.target.style.background = '#374151'}
+                                        >
+                                            ✂️ Cortar
+                                        </button>
+                                    ) : (
+                                        <>
+                                            <button
+                                                onClick={applyCrop}
+                                                disabled={!hasCropChanged}
+                                                style={{ width: '100%', background: !hasCropChanged ? '#9ca3af' : '#059669', border: 'none', borderRadius: '6px', padding: '12px', cursor: !hasCropChanged ? 'not-allowed' : 'pointer', fontSize: '14px', color: '#fff', transition: 'all 0.2s ease' }}
+                                                onMouseEnter={(e) => { if (hasCropChanged) e.target.style.background = '#047857'; }}
+                                                onMouseLeave={(e) => { if (hasCropChanged) e.target.style.background = '#059669'; }}
+                                            >
+                                                ✅ Aplicar Corte
+                                            </button>
+                                            <button
+                                                onClick={() => setShowCropSelection(false)}
+                                                style={{ width: '100%', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px', cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease' }}
+                                                onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
+                                                onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
+                                            >
+                                                🔄 Resetar Seleção
+                                            </button>
+                                        </>
+                                    )}
+                                     {/* Instruções */}
+                                     <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
+                                        <strong style={{ color: '#374151' }}>Como usar:</strong><br/>
+                                        {!showCropSelection ? 'Clique em "Cortar" para começar.' : 'Arraste para selecionar e clique em "Aplicar Corte".'}
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                <button
+                                    onClick={() => { setIsCropped(false); setCroppedImageSrc(''); setShowCropSelection(true); }}
+                                    style={{ width: '100%', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px', cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease' }}
+                                    onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
+                                    onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
+                                >
+                                    🔄 Voltar e Editar
+                                </button>
+                                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
+                                    <strong style={{ color: '#374151' }}>Pronto!</strong><br/>
+                                    Clique em "Salvar" para finalizar ou volte para editar.
+                                </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div style={{
+                        padding: '16px 20px', borderTop: '1px solid #e5e7eb',
+                        display: 'flex', justifyContent: 'flex-end', gap: '12px'
+                    }}>
+                        <button 
+                            onClick={handleCancelCrop} 
+                            style={{ background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease' }}
+                            onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
+                            onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
+                        >
+                            × Cancelar
+                        </button>
+                        <button 
+                            onClick={handleCropImage} 
+                            disabled={uploading} 
+                            style={{ background: uploading ? '#9ca3af' : '#374151', border: 'none', borderRadius: '6px', padding: '10px 16px', cursor: uploading ? 'not-allowed' : 'pointer', fontSize: '14px', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease' }}
+                            onMouseEnter={(e) => { if (!uploading) e.target.style.background = '#1f2937'; }}
+                            onMouseLeave={(e) => { if (!uploading) e.target.style.background = '#374151'; }}
+                        >
+                            {uploading ? 'Processando...' : (isCropped ? 'Salvar' : 'Salvar Imagem Original')}
+                        </button>
+                    </div>
+                </div>
+            </div>
         )}
     </Frame>
 )
