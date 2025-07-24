@@ -340,8 +340,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         let tempoMedioAdmissao = 0;
         if (admissoesConcluidas.length > 0) {
             const temposAdmissao = admissoesConcluidas.map(admissao => {
-                if (admissao.dados_candidato?.created_at && admissao.dt_admissao) {
-                    const inicio = new Date(admissao.dados_candidato.created_at);
+                if (admissao?.created_at && admissao.dt_admissao) {
+                    const inicio = new Date(admissao.created_at);
                     const fim = new Date(admissao.dt_admissao);
                     return Math.ceil((fim - inicio) / (1000 * 60 * 60 * 24));
                 }

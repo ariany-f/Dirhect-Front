@@ -73,20 +73,17 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
 
     // Função para obter o salário (prioriza dados_candidato)
     const getSalario = useMemo(() => {
-        if (candidato?.dados_candidato?.salario) {
-            return candidato.dados_candidato.salario;
+        if (candidato?.salario) {
+            return candidato.salario;
         }
         return candidato?.dados_vaga?.salario || '';
-    }, [candidato?.dados_candidato?.salario, candidato?.dados_vaga?.salario]);
+    }, [candidato?.salario, candidato?.dados_vaga?.salario]);
 
     // Função para atualizar o salário
     const setSalario = (valor) => {
         // Se já existe salário no dados_candidato, atualiza lá
-        if (candidato?.dados_candidato?.salario) {
-            setCampo('dados_candidato', { 
-                ...candidato.dados_candidato, 
-                salario: valor 
-            });
+        if (candidato?.salario) {
+            setCampo('salario', valor);
         } else {
             // Se não existe, atualiza no dados_vaga
             setCampo('dados_vaga', { 

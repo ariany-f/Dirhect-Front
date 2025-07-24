@@ -110,7 +110,7 @@
 }
 .progress-bar-fg {
   height: 10px;
-  background: linear-gradient(to right, var(--primaria), var(--gradient-secundaria));
+  background: linear-gradient(to right, var(--black), var(--gradient-secundaria));
   border-radius: 8px;
   transition: width 0.6s;
   position: absolute;

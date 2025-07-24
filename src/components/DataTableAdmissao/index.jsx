@@ -82,7 +82,7 @@ function DataTableAdmissao({
 
     const handleDadosCandidato = (e, rowData) => {
         e.stopPropagation();
-        setSelectedCandidato(rowData?.dados_candidato);
+        setSelectedCandidato(rowData);
         setShowDadosCandidato(true);
     };
 
@@ -93,8 +93,8 @@ function DataTableAdmissao({
     }
 
     const representativeCandidatoTemplate = (rowData) => {
-        const cpf = rowData?.dados_candidato?.cpf ?
-            formataCPF(rowData?.dados_candidato?.cpf)
+        const cpf = rowData?.cpf ?
+            formataCPF(rowData?.cpf)
             : '---';
         
         return (
@@ -104,7 +104,7 @@ function DataTableAdmissao({
                     {rowData.imagem ? (
                         <img 
                             src={rowData.imagem}
-                            alt={`Foto de ${rowData.dados_candidato?.nome}`}
+                            alt={`Foto de ${rowData?.nome}`}
                             style={{
                                 width: '28px',
                                 height: '28px',
@@ -134,14 +134,14 @@ function DataTableAdmissao({
                         border: '2px solid #f1f5f9',
                         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
                     }}>
-                        {rowData?.dados_candidato?.nome?.charAt(0)?.toUpperCase() || 'C'}
+                        {rowData?.nome?.charAt(0)?.toUpperCase() || 'C'}
                     </div>
                 </div>
                 
                 {/* Nome e CPF */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                     <Texto weight={700} width={'100%'}>
-                        {rowData?.dados_candidato?.nome}
+                        {rowData?.nome}
                     </Texto>
                     <div style={{marginTop: '6px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                         CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
@@ -195,8 +195,8 @@ function DataTableAdmissao({
 
     const representativeSalarioTemplate = (rowData) => {
         const salarioVaga = rowData?.dados_vaga?.salario;
-        const salarioCandidato = rowData?.dados_candidato?.salario || rowData?.salario;
-        const salarioEfetivo = rowData?.salario || rowData?.dados_vaga?.salario || rowData?.dados_candidato?.salario;
+        const salarioCandidato = rowData?.salario;
+        const salarioEfetivo = rowData?.salario || rowData?.dados_vaga?.salario;
         
         const getSalarioEfetivoTexto = () => {
             if (!salarioEfetivo) {

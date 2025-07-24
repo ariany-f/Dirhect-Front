@@ -209,16 +209,9 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
 
             const dadosParaEnviar = {
                 ...admissao,
-                candidato: {
-                    ...candidato,
-                    cpf: formatarCPFNumeros(candidato.dados_candidato.cpf),
-                    salario: removerMascaraBRL(candidato.dados_candidato.salario)
-                },
-                dados_candidato: {
-                    ...candidato,
-                    cpf: formatarCPFNumeros(candidato.dados_candidato.cpf),
-                    salario: removerMascaraBRL(candidato.dados_candidato.salario)
-                }
+                ...candidato,
+                cpf: formatarCPFNumeros(candidato.cpf),
+                salario: removerMascaraBRL(candidato.salario)
             };
 
             // Enviar dados via token
@@ -588,9 +581,9 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
         <Toast ref={toast} style={{ zIndex: 9999 }} />
         <ConfirmDialog />
         {/* Header com informações do candidato */}
-        {candidato?.dados_candidato?.nome && (
+        {candidato?.nome && (
           <div style={{
-            background: 'linear-gradient(to bottom, var(--primaria), var(--gradient-secundaria))',
+            background: 'linear-gradient(to bottom, var(--black), var(--gradient-secundaria))',
             borderRadius: 8,
             padding: '12px 16px',
             marginBottom: 0,
@@ -624,7 +617,7 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
                   fontWeight: 500,
                   color: '#fff'
                 }}>
-                  {candidato?.dados_candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
+                  {candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
                 </div>
                 <div>
                   <h2 style={{
@@ -634,7 +627,7 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
                     color: '#fff',
                     textShadow: '0 1px 2px rgba(0,0,0,0.1)'
                   }}>
-                    {candidato?.dados_candidato?.nome || 'Nome não informado'}
+                    {candidato?.nome || 'Nome não informado'}
                   </h2>
                   <p style={{
                     margin: 0,
@@ -643,7 +636,7 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
                     opacity: 0.9,
                     fontWeight: 400
                   }}>
-                    CPF: {formatarCPF(candidato?.dados_candidato?.cpf) || 'CPF não informado'}
+                    CPF: {formatarCPF(candidato?.cpf) || 'CPF não informado'}
                   </p>
                 </div>
               </div>

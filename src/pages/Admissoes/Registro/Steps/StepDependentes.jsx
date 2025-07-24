@@ -24,7 +24,7 @@ const FormGrid = styled.div`
 `;
 
 const SaveButton = styled.button`
-    background: linear-gradient(135deg, var(--primaria), var(--gradient-secundaria));
+    background: linear-gradient(135deg, var(--black), var(--gradient-secundaria));
     color: white;
     border: none;
     border-radius: 8px;

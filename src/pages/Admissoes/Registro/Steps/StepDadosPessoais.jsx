@@ -50,10 +50,10 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false }) => {
         // E se os dados já foram carregados (para evitar execução na primeira renderização)
         if (candidato?.nome_pai === 'DESCONHECIDO' && 
             candidato?.pai_desconhecido !== true && 
-            candidato?.dados_candidato?.nome) { // Verifica se os dados já foram carregados
+            candidato?.nome) { // Verifica se os dados já foram carregados
             setCampo('pai_desconhecido', true);
         }
-    }, [candidato?.nome_pai, candidato?.pai_desconhecido, candidato?.dados_candidato?.nome, setCampo]);
+    }, [candidato?.nome_pai, candidato?.pai_desconhecido, candidato?.nome, setCampo]);
 
     // Função para buscar endereço pelo CEP
     const handleCepChange = async (valor) => {
@@ -93,8 +93,8 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false }) => {
             <CampoTexto
                 camposVazios={classError}
                 name="nome"
-                valor={candidato?.dados_candidato?.nome ?? ''}
-                setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, nome: valor })}
+                valor={candidato?.nome ?? ''}
+                setValor={valor => setCampo('nome', valor)}
                 type="text"
                 label="Nome"
                 placeholder="Digite o nome"
@@ -103,18 +103,18 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false }) => {
             <CampoTexto
                 camposVazios={classError}
                 name="cpf"
-                valor={candidato?.dados_candidato?.cpf ?? ''}
-                setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, cpf: valor })}
+                valor={candidato?.cpf ?? ''}
+                setValor={valor => setCampo('cpf', valor)}
                 patternMask="999.999.999-99"
                 label="CPF"
                 placeholder="Digite o CPF"
-                disabled={modoLeitura || (candidato?.dados_candidato?.cpf && candidato.dados_candidato.cpf.trim() !== '')}
+                disabled={modoLeitura || (candidato?.cpf && candidato.cpf.trim() !== '')}
             />
             <CampoTexto
                 camposVazios={classError}
                 name="email"
-                valor={candidato?.dados_candidato?.email ?? ''}
-                setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, email: valor })}
+                valor={candidato?.email ?? ''}
+                setValor={valor => setCampo('email', valor)}
                 type="text"
                 label="E-mail"
                 placeholder="Digite o email"
@@ -122,15 +122,15 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false }) => {
             />
             <CampoTexto
                 name="telefone"
-                valor={candidato?.dados_candidato?.telefone ?? ''}
-                setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, telefone: valor })}
+                valor={candidato?.telefone ?? ''}
+                setValor={valor => setCampo('telefone', valor)}
                 label="Telefone"
                 disabled={modoLeitura}
             />
             <CampoTexto
                 name="dt_nascimento"
-                valor={candidato?.dados_candidato?.dt_nascimento ?? ''}
-                setValor={valor => setCampo('dados_candidato', { ...candidato.dados_candidato, dt_nascimento: valor })}
+                valor={candidato?.dt_nascimento ?? ''}
+                setValor={valor => setCampo('dt_nascimento', valor)}
                 label="Data de Nascimento"
                 type="date"
                 disabled={modoLeitura}

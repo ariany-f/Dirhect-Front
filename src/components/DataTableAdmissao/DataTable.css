@@ -6096,7 +6096,7 @@
 
 /* Custom ProgressBar gradient - same as Dashboard */
 .custom-progressbar .p-progressbar-value {
-  background: linear-gradient(to right, var(--primaria), var(--gradient-secundaria)) !important;
+  background: linear-gradient(to right, var(--black), var(--gradient-secundaria)) !important;
   animation: progressFill 1.5s ease-out forwards;
   transform-origin: left;
 }

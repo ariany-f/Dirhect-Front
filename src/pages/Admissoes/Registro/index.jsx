@@ -73,7 +73,7 @@ const ModalContainer = styled.div`
 `;
 
 const ModalHeader = styled.div`
-    background: linear-gradient(135deg, var(--primaria), var(--gradient-secundaria));
+    background: linear-gradient(135deg, var(--black), var(--gradient-secundaria));
     color: white;
     padding: 20px 24px;
     display: flex;
@@ -208,7 +208,7 @@ const ModalButton = styled.button`
     }
     
     &.primary {
-        background: linear-gradient(135deg, var(--primaria), var(--gradient-secundaria));
+        background: linear-gradient(135deg, var(--black), var(--gradient-secundaria));
         color: white;
         box-shadow: 0 4px 12px rgba(12, 0, 76, 0.3);
         
@@ -671,11 +671,8 @@ const CandidatoRegistro = () => {
                         experiencia: data.experiencia || [],
                         dependentes: data.dependentes || [],
                         anotacoes: data.anotacoes || '',
-                        // Normalizar estruturas que podem ser criadas pelos componentes
-                        dados_candidato: data.dados_candidato || {},
                         dados_vaga: data.dados_vaga || {}
                     };
-                    
                     // Atualiza o candidato com todos os dados
                     setCandidato(fullCandidatoData);
                     setVaga(data.dados_vaga || {});
@@ -827,7 +824,7 @@ const CandidatoRegistro = () => {
 
         try {
             // Monta o payload seguindo o padrão correto
-            const dadosCandidato = candidato.dados_candidato || {};
+            const dadosCandidato = candidato || {};
             const dadosVaga = candidato.dados_vaga || {};
             
             // Função para formatar salário corretamente
@@ -1239,7 +1236,7 @@ const CandidatoRegistro = () => {
 
     // Função para validar campos obrigatórios dos dados pessoais
     const validarCamposObrigatorios = () => {
-        const dadosCandidato = candidato.dados_candidato || {};
+        const dadosCandidato = candidato || {};
         const dadosVaga = candidato.dados_vaga || {};
         const camposObrigatorios = [];
         
@@ -1803,14 +1800,14 @@ const CandidatoRegistro = () => {
             </style>
             
             {/* Botão Voltar */}
-            {candidato?.dados_candidato?.nome && (
+            {candidato?.nome && (
                 <BotaoVoltar />
             )}
             
             {/* Header com informações do candidato */}
-            {candidato?.dados_candidato && (
+            {candidato && (
                 <div style={{
-                    background: 'linear-gradient(to bottom, var(--primaria), var(--gradient-secundaria))',
+                    background: 'linear-gradient(to bottom, var(--black), var(--gradient-secundaria))',
                     borderRadius: 8,
                     padding: '12px 16px',
                     marginBottom: 0,
@@ -1835,7 +1832,7 @@ const CandidatoRegistro = () => {
                             {candidato.imagem ? (
                                 <img 
                                     src={candidato.imagem}
-                                    alt={`Foto de ${candidato.dados_candidato.nome}`}
+                                    alt={`Foto de ${candidato.nome}`}
                                     style={{
                                         width: 36,
                                         height: 36,
@@ -1902,7 +1899,7 @@ const CandidatoRegistro = () => {
                                         fontWeight: 500,
                                         color: '#fff'
                                     }}>
-                                        {candidato.dados_candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                        {candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
                                     </div>
                                 )
                             )}
@@ -1919,7 +1916,7 @@ const CandidatoRegistro = () => {
                                 fontWeight: 500,
                                 color: '#fff'
                             }}>
-                                {candidato.dados_candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                {candidato.nome?.charAt(0)?.toUpperCase() || 'C'}
                             </div>
                             <div>
                                 <h2 style={{
@@ -1929,7 +1926,7 @@ const CandidatoRegistro = () => {
                                     color: '#fff',
                                     textShadow: '0 1px 2px rgba(0,0,0,0.1)'
                                 }}>
-                                    {candidato.dados_candidato.nome || 'Nome não informado'}
+                                    {candidato?.nome || 'Nome não informado'}
                                 </h2>
                                 <p style={{
                                     margin: 0,
@@ -1938,7 +1935,7 @@ const CandidatoRegistro = () => {
                                     opacity: 0.9,
                                     fontWeight: 400
                                 }}>
-                                    CPF: {formatarCPF(candidato.dados_candidato.cpf) || 'CPF não informado'}
+                                    CPF: {formatarCPF(candidato?.cpf) || 'CPF não informado'}
                                 </p>
                             </div>
                         </div>
@@ -2211,7 +2208,7 @@ const CandidatoRegistro = () => {
                                     if (tarefaPendente?.tipo_codigo === 'aguardar_documento' && (perfil === 'analista_tenant' || perfil === null)) {
                                         return (
                                             <>
-                                                Após esta confirmação, os <strong>documentos do candidato</strong> <strong>{candidato.dados_candidato?.nome || 'Candidato'}</strong> serão aprovados e encaminhados para aprovação da admissão.
+                                                Após esta confirmação, os <strong>documentos do candidato</strong> <strong>{candidato?.nome || 'Candidato'}</strong> serão aprovados e encaminhados para aprovação da admissão.
                                                 <br /><br />
                                                 Esta ação irá:
                                                 <br />
@@ -2227,7 +2224,7 @@ const CandidatoRegistro = () => {
                                     } else if (tarefaPendente?.tipo_codigo === 'aprovar_admissao') {
                                         return (
                                             <>
-                                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato.dados_candidato?.nome || 'Candidato'}</strong> ao sistema.
+                                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
                                                 <br /><br />
                                                 Esta ação irá:
                                                 <br />
@@ -2243,7 +2240,7 @@ const CandidatoRegistro = () => {
                                     } else {
                                         return (
                                             <>
-                                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato.dados_candidato?.nome || 'Candidato'}</strong> ao sistema.
+                                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
                                                 <br /><br />
                                                 Esta ação irá:
                                                 <br />
@@ -2388,7 +2385,7 @@ const CandidatoRegistro = () => {
                     <ImageModalContent>
                         <ImageModalImage 
                             src={candidato.imagem} 
-                            alt={`Foto de ${candidato.dados_candidato.nome}`} 
+                            alt={`Foto de ${candidato?.nome}`} 
                         />
                         <ImageModalControls>
                             {ArmazenadorToken.hasPermission('change_admissao') && !modoLeitura && (
