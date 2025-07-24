@@ -3096,13 +3096,13 @@ const CandidatoRegistro = () => {
                             </button>
                             <button
                                 onClick={handleCropImage}
-                                disabled={uploading}
+                                disabled={uploading || (showCropSelection && !isCropped)}
                                 style={{
-                                    background: uploading ? '#9ca3af' : '#374151',
+                                    background: uploading || (showCropSelection && !isCropped) ? '#9ca3af' : '#374151',
                                     border: 'none',
                                     borderRadius: '6px',
                                     padding: '10px 16px',
-                                    cursor: uploading ? 'not-allowed' : 'pointer',
+                                    cursor: uploading || (showCropSelection && !isCropped) ? 'not-allowed' : 'pointer',
                                     fontSize: '14px',
                                     color: '#fff',
                                     display: 'flex',
@@ -3111,10 +3111,10 @@ const CandidatoRegistro = () => {
                                     transition: 'all 0.2s ease'
                                 }}
                                 onMouseEnter={(e) => {
-                                    if (!uploading) e.target.style.background = '#1f2937';
+                                    if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#1f2937';
                                 }}
                                 onMouseLeave={(e) => {
-                                    if (!uploading) e.target.style.background = '#374151';
+                                    if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#374151';
                                 }}
                             >
                                 {uploading ? (
@@ -3131,7 +3131,8 @@ const CandidatoRegistro = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <HiCheckCircle fill="white" /> {isCropped ? 'Salvar' : 'Salvar Imagem Original'}
+                                        <HiCheckCircle fill="white" /> 
+                                        {showCropSelection && !isCropped ? 'Aplique ou cancele o corte' : (isCropped ? 'Salvar' : 'Salvar Imagem Original')}
                                     </>
                                 )}
                             </button>

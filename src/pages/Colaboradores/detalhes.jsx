@@ -578,7 +578,6 @@ function ColaboradorDetalhes() {
             reader.onload = () => {
                 setImageSrc(reader.result);
                 setShowCropModal(true);
-                setShowImageModal(false); // Fechar o modal de visualização
                 setShowCropSelection(false);
                 setIsCropped(false);
                 setCroppedImageSrc('');
@@ -1484,12 +1483,24 @@ function ColaboradorDetalhes() {
                         </button>
                         <button 
                             onClick={handleCropImage} 
-                            disabled={uploading} 
-                            style={{ background: uploading ? '#9ca3af' : '#374151', border: 'none', borderRadius: '6px', padding: '10px 16px', cursor: uploading ? 'not-allowed' : 'pointer', fontSize: '14px', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s ease' }}
-                            onMouseEnter={(e) => { if (!uploading) e.target.style.background = '#1f2937'; }}
-                            onMouseLeave={(e) => { if (!uploading) e.target.style.background = '#374151'; }}
+                            disabled={uploading || (showCropSelection && !isCropped)} 
+                            style={{ 
+                                background: uploading || (showCropSelection && !isCropped) ? '#9ca3af' : '#374151', 
+                                border: 'none', 
+                                borderRadius: '6px', 
+                                padding: '10px 16px', 
+                                cursor: uploading || (showCropSelection && !isCropped) ? 'not-allowed' : 'pointer', 
+                                fontSize: '14px', 
+                                color: '#fff', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px', 
+                                transition: 'all 0.2s ease' 
+                            }}
+                            onMouseEnter={(e) => { if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#1f2937'; }}
+                            onMouseLeave={(e) => { if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#374151'; }}
                         >
-                            {uploading ? 'Processando...' : (isCropped ? 'Salvar' : 'Salvar Imagem Original')}
+                            {uploading ? 'Processando...' : (showCropSelection && !isCropped) ? 'Aplique ou cancele o corte' : (isCropped ? 'Salvar' : 'Salvar Imagem Original')}
                         </button>
                     </div>
                 </div>
