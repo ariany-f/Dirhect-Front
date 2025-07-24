@@ -30,8 +30,8 @@ const DocumentoTitulo = styled.h4`
 `;
 
 const ObrigatorioTag = styled.span`
-    background-color: ${props => props.isObrigatorio ? 'var(--error-100)' : 'var(--surface-100)'};
-    color: ${props => props.isObrigatorio ? 'var(--error-600)' : 'var(--text-color-secondary)'};
+    background-color: ${props => props['data-isobrigatorio'] === 'true' ? 'var(--error-100)' : 'var(--surface-100)'};
+    color: ${props => props['data-isobrigatorio'] === 'true' ? 'var(--error-600)' : 'var(--text-color-secondary)'};
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 12px;
@@ -187,9 +187,9 @@ const StepDocumentos = ({ toast }) => {
                         <DocumentoContainer key={documento.id}>
                             <DocumentoHeader>
                                 <DocumentoTitulo>{documento.nome}</DocumentoTitulo>
-                                <ObrigatorioTag isObrigatorio={documento.obrigatorio}>
-                                    {documento.obrigatorio ? 'Obrigatório' : 'Opcional'}
-                                </ObrigatorioTag>
+                                                        <ObrigatorioTag data-isobrigatorio={documento.obrigatorio.toString()}>
+                            {documento.obrigatorio ? 'Obrigatório' : 'Opcional'}
+                        </ObrigatorioTag>
                             </DocumentoHeader>
                             
                             {documento.instrucao && (
