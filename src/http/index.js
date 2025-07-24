@@ -139,6 +139,8 @@ async function tentarRefreshToken() {
             { refresh: refreshToken },
             { headers: { "Content-Type": "application/json" } }
         );
+
+        console.log(response)
         
         // Atualiza o token e a expiração
         const expiration = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
@@ -168,8 +170,8 @@ async function tentarRefreshToken() {
             });
         }
         
-        // ArmazenadorToken.removerToken();
-        // window.location.href = '/login';
+        ArmazenadorToken.removerToken();
+        window.location.href = '/login';
         return false;
     } finally {
         refreshInProgress = false;

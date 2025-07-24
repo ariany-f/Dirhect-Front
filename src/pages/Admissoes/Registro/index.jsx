@@ -868,7 +868,27 @@ const CandidatoRegistro = () => {
                 return resultado;
             };
             
-            const payload = {
+            // Função para remover campos null, undefined ou string vazia
+            const removerCamposVazios = (obj) => {
+                if (Array.isArray(obj)) {
+                    return obj.map(item => removerCamposVazios(item));
+                }
+                
+                if (obj !== null && typeof obj === 'object') {
+                    const objLimpo = {};
+                    Object.keys(obj).forEach(key => {
+                        const valor = obj[key];
+                        if (valor !== null && valor !== undefined && valor !== '') {
+                            objLimpo[key] = removerCamposVazios(valor);
+                        }
+                    });
+                    return objLimpo;
+                }
+                
+                return obj;
+            };
+
+            const payloadCompleto = {
                 // Dados básicos da admissão
                 chapa: candidato.chapa,
                 dt_admissao: candidato.dt_admissao,
@@ -1018,6 +1038,9 @@ const CandidatoRegistro = () => {
                 experiencia: candidato.experiencia || [],
                 anotacoes: candidato.anotacoes || '',
             };
+
+            // Remove campos vazios do payload antes de enviar
+            const payload = removerCamposVazios(payloadCompleto);
 
             await http.put(`admissao/${admissao.id}/`, payload);
             
