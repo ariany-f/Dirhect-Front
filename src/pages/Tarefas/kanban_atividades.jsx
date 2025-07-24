@@ -36,7 +36,7 @@ const MenuItem = styled.button`
     gap: 12px;
     padding: 16px 14px;
     border: none;
-    background: ${props => props.$active ? 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))' : 'transparent'};
+    background: ${props => props.$active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : 'transparent'};
     color: ${props => props.$active ? 'white' : '#374151'};
     border-radius: 8px 0 0 8px;
     cursor: pointer;
@@ -53,7 +53,7 @@ const MenuItem = styled.button`
     }
 
     &:hover {
-        background: ${props => props.$active ? 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))' : '#f3f4f6'};
+        background: ${props => props.$active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : '#f3f4f6'};
     }
 
     .count {

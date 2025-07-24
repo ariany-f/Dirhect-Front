@@ -8,7 +8,7 @@ import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import colaboradoresFake from '@json/ferias.json'; // Dados fake para exemplos de renderização
 import DropdownItens from '@components/DropdownItens'
 
-const GRADIENT = 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))';
+const GRADIENT = 'linear-gradient(to left, var(--black), var(--gradient-secundaria))';
 
 const CalendarContainer = styled.div`
     width: 100%;
@@ -230,7 +230,7 @@ const ViewToggleOption = styled.button`
     display: flex;
     align-items: center;
     gap: 8px;
-    background: ${({ active }) => active ? 'linear-gradient(to left, var(--primaria), var(--gradient-secundaria))' : 'transparent'};
+    background: ${({ active }) => active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : 'transparent'};
     color: ${({ active }) => active ? '#fff' : '#333'};
     border: none;
     font-size: 15px;

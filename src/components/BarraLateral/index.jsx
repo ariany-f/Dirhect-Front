@@ -68,7 +68,7 @@ const BarraLateralEstilizada = styled.aside`
     transition: .5s cubic-bezier(.36,-0.01,0,.77);
     gap: 32px;
     flex-shrink: 0;
-    background: linear-gradient(to bottom, var(--primaria), var(--gradient-secundaria));
+    background: linear-gradient(to bottom, var(--secundaria), var(--gradient-secundaria));
 
     @media screen and (max-width: 760px) {
         position: fixed;
@@ -123,7 +123,7 @@ const NavTitulo = styled.p`
 `
 
 const Logo = styled.img`
-    padding: 0px 30px;
+    padding: 0px 40px;
     max-width: 245px;
 `
 
