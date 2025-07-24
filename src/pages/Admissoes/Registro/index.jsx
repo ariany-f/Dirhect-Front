@@ -28,6 +28,7 @@ import StepAnotacoes from './Steps/StepAnotacoes';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { RiExchangeFill, RiUpload2Fill } from 'react-icons/ri';
 import { ArmazenadorToken } from '@utils';
+import imageCompression from 'browser-image-compression';
 
 // Modal customizado estilizado
 const ModalOverlay = styled.div`
@@ -1647,29 +1648,98 @@ const CandidatoRegistro = () => {
         setShowConfirmacaoDependentes(false);
     };
 
-    const handleImageUpload = (e) => {
+    const compressImage = async (file) => {
+        try {
+            const options = {
+                maxSizeMB: 2, // Máximo 2MB
+                maxWidthOrHeight: 1920, // Dimensão máxima de 1920px
+                useWebWorker: true, // Usar web worker para melhor performance
+                fileType: file.name.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg',
+                quality: 0.8 // Qualidade de 80%
+            };
+            
+            console.log('Compactando imagem...', {
+                originalSize: (file.size / 1024 / 1024).toFixed(2) + 'MB',
+                originalName: file.name
+            });
+            
+            const compressedFile = await imageCompression(file, options);
+            
+            // Garantir que o nome do arquivo seja preservado
+            const finalFile = new File([compressedFile], file.name, {
+                type: compressedFile.type,
+                lastModified: Date.now(),
+            });
+            
+            console.log('Imagem compactada:', {
+                originalSize: (file.size / 1024 / 1024).toFixed(2) + 'MB',
+                compressedSize: (finalFile.size / 1024 / 1024).toFixed(2) + 'MB',
+                reduction: ((1 - finalFile.size / file.size) * 100).toFixed(1) + '%',
+                fileName: finalFile.name,
+                fileType: finalFile.type
+            });
+            
+            return finalFile;
+        } catch (error) {
+            console.error('Erro ao compactar imagem:', error);
+            // Se falhar a compactação, retorna o arquivo original
+            return file;
+        }
+    };
+
+    const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (file && file.type.match('image.*')) {
             setUploading(true);
             
-            const formData = new FormData();
-            formData.append('imagem', file);
-            
-            http.put(`admissao/${id}/`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-            .then(response => {
+            try {
+                // Compactar a imagem antes do upload
+                const compressedFile = await compressImage(file);
+                
+                console.log('Arquivo para upload:', {
+                    name: compressedFile.name,
+                    type: compressedFile.type,
+                    size: compressedFile.size,
+                    hasExtension: compressedFile.name.includes('.')
+                });
+                
+                const formData = new FormData();
+                formData.append('imagem', compressedFile);
+                
+                // Verificar se o FormData está correto
+                console.log('FormData entries:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`${key}:`, value instanceof File ? {
+                        name: value.name,
+                        type: value.type,
+                        size: value.size
+                    } : value);
+                }
+                
+                const response = await http.put(`admissao/${id}/`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                
                 setCandidato(prev => ({ ...prev, imagem: response.imagem }));
+                
+                // Mostrar toast com informações de compactação
+                const originalSize = (file.size / 1024 / 1024).toFixed(2);
+                const compressedSize = (compressedFile.size / 1024 / 1024).toFixed(2);
+                const reduction = ((1 - compressedFile.size / file.size) * 100).toFixed(1);
+                
+                const detail = originalSize !== compressedSize 
+                    ? `Imagem atualizada! Reduzida de ${originalSize}MB para ${compressedSize}MB (${reduction}% menor)`
+                    : 'Imagem do candidato atualizada com sucesso!';
+                
                 toast.current.show({ 
                     severity: 'success', 
                     summary: 'Sucesso', 
-                    detail: 'Imagem do candidato atualizada com sucesso!', 
-                    life: 3000 
+                    detail: detail, 
+                    life: 4000 
                 });
-            })
-            .catch(erro => {
+            } catch (erro) {
                 console.error("Erro ao fazer upload da imagem:", erro);
                 const errorMessage = erro.response?.data?.detail || 'Falha ao fazer upload da imagem.';
                 toast.current.show({ 
@@ -1678,11 +1748,10 @@ const CandidatoRegistro = () => {
                     detail: errorMessage, 
                     life: 3000 
                 });
-            })
-            .finally(() => {
+            } finally {
                 setUploading(false);
                 if (fileInputRef.current) fileInputRef.current.value = '';
-            });
+            }
         } else {
             toast.current.show({ 
                 severity: 'warn', 
