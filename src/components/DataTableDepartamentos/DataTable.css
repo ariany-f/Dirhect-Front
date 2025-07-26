@@ -3312,13 +3312,13 @@
     }
     .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
       background: var(--primaria);
-      color: var(--white)!important;
+      color: var(--secundaria)!important;
       font-size: 12px;
       border-radius: 8px;
     }
     .p-paginator .p-paginator-pages .p-paginator-page.p-highlight:hover {
       background: var(--vermilion-400);
-      color: var(--white)!important;
+      color: var(--secundaria)!important;
       font-size: 12px;
     }
     .p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {

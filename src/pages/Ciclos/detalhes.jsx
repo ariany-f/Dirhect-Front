@@ -89,7 +89,7 @@ function DetalhesCiclos() {
                             {representativSituacaoTemplate()}
                         </FrameVertical>
                         <BotaoGrupo align="center">
-                            <BotaoSemBorda color="var(--primaria)">
+                            <BotaoSemBorda color="var(--terciaria)">
                                 <FaDownload/><Link onClick={() => setModalOpened(true)} className={styles.link}>Importar planilha</Link>
                             </BotaoSemBorda>
                         </BotaoGrupo>

@@ -94,7 +94,7 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
                         </Texto>
                         Cadastre seus colaboradores.
                         {step === 2 &&
-                            <BotaoSemBorda color="var(--primaria)">
+                            <BotaoSemBorda color="var(--terciaria)">
                                 <Link to="/colaborador/registro" className={styles.link}>
                                     Cadastrar Colaboradores&nbsp;<MdArrowCircleRight className='icon' size={18} />
                                 </Link>
@@ -107,7 +107,7 @@ function IncompleteSteps({ transactions = [], colaboradores = [] }){
                         </Texto>
                         Configure os benefícios para os seus colaboradores.
                         {step === 3 &&
-                            <BotaoSemBorda color="var(--primaria)">
+                            <BotaoSemBorda color="var(--terciaria)">
                                 <Link to={'/beneficio/selecao-tipo-recarga'} className={styles.link}>
                                     Configurar&nbsp;<MdArrowCircleRight className='icon' size={18} />
                                 </Link>

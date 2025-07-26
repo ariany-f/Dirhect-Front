@@ -296,7 +296,7 @@ function ModalAlterarRegrasBeneficio({ opened = false, aoClicar, aoFechar, aoSuc
                                     /> 
                                 </StyledDropdownContainer>
                                 {tipo_calculo.code === 'T' &&
-                                    <BotaoSemBorda color="var(--primaria)">
+                                    <BotaoSemBorda color="var(--terciaria)">
                                         <IoSettingsSharp/><Link to={'/contratos/configuracao'} className={styles.link}>Configurar Tabela Interna</Link>
                                     </BotaoSemBorda>
                                 }

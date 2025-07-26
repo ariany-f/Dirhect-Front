@@ -398,10 +398,10 @@ function DataTableBeneficios({
                     placeholder="Buscar benefício" 
                 />
                 <BotaoGrupo align="end">
-                    <BotaoSemBorda color="var(--primaria)">
+                    <BotaoSemBorda color="var(--terciaria)">
                         <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
                     </BotaoSemBorda>
-                    <BotaoSemBorda color="var(--primaria)">
+                    <BotaoSemBorda color="var(--terciaria)">
                         <CiSettings size={16}/> <Link to={'/tipos-beneficio'} className={styles.link}>Tipos de Benefício</Link>
                     </BotaoSemBorda>
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>

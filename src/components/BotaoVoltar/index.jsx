@@ -4,7 +4,7 @@ import { MdKeyboardArrowLeft } from "react-icons/md"
 import { useTranslation } from "react-i18next";
 
 const Anchor = styled.a`
-    color: var(--primaria);
+    color: var(--terciaria);
     font-weight: 700;
     text-decoration: none;
     font-family: var(--fonte-primaria);
@@ -14,7 +14,7 @@ const Anchor = styled.a`
     align-items: center;
     & .icon {
         box-sizing: initial;
-        fill: var(--primaria);
+        fill: var(--terciaria);
     }
 `
 

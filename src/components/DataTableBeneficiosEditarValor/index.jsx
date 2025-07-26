@@ -205,7 +205,7 @@ function DataTableBeneficiosEditarValor({ recarga, tipo, aoEnviar }) {
         <>
             <Toast ref={toast} />
             <BotaoGrupo>
-                <BotaoSemBorda color="var(--primaria)">
+                <BotaoSemBorda color="var(--terciaria)">
                     <FaPencilAlt className={styles.icon} /><Link onClick={editarValores} className={styles.link}>Editar valor dos benefícios</Link>
                 </BotaoSemBorda>
             </BotaoGrupo>

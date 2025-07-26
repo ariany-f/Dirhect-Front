@@ -414,7 +414,7 @@ function DataTableAdmissao({
                     </div>
                 }
                 {/* <BotaoGrupo align="end" gap="8px">
-                    <BotaoSemBorda color="var(--primaria)">
+                    <BotaoSemBorda color="var(--terciaria)">
                         <FaDownload/><Link onClick={() => setModalImportarPlanilhaOpened(true)} className={styles.link}>Importar planilha</Link>
                     </BotaoSemBorda>
                     <Link to="/colaborador/registro">

@@ -48,11 +48,11 @@ const Vagas = () => {
                         <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)"/> Cadastrar Vaga</Botao>
                     </Link>
                     
-                    <BotaoSemBorda color="var(--primaria)">
+                    <BotaoSemBorda color="var(--terciaria)">
                         <CiSettings size={16}/> <Link to={'/vagas/configuracoes'} className={styles.link}>Configurações de Emails</Link>
                     </BotaoSemBorda>
                     {ArmazenadorToken.hasPermission('view_documentorequerido') &&
-                        <BotaoSemBorda color="var(--primaria)">
+                        <BotaoSemBorda color="var(--terciaria)">
                             <CiSettings size={16}/> <Link to={'/documentos/configuracoes'} className={styles.link}>Configurações de Documentos</Link>
                         </BotaoSemBorda>
                     }

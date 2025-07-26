@@ -101,7 +101,7 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
                         <CampoTexto reference={ref} name="planilha" type="file" setValor={adicionarPlanilha}></CampoTexto>
                         <Botao aoClicar={submeterPlanilha} estilo="vermilion" size="medium" filled>{!planilha ? 'Selecionar' : 'Enviar'} arquivo</Botao>
                         <div className={styles.containerBottom}>
-                            <BotaoSemBorda color="var(--primaria)"><FaDownload/><a href={'./src/assets/exemplo_colaboradores_001.xlsx'} target="_blank" download>Baixar modelo</a></BotaoSemBorda>
+                            <BotaoSemBorda color="var(--terciaria)"><FaDownload/><a href={'./src/assets/exemplo_colaboradores_001.xlsx'} target="_blank" download>Baixar modelo</a></BotaoSemBorda>
                         </div>
                     </form>
                 </DialogEstilizado>
