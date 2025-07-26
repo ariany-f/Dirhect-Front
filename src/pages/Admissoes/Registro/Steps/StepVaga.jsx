@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
@@ -21,6 +21,19 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
     
     
     const { candidato, setCampo, vaga } = useCandidatoContext();
+    const [jornadaDateError, setJornadaDateError] = useState('');
+
+    useEffect(() => {
+        setCampo('dt_mudanca_jornada', candidato.dt_admissao);
+    }, [candidato.dt_admissao, setCampo]);
+
+    useEffect(() => {
+        if (candidato.dt_mudanca_jornada && candidato.dt_admissao && candidato.dt_mudanca_jornada !== candidato.dt_admissao) {
+            setJornadaDateError('A data de opção deve ser igual à data de admissão');
+        } else {
+            setJornadaDateError('');
+        }
+    }, [candidato.dt_mudanca_jornada, candidato.dt_admissao]);
 
     // Formata as opções para o formato esperado pelo DropdownItens
     const formatarOpcoes = useMemo(() => {
@@ -445,10 +458,11 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
             <CampoTexto
                 type="date"
                 name="dt_mudanca_jornada"
-                label="Data Mudança Jornada"
+                label="Data da Mudança (Regime Jornada)"
                 valor={candidato.dt_mudanca_jornada || ''}
                 setValor={(valor) => setCampo('dt_mudanca_jornada', valor)}
                 disabled={modoLeitura}
+                errorMessage={jornadaDateError}
             />
             <CampoTexto
                 type="date"
