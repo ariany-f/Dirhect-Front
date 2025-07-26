@@ -61,5 +61,5 @@
 }
 .icon * {
     box-sizing: initial;
-    stroke: var(--white);
+    stroke: var(--secundaria);
 }

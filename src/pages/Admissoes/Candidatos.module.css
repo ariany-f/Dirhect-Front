@@ -13,7 +13,7 @@
 }
 .icon * {
     box-sizing: initial;
-    stroke: var(--white);
+    stroke: var(--secundaria);
 }
 .link {
     text-decoration: none;

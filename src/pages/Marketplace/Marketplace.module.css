@@ -18,5 +18,5 @@
     width: 65vw;
 }
 .icon * {
-    stroke: white;
+    stroke: var(--secundaria);
 }
