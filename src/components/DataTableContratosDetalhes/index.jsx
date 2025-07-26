@@ -610,7 +610,7 @@ function DataTableContratosDetalhes({ beneficios, onUpdate, contrato }) {
                     <Col7 expanded={selectedBeneficio}>
                         <BotaoGrupo align="space-between">
                             <h5>{selectedBeneficio.dados_beneficio.descricao}</h5>
-                            <Botao aoClicar={() => {setSendData({});setSelectedItemBeneficio(null);setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" color="white"/> {t('add')} Itens</Botao>
+                            <Botao aoClicar={() => {setSendData({});setSelectedItemBeneficio(null);setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" color="var(--secundaria)"/> {t('add')} Itens</Botao>
                         </BotaoGrupo>
                         <DataTable  
                             selection={selectedItemBeneficio}

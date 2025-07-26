@@ -2225,7 +2225,7 @@ const CandidatoRegistro = () => {
                                                 }}></div>
                                             ) : (
                                                 <UploadIcon>
-                                                    <RiUpload2Fill fill="var(--secundaria)"/>
+                                                    <RiUpload2Fill fill="var(--white)"/>
                                                 </UploadIcon>
                                             )}
                                         </UploadDropzone>

@@ -86,7 +86,7 @@ function DetalhesOperadoras() {
                                 <b>{operadora?.nome}</b>
                             </ContainerHorizontal>
                         </FrameVertical>
-                        <Botao aoClicar={() => {setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" color="white"/> {t('add')} Benefício</Botao>
+                        <Botao aoClicar={() => {setModalOpened(true);}} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" color="var(--secundaria)"/> {t('add')} Benefício</Botao>
                     </BotaoGrupo>
                     </>
                     : <></>

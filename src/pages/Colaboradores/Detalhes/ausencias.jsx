@@ -43,7 +43,7 @@ function ColaboradorAusencias() {
             {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
                 <BotaoGrupo align="end">
                     <BotaoGrupo align="center">
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" color="white"/> Registrar Ausência</Botao>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" color="var(--secundaria)"/> Registrar Ausência</Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>}
             <DataTableAusencias colaborador={id} ausencias={ausencias}/>

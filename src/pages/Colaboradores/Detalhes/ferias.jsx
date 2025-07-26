@@ -87,7 +87,7 @@ function ColabroadorFerias() {
                 {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && 
                     <BotaoGrupo align="end">
                         <BotaoGrupo align="center">
-                            <Botao aoClicar={criarSolicitacao} estilo="vermilion" size="small" tab><FaUmbrellaBeach className={styles.icon} fill="var(--secundaria)" color="white"/> Solicitar Férias</Botao>
+                            <Botao aoClicar={criarSolicitacao} estilo="vermilion" size="small" tab><FaUmbrellaBeach className={styles.icon} fill="var(--secundaria)" color="var(--secundaria)"/> Solicitar Férias</Botao>
                         </BotaoGrupo>
                     </BotaoGrupo>
                 }
