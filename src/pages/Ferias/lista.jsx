@@ -173,7 +173,7 @@ function FeriasListagem() {
                 </TabPanel>
                 {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && (
                     <BotaoGrupo>
-                        <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill='white' color='white' className={styles.icon}/> Solicitar Férias</Botao>
+                        <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill='var(--secundaria)' color='var(--secundaria)' className={styles.icon}/> Solicitar Férias</Botao>
                     </BotaoGrupo>
                 )}
             </HeaderRow>
