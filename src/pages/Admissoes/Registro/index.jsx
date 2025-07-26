@@ -1579,7 +1579,7 @@ const CandidatoRegistro = () => {
                                 iconPos="right" 
                                 aoClicar={handleSalvarEContinuar}
                             >
-                                <HiArrowRight fill="var(--secundaria)"/> Próximo
+                                <HiArrowRight size={20} fill="var(--secundaria)"/> Próximo
                             </Botao>
                         </>
                     )}
@@ -2370,7 +2370,7 @@ const CandidatoRegistro = () => {
                                             e.target.style.background = 'rgba(255, 255, 255, 0.2)';
                                         }}
                                     >
-                                        <HiEye fill="var(--secundaria)" size={14}/> Visão do Candidato
+                                        <HiEye fill="var(--white)" size={14}/> Visão do Candidato
                                     </button>
                                 ))
                                 :
@@ -2399,7 +2399,7 @@ const CandidatoRegistro = () => {
                                             e.target.style.background = 'rgba(255, 255, 255, 0.2)';
                                         }}
                                     >
-                                        <HiEye fill="var(--secundaria)" size={14}/> Visão da Empresa
+                                        <HiEye fill="var(--white)" size={14}/> Visão da Empresa
                                     </button>
                                 ))
                             }

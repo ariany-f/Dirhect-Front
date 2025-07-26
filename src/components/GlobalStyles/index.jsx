@@ -287,7 +287,7 @@ template {
 }
 .p-highlight .p-stepper-number {
   background-color: var(--primaria);
-  color: var(--white);
+  color: var(--secundaria);
 }
 .p-stepper .p-stepper-panels {
   padding: 5px 0px 0px 0px;
