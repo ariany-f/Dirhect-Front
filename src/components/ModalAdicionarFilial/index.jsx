@@ -93,25 +93,14 @@ function ModalAdicionarFilial({ opened = false, aoFechar, aoSalvar }) {
                                     />
                                 </Col6>
                             </Col12>
-
-                            <div className={styles.containerBottom}>
-                                <Botao
-                                    aoClicar={aoFechar} 
-                                    estilo="neutro" 
-                                    size="medium" 
-                                    filled
-                                >
-                                    Cancelar
-                                </Botao>
-                                <Botao
-                                    aoClicar={validarESalvar} 
-                                    estilo="vermilion" 
-                                    size="medium" 
-                                    filled
-                                >
-                                    Salvar Filial
-                                </Botao>
-                            </div>
+                            <Botao
+                                aoClicar={validarESalvar} 
+                                estilo="vermilion" 
+                                size="medium" 
+                                filled
+                            >
+                                Salvar Filial
+                            </Botao>
                         </Wrapper>
                     </DialogEstilizado>
                 </Overlay>
