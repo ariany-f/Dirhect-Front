@@ -618,8 +618,9 @@ const CandidatoRegistro = () => {
         // 1. Fetch the list of available domain tables
         http.get('tabela_dominio/')
             .then(response => {
-                const availableTables = response.tabelas_disponiveis || [];
+                const availableTables = response?.tabelas_disponiveis || [];
                 setAvailableDominioTables(availableTables);
+
                 // 2. Fetch records only for available tables
                 Promise.all(
                     availableTables.map(tabela =>
@@ -1084,24 +1085,35 @@ const CandidatoRegistro = () => {
                 anotacoes: candidato.anotacoes || '',
                 
                 // Novos campos
+                natureza_esocial: candidato.natureza_esocial,
+                codigo_ocorrencia_sefip: candidato.codigo_ocorrencia_sefip,
+                codigo_categoria_sefip: candidato.codigo_categoria_sefip,
                 motivo_admissao: candidato.motivo_admissao,
+                indicativo_admissao: candidato.indicativo_admissao,
                 dt_transferencia: candidato.dt_transferencia,
                 dt_mudanca_tipo_funcionario: candidato.dt_mudanca_tipo_funcionario,
                 codigo_categoria_esocial: candidato.codigo_categoria_esocial,
                 dt_mudanca_categoria: candidato.dt_mudanca_categoria,
+                tipo_regime_trabalhista: candidato.tipo_regime_trabalhista,
                 funcao_emprego_cargoacumulavel: candidato.funcao_emprego_cargoacumulavel,
+                faixa_salarial: candidato.faixa_salarial,
                 dt_mudanca_funcao: candidato.dt_mudanca_funcao,
+                motivo_mudanca_funcao: candidato.motivo_mudanca_funcao,
                 tipo_recebimento: candidato.tipo_recebimento,
                 dt_mudanca_recebimento: candidato.dt_mudanca_recebimento,
                 mensal: candidato.mensal,
                 dt_mudanca_salario: candidato.dt_mudanca_salario,
+                motivo_mudanca_salario: candidato.motivo_mudanca_salario,
+                horario: candidato.horario,
                 letra: candidato.letra,
                 dt_mudanca_horario: candidato.dt_mudanca_horario,
                 contrato_tempo_parcial: candidato.contrato_tempo_parcial,
+                tipo_regime_jornada: candidato.tipo_regime_jornada,
                 dt_mudanca_jornada: candidato.dt_mudanca_jornada,
+                tipo_situacao: candidato.tipo_situacao,
                 dt_mudanca_situacao: candidato.dt_mudanca_situacao,
-                codigo_ocorrencia_sefip: candidato.codigo_ocorrencia_sefip,
-                codigo_categoria_sefip: candidato.codigo_categoria_sefip
+                motivo_mudanca_situacao: candidato.motivo_mudanca_situacao,
+                tipo_regime_previdenciario: candidato.tipo_regime_previdenciario
             };
 
             // Remove campos vazios do payload antes de enviar

@@ -10,6 +10,7 @@ const GridContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+    align-items: start;
     
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
@@ -151,6 +152,14 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
     const opcoesCodigoOcorrenciaSefip = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_ocorrencia_sefip), [opcoesDominio.codigo_ocorrencia_sefip, formatarOpcoesDominio]);
     const opcoesCodigoCategoriaSefip = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_categoria_sefip), [opcoesDominio.codigo_categoria_sefip, formatarOpcoesDominio]);
     const opcoesContratoTempoParcial = useMemo(() => formatarOpcoesDominio(opcoesDominio.contrato_tempo_parcial), [opcoesDominio.contrato_tempo_parcial, formatarOpcoesDominio]);
+    const opcoesIndicativoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.indicativo_admissao), [opcoesDominio.indicativo_admissao, formatarOpcoesDominio]);
+    const opcoesTipoRegimeTrabalhista = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_regime_trabalhista), [opcoesDominio.tipo_regime_trabalhista, formatarOpcoesDominio]);
+    const opcoesFaixaSalarial = useMemo(() => formatarOpcoesDominio(opcoesDominio.faixa_salarial), [opcoesDominio.faixa_salarial, formatarOpcoesDominio]);
+    const opcoesMotivoMudancaFuncao = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_mudanca_funcao), [opcoesDominio.motivo_mudanca_funcao, formatarOpcoesDominio]);
+    const opcoesMotivoMudancaSalario = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_mudanca_salario), [opcoesDominio.motivo_mudanca_salario, formatarOpcoesDominio]);
+    const opcoesTipoRegimeJornada = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_regime_jornada), [opcoesDominio.tipo_regime_jornada, formatarOpcoesDominio]);
+    const opcoesMotivoMudancaSituacao = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_mudanca_situacao), [opcoesDominio.motivo_mudanca_situacao, formatarOpcoesDominio]);
+    const opcoesTipoRegimePrevidenciario = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_regime_previdenciario), [opcoesDominio.tipo_regime_previdenciario, formatarOpcoesDominio]);
     
     return (
         <GridContainer>
@@ -307,6 +316,26 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={opcoesMotivoAdmissao} 
                 disabled={modoLeitura}
             />
+
+            {availableDominioTables.includes('indicativo_admissao') ? (
+                <DropdownItens
+                    name="indicativo_admissao"
+                    label="Indicativo de Admissão"
+                    valor={getValorSelecionadoFromCandidato('indicativo_admissao', opcoesDominio.indicativo_admissao)}
+                    setValor={(valor) => setCampo('indicativo_admissao', valor.code)}
+                    options={opcoesIndicativoAdmissao}
+                    disabled={modoLeitura}
+                />
+            ) : (
+                <CampoTexto
+                    name="indicativo_admissao"
+                    label="Indicativo de Admissão"
+                    valor={candidato.indicativo_admissao || ''}
+                    setValor={(valor) => setCampo('indicativo_admissao', valor)}
+                    disabled={modoLeitura}
+                />
+            )}
+
             <DropdownItens
                 name="tipo_funcionario"
                 label="Tipo de Funcionário"
@@ -323,6 +352,64 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={opcoesCodigoCategoriaESocial}
                 disabled={modoLeitura}
             />
+
+            {availableDominioTables.includes('tipo_regime_trabalhista') ? (
+                <DropdownItens
+                    name="tipo_regime_trabalhista"
+                    label="Tipo de Regime Trabalhista"
+                    valor={getValorSelecionadoFromCandidato('tipo_regime_trabalhista', opcoesDominio.tipo_regime_trabalhista)}
+                    setValor={(valor) => setCampo('tipo_regime_trabalhista', valor.code)}
+                    options={opcoesTipoRegimeTrabalhista}
+                    disabled={modoLeitura}
+                />
+            ) : (
+                <CampoTexto
+                    name="tipo_regime_trabalhista"
+                    label="Tipo de Regime Trabalhista"
+                    valor={candidato.tipo_regime_trabalhista || ''}
+                    setValor={(valor) => setCampo('tipo_regime_trabalhista', valor)}
+                    disabled={modoLeitura}
+                />
+            )}
+            
+            {availableDominioTables.includes('faixa_salarial') ? (
+                <DropdownItens
+                    name="faixa_salarial"
+                    label="Faixa Salarial"
+                    valor={getValorSelecionadoFromCandidato('faixa_salarial', opcoesDominio.faixa_salarial)}
+                    setValor={(valor) => setCampo('faixa_salarial', valor.code)}
+                    options={opcoesFaixaSalarial}
+                    disabled={modoLeitura}
+                />
+            ) : (
+                <CampoTexto
+                    name="faixa_salarial"
+                    label="Faixa Salarial"
+                    valor={candidato.faixa_salarial || ''}
+                    setValor={(valor) => setCampo('faixa_salarial', valor)}
+                    disabled={modoLeitura}
+                />
+            )}
+
+            {availableDominioTables.includes('motivo_mudanca_funcao') ? (
+                <DropdownItens
+                    name="motivo_mudanca_funcao"
+                    label="Motivo da Mudança de Função"
+                    valor={getValorSelecionadoFromCandidato('motivo_mudanca_funcao', opcoesDominio.motivo_mudanca_funcao)}
+                    setValor={(valor) => setCampo('motivo_mudanca_funcao', valor.code)}
+                    options={opcoesMotivoMudancaFuncao}
+                    disabled={modoLeitura}
+                />
+            ) : (
+                <CampoTexto
+                    name="motivo_mudanca_funcao"
+                    label="Motivo da Mudança de Função"
+                    valor={candidato.motivo_mudanca_funcao || ''}
+                    setValor={(valor) => setCampo('motivo_mudanca_funcao', valor)}
+                    disabled={modoLeitura}
+                />
+            )}
+
             <DropdownItens
                 name="tipo_recebimento"
                 label="Tipo de Recebimento"
@@ -331,6 +418,26 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={opcoesTipoRecebimento}
                 disabled={modoLeitura}
             />
+
+            {availableDominioTables.includes('motivo_mudanca_salario') ? (
+                <DropdownItens
+                    name="motivo_mudanca_salario"
+                    label="Motivo da Mudança de Salário"
+                    valor={getValorSelecionadoFromCandidato('motivo_mudanca_salario', opcoesDominio.motivo_mudanca_salario)}
+                    setValor={(valor) => setCampo('motivo_mudanca_salario', valor.code)}
+                    options={opcoesMotivoMudancaSalario}
+                    disabled={modoLeitura}
+                />
+            ) : (
+                <CampoTexto
+                    name="motivo_mudanca_salario"
+                    label="Motivo da Mudança de Salário"
+                    valor={candidato.motivo_mudanca_salario || ''}
+                    setValor={(valor) => setCampo('motivo_mudanca_salario', valor)}
+                    disabled={modoLeitura}
+                />
+            )}
+
             <DropdownItens
                 name="tipo_situacao"
                 label="Situação"
@@ -339,6 +446,26 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={opcoesTipoSituacao}
                 disabled={modoLeitura}
             />
+
+            {availableDominioTables.includes('motivo_mudanca_situacao') ? (
+                <DropdownItens
+                    name="motivo_mudanca_situacao"
+                    label="Motivo da Mudança de Situação"
+                    valor={getValorSelecionadoFromCandidato('motivo_mudanca_situacao', opcoesDominio.motivo_mudanca_situacao)}
+                    setValor={(valor) => setCampo('motivo_mudanca_situacao', valor.code)}
+                    options={opcoesMotivoMudancaSituacao}
+                    disabled={modoLeitura}
+                />
+            ) : (
+                <CampoTexto
+                    name="motivo_mudanca_situacao"
+                    label="Motivo da Mudança de Situação"
+                    valor={candidato.motivo_mudanca_situacao || ''}
+                    setValor={(valor) => setCampo('motivo_mudanca_situacao', valor)}
+                    disabled={modoLeitura}
+                />
+            )}
+
             <DropdownItens
                 name="codigo_ocorrencia_sefip"
                 label="Código Ocorrência SEFIP"
@@ -355,6 +482,45 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={opcoesCodigoCategoriaSefip}
                 disabled={modoLeitura}
             />
+            
+            {availableDominioTables.includes('tipo_regime_jornada') ? (
+                 <DropdownItens
+                    name="tipo_regime_jornada"
+                    label="Tipo de Regime da Jornada"
+                    valor={getValorSelecionadoFromCandidato('tipo_regime_jornada', opcoesDominio.tipo_regime_jornada)}
+                    setValor={(valor) => setCampo('tipo_regime_jornada', valor.code)}
+                    options={opcoesTipoRegimeJornada}
+                    disabled={modoLeitura}
+                />
+            ) : (
+                <CampoTexto
+                    name="tipo_regime_jornada"
+                    label="Tipo de Regime da Jornada"
+                    valor={candidato.tipo_regime_jornada || ''}
+                    setValor={(valor) => setCampo('tipo_regime_jornada', valor)}
+                    disabled={modoLeitura}
+                />
+            )}
+
+            {availableDominioTables.includes('tipo_regime_previdenciario') ? (
+                <DropdownItens
+                    name="tipo_regime_previdenciario"
+                    label="Tipo de Regime Previdenciário"
+                    valor={getValorSelecionadoFromCandidato('tipo_regime_previdenciario', opcoesDominio.tipo_regime_previdenciario)}
+                    setValor={(valor) => setCampo('tipo_regime_previdenciario', valor.code)}
+                    options={opcoesTipoRegimePrevidenciario}
+                    disabled={modoLeitura}
+                />
+            ) : (
+                <CampoTexto
+                    name="tipo_regime_previdenciario"
+                    label="Tipo de Regime Previdenciário"
+                    valor={candidato.tipo_regime_previdenciario || ''}
+                    setValor={(valor) => setCampo('tipo_regime_previdenciario', valor)}
+                    disabled={modoLeitura}
+                />
+            )}
+            
             {availableDominioTables.includes('contrato_tempo_parcial') ? (
                 <DropdownItens
                     name="contrato_tempo_parcial"

@@ -14,13 +14,13 @@ const Campo = styled(InputText)`
     border-radius: 4px;
     outline: .4px solid var(--neutro-400);
     background: var(--background-label);
-    padding: ${ props => props.$padding ?  props.$padding : '22px 16px' };
+    padding: ${ props => props.$padding ?  props.$padding : '12px 16px' };
     border: none;
     display: flex;
     align-items: center;
     align-self: stretch;
     font-weight: 600;
-    width: ${ props => props.$width ?  props.$width : 'inherit' };
+    width: ${ props => props.$width ?  props.$width : '100%' };
 
     &:disabled {
         background-color: #e9ecef;
@@ -94,10 +94,10 @@ const CampoArea = styled(InputTextarea)`
     border-radius: 4px;
     outline: .4px solid var(--neutro-400);
     background: var(--background-label);
-    padding: 22px 16px;
+    padding: 12px 16px;
     border: none;
     font-weight: 600;
-    width: ${ props => props.$width ?  props.$width : 'inherit' };
+    width: ${ props => props.$width ?  props.$width : '100%' };
     min-height: 80px;
     resize: vertical;
     font-family: inherit;
@@ -129,7 +129,7 @@ const CampoArea = styled(InputTextarea)`
     }
 `
 
-function CampoTexto({ validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
+function CampoTexto({ marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -254,36 +254,21 @@ function CampoTexto({ validateError = true, label, disabled = false, readonly = 
     if (rows) {
         return (
             <div className={styles.inputContainer}>
-                {label ?
-                    <FloatLabel className={styles.lb}>
-                        <CampoArea
-                            id={name}
-                            name={name}
-                            value={valor}
-                            onChange={e => setValor(e.target.value, name)}
-                            disabled={disabled}
-                            readOnly={readonly}
-                            rows={rows}
-                            $width={width}
-                            className={(classeCampoVazio.includes(name) ? 'error' : '')}
-                            placeholder={placeholder}
-                        />
-                        <label htmlFor={name} className={styles.label}>{label}</label>
-                    </FloatLabel>
-                :
-                    <CampoArea
-                        id={name}
-                        name={name}
-                        value={valor}
-                        onChange={e => setValor(e.target.value, name)}
-                        disabled={disabled}
-                        readOnly={readonly}
-                        rows={rows}
-                        $width={width}
-                        className={(classeCampoVazio.includes(name) ? 'error' : '')}
-                        placeholder={placeholder}
-                    />
+                {label &&
+                    <label htmlFor={name} className={styles.label} style={{ marginBottom: '4px', display: 'block' }}>{label}</label>
                 }
+                <CampoArea
+                    id={name}
+                    name={name}
+                    value={valor}
+                    onChange={e => setValor(e.target.value, name)}
+                    disabled={disabled}
+                    readOnly={readonly}
+                    rows={rows}
+                    $width={width}
+                    className={(classeCampoVazio.includes(name) ? 'error' : '')}
+                    placeholder={placeholder}
+                />
                 {numeroCaracteres &&
                     <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>
                 }
@@ -301,37 +286,20 @@ function CampoTexto({ validateError = true, label, disabled = false, readonly = 
     }
 
     return (
-        <>
+        <div className={styles.container}>
             <div className={styles.inputContainer}>
                
-                {label && type!= 'date' ?
-                <FloatLabel className={styles.lb}>
-                    <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
-                    <label htmlFor={name} className={styles.label}>{label}</label>
-                </FloatLabel>
-                : 
-                    label && type == 'date' ?
-                    <>
-                        <label htmlFor={name} className={styles.label}>{label}</label>
-                        <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
-                    </>
-                    :
-                    <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                {label &&
+                    <label htmlFor={name} className={styles.label} style={{ marginBottom: '4px', display: 'block' }}>{label}</label>
                 }
+                <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&
-                    <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>
+                    <small>{`${valor?.length}/${numeroCaracteres}`}</small>
                 }
-                
-                {classeCampoVazio.includes(name)?
-                    <p className={styles.erroMessage}>Você deve preencher esse campo</p>
-                    : (erro ?
-                        <p className={styles.erroMessage}>{erro}</p>
-                        : <p className={styles.erroMessage}>&nbsp;</p>
-                    )
-                }
+                {(erro ? <p className={styles.erroMessage}>{erro}</p> : <p className={styles.erroMessage}>&nbsp;</p>)}
             </div>
-        </>
+        </div>
     )
 }
 

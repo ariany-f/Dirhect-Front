@@ -26,11 +26,9 @@ const Select = styled(Dropdown)`
     text-align: left;
     align-self: stretch;
     font-weight: 700;
-    margin-top: ${ props => props.$marginTop ?  props.$marginTop : '2px' };
     font-size: 14px;
-    width: ${ props => props.$width ?  props.$width : 'inherit' };
+    width: ${ props => props.$width ?  props.$width : '100%' };
     height: ${ props => props.$height ?  props.$height : '46px' };
-    max-width: ${ props => props.$maxWidth ?  props.$maxWidth : '40vw' };
     margin-bottom: ${ props => props.$margin ?  props.$margin : '0px' };
 
     & .p-dropdown-label {
@@ -130,7 +128,6 @@ function DropdownItens({
     $height,
     label, 
     $margin,
-    $marginTop = '2px',
     filter = false,
     camposVazios = [],
     optionTemplate, // Nova prop para o template personalizado
@@ -175,11 +172,11 @@ function DropdownItens({
     }
 
     return (
-        <>
+        <div>
             <GlobalPanelStyle />
             <div className={styles.inputContainer}>
                 {(label) ?
-                <label htmlFor={name} className={styles.label}>
+                <label htmlFor={name} className={styles.label} style={{ marginBottom: '4px', display: 'block' }}>
                     {label}{required && <span style={{color: 'var(--error)'}}> *</span>}
                 </label>
                 : ''}
@@ -191,7 +188,6 @@ function DropdownItens({
                             filter
                             id={name}
                             $margin={$margin}
-                            $marginTop={$marginTop}
                             placeholder={placeholder} 
                             options={options} 
                             value={valor} 
@@ -211,7 +207,6 @@ function DropdownItens({
                         $width={$width}
                         $height={$height}
                         $margin={$margin}
-                        $marginTop={$marginTop}
                         id={name}
                         placeholder={placeholder} 
                         options={options} 
@@ -228,11 +223,12 @@ function DropdownItens({
             </div>
             {classeCampoVazio.includes(name) ?
                 <p className={styles.erroMessage}>Você deve preencher esse campo</p>
-                : (erro &&
+                : (erro ?
                     <p className={styles.erroMessage}>{erro}</p>
+                    : <p className={styles.erroMessage}>&nbsp;</p>
                 )
             }
-        </>       
+        </div>       
     )
 }
 

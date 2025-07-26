@@ -21,8 +21,8 @@ const Col12 = styled.div`
 `
 
 const Col6 = styled.div`
-    padding: 15px 0px;
     flex: 1 1 calc(50% - 10px);
+    margin-bottom: 16px;
 `
 
 const VagasRegistro = () => {
@@ -275,7 +275,9 @@ const VagasRegistro = () => {
         <Frame gap="10px">
             <Toast ref={toast} />
             <BotaoVoltar linkFixo="/vagas" />
-            <h3>Registrar Nova Vaga</h3>
+            <br />
+            <h4>Vaga</h4>
+            <br />
             <form onSubmit={handleSubmit}>
                 <Col12>
                     <Col6>

@@ -1,7 +1,9 @@
 import CampoTexto from "@components/CampoTexto"
 import Botao from "@components/Botao"
+import BotaoGrupo from "@components/BotaoGrupo"
 import Frame from "@components/Frame"
 import Titulo from "@components/Titulo"
+import BotaoVoltar from "@components/BotaoVoltar"
 import Texto from "@components/Texto"
 import QuestionCard from '@components/QuestionCard'
 import SwitchInput from '@components/SwitchInput'
@@ -28,15 +30,43 @@ const Col12 = styled.div`
 `
 
 const Col6 = styled.div`
-    padding: 0px;
     flex: 1 1 calc(50% - 10px);
+    margin-bottom: 16px;
 `
 
-const Col4 = styled.div`
-    padding: 0px;
-    flex: 1 1 calc(33% - 10px);
+const SingleItemWrapper = styled.div`
+    width: 100%;
+    margin-bottom: 16px;
+    
+    & > div {
+        max-width: calc(50% - 5px);
+    }
 `
 
+const FullWidthWrapper = styled.div`
+    width: 100%;
+    margin-bottom: 16px;
+`
+
+const SectionTitleWrapper = styled.div`
+    width: 100%;
+    text-align: left;
+    margin-bottom: 16px;
+    margin-top: 24px;
+    
+    &:first-of-type {
+        margin-top: 0;
+    }
+`;
+
+const TitleContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 24px;
+    margin-bottom: 8px;
+`
 
 const ContainerButton = styled.div`
     display: flex;
@@ -132,17 +162,20 @@ function ColaboradorDadosIniciais() {
     };
 
     return (
-        <form>
+        <Frame gap="10px">
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <Frame estilo="spaced">
-                <Titulo>
+            <BotaoVoltar />
+            <br />
+            <h3>Colaborador</h3>
+            <br />
+            <form onSubmit={sendData}>
+                <SectionTitleWrapper>
                     <h6>Dados do Colaborador</h6>
-                </Titulo>
-            </Frame>
-            <Col12 >
-                <Col6>
-                    <CampoTexto 
+                </SectionTitleWrapper>
+                <Col12 >
+                    <Col6>
+                        <CampoTexto 
                         camposVazios={classError} 
                         patternMask={['999.999.999-99']} 
                         name="cpf" 
@@ -151,9 +184,9 @@ function ColaboradorDadosIniciais() {
                         type="text" 
                         label="CPF" 
                         placeholder="Digite o CPF do colaborador" />
-                </Col6>
-                <Col6>
-                    <CampoTexto 
+                    </Col6>
+                    <Col6>
+                        <CampoTexto 
                         camposVazios={classError} 
                         name="nome" 
                         valor={colaborador.nome} 
@@ -161,9 +194,11 @@ function ColaboradorDadosIniciais() {
                         type="text" 
                         label="Nome do colaborador" 
                         placeholder="Digite o name completo do colaborador" />
-                </Col6>
-                <Col4>
-                    <CampoTexto 
+                    </Col6>
+                </Col12>
+                <Col12>
+                    <Col6>
+                        <CampoTexto 
                         camposVazios={classError} 
                         name="email" 
                         valor={colaborador.email} 
@@ -171,9 +206,9 @@ function ColaboradorDadosIniciais() {
                         type="email" 
                         label="Email do colaborador" 
                         placeholder="Digite o email do colaborador" />
-                </Col4>
-                <Col4>
-                    <CampoTexto 
+                    </Col6>
+                    <Col6>
+                        <CampoTexto 
                         camposVazios={classError} 
                         patternMask={['99 9999-9999', '99 99999-9999']} 
                         name="phone_number" 
@@ -182,57 +217,49 @@ function ColaboradorDadosIniciais() {
                         type="text" 
                         label="Celular do colaborador" 
                         placeholder="Digite o telefone do colaborador" />
-                </Col4>
-                <Col4>
+                    </Col6>
+                </Col12>
+                <SingleItemWrapper>
                     <CampoTexto 
-                        camposVazios={classError} 
-                        name="chapa" 
-                        valor={colaborador.chapa} 
-                        setValor={setChapa} 
-                        type="text" 
-                        label="Matrícula" 
-                        placeholder="Digite a matrícula do colaborador" />
-                </Col4>
-            </Col12>
-            <Col12>
-                <Col6>
+                    camposVazios={classError} 
+                    name="chapa" 
+                    valor={colaborador.chapa} 
+                    setValor={setChapa} 
+                    type="text" 
+                    label="Matrícula" 
+                    placeholder="Digite a matrícula do colaborador" />
+                </SingleItemWrapper>
+                <FullWidthWrapper>
                     <CheckboxContainer name="remember" valor={adicionar_departamento} setValor={setAdicionarDepartamento} label="Adicionar esse colaborador em um departamento" />
-                </Col6>
-            </Col12>
-            {adicionar_departamento &&
-                <>
-                    <Frame estilo="spaced">
-                        <Titulo>
+                </FullWidthWrapper>
+                {adicionar_departamento &&
+                    <>
+                        <SectionTitleWrapper>
                             <h6>Departamento</h6>
-                        </Titulo>
-                    </Frame>
-                    <DepartamentosRecentes setValor={setDepartamento} />
-                </>
-            }
-            <Frame estilo="spaced">
-                <Titulo>
+                        </SectionTitleWrapper>
+                        <DepartamentosRecentes setValor={setDepartamento} />
+                    </>
+                }
+                <TitleContainer>
                     <h6>Endereço do Colaborador</h6>
-                </Titulo>
-                <QuestionCard element={<small>Porque precisamos do endereço?</small>}>
-                    <RiQuestionLine className="question-icon" />
-                </QuestionCard>
-            </Frame>
-            <Col12 >
-                <Col6>
+                    <QuestionCard element={<small>Porque precisamos do endereço?</small>}>
+                        <RiQuestionLine className="question-icon" />
+                    </QuestionCard>
+                </TitleContainer>
+                <FullWidthWrapper >
                     <CampoTexto 
-                        camposVazios={classError} 
-                        patternMask={['99999-999']} 
-                        name="cep" 
-                        valor={colaborador.cep} 
-                        setValor={setCep} 
-                        type="text" 
-                        label="CEP" 
-                        placeholder="Digite o CEP do colaborador" />
-                </Col6>
-            </Col12>
-            <Col12>
-                <Col6>
-                    <CampoTexto 
+                    camposVazios={classError} 
+                    patternMask={['99999-999']} 
+                    name="cep" 
+                    valor={colaborador.cep} 
+                    setValor={ChangeCep} 
+                    type="text" 
+                    label="CEP" 
+                    placeholder="Digite o CEP do colaborador" />
+                </FullWidthWrapper>
+                <Col12>
+                    <Col6>
+                        <CampoTexto 
                         camposVazios={classError} 
                         name="rua" 
                         valor={colaborador.rua} 
@@ -240,9 +267,9 @@ function ColaboradorDadosIniciais() {
                         type="text" 
                         label="Logradouro" 
                         placeholder="Digite a rua do colaborador" />
-                </Col6>
-                <Col6>
-                    <CampoTexto 
+                    </Col6>
+                    <Col6>
+                        <CampoTexto 
                         camposVazios={classError} 
                         name="bairro" 
                         valor={colaborador.bairro} 
@@ -250,9 +277,11 @@ function ColaboradorDadosIniciais() {
                         type="text" 
                         label="Bairro" 
                         placeholder="Digite o Bairro do colaborador" />
-                </Col6>
-                <Col6>
-                    <CampoTexto 
+                    </Col6>
+                </Col12>
+                <Col12>
+                    <Col6>
+                        <CampoTexto 
                         camposVazios={classError} 
                         name="numero" 
                         valor={colaborador.numero} 
@@ -260,18 +289,20 @@ function ColaboradorDadosIniciais() {
                         type="text" 
                         label="Número" 
                         placeholder="Digite o número" />
-                </Col6>
-                <Col6>
-                    <CampoTexto 
-                        name="complemento" 
+                    </Col6>
+                    <Col6>
+                        <CampoTexto 
+                            name="complemento" 
                         valor={colaborador.complemento} 
                         setValor={setComplemento} 
                         type="text" 
                         label="Complemento (opcional)" 
                         placeholder="Digite o complemento" />
-                </Col6>
-                <Col6>
-                    <CampoTexto 
+                    </Col6>
+                </Col12>
+                <Col12>
+                    <Col6>
+                        <CampoTexto 
                         camposVazios={classError} 
                         name="cidade" 
                         valor={colaborador.cidade} 
@@ -279,16 +310,14 @@ function ColaboradorDadosIniciais() {
                         type="text" 
                         label="Cidade" 
                         placeholder="Digite a cidade do colaborador" />
-                </Col6>
-                <Col6>
-                    <DropdownItens camposVazios={classError} valor={colaborador.address_state} setValor={setEstado} options={estados} label="UF" name="address_state" placeholder="Digite a UF do colaborador"/>
-                </Col6>
-            </Col12>
-            <ContainerButton>
-                <Botao aoClicar={() => navigate('/colaborador')} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
-                <Botao aoClicar={(evento) => sendData(evento)} estilo="vermilion" size="medium" filled>Adicionar Colaborador</Botao>
-            </ContainerButton>
-        </form>
+                    </Col6>
+                    <Col6>
+                        <DropdownItens camposVazios={classError} valor={colaborador.estado} setValor={setEstado} options={estados} label="UF" name="address_state" placeholder="Digite a UF do colaborador"/>
+                    </Col6>
+                </Col12>
+                <Botao type="submit" estilo="vermilion" size="medium" filled>Adicionar Colaborador</Botao>
+            </form>
+        </Frame>
     )
 }
 

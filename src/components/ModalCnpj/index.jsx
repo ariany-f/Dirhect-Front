@@ -249,7 +249,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
     return(
         <>
             {opened &&
-            <Overlay>
+            <Overlay style={{ zIndex: 10002 }}>
                 <DialogEstilizado id="modal-cnpj" open={opened}>
                     <Frame gap="16px">
                         <Titulo>
