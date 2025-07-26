@@ -68,7 +68,7 @@ const BarraLateralEstilizada = styled.aside`
     transition: .5s cubic-bezier(.36,-0.01,0,.77);
     gap: 32px;
     flex-shrink: 0;
-    background: linear-gradient(to bottom, var(--secundaria), var(--gradient-secundaria));
+    background: linear-gradient(to bottom, var(--terciaria), var(--gradient-secundaria));
 
     @media screen and (max-width: 760px) {
         position: fixed;

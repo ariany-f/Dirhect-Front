@@ -3,6 +3,7 @@ import BrandColors from '@utils/brandColors'
 
 const brandColors = BrandColors.getBrandColors();
 const colorVariations = BrandColors.generateColorVariations(brandColors.primary);
+const secondaryColorVariations = BrandColors.generateColorVariations(brandColors.secondary);
 
 const EstilosGlobais = createGlobalStyle`
   :root {
@@ -23,6 +24,15 @@ const EstilosGlobais = createGlobalStyle`
       /* Cores secundárias - configuráveis via .env */
       --gradient-secundaria: ${brandColors.secondary};
       --secundaria: ${brandColors.accent};
+      --secundaria-50: ${secondaryColorVariations['--secundaria-50']};
+      --secundaria-100: ${secondaryColorVariations['--secundaria-100']};
+      --secundaria-200: ${secondaryColorVariations['--secundaria-200']};
+      --secundaria-300: ${secondaryColorVariations['--secundaria-300']};
+      --secundaria-400: ${secondaryColorVariations['--secundaria-400']};
+      --secundaria-500: ${secondaryColorVariations['--secundaria-500']};
+      --secundaria-600: ${secondaryColorVariations['--secundaria-600']};
+
+      --terciaria: ${brandColors.tertiary};
       
       /* Cores fixas (não mudam com a marca) */
       --astra-50: #FCFBEA;
@@ -36,7 +46,6 @@ const EstilosGlobais = createGlobalStyle`
       --astra-800: #7D4F16;
       --astra-900: #6A4119;
       --astra-950: #3E220A;
-      --terciaria: #81EFC1;
       --green-50: #EBFEF5;
       --green-100: #CFFCE4;
       --green-200: #A4F6CE;

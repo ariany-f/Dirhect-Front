@@ -436,7 +436,7 @@ function DetalhesVaga() {
                                                 vagaEncerrada() ? "Não é possível adicionar candidatos para uma vaga encerrada" : ""
                                             }
                                         >
-                                            <FaArrowAltCircleRight fill="white" />
+                                            <FaArrowAltCircleRight fill="var(--secundaria)" />
                                             Adicionar Candidato
                                         </Botao>
                                     </>
@@ -568,7 +568,7 @@ function DetalhesVaga() {
                             disabled={vaga?.status === 'T'}
                             title={vaga?.status === 'T' ? "Não é possível adicionar documentos em vagas transferidas" : ""}
                         >
-                            <GrAddCircle stroke="white" /> Adicionar documento requerido
+                            <GrAddCircle stroke="var(--secundaria)" /> Adicionar documento requerido
                         </Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>

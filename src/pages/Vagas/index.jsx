@@ -45,7 +45,7 @@ const Vagas = () => {
                 </BotaoGrupo>
                 <BotaoGrupo align="center">
                     <Link to="/vagas/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white"/> Cadastrar Vaga</Botao>
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)"/> Cadastrar Vaga</Botao>
                     </Link>
                     
                     <BotaoSemBorda color="var(--primaria)">

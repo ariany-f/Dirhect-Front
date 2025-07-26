@@ -101,7 +101,7 @@ function DocumentosConfiguracoes() {
                     
                         <BotaoGrupo>
                             <Botao size="small" aoClicar={() => { setDocumentoEditando(null); setModalAberto(true); }}>
-                                <GrAddCircle stroke="white" /> Novo Documento
+                                <GrAddCircle stroke="var(--secundaria)" /> Novo Documento
                             </Botao>
                         </BotaoGrupo>
                     }

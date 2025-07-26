@@ -4,7 +4,7 @@ import { Ripple } from 'primereact/ripple';
 
 const BotaoEstilizado = styled.button`
     display: ${ props => props.$flex ? 'flex' : 'inline-block'};
-    border-radius: 40px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all .1s linear;
     border: none;

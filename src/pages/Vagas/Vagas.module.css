@@ -23,7 +23,7 @@
 
 .icon * {
     box-sizing: initial;
-    stroke: var(--white);
+    stroke: var(--secundaria);
 }
 .item {
     margin-bottom: 15px;

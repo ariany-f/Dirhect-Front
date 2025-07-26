@@ -4,7 +4,8 @@ export class BrandColors {
     static defaultColors = {
       primary: '#0c004c',
       secondary: '#5d0b62',
-      accent: '#fd95ff'
+      accent: '#fd95ff',
+      tertiary: '#000000'
     };
     
     // Obter cores do .env ou usar padrão
@@ -12,11 +13,13 @@ export class BrandColors {
       const envPrimary = import.meta.env.VITE_BRAND_PRIMARY_COLOR;
       const envSecondary = import.meta.env.VITE_BRAND_SECONDARY_COLOR;
       const envAccent = import.meta.env.VITE_BRAND_ACCENT_COLOR;
+      const envTertiary = import.meta.env.VITE_BRAND_TERTIARY_COLOR;
       
       return {
         primary: envPrimary || this.defaultColors.primary,
         secondary: envSecondary || this.defaultColors.secondary,
-        accent: envAccent || this.defaultColors.accent
+        accent: envAccent || this.defaultColors.accent,
+        tertiary: envTertiary || this.defaultColors.tertiary
       };
     }
   
@@ -84,6 +87,17 @@ export class BrandColors {
         '--vermilion-800': isDark ? adjustBrightness(primaryColor, 0.20) : adjustDarkness(primaryColor, 0.80),
         '--vermilion-900': isDark ? adjustBrightness(primaryColor, 0.10) : adjustDarkness(primaryColor, 0.90),
         '--vermilion-950': isDark ? adjustBrightness(primaryColor, 0.05) : adjustDarkness(primaryColor, 0.95),
+        '--secundaria-50': isDark ? adjustBrightness(primaryColor, 0.95) : adjustDarkness(primaryColor, 0.05),
+        '--secundaria-100': isDark ? adjustBrightness(primaryColor, 0.90) : adjustDarkness(primaryColor, 0.10),
+        '--secundaria-200': isDark ? adjustBrightness(primaryColor, 0.80) : adjustDarkness(primaryColor, 0.20),
+        '--secundaria-300': isDark ? adjustBrightness(primaryColor, 0.70) : adjustDarkness(primaryColor, 0.30),
+        '--secundaria-400': isDark ? adjustBrightness(primaryColor, 0.60) : adjustDarkness(primaryColor, 0.40),
+        '--secundaria-500': isDark ? adjustBrightness(primaryColor, 0.50) : adjustDarkness(primaryColor, 0.50),
+        '--secundaria-600': isDark ? adjustBrightness(primaryColor, 0.40) : adjustDarkness(primaryColor, 0.60),
+        '--secundaria-700': isDark ? adjustBrightness(primaryColor, 0.30) : adjustDarkness(primaryColor, 0.70),
+        '--secundaria-800': isDark ? adjustBrightness(primaryColor, 0.20) : adjustDarkness(primaryColor, 0.80),
+        '--secundaria-900': isDark ? adjustBrightness(primaryColor, 0.10) : adjustDarkness(primaryColor, 0.90),
+        '--secundaria-950': isDark ? adjustBrightness(primaryColor, 0.05) : adjustDarkness(primaryColor, 0.95),
       };
     }
   

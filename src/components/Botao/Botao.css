@@ -23,44 +23,112 @@
 /** Vermilion */
 .vermilion.filled {
     background-color: var(--primaria);
+    color: var(--cor-secundaria);
+    font-weight: 600;
+    width: -webkit-fill-available;
+}
+.vermilion.filled:hover {
+    background-color: var(--secundaria-300);
+}
+.vermilion.filled:active {
+    background-color: var(--secundaria-400);
+}
+
+.white.filled {
+    background-color: var(--white);
+    color: var(--black);
+}
+.white.filled:hover {
+    background-color: var(--white);
+}
+.white.filled:active {
+    background-color: var(--white);
+}
+
+.black.filled {
+    background-color: var(--black);
     color: var(--white);
 }
-
-.vermilion.default {
-    color: var(--primaria);
-    border-color: var(--primaria);
+.black.filled:hover {
+    background-color: var(--black);
+}
+.black.filled:active {
+    background-color: var(--black);
 }
 
-.vermilion.outline {
-    background-color: var(--vermilion-50);
-    color: var(--primaria);
+.vermilion.outlined {
+    background-color: var(--white);
+    color: var(--vermilion);
+    border: 1px solid var(--vermilion);
+}
+.vermilion.outlined:hover {
+    background-color: var(--neutro-100);
+    border: 1px solid var(--vermilion);
+}
+.vermilion.outlined:active {
+    background-color: var(--neutro-100);
+    border: 1px solid var(--vermilion);
 }
 
-.vermilion.filled:hover {
-    background-color: var(--vermilion-400);
+.white.outlined {
+    background-color: var(--white);
+    color: var(--black);
+    border: 1px solid var(--black);
+}
+.white.outlined:hover {
+    background-color: var(--neutro-100);
+    border: 1px solid var(--black);
+}
+.white.outlined:active {
+    background-color: var(--neutro-100);
+    border: 1px solid var(--black);
 }
 
-.vermilion.default:hover {
-    background-color: var(--vermilion-50);
+.black.outlined {
+    background-color: transparent;
+    color: var(--black);
+    border: 1px solid var(--black);
+}
+.black.outlined:hover {
+    background-color: var(--neutro-100);
+    border: 1px solid var(--black);
+}
+.black.outlined:active {
+    background-color: var(--neutro-100);
+    border: 1px solid var(--black);
 }
 
-.vermilion.outline:hover {
-    background-color: var(--vermilion-200);
+.vermilion.text-only {
+    background-color: transparent;
+    color: var(--vermilion);
+}
+.vermilion.text-only:hover {
+    background-color: var(--neutro-100);
+}
+.vermilion.text-only:active {
+    background-color: var(--neutro-100);
 }
 
-.vermilion.filled:disabled {
-    background-color: var(--vermilion-200);
-    color: var(--vermilion-700);
+.white.text-only {
+    background-color: transparent;
+    color: var(--black);
+}
+.white.text-only:hover {
+    background-color: var(--neutro-100);
+}
+.white.text-only:active {
+    background-color: var(--neutro-100);
 }
 
-.vermilion.default:disabled {
-    background-color: var(--vermilion-700);
-    color: var(--primaria);
+.black.text-only {
+    background-color: transparent;
+    color: var(--black);
 }
-
-.vermilion.outline:disabled {
-    background-color: var(--vermilion-50);
-    color: var(--primaria);
+.black.text-only:hover {
+    background-color: var(--neutro-100);
+}
+.black.text-only:active {
+    background-color: var(--neutro-100);
 }
 
 /** Astra */
@@ -145,5 +213,14 @@
 
 /** Button for tab */
 .tab {
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    color: var(--cinza-600);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+    border: 1px solid transparent;
     width: fit-content!important;
+    transition: all .1s linear;
 }

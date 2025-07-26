@@ -70,25 +70,35 @@ const ElegibilidadeLista = () => {
     const [horarios, setHorarios] = useState([])
     const [abasDisponiveis, setAbasDisponiveis] = useState([])
     const [colaboradores, setColaboradores] = useState([])
+    const [rawColaboradores, setRawColaboradores] = useState([])
 
-    const fetchData = (endpoint, setter) => {
-        http.get(`${endpoint}/?format=json`)
-            .then((response) => { setter(response); })
-            .catch((err) => { console.log(err); setLoading(false); })
-    }
-
-    // Primeiro useEffect para carregar os dados iniciais
     useEffect(() => {
-        fetchData('filial', setFiliais);
-        fetchData('departamento', setDepartamentos);
-        fetchData('secao', setSecoes);
-        fetchData('cargo', setCargos);
-        fetchData('centro_custo', setCentrosCusto);
-        fetchData('sindicato', setSindicatos);
-        fetchData('horario', setHorarios);
-        fetchData('funcao', setFuncoes);
-        fetchData('funcionario', setColaboradores);
-    }, [])
+        const endpoints = [
+            'filial', 'departamento', 'secao', 'cargo', 
+            'centro_custo', 'sindicato', 'horario', 'funcao', 'funcionario'
+        ];
+
+        Promise.all(endpoints.map(endpoint => http.get(`${endpoint}/?format=json`)))
+            .then(responses => {
+                setFiliais(responses[0]);
+                setDepartamentos(responses[1]);
+                setSecoes(responses[2]);
+                setCargos(responses[3]);
+                setCentrosCusto(responses[4]);
+                setSindicatos(responses[5]);
+                setHorarios(responses[6]);
+                setFuncoes(responses[7]);
+                setRawColaboradores(responses[8]);
+                setDadosCarregados(true);
+            })
+            .catch(err => {
+                console.error("Erro ao carregar dados de elegibilidade:", err);
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Não foi possível carregar os dados de elegibilidade.' });
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
 
     useEffect(() => {
         if (context) {
@@ -103,19 +113,6 @@ const ElegibilidadeLista = () => {
             setAbasDisponiveis(abasUnicas);
         }
     }, [context]);
-
-    // Segundo useEffect para verificar se todos os dados foram carregados
-    useEffect(() => {
-        const todasAsListasCarregadas = [
-            filiais, departamentos, secoes, cargos,
-            funcoes, centros_custo, sindicatos, horarios
-        ].every(lista => Array.isArray(lista) && lista.length > 0);
-
-        if (todasAsListasCarregadas && !dadosCarregados) {
-            setDadosCarregados(true)
-            setLoading(false)
-        }
-    }, [filiais, departamentos, secoes, cargos, funcoes, centros_custo, sindicatos, horarios, dadosCarregados])
 
     // Terceiro useEffect para processar os dados de elegibilidade
     useEffect(() => {
@@ -166,7 +163,7 @@ const ElegibilidadeLista = () => {
 
     // Novo useEffect para processar os colaboradores
     useEffect(() => {
-        if (colaboradores && colaboradores.length > 0 && colaboradorElegibilidade) {
+        if (rawColaboradores && rawColaboradores.length > 0 && colaboradorElegibilidade) {
             // Primeiro, mapeia os benefícios por funcionário
             const beneficiosPorFuncionario = {};
             colaboradorElegibilidade.forEach(beneficio => {
@@ -190,14 +187,16 @@ const ElegibilidadeLista = () => {
             });
 
             // Depois, atualiza os colaboradores com seus benefícios
-            const colaboradoresAtualizados = colaboradores.map(colaborador => ({
+            const colaboradoresAtualizados = rawColaboradores.map(colaborador => ({
                 ...colaborador,
                 elegibilidade: beneficiosPorFuncionario[colaborador.id] || []
             }));
 
             setColaboradores(colaboradoresAtualizados);
+        } else if (rawColaboradores) {
+            setColaboradores(rawColaboradores)
         }
-    }, [colaboradores, colaboradorElegibilidade]);
+    }, [rawColaboradores, colaboradorElegibilidade]);
 
     const renderizarAba = (nome, componente) => {
         // Se for a aba de colaboradores
