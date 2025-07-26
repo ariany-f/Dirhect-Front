@@ -465,6 +465,8 @@ const CandidatoRegistro = () => {
     const [funcoes, setFuncoes] = useState([]);
     const [sindicatos, setSindicatos] = useState([]);
     const [estados, setEstados] = useState([]);
+    const [opcoesDominio, setOpcoesDominio] = useState({});
+    const [availableDominioTables, setAvailableDominioTables] = useState([]);
     const toast = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [showModalConfirmacao, setShowModalConfirmacao] = useState(false);
@@ -590,6 +592,8 @@ const CandidatoRegistro = () => {
                         }
                     })
                 })
+                .catch(() => {})
+                .finally(() => {});
         }
 
         // Refatoração: array de endpoints e setters
@@ -610,6 +614,30 @@ const CandidatoRegistro = () => {
                 .catch(() => {})
                 .finally(() => {});
         });
+
+        // 1. Fetch the list of available domain tables
+        http.get('tabela_dominio/')
+            .then(response => {
+                const availableTables = response.tabelas_disponiveis || [];
+                setAvailableDominioTables(availableTables);
+                // 2. Fetch records only for available tables
+                Promise.all(
+                    availableTables.map(tabela =>
+                        http.get(`tabela_dominio/${tabela}/`)
+                            .then(res => ({ [tabela]: res?.registros || [] }))
+                            .catch(error => {
+                                console.error(`Erro ao buscar tabela_dominio/${tabela}/`, error);
+                                return { [tabela]: [] };
+                            })
+                    )
+                ).then(resultados => {
+                    const novasOpcoes = resultados.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+                    setOpcoesDominio(novasOpcoes);
+                });
+            })
+            .catch(error => {
+                console.error("Erro ao buscar a lista de tabelas de domínio:", error);
+            });
     }, [])
 
     // Fechar modal com ESC
@@ -1054,6 +1082,26 @@ const CandidatoRegistro = () => {
                 tipo_situacao: candidato.tipo_situacao,
                 aceite_lgpd: candidato.aceite_lgpd,
                 anotacoes: candidato.anotacoes || '',
+                
+                // Novos campos
+                motivo_admissao: candidato.motivo_admissao,
+                dt_transferencia: candidato.dt_transferencia,
+                dt_mudanca_tipo_funcionario: candidato.dt_mudanca_tipo_funcionario,
+                codigo_categoria_esocial: candidato.codigo_categoria_esocial,
+                dt_mudanca_categoria: candidato.dt_mudanca_categoria,
+                funcao_emprego_cargoacumulavel: candidato.funcao_emprego_cargoacumulavel,
+                dt_mudanca_funcao: candidato.dt_mudanca_funcao,
+                tipo_recebimento: candidato.tipo_recebimento,
+                dt_mudanca_recebimento: candidato.dt_mudanca_recebimento,
+                mensal: candidato.mensal,
+                dt_mudanca_salario: candidato.dt_mudanca_salario,
+                letra: candidato.letra,
+                dt_mudanca_horario: candidato.dt_mudanca_horario,
+                contrato_tempo_parcial: candidato.contrato_tempo_parcial,
+                dt_mudanca_jornada: candidato.dt_mudanca_jornada,
+                dt_mudanca_situacao: candidato.dt_mudanca_situacao,
+                codigo_ocorrencia_sefip: candidato.codigo_ocorrencia_sefip,
+                codigo_categoria_sefip: candidato.codigo_categoria_sefip
             };
 
             // Remove campos vazios do payload antes de enviar
@@ -2459,6 +2507,8 @@ const CandidatoRegistro = () => {
                                             funcoes={funcoes}
                                             sindicatos={sindicatos}
                                             modoLeitura={modoLeitura}
+                                            opcoesDominio={opcoesDominio}
+                                            availableDominioTables={availableDominioTables}
                                         />
                                     </ScrollPanel>
                                 </div>
@@ -2747,7 +2797,7 @@ const CandidatoRegistro = () => {
                                         <RiUpload2Fill /> Alterar Imagem
                                     </ImageModalButton>
                                     <ImageModalButton className="danger" onClick={handleRemoveImage}>
-                                        <HiX fill="var(--secundaria)" /> Remover Imagem
+                                        <HiX fill="var(--white)" /> Remover Imagem
                                     </ImageModalButton>
                                 </>
                             )}
