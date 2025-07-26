@@ -22,6 +22,7 @@ import { Real } from '@utils/formats'
 import { PrimeIcons } from 'primereact/api'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import http from '@http'
+import CustomImage from '@components/CustomImage'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -362,7 +363,7 @@ function DetalhesTarefas() {
                       <div style={{display: 'flex', alignItems: 'center', gap: 14, minWidth: 220, justifyContent: 'flex-end'}}>
                         {cliente ? (
                           <>
-                            <img src={cliente.simbolo} alt={cliente.nome} width={38} height={38} style={{borderRadius: '50%', border: '2px solid #eee'}} />
+                            <CustomImage src={cliente.simbolo} alt={cliente.nome} width="38px" height="38px" style={{borderRadius: '50%', border: '2px solid #eee'}} />
                             <div>
                               <Texto weight={700} size={14} style={{textAlign: 'right'}}>{cliente.nome}</Texto>
                             </div>
