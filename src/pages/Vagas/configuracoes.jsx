@@ -196,7 +196,7 @@ function ConfiguracoesVagas() {
                     <h3>Configurações de Emails</h3>
                     <BotaoGrupo>
                         <Botao size="small" aoClicar={() => handleOpenModal()}>
-                            <GrAddCircle stroke="white" /> Novo Modelo de Email
+                            <GrAddCircle stroke="var(--secundaria)" /> Novo Modelo de Email
                         </Botao>
                     </BotaoGrupo>
                 </Header>

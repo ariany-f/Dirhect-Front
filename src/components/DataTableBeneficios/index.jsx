@@ -405,7 +405,7 @@ function DataTableBeneficios({
                         <CiSettings size={16}/> <Link to={'/tipos-beneficio'} className={styles.link}>Tipos de Benefício</Link>
                     </BotaoSemBorda>
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
-                        <GrAddCircle className={styles.icon} stroke="white"/> {t('add')} Benefício
+                        <GrAddCircle className={styles.icon} stroke="var(--secundaria)"/> {t('add')} Benefício
                     </Botao>
                 </BotaoGrupo>
             </BotaoGrupo>

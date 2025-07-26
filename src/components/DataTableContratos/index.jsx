@@ -443,7 +443,7 @@ function DataTableContratos({
                     </span>
                     <BotaoGrupo align="end">
                         <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
-                            <GrAddCircle className={styles.icon} stroke="white"/> Criar Contrato
+                            <GrAddCircle className={styles.icon} stroke="var(--secundaria)"/> Criar Contrato
                         </Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>

@@ -358,7 +358,7 @@ function DataTableTiposBeneficio({
                 />
                 <BotaoGrupo align="end">
                     <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab>
-                        <GrAddCircle className={styles.icon} stroke="white"/> {t('add')} Tipo de Benefício
+                        <GrAddCircle className={styles.icon} stroke="var(--secundaria)"/> {t('add')} Tipo de Benefício
                     </Botao>
                 </BotaoGrupo>
             </BotaoGrupo>
