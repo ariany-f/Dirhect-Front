@@ -1329,7 +1329,7 @@ function ColaboradorDetalhes() {
                             <RiUpload2Fill /> Alterar Imagem
                         </ImageModalButton>
                         <ImageModalButton onClick={handleRemoveImage} style={{background: '#ef4444', color: 'white'}}>
-                            <FaTrash /> Remover Imagem
+                            <FaTrash fill='var(--secundaria)'/> Remover Imagem
                         </ImageModalButton>
                         <ImageModalButton onClick={() => setShowImageModal(false)}>
                             <HiX /> Fechar
