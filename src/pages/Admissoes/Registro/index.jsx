@@ -2445,7 +2445,7 @@ const CandidatoRegistro = () => {
                     </StepperPanel>
                     
                     {!self && (
-                        <StepperPanel header="Dados Cadastrais">
+                        <StepperPanel header="Dados Contratuais">
                             <Container padding={'0'}>
                                 <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                     <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
