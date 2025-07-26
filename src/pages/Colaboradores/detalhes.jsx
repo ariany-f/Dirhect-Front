@@ -953,7 +953,7 @@ function ColaboradorDetalhes() {
                             
                             {colaborador?.tipo_situacao_descricao == 'Ativo' && ArmazenadorToken.hasPermission('add_demissao') && (
                                 <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="vermilion" size="small">
-                                    <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> 
+                                    <FaUserTimes fill='var(--secundaria)' size={16} style={{marginRight: '8px'}} /> 
                                     Solicitar Demissão
                                 </Botao>
                             )}

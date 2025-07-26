@@ -1,4 +1,5 @@
 import Botao from "@components/Botao"
+import BotaoGrupo from "@components/BotaoGrupo"
 import Frame from "@components/Frame"
 import Titulo from "@components/Titulo"
 import RadioButton from "@components/RadioButton"
@@ -299,10 +300,10 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                         </Frame>
                     </Frame>
                     <form method="dialog">
-                        <div className={styles.containerBottom}>
+                        <BotaoGrupo>
                             <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" size="medium" filled>{t('cancel')}</Botao>
                             <Botao aoClicar={selectCompany} estilo="vermilion" size="medium" filled>{t('change')}</Botao>
-                        </div>
+                        </BotaoGrupo>
                     </form>
                 </DialogEstilizado>
             </Overlay>}
