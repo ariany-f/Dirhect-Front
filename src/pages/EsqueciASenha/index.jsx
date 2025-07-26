@@ -98,6 +98,7 @@ function EsqueciASenha() {
 
         if(document.querySelectorAll("form .error").length === 0 && document.querySelectorAll('input:not([value]), input[value=""]').length === 0)
         {
+            setLoading(true);
             solicitarCodigoRecuperacaoSenha()
                 .then((response) => {
                     if(response.detail && response.detail !== "Se o email estiver registrado no sistema, você receberá um link para redefinição de senha.")
@@ -123,6 +124,9 @@ function EsqueciASenha() {
                         toast.error('Erro ao solicitar código de recuperação de senha!')
                     }
                 })
+                .finally(() => {
+                    setLoading(false);
+                });
         }
     }
 
@@ -146,7 +150,7 @@ function EsqueciASenha() {
                     <CampoTexto tipo="email" camposVazios={classError} name="email" valor={usuario.email} setValor={setEmail} label="E-mail do responsável" placeholder="Digite o E-mail do responsável" />
                 </Frame>
             </form>
-            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled disabled={loading}>{loading ? 'Aguarde...' : 'Confirmar'}</Botao>
         </>
     )
 }
