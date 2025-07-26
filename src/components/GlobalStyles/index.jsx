@@ -310,7 +310,7 @@ template {
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
   background-color: var(--neutro-300);
   color: var(--black);
-  border-radius: 50px;
+  border-radius: 8px;
   padding: 8px 12px;
   & .p-tabview-title {
     color: var(--black);
@@ -326,7 +326,7 @@ template {
   background-color: var(--black);
   border: none;
   color: var(--white);
-  border-radius: 50px;
+  border-radius: 8px;
   padding: 8px 12px;
   & .p-tabview-title {
     color: var(--white);
