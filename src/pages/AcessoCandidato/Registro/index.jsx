@@ -361,7 +361,7 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
                     {/* Botões específicos por step */}
                     {activeIndex === 0 && (
                         <Botao size="small" label="Next" iconPos="right" aoClicar={handleAvancar}>
-                            <HiArrowRight fill="white"/> Continuar
+                            <HiArrowRight fill="var(--secundaria)"/> Continuar
                         </Botao>
                     )}
                     
@@ -369,10 +369,10 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
                     {(activeIndex >= 1 && activeIndex <= 4) && (
                         <>
                             <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
-                                <FaSave fill="white"/> Salvar
+                                <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
                             <Botao size="small" label="Next" iconPos="right" aoClicar={handleSalvarEContinuar}>
-                                <HiArrowRight fill="white"/> Salvar e Continuar
+                                <HiArrowRight fill="var(--secundaria)"/> Salvar e Continuar
                             </Botao>
                         </>
                     )}
@@ -381,10 +381,10 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
                     {activeIndex === 5 && (
                         <>
                             <Botao size="small" iconPos="right" aoClicar={handleSalvarAdmissao}>
-                                <FaSave fill="white"/> Salvar
+                                <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
                             <Botao size="small" label="Next" iconPos="right" aoClicar={handleFinalizarDocumentos}>
-                                <RiExchangeFill fill="white"/> Finalizar
+                                <RiExchangeFill fill="var(--secundaria)"/> Finalizar
                             </Botao>
                         </>
                     )}
@@ -396,7 +396,7 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
                             aoClicar={handleAceitarLGPD}
                             disabled={admissao.aceite_lgpd}
                         >
-                            <FaSave fill="white"/> {admissao.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Finalizar'}
+                            <FaSave fill="var(--secundaria)"/> {admissao.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Finalizar'}
                         </Botao>
                     )}
                 </div>

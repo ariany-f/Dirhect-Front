@@ -118,7 +118,7 @@ function ModalHistoricoAdmissao({ opened = false, aoFechar, candidato }) {
                                         }}
                                         onClick={() => handleReenviar(item)}
                                     >
-                                        <FaRegPaperPlane fill="white" size={8} /> Reenviar
+                                        <FaRegPaperPlane fill="var(--secundaria)" size={8} /> Reenviar
                                     </button>
                                 )}
                             </TimelineTitle>

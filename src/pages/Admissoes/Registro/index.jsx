@@ -1558,7 +1558,7 @@ const CandidatoRegistro = () => {
                     {/* Botões específicos por step */}
                     {activeIndex === 0 && (
                         <Botao size="small" label="Next" iconPos="right" aoClicar={handleAvancar}>
-                            <HiArrowRight fill="white"/> Continuar
+                            <HiArrowRight fill="var(--secundaria)"/> Continuar
                         </Botao>
                     )}
                     
@@ -1571,7 +1571,7 @@ const CandidatoRegistro = () => {
                                 aoClicar={handleSalvarAdmissao}
                                 disabled={modoLeitura}
                             >
-                                <FaSave fill="white"/> Salvar
+                                <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
                             <Botao 
                                 size="small" 
@@ -1579,7 +1579,7 @@ const CandidatoRegistro = () => {
                                 iconPos="right" 
                                 aoClicar={handleSalvarEContinuar}
                             >
-                                <HiArrowRight fill="white"/> Próximo
+                                <HiArrowRight fill="var(--secundaria)"/> Próximo
                             </Botao>
                         </>
                     )}
@@ -1593,7 +1593,7 @@ const CandidatoRegistro = () => {
                                 aoClicar={handleSalvarAdmissao}
                                 disabled={modoLeitura}
                             >
-                                <FaSave fill="white"/> Salvar
+                                <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
                             {self ? (
                                 <Botao 
@@ -1601,7 +1601,7 @@ const CandidatoRegistro = () => {
                                     aoClicar={handleAceitarLGPD}
                                     disabled={candidato.aceite_lgpd || modoLeitura}
                                 >
-                                    <FaSave fill="white"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Finalizar'}
+                                    <FaSave fill="var(--secundaria)"/> {candidato.aceite_lgpd ? 'Termo Aceito' : 'Aceitar e Finalizar'}
                                 </Botao>
                             ) : (
                                 <Botao 
@@ -1611,7 +1611,7 @@ const CandidatoRegistro = () => {
                                     aoClicar={handleFinalizarDocumentos}
                                     disabled={!podeFinalizar}
                                 >
-                                    <RiExchangeFill fill="white"/> Finalizar
+                                    <RiExchangeFill fill="var(--secundaria)"/> Finalizar
                                 </Botao>
                             )}
                         </>
@@ -2225,7 +2225,7 @@ const CandidatoRegistro = () => {
                                                 }}></div>
                                             ) : (
                                                 <UploadIcon>
-                                                    <RiUpload2Fill fill="white"/>
+                                                    <RiUpload2Fill fill="var(--secundaria)"/>
                                                 </UploadIcon>
                                             )}
                                         </UploadDropzone>
@@ -2370,7 +2370,7 @@ const CandidatoRegistro = () => {
                                             e.target.style.background = 'rgba(255, 255, 255, 0.2)';
                                         }}
                                     >
-                                        <HiEye fill="white" size={14}/> Visão do Candidato
+                                        <HiEye fill="var(--secundaria)" size={14}/> Visão do Candidato
                                     </button>
                                 ))
                                 :
@@ -2399,7 +2399,7 @@ const CandidatoRegistro = () => {
                                             e.target.style.background = 'rgba(255, 255, 255, 0.2)';
                                         }}
                                     >
-                                        <HiEye fill="white" size={14}/> Visão da Empresa
+                                        <HiEye fill="var(--secundaria)" size={14}/> Visão da Empresa
                                     </button>
                                 ))
                             }
@@ -2535,7 +2535,7 @@ const CandidatoRegistro = () => {
                     <ModalContainer>
                         <ModalHeader>
                             <ModalTitle>
-                                <HiCheckCircle fill="white" /> Confirmação de Finalização
+                                <HiCheckCircle fill="var(--secundaria)" /> Confirmação de Finalização
                             </ModalTitle>
                             <CloseButton onClick={handleCancelarFinalizacao}>
                                 <HiX />
@@ -2607,7 +2607,7 @@ const CandidatoRegistro = () => {
                                 <HiX /> Cancelar
                             </ModalButton>
                             <ModalButton className="primary" onClick={handleConfirmarFinalizacao}>
-                                <HiCheckCircle fill="white" /> Sim, finalizar
+                                <HiCheckCircle fill="var(--secundaria)" /> Sim, finalizar
                             </ModalButton>
                         </ModalFooter>
                     </ModalContainer>
@@ -2620,7 +2620,7 @@ const CandidatoRegistro = () => {
                     <ModalContainer>
                         <ModalHeader>
                             <ModalTitle>
-                                <HiCheckCircle fill="white" /> Confirmação de Salvamento de Dependentes
+                                <HiCheckCircle fill="var(--secundaria)" /> Confirmação de Salvamento de Dependentes
                             </ModalTitle>
                             <CloseButton onClick={handleCancelarDependentes}>
                                 <HiX />
@@ -2713,7 +2713,7 @@ const CandidatoRegistro = () => {
                                 <HiX /> Cancelar
                             </ModalButton>
                             <ModalButton className="primary" onClick={handleConfirmarDependentes}>
-                                <HiCheckCircle fill="white" /> Sim, salvar dependentes
+                                <HiCheckCircle fill="var(--secundaria)" /> Sim, salvar dependentes
                             </ModalButton>
                         </ModalFooter>
                     </ModalContainer>
@@ -2747,7 +2747,7 @@ const CandidatoRegistro = () => {
                                         <RiUpload2Fill /> Alterar Imagem
                                     </ImageModalButton>
                                     <ImageModalButton className="danger" onClick={handleRemoveImage}>
-                                        <HiX fill="white" /> Remover Imagem
+                                        <HiX fill="var(--secundaria)" /> Remover Imagem
                                     </ImageModalButton>
                                 </>
                             )}
@@ -3131,7 +3131,7 @@ const CandidatoRegistro = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <HiCheckCircle fill="white" /> 
+                                        <HiCheckCircle fill="var(--secundaria)" /> 
                                         {showCropSelection && !isCropped ? 'Aplique ou cancele o corte' : (isCropped ? 'Salvar' : 'Salvar Imagem Original')}
                                     </>
                                 )}

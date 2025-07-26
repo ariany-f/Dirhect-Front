@@ -510,7 +510,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         </div>
                                         <BotaoGrupo align="end">
                                             <Botao estilo="vermilion" size="small" aoClicar={solicitarFerias}>
-                                                <FaPaperPlane fill="white" /> Enviar Solicitação
+                                                <FaPaperPlane fill="var(--secundaria)" /> Enviar Solicitação
                                             </Botao>
                                         </BotaoGrupo>
                                     </div>

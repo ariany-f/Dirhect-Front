@@ -187,7 +187,7 @@ function DataTableDemissao({
                 </span>
                 {ArmazenadorToken.hasPermission('view_funcionario') &&
                     <BotaoGrupo>
-                        <Botao aoClicar={() => setModalSelecaoAberto(true)} estilo="vermilion" size="small"><FaUserTimes fill="white" stroke="white" /> Solicitar Demissão</Botao>
+                        <Botao aoClicar={() => setModalSelecaoAberto(true)} estilo="vermilion" size="small"><FaUserTimes fill="var(--secundaria)" stroke="white" /> Solicitar Demissão</Botao>
                     </BotaoGrupo>
                 }
             </div>}

@@ -103,7 +103,7 @@ function DataTableOperadorasDetalhes({ beneficios, onAddBeneficio, onDeleteBenef
                     )}
                     {onAddBeneficio && (
                         <Botao aoClicar={onAddBeneficio} estilo="vermilion" size="small" tab>
-                            <GrAddCircle className={styles.icon} fill="white" color="white"/> {t('add')} Benefício
+                            <GrAddCircle className={styles.icon} fill="var(--secundaria)" color="white"/> {t('add')} Benefício
                         </Botao>
                     )}
                 </BotaoGrupo>

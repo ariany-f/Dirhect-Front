@@ -189,7 +189,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                         <>
                             <BotaoGrupo align="end" gap="8px">
                                 {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
-                                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" stroke="white" color="white"/> Registrar Tarefa</Botao>
+                                    <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" stroke="white" color="white"/> Registrar Tarefa</Botao>
                                 }
                             </BotaoGrupo>
                         </>

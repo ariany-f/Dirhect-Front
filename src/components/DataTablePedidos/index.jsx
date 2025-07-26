@@ -99,7 +99,7 @@ function DataTablePedidos({ pedidos, colaborador = null }) {
                 </div>}
                 <BotaoGrupo align="end">
                     <Link to="/pedidos/adicionar-detalhes">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} color="white" fill="white"/> Criar Pedido</Botao>
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} color="white" fill="var(--secundaria)"/> Criar Pedido</Botao>
                     </Link>
                     <QuestionCard alinhamento="end" element={<AiFillQuestionCircle className="question-icon" size={18} />}>
                         <Link to={'/pedidos/como-funciona'} style={{fontSize: '14px', marginLeft: '8px'}}>Como funciona?</Link>

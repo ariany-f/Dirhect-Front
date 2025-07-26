@@ -21,7 +21,7 @@ function Cartoes() {
             <BotaoGrupo align="end">
                 <BotaoGrupo align="center">
                     <Link to="/colaborador/registro">
-                        <Botao estilo="vermilion" size="small" tab><GrAddCircle fill="white" className={styles.icon}/> Cadastrar elegibilidade</Botao>
+                        <Botao estilo="vermilion" size="small" tab><GrAddCircle fill="var(--secundaria)" className={styles.icon}/> Cadastrar elegibilidade</Botao>
                     </Link>
                 </BotaoGrupo>
             </BotaoGrupo>

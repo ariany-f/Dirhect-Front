@@ -91,7 +91,7 @@ function DataTableAusencias({ ausencias, colaborador = null }) {
                             </span>
                         </div>
                         <BotaoGrupo align="end" gap="8px">
-                            <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="white" stroke="white" color="white"/> Registrar Ausência</Botao>
+                            <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" stroke="white" color="white"/> Registrar Ausência</Botao>
                         </BotaoGrupo>
                     </>
                 )
