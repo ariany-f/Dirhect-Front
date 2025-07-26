@@ -136,6 +136,7 @@ function EsqueciASenha() {
 
     return (
         <>
+            <Loading opened={loading} />
             <Frame gap="16px">
                 <BotaoVoltar />
                 <Titulo>
@@ -150,7 +151,7 @@ function EsqueciASenha() {
                     <CampoTexto tipo="email" camposVazios={classError} name="email" valor={usuario.email} setValor={setEmail} label="E-mail do responsável" placeholder="Digite o E-mail do responsável" />
                 </Frame>
             </form>
-            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled disabled={loading}>{loading ? 'Aguarde...' : 'Confirmar'}</Botao>
+            <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
         </>
     )
 }
