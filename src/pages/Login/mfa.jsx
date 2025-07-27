@@ -106,7 +106,7 @@ function Mfa() {
                         '', 
                         '', 
                         '', 
-                        response.mfa_required,
+                        response.user.mfa_required,
                         response.user.perfil
                     );
                     ArmazenadorToken.removerTempToken();   
@@ -128,7 +128,7 @@ function Mfa() {
                         '', 
                         '', 
                         '', 
-                        response.mfa_required,
+                        response.user.mfa_required,
                         response.user.perfil
                     );
                     ArmazenadorToken.removerTempToken();   
@@ -179,7 +179,7 @@ function Mfa() {
                         '', 
                         '', 
                         '', 
-                        response.mfa_required,
+                        response.user.mfa_required,
                         response.user.perfil
                     );
                     ArmazenadorToken.removerTempToken();
@@ -199,7 +199,7 @@ function Mfa() {
                         '', 
                         '', 
                         '', 
-                        response.mfa_required,
+                        response.user.mfa_required,
                         response.user.perfil
                     );
                     ArmazenadorToken.removerTempToken();   

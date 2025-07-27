@@ -64,7 +64,7 @@ function MeusDadosDadosGerais() {
         if(usuario)
         {
             setUserProfile(usuario);
-            setMfaAtivo(usuario.mfa_required || false);
+            setMfaAtivo(usuario.mfa_required == 'true' ? true : false);
         }
     }, [usuario])
 
@@ -203,11 +203,6 @@ function MeusDadosDadosGerais() {
         try {
             await http.post('mfa/disable/', { otp: otpForDisable });
 
-            // On successful deactivation, update the user profile
-            await http.put(`/usuario/${ArmazenadorToken.UserCompanyPublicId}/`, { mfa_required: false });
-            ArmazenadorToken.definirMfaRequired(false);
-            setMfaRequired(false);
-
             setMfaAtivo(false);
             setShowDisableMfaModal(false);
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'MFA desativado com sucesso!', life: 3000 });
@@ -215,8 +210,11 @@ function MeusDadosDadosGerais() {
             const errorMessage = error?.response?.data?.detail || 'Código de verificação inválido.';
             toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
         } finally {
-            setDisablingMFA(false);
             setOtpForDisable('');
+            await http.put(`/usuario/${ArmazenadorToken.UserCompanyPublicId}/`, { mfa_required: false });
+            ArmazenadorToken.definirMfaRequired(false);
+            setMfaRequired(false);
+            setDisablingMFA(false);
         }
     }
 
