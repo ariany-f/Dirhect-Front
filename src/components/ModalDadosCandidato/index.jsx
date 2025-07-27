@@ -31,7 +31,7 @@ const Valor = styled.span`
 
 function ModalDadosCandidato({ opened = false, aoFechar, candidato }) {
   if (!candidato) return null;
-  const dados = candidato.candidato || candidato;
+  const dados = candidato;
 
   const getStatusColor = (status) => {
     if (!status) return 'var(--neutro-400)';

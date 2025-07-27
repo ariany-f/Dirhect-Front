@@ -352,17 +352,6 @@ function DataTableAdmissao({
                         />
                     </>
                 )}
-                <Tooltip target=".details" mouseTrack mouseTrackLeft={10} />
-                <CgDetailsMore
-                    className="details"
-                    data-pr-tooltip="Ver Detalhes"
-                    size={16}
-                    onClick={(e) => verDetalhes(rowData)}
-                    style={{
-                        cursor: 'pointer',
-                        color: 'var(--primaria)',
-                    }}
-                />
             </div>
         );
     };
@@ -405,6 +394,11 @@ function DataTableAdmissao({
 
     return (
         <>
+            <style>{`
+                .datatable-clickable-row {
+                    cursor: pointer;
+                }
+            `}</style>
             <BotaoGrupo align="space-between">
                 {showSearch &&
                     <div className="flex justify-content-end">
@@ -440,6 +434,8 @@ function DataTableAdmissao({
                 removableSort
                 showGridlines
                 stripedRows
+                onRowClick={(e) => verDetalhes(e.data)}
+                rowClassName={() => 'datatable-clickable-row'}
                 footerColumnGroup={
                     paginator ? (
                         <ColumnGroup>
