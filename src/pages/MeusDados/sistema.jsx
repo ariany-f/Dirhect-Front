@@ -192,6 +192,7 @@ function MeusDadosSistema() {
     const [loading, setLoading] = useState(false);
     const [sistema, setSistema] = useState({
         logoPreview: '',
+        brandName: BrandColors.getBrandName(),
         corPrimaria: BrandColors.getBrandColors().primary,
         corSecundaria: BrandColors.getBrandColors().secondary,
         corAcento: BrandColors.getBrandColors().accent,
@@ -224,6 +225,12 @@ function MeusDadosSistema() {
         if (savedSettings) {
             setSistema(prev => ({ ...prev, ...savedSettings }));
         }
+
+        // Carrega nome salvo
+        setSistema(prev => ({
+            ...prev,
+            brandName: BrandColors.getBrandName(),
+        }));
 
         // Carrega logo salva
         const savedLogo = BrandColors.getBrandLogo();
@@ -319,10 +326,14 @@ function MeusDadosSistema() {
         };
         BrandColors.setBrandColors(newColors);
 
+        // Salva o nome do sistema
+        BrandColors.setBrandName(sistema.brandName);
+
         // Salva logo se foi alterada - REMOVIDO, pois salva no crop
         
         // Prepara e salva todas as configurações no localStorage
         const settingsToSave = {
+            brandName: sistema.brandName,
             corPrimaria: sistema.corPrimaria,
             corSecundaria: sistema.corSecundaria,
             corAcento: sistema.corAcento,
@@ -388,6 +399,12 @@ function MeusDadosSistema() {
                 <Col12>
                     <Col6>
                         <SubTitulo>Identidade Visual</SubTitulo>
+                        <Texto>Nome do Sistema</Texto>
+                        <CampoTexto
+                            valor={sistema.brandName}
+                            setValor={valor => handleChange('brandName', valor)}
+                            placeholder="Digite o nome do sistema"
+                        />
                         <Texto>Logo</Texto>
                         <ImageUploadContainer style={{ flexDirection: 'row', gap: 32 }}>
                             {/* Logo */}

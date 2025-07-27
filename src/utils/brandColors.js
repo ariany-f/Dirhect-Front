@@ -158,7 +158,16 @@ export class BrandColors {
 
     // Obter nome da marca
     static getBrandName() {
-      return import.meta.env.VITE_BRAND_NAME || 'Dirhect';
+      const storedName = localStorage.getItem('brandName');
+      return storedName || import.meta.env.VITE_BRAND_NAME || 'Dirhect';
+    }
+
+    static setBrandName(name) {
+        if (name) {
+            localStorage.setItem('brandName', name);
+        } else {
+            localStorage.removeItem('brandName');
+        }
     }
   
     // Verificar se está em modo white label
@@ -170,6 +179,11 @@ export class BrandColors {
         import.meta.env.VITE_BRAND_LOGO_URL ||
         import.meta.env.VITE_BRAND_NAME
       );
+    }
+
+    // Obter URL base do favicon
+    static getBrandFaviconBaseUrl() {
+        return import.meta.env.VITE_BRAND_FAVICON || '/imagens/cropped-Favicon';
     }
   }
   

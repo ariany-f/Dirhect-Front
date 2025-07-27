@@ -188,6 +188,7 @@ import CodigoVinculoRais from './pages/TabelasSistema/codigo_vinculo_rais'
 import CodigoSituacaoRais from './pages/TabelasSistema/codigo_situacao_rais'
 import DePara from './pages/TabelasSistema/depara'
 import MeusDadosEmpresa from './pages/MeusDados/empresa'
+import usePageMetadata from '@hooks/usePageMetadata';
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -204,6 +205,8 @@ function AppRouter() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  usePageMetadata();
 
   return (
     <BrowserRouter>

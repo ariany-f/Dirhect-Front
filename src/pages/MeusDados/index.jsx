@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import styles from './MeusDados.module.css';
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
+import { ArmazenadorToken } from '@utils';
 
 const ConteudoFrame = styled.div`
   display: flex;
@@ -23,6 +24,7 @@ const ConteudoFrame = styled.div`
 function MeusDados() {
   const [loading, setLoading] = useState(false);
   const [empresa, setEmpresa] = useState(null);
+  const [companyName, setCompanyName] = useState('');
   const toast = useRef(null);
   const location = useLocation();
 
@@ -76,6 +78,23 @@ function MeusDados() {
     //   }
   }, []);
 
+  useEffect(() => {
+    if (usuario) {
+        let name = usuario.company_domain; // Fallback inicial
+
+        if (usuario.companies && usuario.companies.length > 0) {
+            const companyId = ArmazenadorToken.UserCompanyPublicId;
+            const selecionada = usuario.companies.find(c => String(c.id_tenant) === String(companyId)) || usuario.companies[0];
+            
+            if (selecionada?.pessoaJuridica) {
+                const pj = selecionada.pessoaJuridica;
+                name = pj.nome_fantasia || pj.razao_social || name;
+            }
+        }
+        setCompanyName(name);
+    }
+  }, [usuario]);
+
   const handleSalvar = () => {
     toast.current.show({ severity: 'success', summary: 'Salvo', detail: 'Configurações salvas!', life: 3000 });
   };
@@ -91,11 +110,11 @@ function MeusDados() {
           <Link className={styles.link} to="/usuario/sistema">
             <Botao estilo={location.pathname == '/usuario/sistema'?'black':''} size="small" tab>Sistema</Botao>
           </Link>
-          <Link className={styles.link} to="/usuario/empresa">
-            <Botao estilo={location.pathname == '/usuario/empresa'?'black':''} size="small" tab>{usuario?.company_domain}</Botao>
-          </Link>
           <Link className={styles.link} to="/usuario/email">
             <Botao estilo={location.pathname == '/usuario/email'?'black':''} size="small" tab>Emails</Botao>
+          </Link>
+          <Link className={styles.link} to="/usuario/empresa">
+            <Botao estilo={location.pathname == '/usuario/empresa'?'black':''} size="small" tab>{companyName || 'Empresa'}</Botao>
           </Link>
         </BotaoGrupo>
       </BotaoGrupo>
