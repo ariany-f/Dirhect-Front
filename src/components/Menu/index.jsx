@@ -261,7 +261,7 @@ function Menu({ opened = false, aoFechar }){
                                 </Link>
                             </li>
                         )}
-                        {usuario.tipo !== "candidato" && (
+                        {import.meta.env.VITE_OPTIONS_MARKETPLACE === 'true' && usuario.tipo !== "candidato" && (
                             <li onClick={() => FecharMenu()}>
                                 <Link className="link" to="/marketplace">
                                     <div className="group">
