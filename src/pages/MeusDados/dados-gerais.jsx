@@ -187,7 +187,7 @@ function MeusDadosDadosGerais() {
             toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
             throw error; // Re-lança para que o onConfirm do modal possa lidar com o loading state se necessário
         } finally {
-            await http.put(`/usuario/${ArmazenadorToken.UserCompanyPublicId}/`, { mfa_required: true });
+            await http.put(`/usuario/${ArmazenadorToken.UserPublicId}/`, { mfa_required: true });
             ArmazenadorToken.definirMfaRequired(true);
             setMfaRequired(true);
         }
@@ -211,7 +211,7 @@ function MeusDadosDadosGerais() {
             toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
         } finally {
             setOtpForDisable('');
-            await http.put(`/usuario/${ArmazenadorToken.UserCompanyPublicId}/`, { mfa_required: false });
+            await http.put(`/usuario/${ArmazenadorToken.UserPublicId}/`, { mfa_required: false });
             ArmazenadorToken.definirMfaRequired(false);
             setMfaRequired(false);
             setDisablingMFA(false);
