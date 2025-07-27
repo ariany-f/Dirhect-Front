@@ -85,7 +85,7 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
         if (candidato?.banco && !adicionandoAgencia) {
             setLoadingAgencias(true);
             setAgencias([]);
-            http.get(`agencia/?banco=${candidato.banco}`)
+            http.get(`agencia/?num_banco=${candidato.banco}`)
                 .then(response => {
                     const formattedAgencias = response.map(ag => ({
                         code: ag.num_agencia,
