@@ -225,6 +225,24 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 placeholder="Digite o PIS/PASEP"
                 disabled={modoLeitura}
             />
+            <CampoTexto
+                name="carteira_trabalho"
+                valor={candidato?.carteira_trabalho ?? ''}
+                setValor={valor => setCampo('carteira_trabalho', valor)}
+                patternMask="9999999"
+                label="CTPS"
+                placeholder="Digite o número da carteira"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="carteira_motorista"
+                valor={candidato?.carteira_motorista ?? ''}
+                setValor={valor => setCampo('carteira_motorista', valor)}
+                patternMask="99999999999"
+                label="Carteira de Motorista"
+                placeholder="Digite o número da CNH"
+                disabled={modoLeitura}
+            />
             <DropdownItens
                 name="genero"
                 label="Gênero"

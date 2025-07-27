@@ -111,7 +111,7 @@ function ColaboradorDadosPessoais() {
                     <Texto>Cor/Raça</Texto>
                     {!colaborador
                         ? <Skeleton variant="rectangular" width={200} height={25} />
-                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.cor_raca || '---'}</Texto>
+                        : <Texto weight="800">{colaborador.funcionario_pessoa_fisica?.cor_raca_descricao || '---'}</Texto>
                     }
                     
                     <Texto>Identidade</Texto>
