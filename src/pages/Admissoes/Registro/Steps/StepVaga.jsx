@@ -144,6 +144,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     const opcoesTipoRegimePrevidenciario = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_previdenciario_choices), [candidato, formatarOpcoesChoices]);
     const opcoesTipoContratoPrazoDeterminado = useMemo(() => formatarOpcoesChoices(candidato.tipo_contrato_prazo_determinado_choices), [candidato, formatarOpcoesChoices]);
     const opcoesTipoContratoTrabalho = useMemo(() => formatarOpcoesChoices(candidato.tipo_contrato_trabalho_choices), [candidato, formatarOpcoesChoices]);
+    const opcoesNaturezaAtividadeESocial = useMemo(() => formatarOpcoesChoices(candidato.natureza_atividade_esocial_choices), [candidato, formatarOpcoesChoices]);
     
 
     
@@ -426,6 +427,14 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 valor={getValorSelecionadoFromCandidato('tipo_contrato_trabalho', opcoesTipoContratoTrabalho)}
                 setValor={(valor) => setCampo('tipo_contrato_trabalho', valor.code)}
                 options={opcoesTipoContratoTrabalho}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="natureza_atividade_esocial"
+                label="Natureza da Atividade eSocial"
+                valor={getValorSelecionadoFromCandidato('natureza_atividade_esocial', opcoesNaturezaAtividadeESocial)}
+                setValor={(valor) => setCampo('natureza_atividade_esocial', valor.code)}
+                options={opcoesNaturezaAtividadeESocial}
                 disabled={modoLeitura}
             />
 

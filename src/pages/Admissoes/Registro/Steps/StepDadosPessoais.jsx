@@ -235,12 +235,47 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                name="serie_carteira_trab"
+                valor={candidato?.serie_carteira_trab ?? ''}
+                setValor={valor => setCampo('serie_carteira_trab', valor)}
+                patternMask="999999"
+                label="Série da CTPS"
+                placeholder="Digite a série"
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="uf_carteira_trab"
+                label="UF da CTPS"
+                valor={getEstadoFormatado('uf_carteira_trab')}
+                setValor={valor => setCampo('uf_carteira_trab', valor.code)}
+                options={estados}
+                placeholder="Selecione a UF"
+                disabled={modoLeitura}
+                filter
+            />
+            <CampoTexto
+                name="data_emissao_ctps"
+                valor={candidato?.data_emissao_ctps ?? ''}
+                setValor={valor => setCampo('data_emissao_ctps', valor)}
+                type="date"
+                label="Data de Emissão da CTPS"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
                 name="carteira_motorista"
                 valor={candidato?.carteira_motorista ?? ''}
                 setValor={valor => setCampo('carteira_motorista', valor)}
                 patternMask="99999999999"
                 label="Carteira de Motorista"
                 placeholder="Digite o número da CNH"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="data_emissao_cnh"
+                valor={candidato?.data_emissao_cnh ?? ''}
+                setValor={valor => setCampo('data_emissao_cnh', valor)}
+                type="date"
+                label="Data de Emissão da CNH"
                 disabled={modoLeitura}
             />
             <DropdownItens
