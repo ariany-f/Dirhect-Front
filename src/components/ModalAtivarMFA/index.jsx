@@ -52,7 +52,7 @@ const ModalAtivarMFA = ({ opened, aoFechar, qrCode, secret, onConfirm }) => {
     };
 
     const footerContent = (
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
             <Botao estilo="neutro" size="medium" aoClicar={aoFechar}>Cancelar</Botao>
             <Botao estilo="vermilion" size="medium" aoClicar={handleConfirm} disabled={loading || verificationCode.length < 6}>
                 {loading ? 'Verificando...' : 'Ativar MFA'}
