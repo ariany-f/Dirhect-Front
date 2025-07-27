@@ -112,6 +112,12 @@ const ImageContainer = styled.div`
     position: relative;
     width: ${props => props.$width || '120px'};
     height: ${props => props.$height || '120px'};
+    background-color: var(--neutro-200);
+    border: 1px dashed var(--primaria);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
     .hover-overlay {
         position: absolute;
@@ -201,6 +207,7 @@ function MeusDadosSistema() {
         habilidadesCandidato: true,
         experienciaCandidato: true,
         moduloLinhasTransporte: false,
+        moduloMarketplace: true,
         timezone: 'America/Sao_Paulo',
         feriadosTipo: 'nacionais',
         feriadosUF: '',
@@ -342,6 +349,7 @@ function MeusDadosSistema() {
             habilidadesCandidato: sistema.habilidadesCandidato,
             experienciaCandidato: sistema.experienciaCandidato,
             moduloLinhasTransporte: sistema.moduloLinhasTransporte,
+            moduloMarketplace: sistema.moduloMarketplace,
             timezone: sistema.timezone,
             feriadosTipo: sistema.feriadosTipo,
             feriadosUF: sistema.feriadosUF,
@@ -554,13 +562,22 @@ function MeusDadosSistema() {
                     <Col6>
                         <SubTitulo>Módulos</SubTitulo>
                         {loading ? <Skeleton width={200} height={25} /> : (
-                            <SwitchContainer>
-                                <Texto>Linhas de Transporte</Texto>
-                                <SwitchInput
-                                    checked={sistema.moduloLinhasTransporte}
-                                    onChange={valor => handleChange('moduloLinhasTransporte', valor)}
-                                />
-                            </SwitchContainer>
+                            <>
+                                <SwitchContainer>
+                                    <Texto>Linhas de Transporte</Texto>
+                                    <SwitchInput
+                                        checked={sistema.moduloLinhasTransporte}
+                                        onChange={valor => handleChange('moduloLinhasTransporte', valor)}
+                                    />
+                                </SwitchContainer>
+                                <SwitchContainer>
+                                    <Texto>Marketplace</Texto>
+                                    <SwitchInput
+                                        checked={sistema.moduloMarketplace}
+                                        onChange={valor => handleChange('moduloMarketplace', valor)}
+                                    />
+                                </SwitchContainer>
+                            </>
                         )}
                     </Col6>
                 </Col12>

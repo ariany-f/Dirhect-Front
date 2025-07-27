@@ -95,6 +95,12 @@ const ImageContainer = styled.div`
     position: relative;
     width: ${props => props.$width || '120px'};
     height: ${props => props.$height || '120px'};
+    background-color: var(--neutro-200);
+    border: 1px dashed var(--primaria);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
     .hover-overlay {
         position: absolute;
