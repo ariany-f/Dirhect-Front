@@ -1115,7 +1115,9 @@ const CandidatoRegistro = () => {
                 tipo_regime_previdenciario: candidatoAtual.tipo_regime_previdenciario,
                 tipo_contrato_prazo_determinado: candidatoAtual.tipo_contrato_prazo_determinado,
                 tipo_contrato_trabalho: candidatoAtual.tipo_contrato_trabalho,
-                natureza_atividade_esocial: candidatoAtual.natureza_atividade_esocial
+                natureza_atividade_esocial: candidatoAtual.natureza_atividade_esocial,
+                codigo_situacao_fgts: candidatoAtual.codigo_situacao_fgts,
+                dt_opcao_fgts: candidatoAtual.dt_opcao_fgts
             };
 
             // Remove campos vazios do payload antes de enviar

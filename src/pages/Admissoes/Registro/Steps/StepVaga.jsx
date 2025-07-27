@@ -135,6 +135,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     const opcoesTipoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_admissao), [opcoesDominio.tipo_admissao, formatarOpcoesDominio]);
     const opcoesMotivoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_admissao), [opcoesDominio.motivo_admissao, formatarOpcoesDominio]);
     const opcoesLetra = useMemo(() => formatarOpcoesDominio(opcoesDominio.letra), [opcoesDominio.letra, formatarOpcoesDominio]);
+    const opcoesSituacaoFgts = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_situacao_fgts), [opcoesDominio.codigo_situacao_fgts, formatarOpcoesDominio]);
     
     // Usando _choices do payload para os campos especificados
     const opcoesContratoTempoParcial = useMemo(() => formatarOpcoesChoices(candidato.contrato_tempo_parcial_choices), [candidato, formatarOpcoesChoices]);
@@ -437,6 +438,14 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 options={opcoesNaturezaAtividadeESocial}
                 disabled={modoLeitura}
             />
+            <DropdownItens
+                name="codigo_situacao_fgts"
+                label="Situação FGTS"
+                valor={getValorSelecionadoFromCandidato('codigo_situacao_fgts', opcoesSituacaoFgts)}
+                setValor={(valor) => setCampo('codigo_situacao_fgts', valor.code)}
+                options={opcoesSituacaoFgts}
+                disabled={modoLeitura}
+            />
 
             {/* Todos os Campos de Texto agrupados */}
             <CampoTexto
@@ -454,6 +463,14 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => setCampo('jornada', valor)}
                 patternMask="999:99"
                 placeholder="Ex: 220:30"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                type="date"
+                name="dt_opcao_fgts"
+                label="Data de Opção FGTS"
+                valor={candidato.dt_opcao_fgts || ''}
+                setValor={(valor) => setCampo('dt_opcao_fgts', valor)}
                 disabled={modoLeitura}
             />
             <DropdownItens
