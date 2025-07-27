@@ -278,6 +278,24 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 label="Data de Emissão da CNH"
                 disabled={modoLeitura}
             />
+            <CampoTexto
+                name="tipo_carteira_habilit"
+                valor={candidato?.tipo_carteira_habilit ?? ''}
+                setValor={valor => setCampo('tipo_carteira_habilit', valor)}
+                patternMask="A"
+                label="Tipo da Carteira de Habilitação"
+                placeholder="Ex: A, B, C, D, E"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="numero_cartao_sus"
+                valor={candidato?.numero_cartao_sus ?? ''}
+                setValor={valor => setCampo('numero_cartao_sus', valor)}
+                patternMask="999999999999999"
+                label="Número do Cartão SUS"
+                placeholder="Digite o número do cartão SUS"
+                disabled={modoLeitura}
+            />
             <DropdownItens
                 name="genero"
                 label="Gênero"

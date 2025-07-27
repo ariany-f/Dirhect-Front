@@ -1046,6 +1046,7 @@ const CandidatoRegistro = () => {
                 tipo_carteira_habilit: candidatoAtual.tipo_carteira_habilit,
                 data_venc_habilit: candidatoAtual.data_venc_habilit,
                 data_emissao_cnh: candidatoAtual.data_emissao_cnh,
+                numero_cartao_sus: candidatoAtual.numero_cartao_sus,
                 certificado_reservista: candidatoAtual.certificado_reservista,
                 numero_passaporte: candidatoAtual.numero_passaporte,
                 data_emissao_passaporte: candidatoAtual.data_emissao_passaporte,
