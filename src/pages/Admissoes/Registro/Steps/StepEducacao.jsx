@@ -211,14 +211,16 @@ const StepEducacao = () => {
                     )}
                 </div>
             ))}
-            <div style={{marginTop: '12px'}}>
-                <BotaoSemBorda 
-                    aoClicar={adicionarEducacao} 
-                color={podeAdicionarEducacao() ? 'var(--primaria)' : 'var(--surface-500)'}
-            >
-                    <GrAddCircle /> Adicionar Educação
-                </BotaoSemBorda>
-            </div>
+            {import.meta.env.VITE_OPTION_EDUCACAO === 'true' &&
+                <div style={{marginTop: '12px'}}>
+                    <BotaoSemBorda 
+                        aoClicar={adicionarEducacao} 
+                    color={podeAdicionarEducacao() ? 'var(--primaria)' : 'var(--surface-500)'}
+                >
+                        <GrAddCircle /> Adicionar Educação
+                    </BotaoSemBorda>
+                </div>
+            }
         </div>
     );
 };

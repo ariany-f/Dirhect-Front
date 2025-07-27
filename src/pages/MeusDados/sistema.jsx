@@ -204,10 +204,11 @@ function MeusDadosSistema() {
         corAcento: BrandColors.getBrandColors().accent,
         corTerciaria: BrandColors.getBrandColors().tertiary,
         colaboradorPodeEditar: true,
-        habilidadesCandidato: true,
-        experienciaCandidato: true,
-        moduloLinhasTransporte: false,
-        moduloMarketplace: true,
+        habilidadesCandidato: import.meta.env.VITE_OPTION_HABILIDADES === 'true',
+        experienciaCandidato: import.meta.env.VITE_OPTION_EXPERIENCIA === 'true',
+        educacaoCandidato: import.meta.env.VITE_OPTION_EDUCACAO === 'true',
+        moduloLinhasTransporte: import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true',
+        moduloMarketplace: import.meta.env.VITE_OPTIONs_MARKETPLACE === 'true',
         timezone: 'America/Sao_Paulo',
         feriadosTipo: 'nacionais',
         feriadosUF: '',
@@ -348,6 +349,7 @@ function MeusDadosSistema() {
             colaboradorPodeEditar: sistema.colaboradorPodeEditar,
             habilidadesCandidato: sistema.habilidadesCandidato,
             experienciaCandidato: sistema.experienciaCandidato,
+            educacaoCandidato: sistema.educacaoCandidato,
             moduloLinhasTransporte: sistema.moduloLinhasTransporte,
             moduloMarketplace: sistema.moduloMarketplace,
             timezone: sistema.timezone,
@@ -552,6 +554,13 @@ function MeusDadosSistema() {
                                     <SwitchInput
                                         checked={sistema.experienciaCandidato}
                                         onChange={valor => handleChange('experienciaCandidato', valor)}
+                                    />
+                                </SwitchContainer>
+                                <SwitchContainer>
+                                    <Texto>Habilitar dados de educação do candidato?</Texto>
+                                    <SwitchInput
+                                        checked={sistema.educacaoCandidato}
+                                        onChange={valor => handleChange('educacaoCandidato', valor)}
                                     />
                                 </SwitchContainer>
                             </>
