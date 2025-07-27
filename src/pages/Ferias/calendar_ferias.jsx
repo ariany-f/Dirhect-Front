@@ -7,6 +7,7 @@ import { Tooltip } from 'primereact/tooltip';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import colaboradoresFake from '@json/ferias.json'; // Dados fake para exemplos de renderização
 import DropdownItens from '@components/DropdownItens'
+import CampoTexto from '@components/CampoTexto';
 
 const GRADIENT = 'linear-gradient(to left, var(--black), var(--gradient-secundaria))';
 
@@ -224,6 +225,7 @@ const FiltersContainer = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+    justify-content: center;
 `;
 
 const ViewToggleOption = styled.button`
@@ -569,28 +571,19 @@ const CalendarFerias = ({ colaboradores }) => {
             <FixedHeader>
                 <ViewToggleBar>
                     <FiltersContainer>
-                        <input
-                            type="text"
-                            value={filtroColaborador}
-                            onChange={e => setFiltroColaborador(e.target.value)}
-                            placeholder="Filtrar colaborador"
-                            style={{ 
-                                width: 220, 
-                                height: 40, 
-                                borderRadius: 6, 
-                                border: '1px solid #e2e8f0', 
-                                padding: '0 12px', 
-                                fontSize: 14 
-                            }}
-                        />
+                        <div style={{ width: '220px', marginTop: '8px' }}>
+                            <CampoTexto
+                                valor={filtroColaborador}
+                                setValor={setFiltroColaborador}
+                                placeholder="Filtrar colaborador"
+                            />
+                        </div>
                         <DropdownItens
                             valor={anoSelecionado}
                             setValor={setAnoSelecionado}
                             options={anosDisponiveis.map(y => ({ name: y.toString(), value: y }))}
                             placeholder="Selecione o ano"
                             name="ano"
-                            $width="130px"
-                            $height="40px"
                             allowClear={false}
                         />
                     </FiltersContainer>
