@@ -20,6 +20,8 @@ import SubTitulo from '@components/SubTitulo'
 import SwitchInput from '@components/SwitchInput'
 import ModalAtivarMFA from '@components/ModalAtivarMFA'
 import styled from 'styled-components'
+import { Dialog } from 'primereact/dialog'
+import { InputOtp } from 'primereact/inputotp'
 
 const PasswordWrapper = styled.div`
     width: 100%;
@@ -47,6 +49,11 @@ function MeusDadosDadosGerais() {
     const [qrCode, setQrCode] = useState('');
     const [secret, setSecret] = useState('');
     const [loadingMFA, setLoadingMFA] = useState(false);
+
+    // New state for deactivation
+    const [showDisableMfaModal, setShowDisableMfaModal] = useState(false);
+    const [otpForDisable, setOtpForDisable] = useState('');
+    const [disablingMFA, setDisablingMFA] = useState(false);
 
     const {
         usuario,
@@ -111,9 +118,10 @@ function MeusDadosDadosGerais() {
         try {
             const payload = {
                 old_password: senhaAtual,
-                new_password: novaSenha,
+                new_password1: novaSenha,
+                new_password2: confirmarSenha,
             };
-            await http.post(`/usuario/${ArmazenadorToken.UserCompanyPublicId}/`, payload);
+            await http.post('auth/users/set_password/', payload);
 
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Senha alterada com sucesso!', life: 3000 });
             setSenhaAtual('');
@@ -140,20 +148,12 @@ function MeusDadosDadosGerais() {
     };
 
     const handleToggleMFA = async () => {
-        setLoadingMFA(true);
         if (mfaAtivo) {
-            // Lógica para desativar
-            try {
-                await http.post('mfa/disable/');
-                setMfaAtivo(false);
-                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'MFA desativado.', life: 3000 });
-            } catch (error) {
-                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Não foi possível desativar o MFA.', life: 3000 });
-            } finally {
-                setLoadingMFA(false);
-            }
+            // Abre o modal para pedir o OTP para desativar
+            setShowDisableMfaModal(true);
         } else {
             // Lógica para iniciar ativação
+            setLoadingMFA(true);
             try {
                 const response = await http.get('mfa/generate/');
                 if (response && response.qr_code) {
@@ -185,14 +185,40 @@ function MeusDadosDadosGerais() {
         } catch (error) {
             const errorMessage = error?.response?.data?.otp?.[0] || 'Código de verificação inválido. Tente novamente.';
             toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
-            throw error;
+            throw error; // Re-lança para que o onConfirm do modal possa lidar com o loading state se necessário
         } finally {
-            ArmazenadorToken.removerTempToken();
             await http.put(`/usuario/${ArmazenadorToken.UserCompanyPublicId}/`, { mfa_required: true });
             ArmazenadorToken.definirMfaRequired(true);
             setMfaRequired(true);
         }
     };
+
+    const handleConfirmDisableMFA = async () => {
+        if (!otpForDisable || otpForDisable.length < 6) {
+            toast.current.show({ severity: 'warn', summary: 'Atenção', detail: 'Por favor, insira o código de 6 dígitos.', life: 3000 });
+            return;
+        }
+
+        setDisablingMFA(true);
+        try {
+            await http.post('mfa/disable/', { otp: otpForDisable });
+
+            // On successful deactivation, update the user profile
+            await http.put(`/usuario/${ArmazenadorToken.UserCompanyPublicId}/`, { mfa_required: false });
+            ArmazenadorToken.definirMfaRequired(false);
+            setMfaRequired(false);
+
+            setMfaAtivo(false);
+            setShowDisableMfaModal(false);
+            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'MFA desativado com sucesso!', life: 3000 });
+        } catch (error) {
+            const errorMessage = error?.response?.data?.detail || 'Código de verificação inválido.';
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
+        } finally {
+            setDisablingMFA(false);
+            setOtpForDisable('');
+        }
+    }
 
 
     return (
@@ -288,6 +314,25 @@ function MeusDadosDadosGerais() {
             secret={secret}
             onConfirm={handleConfirmMFA}
         />
+        <Dialog 
+            header="Desativar Autenticação de Múltiplos Fatores" 
+            visible={showDisableMfaModal} 
+            style={{ width: '30vw', minWidth: '400px' }} 
+            onHide={() => setShowDisableMfaModal(false)}
+            footer={
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', paddingTop: '16px' }}>
+                    <Botao estilo="neutro" size="medium" aoClicar={() => setShowDisableMfaModal(false)}>Cancelar</Botao>
+                    <Botao estilo="vermilion" size="medium" aoClicar={handleConfirmDisableMFA} disabled={disablingMFA}>
+                        {disablingMFA ? 'Desativando...' : 'Confirmar e Desativar'}
+                    </Botao>
+                </div>
+            }
+        >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', padding: '16px 0' }}>
+                <Texto>Insira o código de 6 dígitos do seu aplicativo de autenticação para confirmar a desativação.</Texto>
+                <InputOtp value={otpForDisable} onChange={(e) => setOtpForDisable(e.value)} length={6} />
+            </div>
+        </Dialog>
         </>
     )
 }
