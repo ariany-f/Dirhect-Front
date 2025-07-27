@@ -65,6 +65,8 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
 
     const opcoesGenero = useMemo(() => formatarOpcoesDominio(opcoesDominio.genero), [opcoesDominio.genero, formatarOpcoesDominio]);
     const opcoesCorRaca = useMemo(() => formatarOpcoesDominio(opcoesDominio.cor_raca), [opcoesDominio.cor_raca, formatarOpcoesDominio]);
+    const opcoesEstadoCivil = useMemo(() => formatarOpcoesDominio(opcoesDominio.estado_civil), [opcoesDominio.estado_civil, formatarOpcoesDominio]);
+    const opcoesNacionalidade = useMemo(() => formatarOpcoesDominio(opcoesDominio.nacionalidade), [opcoesDominio.nacionalidade, formatarOpcoesDominio]);
 
     console.log(candidato)
 
@@ -173,6 +175,22 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 valor={getValorSelecionadoFromCandidato('cor_raca', opcoesCorRaca)}
                 setValor={(valor) => setCampo('cor_raca', valor.code)}
                 options={opcoesCorRaca}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="estado_civil"
+                label="Estado Civil"
+                valor={getValorSelecionadoFromCandidato('estado_civil', opcoesEstadoCivil)}
+                setValor={(valor) => setCampo('estado_civil', valor.code)}
+                options={opcoesEstadoCivil}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="nacionalidade"
+                label="Nacionalidade"
+                valor={getValorSelecionadoFromCandidato('nacionalidade', opcoesNacionalidade)}
+                setValor={(valor) => setCampo('nacionalidade', valor.code)}
+                options={opcoesNacionalidade}
                 disabled={modoLeitura}
             />
             
