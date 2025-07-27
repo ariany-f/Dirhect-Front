@@ -48,7 +48,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         return (choices, campo = '') => {
             if (!choices || typeof choices !== 'object') return [];
             return Object.entries(choices).map(([code, name]) => ({
-                name: (code === 'null' && (campo === 'indicativo_admissao' || campo === 'tipo_regime_trabalhista')) ? 'Nenhum' : name,
+                name: (code === 'null' || name === 'Null' && (campo === 'indicativo_admissao' || campo === 'tipo_regime_trabalhista')) ? 'Nenhum' : name,
                 code
             }));
         };
@@ -101,7 +101,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             if (!Array.isArray(lista) || !candidato) return '';
             
             // Se o valor for null, retorna "Nenhum" para campos específicos
-            if (candidato[campo] === null && (campo === 'indicativo_admissao' || campo === 'tipo_regime_trabalhista')) {
+            if ((candidato[campo] === null || candidato[campo] === 'Null') && (campo === 'indicativo_admissao' || campo === 'tipo_regime_trabalhista')) {
                 return { name: 'Nenhum', code: 'null' };
             }
             
