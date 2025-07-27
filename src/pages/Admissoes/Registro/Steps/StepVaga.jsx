@@ -134,6 +134,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     // Memoizar as opções de domínio formatadas
     const opcoesTipoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_admissao), [opcoesDominio.tipo_admissao, formatarOpcoesDominio]);
     const opcoesMotivoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_admissao), [opcoesDominio.motivo_admissao, formatarOpcoesDominio]);
+    const opcoesLetra = useMemo(() => formatarOpcoesDominio(opcoesDominio.letra), [opcoesDominio.letra, formatarOpcoesDominio]);
     
     // Usando _choices do payload para os campos especificados
     const opcoesContratoTempoParcial = useMemo(() => formatarOpcoesChoices(candidato.contrato_tempo_parcial_choices), [candidato, formatarOpcoesChoices]);
@@ -419,11 +420,12 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => setCampo('dt_admissao', valor)}
                 disabled={modoLeitura}
             />
-            <CampoTexto
+            <DropdownItens
                 name="letra"
                 label="Letra"
-                valor={candidato.letra || ''}
-                setValor={(valor) => setCampo('letra', valor)}
+                valor={getValorSelecionadoFromCandidato('letra', opcoesLetra)}
+                setValor={(valor) => setCampo('letra', valor.code)}
+                options={opcoesLetra}
                 disabled={modoLeitura}
             />
 
