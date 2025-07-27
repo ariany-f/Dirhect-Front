@@ -1940,21 +1940,6 @@ const CandidatoRegistro = () => {
             const cropX = crop.x * scaleX;
             const cropY = crop.y * scaleY;
             
-            console.log('Debug do corte:', {
-                naturalWidth,
-                naturalHeight,
-                displayWidth,
-                displayHeight,
-                scaleX,
-                scaleY,
-                cropWidth,
-                cropHeight,
-                cropX,
-                cropY,
-                outputSize,
-                crop: crop
-            });
-            
             // Preencher o canvas com fundo branco
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, outputSize, outputSize);

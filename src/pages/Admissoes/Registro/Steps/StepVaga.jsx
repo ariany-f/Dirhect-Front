@@ -45,10 +45,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     }, []);
 
     const formatarOpcoesChoices = useMemo(() => {
-        return (choices) => {
+        return (choices, campo = '') => {
             if (!choices || typeof choices !== 'object') return [];
             return Object.entries(choices).map(([code, name]) => ({
-                name,
+                name: (code === 'null' && (campo === 'indicativo_admissao' || campo === 'tipo_regime_trabalhista')) ? 'Nenhum' : name,
                 code
             }));
         };
@@ -98,7 +98,22 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     // Função para obter o valor selecionado no formato {name, code} para tabelas de domínio
     const getValorSelecionadoFromCandidato = useMemo(() => {
         return (campo, lista) => {
-            if (!Array.isArray(lista) || !candidato || !candidato[campo]) return '';
+            if (!Array.isArray(lista) || !candidato) return '';
+            
+            // Se o valor for null, retorna "Nenhum" para campos específicos
+            if (candidato[campo] === null && (campo === 'indicativo_admissao' || campo === 'tipo_regime_trabalhista')) {
+                return { name: 'Nenhum', code: 'null' };
+            }
+            
+            if (!candidato[campo]) return '';
+            
+            // Verifica se o valor é um objeto (como estado_civil, genero, etc.)
+            if (typeof candidato[campo] === 'object' && candidato[campo] !== null) {
+                return {
+                    name: candidato[campo].descricao,
+                    code: candidato[campo].id_origem || candidato[campo].id
+                };
+            }
             
             const code = String(candidato[campo]);
             const item = lista.find(item => String(item.code) === code);
@@ -119,19 +134,45 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     // Memoizar as opções de domínio formatadas
     const opcoesTipoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_admissao), [opcoesDominio.tipo_admissao, formatarOpcoesDominio]);
     const opcoesMotivoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_admissao), [opcoesDominio.motivo_admissao, formatarOpcoesDominio]);
-    const opcoesTipoFuncionario = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_funcionario), [opcoesDominio.tipo_funcionario, formatarOpcoesDominio]);
-    const opcoesCodigoCategoriaESocial = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_categoria_esocial), [opcoesDominio.codigo_categoria_esocial, formatarOpcoesDominio]);
-    const opcoesTipoRecebimento = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_recebimento), [opcoesDominio.tipo_recebimento, formatarOpcoesDominio]);
-    const opcoesTipoSituacao = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_situacao), [opcoesDominio.tipo_situacao, formatarOpcoesDominio]);
-    const opcoesCodigoOcorrenciaSefip = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_ocorrencia_sefip), [opcoesDominio.codigo_ocorrencia_sefip, formatarOpcoesDominio]);
-    const opcoesCodigoCategoriaSefip = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_categoria_sefip), [opcoesDominio.codigo_categoria_sefip, formatarOpcoesDominio]);
     
     // Usando _choices do payload para os campos especificados
     const opcoesContratoTempoParcial = useMemo(() => formatarOpcoesChoices(candidato.contrato_tempo_parcial_choices), [candidato, formatarOpcoesChoices]);
-    const opcoesIndicativoAdmissao = useMemo(() => formatarOpcoesChoices(candidato.indicativo_admissao_choices), [candidato, formatarOpcoesChoices]);
-    const opcoesTipoRegimeTrabalhista = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_trabalhista_choices), [candidato, formatarOpcoesChoices]);
+    const opcoesIndicativoAdmissao = useMemo(() => formatarOpcoesChoices(candidato.indicativo_admissao_choices, 'indicativo_admissao'), [candidato, formatarOpcoesChoices]);
+    const opcoesTipoRegimeTrabalhista = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_trabalhista_choices, 'tipo_regime_trabalhista'), [candidato, formatarOpcoesChoices]);
     const opcoesTipoRegimeJornada = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_jornada_choices), [candidato, formatarOpcoesChoices]);
     const opcoesTipoRegimePrevidenciario = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_previdenciario_choices), [candidato, formatarOpcoesChoices]);
+    
+
+    
+    // Campos que vêm como objetos mas não têm _choices, então usam tabela de domínio
+    const opcoesTipoFuncionario = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_funcionario), [opcoesDominio.tipo_funcionario, formatarOpcoesDominio]);
+    const opcoesCodigoCategoriaESocial = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_categoria_esocial), [opcoesDominio.codigo_categoria_esocial, formatarOpcoesDominio]);
+    
+    // Campos que vêm como strings mas têm _choices disponíveis
+    const opcoesTipoRecebimento = useMemo(() => {
+        if (candidato.tipo_recebimento_choices) {
+            return formatarOpcoesChoices(candidato.tipo_recebimento_choices);
+        }
+        return formatarOpcoesDominio(opcoesDominio.tipo_recebimento);
+    }, [candidato.tipo_recebimento_choices, opcoesDominio.tipo_recebimento, formatarOpcoesChoices, formatarOpcoesDominio]);
+    
+    const opcoesTipoSituacao = useMemo(() => {
+        return formatarOpcoesDominio(opcoesDominio.tipo_situacao);
+    }, [opcoesDominio.tipo_situacao, formatarOpcoesDominio]);
+    
+    const opcoesCodigoOcorrenciaSefip = useMemo(() => {
+        if (candidato.codigo_ocorrencia_sefip_choices) {
+            return formatarOpcoesChoices(candidato.codigo_ocorrencia_sefip_choices);
+        }
+        return formatarOpcoesDominio(opcoesDominio.codigo_ocorrencia_sefip);
+    }, [candidato.codigo_ocorrencia_sefip_choices, opcoesDominio.codigo_ocorrencia_sefip, formatarOpcoesChoices, formatarOpcoesDominio]);
+    
+    const opcoesCodigoCategoriaSefip = useMemo(() => {
+        if (candidato.codigo_categoria_sefip_choices) {
+            return formatarOpcoesChoices(candidato.codigo_categoria_sefip_choices);
+        }
+        return formatarOpcoesDominio(opcoesDominio.codigo_categoria_sefip);
+    }, [candidato.codigo_categoria_sefip_choices, opcoesDominio.codigo_categoria_sefip, formatarOpcoesChoices, formatarOpcoesDominio]);
     
     return (
         <GridContainer>

@@ -54,7 +54,17 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
 
     const getValorSelecionadoFromCandidato = useMemo(() => {
         return (campo, lista) => {
-            if (!Array.isArray(lista) || !candidato || !candidato[campo]) return '';
+            if (!Array.isArray(lista) || !candidato) return '';
+            
+            if (!candidato[campo]) return '';
+            
+            // Verifica se o valor é um objeto (como genero, estado_civil, etc.)
+            if (typeof candidato[campo] === 'object' && candidato[campo] !== null) {
+                return {
+                    name: candidato[campo].descricao,
+                    code: candidato[campo].id_origem || candidato[campo].id
+                };
+            }
             
             const code = String(candidato[campo]);
             const item = lista.find(item => String(item.code) === code);
@@ -108,9 +118,9 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
     };
 
     // Função para obter o estado formatado
-    const getEstadoFormatado = () => {
-        if (!candidato?.estado) return '';
-        const estadoEncontrado = estados.find(e => e.code === candidato.estado);
+    const getEstadoFormatado = (campo = 'estado') => {
+        if (!candidato?.[campo]) return '';
+        const estadoEncontrado = estados.find(e => e.code === candidato[campo]);
         return estadoEncontrado || '';
     };
 
@@ -192,6 +202,17 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 setValor={(valor) => setCampo('nacionalidade', valor.code)}
                 options={opcoesNacionalidade}
                 disabled={modoLeitura}
+                filter
+            />
+            <DropdownItens
+                name="estado_natal"
+                label="Estado Natal"
+                valor={getEstadoFormatado('estado_natal')}
+                setValor={valor => setCampo('estado_natal', valor.code)}
+                options={estados}
+                placeholder="Selecione o estado natal"
+                disabled={modoLeitura}
+                filter
             />
             
             <SectionTitle>Filiação</SectionTitle>
@@ -316,7 +337,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
             />
             <DropdownItens
                 $margin={'10px'}
-                valor={getEstadoFormatado()}
+                valor={getEstadoFormatado('estado')}
                 setValor={valor => setCampo('estado', valor.code)}
                 options={estados}
                 name="state"
