@@ -26,6 +26,14 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
 
     useEffect(() => {
         setCampo('dt_mudanca_jornada', candidato.dt_admissao);
+        setCampo('dt_mudanca_situacao', candidato.dt_admissao);
+        setCampo('dt_mudanca_funcao', candidato.dt_admissao);
+        setCampo('dt_mudanca_salario', candidato.dt_admissao);
+        setCampo('dt_mudanca_categoria', candidato.dt_admissao);
+        setCampo('dt_mudanca_tipo_funcionario', candidato.dt_admissao);
+        setCampo('dt_mudanca_recebimento', candidato.dt_admissao);
+        setCampo('dt_mudanca_horario', candidato.dt_admissao);
+        setCampo('dt_mudanca_jornada', candidato.dt_admissao);
     }, [candidato.dt_admissao, setCampo]);
 
     useEffect(() => {

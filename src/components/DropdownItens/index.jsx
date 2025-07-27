@@ -29,6 +29,7 @@ const Select = styled(Dropdown)`
     font-size: 14px;
     width: ${ props => props.$width ?  props.$width : '100%' };
     height: ${ props => props.$height ?  props.$height : '46px' };
+    max-width: ${ props => props.$maxWidth ?  props.$maxWidth : '36vw' };
     margin-bottom: ${ props => props.$margin ?  props.$margin : '0px' };
 
     & .p-dropdown-label {
