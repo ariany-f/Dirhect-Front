@@ -216,6 +216,15 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 type="date"
                 disabled={modoLeitura}
             />
+            <CampoTexto
+                name="pispasep"
+                valor={candidato?.pispasep ?? ''}
+                setValor={valor => setCampo('pispasep', valor)}
+                patternMask="999.99999.99-9"
+                label="PIS/PASEP"
+                placeholder="Digite o PIS/PASEP"
+                disabled={modoLeitura}
+            />
             <DropdownItens
                 name="genero"
                 label="Gênero"

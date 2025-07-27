@@ -965,6 +965,7 @@ const CandidatoRegistro = () => {
                 chapa: candidatoAtual.chapa,
                 dt_admissao: candidatoAtual.dt_admissao,
                 jornada: candidatoAtual.jornada,
+                pispasep: candidatoAtual.pispasep,
                 salario: (() => {
                     const salarioCandidato = dadosCandidato?.salario;
                     const salarioVaga = dadosVaga?.salario;
