@@ -13,6 +13,7 @@ import styles from './MeusDados.module.css';
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { ArmazenadorToken } from '@utils';
+import { RiInformationLine } from 'react-icons/ri';
 
 const ConteudoFrame = styled.div`
   display: flex;
@@ -21,12 +22,24 @@ const ConteudoFrame = styled.div`
   width: 100%;
 `;
 
+const InfoMessage = styled.div`
+  background-color: var(--blue-50);
+  color: var(--blue-700);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--blue-200);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
 function MeusDados() {
   const [loading, setLoading] = useState(false);
   const [empresa, setEmpresa] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const toast = useRef(null);
   const location = useLocation();
+  const [podeAlterarCliente, setPodeAlterarCliente] = useState(false);
 
   const {
       usuario,
@@ -35,6 +48,9 @@ function MeusDados() {
   } = useSessaoUsuarioContext()
 
   useEffect(() => {
+    // Verifica a permissão para alterar cliente
+    setPodeAlterarCliente(ArmazenadorToken.hasPermission('change_cliente'));
+
     setLoading(true);
 
     // if(!empresa)
@@ -102,6 +118,16 @@ function MeusDados() {
   return (
     <ConteudoFrame>
       <Toast ref={toast} />
+      
+
+      {podeAlterarCliente && usuario && usuario.companies && usuario.companies.length > 1 && (
+        <InfoMessage>
+            <RiInformationLine size={24} />
+            <Texto>
+                Você pode alterar a empresa selecionada no menu superior.
+            </Texto>
+        </InfoMessage>
+      )}
       <BotaoGrupo align="space-between">
         <BotaoGrupo>
           <Link className={styles.link} to="/usuario">
@@ -113,11 +139,14 @@ function MeusDados() {
           <Link className={styles.link} to="/usuario/email">
             <Botao estilo={location.pathname == '/usuario/email'?'black':''} size="small" tab>Emails</Botao>
           </Link>
-          <Link className={styles.link} to="/usuario/empresa">
-            <Botao estilo={location.pathname == '/usuario/empresa'?'black':''} size="small" tab>{companyName || 'Empresa'}</Botao>
-          </Link>
+          {podeAlterarCliente && (
+            <Link className={styles.link} to="/usuario/empresa">
+                <Botao estilo={location.pathname == '/usuario/empresa'?'black':''} size="small" tab>{companyName || 'Empresa'}</Botao>
+            </Link>
+          )}
         </BotaoGrupo>
       </BotaoGrupo>
+
       <Outlet/>
     </ConteudoFrame>
   );
