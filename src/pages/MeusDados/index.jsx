@@ -52,46 +52,6 @@ function MeusDados() {
     setPodeAlterarCliente(ArmazenadorToken.hasPermission('change_cliente'));
 
     setLoading(true);
-
-    // if(!empresa)
-    //   {
-    //        // Buscar clientes
-    //        http.get(`cliente/?format=json`)
-    //        .then(async (response) => {
-    //            let clientes = response; // Supondo que a resposta seja um array de clientes
-
-    //            // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
-    //            const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
-    //                try {
-    //                    // Buscar o tenant
-    //                    const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
-    //                    const tenant = tenantResponse || {};
-
-    //                    // Buscar a pessoa jurídica
-    //                    const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
-    //                    const pessoaJuridica = pessoaJuridicaResponse || {};
-
-
-    //                    // Retornar o objeto consolidado
-    //                    return {
-    //                        ...cliente,
-    //                        tenant,
-    //                        pessoaJuridica
-    //                    };
-    //                } catch (erro) {
-    //                    console.error("Erro ao buscar dados do cliente:", erro);
-    //                    return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
-    //                }
-    //            }));
-
-    //            // Atualizar o estado com os clientes completos
-    //            setTenants(clientesCompletos);
-               
-    //       })
-    //       .catch(erro => {
-    //           console.error("Erro ao buscar clientes:", erro);
-    //       });
-    //   }
   }, []);
 
   useEffect(() => {
