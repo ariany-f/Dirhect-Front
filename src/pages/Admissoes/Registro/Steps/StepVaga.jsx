@@ -101,7 +101,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             if (!Array.isArray(lista) || !candidato) return '';
             
             // Se o valor for null, retorna "Nenhum" para campos específicos
-            if ((candidato[campo].descricao === 'Null')) {
+            if (candidato[campo] && candidato[campo].descricao === 'Null') {
                 return { name: 'Nenhum', code: candidato[campo].id || 'null' };
             }
             
