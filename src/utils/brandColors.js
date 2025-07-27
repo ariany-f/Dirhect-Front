@@ -8,21 +8,28 @@ export class BrandColors {
       tertiary: '#000000'
     };
     
-    // Obter cores do .env ou usar padrão
+    // Obter cores do localStorage, .env ou usar padrão
     static getBrandColors() {
+      const storedColors = JSON.parse(localStorage.getItem('brandColors')) || {};
       const envPrimary = import.meta.env.VITE_BRAND_PRIMARY_COLOR;
       const envSecondary = import.meta.env.VITE_BRAND_SECONDARY_COLOR;
       const envAccent = import.meta.env.VITE_BRAND_ACCENT_COLOR;
       const envTertiary = import.meta.env.VITE_BRAND_TERTIARY_COLOR;
       
       return {
-        primary: envPrimary || this.defaultColors.primary,
-        secondary: envSecondary || this.defaultColors.secondary,
-        accent: envAccent || this.defaultColors.accent,
-        tertiary: envTertiary || this.defaultColors.tertiary
+        primary: storedColors.primary || envPrimary || this.defaultColors.primary,
+        secondary: storedColors.secondary || envSecondary || this.defaultColors.secondary,
+        accent: storedColors.accent || envAccent || this.defaultColors.accent,
+        tertiary: storedColors.tertiary || envTertiary || this.defaultColors.tertiary
       };
     }
-  
+
+    // Salvar e aplicar novas cores
+    static setBrandColors(colors) {
+        localStorage.setItem('brandColors', JSON.stringify(colors));
+        this.applyBrandColors();
+    }
+
     // Gerar variações de cores baseadas na cor primária
     static generateColorVariations(primaryColor) {
       // Função auxiliar para converter hex para RGB
@@ -148,7 +155,7 @@ export class BrandColors {
     static getBrandLogo() {
       return import.meta.env.VITE_BRAND_LOGO_URL || '/imagens/logo.png';
     }
-  
+
     // Obter nome da marca
     static getBrandName() {
       return import.meta.env.VITE_BRAND_NAME || 'Dirhect';

@@ -265,6 +265,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false }) => {
                 label="Estado"
                 placeholder="Selecione o estado"
                 disabled={modoLeitura}
+                filter
             />
         </GridContainer>
     );

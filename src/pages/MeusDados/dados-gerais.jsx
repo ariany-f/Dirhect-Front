@@ -16,12 +16,22 @@ import ModalAlterarEmail from '@components/ModalAlterar/email'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import CampoTexto from '@components/CampoTexto'
 import Botao from '@components/Botao'
-import BotaoGrupo from '@components/BotaoGrupo'
+import SubTitulo from '@components/SubTitulo'
+import SwitchInput from '@components/SwitchInput'
+import ModalAtivarMFA from '@components/ModalAtivarMFA'
+import styled from 'styled-components'
+
+const PasswordWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 0;
+`;
 
 function MeusDadosDadosGerais() {
 
     const [userProfile, setUserProfile] = useState([])
-    const [empresaSelecionada, setEmpresaSelecionada] = useState(null)
     const [modalTelefoneOpened, setModalTelefoneOpened] = useState(false)
     const [modalEmailOpened, setModalEmailOpened] = useState(false)
     const toast = useRef(null)
@@ -29,35 +39,26 @@ function MeusDadosDadosGerais() {
     const [novaSenha, setNovaSenha] = useState('');
     const [confirmarSenha, setConfirmarSenha] = useState('');
     const [alterandoSenha, setAlterandoSenha] = useState(false);
+    const [mostrarCamposSenha, setMostrarCamposSenha] = useState(false);
     
+    // MFA States
+    const [mfaAtivo, setMfaAtivo] = useState(false);
+    const [modalMFAOpened, setModalMFAOpened] = useState(false);
+    const [qrCode, setQrCode] = useState('');
+    const [secret, setSecret] = useState('');
+    const [loadingMFA, setLoadingMFA] = useState(false);
+
     const {
         usuario,
-        retornarCompanySession,
-        setSessionCompany,
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
-        if(usuario && !Object.keys(userProfile).length)
+        if(usuario)
         {
-            setUserProfile(usuario)
+            setUserProfile(usuario);
+            setMfaAtivo(usuario.mfa_enabled || false);
         }
-        // /**
-        //  * Dados necessários para exibição no painel do usuário
-        //  */
-        // if(!Object.keys(userProfile).length)
-        // {
-        //     http.get(`usuario/${ArmazenadorToken.UserPublicId}`)
-        //     .then(response => {
-        //         if(response.detail != 'Não encontrado')
-        //         {
-        //             setUserProfile(response)
-        //         }
-        //     })
-        //     .catch(erro => {
-        //         console.error(erro)
-        //     })
-        // }
-    }, [userProfile, usuario])
+    }, [usuario])
 
     function editarTelefone(telefone) {
         let contact_info = {}
@@ -93,12 +94,7 @@ function MeusDadosDadosGerais() {
         .catch(erro => console.log(erro))
     }
 
-    function formataCNPJ(cnpj) {
-        cnpj = cnpj.replace(/[^\d]/g, "");
-        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
-    }
-
-    const handleAlterarSenha = () => {
+    const handleAlterarSenha = async () => {
         setAlterandoSenha(true);
         if (!senhaAtual || !novaSenha || !confirmarSenha) {
             toast.current.show({ severity: 'warn', summary: 'Atenção', detail: 'Preencha todos os campos.', life: 3000 });
@@ -110,14 +106,87 @@ function MeusDadosDadosGerais() {
             setAlterandoSenha(false);
             return;
         }
-        setTimeout(() => {
+
+        try {
+            const payload = {
+                old_password: senhaAtual,
+                new_password1: novaSenha,
+                new_password2: confirmarSenha,
+            };
+            await http.post('auth/users/set_password/', payload);
+
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Senha alterada com sucesso!', life: 3000 });
             setSenhaAtual('');
             setNovaSenha('');
             setConfirmarSenha('');
             setAlterandoSenha(false);
-        }, 1000);
+            setMostrarCamposSenha(false);
+        } catch (error) {
+            const errors = error.response?.data;
+            let errorMessage = 'Não foi possível alterar a senha.';
+            if (errors) {
+                // Captura a primeira mensagem de erro disponível
+                const errorKey = Object.keys(errors)[0];
+                errorMessage = errors[errorKey][0];
+            }
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
+            setAlterandoSenha(false);
+        }
     };
+
+    const handleCloseMfaModal = () => {
+        setModalMFAOpened(false);
+        ArmazenadorToken.removerTempToken();
+    };
+
+    const handleToggleMFA = async () => {
+        setLoadingMFA(true);
+        if (mfaAtivo) {
+            // Lógica para desativar
+            try {
+                await http.post('mfa/disable/');
+                setMfaAtivo(false);
+                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'MFA desativado.', life: 3000 });
+            } catch (error) {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Não foi possível desativar o MFA.', life: 3000 });
+            } finally {
+                setLoadingMFA(false);
+            }
+        } else {
+            // Lógica para iniciar ativação
+            try {
+                const response = await http.get('mfa/generate/');
+                if (response && response.qr_code) {
+                   
+                    setQrCode(`data:image/png;base64,${response.qr_code}`);
+                    setSecret(response.secret || '');
+                    setModalMFAOpened(true);
+                } else {
+                    toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Resposta inválida do servidor ao gerar MFA.', life: 3000 });
+                }
+            } catch (error) {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Não foi possível iniciar a ativação do MFA.', life: 3000 });
+            } finally {
+                setLoadingMFA(false);
+            }
+        }
+    };
+    
+    const handleConfirmMFA = async (verificationCode) => {
+        try {
+            ArmazenadorToken.definirTempTokenMFA(ArmazenadorToken.AccessToken);
+            await http.post('/mfa/validate/', { otp: verificationCode });
+            setMfaAtivo(true);
+            setModalMFAOpened(false);
+            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'MFA ativado com sucesso!', life: 3000 });
+            ArmazenadorToken.removerTempTokenMFA();
+        } catch (error) {
+            const errorMessage = error?.response?.data?.otp?.[0] || 'Código de verificação inválido. Tente novamente.';
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
+            throw error;
+        } 
+    };
+
 
     return (
         <>
@@ -125,16 +194,45 @@ function MeusDadosDadosGerais() {
         <Titulo><h6>Informações gerais</h6></Titulo>
         <div className={styles.card_dashboard}>
             <Texto>Nome completo</Texto>
-            {ArmazenadorToken.UserName ?
-                <Texto weight="800">{ArmazenadorToken.UserName}</Texto>
+            {userProfile?.name ?
+                <Texto weight="800">{userProfile.name}</Texto>
                 : <Skeleton variant="rectangular" width={200} height={25} />
             }
-            <Texto>Senha</Texto>
-            <BotaoSemBorda>
-                <RiEditBoxFill size={18} />
-                <Link to="/usuario/sistema" className={styles.link}>Alterar</Link>
-            </BotaoSemBorda>
         </div>
+        
+        <Titulo><h6>Segurança da Conta</h6></Titulo>
+        <div className={styles.card_dashboard}>
+            <SubTitulo>Alterar Senha</SubTitulo>
+            {!mostrarCamposSenha && (
+                <BotaoSemBorda onClick={() => setMostrarCamposSenha(true)}>
+                    <RiEditBoxFill size={18} />
+                    <span className={styles.link}>Alterar</span>
+                </BotaoSemBorda>
+            )}
+
+            {mostrarCamposSenha && (
+                <PasswordWrapper>
+                    <CampoTexto label="Senha Atual" tipo="password" valor={senhaAtual} setValor={setSenhaAtual} />
+                    <CampoTexto label="Nova Senha" tipo="password" valor={novaSenha} setValor={setNovaSenha} />
+                    <CampoTexto label="Confirmar Nova Senha" tipo="password" valor={confirmarSenha} setValor={setConfirmarSenha} />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
+                        <Botao estilo="neutro" size="medium" aoClicar={() => setMostrarCamposSenha(false)}>Cancelar</Botao>
+                        <Botao estilo="vermilion" size="medium" aoClicar={handleAlterarSenha} disabled={alterandoSenha}>
+                            {alterandoSenha ? 'Alterando...' : 'Alterar Senha'}
+                        </Botao>
+                    </div>
+                </PasswordWrapper>
+            )}
+
+            <hr style={{width: '100%', border: 'none', borderTop: '1px solid var(--neutro-200)', margin: '24px 0'}} />
+
+            <SubTitulo>Autenticação de Múltiplos Fatores (MFA)</SubTitulo>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingTop: '8px' }}>
+                <Texto>Ativar MFA no seu próximo login</Texto>
+                <SwitchInput checked={mfaAtivo} onChange={handleToggleMFA} disabled={loadingMFA} />
+            </div>
+        </div>
+
         <Titulo><h6>Informações de contato</h6></Titulo>
         <div className={styles.card_dashboard}>
             <ContainerHorizontal width="50%">
@@ -149,7 +247,7 @@ function MeusDadosDadosGerais() {
                     </Frame>
                     <BotaoSemBorda>
                         <RiEditBoxFill size={18} />
-                        <Link onClick={() => {setModalTelefoneOpened(true)}} className={styles.link}>Alterar</Link>
+                        <Link to="#" onClick={() => {setModalTelefoneOpened(true)}} className={styles.link}>Alterar</Link>
                     </BotaoSemBorda>
                     </>
                     : <Skeleton variant="rectangular" width={200} height={25} />
@@ -167,7 +265,7 @@ function MeusDadosDadosGerais() {
                         </Frame>
                         <BotaoSemBorda>
                             <RiEditBoxFill size={18} />
-                            <Link onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
+                            <Link to="#" onClick={() => setModalEmailOpened(true)} className={styles.link}>Alterar</Link>
                         </BotaoSemBorda>
                     </>
                     : <Skeleton variant="rectangular" width={200} height={25} />
@@ -176,6 +274,13 @@ function MeusDadosDadosGerais() {
         </div>
         <ModalAlterarTelefone dadoAntigo={(userProfile && userProfile.phones && userProfile.phones.length) ? ('(' + userProfile.phones[0].phone_code + ') ' + userProfile.phones[0].phone_number) : ''} aoClicar={editarTelefone} opened={modalTelefoneOpened} aoFechar={() => setModalTelefoneOpened(!modalTelefoneOpened)} />
         <ModalAlterarEmail dadoAntigo={userProfile.email ?? ''} aoClicar={editarEmail} opened={modalEmailOpened} aoFechar={() => setModalEmailOpened(!modalEmailOpened)} />
+        <ModalAtivarMFA 
+            opened={modalMFAOpened}
+            aoFechar={handleCloseMfaModal}
+            qrCode={qrCode}
+            secret={secret}
+            onConfirm={handleConfirmMFA}
+        />
         </>
     )
 }

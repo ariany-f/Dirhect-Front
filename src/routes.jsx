@@ -154,7 +154,7 @@ import MobileScrollToTop from '@components/MobileScrollToTop'
 import MeusDadosSistema from '@pages/MeusDados/sistema'
 import { Toast } from 'primereact/toast'
 import { ToastContainer } from 'react-toastify'
-import ConfiguracoesVagas from '@pages/Vagas/configuracoes'
+import ConfiguracoesEmails from '@pages/MeusDados/configuracoes'
 import MfaGenerate from '@pages/Login/mfa_generate'
 import Documentos from './pages/DocumentosRequeridos'
 import DocumentosConfiguracoes from './pages/DocumentosRequeridos/configuracoes'
@@ -187,6 +187,7 @@ import CodigoSituacaoFgts from './pages/TabelasSistema/codigo_situacao_fgts'
 import CodigoVinculoRais from './pages/TabelasSistema/codigo_vinculo_rais'
 import CodigoSituacaoRais from './pages/TabelasSistema/codigo_situacao_rais'
 import DePara from './pages/TabelasSistema/depara'
+import MeusDadosEmpresa from './pages/MeusDados/empresa'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -399,7 +400,6 @@ function AppRouter() {
                 <Route path="fechadas" element={<VagasCanceladas />} />
                 <Route path="transferidas" element={<VagasTransferidas />} />
               </Route>
-              <Route path="vagas/configuracoes" element={<ConfiguracoesVagas />} />
               <Route path="vagas/detalhes/:id" element={<DetalhesVaga />} />
               <Route path="vagas/registro" element={<VagasRegistro />} />
 
@@ -491,6 +491,8 @@ function AppRouter() {
                   <Route path="endereco" element={<MeusDadosEndereco />} />
                   <Route path="dados-faturamento" element={<MeusDadosDadosFaturamento />} />
                   <Route path="sistema" element={<MeusDadosSistema />} />
+                  <Route path="email" element={<ConfiguracoesEmails />} />
+                  <Route path="empresa" element={<MeusDadosEmpresa />} />
               </Route>
             </Route>
             <Route path="*" element={<NaoEncontrada />}></Route>

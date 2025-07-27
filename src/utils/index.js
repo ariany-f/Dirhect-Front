@@ -1,5 +1,6 @@
 const ACCESS_TOKEN = 'token_access'
 const TEMP_TOKEN = 'temp_token'
+const TEMP_TOKEN_MFA = 'temp_token_mfa'
 const ADMISSAO_TOKEN = 'admissao_token'
 const ADMISSAO_SECURITY_TOKEN = 'admissao_security_token'
 const EXPIRATION = 'expires_at'
@@ -52,6 +53,15 @@ export class ArmazenadorToken {
     }
     static removerTempToken() {
         sessionStorage.removeItem(TEMP_TOKEN)
+    }
+    static definirTempTokenMFA(tempTokenMFA) {
+        sessionStorage.setItem(TEMP_TOKEN_MFA, tempTokenMFA)
+    }
+    static get TempTokenMFA() {
+        return sessionStorage.getItem(TEMP_TOKEN_MFA)
+    }
+    static removerTempTokenMFA() {
+        sessionStorage.removeItem(TEMP_TOKEN_MFA)
     }
     static definirAdmissaoToken(admissaoToken) {
         sessionStorage.setItem(ADMISSAO_TOKEN, admissaoToken)

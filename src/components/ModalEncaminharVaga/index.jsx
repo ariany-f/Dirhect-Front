@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { Editor } from "primereact/editor";
 import Botao from "@components/Botao";
+import BotaoSemBorda from "@components/BotaoSemBorda";
 import Frame from "@components/Frame";
 import CampoTexto from "@components/CampoTexto";
 import BotaoGrupo from "@components/BotaoGrupo";
@@ -10,8 +11,10 @@ import Titulo from "@components/Titulo";
 import { RiCloseFill } from "react-icons/ri";
 import styles from "./ModalEncaminharVaga.module.css";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
+import { MdArrowCircleRight } from 'react-icons/md'
 import { Real } from '@utils/formats'
 import http from '@http'
+import { Link, useNavigate } from "react-router-dom";
 // Função para formatar a data
 const formatDate = (date) => {
   if (!date) return "";
@@ -158,6 +161,7 @@ function gerarHtmlComEstilo(conteudoHtml) {
 function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidadeInicial, candidato = null, vagaId }) {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
   const [mensagem, setMensagem] = useState("");
   const [cpf, setCpf] = useState("");
   const [nascimento, setNascimento] = useState("");
@@ -215,6 +219,17 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
     // Variável obrigatória
     { value: "{{link_acesso}}", label: "Link de Acesso", obrigatoria: true },
   ];
+
+  useEffect(() => {
+    if (showEditorContent && editorRef.current) {
+      // Acessa a instância do Quill através do método getQuill() da referência
+      const quill = editorRef.current.getQuill();
+      if (quill) {
+        setQuillInstance(quill);
+      }
+    }
+  }, [showEditorContent]); // Executa quando o editor é exibido
+
 
   const substituirVariaveis = (conteudo) => {
     if (!conteudo) return "";
@@ -385,22 +400,6 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
         setEditorContent(newContent);
       }
     }, 100);
-  };
-
-  const onEditorReady = (quill) => {
-    console.log('onEditorReady chamado!');
-    console.log('Quill recebido:', quill);
-    console.log('Tipo do quill:', typeof quill);
-    console.log('Métodos disponíveis:', Object.getOwnPropertyNames(Object.getPrototypeOf(quill)));
-    
-    // Armazena a instância do Quill
-    setQuillInstance(quill);
-    
-    // Também armazena na referência para backup
-    if (editorRef.current) {
-      editorRef.current.quill = quill;
-      console.log('Quill armazenado na referência também');
-    }
   };
 
   const handleSave = () => {
@@ -643,12 +642,16 @@ function ModalEncaminharVaga({ opened = false, aoFechar, aoSalvar, periculosidad
                       placeholder={loadingTemplates ? "Carregando templates..." : dropdownTemplates.length === 0 ? "Nenhum template disponível" : "Selecione um template"}
                       disabled={loadingTemplates}
                     />
+                    <div style={{ cursor: 'pointer', display: 'flex', justifyContent: 'end', height: '30px', marginBottom: '5px', alignItems: 'center'}}>
+                      <BotaoSemBorda color="var(--terciaria)" aoClicar={() => navigate('/usuario/email')}>
+                            Cadastrar Template<MdArrowCircleRight className='icon' size={18} />
+                      </BotaoSemBorda>
+                    </div>
                     <Editor
                       ref={editorRef}
                       value={editorContent}
                       onTextChange={(e) => setEditorContent(e.htmlValue)}
                       style={{ height: '240px' }}
-                      onEditorReady={onEditorReady}
                     />
                     <VariaveisContainer>
                       {variaveis.map((variavel, index) => {

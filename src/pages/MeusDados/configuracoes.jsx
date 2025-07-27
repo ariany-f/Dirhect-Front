@@ -26,7 +26,7 @@ const Header = styled.div`
     margin-bottom: 20px;
 `;
 
-function ConfiguracoesVagas() {
+function ConfiguracoesEmails() {
     const toast = useRef(null);
     const [emails, setEmails] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -190,7 +190,6 @@ function ConfiguracoesVagas() {
         <Frame gap="16px">
             <Toast ref={toast} />
             <ConfirmDialog />
-            <BotaoVoltar linkFixo="/vagas" />
             <Container>
                 <Header>
                     <h3>Configurações de Emails</h3>
@@ -221,4 +220,4 @@ function ConfiguracoesVagas() {
     );
 }
 
-export default ConfiguracoesVagas;
+export default ConfiguracoesEmails;

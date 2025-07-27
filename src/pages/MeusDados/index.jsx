@@ -34,36 +34,46 @@ function MeusDados() {
 
   useEffect(() => {
     setLoading(true);
-    // setTimeout(() => {
-    //   setEmpresa({
-    //     logo: null,
-    //     razaoSocial: 'Minha Empresa LTDA',
-    //     cnpj: '12345678000199',
-    //     nomeFantasia: 'Minha Empresa',
-    //     endereco: 'Rua Exemplo, 123, Centro, Cidade/UF',
-    //     dadosBancarios: {
-    //       banco: 'Banco XPTO',
-    //       agencia: '1234',
-    //       conta: '56789-0',
-    //     },
-    //     corPrincipal: '#1A237E',
-    //     dadosFaturamento: {
-    //       email: 'faturamento@empresa.com',
-    //       inscricaoEstadual: '123456789',
-    //       inscricaoMunicipal: '987654321',
-    //     },
-    //     colaboradorPodeEditar: true,
-    //     integracoes: {
-    //       zapier: false,
-    //       rm: false,
-    //       sap: false,
-    //     },
-    //     timezone: 'America/Sao_Paulo',
-    //     feriados: [],
-    //     idioma: 'pt-BR',
-    //   });
-    //   setLoading(false);
-    // }, 1000);
+
+    // if(!empresa)
+    //   {
+    //        // Buscar clientes
+    //        http.get(`cliente/?format=json`)
+    //        .then(async (response) => {
+    //            let clientes = response; // Supondo que a resposta seja um array de clientes
+
+    //            // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
+    //            const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
+    //                try {
+    //                    // Buscar o tenant
+    //                    const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
+    //                    const tenant = tenantResponse || {};
+
+    //                    // Buscar a pessoa jurídica
+    //                    const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
+    //                    const pessoaJuridica = pessoaJuridicaResponse || {};
+
+
+    //                    // Retornar o objeto consolidado
+    //                    return {
+    //                        ...cliente,
+    //                        tenant,
+    //                        pessoaJuridica
+    //                    };
+    //                } catch (erro) {
+    //                    console.error("Erro ao buscar dados do cliente:", erro);
+    //                    return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
+    //                }
+    //            }));
+
+    //            // Atualizar o estado com os clientes completos
+    //            setTenants(clientesCompletos);
+               
+    //       })
+    //       .catch(erro => {
+    //           console.error("Erro ao buscar clientes:", erro);
+    //       });
+    //   }
   }, []);
 
   const handleSalvar = () => {
@@ -76,16 +86,16 @@ function MeusDados() {
       <BotaoGrupo align="space-between">
         <BotaoGrupo>
           <Link className={styles.link} to="/usuario">
-            <Botao estilo={location.pathname == '/usuario'?'black':''} size="small" tab>Dados Pessoais</Botao>
-          </Link>
-          <Link className={styles.link} to="/usuario/endereco">
-            <Botao estilo={location.pathname == '/usuario/endereco'?'black':''} size="small" tab>Endereço</Botao>
-          </Link>
-          <Link className={styles.link} to="/usuario/dados-faturamento">
-            <Botao estilo={location.pathname == '/usuario/dados-faturamento'?'black':''} size="small" tab>Dados de faturamento</Botao>
+            <Botao estilo={location.pathname == '/usuario'?'black':''} size="small" tab>Dados Usuário</Botao>
           </Link>
           <Link className={styles.link} to="/usuario/sistema">
             <Botao estilo={location.pathname == '/usuario/sistema'?'black':''} size="small" tab>Sistema</Botao>
+          </Link>
+          <Link className={styles.link} to="/usuario/empresa">
+            <Botao estilo={location.pathname == '/usuario/empresa'?'black':''} size="small" tab>{usuario?.company_domain}</Botao>
+          </Link>
+          <Link className={styles.link} to="/usuario/email">
+            <Botao estilo={location.pathname == '/usuario/email'?'black':''} size="small" tab>Emails</Botao>
           </Link>
         </BotaoGrupo>
       </BotaoGrupo>

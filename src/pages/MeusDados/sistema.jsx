@@ -12,6 +12,12 @@ import styled from 'styled-components';
 import { ColorPicker } from 'primereact/colorpicker';
 import { RiUpload2Fill } from 'react-icons/ri';
 import { Dropdown } from 'primereact/dropdown';
+import BrandColors from '@utils/brandColors';
+import SwitchInput from '@components/SwitchInput';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import imageCompression from 'browser-image-compression';
+import { HiX } from 'react-icons/hi';
 
 const Col12 = styled.div`
     display: flex;
@@ -47,9 +53,16 @@ const ImageUploadContainer = styled.div`
     align-items: center;
     gap: 16px;
     margin: 0;
-    width: 120px;
     padding-top: 20px;
     padding-bottom: 20px;
+`;
+
+const SwitchContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 0;
 `;
 
 const UploadArea = styled.label`
@@ -95,20 +108,98 @@ const UploadText = styled.span`
     font-size: 12px;
 `;
 
+const ImageContainer = styled.div`
+    position: relative;
+    width: ${props => props.$width || '120px'};
+    height: ${props => props.$height || '120px'};
+    
+    .hover-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 8px;
+    }
+    
+    &:hover .hover-overlay {
+        opacity: 1;
+    }
+`;
+
+const HoverIconButton = styled.button`
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+
+    svg {
+        font-size: 20px;
+    }
+
+    svg * {
+        fill: #e2e8f0; /* Cor cinza claro padrão */
+        transition: fill 0.2s ease-in-out;
+    }
+
+    &:hover {
+        transform: scale(1.1);
+        background: rgba(0, 0, 0, 0.9);
+    }
+
+    &:hover svg * {
+        fill: white; /* Cor branca ao passar o mouse */
+    }
+`;
+
+const RemoveButton = styled.button`
+    background: transparent;
+    border: none;
+    color: var(--neutro-500);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-top: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        color: #ef4444;
+        background: #fef2f2;
+    }
+`;
+
 function MeusDadosSistema() {
     const [loading, setLoading] = useState(false);
     const [sistema, setSistema] = useState({
-        logo: null,
         logoPreview: '',
-        symbol: null,
-        symbolPreview: '',
-        corPrincipal: '#1A237E',
+        corPrimaria: BrandColors.getBrandColors().primary,
+        corSecundaria: BrandColors.getBrandColors().secondary,
+        corAcento: BrandColors.getBrandColors().accent,
+        corTerciaria: BrandColors.getBrandColors().tertiary,
         colaboradorPodeEditar: true,
-        integracoes: {
-            zapier: false,
-            rm: false,
-            sap: false,
-        },
+        habilidadesCandidato: true,
+        experienciaCandidato: true,
+        moduloLinhasTransporte: false,
         timezone: 'America/Sao_Paulo',
         feriadosTipo: 'nacionais',
         feriadosUF: '',
@@ -116,24 +207,31 @@ function MeusDadosSistema() {
     });
     const toast = useRef(null);
     const fileInputRef = useRef(null);
-    const symbolInputRef = useRef(null);
+
+    // Crop states
+    const [uploading, setUploading] = useState(false);
+    const [showCropModal, setShowCropModal] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [crop, setCrop] = useState({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
+    const [imageSrc, setImageSrc] = useState('');
+    const [imageRef, setImageRef] = useState(null);
 
     const { usuario } = useSessaoUsuarioContext();
 
     useEffect(() => {
-        // Se já existe logo e símbolo no storage/token, mostra como preview inicial
-        if (usuario && usuario.company_logo) {
-            setSistema(prev => ({
-                ...prev,
-                logoPreview: usuario.company_logo
-            }));
+        // Carrega configurações salvas do localStorage
+        const savedSettings = JSON.parse(localStorage.getItem('systemSettings'));
+        if (savedSettings) {
+            setSistema(prev => ({ ...prev, ...savedSettings }));
         }
-        if (usuario && usuario.company_symbol) {
-            setSistema(prev => ({
-                ...prev,
-                symbolPreview: usuario.company_symbol
-            }));
-        }
+
+        // Carrega logo salva
+        const savedLogo = BrandColors.getBrandLogo();
+        setSistema(prev => ({
+            ...prev,
+            logoPreview: savedLogo || (usuario && usuario.company_logo)
+        }));
+        
         setLoading(false);
     }, [usuario]);
 
@@ -141,43 +239,105 @@ function MeusDadosSistema() {
         setSistema(prev => ({ ...prev, [campo]: valor }));
     };
 
-    const handleIntegracaoChange = (campo, valor) => {
-        setSistema(prev => ({ ...prev, integracoes: { ...prev.integracoes, [campo]: valor } }));
-    };
-
-    const handleLogoChange = (e) => {
-        const file = e.target.files[0];
-        if (file && file.type.match('image.*')) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                setSistema(prev => ({ ...prev, logo: file, logoPreview: event.target.result }));
-            };
-            reader.readAsDataURL(file);
+    const compressImage = async (file) => {
+        try {
+            const options = { maxSizeMB: 1, maxWidthOrHeight: 1024, useWebWorker: true, fileType: file.type, quality: 0.8 };
+            const compressedFile = await imageCompression(file, options);
+            return new File([compressedFile], file.name, { type: compressedFile.type, lastModified: Date.now() });
+        } catch (error) {
+            console.error('Erro ao compactar imagem:', error);
+            return file;
         }
     };
 
-    const handleSymbolChange = (e) => {
+    const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file && file.type.match('image.*')) {
+            setSelectedFile(file);
             const reader = new FileReader();
-            reader.onload = (event) => {
-                setSistema(prev => ({ ...prev, symbol: file, symbolPreview: event.target.result }));
+            reader.onload = () => {
+                setImageSrc(reader.result);
+                setCrop({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
+                setShowCropModal(true);
             };
             reader.readAsDataURL(file);
         }
     };
 
     const handleRemoveLogo = () => {
-        setSistema(prev => ({ ...prev, logo: null, logoPreview: '' }));
+        setSistema(prev => ({ ...prev, logoPreview: '' }));
+        BrandColors.setBrandLogo(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Logo removida com sucesso!' });
+    };
+
+    const handleCropImage = async () => {
+        if (!imageRef || !crop.width || !crop.height) return;
+        setUploading(true);
+
+        const canvas = document.createElement('canvas');
+        const scaleX = imageRef.naturalWidth / imageRef.width;
+        const scaleY = imageRef.naturalHeight / imageRef.height;
+        canvas.width = crop.width * scaleX;
+        canvas.height = crop.height * scaleY;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(imageRef, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(async (blob) => {
+            if (!blob) { setUploading(false); return; }
+            const croppedFile = new File([blob], selectedFile.name, { type: selectedFile.type });
+            const compressedFile = await compressImage(croppedFile);
+            
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const dataUrl = reader.result;
+                BrandColors.setBrandLogo(dataUrl);
+                setSistema(prev => ({ ...prev, logoPreview: dataUrl }));
+                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Logo atualizada com sucesso!' });
+                handleCancelCrop();
+            };
+            reader.readAsDataURL(compressedFile);
+
+            setUploading(false);
+        }, selectedFile.type);
+    };
+
+    const handleCancelCrop = () => {
+        setShowCropModal(false);
+        setImageSrc('');
+        setSelectedFile(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
-    const handleRemoveSymbol = () => {
-        setSistema(prev => ({ ...prev, symbol: null, symbolPreview: '' }));
-        if (symbolInputRef.current) symbolInputRef.current.value = '';
-    };
-
     const handleSalvar = () => {
+        // Salva as cores para aplicação imediata
+        const newColors = {
+            primary: sistema.corPrimaria,
+            secondary: sistema.corSecundaria,
+            accent: sistema.corAcento,
+            tertiary: sistema.corTerciaria
+        };
+        BrandColors.setBrandColors(newColors);
+
+        // Salva logo se foi alterada - REMOVIDO, pois salva no crop
+        
+        // Prepara e salva todas as configurações no localStorage
+        const settingsToSave = {
+            corPrimaria: sistema.corPrimaria,
+            corSecundaria: sistema.corSecundaria,
+            corAcento: sistema.corAcento,
+            corTerciaria: sistema.corTerciaria,
+            colaboradorPodeEditar: sistema.colaboradorPodeEditar,
+            habilidadesCandidato: sistema.habilidadesCandidato,
+            experienciaCandidato: sistema.experienciaCandidato,
+            moduloLinhasTransporte: sistema.moduloLinhasTransporte,
+            timezone: sistema.timezone,
+            feriadosTipo: sistema.feriadosTipo,
+            feriadosUF: sistema.feriadosUF,
+            idioma: sistema.idioma,
+        };
+        localStorage.setItem('systemSettings', JSON.stringify(settingsToSave));
+
         toast.current.show({ severity: 'success', summary: 'Salvo', detail: 'Configurações do sistema salvas!', life: 3000 });
     };
 
@@ -217,156 +377,202 @@ function MeusDadosSistema() {
     ];
 
     return (
-        <form>
-            <Toast ref={toast} />
-            <Frame estilo="spaced">
-                <Titulo>
-                    <h6>Configurações do Sistema</h6>
-                </Titulo>
-            </Frame>
-            <Col12>
-                <Col6>
-                    <SubTitulo>Identidade Visual</SubTitulo>
-                    <Texto>Logo e Símbolo</Texto>
-                    <ImageUploadContainer style={{ flexDirection: 'row', gap: 32 }}>
-                        {/* Logo */}
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleLogoChange}
-                                ref={fileInputRef}
-                                style={{ display: 'none' }}
-                                id="sistema-logo-upload"
-                            />
-                            <UploadArea htmlFor="sistema-logo-upload" $hasImage={!!sistema.logoPreview} $width="180px" $height="80px">
-                                {sistema.logoPreview ? (
-                                    <UploadPreview src={sistema.logoPreview} alt="Preview da logo" />
-                                ) : (
-                                    <UploadIcon>
-                                        <RiUpload2Fill size={'28px'} />
-                                        <UploadText>Clique para adicionar uma logo</UploadText>
-                                        <UploadText>(PNG, JPG, até 2MB)</UploadText>
-                                    </UploadIcon>
+        <>
+            <form>
+                <Toast ref={toast} />
+                <Frame estilo="spaced">
+                    <Titulo>
+                        <h6>Configurações do Sistema</h6>
+                    </Titulo>
+                </Frame>
+                <Col12>
+                    <Col6>
+                        <SubTitulo>Identidade Visual</SubTitulo>
+                        <Texto>Logo</Texto>
+                        <ImageUploadContainer style={{ flexDirection: 'row', gap: 32 }}>
+                            {/* Logo */}
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    id="sistema-logo-upload"
+                                />
+                                {loading ? <Skeleton width="180px" height="80px" /> : (
+                                    sistema.logoPreview ? (
+                                        <>
+                                            <ImageContainer $width="180px" $height="80px">
+                                                <UploadPreview src={sistema.logoPreview} alt="Logo da empresa" />
+                                                <div className="hover-overlay">
+                                                    <HoverIconButton onClick={() => fileInputRef.current.click()}><RiUpload2Fill /></HoverIconButton>
+                                                </div>
+                                            </ImageContainer>
+                                            <RemoveButton onClick={handleRemoveLogo}><HiX size={12} /> Remover</RemoveButton>
+                                        </>
+                                    ) : (
+                                        <UploadArea htmlFor="sistema-logo-upload" $width="180px" $height="80px">
+                                            <UploadIcon>
+                                                <RiUpload2Fill size={'28px'} />
+                                                <UploadText>Clique para adicionar uma logo</UploadText>
+                                            </UploadIcon>
+                                        </UploadArea>
+                                    )
                                 )}
-                            </UploadArea>
-                            {sistema.logoPreview && (
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    <Botao aoClicar={() => fileInputRef.current.click()} estilo="neutro" size="small">Alterar Logo</Botao>
-                                    <Botao aoClicar={handleRemoveLogo} estilo="erro" size="small">Remover Logo</Botao>
+                            </div>
+                        </ImageUploadContainer>
+                        <Texto>Cores da Marca</Texto>
+                        {loading ? <Skeleton width={80} height={30} /> : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                    <ColorPicker value={sistema.corPrimaria} onChange={e => handleChange('corPrimaria', '#' + e.value)} style={{ height: 40 }} />
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                                        <span>Cor Primária</span>
+                                        <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{sistema.corPrimaria}</span>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-                        {/* Símbolo */}
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleSymbolChange}
-                                ref={symbolInputRef}
-                                style={{ display: 'none' }}
-                                id="sistema-symbol-upload"
-                            />
-                            <UploadArea htmlFor="sistema-symbol-upload" $hasImage={!!sistema.symbolPreview}>
-                                {sistema.symbolPreview ? (
-                                    <UploadPreview src={sistema.symbolPreview} alt="Preview do símbolo" />
-                                ) : (
-                                    <UploadIcon>
-                                        <RiUpload2Fill size={'28px'} />
-                                        <UploadText>Clique para adicionar um símbolo</UploadText>
-                                        <UploadText>(PNG, JPG, até 2MB)</UploadText>
-                                    </UploadIcon>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                    <ColorPicker value={sistema.corSecundaria} onChange={e => handleChange('corSecundaria', '#' + e.value)} style={{ height: 40 }} />
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                                        <span>Cor Secundária</span>
+                                        <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{sistema.corSecundaria}</span>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                    <ColorPicker value={sistema.corAcento} onChange={e => handleChange('corAcento', '#' + e.value)} style={{ height: 40 }} />
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                                        <span>Cor de Acento</span>
+                                        <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{sistema.corAcento}</span>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                    <ColorPicker value={sistema.corTerciaria} onChange={e => handleChange('corTerciaria', '#' + e.value)} style={{ height: 40 }} />
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                                        <span>Cor Terciária</span>
+                                        <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{sistema.corTerciaria}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </Col6>
+                    <Col6>
+                        <SubTitulo>Localização</SubTitulo>
+                        {loading ? <Skeleton width={200} height={25} /> : (
+                            <>
+                                <Texto>Timezone</Texto>
+                                <Dropdown
+                                    value={timezones.find(tz => tz.value === sistema.timezone) || timezones[0]}
+                                    options={timezones}
+                                    onChange={e => handleChange('timezone', e.value.value)}
+                                    optionLabel="label"
+                                    placeholder="Selecione o timezone"
+                                    style={{ width: '100%', height: 65, display: 'flex', alignItems: 'center', marginBottom: 16 }}
+                                />
+                                <Texto>Idioma padrão</Texto>
+                                <Dropdown
+                                    value={languages.find(lang => lang.code === sistema.idioma)}
+                                    options={languages}
+                                    onChange={e => handleChange('idioma', e.value.code)}
+                                    optionLabel="name"
+                                    placeholder="Selecione o idioma"
+                                    style={{ width: '100%', height: 65, display: 'flex', alignItems: 'center' }}
+                                />
+                            </>
+                        )}
+                        <SubTitulo>Feriados</SubTitulo>
+                        {loading ? <Skeleton width={200} height={25} /> : (
+                            <>
+                                <Texto>Tipo de feriado</Texto>
+                                <Dropdown 
+                                    value={sistema.feriadosTipo}
+                                    options={feriadosOptions}
+                                    onChange={e => handleChange('feriadosTipo', e.value)}
+                                    placeholder="Selecione o tipo de feriado"
+                                    style={{ width: '100%', marginBottom: 16, height: 65, display: 'flex', alignItems: 'center' }}
+                                />
+                                {sistema.feriadosTipo === 'estaduais' && (
+                                    <>
+                                        <Texto>Estado (UF)</Texto>
+                                        <Dropdown
+                                            value={sistema.feriadosUF}
+                                            options={estados}
+                                            onChange={e => handleChange('feriadosUF', e.value)}
+                                            placeholder="Selecione o estado"
+                                            style={{ width: '100%', height: 65, display: 'flex', alignItems: 'center' }}
+                                        />
+                                    </>
                                 )}
-                            </UploadArea>
-                            {sistema.symbolPreview && (
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    <Botao aoClicar={() => symbolInputRef.current.click()} estilo="neutro" size="small">Alterar Símbolo</Botao>
-                                    <Botao aoClicar={handleRemoveSymbol} estilo="erro" size="small">Remover Símbolo</Botao>
-                                </div>
-                            )}
-                        </div>
-                    </ImageUploadContainer>
-                    <Texto>Cor principal</Texto>
-                    {loading ? <Skeleton width={80} height={30} /> : (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                            <ColorPicker value={sistema.corPrincipal} onChange={e => handleChange('corPrincipal', e.value)} style={{ height: 40 }} />
-                            <span style={{ marginLeft: 8, fontFamily: 'monospace' }}>{sistema.corPrincipal}</span>
-                        </div>
-                    )}
-                </Col6>
-                <Col6>
-                    <SubTitulo>Integrações</SubTitulo>
-                    {loading ? <Skeleton width={200} height={25} /> : (
-                        <>
-                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.rm} onChange={e => handleIntegracaoChange('rm', e.target.checked)} /> RM</CheckboxLabel>
-                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.sap} onChange={e => handleIntegracaoChange('sap', e.target.checked)} /> SAP</CheckboxLabel>
-                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.sap} onChange={e => handleIntegracaoChange('sap', e.target.checked)} /> SAP - SuccessFactors</CheckboxLabel>
-                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.lg} onChange={e => handleIntegracaoChange('lg', e.target.checked)} /> LG</CheckboxLabel>
-                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.protheus} onChange={e => handleIntegracaoChange('protheus', e.target.checked)} /> Protheus</CheckboxLabel>
-                            <CheckboxLabel><input type="checkbox" checked={sistema?.integracoes?.datasul} onChange={e => handleIntegracaoChange('datasul', e.target.checked)} /> DataSul</CheckboxLabel>
-                        </>
-                    )}
-                </Col6>
-            </Col12>
-            <Col12>
-                <Col6>
-                    <SubTitulo>Localização</SubTitulo>
-                    {loading ? <Skeleton width={200} height={25} /> : (
-                        <>
-                            <Texto>Timezone</Texto>
-                            <Dropdown
-                                value={timezones.find(tz => tz.value === sistema.timezone) || timezones[0]}
-                                options={timezones}
-                                onChange={e => handleChange('timezone', e.value.value)}
-                                optionLabel="label"
-                                placeholder="Selecione o timezone"
-                                style={{ width: '100%', height: 65, display: 'flex', alignItems: 'center', marginBottom: 16 }}
-                            />
-                            <Texto>Idioma padrão</Texto>
-                            <Dropdown
-                                value={languages.find(lang => lang.code === sistema.idioma)}
-                                options={languages}
-                                onChange={e => handleChange('idioma', e.value.code)}
-                                optionLabel="name"
-                                placeholder="Selecione o idioma"
-                                style={{ width: '100%', height: 65, display: 'flex', alignItems: 'center' }}
-                            />
-                        </>
-                    )}
-                </Col6>
-                <Col6>
-                    <SubTitulo>Feriados</SubTitulo>
-                    {loading ? <Skeleton width={200} height={25} /> : (
-                        <>
-                            <Texto>Tipo de feriado</Texto>
-                            <Dropdown 
-                                value={sistema.feriadosTipo}
-                                options={feriadosOptions}
-                                onChange={e => handleChange('feriadosTipo', e.value)}
-                                placeholder="Selecione o tipo de feriado"
-                                style={{ width: '100%', marginBottom: 16, height: 65, display: 'flex', alignItems: 'center' }}
-                            />
-                            {sistema.feriadosTipo === 'estaduais' && (
-                                <>
-                                    <Texto>Estado (UF)</Texto>
-                                    <Dropdown
-                                        value={sistema.feriadosUF}
-                                        options={estados}
-                                        onChange={e => handleChange('feriadosUF', e.value)}
-                                        placeholder="Selecione o estado"
-                                        style={{ width: '100%', height: 65, display: 'flex', alignItems: 'center' }}
+                            </>
+                        )}
+                        <SubTitulo>Admissão Digital</SubTitulo>
+                        {loading ? <Skeleton width={200} height={25} /> : (
+                            <>
+                                <SwitchContainer>
+                                    <Texto>Permitir que o candidato preencha seus próprios dados?</Texto>
+                                    <SwitchInput
+                                        checked={sistema.colaboradorPodeEditar}
+                                        onChange={valor => handleChange('colaboradorPodeEditar', valor)}
                                     />
-                                </>
-                            )}
-                        </>
-                    )}
-                </Col6>
-            </Col12>
-            <ContainerButton>
-                <Botao estilo="vermilion" size="medium" aoClicar={handleSalvar}>Salvar Configurações</Botao>
-            </ContainerButton>
-        </form>
-    );
-}
+                                </SwitchContainer>
+                                <SwitchContainer>
+                                    <Texto>Habilitar dados de habilidade do candidato?</Texto>
+                                    <SwitchInput
+                                        checked={sistema.habilidadesCandidato}
+                                        onChange={valor => handleChange('habilidadesCandidato', valor)}
+                                    />
+                                </SwitchContainer>
+                                <SwitchContainer>
+                                    <Texto>Habilitar dados de experiência do candidato?</Texto>
+                                    <SwitchInput
+                                        checked={sistema.experienciaCandidato}
+                                        onChange={valor => handleChange('experienciaCandidato', valor)}
+                                    />
+                                </SwitchContainer>
+                            </>
+                        )}
+                    </Col6>
+                </Col12>
+                <Col12>
+                    <Col6>
+                        <SubTitulo>Módulos</SubTitulo>
+                        {loading ? <Skeleton width={200} height={25} /> : (
+                            <SwitchContainer>
+                                <Texto>Linhas de Transporte</Texto>
+                                <SwitchInput
+                                    checked={sistema.moduloLinhasTransporte}
+                                    onChange={valor => handleChange('moduloLinhasTransporte', valor)}
+                                />
+                            </SwitchContainer>
+                        )}
+                    </Col6>
+                </Col12>
+                <ContainerButton>
+                    <Botao estilo="vermilion" size="medium" aoClicar={handleSalvar}>Salvar Configurações</Botao>
+                </ContainerButton>
+            </form>
+                {/* Modal de Corte */}
+                {showCropModal && (
+                    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10001 }}>
+                        <div style={{ background: '#fff', borderRadius: '12px', maxWidth: '90vw', width: '600px', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <h3 style={{ margin: 0, fontSize: '18px' }}>Cortar Imagem</h3>
+                                <button onClick={handleCancelCrop} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer' }}>&times;</button>
+                            </div>
+                            <div style={{ padding: '20px', display: 'flex', justifyContent: 'center', minHeight: '300px' }}>
+                                <ReactCrop crop={crop} onChange={c => setCrop(c)}>
+                                    <img ref={setImageRef} src={imageSrc} alt="Para Cortar" style={{ maxHeight: '60vh' }} />
+                                </ReactCrop>
+                            </div>
+                            <div style={{ padding: '16px 20px', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                                <Botao estilo="neutro" aoClicar={handleCancelCrop}>Cancelar</Botao>
+                                <Botao estilo="vermilion" aoClicar={handleCropImage} disabled={uploading}>{uploading ? 'Processando...' : 'Salvar'}</Botao>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </>
+        );
+    }
 
-export default MeusDadosSistema;
+    export default MeusDadosSistema;
