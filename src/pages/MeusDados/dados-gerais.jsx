@@ -111,10 +111,9 @@ function MeusDadosDadosGerais() {
         try {
             const payload = {
                 old_password: senhaAtual,
-                new_password1: novaSenha,
-                new_password2: confirmarSenha,
+                new_password: novaSenha,
             };
-            await http.post('auth/users/set_password/', payload);
+            await http.post(`/usuario/${ArmazenadorToken.UserCompanyPublicId}/`, payload);
 
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Senha alterada com sucesso!', life: 3000 });
             setSenhaAtual('');
@@ -212,7 +211,7 @@ function MeusDadosDadosGerais() {
         <div className={styles.card_dashboard}>
             <SubTitulo>Alterar Senha</SubTitulo>
             {!mostrarCamposSenha && (
-                <BotaoSemBorda onClick={() => setMostrarCamposSenha(true)}>
+                <BotaoSemBorda aoClicar={() => setMostrarCamposSenha(true)}>
                     <RiEditBoxFill size={18} />
                     <span className={styles.link}>Alterar</span>
                 </BotaoSemBorda>
