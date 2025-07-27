@@ -201,6 +201,9 @@ export class ArmazenadorToken {
     static get UserTipo() {
         return sessionStorage.getItem(USER_TYPE)
     }
+    static definirMfaRequired(mfa_required) {
+        sessionStorage.setItem(MFA_REQUIRED, mfa_required)
+    }
     static definirTipo(tipo) {
         sessionStorage.setItem(USER_TYPE, tipo)
     }

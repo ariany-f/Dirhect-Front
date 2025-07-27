@@ -50,13 +50,14 @@ function MeusDadosDadosGerais() {
 
     const {
         usuario,
+        setMfaRequired
     } = useSessaoUsuarioContext()
 
     useEffect(() => {
         if(usuario)
         {
             setUserProfile(usuario);
-            setMfaAtivo(usuario.mfa_enabled || false);
+            setMfaAtivo(usuario.mfa_required || false);
         }
     }, [usuario])
 
@@ -158,6 +159,9 @@ function MeusDadosDadosGerais() {
                 const response = await http.get('mfa/generate/');
                 if (response && response.qr_code) {
                    
+                    if (response.temp_token) {
+                        ArmazenadorToken.definirTempToken(response.temp_token);
+                    }
                     setQrCode(`data:image/png;base64,${response.qr_code}`);
                     setSecret(response.secret || '');
                     setModalMFAOpened(true);
@@ -179,12 +183,16 @@ function MeusDadosDadosGerais() {
             setMfaAtivo(true);
             setModalMFAOpened(false);
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'MFA ativado com sucesso!', life: 3000 });
-            ArmazenadorToken.removerTempTokenMFA();
         } catch (error) {
             const errorMessage = error?.response?.data?.otp?.[0] || 'Código de verificação inválido. Tente novamente.';
             toast.current.show({ severity: 'error', summary: 'Erro', detail: errorMessage, life: 3000 });
             throw error;
-        } 
+        } finally {
+            ArmazenadorToken.removerTempToken();
+            await http.put(`/usuario/${ArmazenadorToken.UserCompanyPublicId}/`, { mfa_required: true });
+            ArmazenadorToken.definirMfaRequired(true);
+            setMfaRequired(true);
+        }
     };
 
 
