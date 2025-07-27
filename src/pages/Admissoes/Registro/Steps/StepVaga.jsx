@@ -18,31 +18,10 @@ const GridContainer = styled.div`
     }
 `;
 
-const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horarios, funcoes, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [] }) => {
+const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [] }) => {
     
     
     const { candidato, setCampo, vaga } = useCandidatoContext();
-    const [jornadaDateError, setJornadaDateError] = useState('');
-
-    useEffect(() => {
-        setCampo('dt_mudanca_jornada', candidato.dt_admissao);
-        setCampo('dt_mudanca_situacao', candidato.dt_admissao);
-        setCampo('dt_mudanca_funcao', candidato.dt_admissao);
-        setCampo('dt_mudanca_salario', candidato.dt_admissao);
-        setCampo('dt_mudanca_categoria', candidato.dt_admissao);
-        setCampo('dt_mudanca_tipo_funcionario', candidato.dt_admissao);
-        setCampo('dt_mudanca_recebimento', candidato.dt_admissao);
-        setCampo('dt_mudanca_horario', candidato.dt_admissao);
-        setCampo('dt_mudanca_jornada', candidato.dt_admissao);
-    }, [candidato.dt_admissao, setCampo]);
-
-    useEffect(() => {
-        if (candidato.dt_mudanca_jornada && candidato.dt_admissao && candidato.dt_mudanca_jornada !== candidato.dt_admissao) {
-            setJornadaDateError('A data de opção deve ser igual à data de admissão');
-        } else {
-            setJornadaDateError('');
-        }
-    }, [candidato.dt_mudanca_jornada, candidato.dt_admissao]);
 
     // Formata as opções para o formato esperado pelo DropdownItens
     const formatarOpcoes = useMemo(() => {
@@ -118,33 +97,10 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
         };
     }, [candidato]);
 
-    // Função para obter o salário (prioriza dados_candidato)
-    const getSalario = useMemo(() => {
-        if (candidato?.salario) {
-            return candidato.salario;
-        }
-        return candidato?.dados_vaga?.salario || '';
-    }, [candidato?.salario, candidato?.dados_vaga?.salario]);
-
-    // Função para atualizar o salário
-    const setSalario = (valor) => {
-        // Se já existe salário no dados_candidato, atualiza lá
-        if (candidato?.salario) {
-            setCampo('salario', valor);
-        } else {
-            // Se não existe, atualiza no dados_vaga
-            setCampo('dados_vaga', { 
-                ...candidato.dados_vaga, 
-                salario: valor 
-            });
-        }
-    };
-
     // Memoizar as opções formatadas para evitar recriações desnecessárias
     const opcoesFiliais = useMemo(() => formatarOpcoes(filiais), [filiais, formatarOpcoes]);
     const opcoesDepartamentos = useMemo(() => formatarOpcoes(departamentos), [departamentos, formatarOpcoes]);
     const opcoesSecoes = useMemo(() => formatarOpcoes(secoes), [secoes, formatarOpcoes]);
-    const opcoesCargos = useMemo(() => formatarOpcoes(cargos), [cargos, formatarOpcoes]);
     const opcoesCentrosCusto = useMemo(() => formatarOpcoes(centros_custo), [centros_custo, formatarOpcoes]);
     const opcoesHorarios = useMemo(() => formatarOpcoes(horarios, true), [horarios, formatarOpcoes]);
     const opcoesFuncoes = useMemo(() => formatarOpcoes(funcoes), [funcoes, formatarOpcoes]);
@@ -162,11 +118,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
     const opcoesContratoTempoParcial = useMemo(() => formatarOpcoesDominio(opcoesDominio.contrato_tempo_parcial), [opcoesDominio.contrato_tempo_parcial, formatarOpcoesDominio]);
     const opcoesIndicativoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.indicativo_admissao), [opcoesDominio.indicativo_admissao, formatarOpcoesDominio]);
     const opcoesTipoRegimeTrabalhista = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_regime_trabalhista), [opcoesDominio.tipo_regime_trabalhista, formatarOpcoesDominio]);
-    const opcoesFaixaSalarial = useMemo(() => formatarOpcoesDominio(opcoesDominio.faixa_salarial), [opcoesDominio.faixa_salarial, formatarOpcoesDominio]);
-    const opcoesMotivoMudancaFuncao = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_mudanca_funcao), [opcoesDominio.motivo_mudanca_funcao, formatarOpcoesDominio]);
-    const opcoesMotivoMudancaSalario = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_mudanca_salario), [opcoesDominio.motivo_mudanca_salario, formatarOpcoesDominio]);
     const opcoesTipoRegimeJornada = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_regime_jornada), [opcoesDominio.tipo_regime_jornada, formatarOpcoesDominio]);
-    const opcoesMotivoMudancaSituacao = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_mudanca_situacao), [opcoesDominio.motivo_mudanca_situacao, formatarOpcoesDominio]);
     const opcoesTipoRegimePrevidenciario = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_regime_previdenciario), [opcoesDominio.tipo_regime_previdenciario, formatarOpcoesDominio]);
     
     return (
@@ -219,23 +171,6 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={opcoesSecoes}
                 label="Seção"
                 required={isCampoObrigatorio(secoes)}
-                search
-                filter
-                disabled={modoLeitura}
-            />
-            <DropdownItens
-                name="cargo"
-                valor={getValorSelecionado('cargo_id', cargos)}
-                setValor={valor => {
-                    setCampo('dados_vaga', { 
-                        ...candidato.dados_vaga, 
-                        cargo_id: valor.code,
-                        cargo_nome: valor.name
-                    });
-                }}
-                options={opcoesCargos}
-                label="Cargo"
-                required={isCampoObrigatorio(cargos)}
                 search
                 filter
                 disabled={modoLeitura}
@@ -380,44 +315,6 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 />
             )}
             
-            {availableDominioTables.includes('faixa_salarial') ? (
-                <DropdownItens
-                    name="faixa_salarial"
-                    label="Faixa Salarial"
-                    valor={getValorSelecionadoFromCandidato('faixa_salarial', opcoesDominio.faixa_salarial)}
-                    setValor={(valor) => setCampo('faixa_salarial', valor.code)}
-                    options={opcoesFaixaSalarial}
-                    disabled={modoLeitura}
-                />
-            ) : (
-                <CampoTexto
-                    name="faixa_salarial"
-                    label="Faixa Salarial"
-                    valor={candidato.faixa_salarial || ''}
-                    setValor={(valor) => setCampo('faixa_salarial', valor)}
-                    disabled={modoLeitura}
-                />
-            )}
-
-            {availableDominioTables.includes('motivo_mudanca_funcao') ? (
-                <DropdownItens
-                    name="motivo_mudanca_funcao"
-                    label="Motivo da Mudança de Função"
-                    valor={getValorSelecionadoFromCandidato('motivo_mudanca_funcao', opcoesDominio.motivo_mudanca_funcao)}
-                    setValor={(valor) => setCampo('motivo_mudanca_funcao', valor.code)}
-                    options={opcoesMotivoMudancaFuncao}
-                    disabled={modoLeitura}
-                />
-            ) : (
-                <CampoTexto
-                    name="motivo_mudanca_funcao"
-                    label="Motivo da Mudança de Função"
-                    valor={candidato.motivo_mudanca_funcao || ''}
-                    setValor={(valor) => setCampo('motivo_mudanca_funcao', valor)}
-                    disabled={modoLeitura}
-                />
-            )}
-
             <DropdownItens
                 name="tipo_recebimento"
                 label="Tipo de Recebimento"
@@ -427,25 +324,6 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 disabled={modoLeitura}
             />
 
-            {availableDominioTables.includes('motivo_mudanca_salario') ? (
-                <DropdownItens
-                    name="motivo_mudanca_salario"
-                    label="Motivo da Mudança de Salário"
-                    valor={getValorSelecionadoFromCandidato('motivo_mudanca_salario', opcoesDominio.motivo_mudanca_salario)}
-                    setValor={(valor) => setCampo('motivo_mudanca_salario', valor.code)}
-                    options={opcoesMotivoMudancaSalario}
-                    disabled={modoLeitura}
-                />
-            ) : (
-                <CampoTexto
-                    name="motivo_mudanca_salario"
-                    label="Motivo da Mudança de Salário"
-                    valor={candidato.motivo_mudanca_salario || ''}
-                    setValor={(valor) => setCampo('motivo_mudanca_salario', valor)}
-                    disabled={modoLeitura}
-                />
-            )}
-
             <DropdownItens
                 name="tipo_situacao"
                 label="Situação"
@@ -454,25 +332,6 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 options={opcoesTipoSituacao}
                 disabled={modoLeitura}
             />
-
-            {availableDominioTables.includes('motivo_mudanca_situacao') ? (
-                <DropdownItens
-                    name="motivo_mudanca_situacao"
-                    label="Motivo da Mudança de Situação"
-                    valor={getValorSelecionadoFromCandidato('motivo_mudanca_situacao', opcoesDominio.motivo_mudanca_situacao)}
-                    setValor={(valor) => setCampo('motivo_mudanca_situacao', valor.code)}
-                    options={opcoesMotivoMudancaSituacao}
-                    disabled={modoLeitura}
-                />
-            ) : (
-                <CampoTexto
-                    name="motivo_mudanca_situacao"
-                    label="Motivo da Mudança de Situação"
-                    valor={candidato.motivo_mudanca_situacao || ''}
-                    setValor={(valor) => setCampo('motivo_mudanca_situacao', valor)}
-                    disabled={modoLeitura}
-                />
-            )}
 
             <DropdownItens
                 name="codigo_ocorrencia_sefip"
@@ -496,7 +355,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                     name="tipo_regime_jornada"
                     label="Tipo de Regime da Jornada"
                     valor={getValorSelecionadoFromCandidato('tipo_regime_jornada', opcoesDominio.tipo_regime_jornada)}
-                    setValor={(valor) => setCampo('tipo_regime_jornada', valor.code)}
+                    setValor={(valor) => setCampo('tipo_regime_jornada', valor)}
                     options={opcoesTipoRegimeJornada}
                     disabled={modoLeitura}
                 />
@@ -515,7 +374,7 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                     name="tipo_regime_previdenciario"
                     label="Tipo de Regime Previdenciário"
                     valor={getValorSelecionadoFromCandidato('tipo_regime_previdenciario', opcoesDominio.tipo_regime_previdenciario)}
-                    setValor={(valor) => setCampo('tipo_regime_previdenciario', valor.code)}
+                    setValor={(valor) => setCampo('tipo_regime_previdenciario', valor)}
                     options={opcoesTipoRegimePrevidenciario}
                     disabled={modoLeitura}
                 />
@@ -547,24 +406,8 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                     disabled={modoLeitura}
                 />
             )}
-            <div />
 
             {/* Todos os Campos de Texto agrupados */}
-            <CampoTexto
-                patternMask={'BRL'}
-                name="salario"
-                valor={getSalario}
-                setValor={setSalario}
-                label="Salário"
-                disabled={modoLeitura}
-            />
-            <CampoTexto
-                name="letra"
-                label="Letra"
-                valor={candidato.letra || ''}
-                setValor={(valor) => setCampo('letra', valor)}
-                disabled={modoLeitura}
-            />
             <CampoTexto
                 type="date"
                 name="dt_admissao"
@@ -574,76 +417,10 @@ const StepVaga = ({ filiais, departamentos, secoes, cargos, centros_custo, horar
                 disabled={modoLeitura}
             />
             <CampoTexto
-                type="date"
-                name="dt_transferencia"
-                label="Data de Transferência"
-                valor={candidato.dt_transferencia || ''}
-                setValor={(valor) => setCampo('dt_transferencia', valor)}
-                disabled={modoLeitura}
-            />
-            <CampoTexto
-                type="date"
-                name="dt_mudanca_tipo_funcionario"
-                label="Data da Mudança do Tipo de Funcionário"
-                valor={candidato.dt_mudanca_tipo_funcionario || ''}
-                setValor={(valor) => setCampo('dt_mudanca_tipo_funcionario', valor)}
-                disabled={modoLeitura}
-            />
-            <CampoTexto
-                type="date"
-                name="dt_mudanca_categoria"
-                label="Data Mudança Categoria"
-                valor={candidato.dt_mudanca_categoria || ''}
-                setValor={(valor) => setCampo('dt_mudanca_categoria', valor)}
-                disabled={modoLeitura}
-            />
-            <CampoTexto
-                type="date"
-                name="dt_mudanca_funcao"
-                label="Data Mudança de Função"
-                valor={candidato.dt_mudanca_funcao || ''}
-                setValor={(valor) => setCampo('dt_mudanca_funcao', valor)}
-                disabled={modoLeitura}
-            />
-            <CampoTexto
-                type="date"
-                name="dt_mudanca_salario"
-                label="Data Mudança Salário"
-                valor={candidato.dt_mudanca_salario || ''}
-                setValor={(valor) => setCampo('dt_mudanca_salario', valor)}
-                disabled={modoLeitura}
-            />
-            <CampoTexto
-                type="date"
-                name="dt_mudanca_recebimento"
-                label="Data Mudança Recebimento"
-                valor={candidato.dt_mudanca_recebimento || ''}
-                setValor={(valor) => setCampo('dt_mudanca_recebimento', valor)}
-                disabled={modoLeitura}
-            />
-            <CampoTexto
-                type="date"
-                name="dt_mudanca_horario"
-                label="Data Mudança Horário"
-                valor={candidato.dt_mudanca_horario || ''}
-                setValor={(valor) => setCampo('dt_mudanca_horario', valor)}
-                disabled={modoLeitura}
-            />
-            <CampoTexto
-                type="date"
-                name="dt_mudanca_jornada"
-                label="Data da Mudança (Regime Jornada)"
-                valor={candidato.dt_mudanca_jornada || ''}
-                setValor={(valor) => setCampo('dt_mudanca_jornada', valor)}
-                disabled={modoLeitura}
-                errorMessage={jornadaDateError}
-            />
-            <CampoTexto
-                type="date"
-                name="dt_mudanca_situacao"
-                label="Data Mudança Situação"
-                valor={candidato.dt_mudanca_situacao || ''}
-                setValor={(valor) => setCampo('dt_mudanca_situacao', valor)}
+                name="letra"
+                label="Letra"
+                valor={candidato.letra || ''}
+                setValor={(valor) => setCampo('letra', valor)}
                 disabled={modoLeitura}
             />
 

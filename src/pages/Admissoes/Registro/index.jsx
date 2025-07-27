@@ -229,6 +229,25 @@ const ModalButton = styled.button`
         }
     }
     
+    &.danger {
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        
+        svg {
+            color: #b91c1c;
+        }
+        
+        &:hover {
+            background: #fecaca;
+            color: #991b1b;
+            
+            svg {
+                color: #991b1b;
+            }
+        }
+    }
+    
     &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
@@ -828,8 +847,27 @@ const CandidatoRegistro = () => {
         return index; // Dependentes
     };
 
+    // Normaliza os dados para comparação (remove propriedades que podem ser undefined/null)
+    const normalizarObjeto = (obj) => {
+        if (!obj || typeof obj !== 'object') return obj;
+        
+        const normalizado = {};
+        Object.keys(obj).forEach(key => {
+            const valor = obj[key];
+            if (valor !== undefined && valor !== null && valor !== '') {
+                if (typeof valor === 'object' && !Array.isArray(valor)) {
+                    normalizado[key] = normalizarObjeto(valor);
+                } else {
+                    normalizado[key] = valor;
+                }
+            }
+        });
+        return normalizado;
+    };
+
     // Função que executa o salvamento real
-    const executarSalvamento = async () => {
+    const executarSalvamento = async (candidatoOverride = null) => {
+        const candidatoAtual = candidatoOverride || candidato;
         if (!admissao?.id) return;
         
         if (modoLeitura) {
@@ -842,56 +880,27 @@ const CandidatoRegistro = () => {
             return;
         }
 
-        // Verifica se está no step de dependentes
-        const stepDependentesIndex = getStepDependentesIndex();
-        const isStepDependentes = activeIndex === stepDependentesIndex;
-        
-        // Se está no step de dependentes e não há dependentes novos, não faz PUT de admissão
-        if (isStepDependentes) {
-            const dependentesNovos = candidato.dependentes?.filter(dep => !dep.id) || [];
-            if (dependentesNovos.length === 0) {
-                console.log('Step de dependentes: nenhum dependente novo para salvar');
+        // Se não for um override, verifica se houve mudanças
+        if (!candidatoOverride) {
+            const candidatoNormalizado = normalizarObjeto(candidatoAtual);
+            const initialNormalizado = normalizarObjeto(initialCandidato);
+            
+            if (JSON.stringify(candidatoNormalizado) === JSON.stringify(initialNormalizado)) {
+                toast.current.show({
+                    severity: 'info',
+                    summary: 'Informação',
+                    detail: 'Nenhuma alteração para salvar.',
+                    life: 3000
+                });
+                console.log('Nenhuma alteração detectada, salvamento pulado.');
                 return;
             }
-        }
-        
-        // Normaliza os dados para comparação (remove propriedades que podem ser undefined/null)
-        const normalizarObjeto = (obj) => {
-            if (!obj || typeof obj !== 'object') return obj;
-            
-            const normalizado = {};
-            Object.keys(obj).forEach(key => {
-                const valor = obj[key];
-                if (valor !== undefined && valor !== null && valor !== '') {
-                    if (typeof valor === 'object' && !Array.isArray(valor)) {
-                        normalizado[key] = normalizarObjeto(valor);
-                    } else {
-                        normalizado[key] = valor;
-                    }
-                }
-            });
-            return normalizado;
-        };
-        
-        const candidatoNormalizado = normalizarObjeto(candidato);
-        const initialNormalizado = normalizarObjeto(initialCandidato);
-        
-        // Compara o estado atual com o inicial
-        if (JSON.stringify(candidatoNormalizado) === JSON.stringify(initialNormalizado)) {
-            toast.current.show({
-                severity: 'info',
-                summary: 'Informação',
-                detail: 'Nenhuma alteração para salvar.',
-                life: 3000
-            });
-            console.log('Nenhuma alteração detectada, salvamento pulado.');
-            return;
         }
 
         try {
             // Monta o payload seguindo o padrão correto
-            const dadosCandidato = candidato || {};
-            const dadosVaga = candidato.dados_vaga || {};
+            const dadosCandidato = candidatoAtual || {};
+            const dadosVaga = candidatoAtual.dados_vaga || {};
             
             // Função para formatar salário corretamente
             const formatarSalario = (valor) => {
@@ -953,30 +962,30 @@ const CandidatoRegistro = () => {
 
             const payloadCompleto = {
                 // Dados básicos da admissão
-                chapa: candidato.chapa,
-                dt_admissao: candidato.dt_admissao,
+                chapa: candidatoAtual.chapa,
+                dt_admissao: candidatoAtual.dt_admissao,
                 salario: (() => {
                     const salarioCandidato = dadosCandidato?.salario;
                     const salarioVaga = dadosVaga?.salario;
-                    const salarioPrincipal = candidato.salario;
+                    const salarioPrincipal = candidatoAtual.salario;
                     
                     const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
                     console.log('Salário selecionado para formatar:', salarioParaFormatar);
                     
                     return formatarSalario(salarioParaFormatar);
                 })(),
-                status: candidato.status,
-                grau_instrucao: candidato.grau_instrucao,
+                status: candidatoAtual.status,
+                grau_instrucao: candidatoAtual.grau_instrucao,
                 
                 // Endereço
-                cep: candidato.cep,
-                rua: candidato.rua,
-                numero: candidato.numero,
-                complemento: candidato.complemento,
-                bairro: candidato.bairro,
-                cidade: candidato.cidade,
-                estado: candidato.estado,
-                pais: candidato.pais,
+                cep: candidatoAtual.cep,
+                rua: candidatoAtual.rua,
+                numero: candidatoAtual.numero,
+                complemento: candidatoAtual.complemento,
+                bairro: candidatoAtual.bairro,
+                cidade: candidatoAtual.cidade,
+                estado: candidatoAtual.estado,
+                pais: candidatoAtual.pais,
                 // Dados do candidato
                 // candidato: {
                     nome: dadosCandidato.nome,
@@ -987,7 +996,7 @@ const CandidatoRegistro = () => {
                     salario: (() => {
                         const salarioCandidato = dadosCandidato?.salario;
                         const salarioVaga = dadosVaga?.salario;
-                        const salarioPrincipal = candidato.salario;
+                        const salarioPrincipal = candidatoAtual.salario;
                         
                         const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
                         console.log('Salário candidato selecionado para formatar:', salarioParaFormatar);
@@ -997,123 +1006,110 @@ const CandidatoRegistro = () => {
                 // },
                 
                 // Dados pessoais
-                nome_mae: candidato.nome_mae,
-                sobrenome_mae: candidato.sobrenome_mae,
-                nome_pai: candidato.nome_pai,
-                sobrenome_pai: candidato.sobrenome_pai,
-                naturalidade: candidato.naturalidade,
-                estado_natal: candidato.estado_natal,
-                nacionalidade: candidato.nacionalidade,
-                cor_raca: candidato.cor_raca,
-                deficiente_fisico: candidato.deficiente_fisico,
-                naturalizado: candidato.naturalizado,
-                data_naturalizacao: candidato.data_naturalizacao,
-                pais_origem: candidato.pais_origem,
-                tipo_visto: candidato.tipo_visto,
-                data_venc_visto: candidato.data_venc_visto,
-                nome_social: candidato.nome_social,
-                genero: candidato.genero,
-                estado_civil: candidato.estado_civil,
+                nome_mae: candidatoAtual.nome_mae,
+                sobrenome_mae: candidatoAtual.sobrenome_mae,
+                nome_pai: candidatoAtual.nome_pai,
+                sobrenome_pai: candidatoAtual.sobrenome_pai,
+                naturalidade: candidatoAtual.naturalidade,
+                estado_natal: candidatoAtual.estado_natal,
+                nacionalidade: candidatoAtual.nacionalidade,
+                cor_raca: candidatoAtual.cor_raca,
+                deficiente_fisico: candidatoAtual.deficiente_fisico,
+                naturalizado: candidatoAtual.naturalizado,
+                data_naturalizacao: candidatoAtual.data_naturalizacao,
+                pais_origem: candidatoAtual.pais_origem,
+                tipo_visto: candidatoAtual.tipo_visto,
+                data_venc_visto: candidatoAtual.data_venc_visto,
+                nome_social: candidatoAtual.nome_social,
+                genero: candidatoAtual.genero,
+                estado_civil: candidatoAtual.estado_civil,
                 
                 // Documentos
-                identidade: candidato.identidade,
-                uf_identidade: candidato.uf_identidade,
-                orgao_emissor_ident: candidato.orgao_emissor_ident,
-                data_emissao_ident: candidato.data_emissao_ident,
-                titulo_eleitor: candidato.titulo_eleitor,
-                zona_titulo_eleitor: candidato.zona_titulo_eleitor,
-                secao_titulo_eleitor: candidato.secao_titulo_eleitor,
-                data_titulo_eleitor: candidato.data_titulo_eleitor,
-                estado_emissor_tit_eleitor: candidato.estado_emissor_tit_eleitor,
-                carteira_trabalho: candidato.carteira_trabalho,
-                serie_carteira_trab: candidato.serie_carteira_trab,
-                uf_carteira_trab: candidato.uf_carteira_trab,
-                data_emissao_ctps: candidato.data_emissao_ctps,
-                data_venc_ctps: candidato.data_venc_ctps,
-                nit: candidato.nit,
-                carteira_motorista: candidato.carteira_motorista,
-                tipo_carteira_habilit: candidato.tipo_carteira_habilit,
-                data_venc_habilit: candidato.data_venc_habilit,
-                data_emissao_cnh: candidato.data_emissao_cnh,
-                certificado_reservista: candidato.certificado_reservista,
-                numero_passaporte: candidato.numero_passaporte,
-                data_emissao_passaporte: candidato.data_emissao_passaporte,
-                data_validade_passaporte: candidato.data_validade_passaporte,
-                registro_profissional: candidato.registro_profissional,
-                uf_registro_profissional: candidato.uf_registro_profissional,
-                data_emissao_registro_profissional: candidato.data_emissao_registro_profissional,
-                tipo_sanguineo: candidato.tipo_sanguineo,
-                circunscricao_militar: candidato.circunscricao_militar,
-                orgao_expedicao: candidato.orgao_expedicao,
-                regiao_militar: candidato.regiao_militar,
-                situacao_militar: candidato.situacao_militar,
+                identidade: candidatoAtual.identidade,
+                uf_identidade: candidatoAtual.uf_identidade,
+                orgao_emissor_ident: candidatoAtual.orgao_emissor_ident,
+                data_emissao_ident: candidatoAtual.data_emissao_ident,
+                titulo_eleitor: candidatoAtual.titulo_eleitor,
+                zona_titulo_eleitor: candidatoAtual.zona_titulo_eleitor,
+                secao_titulo_eleitor: candidatoAtual.secao_titulo_eleitor,
+                data_titulo_eleitor: candidatoAtual.data_titulo_eleitor,
+                estado_emissor_tit_eleitor: candidatoAtual.estado_emissor_tit_eleitor,
+                carteira_trabalho: candidatoAtual.carteira_trabalho,
+                serie_carteira_trab: candidatoAtual.serie_carteira_trab,
+                uf_carteira_trab: candidatoAtual.uf_carteira_trab,
+                data_emissao_ctps: candidatoAtual.data_emissao_ctps,
+                data_venc_ctps: candidatoAtual.data_venc_ctps,
+                nit: candidatoAtual.nit,
+                carteira_motorista: candidatoAtual.carteira_motorista,
+                tipo_carteira_habilit: candidatoAtual.tipo_carteira_habilit,
+                data_venc_habilit: candidatoAtual.data_venc_habilit,
+                data_emissao_cnh: candidatoAtual.data_emissao_cnh,
+                certificado_reservista: candidatoAtual.certificado_reservista,
+                numero_passaporte: candidatoAtual.numero_passaporte,
+                data_emissao_passaporte: candidatoAtual.data_emissao_passaporte,
+                data_validade_passaporte: candidatoAtual.data_validade_passaporte,
+                registro_profissional: candidatoAtual.registro_profissional,
+                uf_registro_profissional: candidatoAtual.uf_registro_profissional,
+                data_emissao_registro_profissional: candidatoAtual.data_emissao_registro_profissional,
+                tipo_sanguineo: candidatoAtual.tipo_sanguineo,
+                circunscricao_militar: candidatoAtual.circunscricao_militar,
+                orgao_expedicao: candidatoAtual.orgao_expedicao,
+                regiao_militar: candidatoAtual.regiao_militar,
+                situacao_militar: candidatoAtual.situacao_militar,
                 
                 // Contatos
-                telefone1: candidato.telefone1,
-                telefone2: candidato.telefone2,
-                email_pessoal: candidato.email_pessoal,
+                telefone1: candidatoAtual.telefone1,
+                telefone2: candidatoAtual.telefone2,
+                email_pessoal: candidatoAtual.email_pessoal,
                 
                 // Dados bancários
-                banco: candidato.banco,
-                agencia: candidato.agencia,
-                agencia_nova: candidato.agencia_nova,
-                conta_corrente: candidato.conta_corrente,
-                tipo_conta: candidato.tipo_conta,
-                operacao: candidato.operacao,
-                pix: candidato.pix,
-                pix_tipo: candidato.pix_tipo,
+                banco: candidatoAtual.banco,
+                agencia: candidatoAtual.agencia,
+                agencia_nova: candidatoAtual.agencia_nova,
+                conta_corrente: candidatoAtual.conta_corrente,
+                tipo_conta: candidatoAtual.tipo_conta,
+                operacao: candidatoAtual.operacao,
+                pix: candidatoAtual.pix,
+                pix_tipo: candidatoAtual.pix_tipo,
                 
                 // Dados da vaga (apenas se não for self)
                 ...(self ? {} : {
-                    centro_custo: dadosVaga?.centro_custo_id ? dadosVaga.centro_custo_id : candidato.centro_custo,
-                    filial: dadosVaga?.filial_id ? dadosVaga.filial_id : candidato.filial,
-                    departamento: dadosVaga?.departamento_id ? dadosVaga.departamento_id : candidato.departamento,
-                    id_secao: dadosVaga?.secao_id ? dadosVaga.secao_id : candidato.id_secao,
-                    id_funcao: dadosVaga?.funcao_id ? dadosVaga.funcao_id : candidato.id_funcao,
-                    cargo: dadosVaga?.cargo_id ? dadosVaga.cargo_id : candidato.cargo,
-                    horario: dadosVaga?.horario_id ? dadosVaga.horario_id : candidato.horario,
-                    sindicato: dadosVaga?.sindicato_id ? dadosVaga.sindicato_id : candidato.sindicato,
+                    centro_custo: dadosVaga?.centro_custo_id ? dadosVaga.centro_custo_id : candidatoAtual.centro_custo,
+                    filial: dadosVaga?.filial_id ? dadosVaga.filial_id : candidatoAtual.filial,
+                    departamento: dadosVaga?.departamento_id ? dadosVaga.departamento_id : candidatoAtual.departamento,
+                    id_secao: dadosVaga?.secao_id ? dadosVaga.secao_id : candidatoAtual.id_secao,
+                    id_funcao: dadosVaga?.funcao_id ? dadosVaga.funcao_id : candidatoAtual.id_funcao,
+                    cargo: dadosVaga?.cargo_id ? dadosVaga.cargo_id : candidatoAtual.cargo,
+                    horario: dadosVaga?.horario_id ? dadosVaga.horario_id : candidatoAtual.horario,
+                    sindicato: dadosVaga?.sindicato_id ? dadosVaga.sindicato_id : candidatoAtual.sindicato,
                 }),
                 
                 // Dados adicionais
-                tipo_admissao: candidato.tipo_admissao,
-                codigo_ficha_registro: candidato.codigo_ficha_registro,
-                codigo_jornada: candidato.codigo_jornada,
-                tipo_funcionario: candidato.tipo_funcionario,
-                tipo_situacao: candidato.tipo_situacao,
-                aceite_lgpd: candidato.aceite_lgpd,
-                anotacoes: candidato.anotacoes || '',
+                tipo_admissao: candidatoAtual.tipo_admissao,
+                codigo_ficha_registro: candidatoAtual.codigo_ficha_registro,
+                codigo_jornada: candidatoAtual.codigo_jornada,
+                tipo_funcionario: candidatoAtual.tipo_funcionario,
+                tipo_situacao: candidatoAtual.tipo_situacao,
+                aceite_lgpd: candidatoAtual.aceite_lgpd,
+                anotacoes: candidatoAtual.anotacoes || '',
                 
                 // Novos campos
-                natureza_esocial: candidato.natureza_esocial,
-                codigo_ocorrencia_sefip: candidato.codigo_ocorrencia_sefip,
-                codigo_categoria_sefip: candidato.codigo_categoria_sefip,
-                motivo_admissao: candidato.motivo_admissao,
-                indicativo_admissao: candidato.indicativo_admissao,
-                dt_transferencia: candidato.dt_transferencia,
-                dt_mudanca_tipo_funcionario: candidato.dt_mudanca_tipo_funcionario,
-                codigo_categoria_esocial: candidato.codigo_categoria_esocial,
-                dt_mudanca_categoria: candidato.dt_mudanca_categoria,
-                tipo_regime_trabalhista: candidato.tipo_regime_trabalhista,
-                funcao_emprego_cargoacumulavel: candidato.funcao_emprego_cargoacumulavel,
-                faixa_salarial: candidato.faixa_salarial,
-                dt_mudanca_funcao: candidato.dt_mudanca_funcao,
-                motivo_mudanca_funcao: candidato.motivo_mudanca_funcao,
-                tipo_recebimento: candidato.tipo_recebimento,
-                dt_mudanca_recebimento: candidato.dt_mudanca_recebimento,
-                mensal: candidato.mensal,
-                dt_mudanca_salario: candidato.dt_mudanca_salario,
-                motivo_mudanca_salario: candidato.motivo_mudanca_salario,
-                horario: candidato.horario,
-                letra: candidato.letra,
-                dt_mudanca_horario: candidato.dt_mudanca_horario,
-                contrato_tempo_parcial: candidato.contrato_tempo_parcial,
-                tipo_regime_jornada: candidato.tipo_regime_jornada,
-                dt_mudanca_jornada: candidato.dt_mudanca_jornada,
-                tipo_situacao: candidato.tipo_situacao,
-                dt_mudanca_situacao: candidato.dt_mudanca_situacao,
-                motivo_mudanca_situacao: candidato.motivo_mudanca_situacao,
-                tipo_regime_previdenciario: candidato.tipo_regime_previdenciario
+                natureza_esocial: candidatoAtual.natureza_esocial,
+                codigo_ocorrencia_sefip: candidatoAtual.codigo_ocorrencia_sefip,
+                codigo_categoria_sefip: candidatoAtual.codigo_categoria_sefip,
+                motivo_admissao: candidatoAtual.motivo_admissao,
+                indicativo_admissao: candidatoAtual.indicativo_admissao,
+                codigo_categoria_esocial: candidatoAtual.codigo_categoria_esocial,
+                tipo_regime_trabalhista: candidatoAtual.tipo_regime_trabalhista,
+                funcao_emprego_cargoacumulavel: candidatoAtual.funcao_emprego_cargoacumulavel,
+                tipo_recebimento: candidatoAtual.tipo_recebimento,
+                mensal: candidatoAtual.mensal,
+                horario: candidatoAtual.horario,
+                letra: candidatoAtual.letra,
+                contrato_tempo_parcial: candidatoAtual.contrato_tempo_parcial,
+                tipo_regime_jornada: candidatoAtual.tipo_regime_jornada,
+                tipo_situacao: candidatoAtual.tipo_situacao,
+                tipo_regime_previdenciario: candidatoAtual.tipo_regime_previdenciario
             };
 
             // Remove campos vazios do payload antes de enviar
@@ -1122,10 +1118,10 @@ const CandidatoRegistro = () => {
             await http.put(`admissao/${admissao.id}/`, payload);
             
             // Salvar dependentes separadamente se houver dependentes
-            if (candidato.dependentes && candidato.dependentes.length > 0) {
+            if (candidatoAtual.dependentes && candidatoAtual.dependentes.length > 0) {
                 try {
                     // Filtra apenas dependentes novos (que não existem na API)
-                    const dependentesNovos = candidato.dependentes.filter(dep => {
+                    const dependentesNovos = candidatoAtual.dependentes.filter(dep => {
                         // Se tem ID, já existe na API
                         if (dep.id) return false;
                         
@@ -1136,7 +1132,7 @@ const CandidatoRegistro = () => {
                         const cpfLimpo = dep.cpf.replace(/\D/g, '');
                         
                         // Verifica se já existe um dependente com este CPF na API (com ID)
-                        const dependenteExistente = candidato.dependentes.find(d => 
+                        const dependenteExistente = candidatoAtual.dependentes.find(d => 
                             d.id && d.cpf && d.cpf.replace(/\D/g, '') === cpfLimpo
                         );
                         
@@ -1171,14 +1167,14 @@ const CandidatoRegistro = () => {
                             nrosus: dep.nrosus || null,
                             nronascidovivo: dep.nronascidovivo || null,
                             nome_mae: dep.nome_mae || null,
-                            id_admissao: candidato.id,
+                            id_admissao: candidatoAtual.id,
                             genero: dep.genero || null,
                             estadocivil: dep.estadocivil || null,
                             grau_parentesco: dep.grau_parentesco || null
                         }));
 
                         try {
-                            const dependentesSalvos = await http.post(`admissao/${candidato.id}/adiciona_dependentes/`, dependentesParaEnviar);
+                            const dependentesSalvos = await http.post(`admissao/${candidatoAtual.id}/adiciona_dependentes/`, dependentesParaEnviar);
                             console.log('Dependentes novos salvos com sucesso no endpoint específico');
 
                             // Atualiza o estado para refletir os dependentes salvos
@@ -1218,8 +1214,8 @@ const CandidatoRegistro = () => {
             
             // Atualiza o snapshot inicial com os novos dados salvos
             setTimeout(() => {
-                const candidatoAtualizado = JSON.parse(JSON.stringify(candidato));
-                setInitialCandidato(candidatoAtualizado);
+                const snapshot = JSON.parse(JSON.stringify(candidatoAtual));
+                setInitialCandidato(snapshot);
             }, 100);
 
         } catch (error) {
@@ -1742,6 +1738,25 @@ const CandidatoRegistro = () => {
 
     const handleCancelarDependentes = () => {
         setShowConfirmacaoDependentes(false);
+    };
+
+    const handleRemoverDependentesESalvar = async () => {
+        setShowConfirmacaoDependentes(false);
+
+        // Filtra para manter apenas os dependentes já salvos (com ID)
+        const dependentesMantidos = candidato.dependentes.filter(dep => dep.id);
+        const candidatoAtualizado = { ...candidato, dependentes: dependentesMantidos };
+
+        // Atualiza o estado do contexto para refletir a remoção na UI
+        setCandidato(candidatoAtualizado);
+
+        // Executa o salvamento com o objeto atualizado, pulando a verificação de "nenhuma alteração"
+        await executarSalvamento(candidatoAtualizado);
+
+        if (acaoSalvamento === 'salvar_continuar') {
+            stepperRef.current.nextCallback();
+            setActiveIndex(prev => prev + 1);
+        }
     };
 
     const compressImage = async (file) => {
@@ -2774,8 +2789,11 @@ const CandidatoRegistro = () => {
                             <ModalButton className="secondary" onClick={handleCancelarDependentes}>
                                 <HiX /> Cancelar
                             </ModalButton>
+                            <ModalButton className="danger" onClick={handleRemoverDependentesESalvar}>
+                                <FaTrash fill="var(--error)" /> Remover
+                            </ModalButton>
                             <ModalButton className="primary" onClick={handleConfirmarDependentes}>
-                                <HiCheckCircle fill="var(--secundaria)" /> Sim, salvar dependentes
+                                <HiCheckCircle size={20} fill="var(--white)" /> Sim, salvar dependentes
                             </ModalButton>
                         </ModalFooter>
                     </ModalContainer>
