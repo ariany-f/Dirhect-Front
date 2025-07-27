@@ -2503,7 +2503,12 @@ const CandidatoRegistro = () => {
                         <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
-                                    <StepDadosPessoais classError={classError} estados={estados} modoLeitura={modoLeitura} />
+                                    <StepDadosPessoais 
+                                        classError={classError} 
+                                        estados={estados} 
+                                        modoLeitura={modoLeitura} 
+                                        opcoesDominio={opcoesDominio}
+                                    />
                                 </ScrollPanel>
                             </div>
                         </Container>

@@ -203,9 +203,9 @@ http.interceptors.request.use(async (config) => {
     const tempTokenMFA = ArmazenadorToken.TempTokenMFA;
     const admissaoToken = ArmazenadorToken.AdmissaoToken;
     const admissaoSecurityToken = ArmazenadorToken.AdmissaoSecurityToken;
-    console.log(config.url)
+    
     // Se for uma requisição para /token e não tiver access token mas tiver temp token
-    if ((config.url === '/mfa/validate/' || config.url === '/mfa/generate/' || config.url === '/token/') && (tempToken || tempTokenMFA)) {
+    if ((config.url === '/mfa/validate/' || config.url === '/mfa/email/send/' || config.url === '/mfa/email/validate/' || config.url === '/mfa/generate/' || config.url === '/token/') && (tempToken || tempTokenMFA)) {
         if(tempToken) {
             config.headers['X-Temp-Token'] = tempToken;
         }

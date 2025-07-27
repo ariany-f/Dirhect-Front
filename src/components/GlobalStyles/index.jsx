@@ -319,6 +319,21 @@ template {
     font-weight: 600;
   }
 }
+.p-dialog-title {
+  font-family: var(--fonte-secundaria);
+  font-size: 18px;
+  font-weight: 800;
+}
+.p-dialog-header {
+  border-radius: 16px 16px 0 0;
+}
+.p-dialog-footer {
+  border-radius: 0 0 16px 16px;
+}
+.p-dialog {
+  font-family: var(--fonte-primaria);
+  border-radius: 16px;
+}
 .p-tabview .p-tabview-nav li:not(.p-highlight):not(.p-disabled):hover .p-tabview-nav-link {
   cursor: pointer;
 }

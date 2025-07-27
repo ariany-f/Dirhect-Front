@@ -14,7 +14,7 @@ import { ArmazenadorToken } from '@utils';
 
 function Mfa() {
     const navegar = useNavigate();
-    const { confirmed } = useParams();
+    const { confirmed, method } = useParams();
     const [otpCode, setOtpCode] = useState('');
     const { control, handleSubmit, formState: { errors } } = useForm();
 
@@ -44,6 +44,58 @@ function Mfa() {
         />
     );
 
+    const handleSuccessfulLogin = (response) => {
+        const expiration = new Date();
+        expiration.setMinutes(expiration.getMinutes() + 15);
+
+        ArmazenadorToken.definirToken(
+            response.access,
+            expiration,
+            response.refresh,
+            response.permissions
+        );
+        
+        setEmail(response.user.email);
+        setCpf(response.user.cpf ?? '');
+        setUserPublicId(response.user.id);
+        setName(response.user.first_name + ' ' + response.user.last_name);
+        
+        setUsuarioEstaLogado(true);
+        
+        const gruposValidos = response.groups.filter(grupo => !grupo.startsWith('_'));
+        
+        if (gruposValidos.length > 1) {
+            setGroups(response.groups);
+            ArmazenadorToken.definirUsuario(
+                response.user.first_name + ' ' + response.user.last_name,
+                response.user.email,
+                response.user.cpf ?? '',
+                response.user.id,
+                '', '', '', '', '', 
+                response.user.mfa_required,
+                response.user.perfil
+            );
+            ArmazenadorToken.removerTempToken();
+            ArmazenadorToken.definirGrupos(response.groups);
+            navegar('/login/selecionar-grupo');
+        } else {
+            const grupoSelecionado = gruposValidos[0] || response.groups[0];
+            setTipo(grupoSelecionado);
+            ArmazenadorToken.definirUsuario(
+                response.user.first_name + ' ' + response.user.last_name,
+                response.user.email,
+                response.user.cpf ?? '',
+                response.user.id,
+                grupoSelecionado,
+                '', '', '', '', 
+                response.user.mfa_required,
+                response.user.perfil
+            );
+            ArmazenadorToken.removerTempToken();   
+            navegar('/login/selecionar-empresa');
+        }
+    };
+
     async function handleMfaValidade() {
         return new Promise((resolve, reject) => {
             http.post('/mfa/validate/', { otp: otpCode })
@@ -69,142 +121,43 @@ function Mfa() {
         });
     }
 
+    async function handleEmailMfaValidate() {
+        return new Promise((resolve, reject) => {
+            http.post('/mfa/email/validate/', { otp: otpCode })
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(error => {
+                    toast.error('Erro ao verificar Token de e-mail!');
+                    reject(error);
+                });
+        });
+    }
+
     async function handleVerifyOtp() {
-        if(confirmed === 'true') {
-            await handleToken()
-            .then(response => {
-                toast.success('Token verificado com sucesso!');
-                const expiration = new Date();
-                expiration.setMinutes(expiration.getMinutes() + 15);
+        if (confirmed === 'true') {
+            const validationPromise = method === 'email' 
+                ? handleEmailMfaValidate() 
+                : handleToken();
 
-                ArmazenadorToken.definirToken(
-                    response.access,
-                    expiration,
-                    response.refresh,
-                    response.permissions
-                );
-                
-                setEmail(response.user.email);
-                setCpf(response.user.cpf ?? '');
-                setUserPublicId(response.user.id);
-                setName(response.user.first_name + ' ' + response.user.last_name);
-
-                setUsuarioEstaLogado(true);
-
-                // Filtrar grupos que não começam com "_" (grupos válidos)
-                const gruposValidos = response.groups.filter(grupo => !grupo.startsWith('_'));
-                
-                if(gruposValidos.length > 1) {
-                    setGroups(response.groups);
-                    ArmazenadorToken.definirUsuario(
-                        response.user.first_name + ' ' + response.user.last_name,
-                        response.user.email,
-                        response.user.cpf ?? '',
-                        response.user.id,
-                        '',
-                        '', 
-                        '', 
-                        '', 
-                        '', 
-                        response.user.mfa_required,
-                        response.user.perfil
-                    );
-                    ArmazenadorToken.removerTempToken();   
-                    ArmazenadorToken.definirGrupos(response.groups);
-                    
-                    navegar('/login/selecionar-grupo');
-                } else {
-                    // Usar o primeiro grupo válido
-                    const grupoSelecionado = gruposValidos[0] || response.groups[0];
-                    setTipo(grupoSelecionado);
-
-                    ArmazenadorToken.definirUsuario(
-                        response.user.first_name + ' ' + response.user.last_name,
-                        response.user.email,
-                        response.user.cpf ?? '',
-                        response.user.id,
-                        grupoSelecionado,
-                        '', 
-                        '', 
-                        '', 
-                        '', 
-                        response.user.mfa_required,
-                        response.user.perfil
-                    );
-                    ArmazenadorToken.removerTempToken();   
-                    
-                    navegar('/login/selecionar-empresa');
-                }
-            })
-            .catch(error => {
-                if(error.otp)
-                {
-                    toast.error(error.otp[0]);
-                }else{
-                    toast.error('Erro ao verificar Token!');
-                }
-            });
+            validationPromise
+                .then(response => {
+                    toast.success('Token verificado com sucesso!');
+                    handleSuccessfulLogin(response);
+                })
+                .catch(error => {
+                    if (error.otp) {
+                        toast.error(error.otp[0]);
+                    } else if (error.detail) {
+                        toast.error(error.detail);
+                    } else {
+                        toast.error('Erro ao verificar Token!');
+                    }
+                });
         } else {
             await handleMfaValidade()
             .then(response => {
-                const expiration = new Date();
-                expiration.setMinutes(expiration.getMinutes() + 15);
-
-                ArmazenadorToken.definirToken(
-                    response.access,
-                    expiration,
-                    response.refresh,
-                    response.permissions
-                );
-                
-                setEmail(response.user.email);
-                setCpf(response.user.cpf ?? '');
-                setUserPublicId(response.user.id);
-                setName(response.user.first_name + ' ' + response.user.last_name);
-                
-                setUsuarioEstaLogado(true);
-                
-                // Filtrar grupos que não começam com "_" (grupos válidos)
-                const gruposValidos = response.groups.filter(grupo => !grupo.startsWith('_'));
-                
-                if(gruposValidos.length > 1) {
-                    setGroups(response.groups);
-                    ArmazenadorToken.definirUsuario(
-                        response.user.first_name + ' ' + response.user.last_name,
-                        response.user.email,
-                        response.user.cpf ?? '',
-                        response.user.id,
-                        '',
-                        '', 
-                        '', 
-                        '', 
-                        '', 
-                        response.user.mfa_required,
-                        response.user.perfil
-                    );
-                    ArmazenadorToken.removerTempToken();
-                    ArmazenadorToken.definirGrupos(response.groups);
-                    navegar('/login/selecionar-grupo');
-                } else {
-                    // Usar o primeiro grupo válido
-                    const grupoSelecionado = gruposValidos[0] || response.groups[0];
-                    setTipo(grupoSelecionado);
-                    ArmazenadorToken.definirUsuario(
-                        response.user.first_name + ' ' + response.user.last_name,
-                        response.user.email,
-                        response.user.cpf ?? '',
-                        response.user.id,
-                        grupoSelecionado,
-                        '', 
-                        '', 
-                        '', 
-                        '', 
-                        response.user.mfa_required,
-                        response.user.perfil
-                    );
-                    ArmazenadorToken.removerTempToken();   
-                    navegar('/login/selecionar-empresa');
-                }
+                handleSuccessfulLogin(response);
             })
             .catch(error => {
                 if(error.otp)

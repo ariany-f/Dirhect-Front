@@ -44,6 +44,16 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         };
     }, []);
 
+    const formatarOpcoesChoices = useMemo(() => {
+        return (choices) => {
+            if (!choices || typeof choices !== 'object') return [];
+            return Object.entries(choices).map(([code, name]) => ({
+                name,
+                code
+            }));
+        };
+    }, []);
+
     // Função para verificar se um campo é obrigatório baseado na lista
     const isCampoObrigatorio = useMemo(() => {
         return (lista) => {
@@ -90,10 +100,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         return (campo, lista) => {
             if (!Array.isArray(lista) || !candidato || !candidato[campo]) return '';
             
-            const code = candidato[campo];
-            const item = lista.find(item => (item.id_origem || item.codigo) === code);
+            const code = String(candidato[campo]);
+            const item = lista.find(item => String(item.code) === code);
             
-            return item ? { name: item.descricao, code: (item.id_origem || item.codigo) } : '';
+            return item ? { name: item.name, code: item.code } : '';
         };
     }, [candidato]);
 
@@ -115,11 +125,13 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     const opcoesTipoSituacao = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_situacao), [opcoesDominio.tipo_situacao, formatarOpcoesDominio]);
     const opcoesCodigoOcorrenciaSefip = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_ocorrencia_sefip), [opcoesDominio.codigo_ocorrencia_sefip, formatarOpcoesDominio]);
     const opcoesCodigoCategoriaSefip = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_categoria_sefip), [opcoesDominio.codigo_categoria_sefip, formatarOpcoesDominio]);
-    const opcoesContratoTempoParcial = useMemo(() => formatarOpcoesDominio(opcoesDominio.contrato_tempo_parcial), [opcoesDominio.contrato_tempo_parcial, formatarOpcoesDominio]);
-    const opcoesIndicativoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.indicativo_admissao), [opcoesDominio.indicativo_admissao, formatarOpcoesDominio]);
-    const opcoesTipoRegimeTrabalhista = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_regime_trabalhista), [opcoesDominio.tipo_regime_trabalhista, formatarOpcoesDominio]);
-    const opcoesTipoRegimeJornada = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_regime_jornada), [opcoesDominio.tipo_regime_jornada, formatarOpcoesDominio]);
-    const opcoesTipoRegimePrevidenciario = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_regime_previdenciario), [opcoesDominio.tipo_regime_previdenciario, formatarOpcoesDominio]);
+    
+    // Usando _choices do payload para os campos especificados
+    const opcoesContratoTempoParcial = useMemo(() => formatarOpcoesChoices(candidato.contrato_tempo_parcial_choices), [candidato, formatarOpcoesChoices]);
+    const opcoesIndicativoAdmissao = useMemo(() => formatarOpcoesChoices(candidato.indicativo_admissao_choices), [candidato, formatarOpcoesChoices]);
+    const opcoesTipoRegimeTrabalhista = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_trabalhista_choices), [candidato, formatarOpcoesChoices]);
+    const opcoesTipoRegimeJornada = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_jornada_choices), [candidato, formatarOpcoesChoices]);
+    const opcoesTipoRegimePrevidenciario = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_previdenciario_choices), [candidato, formatarOpcoesChoices]);
     
     return (
         <GridContainer>
@@ -137,6 +149,23 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 options={opcoesFiliais}
                 label="Filial"
                 required={isCampoObrigatorio(filiais)}
+                search
+                filter
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="funcao"
+                valor={getValorSelecionado('funcao_id', funcoes)}
+                setValor={valor => {
+                    setCampo('dados_vaga', { 
+                        ...candidato.dados_vaga, 
+                        funcao_id: valor.code,
+                        funcao_nome: valor.name
+                    });
+                }}
+                options={opcoesFuncoes}
+                label="Função"
+                required={isCampoObrigatorio(funcoes)}
                 search
                 filter
                 disabled={modoLeitura}
@@ -210,23 +239,6 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <DropdownItens
-                name="funcao"
-                valor={getValorSelecionado('funcao_id', funcoes)}
-                setValor={valor => {
-                    setCampo('dados_vaga', { 
-                        ...candidato.dados_vaga, 
-                        funcao_id: valor.code,
-                        funcao_nome: valor.name
-                    });
-                }}
-                options={opcoesFuncoes}
-                label="Função"
-                required={isCampoObrigatorio(funcoes)}
-                search
-                filter
-                disabled={modoLeitura}
-            />
-            <DropdownItens
                 name="sindicato"
                 valor={getValorSelecionado('sindicato_id', sindicatos)}
                 setValor={valor => {
@@ -246,7 +258,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <DropdownItens
                 name="tipo_admissao"
                 label="Tipo de Admissão"
-                valor={getValorSelecionadoFromCandidato('tipo_admissao', opcoesDominio.tipo_admissao)}
+                valor={getValorSelecionadoFromCandidato('tipo_admissao', opcoesTipoAdmissao)}
                 setValor={(valor) => setCampo('tipo_admissao', valor.code)}
                 options={opcoesTipoAdmissao} 
                 disabled={modoLeitura}
@@ -254,35 +266,25 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <DropdownItens
                 name="motivo_admissao"
                 label="Motivo da Admissão"
-                valor={getValorSelecionadoFromCandidato('motivo_admissao', opcoesDominio.motivo_admissao)}
+                valor={getValorSelecionadoFromCandidato('motivo_admissao', opcoesMotivoAdmissao)}
                 setValor={(valor) => setCampo('motivo_admissao', valor.code)}
                 options={opcoesMotivoAdmissao} 
                 disabled={modoLeitura}
             />
 
-            {availableDominioTables.includes('indicativo_admissao') ? (
-                <DropdownItens
-                    name="indicativo_admissao"
-                    label="Indicativo de Admissão"
-                    valor={getValorSelecionadoFromCandidato('indicativo_admissao', opcoesDominio.indicativo_admissao)}
-                    setValor={(valor) => setCampo('indicativo_admissao', valor.code)}
-                    options={opcoesIndicativoAdmissao}
-                    disabled={modoLeitura}
-                />
-            ) : (
-                <CampoTexto
-                    name="indicativo_admissao"
-                    label="Indicativo de Admissão"
-                    valor={candidato.indicativo_admissao || ''}
-                    setValor={(valor) => setCampo('indicativo_admissao', valor)}
-                    disabled={modoLeitura}
-                />
-            )}
+            <DropdownItens
+                name="indicativo_admissao"
+                label="Indicativo de Admissão"
+                valor={getValorSelecionadoFromCandidato('indicativo_admissao', opcoesIndicativoAdmissao)}
+                setValor={(valor) => setCampo('indicativo_admissao', valor.code)}
+                options={opcoesIndicativoAdmissao}
+                disabled={modoLeitura}
+            />
 
             <DropdownItens
                 name="tipo_funcionario"
                 label="Tipo de Funcionário"
-                valor={getValorSelecionadoFromCandidato('tipo_funcionario', opcoesDominio.tipo_funcionario)}
+                valor={getValorSelecionadoFromCandidato('tipo_funcionario', opcoesTipoFuncionario)}
                 setValor={(valor) => setCampo('tipo_funcionario', valor.code)}
                 options={opcoesTipoFuncionario} 
                 disabled={modoLeitura}
@@ -290,35 +292,25 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <DropdownItens
                 name="codigo_categoria_esocial"
                 label="Código Categoria eSocial"
-                valor={getValorSelecionadoFromCandidato('codigo_categoria_esocial', opcoesDominio.codigo_categoria_esocial)}
+                valor={getValorSelecionadoFromCandidato('codigo_categoria_esocial', opcoesCodigoCategoriaESocial)}
                 setValor={(valor) => setCampo('codigo_categoria_esocial', valor.code)}
                 options={opcoesCodigoCategoriaESocial}
                 disabled={modoLeitura}
             />
 
-            {availableDominioTables.includes('tipo_regime_trabalhista') ? (
-                <DropdownItens
-                    name="tipo_regime_trabalhista"
-                    label="Tipo de Regime Trabalhista"
-                    valor={getValorSelecionadoFromCandidato('tipo_regime_trabalhista', opcoesDominio.tipo_regime_trabalhista)}
-                    setValor={(valor) => setCampo('tipo_regime_trabalhista', valor.code)}
-                    options={opcoesTipoRegimeTrabalhista}
-                    disabled={modoLeitura}
-                />
-            ) : (
-                <CampoTexto
-                    name="tipo_regime_trabalhista"
-                    label="Tipo de Regime Trabalhista"
-                    valor={candidato.tipo_regime_trabalhista || ''}
-                    setValor={(valor) => setCampo('tipo_regime_trabalhista', valor)}
-                    disabled={modoLeitura}
-                />
-            )}
+            <DropdownItens
+                name="tipo_regime_trabalhista"
+                label="Tipo de Regime Trabalhista"
+                valor={getValorSelecionadoFromCandidato('tipo_regime_trabalhista', opcoesTipoRegimeTrabalhista)}
+                setValor={(valor) => setCampo('tipo_regime_trabalhista', valor.code)}
+                options={opcoesTipoRegimeTrabalhista}
+                disabled={modoLeitura}
+            />
             
             <DropdownItens
                 name="tipo_recebimento"
                 label="Tipo de Recebimento"
-                valor={getValorSelecionadoFromCandidato('tipo_recebimento', opcoesDominio.tipo_recebimento)}
+                valor={getValorSelecionadoFromCandidato('tipo_recebimento', opcoesTipoRecebimento)}
                 setValor={(valor) => setCampo('tipo_recebimento', valor.code)}
                 options={opcoesTipoRecebimento}
                 disabled={modoLeitura}
@@ -327,7 +319,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <DropdownItens
                 name="tipo_situacao"
                 label="Situação"
-                valor={getValorSelecionadoFromCandidato('tipo_situacao', opcoesDominio.tipo_situacao)}
+                valor={getValorSelecionadoFromCandidato('tipo_situacao', opcoesTipoSituacao)}
                 setValor={(valor) => setCampo('tipo_situacao', valor.code)}
                 options={opcoesTipoSituacao}
                 disabled={modoLeitura}
@@ -336,7 +328,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <DropdownItens
                 name="codigo_ocorrencia_sefip"
                 label="Código Ocorrência SEFIP"
-                valor={getValorSelecionadoFromCandidato('codigo_ocorrencia_sefip', opcoesDominio.codigo_ocorrencia_sefip)}
+                valor={getValorSelecionadoFromCandidato('codigo_ocorrencia_sefip', opcoesCodigoOcorrenciaSefip)}
                 setValor={(valor) => setCampo('codigo_ocorrencia_sefip', valor.code)}
                 options={opcoesCodigoOcorrenciaSefip}
                 disabled={modoLeitura}
@@ -344,68 +336,38 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <DropdownItens
                 name="codigo_categoria_sefip"
                 label="Código Categoria SEFIP"
-                valor={getValorSelecionadoFromCandidato('codigo_categoria_sefip', opcoesDominio.codigo_categoria_sefip)}
+                valor={getValorSelecionadoFromCandidato('codigo_categoria_sefip', opcoesCodigoCategoriaSefip)}
                 setValor={(valor) => setCampo('codigo_categoria_sefip', valor.code)}
                 options={opcoesCodigoCategoriaSefip}
                 disabled={modoLeitura}
             />
             
-            {availableDominioTables.includes('tipo_regime_jornada') ? (
-                 <DropdownItens
-                    name="tipo_regime_jornada"
-                    label="Tipo de Regime da Jornada"
-                    valor={getValorSelecionadoFromCandidato('tipo_regime_jornada', opcoesDominio.tipo_regime_jornada)}
-                    setValor={(valor) => setCampo('tipo_regime_jornada', valor)}
-                    options={opcoesTipoRegimeJornada}
-                    disabled={modoLeitura}
-                />
-            ) : (
-                <CampoTexto
-                    name="tipo_regime_jornada"
-                    label="Tipo de Regime da Jornada"
-                    valor={candidato.tipo_regime_jornada || ''}
-                    setValor={(valor) => setCampo('tipo_regime_jornada', valor)}
-                    disabled={modoLeitura}
-                />
-            )}
+            <DropdownItens
+                name="tipo_regime_jornada"
+                label="Tipo de Regime da Jornada"
+                valor={getValorSelecionadoFromCandidato('tipo_regime_jornada', opcoesTipoRegimeJornada)}
+                setValor={(valor) => setCampo('tipo_regime_jornada', valor.code)}
+                options={opcoesTipoRegimeJornada}
+                disabled={modoLeitura}
+            />
 
-            {availableDominioTables.includes('tipo_regime_previdenciario') ? (
-                <DropdownItens
-                    name="tipo_regime_previdenciario"
-                    label="Tipo de Regime Previdenciário"
-                    valor={getValorSelecionadoFromCandidato('tipo_regime_previdenciario', opcoesDominio.tipo_regime_previdenciario)}
-                    setValor={(valor) => setCampo('tipo_regime_previdenciario', valor)}
-                    options={opcoesTipoRegimePrevidenciario}
-                    disabled={modoLeitura}
-                />
-            ) : (
-                <CampoTexto
-                    name="tipo_regime_previdenciario"
-                    label="Tipo de Regime Previdenciário"
-                    valor={candidato.tipo_regime_previdenciario || ''}
-                    setValor={(valor) => setCampo('tipo_regime_previdenciario', valor)}
-                    disabled={modoLeitura}
-                />
-            )}
+            <DropdownItens
+                name="tipo_regime_previdenciario"
+                label="Tipo de Regime Previdenciário"
+                valor={getValorSelecionadoFromCandidato('tipo_regime_previdenciario', opcoesTipoRegimePrevidenciario)}
+                setValor={(valor) => setCampo('tipo_regime_previdenciario', valor.code)}
+                options={opcoesTipoRegimePrevidenciario}
+                disabled={modoLeitura}
+            />
             
-            {availableDominioTables.includes('contrato_tempo_parcial') ? (
-                <DropdownItens
-                    name="contrato_tempo_parcial"
-                    label="Contrato de Trabalho em Tempo Parcial"
-                    valor={getValorSelecionadoFromCandidato('contrato_tempo_parcial', opcoesDominio.contrato_tempo_parcial)}
-                    setValor={(valor) => setCampo('contrato_tempo_parcial', valor.code)}
-                    options={opcoesContratoTempoParcial}
-                    disabled={modoLeitura}
-                />
-            ) : (
-                <CampoTexto
-                    name="contrato_tempo_parcial"
-                    label="Contrato de Trabalho em Tempo Parcial"
-                    valor={candidato.contrato_tempo_parcial || ''}
-                    setValor={(valor) => setCampo('contrato_tempo_parcial', valor)}
-                    disabled={modoLeitura}
-                />
-            )}
+            <DropdownItens
+                name="contrato_tempo_parcial"
+                label="Contrato de Trabalho em Tempo Parcial"
+                valor={getValorSelecionadoFromCandidato('contrato_tempo_parcial', opcoesContratoTempoParcial)}
+                setValor={(valor) => setCampo('contrato_tempo_parcial', valor.code)}
+                options={opcoesContratoTempoParcial}
+                disabled={modoLeitura}
+            />
 
             {/* Todos os Campos de Texto agrupados */}
             <CampoTexto

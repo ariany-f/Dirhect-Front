@@ -1,6 +1,7 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import CampoTexto from "@components/CampoTexto"
+import BotaoGrupo from "@components/BotaoGrupo"
 import Titulo from "@components/Titulo"
 import { RiCloseFill } from 'react-icons/ri'
 import { useEffect, useState } from "react"
@@ -52,10 +53,10 @@ function ModalAlterarTelefone({ opened = false, aoClicar, aoFechar, dadoAntigo }
                         />
                     </Frame>
                     <form method="dialog">
-                        <div className={styles.containerBottom}>
+                        <BotaoGrupo align="end">
                             <Botao aoClicar={fecharModal} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
                             <Botao aoClicar={salvarDados} estilo="vermilion" size="medium" filled>Salvar</Botao>
-                        </div>
+                        </BotaoGrupo>
                     </form>
                 </DialogEstilizado>
             </Overlay>}

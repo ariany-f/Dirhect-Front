@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
@@ -38,9 +38,33 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepDadosPessoais = ({ classError, estados, modoLeitura = false }) => {
+const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDominio = {} }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
+
+    const formatarOpcoesDominio = useMemo(() => {
+        return (opcoes) => {
+            if (!Array.isArray(opcoes)) return [];
+            return opcoes.map(opcao => ({
+                name: opcao.descricao,
+                code: opcao.id_origem || opcao.codigo
+            }));
+        };
+    }, []);
+
+    const getValorSelecionadoFromCandidato = useMemo(() => {
+        return (campo, lista) => {
+            if (!Array.isArray(lista) || !candidato || !candidato[campo]) return '';
+            
+            const code = String(candidato[campo]);
+            const item = lista.find(item => String(item.code) === code);
+            
+            return item ? { name: item.name, code: item.code } : '';
+        };
+    }, [candidato]);
+
+    const opcoesGenero = useMemo(() => formatarOpcoesDominio(opcoesDominio.genero), [opcoesDominio.genero, formatarOpcoesDominio]);
+    const opcoesCorRaca = useMemo(() => formatarOpcoesDominio(opcoesDominio.cor_raca), [opcoesDominio.cor_raca, formatarOpcoesDominio]);
 
     console.log(candidato)
 
@@ -133,6 +157,22 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false }) => {
                 setValor={valor => setCampo('dt_nascimento', valor)}
                 label="Data de Nascimento"
                 type="date"
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="genero"
+                label="Gênero"
+                valor={getValorSelecionadoFromCandidato('genero', opcoesGenero)}
+                setValor={(valor) => setCampo('genero', valor.code)}
+                options={opcoesGenero}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="cor_raca"
+                label="Cor/Raça"
+                valor={getValorSelecionadoFromCandidato('cor_raca', opcoesCorRaca)}
+                setValor={(valor) => setCampo('cor_raca', valor.code)}
+                options={opcoesCorRaca}
                 disabled={modoLeitura}
             />
             

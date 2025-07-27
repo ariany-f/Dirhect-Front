@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import Botao from '@components/Botao';
+import { InputOtp } from 'primereact/inputotp';
+import styled from 'styled-components';
+import { HiCheckCircle } from 'react-icons/hi';
 import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
 import SubTitulo from '@components/SubTitulo';
 import { Skeleton } from 'primereact/skeleton';
-import styled from 'styled-components';
 
 const ModalContainer = styled.div`
     display: flex;
@@ -40,6 +42,17 @@ const ModalAtivarMFA = ({ opened, aoFechar, qrCode, secret, onConfirm }) => {
     const [verificationCode, setVerificationCode] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const customInput = ({ events, props }) => (
+        <input
+            {...events}
+            {...props}
+            type="tel"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="custom-otp-input"
+        />
+    );
+
     const handleConfirm = async () => {
         setLoading(true);
         try {
@@ -50,6 +63,13 @@ const ModalAtivarMFA = ({ opened, aoFechar, qrCode, secret, onConfirm }) => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        // Limpa o código quando o modal é fechado ou reaberto
+        if (!opened) {
+            setVerificationCode('');
+        }
+    }, [opened]);
 
     const footerContent = (
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
@@ -70,6 +90,25 @@ const ModalAtivarMFA = ({ opened, aoFechar, qrCode, secret, onConfirm }) => {
             blockScroll
             draggable={false}
         >
+            <style>
+                {`
+                    .custom-otp-input {
+                        width: 40px;
+                        font-size: 36px;
+                        border: 0 none;
+                        appearance: none;
+                        text-align: center;
+                        transition: all 0.2s;
+                        background: transparent;
+                        border-bottom: 2px solid var(--surface-500);
+                    }
+
+                    .custom-otp-input:focus {
+                        outline: 0 none;
+                        border-bottom-color: var(--primary-color);
+                    }
+                `}
+            </style>
             <ModalContainer>
                 <QRCodeColumn>
                     <SubTitulo>1. Escaneie o QR Code</SubTitulo>
@@ -90,12 +129,14 @@ const ModalAtivarMFA = ({ opened, aoFechar, qrCode, secret, onConfirm }) => {
                 <VerificationColumn>
                     <SubTitulo>2. Digite o código</SubTitulo>
                     <Texto>Use seu aplicativo de autenticação (ex: Google Authenticator) para escanear a imagem e digite o código de 6 dígitos.</Texto>
-                    <CampoTexto
-                        label="Código de Verificação"
-                        valor={verificationCode}
-                        setValor={setVerificationCode}
-                        patternMask={['999999']}
-                    />
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <InputOtp 
+                            value={verificationCode} 
+                            onChange={(e) => setVerificationCode(e.value)} 
+                            length={6} 
+                            inputTemplate={customInput}
+                        />
+                    </div>
                 </VerificationColumn>
             </ModalContainer>
         </Dialog>

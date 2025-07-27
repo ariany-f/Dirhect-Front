@@ -196,22 +196,34 @@ function Login() {
             if(error?.password) {
                 toast.error(error.password[0], { icon: ErrorIcon });
                 setErrorMessage(error.password[0]);
-            } else if(error?.mfa_required && error?.mfa_required[0] && error?.mfa_required[0] == 'True') {
-
+                setLoading(false);
+            } else if(error?.mfa_required?.[0] === 'True') {
                 ArmazenadorToken.definirTempToken(error.temp_token[0]);
+                ArmazenadorToken.definirMfaRequired(true);
+                setMfaRequired(true);
+                const primaryMethod = error.primary_method?.[0];
 
-                if(error?.mfa_configured && error?.mfa_configured[0] && error?.mfa_configured[0] == 'True') {
-                    navegar('/login/mfa/true');
-                }
-                else {
-                    navegar('/login/mfa/generate');
+                if (primaryMethod === 'email') {
+                    try {
+                        await http.post('/mfa/email/send/');
+                        toast.success('Código de verificação enviado para o seu e-mail.');
+                        navegar('/login/mfa/true/email');
+                    } catch (sendError) {
+                        toast.error('Erro ao enviar o código de verificação por e-mail.');
+                        setLoading(false);
+                    }
+                } else { // 'app' ou padrão
+                    if (error?.mfa_configured?.[0] === 'True') {
+                        navegar('/login/mfa/true/app'); // ou /login/mfa/true/app
+                    } else {
+                        navegar('/login/mfa/generate');
+                    }
                 }
             } else {
                 toast.error('Ocorreu um erro ao tentar fazer login', { icon: ErrorIcon });
                 setErrorMessage('Ocorreu um erro ao tentar fazer login');
+                setLoading(false);
             }
-        } finally {
-            setLoading(false);
         }
     }
 

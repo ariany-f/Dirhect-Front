@@ -1,6 +1,7 @@
 import Botao from "@components/Botao"
 import Frame from "@components/Frame"
 import CampoTexto from "@components/CampoTexto"
+import BotaoGrupo from "@components/BotaoGrupo"
 import DropdownItens from '@components/DropdownItens'
 import Titulo from "@components/Titulo"
 import { RiCloseFill } from 'react-icons/ri'
@@ -204,7 +205,7 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, dadoAntigo }) {
                             </Col12>
                         </div>
                     </Frame>
-                    <div className={styles.containerBottom}>
+                    <BotaoGrupo align="end">
                         <Botao
                             aoClicar={fecharModal} 
                             estilo="neutro" 
@@ -221,7 +222,7 @@ function ModalAlterar({ opened = false, aoClicar, aoFechar, dadoAntigo }) {
                         >
                             Salvar
                         </Botao>
-                    </div>
+                    </BotaoGrupo>
                 </DialogEstilizado>
             </Overlay>
             }

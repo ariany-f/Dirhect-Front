@@ -149,8 +149,8 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
             />
 
             {adicionandoAgencia ? (
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
-                    <div style={{ flex: 1, marginTop: '30px' }}>
+                <div style={{ display: 'flex', width: '100%', alignItems: 'start', gap: '16px', justifyContent: 'start' }}>
+                    <div style={{ flex: 1 }}>
                         <CampoTexto
                             name="agencia_nova"
                             valor={candidato?.agencia_nova || filtroAgencia}
@@ -159,12 +159,14 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
                             placeholder="Digite o número da agência"
                         />
                     </div>
-                     <BotaoSemBorda aoClicar={() => {
-                        setAdicionandoAgencia(false);
-                        setCampo('agencia_nova', '');
-                    }}>
-                        Cancelar
-                    </BotaoSemBorda>
+                    <div style={{ height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <BotaoSemBorda aoClicar={() => {
+                            setAdicionandoAgencia(false);
+                            setCampo('agencia_nova', '');
+                        }}>
+                            Cancelar
+                        </BotaoSemBorda>
+                    </div>
                 </div>
             ) : (
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
