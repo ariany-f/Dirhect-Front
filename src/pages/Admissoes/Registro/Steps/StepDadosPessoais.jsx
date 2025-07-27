@@ -282,7 +282,6 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 name="tipo_carteira_habilit"
                 valor={candidato?.tipo_carteira_habilit ?? ''}
                 setValor={valor => setCampo('tipo_carteira_habilit', valor)}
-                patternMask="A"
                 label="Tipo da Carteira de Habilitação"
                 placeholder="Ex: A, B, C, D, E"
                 disabled={modoLeitura}
