@@ -301,7 +301,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
     { "id": 7, "url": "linhas-transporte", "pageTitulo": "Linhas de Transporte" },
     { "id": 8, "url": "despesa", "pageTitulo": "Despesas" },
     { "id": 9, "url": "operador", "pageTitulo": "Operadores" },
-    { "id": 10, "url": "usuario", "pageTitulo": t('me') },
+    { "id": 10, "url": "usuario", "pageTitulo": t('settings') },
     { "id": 11, "url": "dependentes", "pageTitulo": "Dependentes" },
     { "id": 12, "url": "contratos", "pageTitulo": "Contratos" },
     { "id": 13, "url": "ferias", "pageTitulo": "Férias" },
