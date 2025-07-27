@@ -1111,7 +1111,9 @@ const CandidatoRegistro = () => {
                 contrato_tempo_parcial: candidatoAtual.contrato_tempo_parcial,
                 tipo_regime_jornada: candidatoAtual.tipo_regime_jornada,
                 tipo_situacao: candidatoAtual.tipo_situacao,
-                tipo_regime_previdenciario: candidatoAtual.tipo_regime_previdenciario
+                tipo_regime_previdenciario: candidatoAtual.tipo_regime_previdenciario,
+                tipo_contrato_prazo_determinado: candidatoAtual.tipo_contrato_prazo_determinado,
+                tipo_contrato_trabalho: candidatoAtual.tipo_contrato_trabalho
             };
 
             // Remove campos vazios do payload antes de enviar

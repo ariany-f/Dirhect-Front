@@ -142,6 +142,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     const opcoesTipoRegimeTrabalhista = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_trabalhista_choices, 'tipo_regime_trabalhista'), [candidato, formatarOpcoesChoices]);
     const opcoesTipoRegimeJornada = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_jornada_choices), [candidato, formatarOpcoesChoices]);
     const opcoesTipoRegimePrevidenciario = useMemo(() => formatarOpcoesChoices(candidato.tipo_regime_previdenciario_choices), [candidato, formatarOpcoesChoices]);
+    const opcoesTipoContratoPrazoDeterminado = useMemo(() => formatarOpcoesChoices(candidato.tipo_contrato_prazo_determinado_choices), [candidato, formatarOpcoesChoices]);
+    const opcoesTipoContratoTrabalho = useMemo(() => formatarOpcoesChoices(candidato.tipo_contrato_trabalho_choices), [candidato, formatarOpcoesChoices]);
     
 
     
@@ -408,6 +410,22 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 valor={getValorSelecionadoFromCandidato('contrato_tempo_parcial', opcoesContratoTempoParcial)}
                 setValor={(valor) => setCampo('contrato_tempo_parcial', valor.code)}
                 options={opcoesContratoTempoParcial}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="tipo_contrato_prazo_determinado"
+                label="Tipo de Contrato Prazo Determinado"
+                valor={getValorSelecionadoFromCandidato('tipo_contrato_prazo_determinado', opcoesTipoContratoPrazoDeterminado)}
+                setValor={(valor) => setCampo('tipo_contrato_prazo_determinado', valor.code)}
+                options={opcoesTipoContratoPrazoDeterminado}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="tipo_contrato_trabalho"
+                label="Tipo de Contrato de Trabalho"
+                valor={getValorSelecionadoFromCandidato('tipo_contrato_trabalho', opcoesTipoContratoTrabalho)}
+                setValor={(valor) => setCampo('tipo_contrato_trabalho', valor.code)}
+                options={opcoesTipoContratoTrabalho}
                 disabled={modoLeitura}
             />
 
