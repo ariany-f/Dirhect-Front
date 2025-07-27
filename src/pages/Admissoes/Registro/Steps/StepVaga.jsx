@@ -420,6 +420,15 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => setCampo('dt_admissao', valor)}
                 disabled={modoLeitura}
             />
+            <CampoTexto
+                name="jornada"
+                label="Jornada (HH:mm)"
+                valor={candidato.jornada || ''}
+                setValor={(valor) => setCampo('jornada', valor)}
+                patternMask="999:99"
+                placeholder="Ex: 220:30"
+                disabled={modoLeitura}
+            />
             <DropdownItens
                 name="letra"
                 label="Letra"

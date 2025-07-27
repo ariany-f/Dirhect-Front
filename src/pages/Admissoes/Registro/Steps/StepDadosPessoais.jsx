@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
@@ -41,6 +41,8 @@ const SectionTitle = styled.div`
 const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDominio = {} }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
+    const [cidades, setCidades] = useState([]);
+    const [loadingCidades, setLoadingCidades] = useState(false);
 
     const formatarOpcoesDominio = useMemo(() => {
         return (opcoes) => {
@@ -91,6 +93,42 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
         }
     }, [candidato?.nome_pai, candidato?.pai_desconhecido, candidato?.nome, setCampo]);
 
+    // Função para buscar cidades do estado natal
+    const buscarCidades = async (estado) => {
+        if (!estado) {
+            setCidades([]);
+            return;
+        }
+        
+        setLoadingCidades(true);
+        try {
+            const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado}/municipios`);
+            if (response.data && Array.isArray(response.data)) {
+                const cidadesFormatadas = response.data.map(cidade => ({
+                    name: cidade.nome,
+                    code: cidade.nome
+                }));
+                setCidades(cidadesFormatadas);
+            } else {
+                setCidades([]);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar cidades:', error);
+            setCidades([]);
+        } finally {
+            setLoadingCidades(false);
+        }
+    };
+
+    // Carrega cidades quando o estado natal muda
+    useEffect(() => {
+        if (candidato?.estado_natal) {
+            buscarCidades(candidato.estado_natal);
+        } else {
+            setCidades([]);
+        }
+    }, [candidato?.estado_natal]);
+
     // Função para buscar endereço pelo CEP
     const handleCepChange = async (valor) => {
         // Atualiza o campo CEP normalmente
@@ -122,6 +160,13 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
         if (!candidato?.[campo]) return '';
         const estadoEncontrado = estados.find(e => e.code === candidato[campo]);
         return estadoEncontrado || '';
+    };
+
+    // Função para obter a naturalidade formatada
+    const getNaturalidadeFormatada = () => {
+        if (!candidato?.naturalidade) return '';
+        const naturalidadeEncontrada = cidades.find(c => c.code === candidato.naturalidade);
+        return naturalidadeEncontrada || '';
     };
 
     return (
@@ -212,6 +257,16 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 options={estados}
                 placeholder="Selecione o estado natal"
                 disabled={modoLeitura}
+                filter
+            />
+            <DropdownItens
+                name="naturalidade"
+                label="Naturalidade"
+                valor={getNaturalidadeFormatada()}
+                setValor={valor => setCampo('naturalidade', valor.code)}
+                options={cidades}
+                placeholder={loadingCidades ? "Carregando cidades..." : "Selecione a naturalidade"}
+                disabled={modoLeitura || !candidato?.estado_natal || loadingCidades}
                 filter
             />
             

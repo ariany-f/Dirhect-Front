@@ -964,6 +964,7 @@ const CandidatoRegistro = () => {
                 // Dados básicos da admissão
                 chapa: candidatoAtual.chapa,
                 dt_admissao: candidatoAtual.dt_admissao,
+                jornada: candidatoAtual.jornada,
                 salario: (() => {
                     const salarioCandidato = dadosCandidato?.salario;
                     const salarioVaga = dadosVaga?.salario;
@@ -1114,6 +1115,14 @@ const CandidatoRegistro = () => {
 
             // Remove campos vazios do payload antes de enviar
             const payload = removerCamposVazios(payloadCompleto);
+
+            // Debug: verificar se há campos duplicados
+            console.log('Payload antes do envio:', payload);
+            console.log('Campo naturalidade no payload:', payload.naturalidade);
+            const camposDuplicados = Object.keys(payload).filter((item, index) => Object.keys(payload).indexOf(item) !== index);
+            if (camposDuplicados.length > 0) {
+                console.warn('Campos duplicados encontrados:', camposDuplicados);
+            }
 
             await http.put(`admissao/${admissao.id}/`, payload);
             
