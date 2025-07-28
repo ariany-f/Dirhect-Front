@@ -4,7 +4,9 @@ import CampoTexto from '@components/CampoTexto';
 import { Dropdown } from 'primereact/dropdown';
 import SwitchInput from '@components/SwitchInput';
 import Botao from '@components/Botao';
+import BotaoSemBorda from '@components/BotaoSemBorda';
 import { FaSave } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa';
 import http from '@http';
 import Frame from "@components/Frame"
 import Titulo from "@components/Titulo"
@@ -12,6 +14,7 @@ import { RiCloseFill } from 'react-icons/ri'
 import styled from "styled-components"
 import styles from './ModalDocumentoVaga.module.css'
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
+import { useNavigate } from 'react-router-dom';
 
 const Col12 = styled.div`
     display: flex;
@@ -35,6 +38,7 @@ const Col6Centered = styled.div`
 `
 
 function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, documento = null }) {
+    const navigate = useNavigate();
     const [classError, setClassError] = useState([]);
     const [documentoNome, setDocumentoNome] = useState('');
     const [obrigatorio, setObrigatorio] = useState(true);
@@ -42,6 +46,11 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
     const [documentosRequeridos, setDocumentosRequeridos] = useState([]);
 
     const vagaTransferida = vaga?.status === 'T';
+
+    const handleCriarNovo = () => {
+        aoFechar(); // Fecha o modal atual
+        navigate('/documentos/configuracoes'); // Redireciona para a página de configurações
+    };
 
     useEffect(() => {
         if (opened) {
@@ -152,6 +161,15 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
                                                 className={classError.includes('documento') ? 'p-invalid' : ''}
                                                 disabled={vagaTransferida}
                                             />
+                                            <div style={{ marginTop: '8px' }}>
+                                                <BotaoSemBorda 
+                                                    aoClicar={handleCriarNovo}
+                                                    color="var(--primaria)"
+                                                >
+                                                    <FaPlus size={12} />
+                                                    Criar Novo Padrão
+                                                </BotaoSemBorda>
+                                            </div>
                                         </div>
                                     </Col6>
                                 </Col12>
