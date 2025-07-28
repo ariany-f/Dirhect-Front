@@ -131,7 +131,7 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
 
             <DropdownItens
                 $margin={'28px'}
-                valor={candidato?.banco ? bancos.find(b => b.code === candidato.banco) || '' : ''}
+                valor={candidato?.banco ? (bancos.find(b => b.code === candidato.banco) || null) : null}
                 setValor={valor => {
                     setCampo('banco', valor.code);
                     setCampo('banco_codigo', valor.code);
@@ -172,7 +172,7 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <DropdownItens
                         $margin={'10px'}
-                        valor={candidato?.agencia ? agencias.find(a => a.code === candidato.agencia) || '' : ''}
+                        valor={candidato?.agencia ? (agencias.find(a => a.code === candidato.agencia) || null) : null}
                         setValor={valor => setCampo('agencia', valor.code)}
                         options={agencias}
                         name="agencia"
@@ -242,7 +242,7 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
 
             <DropdownItens
                 $margin={'10px'}
-                valor={candidato?.tipo_conta ? tiposConta.find(t => t.code === candidato.tipo_conta) || '' : ''}
+                valor={candidato?.tipo_conta ? (tiposConta.find(t => t.code === candidato.tipo_conta) || null) : null}
                 setValor={valor => setCampo('tipo_conta', valor.code)}
                 options={tiposConta}
                 name="tipo_conta"
