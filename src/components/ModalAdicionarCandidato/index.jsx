@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Botao from "@components/Botao";
 import Frame from "@components/Frame";
@@ -31,6 +31,28 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
   const [filial, setFilial] = useState("");
   const [centroCusto, setCentroCusto] = useState("");
 
+  const limparCampos = () => {
+    setNome("");
+    setEmail("");
+    setCpf("");
+    setNascimento("");
+    setTelefone("");
+    setFilial("");
+    setCentroCusto("");
+  };
+
+  // Limpa os campos quando o modal é aberto
+  useEffect(() => {
+    if (opened) {
+      limparCampos();
+    }
+  }, [opened]);
+
+  const handleFechar = () => {
+    limparCampos();
+    aoFechar();
+  };
+
   const handleSave = () => {
     aoSalvar({
       nome,
@@ -39,6 +61,7 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
       nascimento,
       telefone
     });
+    limparCampos();
   };
 
   return (
@@ -47,7 +70,7 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
       <DialogEstilizado $width="60vw" $minWidth="40vw" open={opened}>
         <Frame>
           <Titulo>
-            <button className="close" onClick={aoFechar}>
+            <button className="close" onClick={handleFechar}>
               <RiCloseFill size={20} className="fechar" />  
             </button>
             <h6>Adicionar Candidato</h6>
@@ -75,7 +98,7 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
         <div className={styles.containerBottom}>
           <BotaoGrupo>
             <Botao
-              aoClicar={aoFechar}
+              aoClicar={handleFechar}
               estilo="neutro"
               size="medium"
               filled
