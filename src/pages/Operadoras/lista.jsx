@@ -98,7 +98,7 @@ function OperadorasListagem() {
         }
         const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
         const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
-        const companyDomain = sessionStorage.getItem("company_domain") || 'dirhect';
+        const companyDomain = localStorage.getItem("company_domain") || 'dirhect';
         const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;            
         const response = await axios.post(`${baseUrl}operadora/`, formData, {
             headers: {
@@ -174,7 +174,7 @@ function OperadorasListagem() {
         if (operadora.imagem) formData.append('imagem', operadora.imagem);
         const API_BASE_DOMAIN = import.meta.env.VITE_API_BASE_DOMAIN || "dirhect.net";
         const PROTOCOL = import.meta.env.MODE === 'development' ? 'http' : 'https';
-        const companyDomain = sessionStorage.getItem("company_domain") || 'dirhect';
+        const companyDomain = localStorage.getItem("company_domain") || 'dirhect';
         const baseUrl = `${PROTOCOL}://${companyDomain}.${API_BASE_DOMAIN}/api/`;
         const response = await axios.put(`${baseUrl}operadora/${operadoraEditando.id}/`, formData, {
             headers: {

@@ -17,8 +17,8 @@ export const VagasProvider = ({ children }) => {
     const [vagas, setVagas] = useState(vagasInicial);
 
     useEffect(() => {
-        // Carregar vagas do sessionStorage ou usar dados iniciais
-        const storedVagas = sessionStorage.getItem('vagas');
+        // Carregar vagas do localStorage ou usar dados iniciais
+        const storedVagas = localStorage.getItem('vagas');
         if (storedVagas) {
             setVagas(JSON.parse(storedVagas));
         } else {
@@ -32,8 +32,8 @@ export const VagasProvider = ({ children }) => {
                 ...prevState,
                 abertas: [...prevState.abertas, newVaga],
             };
-            // Salvar no sessionStorage
-            sessionStorage.setItem('vagas', JSON.stringify(updatedVagas));
+            // Salvar no localStorage
+            localStorage.setItem('vagas', JSON.stringify(updatedVagas));
             return updatedVagas;
         });
     };

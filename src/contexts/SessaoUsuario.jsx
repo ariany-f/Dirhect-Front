@@ -14,23 +14,23 @@ addLocale('pt', ptCommon);
 addLocale('en', enCommon);
 
 const usuarioInicial = {
-    name: sessionStorage.getItem('name') ?? '',
-    email: sessionStorage.getItem('email') ?? '',
+    name: localStorage.getItem('name') ?? '',
+    email: localStorage.getItem('email') ?? '',
     password: '',
-    cpf: sessionStorage.getItem('cpf') ?? '',
+    cpf: localStorage.getItem('cpf') ?? '',
     document: '',
-    public_id: sessionStorage.getItem('public_id') ?? '',
-    company_public_id: sessionStorage.getItem('company_public_id') ?? '',
-    company_domain: sessionStorage.getItem('company_domain') ??     '',
-    company_logo: sessionStorage.getItem('company_logo') ?? '',
-    company_symbol: sessionStorage.getItem('company_symbol') ?? '',
+    public_id: localStorage.getItem('public_id') ?? '',
+    company_public_id: localStorage.getItem('company_public_id') ?? '',
+    company_domain: localStorage.getItem('company_domain') ??     '',
+    company_logo: localStorage.getItem('company_logo') ?? '',
+    company_symbol: localStorage.getItem('company_symbol') ?? '',
     remember: false,
     companies: null,
     code: [],
     mfa_required: false,
-    profile: sessionStorage.getItem('profile') ?? null,
-    tipo: sessionStorage.getItem('tipo') ?? '',
-    groups: sessionStorage.getItem('groups') ?? null
+    profile: localStorage.getItem('profile') ?? null,
+    tipo: localStorage.getItem('tipo') ?? '',
+    groups: localStorage.getItem('groups') ?? null
 }
 
 const recuperacaoSenhaInicial = {
@@ -90,19 +90,19 @@ export const SessaoUsuarioProvider = ({ children }) => {
 
         let usuarioSalvo = null;
 
-        // Tenta recuperar os dados do sessionStorage ou localStorage
-        const cpfSalvo = sessionStorage.getItem('cpf');
-        const nameSalvo = sessionStorage.getItem('name');
-        const emailSalvo = sessionStorage.getItem('email');
-        const publicIdSalvo = sessionStorage.getItem('public_id');
-        const tipoSalvo = sessionStorage.getItem('tipo');
-        const groupsSalvo = sessionStorage.getItem('groups');
-        const domainSalvo = sessionStorage.getItem('domain');
-        const simboloSalvo = sessionStorage.getItem('simbolo');
-        const logoSalvo = sessionStorage.getItem('logo');
-        const companyPublicIdSalvo = sessionStorage.getItem('company_public_id');
-        const mfaRequiredSalvo = sessionStorage.getItem('mfa_required');
-        const profileSalvo = sessionStorage.getItem('profile');
+        // Tenta recuperar os dados do localStorage ou localStorage
+        const cpfSalvo = localStorage.getItem('cpf');
+        const nameSalvo = localStorage.getItem('name');
+        const emailSalvo = localStorage.getItem('email');
+        const publicIdSalvo = localStorage.getItem('public_id');
+        const tipoSalvo = localStorage.getItem('tipo');
+        const groupsSalvo = localStorage.getItem('groups');
+        const domainSalvo = localStorage.getItem('domain');
+        const simboloSalvo = localStorage.getItem('simbolo');
+        const logoSalvo = localStorage.getItem('logo');
+        const companyPublicIdSalvo = localStorage.getItem('company_public_id');
+        const mfaRequiredSalvo = localStorage.getItem('mfa_required');
+        const profileSalvo = localStorage.getItem('profile');
         usuarioSalvo = {
             cpf: cpfSalvo ?? '',
             email: emailSalvo ?? '',
