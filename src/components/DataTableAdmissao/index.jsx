@@ -187,9 +187,15 @@ function DataTableAdmissao({
     const representativeStatusTemplate = (rowData) => {
         const total = rowData?.documentos_status?.total || 0;
         const enviados = rowData?.documentos_status?.enviados || 0;
+        const dependentes = rowData?.dependentes?.length || 0;
         
-        return <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                Documentos: &nbsp;<p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {enviados}/{total}</p>
+        return <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'start', gap: '4px', color: 'var(--neutro-500)'}}>
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px'}}>
+                    Documentos: <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {enviados}/{total}</p>
+                </div>
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px'}}>
+                    Dependentes: <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {dependentes}</p>
+                </div>
             </div>;
     }
 
