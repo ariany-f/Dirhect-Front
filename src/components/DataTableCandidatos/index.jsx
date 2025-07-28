@@ -195,7 +195,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                     if (!deveAbrirModal) {
                         // Se não deve abrir modal, mostra confirmação antes de enviar
                         confirmDialog({
-                            message: 'Tem certeza que deseja aprovar este candidato?',
+                            message: ' Tem certeza que deseja aprovar este candidato?',
                             header: 'Confirmação',
                             icon: 'pi pi-info-circle',
                             acceptLabel: 'Sim, aprovar',
@@ -267,7 +267,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
         if (!deveAbrirModal) {
             // Se não deve abrir modal, mostra confirmação antes de enviar
             confirmDialog({
-                message: 'Tem certeza que deseja aprovar este candidato?',
+                message: ' Tem certeza que deseja aprovar este candidato?',
                 header: 'Confirmação',
                 icon: 'pi pi-info-circle',
                 acceptLabel: 'Sim, aprovar',
