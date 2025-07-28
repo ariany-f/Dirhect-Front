@@ -271,6 +271,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
             />
             <CampoTexto
                 name="serie_carteira_trab"
+                maxCaracteres={5}
                 valor={candidato?.serie_carteira_trab ?? ''}
                 setValor={valor => setCampo('serie_carteira_trab', valor)}
                 patternMask="999999"
