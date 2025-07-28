@@ -218,7 +218,7 @@ function Mfa() {
                     <Titulo>
                         <h2>Segurança</h2>
                         <SubTitulo>
-                            Digite o código OTP para continuar
+                            Digite o código OTP {method == 'email' ? 'enviado para o seu e-mail' : 'gerado no seu aplicativo de autenticação'} para continuar
                         </SubTitulo>
                     </Titulo>
                 </Frame>
