@@ -786,6 +786,10 @@ const CandidatoRegistro = () => {
             return;
         }
 
+        // Validação de campos obrigatórios do step atual
+        const validacaoCampos = validarCamposObrigatoriosStep();
+        if (!validacaoCampos) return;
+
         // Verifica se há dependentes novos para adicionar
         if (candidato.dependentes && candidato.dependentes.length > 0) {
             const dependentesNovos = candidato.dependentes.filter(dep => !dep.id);
@@ -809,6 +813,10 @@ const CandidatoRegistro = () => {
             setActiveIndex(prev => prev + 1);
             return;
         }
+
+        // Validação de campos obrigatórios do step atual
+        const validacaoCampos = validarCamposObrigatoriosStep();
+        if (!validacaoCampos) return;
 
         // Verifica se há dependentes novos para adicionar
         if (candidato.dependentes && candidato.dependentes.length > 0) {
@@ -1350,6 +1358,132 @@ const CandidatoRegistro = () => {
         return true;
     };
 
+    // Função para validar campos obrigatórios do step atual
+    const validarCamposObrigatoriosStep = () => {
+        const dadosCandidato = candidato || {};
+        const dadosVaga = candidato.dados_vaga || {};
+        const camposObrigatorios = [];
+        
+        // Validação específica por step
+        if (activeIndex === 1) { // Step Dados Pessoais
+            // Validação de dados pessoais obrigatórios
+            if (!dadosCandidato.nome?.trim()) {
+                camposObrigatorios.push('Nome completo');
+            }
+            if (!dadosCandidato.cpf?.trim()) {
+                camposObrigatorios.push('CPF');
+            }
+            if (!dadosCandidato.email?.trim()) {
+                camposObrigatorios.push('E-mail');
+            }
+            if (!dadosCandidato.telefone?.trim()) {
+                camposObrigatorios.push('Telefone');
+            }
+            if (!dadosCandidato.dt_nascimento) {
+                camposObrigatorios.push('Data de nascimento');
+            }
+
+            // Validação de campos obrigatórios baseada nos documentos
+            if (dadosCandidato.documentos && Array.isArray(dadosCandidato.documentos)) {
+                const camposRequeridos = {};
+                
+                // Coleta todos os campos requeridos dos documentos
+                dadosCandidato.documentos.forEach(documento => {
+                    if (documento.campos_requeridos) {
+                        let camposObj = documento.campos_requeridos;
+                        if (typeof camposObj === 'string') {
+                            try {
+                                camposObj = JSON.parse(camposObj);
+                            } catch (error) {
+                                return;
+                            }
+                        }
+                        
+                        Object.entries(camposObj).forEach(([campo, obrigatorio]) => {
+                            if (obrigatorio === true) {
+                                camposRequeridos[campo] = true;
+                            }
+                        });
+                    }
+                });
+
+                // Valida os campos requeridos
+                const nomesCampos = {
+                    identidade: 'Identidade (RG)',
+                    uf_identidade: 'UF da Identidade',
+                    orgao_emissor_ident: 'Órgão Emissor da Identidade',
+                    data_emissao_ident: 'Data de Emissão da Identidade',
+                    titulo_eleitor: 'Título de Eleitor',
+                    zona_titulo_eleitor: 'Zona do Título',
+                    secao_titulo_eleitor: 'Seção do Título',
+                    data_titulo_eleitor: 'Data do Título',
+                    estado_emissor_tit_eleitor: 'Estado Emissor do Título',
+                    carteira_trabalho: 'CTPS',
+                    serie_carteira_trab: 'Série da CTPS',
+                    uf_carteira_trab: 'UF da CTPS',
+                    data_emissao_ctps: 'Data de Emissão da CTPS',
+                    data_venc_ctps: 'Data de Vencimento da CTPS',
+                    carteira_motorista: 'Carteira de Motorista',
+                    tipo_carteira_habilit: 'Tipo da Carteira de Habilitação',
+                    data_venc_habilit: 'Data de Vencimento da Habilitação',
+                    data_emissao_cnh: 'Data de Emissão da CNH',
+                    pispasep: 'PIS/PASEP',
+                    dt_opcao_fgts: 'Data de Opção FGTS',
+                    codigo_situacao_fgts: 'Código Situação FGTS'
+                };
+
+                Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {
+                    if (obrigatorio && !dadosCandidato[campo]?.toString().trim()) {
+                        const nomeCampo = nomesCampos[campo] || campo;
+                        if (!camposObrigatorios.includes(nomeCampo)) {
+                            camposObrigatorios.push(nomeCampo);
+                        }
+                    }
+                });
+            }
+        } else if (activeIndex === 2) { // Step Dados Bancários
+            // Validação de dados bancários obrigatórios
+            if (!candidato.banco?.trim()) {
+                camposObrigatorios.push('Banco');
+            }
+            if (!candidato.agencia?.trim()) {
+                camposObrigatorios.push('Agência');
+            }
+            if (!candidato.conta_corrente?.trim()) {
+                camposObrigatorios.push('Conta corrente');
+            }
+        } else if (activeIndex === 3 && !self) { // Step Dados Contratuais (apenas se não for self)
+            // Validação de dados cadastrais obrigatórios
+            if (filiais && filiais.length > 0 && !dadosVaga.filial_id) {
+                camposObrigatorios.push('Filial');
+            }
+            if (departamentos && departamentos.length > 0 && !dadosVaga.departamento_id) {
+                camposObrigatorios.push('Departamento');
+            }
+            if (cargos && cargos.length > 0 && !dadosVaga.cargo_id) {
+                camposObrigatorios.push('Cargo');
+            }
+            if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
+                camposObrigatorios.push('Centro de custo');
+            }
+            if (!dadosVaga.salario?.trim()) {
+                camposObrigatorios.push('Salário');
+            }
+        }
+        
+        if (camposObrigatorios.length > 0) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Campos obrigatórios não preenchidos',
+                detail: `Os seguintes campos são obrigatórios: ${camposObrigatorios.join(', ')}`,
+                life: 5000
+            });
+            return false;
+        }
+        
+        return true;
+    };
+
     // Função para validar campos obrigatórios dos dados pessoais
     const validarCamposObrigatorios = () => {
         const dadosCandidato = candidato || {};
@@ -1629,6 +1763,13 @@ const CandidatoRegistro = () => {
     };
 
     const handleAvancar = () => {
+        // Validação apenas para o step de documentos (step 0)
+        if (activeIndex === 0) {
+            // Validação de documentos
+            const validacaoDocumentos = validarDocumentos();
+            if (!validacaoDocumentos) return;
+        }
+        
         stepperRef.current.nextCallback();
         setActiveIndex(prev => prev + 1);
     };
