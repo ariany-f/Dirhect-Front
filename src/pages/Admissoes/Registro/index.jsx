@@ -1050,7 +1050,10 @@ const CandidatoRegistro = () => {
                 uf_identidade: candidatoAtual.uf_identidade,
                 orgao_emissor_ident: candidatoAtual.orgao_emissor_ident,
                 data_emissao_ident: candidatoAtual.data_emissao_ident,
-                numero_cartao_sus: candidatoAtual.numero_cartao_sus,
+                pispasep: candidatoAtual.pispasep,
+                dt_opcao_fgts: candidatoAtual.dt_opcao_fgts,
+                codigo_situacao_fgts: candidatoAtual.codigo_situacao_fgts,
+                numero_cartao_sus: candidatoAtual.nrosus,
                 certificado_reservista: candidatoAtual.certificado_reservista,
                 numero_passaporte: candidatoAtual.numero_passaporte,
                 data_emissao_passaporte: candidatoAtual.data_emissao_passaporte,
@@ -1399,6 +1402,65 @@ const CandidatoRegistro = () => {
             if (!dadosVaga.salario?.trim()) {
                 camposObrigatorios.push('Salário');
             }
+        }
+
+        // Validação de campos obrigatórios baseada nos documentos
+        if (dadosCandidato.documentos && Array.isArray(dadosCandidato.documentos)) {
+            const camposRequeridos = {};
+            
+            // Coleta todos os campos requeridos dos documentos
+            dadosCandidato.documentos.forEach(documento => {
+                if (documento.campos_requeridos) {
+                    let camposObj = documento.campos_requeridos;
+                    if (typeof camposObj === 'string') {
+                        try {
+                            camposObj = JSON.parse(camposObj);
+                        } catch (error) {
+                            return;
+                        }
+                    }
+                    
+                    Object.entries(camposObj).forEach(([campo, obrigatorio]) => {
+                        if (obrigatorio === true) {
+                            camposRequeridos[campo] = true;
+                        }
+                    });
+                }
+            });
+
+            // Valida os campos requeridos
+            const nomesCampos = {
+                identidade: 'Identidade (RG)',
+                uf_identidade: 'UF da Identidade',
+                orgao_emissor_ident: 'Órgão Emissor da Identidade',
+                data_emissao_ident: 'Data de Emissão da Identidade',
+                titulo_eleitor: 'Título de Eleitor',
+                zona_titulo_eleitor: 'Zona do Título',
+                secao_titulo_eleitor: 'Seção do Título',
+                data_titulo_eleitor: 'Data do Título',
+                estado_emissor_tit_eleitor: 'Estado Emissor do Título',
+                carteira_trabalho: 'CTPS',
+                serie_carteira_trab: 'Série da CTPS',
+                uf_carteira_trab: 'UF da CTPS',
+                data_emissao_ctps: 'Data de Emissão da CTPS',
+                data_venc_ctps: 'Data de Vencimento da CTPS',
+                carteira_motorista: 'Carteira de Motorista',
+                tipo_carteira_habilit: 'Tipo da Carteira de Habilitação',
+                data_venc_habilit: 'Data de Vencimento da Habilitação',
+                data_emissao_cnh: 'Data de Emissão da CNH',
+                pispasep: 'PIS/PASEP',
+                dt_opcao_fgts: 'Data de Opção FGTS',
+                codigo_situacao_fgts: 'Código Situação FGTS'
+            };
+
+            Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {
+                if (obrigatorio && !dadosCandidato[campo]?.toString().trim()) {
+                    const nomeCampo = nomesCampos[campo] || campo;
+                    if (!camposObrigatorios.includes(nomeCampo)) {
+                        camposObrigatorios.push(nomeCampo);
+                    }
+                }
+            });
         }
         
         if (camposObrigatorios.length > 0) {
