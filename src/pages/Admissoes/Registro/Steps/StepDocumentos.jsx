@@ -170,13 +170,13 @@ const StepDocumentos = ({ toast }) => {
         if (arquivo instanceof File) return '';
         
         // Se já contém a URL completa, retorna como está
-        if (arquivo.includes('dirhect.net')) {
+        if (arquivo.includes(import.meta.env.VITE_API_BASE_DOMAIN)) {
             return arquivo;
         }
         
         // Remove a primeira barra se existir
         const caminhoLimpo = arquivo.startsWith('/') ? arquivo.substring(1) : arquivo;
-        return `https://dirhect.dirhect.net/${caminhoLimpo}`;
+        return `https://dirhect.${import.meta.env.VITE_API_BASE_DOMAIN}/${caminhoLimpo}`;
     };
 
     return (
