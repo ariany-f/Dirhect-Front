@@ -157,8 +157,13 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
     {
         let valorCampo = evento.target.files ? evento.target.files[0] : evento.target.value;
     
+        // Garante que valorCampo seja uma string válida
+        if (typeof valorCampo !== 'string') {
+            valorCampo = String(valorCampo || '');
+        }
+    
         // Verifica se há limite de caracteres e se o valor excede
-        if (maxCaracteres && typeof valorCampo === 'string' && valorCampo.length > maxCaracteres) {
+        if (maxCaracteres && valorCampo.length > maxCaracteres) {
             return; // Não permite digitar mais caracteres
         }
     
@@ -301,7 +306,7 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                 <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on" maxLength={maxCaracteres}></Campo>
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&
-                    <small>{`${valor?.length}/${numeroCaracteres}`}</small>
+                    <small>{`${(valor && typeof valor === 'string' ? valor.length : 0)}/${numeroCaracteres}`}</small>
                 }
                 {classeCampoVazio.includes(name)?
                     <p className={styles.erroMessage}>Você deve preencher esse campo</p>
