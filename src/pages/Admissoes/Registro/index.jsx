@@ -1342,7 +1342,7 @@ const CandidatoRegistro = () => {
         if (documentosNaoObrigatoriosPendentes.length > 0) {
             return new Promise((resolve) => {
                 confirmDialog({
-                    message: `Os seguintes documentos não obrigatórios estão pendentes: ${documentosNaoObrigatoriosPendentes.join(', ')}. Deseja continuar mesmo assim?`,
+                    message: ` Os seguintes documentos não obrigatórios estão pendentes: ${documentosNaoObrigatoriosPendentes.join(', ')}. Deseja continuar mesmo assim?`,
                     header: 'Confirmação',
                     icon: 'pi pi-exclamation-triangle',
                     acceptLabel: 'Sim, continuar',
