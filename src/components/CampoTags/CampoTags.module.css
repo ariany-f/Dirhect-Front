@@ -1,0 +1,18 @@
+/* Estilos específicos para o componente CampoTags */
+.container {
+    position: relative;
+    width: 100%;
+}
+
+.inputContainer {
+    position: relative;
+    width: 100%;
+}
+
+.errorMessage {
+    color: var(--error);
+    font-size: 12px;
+    margin-top: 4px;
+    margin-bottom: 0;
+    min-height: 16px;
+} 

@@ -80,6 +80,31 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
     const opcoesEstadoCivil = useMemo(() => formatarOpcoesDominio(opcoesDominio.estado_civil), [opcoesDominio.estado_civil, formatarOpcoesDominio]);
     const opcoesNacionalidade = useMemo(() => formatarOpcoesDominio(opcoesDominio.nacionalidade), [opcoesDominio.nacionalidade, formatarOpcoesDominio]);
 
+    // Função para verificar se um campo é obrigatório baseado nos documentos
+    const isCampoObrigatorio = useMemo(() => {
+        return (campo) => {
+            if (!candidato?.documentos || !Array.isArray(candidato.documentos)) {
+                return false;
+            }
+            
+            return candidato.documentos.some(documento => {
+                if (!documento.campos_requeridos) return false;
+                
+                // Se for string, tenta fazer parse
+                let camposObj = documento.campos_requeridos;
+                if (typeof camposObj === 'string') {
+                    try {
+                        camposObj = JSON.parse(camposObj);
+                    } catch (error) {
+                        return false;
+                    }
+                }
+                
+                return camposObj[campo] === true;
+            });
+        };
+    }, [candidato?.documentos]);
+
     console.log(candidato)
 
     // Verifica se o nome do pai é "DESCONHECIDO" e ativa o switch automaticamente
@@ -226,11 +251,27 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                name="dt_opcao_fgts"
+                valor={candidato?.dt_opcao_fgts ?? ''}
+                setValor={valor => setCampo('dt_opcao_fgts', valor)}
+                type="date"
+                label={`Data de Opção FGTS${isCampoObrigatorio('dt_opcao_fgts') ? '*' : ''}`}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="codigo_situacao_fgts"
+                label={`Código Situação FGTS${isCampoObrigatorio('codigo_situacao_fgts') ? '*' : ''}`}
+                valor={getValorSelecionadoFromCandidato('codigo_situacao_fgts', opcoesDominio.codigo_situacao_fgts || [])}
+                setValor={(valor) => setCampo('codigo_situacao_fgts', valor.code)}
+                options={formatarOpcoesDominio(opcoesDominio.codigo_situacao_fgts || [])}
+                disabled={modoLeitura}
+            />
+            <CampoTexto
                 name="carteira_trabalho"
                 valor={candidato?.carteira_trabalho ?? ''}
                 setValor={valor => setCampo('carteira_trabalho', valor)}
                 patternMask="9999999"
-                label="CTPS"
+                label={`CTPS${isCampoObrigatorio('carteira_trabalho') ? '*' : ''}`}
                 placeholder="Digite o número da carteira"
                 disabled={modoLeitura}
             />
@@ -239,13 +280,13 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 valor={candidato?.serie_carteira_trab ?? ''}
                 setValor={valor => setCampo('serie_carteira_trab', valor)}
                 patternMask="999999"
-                label="Série da CTPS"
+                label={`Série da CTPS${isCampoObrigatorio('serie_carteira_trab') ? '*' : ''}`}
                 placeholder="Digite a série"
                 disabled={modoLeitura}
             />
             <DropdownItens
                 name="uf_carteira_trab"
-                label="UF da CTPS"
+                label={`UF da CTPS${isCampoObrigatorio('uf_carteira_trab') ? '*' : ''}`}
                 valor={getEstadoFormatado('uf_carteira_trab')}
                 setValor={valor => setCampo('uf_carteira_trab', valor.code)}
                 options={estados}
@@ -258,7 +299,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 valor={candidato?.data_emissao_ctps ?? ''}
                 setValor={valor => setCampo('data_emissao_ctps', valor)}
                 type="date"
-                label="Data de Emissão da CTPS"
+                label={`Data de Emissão da CTPS${isCampoObrigatorio('data_emissao_ctps') ? '*' : ''}`}
                 disabled={modoLeitura}
             />
             <CampoTexto
@@ -266,7 +307,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 valor={candidato?.carteira_motorista ?? ''}
                 setValor={valor => setCampo('carteira_motorista', valor)}
                 patternMask="99999999999"
-                label="Carteira de Motorista"
+                label={`Carteira de Motorista${isCampoObrigatorio('carteira_motorista') ? '*' : ''}`}
                 placeholder="Digite o número da CNH"
                 disabled={modoLeitura}
             />
@@ -275,15 +316,51 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 valor={candidato?.data_emissao_cnh ?? ''}
                 setValor={valor => setCampo('data_emissao_cnh', valor)}
                 type="date"
-                label="Data de Emissão da CNH"
+                label={`Data de Emissão da CNH${isCampoObrigatorio('data_emissao_cnh') ? '*' : ''}`}
                 disabled={modoLeitura}
             />
             <CampoTexto
                 name="tipo_carteira_habilit"
                 valor={candidato?.tipo_carteira_habilit ?? ''}
                 setValor={valor => setCampo('tipo_carteira_habilit', valor)}
-                label="Tipo da Carteira de Habilitação"
+                label={`Tipo da Carteira de Habilitação${isCampoObrigatorio('tipo_carteira_habilit') ? '*' : ''}`}
                 placeholder="Ex: A, B, C, D, E"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                camposVazios={isCampoObrigatorio('identidade') && classError.includes('identidade') ? ['identidade'] : []}
+                name="identidade"
+                valor={candidato?.identidade ?? ''}
+                setValor={valor => setCampo('identidade', valor)}
+                patternMask="999999999"
+                label={`Identidade (RG)${isCampoObrigatorio('identidade') ? '*' : ''}`}
+                placeholder="Digite o número do RG"
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="uf_identidade"
+                label={`UF da Identidade${isCampoObrigatorio('uf_identidade') ? '*' : ''}`}
+                valor={getEstadoFormatado('uf_identidade')}
+                setValor={valor => setCampo('uf_identidade', valor.code)}
+                options={estados}
+                placeholder="Selecione a UF"
+                disabled={modoLeitura}
+                filter
+            />
+            <CampoTexto
+                name="orgao_emissor_ident"
+                valor={candidato?.orgao_emissor_ident ?? ''}
+                setValor={valor => setCampo('orgao_emissor_ident', valor)}
+                label={`Órgão Emissor da Identidade${isCampoObrigatorio('orgao_emissor_ident') ? '*' : ''}`}
+                placeholder="Ex: SSP, DETRAN"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="data_emissao_ident"
+                valor={candidato?.data_emissao_ident ?? ''}
+                setValor={valor => setCampo('data_emissao_ident', valor)}
+                type="date"
+                label={`Data de Emissão da Identidade${isCampoObrigatorio('data_emissao_ident') ? '*' : ''}`}
                 disabled={modoLeitura}
             />
             <CampoTexto
@@ -294,6 +371,51 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 label="Número do Cartão SUS"
                 placeholder="Digite o número do cartão SUS"
                 disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="titulo_eleitor"
+                valor={candidato?.titulo_eleitor ?? ''}
+                setValor={valor => setCampo('titulo_eleitor', valor)}
+                patternMask="999999999999"
+                label={`Título de Eleitor${isCampoObrigatorio('titulo_eleitor') ? '*' : ''}`}
+                placeholder="Digite o número do título"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="zona_titulo_eleitor"
+                valor={candidato?.zona_titulo_eleitor ?? ''}
+                setValor={valor => setCampo('zona_titulo_eleitor', valor)}
+                patternMask="999"
+                label={`Zona do Título${isCampoObrigatorio('zona_titulo_eleitor') ? '*' : ''}`}
+                placeholder="Digite a zona"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="secao_titulo_eleitor"
+                valor={candidato?.secao_titulo_eleitor ?? ''}
+                setValor={valor => setCampo('secao_titulo_eleitor', valor)}
+                patternMask="9999"
+                label={`Seção do Título${isCampoObrigatorio('secao_titulo_eleitor') ? '*' : ''}`}
+                placeholder="Digite a seção"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="data_titulo_eleitor"
+                valor={candidato?.data_titulo_eleitor ?? ''}
+                setValor={valor => setCampo('data_titulo_eleitor', valor)}
+                type="date"
+                label={`Data do Título${isCampoObrigatorio('data_titulo_eleitor') ? '*' : ''}`}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="estado_emissor_tit_eleitor"
+                label={`Estado Emissor do Título${isCampoObrigatorio('estado_emissor_tit_eleitor') ? '*' : ''}`}
+                valor={getEstadoFormatado('estado_emissor_tit_eleitor')}
+                setValor={valor => setCampo('estado_emissor_tit_eleitor', valor.code)}
+                options={estados}
+                placeholder="Selecione o estado"
+                disabled={modoLeitura}
+                filter
             />
             <DropdownItens
                 name="genero"
