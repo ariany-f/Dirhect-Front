@@ -223,6 +223,8 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
             <CampoTexto
                 name="conta_corrente"
                 valor={candidato?.conta_corrente ?? ''}
+                numeroCaracteres={10}
+                maxCaracteres={10}
                 setValor={valor => setCampo('conta_corrente', valor)}
                 label="Número da Conta"
                 placeholder="Digite o número da conta (com dígito)"

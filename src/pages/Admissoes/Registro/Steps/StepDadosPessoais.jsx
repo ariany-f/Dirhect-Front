@@ -206,6 +206,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 label="Nome"
                 placeholder="Digite o nome"
                 disabled={modoLeitura}
+                maxCaracteres={100}
             />
             <CampoTexto
                 camposVazios={classError}

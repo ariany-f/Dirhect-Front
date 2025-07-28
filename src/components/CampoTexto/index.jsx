@@ -129,7 +129,7 @@ const CampoArea = styled(InputTextarea)`
     }
 `
 
-function CampoTexto({ marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
+function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -156,6 +156,11 @@ function CampoTexto({ marginTop = null, validateError = true, label, disabled = 
     function changeValor(evento, patternMask)
     {
         let valorCampo = evento.target.files ? evento.target.files[0] : evento.target.value;
+    
+        // Verifica se há limite de caracteres e se o valor excede
+        if (maxCaracteres && typeof valorCampo === 'string' && valorCampo.length > maxCaracteres) {
+            return; // Não permite digitar mais caracteres
+        }
     
         if(patternMask.length > 0 && type !== 'file')
         {
@@ -268,6 +273,7 @@ function CampoTexto({ marginTop = null, validateError = true, label, disabled = 
                     $width={width}
                     className={(classeCampoVazio.includes(name) ? 'error' : '')}
                     placeholder={placeholder}
+                    maxLength={maxCaracteres}
                 />
                 {numeroCaracteres &&
                     <div style={{ fontSize: '12px',display: 'flex', justifyContent: 'end', width: '100%'}} >{caracteresDigitados}/{numeroCaracteres}</div>
@@ -292,12 +298,20 @@ function CampoTexto({ marginTop = null, validateError = true, label, disabled = 
                 {label &&
                     <label htmlFor={name} className={styles.label} style={{ marginBottom: '4px', display: 'block' }}>{label}</label>
                 }
-                <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on"></Campo>
+                <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on" maxLength={maxCaracteres}></Campo>
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&
                     <small>{`${valor?.length}/${numeroCaracteres}`}</small>
                 }
-                {(erro ? <p className={styles.erroMessage}>{erro}</p> : <p className={styles.erroMessage}>&nbsp;</p>)}
+                {classeCampoVazio.includes(name)?
+                    <p className={styles.erroMessage}>Você deve preencher esse campo</p>
+                    : (erro ?
+                        <p className={styles.erroMessage}>{erro}</p>
+                        : (validateError && 
+                            <p className={styles.erroMessage}>&nbsp;</p>
+                        )
+                    )
+                }
             </div>
         </div>
     )
