@@ -260,14 +260,6 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 label={`Data de Opção FGTS${isCampoObrigatorio('dt_opcao_fgts') ? '*' : ''}`}
                 disabled={modoLeitura}
             />
-            <DropdownItens
-                name="codigo_situacao_fgts"
-                label={`Código Situação FGTS${isCampoObrigatorio('codigo_situacao_fgts') ? '*' : ''}`}
-                valor={getValorSelecionadoFromCandidato('codigo_situacao_fgts', opcoesDominio.codigo_situacao_fgts || [])}
-                setValor={(valor) => setCampo('codigo_situacao_fgts', valor.code)}
-                options={formatarOpcoesDominio(opcoesDominio.codigo_situacao_fgts || [])}
-                disabled={modoLeitura}
-            />
             <CampoTexto
                 name="carteira_trabalho"
                 valor={candidato?.carteira_trabalho ?? ''}
