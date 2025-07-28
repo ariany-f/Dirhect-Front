@@ -88,7 +88,8 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
             }
             
             return candidato.documentos.some(documento => {
-                if (!documento.campos_requeridos) return false;
+                // Só considera campos requeridos se o documento for obrigatório
+                if (!documento.obrigatorio || !documento.campos_requeridos) return false;
                 
                 // Se for string, tenta fazer parse
                 let camposObj = documento.campos_requeridos;

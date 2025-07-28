@@ -1389,7 +1389,8 @@ const CandidatoRegistro = () => {
                 
                 // Coleta todos os campos requeridos dos documentos
                 dadosCandidato.documentos.forEach(documento => {
-                    if (documento.campos_requeridos) {
+                    // Só valida campos se o documento for obrigatório
+                    if (documento.obrigatorio === true && documento.campos_requeridos) {
                         let camposObj = documento.campos_requeridos;
                         if (typeof camposObj === 'string') {
                             try {
@@ -1544,7 +1545,8 @@ const CandidatoRegistro = () => {
             
             // Coleta todos os campos requeridos dos documentos
             dadosCandidato.documentos.forEach(documento => {
-                if (documento.campos_requeridos) {
+                // Só valida campos se o documento for obrigatório
+                if (documento.obrigatorio === true && documento.campos_requeridos) {
                     let camposObj = documento.campos_requeridos;
                     if (typeof camposObj === 'string') {
                         try {
