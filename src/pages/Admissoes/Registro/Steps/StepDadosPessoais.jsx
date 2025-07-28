@@ -329,6 +329,14 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                name="data_venc_habilit"
+                valor={candidato?.data_venc_habilit ?? ''}
+                setValor={valor => setCampo('data_venc_habilit', valor)}
+                type="date"
+                label={`Data de Vencimento da CNH${isCampoObrigatorio('data_venc_habilit') ? '*' : ''}`}
+                disabled={modoLeitura}
+            />
+            <CampoTexto
                 camposVazios={isCampoObrigatorio('identidade') && classError.includes('identidade') ? ['identidade'] : []}
                 name="identidade"
                 valor={candidato?.identidade ?? ''}
