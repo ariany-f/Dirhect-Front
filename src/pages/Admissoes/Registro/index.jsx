@@ -1017,9 +1017,7 @@ const CandidatoRegistro = () => {
                 
                 // Dados pessoais
                 nome_mae: candidatoAtual.nome_mae,
-                sobrenome_mae: candidatoAtual.sobrenome_mae,
                 nome_pai: candidatoAtual.nome_pai,
-                sobrenome_pai: candidatoAtual.sobrenome_pai,
                 naturalidade: candidatoAtual.naturalidade,
                 estado_natal: candidatoAtual.estado_natal,
                 nacionalidade: candidatoAtual.nacionalidade,

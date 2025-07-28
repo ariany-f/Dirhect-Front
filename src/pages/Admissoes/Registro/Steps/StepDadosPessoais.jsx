@@ -485,16 +485,6 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 placeholder="Digite o nome da mãe"
                 disabled={modoLeitura}
             />
-            <CampoTexto
-                camposVazios={classError}
-                name="sobrenome_mae"
-                valor={candidato?.sobrenome_mae ?? ''}
-                setValor={valor => setCampo('sobrenome_mae', valor)}
-                type="text"
-                label="Sobrenome da Mãe *"
-                placeholder="Digite o sobrenome da mãe"
-                disabled={modoLeitura}
-            />
             
             {/* Pai - Com switch para desconhecido */}
             <div style={{ 
@@ -510,10 +500,8 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                         setCampo('pai_desconhecido', value);
                         if (value) {
                             setCampo('nome_pai', 'DESCONHECIDO');
-                            setCampo('sobrenome_pai', 'DESCONHECIDO');
                         } else {
                             setCampo('nome_pai', '');
-                            setCampo('sobrenome_pai', '');
                         }
                     }}
                     disabled={modoLeitura}
@@ -535,15 +523,6 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 type="text"
                 label="Nome do Pai"
                 placeholder="Digite o nome do pai"
-                disabled={modoLeitura || candidato?.pai_desconhecido}
-            />
-            <CampoTexto
-                name="sobrenome_pai"
-                valor={candidato?.sobrenome_pai ?? ''}
-                setValor={valor => setCampo('sobrenome_pai', valor)}
-                type="text"
-                label="Sobrenome do Pai"
-                placeholder="Digite o sobrenome do pai"
                 disabled={modoLeitura || candidato?.pai_desconhecido}
             />
             
