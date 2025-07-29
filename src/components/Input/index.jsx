@@ -86,7 +86,7 @@ const Input = ({
         if (mask) {
           defaultRules.validate = (value) => {
             const maskRequiredChars = mask.split('').filter(c => c === '9' || c === 'A' || c === 'a');
-            const valueChars = value ? value.replace(/[^0-9a-zA-Z]/g, '') : '';
+            const valueChars = (value && typeof value === 'string') ? value.replace(/[^0-9a-zA-Z]/g, '') : '';
             return (
               valueChars.length >= maskRequiredChars.length || 
               'Preencha todos os campos obrigatórios'

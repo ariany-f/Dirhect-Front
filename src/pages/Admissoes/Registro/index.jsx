@@ -1170,9 +1170,9 @@ const CandidatoRegistro = () => {
                     const dependentesUnicos = dependentesNovos.filter((dep, index, arr) => {
                         if (!dep.cpf) return true;
                         
-                        const cpfLimpo = dep.cpf.replace(/\D/g, '');
+                        const cpfLimpo = (dep.cpf && typeof dep.cpf === 'string') ? dep.cpf.replace(/\D/g, '') : '';
                         const primeiroIndex = arr.findIndex(d => 
-                            d.cpf && d.cpf.replace(/\D/g, '') === cpfLimpo
+                            d.cpf && typeof d.cpf === 'string' && d.cpf.replace(/\D/g, '') === cpfLimpo
                         );
                         
                         return index === primeiroIndex;
