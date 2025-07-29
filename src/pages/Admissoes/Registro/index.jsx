@@ -2691,7 +2691,7 @@ const CandidatoRegistro = () => {
                 </div>
             )}
 
-            <div style={{ paddingBottom: '80px' }} className={modoLeitura ? 'modo-leitura' : ''}> {/* Espaço para o footer fixo */}
+            <div className={modoLeitura ? 'modo-leitura' : ''}> {/* Espaço para o footer fixo */}
                 <Stepper 
                     headerPosition="top" 
                     ref={stepperRef} 
