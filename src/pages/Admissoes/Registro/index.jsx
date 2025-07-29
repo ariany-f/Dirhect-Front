@@ -1306,15 +1306,11 @@ const CandidatoRegistro = () => {
                 });
                 return;
             }
-
-            await http.post(`tarefas/${tarefa.id}/concluir/`);
-            
-            toast.current.show({
-                severity: 'success',
-                summary: 'Sucesso',
-                detail: 'Tarefa concluída com sucesso!',
-                life: 3000
-            });
+            if(tarefa.status === 'pendente'){
+                await http.post(`tarefas/${tarefa.id}/aprovar/`);
+            } else if (tarefa.status === 'em_andamento') {
+                await http.post(`tarefas/${tarefa.id}/concluir/`);
+            }
 
             // Atualiza o estado local da tarefa
             const novasTarefas = candidato.tarefas.map(t => {
