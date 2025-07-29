@@ -164,8 +164,6 @@ const VagasRegistro = () => {
             { campo: salario, nome: 'salario' },
             { campo: qtdVagas, nome: 'qtd_vaga' },
             { campo: filial, nome: 'Filial' },
-            { campo: departamento, nome: 'Departamento' },
-            { campo: cargo, nome: 'Cargo' },
             { campo: horario, nome: 'horario' }
         ];
 
