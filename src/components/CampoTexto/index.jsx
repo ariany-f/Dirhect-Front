@@ -173,16 +173,35 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
             {
                 if(valorCampo.length > 0)
                 {
-                    setValor(currency.mask({ locale: 'pt-BR', currency: 'BRL', value: currency.unmask({ locale: 'pt-BR', currency: 'BRL', value: valorCampo }) }), evento.target.name)
+                    try {
+                        const valorUnmasked = currency.unmask({ locale: 'pt-BR', currency: 'BRL', value: valorCampo });
+                        setValor(currency.mask({ locale: 'pt-BR', currency: 'BRL', value: valorUnmasked }), evento.target.name);
+                    } catch (error) {
+                        console.error('Erro ao processar valor BRL:', error);
+                        setValor(valorCampo, evento.target.name);
+                    }
                 }
                 else
                 {
-                    setValor(currency.mask({ locale: 'pt-BR', currency: 'BRL', value: currency.unmask({ locale: 'pt-BR', currency: 'BRL', value: 0 }) }), evento.target.name)
+                    try {
+                        setValor(currency.mask({ locale: 'pt-BR', currency: 'BRL', value: currency.unmask({ locale: 'pt-BR', currency: 'BRL', value: 0 }) }), evento.target.name);
+                    } catch (error) {
+                        console.error('Erro ao processar valor BRL zero:', error);
+                        setValor('', evento.target.name);
+                    }
                 }
             }
             else
             {
-                setValor(masker(unMask(valorCampo), patternMask), evento.target.name)
+                try {
+                    // Garante que valorCampo seja uma string válida antes de usar unMask
+                    const valorString = typeof valorCampo === 'string' ? valorCampo : String(valorCampo || '');
+                    const valorUnmasked = unMask(valorString);
+                    setValor(masker(valorUnmasked, patternMask), evento.target.name);
+                } catch (error) {
+                    console.error('Erro ao processar máscara:', error);
+                    setValor(valorCampo, evento.target.name);
+                }
             }
         }
         else
@@ -242,20 +261,29 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
 
     useEffect(() => {
         if (valor && patternMask.length > 0 && type !== 'file') {
-            let valorFormatado;
-            if (patternMask === 'BRL') {
-                valorFormatado = currency.mask({ 
-                    locale: 'pt-BR', 
-                    currency: 'BRL', 
-                    value: currency.unmask({ locale: 'pt-BR', currency: 'BRL', value: valor }) 
-                });
-            } else {
-                valorFormatado = masker(unMask(valor), patternMask);
-            }
-            
-            // Só atualiza se o valor formatado for diferente do valor atual
-            if (valorFormatado !== valor) {
-                setValor(valorFormatado, name);
+            try {
+                let valorFormatado;
+                if (patternMask === 'BRL') {
+                    const valorUnmasked = currency.unmask({ locale: 'pt-BR', currency: 'BRL', value: valor });
+                    valorFormatado = currency.mask({ 
+                        locale: 'pt-BR', 
+                        currency: 'BRL', 
+                        value: valorUnmasked 
+                    });
+                } else {
+                    // Garante que valor seja uma string válida antes de usar unMask
+                    const valorString = typeof valor === 'string' ? valor : String(valor || '');
+                    const valorUnmasked = unMask(valorString);
+                    valorFormatado = masker(valorUnmasked, patternMask);
+                }
+                
+                // Só atualiza se o valor formatado for diferente do valor atual
+                if (valorFormatado !== valor) {
+                    setValor(valorFormatado, name);
+                }
+            } catch (error) {
+                console.error('Erro ao formatar valor no useEffect:', error);
+                // Não atualiza o valor se houver erro na formatação
             }
         }
     }, [valor, patternMask, type, name]); // Removido setValor das dependências
