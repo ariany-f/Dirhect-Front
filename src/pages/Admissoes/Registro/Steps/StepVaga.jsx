@@ -334,6 +334,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => setCampo('tipo_funcionario', valor.code)}
                 options={opcoesTipoFuncionario} 
                 disabled={modoLeitura}
+                filter
             />
             <DropdownItens
                 name="codigo_categoria_esocial"
@@ -342,6 +343,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => setCampo('codigo_categoria_esocial', valor.code)}
                 options={opcoesCodigoCategoriaESocial}
                 disabled={modoLeitura}
+                filter
             />
 
             <DropdownItens
@@ -369,6 +371,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => setCampo('tipo_situacao', valor.code)}
                 options={opcoesTipoSituacao}
                 disabled={modoLeitura}
+                filter
             />
 
             <DropdownItens
@@ -378,6 +381,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => setCampo('codigo_ocorrencia_sefip', valor.code)}
                 options={opcoesCodigoOcorrenciaSefip}
                 disabled={modoLeitura}
+                filter
             />
             <DropdownItens
                 name="codigo_categoria_sefip"
@@ -386,6 +390,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => setCampo('codigo_categoria_sefip', valor.code)}
                 options={opcoesCodigoCategoriaSefip}
                 disabled={modoLeitura}
+                filter
             />
             
             <DropdownItens
