@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
 import Container from '@components/Container'; // Importando o componente Container
 import Botao from '@components/Botao'; // Importando o componente Container
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useOutletContext } from 'react-router-dom';
 import styled from "styled-components"
 import http from '@http'
 import axios from "axios"
@@ -310,6 +310,45 @@ const ConteudoFrame = styled.div`
         margin-bottom: 10px;
     }
 
+
+    /* Para telas muito pequenas */
+    @media (min-resolution: 96dpi), (min-resolution: 1dppx) and (max-height: 600px) {
+        .custom-stepper {
+            height: 350px;
+        }
+        .responsive-scroll-panel {
+            height: 250px;
+            min-height: 200px;
+        }
+        .responsive-inner-scroll {
+            height: 210px;
+            min-height: 170px;
+        }
+    }
+
+    /* Para escala 100% com altura maior que 48vh */
+    @media (min-resolution: 96dpi), (min-resolution: 1dppx) {
+        .custom-stepper {
+            height: 470px;
+        }
+        .responsive-scroll-panel {
+            height: 50vh;
+            min-height: 50vh;
+        }
+    }
+
+    /* Para escala 100% com altura maior que 60vh */
+    @media (min-resolution: 96dpi), (min-resolution: 1dppx) and (min-height: 70vh) {
+        .custom-stepper {
+            height: 600px;
+        }
+        .responsive-scroll-panel {
+            height: 60vh;
+            min-height: 60vh;
+        }
+    }
+
+    
     /* Media query específica para detectar zoom/escala do Windows */
     @media (min-resolution: 120dpi), (min-resolution: 1.25dppx) {
         .custom-stepper {
@@ -341,21 +380,6 @@ const ConteudoFrame = styled.div`
             height: 240px;
             min-height: 210px;
             max-height: 240px;
-        }
-    }
-
-    /* Para telas muito pequenas */
-    @media (max-height: 600px) {
-        .custom-stepper {
-            height: 350px;
-        }
-        .responsive-scroll-panel {
-            height: 250px;
-            min-height: 200px;
-        }
-        .responsive-inner-scroll {
-            height: 210px;
-            min-height: 170px;
         }
     }
 `;
@@ -467,6 +491,7 @@ const CandidatoRegistro = () => {
 
     let { id, self = false } = useParams()
     const { candidato, setCandidato, admissao, setAdmissao, vaga, setVaga } = useCandidatoContext()
+    const { sidebarOpened } = useOutletContext() || { sidebarOpened: true }
     const [classError, setClassError] = useState([])
     const stepperRef = useRef(null);
     const navegar = useNavigate()
@@ -1861,7 +1886,7 @@ const CandidatoRegistro = () => {
             <div style={{
                 position: 'fixed',
                 bottom: 0,
-                left: '248px', // Ajustado para não sobrepor a sidebar (assumindo largura padrão de sidebar)
+                left: sidebarOpened ? '248px' : '0px', // Ajusta dinamicamente baseado no estado da sidebar
                 right: 0,
                 background: '#fff',
                 borderTop: '1px solid #e0e0e0',
@@ -1870,7 +1895,8 @@ const CandidatoRegistro = () => {
                 zIndex: 1000,
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                transition: 'left 0.3s ease' // Adiciona transição suave
             }}>
                 <div style={{ display: 'flex', gap: 12 }}>
                     {/* Botão Voltar - em todos os steps exceto o primeiro */}

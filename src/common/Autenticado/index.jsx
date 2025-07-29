@@ -224,7 +224,7 @@ function Autenticado() {
                 <MainContainer aoClicar={fechaMenu} align="flex-start" padding="0 0 0 0">
                     <Cabecalho sidebarOpened={sidebarOpened} setSidebarOpened={setSidebarOpened} setMenuOpened={toggleMenu} menuOpened={menuOpened} aoClicar={selectCompany} nomeEmpresa={empresa ? empresa.toUpperCase() : ''} simbolo={simbolo} logo={logo} />
                     <MarginContainer>
-                        <Outlet key={empresa} />
+                        <Outlet key={empresa} context={{ sidebarOpened }} />
                     </MarginContainer>
                     {!isDesktop && <BottomMenu />}
                 </MainContainer>
