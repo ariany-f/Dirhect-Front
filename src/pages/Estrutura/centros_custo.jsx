@@ -58,17 +58,13 @@ function CentrosCustoLista() {
         const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '';
         http.get(`centro_custo/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
+                console.log(response)
                 setCentrosCusto(response.results)
                 setTotalRecords(response.count)
                 setTotalPages(response.total_pages)
             })
             .catch(erro => {
                 console.error('Erro ao carregar centros de custo:', erro)
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Erro ao carregar centros de custo'
-                })
             })
             .finally(() => {
                 setLoading(false)

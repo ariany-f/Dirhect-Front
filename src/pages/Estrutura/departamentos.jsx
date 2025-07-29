@@ -169,7 +169,8 @@ function DepartamentosLista() {
                 }
             </BotaoGrupo>
             
-            {departamentos && departamentos.length > 0 ?
+            {
+                
                 <DataTableDepartamentos 
                     departamentos={departamentos}
                     paginator={true}
@@ -183,14 +184,6 @@ function DepartamentosLista() {
                     sortOrder={sortOrder}
                     onSort={onSort}
                 />
-                :
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} alt="Sem departamentos" />
-                        <h6>Não há departamentos registrados</h6>
-                        <p>Aqui você verá todos os departamentos registrados.</p>
-                    </section>
-                </ContainerSemRegistro>
             }
         </ConteudoFrame>
         <ModalAdicionarDepartamento 

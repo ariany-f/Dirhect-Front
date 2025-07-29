@@ -137,7 +137,7 @@ function FuncoesLista() {
                 }
             </BotaoGrupo>
             {
-                funcoes && funcoes.length > 0 ?
+                
                     <DataTableFuncoes 
                         funcoes={funcoes}
                         paginator={true}
@@ -151,14 +151,6 @@ function FuncoesLista() {
                         sortOrder={sortOrder}
                         onSort={onSort}
                     />
-                :
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} />
-                        <h6>Não há funcoes registrados</h6>
-                        <p>Aqui você verá todos os funcoes registrados.</p>
-                    </section>
-                </ContainerSemRegistro>
             }
         </ConteudoFrame>
         <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />

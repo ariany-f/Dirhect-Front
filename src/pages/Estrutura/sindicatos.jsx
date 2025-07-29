@@ -176,7 +176,6 @@ function SindicatosLista() {
                 }
             </BotaoGrupo>
             
-            {sindicatos && sindicatos.length > 0 ?
                 <DataTableSindicatos 
                     sindicatos={sindicatos}
                     paginator={true}
@@ -190,15 +189,6 @@ function SindicatosLista() {
                     sortOrder={sortOrder}
                     onSort={onSort}
                 />
-                :
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} alt="Sem sindicatos" />
-                        <h6>Não há sindicatos registrados</h6>
-                        <p>Aqui você verá todos os sindicatos registrados.</p>
-                    </section>
-                </ContainerSemRegistro>
-            }
         </ConteudoFrame>
         <ModalAdicionarSindicato 
             aoSalvar={adicionarSindicato} 

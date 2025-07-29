@@ -175,7 +175,6 @@ function SecoesLista() {
                 }
             </BotaoGrupo>
             
-            {secoes && secoes.length > 0 ?
                 <DataTableSecoes 
                     secoes={secoes}
                     paginator={true}
@@ -189,15 +188,6 @@ function SecoesLista() {
                     sortOrder={sortOrder}
                     onSort={onSort}
                 />
-                :
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} alt="Sem seções" />
-                        <h6>Não há seções registradas</h6>
-                        <p>Aqui você verá todas as seções registradas.</p>
-                    </section>
-                </ContainerSemRegistro>
-            }
         </ConteudoFrame>
         <ModalAdicionarSecao 
             aoSalvar={adicionarSecao} 

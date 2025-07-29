@@ -201,7 +201,7 @@ function DataTableHorarios({
                 {selected &&
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
-                <Column field="codigo" header="Código" sortable style={{ width: '15%' }}></Column>
+                <Column field="id_origem" header="Código" sortable style={{ width: '15%' }}></Column>
                 <Column field="descricao" header="Descrição" sortable style={{ width: '65%' }}></Column>
                 <Column field="jornada" header="Jornada" sortable style={{ width: '10%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>

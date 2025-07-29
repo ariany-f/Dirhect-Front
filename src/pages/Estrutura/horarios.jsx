@@ -155,7 +155,6 @@ function HorariosLista() {
                 }
             </BotaoGrupo>
             
-            {horarios && horarios.length > 0 ?
                 <DataTableHorarios 
                     horarios={horarios}
                     paginator={true}
@@ -169,15 +168,6 @@ function HorariosLista() {
                     sortOrder={sortOrder}
                     onSort={onSort}
                 />
-                :
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} alt="Sem horários" />
-                        <h6>Não há horários registrados</h6>
-                        <p>Aqui você verá todos os horários registrados.</p>
-                    </section>
-                </ContainerSemRegistro>
-            }
         </ConteudoFrame>
         <ModalAdicionarHorario aoSalvar={adicionarHorario} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />
         </>

@@ -88,6 +88,10 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
             )
         }
         else {
+            if(rowData?.cargo_origem_id){
+                return <p>{rowData?.cargo_origem_id}</p>
+            }
+            
             return <p>Não informado</p>
         }
     }
@@ -217,6 +221,7 @@ function DataTableFuncoes({ funcoes, showSearch = true, paginator = true, rows =
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
                 <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
+                <Column field="funcao_origem_id" header="Código" sortable style={{ width: '10%' }}></Column>
                 <Column field="nome" header="Nome" sortable style={{ width: '20%' }}></Column>
                 <Column field="cargo" header="Cargo" sortable style={{ width: '15%' }} body={representativeCargoTemplate}></Column>
                 <Column body={representativeDetalhesTemplate} field="descricao" header="Descrição" sortable style={{ width: '45%' }}></Column>

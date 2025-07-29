@@ -137,7 +137,6 @@ function CargosLista() {
                 }
             </BotaoGrupo>
             {
-                cargos && cargos.length > 0 ?
                     <DataTableCargos 
                         cargos={cargos}
                         paginator={true}
@@ -151,14 +150,7 @@ function CargosLista() {
                         sortOrder={sortOrder}
                         onSort={onSort}
                     />
-                :
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} />
-                        <h6>Não há cargos registrados</h6>
-                        <p>Aqui você verá todos os cargos registrados.</p>
-                    </section>
-                </ContainerSemRegistro>
+               
             }
         </ConteudoFrame>
         <ModalAdicionarDepartamento aoSalvar={() => true} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />

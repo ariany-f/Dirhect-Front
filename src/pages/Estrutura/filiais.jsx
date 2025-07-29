@@ -166,7 +166,6 @@ function FiliaisLista() {
             </BotaoGrupo>
             
             {
-                filiais && filiais.length > 0 ?
                 <DataTableFiliais 
                     filiais={filiais}
                     paginator={true}
@@ -180,14 +179,6 @@ function FiliaisLista() {
                     sortOrder={sortOrder}
                     onSort={onSort}
                 />
-                :
-                <ContainerSemRegistro>
-                    <section className={styles.container}>
-                        <img src={Management} />
-                        <h6>Não há filiais registradas</h6>
-                        <p>Aqui você verá todas as filiais registradas.</p>
-                    </section>
-                </ContainerSemRegistro>
             }
         </ConteudoFrame>
         <ModalAdicionarFilial aoSalvar={adicionarFilial} aoSucesso={toast} aoFechar={() => setModalOpened(false)} opened={modalOpened} />

@@ -184,6 +184,7 @@ function DataTableCargos({ cargos, showSearch = true, paginator = true, rows = 1
                     <Column selectionMode="multiple" style={{ width: '5%' }}></Column>
                 }
                 <Column field="id" header="Id" sortable style={{ width: '10%' }}></Column>
+                <Column field="id_origem" header="Código" sortable style={{ width: '10%' }}></Column>
                 <Column field="nome" header="Nome" sortable style={{ width: '30%' }}></Column>
                 <Column field="descricao" header="Descrição" sortable style={{ width: '30%' }}></Column>
                 <Column body={representativeActionsTemplate} header="" style={{ width: '10%' }}></Column>
