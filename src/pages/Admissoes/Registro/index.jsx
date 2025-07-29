@@ -1122,6 +1122,8 @@ const CandidatoRegistro = () => {
                 funcao_emprego_cargoacumulavel: candidatoAtual.funcao_emprego_cargoacumulavel,
                 tipo_recebimento: candidatoAtual.tipo_recebimento,
                 mensal: candidatoAtual.mensal,
+                calcula_inss: candidatoAtual.calcula_inss,
+                calcula_irrf: candidatoAtual.calcula_irrf,
                 horario: candidatoAtual.horario,
                 letra: candidatoAtual.letra,
                 contrato_tempo_parcial: candidatoAtual.contrato_tempo_parcial,

@@ -495,6 +495,18 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 onChange={(e) => setCampo('mensal', e.target.checked)}
                 disabled={modoLeitura}
             />
+            <CheckboxContainer
+                label="Calcula INSS"
+                checked={candidato.calcula_inss || false}
+                onChange={(e) => setCampo('calcula_inss', e.target.checked)}
+                disabled={modoLeitura}
+            />
+            <CheckboxContainer
+                label="Calcula IRRF"
+                checked={candidato.calcula_irrf || false}
+                onChange={(e) => setCampo('calcula_irrf', e.target.checked)}
+                disabled={modoLeitura}
+            />
         </GridContainer>
     );
 };
