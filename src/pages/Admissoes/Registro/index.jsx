@@ -2804,7 +2804,7 @@ const CandidatoRegistro = () => {
                         </StepperPanel>
                     )}
                     
-                    <StepperPanel header="Educação">
+                    <StepperPanel header="Escolaridade">
                         <ScrollPanel className="responsive-scroll-panel">
                             <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
                                 <ScrollPanel className="responsive-inner-scroll">
