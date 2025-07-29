@@ -515,7 +515,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 valor={candidato?.nome_mae ?? ''}
                 setValor={valor => setCampo('nome_mae', valor)}
                 type="text"
-                label="Nome da Mãe *"
+                label="Nome da Mãe"
                 placeholder="Digite o nome da mãe"
                 disabled={modoLeitura}
             />
