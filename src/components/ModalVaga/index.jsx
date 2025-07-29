@@ -15,6 +15,7 @@ const Col12 = styled.div`
     flex-wrap: wrap;
     justify-content: space-around;
     gap: 10px;
+    min-height: fit-content;
 `
 
 const Col6 = styled.div`
@@ -25,9 +26,11 @@ const Col6 = styled.div`
 const ModalContent = styled.div`
     display: flex;
     gap: 24px;
-    height: calc(100vh - 200px);
+    margin-top: 10px;
+    min-height: calc(100vh - 200px);
+    max-height: calc(100vh - 200px);
     overflow-y: auto;
-    padding: 0 24px;
+    padding: 5px 0px;
 `
 
 const Column = styled.div`
@@ -39,6 +42,7 @@ const Column = styled.div`
     background: var(--surface-card);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-height: fit-content;
 
     h6 {
         margin: 0;
