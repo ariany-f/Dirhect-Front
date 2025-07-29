@@ -318,7 +318,7 @@ const ConteudoFrame = styled.div`
         .responsive-scroll-panel {
             height: 330px; /* Altura menor para zoom 125% */
             min-height: 280px;
-            max-height: 330px;
+            max-height: 48vh;
         }
         .responsive-inner-scroll {
             height: 290px;
