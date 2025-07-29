@@ -1196,7 +1196,13 @@ const CandidatoRegistro = () => {
                             id_admissao: candidatoAtual.id,
                             genero: dep.genero || null,
                             estadocivil: dep.estadocivil || null,
-                            grau_parentesco: dep.grau_parentesco || null
+                            grau_parentesco: dep.grau_parentesco || null,
+                            incidencia_irrf: dep.incidencia_irrf || false,
+                            incidencia_inss: dep.incidencia_inss || false,
+                            incidencia_assist_medica: dep.incidencia_assist_medica || false,
+                            incidencia_assist_odonto: dep.incidencia_assist_odonto || false,
+                            incidencia_pensao: dep.incidencia_pensao || false,
+                            incidencia_sal_familia: dep.incidencia_sal_familia || false
                         }));
 
                         try {

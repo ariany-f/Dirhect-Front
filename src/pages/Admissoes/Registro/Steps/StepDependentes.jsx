@@ -236,7 +236,13 @@ const StepDependentes = ({ modoLeitura = false }) => {
                 nome_mae: dependente.nome_mae || null,
                 grau_parentesco: dependente.grau_parentesco,
                 genero_id_origem: dependente.genero_id_origem,
-                estado_civil_id_origem: dependente.estado_civil_id_origem
+                estado_civil_id_origem: dependente.estado_civil_id_origem,
+                incidencia_irrf: dependente.incidencia_irrf || false,
+                incidencia_inss: dependente.incidencia_inss || false,
+                incidencia_assist_medica: dependente.incidencia_assist_medica || false,
+                incidencia_assist_odonto: dependente.incidencia_assist_odonto || false,
+                incidencia_pensao: dependente.incidencia_pensao || false,
+                incidencia_sal_familia: dependente.incidencia_sal_familia || false
             };
 
             console.log('Salvando dependente:', dependenteParaEnviar);
@@ -306,7 +312,13 @@ const StepDependentes = ({ modoLeitura = false }) => {
             nrosus: '',
             nronascidovivo: '',
             genero_id_origem: '',
-            estado_civil_id_origem: ''
+            estado_civil_id_origem: '',
+            incidencia_irrf: false,
+            incidencia_inss: false,
+            incidencia_assist_medica: false,
+            incidencia_assist_odonto: false,
+            incidencia_pensao: false,
+            incidencia_sal_familia: false
         };
         const novosDependentes = [...(candidato.dependentes || []), novoDependente];
         const novoIndex = novosDependentes.length - 1;
@@ -624,6 +636,48 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                             />
                                             <CampoTexto label="Número SUS" valor={dependente.nrosus} setValor={v => handleUpdateDependente(id, 'nrosus', v)} disabled={modoLeitura || isSaved} />
                                             <CampoTexto label="Número Nascido Vivo" valor={dependente.nronascidovivo} setValor={v => handleUpdateDependente(id, 'nronascidovivo', v)} disabled={modoLeitura || isSaved} />
+                                        </FormGrid>
+                                    </div>
+                                    
+                                    <div style={{marginTop: '24px'}}>
+                                        <h4 style={sectionTitleStyle}>Incidências</h4>
+                                        <FormGrid>
+                                            <CheckboxContainer
+                                                label="Incidência IRRF"
+                                                valor={dependente.incidencia_irrf}
+                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_irrf', checked)}
+                                                disabled={modoLeitura || isSaved}
+                                            />
+                                            <CheckboxContainer
+                                                label="Incidência INSS"
+                                                valor={dependente.incidencia_inss}
+                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_inss', checked)}
+                                                disabled={modoLeitura || isSaved}
+                                            />
+                                            <CheckboxContainer
+                                                label="Incidência Assistência Médica"
+                                                valor={dependente.incidencia_assist_medica}
+                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_assist_medica', checked)}
+                                                disabled={modoLeitura || isSaved}
+                                            />
+                                            <CheckboxContainer
+                                                label="Incidência Assistência Odontológica"
+                                                valor={dependente.incidencia_assist_odonto}
+                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_assist_odonto', checked)}
+                                                disabled={modoLeitura || isSaved}
+                                            />
+                                            <CheckboxContainer
+                                                label="Incidência Pensão"
+                                                valor={dependente.incidencia_pensao}
+                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_pensao', checked)}
+                                                disabled={modoLeitura || isSaved}
+                                            />
+                                            <CheckboxContainer
+                                                label="Incidência Salário Família"
+                                                valor={dependente.incidencia_sal_familia}
+                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_sal_familia', checked)}
+                                                disabled={modoLeitura || isSaved}
+                                            />
                                         </FormGrid>
                                     </div>
                                     
