@@ -166,16 +166,67 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
             setInclusaoPara(vaga.inclusao_para || '');
             setPericulosidade(vaga.periculosidade ? listaPericulosidades.find(p => p.code === vaga.periculosidade) : '');
             setInsalubridade(vaga.insalubridade || '');
-            setFilial(vaga.filial_id ? { code: vaga.filial_id, name: filiais.find(f => f.id === vaga.filial_id)?.nome } : null);
-            setCentroCusto(vaga.centro_custo_id ? { code: vaga.centro_custo_id, name: centros_custo.find(cc => cc.id === vaga.centro_custo_id)?.nome } : null);
-            setDepartamento(vaga.departamento_id ? { code: vaga.departamento_id, name: departamentos.find(d => d.id === vaga.departamento_id)?.nome } : null);
-            setSecao(vaga.secao_id ? { code: vaga.secao_id, name: secoes.find(s => s.id === vaga.secao_id)?.nome } : null);
-            setCargo(vaga.cargo_id ? { code: vaga.cargo_id, name: cargos.find(c => c.id === vaga.cargo_id)?.nome } : null);
-            setHorario(vaga.horario_id ? { code: vaga.horario_id, name: horarios.find(h => h.id === vaga.horario_id)?.codigo + ' - ' + horarios.find(h => h.id === vaga.horario_id)?.descricao } : null);
-            setFuncao(vaga.funcao_id ? { code: vaga.funcao_id, name: funcoes.find(f => f.id === vaga.funcao_id)?.nome } : null);
-            setSindicato(vaga.sindicato_id ? { code: vaga.sindicato_id, name: sindicatos.find(s => s.id === vaga.sindicato_id)?.codigo + ' - ' + sindicatos.find(s => s.id === vaga.sindicato_id)?.descricao } : null);
+            
+            // Só definir os valores quando as listas estiverem carregadas
+            if (filiais.length > 0) {
+                setFilial(vaga.filial_id ? { code: vaga.filial_id, name: filiais.find(f => f.id === vaga.filial_id)?.id_origem + ' - ' + filiais.find(f => f.id === vaga.filial_id)?.nome || '' } : null);
+            }
+            if (centros_custo.length > 0) {
+                setCentroCusto(vaga.centro_custo_id ? { code: vaga.centro_custo_id, name: centros_custo.find(cc => cc.id === vaga.centro_custo_id)?.cc_origem + ' - ' + centros_custo.find(cc => cc.id === vaga.centro_custo_id)?.nome || '' } : null);
+            }
+            if (departamentos.length > 0) {
+                setDepartamento(vaga.departamento_id ? { code: vaga.departamento_id, name: departamentos.find(d => d.id === vaga.departamento_id)?.id_origem + ' - ' + departamentos.find(d => d.id === vaga.departamento_id)?.nome || '' } : null);
+            }
+            if (secoes.length > 0) {
+                setSecao(vaga.secao_id ? { code: vaga.secao_id, name: secoes.find(s => s.id === vaga.secao_id)?.id_origem + ' - ' + secoes.find(s => s.id === vaga.secao_id)?.nome || '' } : null);
+            }
+            if (cargos.length > 0) {
+                setCargo(vaga.cargo_id ? { code: vaga.cargo_id, name: cargos.find(c => c.id === vaga.cargo_id)?.id_origem + ' - ' + cargos.find(c => c.id === vaga.cargo_id)?.nome || '' } : null);
+            }
+            if (horarios.length > 0) {
+                const horarioEncontrado = horarios.find(h => h.id === vaga.horario_id);
+                setHorario(vaga.horario_id && horarioEncontrado ? { 
+                    code: vaga.horario_id, 
+                    name: `${horarioEncontrado.id_origem} - ${horarioEncontrado.descricao}` 
+                } : null);
+            }
+            if (funcoes.length > 0) {
+                setFuncao(vaga.funcao_id ? { code: vaga.funcao_id, name: funcoes.find(f => f.id === vaga.funcao_id)?.funcao_origem_id + ' - ' + funcoes.find(f => f.id === vaga.funcao_id)?.nome || '' } : null);
+            }
+            if (sindicatos.length > 0) {
+                const sindicatoEncontrado = sindicatos.find(s => s.id === vaga.sindicato_id);
+                setSindicato(vaga.sindicato_id && sindicatoEncontrado ? { 
+                    code: vaga.sindicato_id, 
+                    name: `${sindicatoEncontrado.id_origem} - ${sindicatoEncontrado.descricao}` 
+                } : null);
+            }
         }
     }, [vaga, filiais, centros_custo, departamentos, secoes, cargos, horarios, funcoes, sindicatos]);
+
+    // Limpar valores quando o modal for fechado
+    useEffect(() => {
+        if (!opened) {
+            setTitulo('');
+            setDescricao('');
+            setDataAbertura('');
+            setDataEncerramento('');
+            setSalario('');
+            setDeficiencia(false);
+            setQtdVagas('');
+            setInclusao(false);
+            setInclusaoPara('');
+            setPericulosidade('');
+            setInsalubridade('');
+            setFilial(null);
+            setCentroCusto(null);
+            setDepartamento(null);
+            setSecao(null);
+            setCargo(null);
+            setHorario(null);
+            setFuncao(null);
+            setSindicato(null);
+        }
+    }, [opened]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -220,6 +271,11 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
         };
 
         aoSalvar(vagaAtualizada);
+    };
+ 
+    // Função para verificar se um campo é obrigatório baseado na lista
+    const isCampoObrigatorio = (lista) => {
+        return lista && lista.length > 0;
     };
 
     return (
@@ -313,6 +369,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         name="filial" 
                                         valor={filial}
                                         setValor={setFilial} 
+                                        required={isCampoObrigatorio(filiais)}
                                         options={filiais.map(filial => ({
                                             name: filial.id_origem + ' - ' + filial.nome,
                                             code: filial.id
@@ -323,38 +380,10 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                 <Col6>
                                     <DropdownItens 
                                         camposVazios={classError}
-                                        name="centro_custo" 
-                                        valor={centroCusto}
-                                        setValor={setCentroCusto} 
-                                        options={centros_custo.map(cc => ({
-                                            name: cc.cc_origem + ' - ' + cc.nome,
-                                            code: cc.id
-                                        }))} 
-                                        label="Centro de Custo"
-                                        placeholder="Centro de Custo" />
-                                </Col6>
-                            </Col12>
-
-                            <Col12>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
-                                        name="departamento" 
-                                        valor={departamento}
-                                        setValor={setDepartamento} 
-                                        options={departamentos.map(dep => ({
-                                            name: dep.id_origem + ' - ' + dep.nome,
-                                            code: dep.id
-                                        }))} 
-                                        label="Departamento"
-                                        placeholder="Departamento" />
-                                </Col6>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
                                         name="secao" 
                                         valor={secao}
                                         setValor={setSecao} 
+                                        required={isCampoObrigatorio(secoes)}
                                         options={secoes.map(sec => ({
                                             name: sec.id_origem + ' - ' + sec.nome,
                                             code: sec.id
@@ -368,15 +397,16 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                 <Col6>
                                     <DropdownItens 
                                         camposVazios={classError}
-                                        name="cargo" 
-                                        valor={cargo}
-                                        setValor={setCargo} 
-                                        options={cargos.map(cargo => ({
-                                            name: cargo.id_origem + ' - ' + cargo.nome,
-                                            code: cargo.id
+                                        name="funcao" 
+                                        valor={funcao}
+                                        setValor={setFuncao} 
+                                        required={isCampoObrigatorio(funcoes)}
+                                        options={funcoes.map(funcao => ({
+                                            name: funcao.funcao_origem_id + ' - ' + funcao.nome,
+                                            code: funcao.id
                                         }))} 
-                                        label="Cargo"
-                                        placeholder="Cargo" />
+                                        label="Função"
+                                        placeholder="Função" />
                                 </Col6>
                                 <Col6>
                                     <DropdownItens 
@@ -384,6 +414,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         name="horario" 
                                         valor={horario}
                                         setValor={setHorario} 
+                                        required={isCampoObrigatorio(horarios)}
                                         options={horarios.map(horario => ({
                                             name: `${horario.id_origem} - ${horario.descricao}`,
                                             code: horario.id
@@ -397,28 +428,30 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                 <Col6>
                                     <DropdownItens 
                                         camposVazios={classError}
-                                        name="funcao" 
-                                        valor={funcao}
-                                        setValor={setFuncao} 
-                                        options={funcoes.map(funcao => ({
-                                            name: funcao.funcao_origem_id + ' - ' + funcao.nome,
-                                            code: funcao.id
-                                        }))} 
-                                        label="Função"
-                                        placeholder="Função" />
-                                </Col6>
-                                <Col6>
-                                    <DropdownItens 
-                                        camposVazios={classError}
                                         name="sindicato" 
                                         valor={sindicato}
                                         setValor={setSindicato} 
+                                        required={isCampoObrigatorio(sindicatos)}
                                         options={sindicatos.map(sindicato => ({
                                             name: `${sindicato.id_origem} - ${sindicato.descricao}`,
                                             code: sindicato.id
                                         }))} 
                                         label="Sindicato"
                                         placeholder="Sindicato" />
+                                </Col6>
+                                <Col6>
+                                    <DropdownItens 
+                                        camposVazios={classError}
+                                        name="centro_custo" 
+                                        valor={centroCusto}
+                                        setValor={setCentroCusto} 
+                                        required={isCampoObrigatorio(centros_custo)}
+                                        options={centros_custo.map(cc => ({
+                                            name: cc.cc_origem + ' - ' + cc.nome,
+                                            code: cc.id
+                                        }))} 
+                                        label="Centro de Custo"
+                                        placeholder="Centro de Custo" />
                                 </Col6>
                             </Col12>
                         </Column>

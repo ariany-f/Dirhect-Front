@@ -432,41 +432,6 @@ const VagasRegistro = () => {
                         <Col6>
                             <DropdownItens 
                                 camposVazios={classError}
-                                name="centro_custo" 
-                                valor={centroCusto}
-                                setValor={setCentroCusto} 
-                                options={centros_custo.map(cc => ({
-                                    name: `${cc.cc_origem} - ${cc.nome}`,
-                                    code: cc.id
-                                }))} 
-                                filter
-                                label="Centro de Custo"
-                                placeholder="Centro de Custo"
-                                required={isCampoObrigatorio(centros_custo)}
-                                allowClear={true} />
-                        </Col6>
-                    </Col12>
-
-                    <Col12>
-                        <Col6>
-                            <DropdownItens 
-                                camposVazios={classError}
-                                name="departamento" 
-                                valor={departamento}
-                                setValor={setDepartamento} 
-                                options={departamentos.map(dep => ({
-                                    name: `${dep.id_origem} - ${dep.nome}`,
-                                    code: dep.id
-                                }))} 
-                                filter
-                                label="Departamento"
-                                placeholder="Departamento"
-                                required={isCampoObrigatorio(departamentos)}
-                                allowClear={true} />
-                        </Col6>
-                        <Col6>
-                            <DropdownItens 
-                                camposVazios={classError}
                                 name="secao" 
                                 valor={secao}
                                 setValor={setSecao} 
@@ -478,41 +443,6 @@ const VagasRegistro = () => {
                                 label="Seção"
                                 placeholder="Seção"
                                 required={isCampoObrigatorio(secoes)}
-                                allowClear={true} />
-                        </Col6>
-                    </Col12>
-
-                    <Col12>
-                        <Col6>
-                            <DropdownItens 
-                                camposVazios={classError}
-                                name="cargo" 
-                                valor={cargo}
-                                setValor={setCargo} 
-                                options={cargos.map(cargo => ({
-                                    name: `${cargo.id_origem} - ${cargo.nome}`,
-                                    code: cargo.id
-                                }))} 
-                                filter
-                                label="Cargo"
-                                placeholder="Cargo"
-                                required={isCampoObrigatorio(cargos)}
-                                allowClear={true} />
-                        </Col6>
-                        <Col6>
-                            <DropdownItens 
-                                camposVazios={classError}
-                                name="horario" 
-                                valor={horario}
-                                setValor={setHorario} 
-                                options={horarios.map(horario => ({
-                                    name: `${horario.id_origem} - ${horario.descricao}`,
-                                    code: horario.id
-                                }))} 
-                                filter
-                                label="Horário"
-                                placeholder="Horário"
-                                required={isCampoObrigatorio(horarios)}
                                 allowClear={true} />
                         </Col6>
                     </Col12>
@@ -537,6 +467,25 @@ const VagasRegistro = () => {
                         <Col6>
                             <DropdownItens 
                                 camposVazios={classError}
+                                name="horario" 
+                                valor={horario}
+                                setValor={setHorario} 
+                                options={horarios.map(horario => ({
+                                    name: `${horario.id_origem} - ${horario.descricao}`,
+                                    code: horario.id
+                                }))} 
+                                filter
+                                label="Horário"
+                                placeholder="Horário"
+                                required={isCampoObrigatorio(horarios)}
+                                allowClear={true} />
+                        </Col6>
+                    </Col12>
+
+                    <Col12>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
                                 name="sindicato" 
                                 valor={sindicato}
                                 setValor={setSindicato} 
@@ -548,6 +497,22 @@ const VagasRegistro = () => {
                                 label="Sindicato"
                                 placeholder="Sindicato"
                                 required={isCampoObrigatorio(sindicatos)}
+                                allowClear={true} />
+                        </Col6>
+                        <Col6>
+                            <DropdownItens 
+                                camposVazios={classError}
+                                name="centro_custo" 
+                                valor={centroCusto}
+                                setValor={setCentroCusto} 
+                                options={centros_custo.map(cc => ({
+                                    name: `${cc.cc_origem} - ${cc.nome}`,
+                                    code: cc.id
+                                }))} 
+                                filter
+                                label="Centro de Custo"
+                                placeholder="Centro de Custo"
+                                required={isCampoObrigatorio(centros_custo)}
                                 allowClear={true} />
                         </Col6>
                     </Col12>
