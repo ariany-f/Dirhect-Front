@@ -38,7 +38,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         return (opcoes) => {
             if (!Array.isArray(opcoes)) return [];
             return opcoes.map(opcao => ({
-                name: opcao.descricao,
+                name: opcao.id_origem ? `${opcao.id_origem} - ${opcao.nome || opcao.descricao}` : opcao.nome || opcao.descricao,
                 code: opcao.id_origem || opcao.codigo
             }));
         };
@@ -458,7 +458,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             />
             <CampoTexto
                 name="jornada"
-                label="Jornada (HH:mm)"
+                label="Jornada (HHH:mm)"
                 valor={candidato.jornada || ''}
                 setValor={(valor) => setCampo('jornada', valor)}
                 patternMask="999:99"

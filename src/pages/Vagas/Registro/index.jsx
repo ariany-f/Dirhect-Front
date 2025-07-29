@@ -383,6 +383,7 @@ const VagasRegistro = () => {
                     </Col6>
                     <Col6>
                         <CampoTexto
+                            camposVazios={classError}
                             patternMask={['999']}
                             name="qtd_vaga" 
                             valor={qtdVagas} 
@@ -418,9 +419,10 @@ const VagasRegistro = () => {
                                 valor={filial}
                                 setValor={setFilial} 
                                 options={filiais.map(filial => ({
-                                    name: filial.nome,
+                                    name: `${filial.id_origem} - ${filial.nome}`,
                                     code: filial.id
                                 }))} 
+                                filter
                                 placeholder="Filial"
                                 required={isCampoObrigatorio(filiais)}
                                 allowClear={true} />
@@ -432,9 +434,10 @@ const VagasRegistro = () => {
                                 valor={centroCusto}
                                 setValor={setCentroCusto} 
                                 options={centros_custo.map(cc => ({
-                                    name: cc.nome,
+                                    name: `${cc.id_origem} - ${cc.nome}`,
                                     code: cc.id
                                 }))} 
+                                filter
                                 placeholder="Centro de Custo"
                                 required={isCampoObrigatorio(centros_custo)}
                                 allowClear={true} />
@@ -449,9 +452,10 @@ const VagasRegistro = () => {
                                 valor={departamento}
                                 setValor={setDepartamento} 
                                 options={departamentos.map(dep => ({
-                                    name: dep.nome,
+                                    name: `${dep.id_origem} - ${dep.nome}`,
                                     code: dep.id
                                 }))} 
+                                filter
                                 placeholder="Departamento"
                                 required={isCampoObrigatorio(departamentos)}
                                 allowClear={true} />
@@ -463,9 +467,10 @@ const VagasRegistro = () => {
                                 valor={secao}
                                 setValor={setSecao} 
                                 options={secoes.map(sec => ({
-                                    name: sec.nome,
+                                    name: `${sec.id_origem} - ${sec.nome}`,
                                     code: sec.id
                                 }))} 
+                                filter
                                 placeholder="Seção"
                                 required={isCampoObrigatorio(secoes)}
                                 allowClear={true} />
@@ -480,9 +485,10 @@ const VagasRegistro = () => {
                                 valor={cargo}
                                 setValor={setCargo} 
                                 options={cargos.map(cargo => ({
-                                    name: cargo.nome,
+                                    name: `${cargo.id_origem} - ${cargo.nome}`,
                                     code: cargo.id
                                 }))} 
+                                filter
                                 placeholder="Cargo"
                                 required={isCampoObrigatorio(cargos)}
                                 allowClear={true} />
@@ -494,9 +500,10 @@ const VagasRegistro = () => {
                                 valor={horario}
                                 setValor={setHorario} 
                                 options={horarios.map(horario => ({
-                                    name: `${horario.codigo} - ${horario.descricao}`,
+                                    name: `${horario.id_origem} - ${horario.descricao}`,
                                     code: horario.id
                                 }))} 
+                                filter
                                 placeholder="Horário"
                                 required={isCampoObrigatorio(horarios)}
                                 allowClear={true} />
@@ -514,6 +521,7 @@ const VagasRegistro = () => {
                                     name: funcao.nome,
                                     code: funcao.id
                                 }))} 
+                                filter
                                 placeholder="Função"
                                 required={isCampoObrigatorio(funcoes)}
                                 allowClear={true} />
@@ -525,9 +533,10 @@ const VagasRegistro = () => {
                                 valor={sindicato}
                                 setValor={setSindicato} 
                                 options={sindicatos.map(sindicato => ({
-                                    name: `${sindicato.codigo} - ${sindicato.descricao}`,
+                                    name: `${sindicato.id_origem} - ${sindicato.descricao}`,
                                     code: sindicato.id
                                 }))} 
+                                filter
                                 placeholder="Sindicato"
                                 required={isCampoObrigatorio(sindicatos)}
                                 allowClear={true} />

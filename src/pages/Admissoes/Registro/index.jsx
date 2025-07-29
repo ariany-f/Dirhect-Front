@@ -1341,10 +1341,10 @@ const CandidatoRegistro = () => {
             .filter(doc => !doc.obrigatorio && !doc.upload_feito)
             .map(doc => doc.nome);
 
-        if (documentosNaoObrigatoriosPendentes.length > 0) {
+        if (documentosNaoObrigatoriosPendentes.length > 0 && !modoLeitura) {
             return new Promise((resolve) => {
                 confirmDialog({
-                    message: ` Os seguintes documentos não obrigatórios estão pendentes: ${documentosNaoObrigatoriosPendentes.join(', ')}. Deseja continuar mesmo assim?`,
+                    message: `Os seguintes documentos não obrigatórios estão pendentes: ${documentosNaoObrigatoriosPendentes.join(', ')}. Deseja continuar mesmo assim?`,
                     header: 'Confirmação',
                     icon: 'pi pi-exclamation-triangle',
                     acceptLabel: 'Sim, continuar',
