@@ -110,6 +110,14 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
 
     console.log(candidato)
 
+    useEffect(() => {
+
+        if(candidato.dt_admissao && candidato.dt_admissao !== '' && (!candidato.dt_opcao_fgts || candidato.dt_opcao_fgts === ''))
+        {
+            setCampo('dt_opcao_fgts', candidato.dt_admissao)
+        }
+    }, [candidato.dt_admissao])
+
     // Verifica se o nome do pai é "DESCONHECIDO" e ativa o switch automaticamente
     useEffect(() => {
         // Só atualiza se o nome do pai for "DESCONHECIDO" mas o switch não estiver ativo
