@@ -79,6 +79,8 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
     const opcoesCorRaca = useMemo(() => formatarOpcoesDominio(opcoesDominio.cor_raca), [opcoesDominio.cor_raca, formatarOpcoesDominio]);
     const opcoesEstadoCivil = useMemo(() => formatarOpcoesDominio(opcoesDominio.estado_civil), [opcoesDominio.estado_civil, formatarOpcoesDominio]);
     const opcoesNacionalidade = useMemo(() => formatarOpcoesDominio(opcoesDominio.nacionalidade), [opcoesDominio.nacionalidade, formatarOpcoesDominio]);
+    const opcoesTipoRua = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_rua), [opcoesDominio.tipo_rua, formatarOpcoesDominio]);
+    const opcoesTipoBairro = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_bairro), [opcoesDominio.tipo_bairro, formatarOpcoesDominio]);
 
     // Função para verificar se um campo é obrigatório baseado nos documentos
     const isCampoObrigatorio = useMemo(() => {
@@ -538,12 +540,32 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 label="CEP"
                 disabled={modoLeitura}
             />
+            <DropdownItens
+                name="tipo_rua"
+                label="Tipo de Logradouro"
+                valor={getValorSelecionadoFromCandidato('tipo_rua', opcoesTipoRua)}
+                setValor={(valor) => setCampo('tipo_rua', valor.code)}
+                options={opcoesTipoRua}
+                placeholder="Selecione o tipo"
+                disabled={modoLeitura}
+                filter
+            />
             <CampoTexto
                 name="rua"
                 valor={candidato?.rua ?? ''}
                 setValor={valor => setCampo('rua', valor)}
                 label="Logradouro"
                 disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="tipo_bairro"
+                label="Tipo de Bairro"
+                valor={getValorSelecionadoFromCandidato('tipo_bairro', opcoesTipoBairro)}
+                setValor={(valor) => setCampo('tipo_bairro', valor.code)}
+                options={opcoesTipoBairro}
+                placeholder="Selecione o tipo"
+                disabled={modoLeitura}
+                filter
             />
             <CampoTexto
                 name="bairro"

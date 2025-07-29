@@ -993,6 +993,8 @@ const CandidatoRegistro = () => {
                 numero: candidatoAtual.numero,
                 complemento: candidatoAtual.complemento,
                 bairro: candidatoAtual.bairro,
+                tipo_rua: candidatoAtual.tipo_rua,
+                tipo_bairro: candidatoAtual.tipo_bairro,
                 cidade: candidatoAtual.cidade,
                 estado: candidatoAtual.estado,
                 pais: candidatoAtual.pais,
@@ -2588,7 +2590,7 @@ const CandidatoRegistro = () => {
                                         color: '#fff',
                                         opacity: 0.9
                                     }}>
-                                        📖 Modo Leitura
+                                        Admissão Finalizada
                                     </span>
                                 </div>
                             )}

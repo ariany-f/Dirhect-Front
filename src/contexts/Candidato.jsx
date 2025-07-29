@@ -75,6 +75,8 @@ const candidatoInicial = {
     numero: null,
     complemento: null,
     bairro: null,
+    tipo_rua: null,
+    tipo_bairro: null,
     estado: null,
     cidade: null,
     cep: null,

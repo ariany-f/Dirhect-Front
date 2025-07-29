@@ -28,6 +28,7 @@ import { GrAddCircle } from 'react-icons/gr';
 import styles from '@pages/Colaboradores/Colaboradores.module.css'
 import { formatCurrency, formatNumber } from '@utils/formats';
 import http from '@http';
+import { ArmazenadorToken } from '@utils';
 
 function DataTableAdmissao({ 
     vagas,
@@ -55,6 +56,44 @@ function DataTableAdmissao({
     const [modalImportarPlanilhaOpened, setModalImportarPlanilhaOpened] = useState(false)
 
     const navegar = useNavigate()
+
+    // Função para verificar permissão de tarefa (igual ao index.jsx)
+    const verificarPermissaoTarefa = (tipoTarefa) => {
+        const perfil = ArmazenadorToken.UserProfile;
+        
+        switch (tipoTarefa) {
+            case 'aguardar_documento':
+                // Permite que qualquer perfil aprovado possa aprovar documentos
+                return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === null;
+            case 'aprovar_admissao':
+                return ['analista', 'supervisor', 'gestor'].includes(perfil);
+            case 'aguardar_lgpd':
+                // Permite que qualquer perfil aprovado possa aceitar LGPD
+                return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === null;
+            default:
+                return false;
+        }
+    };
+
+    // Função para obter tarefa pendente (igual ao index.jsx)
+    const obterTarefaPendente = (candidato) => {
+        if (!candidato?.tarefas) return null;
+        
+        const tarefasPendentes = candidato.tarefas.filter(tarefa => {
+            const temPermissao = verificarPermissaoTarefa(tarefa.tipo_codigo);
+            const statusValido = tarefa.status === 'pendente' || tarefa.status === 'em_andamento';
+            
+            return statusValido && temPermissao;
+        });
+        
+        return tarefasPendentes.length > 0 ? tarefasPendentes[0] : null;
+    };
+
+    // Função para verificar se está em modo leitura
+    const verificarModoLeitura = (candidato) => {
+        const tarefaPendente = obterTarefaPendente(candidato);
+        return !tarefaPendente;
+    };
 
     // Função para verificar se alguma admissão tem tarefa de LGPD
     const algumaAdmissaoTemLGPD = () => {
@@ -97,6 +136,9 @@ function DataTableAdmissao({
             formataCPF(rowData?.cpf)
             : '---';
         
+        // Verifica se está em modo leitura usando a mesma lógica do index.jsx
+        const isModoLeitura = verificarModoLeitura(rowData);
+        
         return (
             <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 {/* Imagem ou Avatar */}
@@ -138,11 +180,31 @@ function DataTableAdmissao({
                     </div>
                 </div>
                 
-                {/* Nome e CPF */}
+                {/* Nome, CPF e etiqueta de modo leitura */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                    <Texto weight={700} width={'100%'}>
-                        {rowData?.nome}
-                    </Texto>
+                    <div style={{ display: 'flex', alignItems: 'space-between', gap: '4px', flexWrap: 'wrap' }}>
+                        <Texto weight={700}>
+                            {rowData?.nome}
+                        </Texto>
+                        {isModoLeitura && (
+                            <div
+                                style={{
+                                    backgroundColor: 'var(--neutro-300)',
+                                    color: 'var(--neutro-800)',
+                                    fontWeight: 500,
+                                    fontSize: 10,
+                                    borderRadius: 6,
+                                    padding: '2px 3px',
+                                    border: '1px solid var(--neutro-400)',
+                                    display: 'inline-block',
+                                    textAlign: 'center',
+                                    minWidth: 'fit-content'
+                                }}
+                            >
+                                Finalizada
+                            </div>
+                        )}
+                    </div>
                     <div style={{marginTop: '6px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                         CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
                     </div>
@@ -189,7 +251,7 @@ function DataTableAdmissao({
         const enviados = rowData?.documentos_status?.enviados || 0;
         const dependentes = rowData?.dependentes?.length || 0;
         
-        return <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'start', gap: '4px', color: 'var(--neutro-500)'}}>
+        return <div style={{width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'start', gap: '4px', color: 'var(--neutro-500)'}}>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px'}}>
                     Documentos: <p style={{fontWeight: '400', color: 'var(--neutro-500)'}}> {enviados}/{total}</p>
                 </div>
@@ -228,13 +290,6 @@ function DataTableAdmissao({
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>
-                    <span style={{ color: '#666', fontSize: 12 }}>Vaga: </span>
-                    <span style={{ color: '#333' }}>
-                        {salarioVaga ? formatCurrency(salarioVaga) : 'Não informado'}
-                    </span>
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 500 }}>
-                    <span style={{ color: '#666', fontSize: 12 }}>Efetivo: </span>
                     <span style={{ 
                         color: getSalarioEfetivoCor(), 
                         fontWeight: salarioEfetivo == salarioVaga ? 500 : 600
@@ -295,13 +350,6 @@ function DataTableAdmissao({
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>
-                    <span style={{ color: '#666', fontSize: 12 }}>Vaga: </span>
-                    <span style={{ color: '#333' }}>
-                        {filial_vaga_nome}
-                    </span>
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 500 }}>
-                    <span style={{ color: '#666', fontSize: 12 }}>Efetivo: </span>
                     <span style={{ 
                         color: filial_efetiva_id == filial_vaga_id ? 'var(--neutro-600)' : 'var(--vermilion-500)', 
                         fontWeight: filial_efetiva_id == filial_vaga_id ? 500 : 600
@@ -404,6 +452,14 @@ function DataTableAdmissao({
                 .datatable-clickable-row {
                     cursor: pointer;
                 }
+                .datatable-readonly-row {
+                    opacity: 0.7;
+                    background-color: #f8f9fa !important;
+                }
+                .datatable-readonly-row:hover {
+                    opacity: 0.8;
+                    background-color: #e9ecef !important;
+                }
             `}</style>
             <BotaoGrupo align="space-between">
                 {showSearch &&
@@ -439,9 +495,11 @@ function DataTableAdmissao({
                 onSort={handleSort}
                 removableSort
                 showGridlines
-                stripedRows
                 onRowClick={(e) => verDetalhes(e.data)}
-                rowClassName={() => 'datatable-clickable-row'}
+                rowClassName={(data) => {
+                    const isModoLeitura = verificarModoLeitura(data);
+                    return `datatable-clickable-row ${isModoLeitura ? 'datatable-readonly-row' : ''}`;
+                }}
                 footerColumnGroup={
                     paginator ? (
                         <ColumnGroup>
@@ -452,11 +510,11 @@ function DataTableAdmissao({
                     ) : null
                 }
             >
-                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '20%' }}></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '30%' }}></Column>
                 <Column body={vagaTemplate} header="Vaga" style={{ width: '15%' }}></Column>
                 <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: '12%' }}></Column>
-                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '15%' }}></Column>
-                <Column body={representativeFilialTemplate} header="Filial" style={{ width: '15%' }}></Column>
+                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '10%' }}></Column>
+                <Column body={representativeFilialTemplate} header="Filial" style={{ width: '10%' }}></Column>
                 {algumaAdmissaoTemLGPD() && (
                     <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '8%' }}></Column>
                 )}
