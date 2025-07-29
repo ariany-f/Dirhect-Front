@@ -1506,10 +1506,10 @@ const CandidatoRegistro = () => {
                         camposObrigatorios.push(`Grau de parentesco do dependente ${index + 1}`);
                         setClassError(prev => [...prev, `grau_parentesco_${index}`]);
                     }
-                    if (!dependente.nrodepend?.trim()) {
-                        camposObrigatorios.push(`Número do dependente ${index + 1}`);
-                        setClassError(prev => [...prev, `nrodepend_${index}`]);
-                    }
+                    // if (!dependente.nrodepend?.trim()) {
+                    //     camposObrigatorios.push(`Número do dependente ${index + 1}`);
+                    //     setClassError(prev => [...prev, `nrodepend_${index}`]);
+                    // }
                 });
             }
         }
