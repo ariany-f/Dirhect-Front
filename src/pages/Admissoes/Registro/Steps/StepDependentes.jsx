@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import { FaTrash, FaChevronDown, FaChevronUp, FaSave } from 'react-icons/fa';
 import { GrAddCircle } from 'react-icons/gr';
@@ -63,7 +63,7 @@ const StyledToast = styled(Toast)`
 `;
 
 
-const StepDependentes = ({ modoLeitura = false }) => {
+const StepDependentes = ({ classError = [], modoLeitura = false }) => {
     const { candidato, setCandidato } = useCandidatoContext();
     const [grausParentesco, setGrausParentesco] = useState([]);
     const [generos, setGeneros] = useState([]);
@@ -76,6 +76,13 @@ const StepDependentes = ({ modoLeitura = false }) => {
     const [modalSalvamentoVisible, setModalSalvamentoVisible] = useState(false);
     const [modalRemocaoVisible, setModalRemocaoVisible] = useState(false);
     const toast = useRef(null);
+
+    // Função para verificar se um campo está em erro
+    const isCampoEmErro = useMemo(() => {
+        return (campo) => {
+            return classError.includes(campo);
+        };
+    }, [classError]);
 
     useEffect(() => {
         // Carregar graus de parentesco
@@ -235,8 +242,8 @@ const StepDependentes = ({ modoLeitura = false }) => {
                 nronascidovivo: dependente.nronascidovivo || null,
                 nome_mae: dependente.nome_mae || null,
                 grau_parentesco: dependente.grau_parentesco,
-                genero: dependente.genero_id_origem,
-                estadocivil: dependente.estado_civil_id_origem,
+                genero: dependente.genero,
+                estadocivil: dependente.estadocivil,
                 incidencia_irrf: dependente.incidencia_irrf || false,
                 incidencia_inss: dependente.incidencia_inss || false,
                 incidencia_assist_medica: dependente.incidencia_assist_medica || false,
@@ -548,12 +555,14 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                 <div style={{paddingTop: '16px'}}>
                                     <FormGrid>
                                         <CampoTexto
+                                            camposVazios={isCampoEmErro(`nome_depend_${idx}`) ? [`nome_depend_${idx}`] : []}
                                             label="Nome Completo *"
                                             valor={dependente.nome_depend}
                                             setValor={(valor) => handleUpdateDependente(id, 'nome_depend', valor)}
                                             disabled={modoLeitura || isSaved}
                                         />
                                         <DropdownItens
+                                            camposVazios={isCampoEmErro(`grau_parentesco_${idx}`) ? [`grau_parentesco_${idx}`] : []}
                                             label="Grau de Parentesco *"
                                             valor={(() => {
                                                 // Para dependentes salvos, sempre busca na lista completa
@@ -594,7 +603,7 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                             label="Gênero"
                                             valor={(() => {
                                                 const valorEncontrado = generos.find(g => {
-                                                    return g.code == dependente.genero_id_origem || g.id_origem == dependente.genero_id_origem;
+                                                    return g.code == dependente.genero || g.id_origem == dependente.genero;
                                                 });
                                                 return valorEncontrado || '';
                                             })()}
@@ -608,7 +617,7 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                             label="Estado Civil"
                                             valor={(() => {
                                                 const valorEncontrado = estadosCivis.find(g => {
-                                                    return g.code == dependente.estado_civil_id_origem || g.id_origem == dependente.estado_civil_id_origem;
+                                                    return g.code == dependente.estadocivil || g.id_origem == dependente.estadocivil;
                                                 });
                                                 return valorEncontrado || '';
                                             })()}

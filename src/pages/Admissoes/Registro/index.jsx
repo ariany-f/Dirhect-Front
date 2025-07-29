@@ -1379,6 +1379,9 @@ const CandidatoRegistro = () => {
 
     // Função para validar campos obrigatórios do step atual
     const validarCamposObrigatoriosStep = () => {
+        // Limpa os erros anteriores
+        setClassError([]);
+        
         const dadosCandidato = candidato || {};
         const dadosVaga = candidato.dados_vaga || {};
         const camposObrigatorios = [];
@@ -1388,18 +1391,23 @@ const CandidatoRegistro = () => {
             // Validação de dados pessoais obrigatórios
             if (!dadosCandidato.nome?.trim()) {
                 camposObrigatorios.push('Nome completo');
+                setClassError(prev => [...prev, 'nome']);
             }
             if (!dadosCandidato.cpf?.trim()) {
                 camposObrigatorios.push('CPF');
+                setClassError(prev => [...prev, 'cpf']);
             }
             if (!dadosCandidato.email?.trim()) {
                 camposObrigatorios.push('E-mail');
+                setClassError(prev => [...prev, 'email']);
             }
             if (!dadosCandidato.telefone?.trim()) {
                 camposObrigatorios.push('Telefone');
+                setClassError(prev => [...prev, 'telefone']);
             }
             if (!dadosCandidato.dt_nascimento) {
                 camposObrigatorios.push('Data de nascimento');
+                setClassError(prev => [...prev, 'dt_nascimento']);
             }
 
             // Validação de campos obrigatórios baseada nos documentos
@@ -1457,6 +1465,7 @@ const CandidatoRegistro = () => {
                         const nomeCampo = nomesCampos[campo] || campo;
                         if (!camposObrigatorios.includes(nomeCampo)) {
                             camposObrigatorios.push(nomeCampo);
+                            setClassError(prev => [...prev, campo]);
                         }
                     }
                 });
@@ -1465,26 +1474,51 @@ const CandidatoRegistro = () => {
             // Validação de dados bancários obrigatórios
             if (!candidato.banco?.trim()) {
                 camposObrigatorios.push('Banco');
+                setClassError(prev => [...prev, 'banco']);
             }
             if (!candidato.conta_corrente?.trim()) {
                 camposObrigatorios.push('Conta corrente');
+                setClassError(prev => [...prev, 'conta_corrente']);
             }
         } else if (activeIndex === 3 && !self) { // Step Dados Contratuais (apenas se não for self)
             // Validação de dados cadastrais obrigatórios
             if (filiais && filiais.length > 0 && !dadosVaga.filial_id) {
                 camposObrigatorios.push('Filial');
+                setClassError(prev => [...prev, 'filial_id']);
             }
             if (departamentos && departamentos.length > 0 && !dadosVaga.departamento_id) {
                 camposObrigatorios.push('Departamento');
+                setClassError(prev => [...prev, 'departamento_id']);
             }
             if (cargos && cargos.length > 0 && !dadosVaga.cargo_id) {
                 camposObrigatorios.push('Cargo');
+                setClassError(prev => [...prev, 'cargo_id']);
             }
             if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
                 camposObrigatorios.push('Centro de custo');
+                setClassError(prev => [...prev, 'centro_custo_id']);
             }
             if (!dadosVaga.salario?.trim()) {
                 camposObrigatorios.push('Salário');
+                setClassError(prev => [...prev, 'salario']);
+            }
+        } else if (activeIndex === getStepDependentesIndex()) { // Step Dependentes
+            // Validação de dependentes obrigatórios
+            if (candidato.dependentes && candidato.dependentes.length > 0) {
+                candidato.dependentes.forEach((dependente, index) => {
+                    if (!dependente.nome_depend?.trim()) {
+                        camposObrigatorios.push(`Nome do dependente ${index + 1}`);
+                        setClassError(prev => [...prev, `nome_depend_${index}`]);
+                    }
+                    if (!dependente.grau_parentesco) {
+                        camposObrigatorios.push(`Grau de parentesco do dependente ${index + 1}`);
+                        setClassError(prev => [...prev, `grau_parentesco_${index}`]);
+                    }
+                    if (!dependente.nrodepend?.trim()) {
+                        camposObrigatorios.push(`Número do dependente ${index + 1}`);
+                        setClassError(prev => [...prev, `nrodepend_${index}`]);
+                    }
+                });
             }
         }
         
@@ -1498,6 +1532,8 @@ const CandidatoRegistro = () => {
             return false;
         }
         
+        // Se chegou até aqui, não há erros, então limpa o classError
+        setClassError([]);
         return true;
     };
 
@@ -2820,7 +2856,7 @@ const CandidatoRegistro = () => {
                         <ScrollPanel className="responsive-scroll-panel">
                             <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
                                 <ScrollPanel className="responsive-inner-scroll">
-                                    <StepDependentes modoLeitura={modoLeitura} />
+                                    <StepDependentes classError={classError} modoLeitura={modoLeitura} />
                                 </ScrollPanel>
                             </div>
                         </ScrollPanel>

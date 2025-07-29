@@ -38,7 +38,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDominio = {} }) => {
+const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opcoesDominio = {} }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
     const [cidades, setCidades] = useState([]);
@@ -107,6 +107,13 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
             });
         };
     }, [candidato?.documentos]);
+
+    // Função para verificar se um campo está em erro
+    const isCampoEmErro = useMemo(() => {
+        return (campo) => {
+            return classError.includes(campo);
+        };
+    }, [classError]);
 
     useEffect(() => {
 
@@ -261,6 +268,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('dt_opcao_fgts') && isCampoEmErro('dt_opcao_fgts') ? ['dt_opcao_fgts'] : []}
                 name="dt_opcao_fgts"
                 valor={candidato?.dt_opcao_fgts ?? ''}
                 setValor={valor => setCampo('dt_opcao_fgts', valor)}
@@ -269,6 +277,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('carteira_trabalho') && isCampoEmErro('carteira_trabalho') ? ['carteira_trabalho'] : []}
                 name="carteira_trabalho"
                 valor={candidato?.carteira_trabalho ?? ''}
                 setValor={valor => setCampo('carteira_trabalho', valor)}
@@ -278,6 +287,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('serie_carteira_trab') && isCampoEmErro('serie_carteira_trab') ? ['serie_carteira_trab'] : []}
                 name="serie_carteira_trab"
                 maxCaracteres={5}
                 valor={candidato?.serie_carteira_trab ?? ''}
@@ -288,6 +298,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoObrigatorio('uf_carteira_trab') && isCampoEmErro('uf_carteira_trab') ? ['uf_carteira_trab'] : []}
                 name="uf_carteira_trab"
                 label={`UF da CTPS${isCampoObrigatorio('uf_carteira_trab') ? '*' : ''}`}
                 valor={getEstadoFormatado('uf_carteira_trab')}
@@ -298,6 +309,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 filter
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('data_emissao_ctps') && isCampoEmErro('data_emissao_ctps') ? ['data_emissao_ctps'] : []}
                 name="data_emissao_ctps"
                 valor={candidato?.data_emissao_ctps ?? ''}
                 setValor={valor => setCampo('data_emissao_ctps', valor)}
@@ -306,6 +318,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('carteira_motorista') && isCampoEmErro('carteira_motorista') ? ['carteira_motorista'] : []}
                 name="carteira_motorista"
                 valor={candidato?.carteira_motorista ?? ''}
                 setValor={valor => setCampo('carteira_motorista', valor)}
@@ -315,6 +328,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('data_emissao_cnh') && isCampoEmErro('data_emissao_cnh') ? ['data_emissao_cnh'] : []}
                 name="data_emissao_cnh"
                 valor={candidato?.data_emissao_cnh ?? ''}
                 setValor={valor => setCampo('data_emissao_cnh', valor)}
@@ -323,6 +337,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('tipo_carteira_habilit') && isCampoEmErro('tipo_carteira_habilit') ? ['tipo_carteira_habilit'] : []}
                 name="tipo_carteira_habilit"
                 valor={candidato?.tipo_carteira_habilit ?? ''}
                 setValor={valor => setCampo('tipo_carteira_habilit', valor)}
@@ -331,6 +346,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('data_venc_habilit') && isCampoEmErro('data_venc_habilit') ? ['data_venc_habilit'] : []}
                 name="data_venc_habilit"
                 valor={candidato?.data_venc_habilit ?? ''}
                 setValor={valor => setCampo('data_venc_habilit', valor)}
@@ -339,7 +355,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
-                camposVazios={isCampoObrigatorio('identidade') && classError.includes('identidade') ? ['identidade'] : []}
+                camposVazios={isCampoObrigatorio('identidade') && isCampoEmErro('identidade') ? ['identidade'] : []}
                 name="identidade"
                 valor={candidato?.identidade ?? ''}
                 setValor={valor => setCampo('identidade', valor)}
@@ -349,6 +365,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoObrigatorio('uf_identidade') && isCampoEmErro('uf_identidade') ? ['uf_identidade'] : []}
                 name="uf_identidade"
                 label={`UF da Identidade${isCampoObrigatorio('uf_identidade') ? '*' : ''}`}
                 valor={getEstadoFormatado('uf_identidade')}
@@ -359,6 +376,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 filter
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('orgao_emissor_ident') && isCampoEmErro('orgao_emissor_ident') ? ['orgao_emissor_ident'] : []}
                 name="orgao_emissor_ident"
                 valor={candidato?.orgao_emissor_ident ?? ''}
                 setValor={valor => setCampo('orgao_emissor_ident', valor)}
@@ -367,6 +385,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('data_emissao_ident') && isCampoEmErro('data_emissao_ident') ? ['data_emissao_ident'] : []}
                 name="data_emissao_ident"
                 valor={candidato?.data_emissao_ident ?? ''}
                 setValor={valor => setCampo('data_emissao_ident', valor)}
@@ -384,6 +403,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('titulo_eleitor') && isCampoEmErro('titulo_eleitor') ? ['titulo_eleitor'] : []}
                 name="titulo_eleitor"
                 valor={candidato?.titulo_eleitor ?? ''}
                 setValor={valor => setCampo('titulo_eleitor', valor)}
@@ -393,6 +413,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('zona_titulo_eleitor') && isCampoEmErro('zona_titulo_eleitor') ? ['zona_titulo_eleitor'] : []}
                 name="zona_titulo_eleitor"
                 valor={candidato?.zona_titulo_eleitor ?? ''}
                 setValor={valor => setCampo('zona_titulo_eleitor', valor)}
@@ -402,6 +423,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('secao_titulo_eleitor') && isCampoEmErro('secao_titulo_eleitor') ? ['secao_titulo_eleitor'] : []}
                 name="secao_titulo_eleitor"
                 valor={candidato?.secao_titulo_eleitor ?? ''}
                 setValor={valor => setCampo('secao_titulo_eleitor', valor)}
@@ -411,6 +433,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoObrigatorio('data_titulo_eleitor') && isCampoEmErro('data_titulo_eleitor') ? ['data_titulo_eleitor'] : []}
                 name="data_titulo_eleitor"
                 valor={candidato?.data_titulo_eleitor ?? ''}
                 setValor={valor => setCampo('data_titulo_eleitor', valor)}
@@ -419,6 +442,7 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoObrigatorio('estado_emissor_tit_eleitor') && isCampoEmErro('estado_emissor_tit_eleitor') ? ['estado_emissor_tit_eleitor'] : []}
                 name="estado_emissor_tit_eleitor"
                 label={`Estado Emissor do Título${isCampoObrigatorio('estado_emissor_tit_eleitor') ? '*' : ''}`}
                 valor={getEstadoFormatado('estado_emissor_tit_eleitor')}
