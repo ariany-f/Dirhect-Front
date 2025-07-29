@@ -23,9 +23,17 @@ const ChBtn = styled.input`
     &::after {
         content: '';
     }
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        ~ label {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    }
 `;
 
-function CheckboxContainer({ valor, setValor, label, name, fontSize = '12px' }) {
+function CheckboxContainer({ valor, setValor, label, name, fontSize = '12px', disabled = false }) {
     return (
         <div className={styles.checkboxContainer}>
             <ChBtn 
@@ -34,6 +42,7 @@ function CheckboxContainer({ valor, setValor, label, name, fontSize = '12px' }) 
                 id={name} 
                 onChange={(evento) => setValor(evento.target.checked)} // Passa o novo estado
                 type="checkbox" 
+                disabled={disabled}
             />
             {label && <label htmlFor={name} className={styles.label}>{label}</label>}
         </div>

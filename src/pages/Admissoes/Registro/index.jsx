@@ -998,6 +998,10 @@ const CandidatoRegistro = () => {
                 cidade: candidatoAtual.cidade,
                 estado: candidatoAtual.estado,
                 pais: candidatoAtual.pais,
+                perc_adiantamento: candidatoAtual.perc_adiantamento,
+                ajuda_custo: candidatoAtual.ajuda_custo,
+                arredondamento: candidatoAtual.arredondamento,
+                media_sal_maternidade: candidatoAtual.media_sal_maternidade,
                 // Dados do candidato
                 // candidato: {
                     nome: dadosCandidato.nome,
@@ -1153,24 +1157,13 @@ const CandidatoRegistro = () => {
             // Salvar dependentes separadamente se houver dependentes
             if (candidatoAtual.dependentes && candidatoAtual.dependentes.length > 0) {
                 try {
-                    // Filtra apenas dependentes novos (que não existem na API)
+                    // Filtra apenas dependentes novos (sem ID) que ainda não foram salvos
                     const dependentesNovos = candidatoAtual.dependentes.filter(dep => {
-                        // Se tem ID, já existe na API
+                        // Se já tem ID, já foi salvo
                         if (dep.id) return false;
                         
-                        // Se não tem CPF, é novo
-                        if (!dep.cpf) return true;
-                        
-                        // Remove máscara do CPF para comparação
-                        const cpfLimpo = dep.cpf.replace(/\D/g, '');
-                        
-                        // Verifica se já existe um dependente com este CPF na API (com ID)
-                        const dependenteExistente = candidatoAtual.dependentes.find(d => 
-                            d.id && d.cpf && d.cpf.replace(/\D/g, '') === cpfLimpo
-                        );
-                        
-                        // Se não encontrou dependente existente com este CPF, é novo
-                        return !dependenteExistente;
+                        // Se tem temp_id mas não tem ID, ainda não foi salvo
+                        return dep.temp_id && !dep.id;
                     });
                     
                     // Remove dependentes duplicados baseado no CPF (sem ID)
@@ -1196,7 +1189,7 @@ const CandidatoRegistro = () => {
                             nroregistro: dep.nroregistro || null,
                             nrolivro: dep.nrolivro || null,
                             nrofolha: dep.nrofolha || null,
-                            cartao_vacina: dep.cartao_vacina || null,
+                            cartao_vacina: dep.cartao_vacina || false,
                             nrosus: dep.nrosus || null,
                             nronascidovivo: dep.nronascidovivo || null,
                             nome_mae: dep.nome_mae || null,
@@ -1763,11 +1756,11 @@ const CandidatoRegistro = () => {
         setActiveIndex(prev => prev - 1);
     };
 
-    const handleAvancar = () => {
+    const handleAvancar = async () => {
         // Validação apenas para o step de documentos (step 0)
         if (activeIndex === 0) {
             // Validação de documentos
-            const validacaoDocumentos = validarDocumentos();
+            const validacaoDocumentos = await validarDocumentos();
             if (!validacaoDocumentos) return;
         }
         

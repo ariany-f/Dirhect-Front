@@ -108,8 +108,6 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
         };
     }, [candidato?.documentos]);
 
-    console.log(candidato)
-
     useEffect(() => {
 
         if(candidato.dt_admissao && candidato.dt_admissao !== '' && (!candidato.dt_opcao_fgts || candidato.dt_opcao_fgts === ''))
@@ -613,6 +611,42 @@ const StepDadosPessoais = ({ classError, estados, modoLeitura = false, opcoesDom
                 placeholder="Selecione o estado"
                 disabled={modoLeitura}
                 filter
+            />
+            
+            <SectionTitle>Dados Adicionais</SectionTitle>
+            
+            <CampoTexto
+                name="perc_adiantamento"
+                valor={candidato?.perc_adiantamento ?? ''}
+                setValor={valor => setCampo('perc_adiantamento', valor)}
+                patternMask="999"
+                label="Percentual de Adiantamento"
+                placeholder="Ex: 50"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="ajuda_custo"
+                valor={candidato?.ajuda_custo ?? ''}
+                setValor={valor => setCampo('ajuda_custo', valor)}
+                label="Ajuda de Custo"
+                placeholder="Digite o valor"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="arredondamento"
+                valor={candidato?.arredondamento ?? ''}
+                setValor={valor => setCampo('arredondamento', valor)}
+                label="Arredondamento"
+                placeholder="Digite o valor"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="media_sal_maternidade"
+                valor={candidato?.media_sal_maternidade ?? ''}
+                setValor={valor => setCampo('media_sal_maternidade', valor)}
+                label="Média Salário Maternidade"
+                placeholder="Digite o valor"
+                disabled={modoLeitura}
             />
         </GridContainer>
     );

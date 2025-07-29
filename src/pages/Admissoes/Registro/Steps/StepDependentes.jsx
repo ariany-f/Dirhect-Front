@@ -5,6 +5,7 @@ import { GrAddCircle } from 'react-icons/gr';
 import { v4 as uuidv4 } from 'uuid';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
+import CheckboxContainer from '@components/CheckboxContainer';
 import http from '@http';
 import BotaoSemBorda from '@components/BotaoSemBorda';
 import styled from 'styled-components';
@@ -65,25 +66,58 @@ const StyledToast = styled(Toast)`
 const StepDependentes = ({ modoLeitura = false }) => {
     const { candidato, setCandidato } = useCandidatoContext();
     const [grausParentesco, setGrausParentesco] = useState([]);
+    const [generos, setGeneros] = useState([]);
+    const [estadosCivis, setEstadosCivis] = useState([]);
     const [abertos, setAbertos] = useState(() => 
         (candidato.dependentes?.length > 0) ? [candidato.dependentes.length - 1] : []
     );
     const [salvandoDependente, setSalvandoDependente] = useState(null);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+    const [modalSalvamentoVisible, setModalSalvamentoVisible] = useState(false);
+    const [modalRemocaoVisible, setModalRemocaoVisible] = useState(false);
     const toast = useRef(null);
 
     useEffect(() => {
+        // Carregar graus de parentesco
         http.get('tabela_dominio/grau_parentesco/')
             .then(response => {
                 const formattedOptions = response.registros?.map(item => ({
                     code: item.id_origem,
                     name: item.descricao,
-                    id_origem: item.id_origem // Mantém também o id_origem para comparação
+                    id_origem: item.id_origem
                 })) || [];
                 setGrausParentesco(formattedOptions);
             })
             .catch(error => {
                 console.error("Erro ao buscar graus de parentesco:", error);
+            });
+
+        // Carregar gêneros
+        http.get('tabela_dominio/genero/')
+            .then(response => {
+                const formattedOptions = response.registros?.map(item => ({
+                    code: item.id_origem,
+                    name: item.descricao,
+                    id_origem: item.id_origem
+                })) || [];
+                setGeneros(formattedOptions);
+            })
+            .catch(error => {
+                console.error("Erro ao buscar gêneros:", error);
+            });
+
+        // Carregar estados civis
+        http.get('tabela_dominio/estado_civil/')
+            .then(response => {
+                const formattedOptions = response.registros?.map(item => ({
+                    code: item.id_origem,
+                    name: item.descricao,
+                    id_origem: item.id_origem
+                })) || [];
+                setEstadosCivis(formattedOptions);
+            })
+            .catch(error => {
+                console.error("Erro ao buscar estados civis:", error);
             });
     }, []);
 
@@ -118,11 +152,14 @@ const StepDependentes = ({ modoLeitura = false }) => {
     };
 
     const confirmarSalvarDependente = (dependente) => {
-        if (confirmDialogVisible) return; // Previne múltiplos diálogos
+        // Previne múltiplos diálogos e cliques duplos
+        if (modalSalvamentoVisible || salvandoDependente === dependente.temp_id) {
+            return;
+        }
         
         const parentescoNome = grausParentesco.find(g => g.code === dependente.grau_parentesco)?.name || 'Não informado';
         
-        setConfirmDialogVisible(true);
+        setModalSalvamentoVisible(true);
         confirmDialog({
             message: (
                 <div>
@@ -146,11 +183,14 @@ const StepDependentes = ({ modoLeitura = false }) => {
             header: 'Confirmar Cadastro de Dependente',
             icon: 'pi pi-check-circle',
             accept: () => {
-                executarSalvarDependente(dependente);
-                setConfirmDialogVisible(false);
+                setModalSalvamentoVisible(false);
+                // Pequeno delay para garantir que o estado foi atualizado
+                setTimeout(() => {
+                    executarSalvarDependente(dependente);
+                }, 100);
             },
             reject: () => {
-                setConfirmDialogVisible(false);
+                setModalSalvamentoVisible(false);
             },
             acceptLabel: 'Sim, cadastrar',
             rejectLabel: 'Cancelar',
@@ -170,10 +210,13 @@ const StepDependentes = ({ modoLeitura = false }) => {
             return;
         }
 
+        // Verifica se já foi salvo ou está sendo salvo
         if (dependente.id || salvandoDependente === dependente.temp_id) {
-            return; // Já foi salvo ou está sendo salvo
+            console.log('Dependente já salvo ou em processo de salvamento');
+            return;
         }
 
+        // Marca como salvando
         setSalvandoDependente(dependente.temp_id);
 
         try {
@@ -187,12 +230,16 @@ const StepDependentes = ({ modoLeitura = false }) => {
                 nroregistro: dependente.nroregistro || null,
                 nrolivro: dependente.nrolivro || null,
                 nrofolha: dependente.nrofolha || null,
-                cartao_vacina: dependente.cartao_vacina || null,
+                cartao_vacina: dependente.cartao_vacina || false,
                 nrosus: dependente.nrosus || null,
                 nronascidovivo: dependente.nronascidovivo || null,
                 nome_mae: dependente.nome_mae || null,
-                grau_parentesco: dependente.grau_parentesco
+                grau_parentesco: dependente.grau_parentesco,
+                genero_id_origem: dependente.genero_id_origem,
+                estado_civil_id_origem: dependente.estado_civil_id_origem
             };
+
+            console.log('Salvando dependente:', dependenteParaEnviar);
 
             const response = await http.post(`admissao/${admissaoId}/adiciona_dependentes/`, [dependenteParaEnviar]);
             
@@ -224,6 +271,7 @@ const StepDependentes = ({ modoLeitura = false }) => {
                 life: 5000
             });
         } finally {
+            // Sempre limpa o estado de salvamento
             setSalvandoDependente(null);
         }
     };
@@ -254,9 +302,11 @@ const StepDependentes = ({ modoLeitura = false }) => {
             nroregistro: '',
             nrolivro: '',
             nrofolha: '',
-            cartao_vacina: '',
+            cartao_vacina: false,
             nrosus: '',
-            nronascidovivo: ''
+            nronascidovivo: '',
+            genero_id_origem: '',
+            estado_civil_id_origem: ''
         };
         const novosDependentes = [...(candidato.dependentes || []), novoDependente];
         const novoIndex = novosDependentes.length - 1;
@@ -342,21 +392,21 @@ const StepDependentes = ({ modoLeitura = false }) => {
     };
 
     const confirmarRemocaoDependente = (dependente) => {
-        if (confirmDialogVisible) return; // Previne múltiplos diálogos
+        if (modalRemocaoVisible) return; // Previne múltiplos diálogos
         
         if (dependente.id) {
             // Dependente já salvo - mostrar confirmação
-            setConfirmDialogVisible(true);
+            setModalRemocaoVisible(true);
             confirmDialog({
                 message: `Tem certeza que deseja remover o dependente "${dependente.nome_depend || 'Sem nome'}"? Esta ação não pode ser desfeita.`,
                 header: 'Confirmar Remoção',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
                     executarRemocaoDependente(dependente);
-                    setConfirmDialogVisible(false);
+                    setModalRemocaoVisible(false);
                 },
                 reject: () => {
-                    setConfirmDialogVisible(false);
+                    setModalRemocaoVisible(false);
                 },
                 acceptLabel: 'Sim, remover',
                 rejectLabel: 'Cancelar',
@@ -431,7 +481,6 @@ const StepDependentes = ({ modoLeitura = false }) => {
     return (
         <>
             <StyledToast ref={toast} />
-            <ConfirmDialog />
             <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', paddingTop: '10px'}}>
                 {(candidato.dependentes || []).map((dependente, idx) => {
                     const id = dependente.id || dependente.temp_id;
@@ -492,12 +541,6 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                             setValor={(valor) => handleUpdateDependente(id, 'nome_depend', valor)}
                                             disabled={modoLeitura || isSaved}
                                         />
-                                        <CampoTexto
-                                            label="Número do Dependente *"
-                                            valor={dependente.nrodepend}
-                                            setValor={(valor) => handleUpdateDependente(id, 'nrodepend', valor)}
-                                            disabled={true}
-                                        />
                                         <DropdownItens
                                             label="Grau de Parentesco *"
                                             valor={(() => {
@@ -535,6 +578,34 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                             type="date"
                                             disabled={modoLeitura || isSaved}
                                         />
+                                        <DropdownItens
+                                            label="Gênero"
+                                            valor={(() => {
+                                                const valorEncontrado = generos.find(g => {
+                                                    return g.code == dependente.genero_id_origem || g.id_origem == dependente.genero_id_origem;
+                                                });
+                                                return valorEncontrado || '';
+                                            })()}
+                                            setValor={(valor) => handleUpdateDependente(id, 'genero_id_origem', valor.code)}
+                                            options={generos}
+                                            placeholder="Selecione o gênero"
+                                            disabled={modoLeitura || isSaved}
+                                            filter
+                                        />
+                                        <DropdownItens
+                                            label="Estado Civil"
+                                            valor={(() => {
+                                                const valorEncontrado = estadosCivis.find(g => {
+                                                    return g.code == dependente.estado_civil_id_origem || g.id_origem == dependente.estado_civil_id_origem;
+                                                });
+                                                return valorEncontrado || '';
+                                            })()}
+                                            setValor={(valor) => handleUpdateDependente(id, 'estado_civil_id_origem', valor.code)}
+                                            options={estadosCivis}
+                                            placeholder="Selecione o estado civil"
+                                            disabled={modoLeitura || isSaved}
+                                            filter
+                                        />
                                     </FormGrid>
                                     
                                     <div style={{marginTop: '24px'}}>
@@ -545,7 +616,12 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                             <CampoTexto label="Número do Registro" valor={dependente.nroregistro} setValor={v => handleUpdateDependente(id, 'nroregistro', v)} disabled={modoLeitura || isSaved} />
                                             <CampoTexto label="Número do Livro" valor={dependente.nrolivro} setValor={v => handleUpdateDependente(id, 'nrolivro', v)} disabled={modoLeitura || isSaved} />
                                             <CampoTexto label="Número da Folha" valor={dependente.nrofolha} setValor={v => handleUpdateDependente(id, 'nrofolha', v)} disabled={modoLeitura || isSaved} />
-                                            <CampoTexto label="Cartão de Vacina" valor={dependente.cartao_vacina} setValor={v => handleUpdateDependente(id, 'cartao_vacina', v)} disabled={modoLeitura || isSaved} />
+                                            <CheckboxContainer
+                                                label="Cartão de Vacina"
+                                                valor={dependente.cartao_vacina}
+                                                setValor={(checked) => handleUpdateDependente(id, 'cartao_vacina', checked)}
+                                                disabled={modoLeitura || isSaved}
+                                            />
                                             <CampoTexto label="Número SUS" valor={dependente.nrosus} setValor={v => handleUpdateDependente(id, 'nrosus', v)} disabled={modoLeitura || isSaved} />
                                             <CampoTexto label="Número Nascido Vivo" valor={dependente.nronascidovivo} setValor={v => handleUpdateDependente(id, 'nronascidovivo', v)} disabled={modoLeitura || isSaved} />
                                         </FormGrid>
@@ -556,7 +632,7 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                             onClick={() => confirmarSalvarDependente(dependente)}
                                             disabled={!podeSalvarDependente(dependente) || isSaving}
                                         >
-                                            <FaSave />
+                                            <FaSave fill="var(--white)" />
                                             {isSaving ? 'Salvando...' : 'Salvar Dependente'}
                                         </SaveButton>
                                     )}
