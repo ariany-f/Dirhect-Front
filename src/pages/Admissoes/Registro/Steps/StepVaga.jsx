@@ -217,23 +217,6 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <DropdownItens
-                name="departamento"
-                valor={getValorSelecionado('departamento_id', departamentos)}
-                setValor={valor => {
-                    setCampo('dados_vaga', { 
-                        ...candidato.dados_vaga, 
-                        departamento_id: valor.code,
-                        departamento_nome: valor.name
-                    });
-                }}
-                options={opcoesDepartamentos}
-                label="Departamento"
-                required={isCampoObrigatorio(departamentos)}
-                search
-                filter
-                disabled={modoLeitura}
-            />
-            <DropdownItens
                 name="secao"
                 valor={getValorSelecionado('secao_id', secoes)}
                 setValor={valor => {

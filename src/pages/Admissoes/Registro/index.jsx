@@ -1486,14 +1486,6 @@ const CandidatoRegistro = () => {
                 camposObrigatorios.push('Filial');
                 setClassError(prev => [...prev, 'filial_id']);
             }
-            if (departamentos && departamentos.length > 0 && !dadosVaga.departamento_id) {
-                camposObrigatorios.push('Departamento');
-                setClassError(prev => [...prev, 'departamento_id']);
-            }
-            if (cargos && cargos.length > 0 && !dadosVaga.cargo_id) {
-                camposObrigatorios.push('Cargo');
-                setClassError(prev => [...prev, 'cargo_id']);
-            }
             if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
                 camposObrigatorios.push('Centro de custo');
                 setClassError(prev => [...prev, 'centro_custo_id']);
@@ -1573,12 +1565,6 @@ const CandidatoRegistro = () => {
             // Só valida campos se houver dados disponíveis nos dropdowns
             if (filiais && filiais.length > 0 && !dadosVaga.filial_id) {
                 camposObrigatorios.push('Filial');
-            }
-            if (departamentos && departamentos.length > 0 && !dadosVaga.departamento_id) {
-                camposObrigatorios.push('Departamento');
-            }
-            if (cargos && cargos.length > 0 && !dadosVaga.cargo_id) {
-                camposObrigatorios.push('Cargo');
             }
             if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
                 camposObrigatorios.push('Centro de custo');
