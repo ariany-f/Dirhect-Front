@@ -13,7 +13,6 @@ import { ArmazenadorToken } from "@utils";
 import loginData from '@json/login.json';
 import { useTranslation } from "react-i18next";
 import imagem from '@imagens/bg-mobile.jpg';
-import logo from '@imagens/logo.png';
 import http from "@http";
 import { useForm } from "react-hook-form";
 import { SuccessIcon, ErrorIcon } from '@components/ToastIcons';
@@ -24,6 +23,7 @@ function LoginMobile() {
     const navegar = useNavigate();
     const [logins, setLogins] = useState([]);
     const { t } = useTranslation('common');
+    const logo = import.meta.env.VITE_BRAND_LOGO_URL;
     const { 
         usuario,
         setRemember,

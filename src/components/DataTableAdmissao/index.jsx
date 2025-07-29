@@ -89,10 +89,27 @@ function DataTableAdmissao({
         return tarefasPendentes.length > 0 ? tarefasPendentes[0] : null;
     };
 
+    const obterTodasTarefaPendente = (candidato) => {
+        if (!candidato?.tarefas) return null;
+        
+        const tarefasPendentes = candidato.tarefas.filter(tarefa => {
+            const statusValido = tarefa.status === 'pendente' || tarefa.status === 'em_andamento';
+            
+            return statusValido;
+        });
+        
+        return tarefasPendentes.length > 0 ? tarefasPendentes[0] : null;
+    };
+
     // Função para verificar se está em modo leitura
     const verificarModoLeitura = (candidato) => {
         const tarefaPendente = obterTarefaPendente(candidato);
         return !tarefaPendente;
+    };
+
+    const verificarFinalizada = (candidato) => {
+        const todasTarefasPendentes = obterTodasTarefaPendente(candidato);
+        return !todasTarefasPendentes;
     };
 
     // Função para verificar se alguma admissão tem tarefa de LGPD
@@ -138,6 +155,7 @@ function DataTableAdmissao({
         
         // Verifica se está em modo leitura usando a mesma lógica do index.jsx
         const isModoLeitura = verificarModoLeitura(rowData);
+        const isFinalizada = verificarFinalizada(rowData);
         
         return (
             <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -201,7 +219,7 @@ function DataTableAdmissao({
                                     minWidth: 'fit-content'
                                 }}
                             >
-                                Finalizada
+                                {isFinalizada ? 'Finalizada' : 'Modo Leitura'}
                             </div>
                         )}
                     </div>
@@ -498,7 +516,8 @@ function DataTableAdmissao({
                 onRowClick={(e) => verDetalhes(e.data)}
                 rowClassName={(data) => {
                     const isModoLeitura = verificarModoLeitura(data);
-                    return `datatable-clickable-row ${isModoLeitura ? 'datatable-readonly-row' : ''}`;
+                    const isFinalizada = verificarFinalizada(data);
+                    return `datatable-clickable-row ${(isModoLeitura || isFinalizada) ? 'datatable-readonly-row' : ''}`;
                 }}
                 footerColumnGroup={
                     paginator ? (

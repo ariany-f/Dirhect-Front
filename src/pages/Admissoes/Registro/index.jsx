@@ -491,6 +491,8 @@ const CandidatoRegistro = () => {
     const [showModalConfirmacao, setShowModalConfirmacao] = useState(false);
     const [initialCandidato, setInitialCandidato] = useState(null);
     const [modoLeitura, setModoLeitura] = useState(false);
+    const [perfil, setPerfil] = useState(null);
+    const [finalizada, setFinalizada] = useState(false);
     const [showConfirmacaoFinalizacao, setShowConfirmacaoFinalizacao] = useState(false);
     const [showConfirmacaoDependentes, setShowConfirmacaoDependentes] = useState(false);
     const [dependentesParaAdicionar, setDependentesParaAdicionar] = useState([]);
@@ -528,12 +530,12 @@ const CandidatoRegistro = () => {
         switch (tipoTarefa) {
             case 'aguardar_documento':
                 // Permite que qualquer perfil aprovado possa aprovar documentos
-                return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === null;
+                return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === '' || perfil === null;
             case 'aprovar_admissao':
                 return ['analista', 'supervisor', 'gestor'].includes(perfil);
             case 'aguardar_lgpd':
                 // Permite que qualquer perfil aprovado possa aceitar LGPD
-                return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === null;
+                return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === '' || perfil === null;
             default:
                 return false;
         }
@@ -544,6 +546,18 @@ const CandidatoRegistro = () => {
             tarefa.tipo_codigo === tipoTarefa && 
             (tarefa.status === 'concluida' || tarefa.status === 'concluído')
         );
+    };
+
+    const obterTodasTarefaPendente = () => {
+        if (!candidato?.tarefas) return null;
+        
+        const tarefasPendentes = candidato.tarefas.filter(tarefa => {
+            const statusValido = tarefa.status === 'pendente' || tarefa.status === 'em_andamento';
+            
+            return statusValido;
+        });
+        
+        return tarefasPendentes.length > 0 ? tarefasPendentes[0] : null;
     };
 
     const obterTarefaPendente = () => {
@@ -562,12 +576,20 @@ const CandidatoRegistro = () => {
     // Verificar se deve estar em modo leitura
     useEffect(() => {
         const tarefaPendente = obterTarefaPendente();
-        
-        // Se não há tarefa pendente que o usuário pode concluir, ativa modo leitura
-        if (!tarefaPendente) {
+        const todasTarefasPendentes = obterTodasTarefaPendente();
+
+        if((!todasTarefasPendentes) || todasTarefasPendentes.length === 0){
+            setFinalizada(true);
             setModoLeitura(true);
         } else {
-            setModoLeitura(false);
+            if(!tarefaPendente){
+                setModoLeitura(true);
+                setFinalizada(false);
+            }
+            else {
+                setModoLeitura(false);
+                setFinalizada(false);
+            }
         }
     }, [candidato?.tarefas]);
 
@@ -1628,7 +1650,7 @@ const CandidatoRegistro = () => {
 
         // Obter a tarefa pendente que o usuário pode concluir
         const tarefaPendente = obterTarefaPendente();
-        
+
         if (!tarefaPendente) {
             toast.current.show({
                 severity: 'error',
@@ -1637,6 +1659,17 @@ const CandidatoRegistro = () => {
                 life: 3000
             });
             return;
+        }
+
+        const perfil = ArmazenadorToken.UserProfile;
+                                    
+        if(perfil === 'analista_tenant' && tarefaPendente?.tipo_codigo === 'aprovar_admissao'){
+            toast.current.show({
+                severity: 'error',
+                summary: 'Você não pode executar esta ação',
+                detail: 'Você não pode executar esta ação',
+                life: 3000
+            });
         }
 
         // Se for visão empresa (self = false), mostra modal de confirmação
@@ -2591,7 +2624,7 @@ const CandidatoRegistro = () => {
                                         color: '#fff',
                                         opacity: 0.9
                                     }}>
-                                        Admissão Finalizada
+                                        {finalizada ? 'Admissão Finalizada' : 'Modo Leitura'}
                                     </span>
                                 </div>
                             )}
@@ -2838,9 +2871,12 @@ const CandidatoRegistro = () => {
                             <ModalMessage>
                                 {(() => {
                                     const tarefaPendente = obterTarefaPendente();
+                                    
+                                    // analista_tenant=RH
+                                    // analista=Outsourcing
                                     const perfil = ArmazenadorToken.UserProfile;
                                     
-                                    if (tarefaPendente?.tipo_codigo === 'aguardar_documento' && (perfil === 'analista_tenant' || perfil === null)) {
+                                    if (tarefaPendente?.tipo_codigo === 'aguardar_documento') {
                                         return (
                                             <>
                                                 Após esta confirmação, os <strong>documentos do candidato</strong> <strong>{candidato?.nome || 'Candidato'}</strong> serão aprovados e encaminhados para aprovação da admissão.

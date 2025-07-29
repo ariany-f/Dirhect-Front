@@ -107,7 +107,7 @@ export class ArmazenadorToken {
         localStorage.setItem(COMPANY_SYMBOL, company_symbol)
         localStorage.setItem(COMPANY_LOGO, company_logo)
     }
-    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo, mfa_required, profile = 'analista') {
+    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo, mfa_required, profile = '') {
         if (!email) {
             throw new Error('Email é obrigatório')
         }
@@ -122,7 +122,7 @@ export class ArmazenadorToken {
             localStorage.setItem(COMPANY_SYMBOL, company_symbol || '')
             localStorage.setItem(COMPANY_LOGO, company_logo || '')
             localStorage.setItem(MFA_REQUIRED, mfa_required || false)
-            localStorage.setItem(USER_PROFILE, profile || 'analista')
+            localStorage.setItem(USER_PROFILE, profile || '')
         } catch (error) {
             console.error('Erro ao armazenar dados do usuário:', error)
             throw new Error('Falha ao armazenar dados do usuário')
