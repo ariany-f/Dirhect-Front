@@ -235,8 +235,8 @@ const StepDependentes = ({ modoLeitura = false }) => {
                 nronascidovivo: dependente.nronascidovivo || null,
                 nome_mae: dependente.nome_mae || null,
                 grau_parentesco: dependente.grau_parentesco,
-                genero_id_origem: dependente.genero_id_origem,
-                estado_civil_id_origem: dependente.estado_civil_id_origem,
+                genero: dependente.genero_id_origem,
+                estadocivil: dependente.estado_civil_id_origem,
                 incidencia_irrf: dependente.incidencia_irrf || false,
                 incidencia_inss: dependente.incidencia_inss || false,
                 incidencia_assist_medica: dependente.incidencia_assist_medica || false,
@@ -311,8 +311,8 @@ const StepDependentes = ({ modoLeitura = false }) => {
             cartao_vacina: false,
             nrosus: '',
             nronascidovivo: '',
-            genero_id_origem: '',
-            estado_civil_id_origem: '',
+            genero: '',
+            estadocivil: '',
             incidencia_irrf: false,
             incidencia_inss: false,
             incidencia_assist_medica: false,
@@ -598,7 +598,7 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                                 });
                                                 return valorEncontrado || '';
                                             })()}
-                                            setValor={(valor) => handleUpdateDependente(id, 'genero_id_origem', valor.code)}
+                                            setValor={(valor) => handleUpdateDependente(id, 'genero', valor.code)}
                                             options={generos}
                                             placeholder="Selecione o gênero"
                                             disabled={modoLeitura || isSaved}
@@ -612,7 +612,7 @@ const StepDependentes = ({ modoLeitura = false }) => {
                                                 });
                                                 return valorEncontrado || '';
                                             })()}
-                                            setValor={(valor) => handleUpdateDependente(id, 'estado_civil_id_origem', valor.code)}
+                                            setValor={(valor) => handleUpdateDependente(id, 'estadocivil', valor.code)}
                                             options={estadosCivis}
                                             placeholder="Selecione o estado civil"
                                             disabled={modoLeitura || isSaved}

@@ -317,6 +317,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                             name: filial.nome,
                                             code: filial.id
                                         }))} 
+                                        label="Filial"
                                         placeholder="Filial" />
                                 </Col6>
                                 <Col6>
@@ -329,6 +330,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                             name: cc.nome,
                                             code: cc.id
                                         }))} 
+                                        label="Centro de Custo"
                                         placeholder="Centro de Custo" />
                                 </Col6>
                             </Col12>
@@ -344,6 +346,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                             name: dep.nome,
                                             code: dep.id
                                         }))} 
+                                        label="Departamento"
                                         placeholder="Departamento" />
                                 </Col6>
                                 <Col6>
@@ -356,6 +359,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                             name: sec.nome,
                                             code: sec.id
                                         }))} 
+                                        label="Seção"
                                         placeholder="Seção" />
                                 </Col6>
                             </Col12>
@@ -371,6 +375,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                             name: cargo.nome,
                                             code: cargo.id
                                         }))} 
+                                        label="Cargo"
                                         placeholder="Cargo" />
                                 </Col6>
                                 <Col6>
@@ -383,6 +388,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                             name: `${horario.codigo} - ${horario.descricao}`,
                                             code: horario.id
                                         }))} 
+                                        label="Horário"
                                         placeholder="Horário" />
                                 </Col6>
                             </Col12>
@@ -398,6 +404,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                             name: funcao.nome,
                                             code: funcao.id
                                         }))} 
+                                        label="Função"
                                         placeholder="Função" />
                                 </Col6>
                                 <Col6>
@@ -410,6 +417,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                             name: `${sindicato.codigo} - ${sindicato.descricao}`,
                                             code: sindicato.id
                                         }))} 
+                                        label="Sindicato"
                                         placeholder="Sindicato" />
                                 </Col6>
                             </Col12>

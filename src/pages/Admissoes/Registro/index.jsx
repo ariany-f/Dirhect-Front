@@ -1466,9 +1466,6 @@ const CandidatoRegistro = () => {
             if (!candidato.banco?.trim()) {
                 camposObrigatorios.push('Banco');
             }
-            // if (!candidato.agencia?.trim()) {
-            //     camposObrigatorios.push('Agência');
-            // }
             if (!candidato.conta_corrente?.trim()) {
                 camposObrigatorios.push('Conta corrente');
             }
