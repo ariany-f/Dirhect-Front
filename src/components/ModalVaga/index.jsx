@@ -314,7 +314,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         valor={filial}
                                         setValor={setFilial} 
                                         options={filiais.map(filial => ({
-                                            name: filial.nome,
+                                            name: filial.id_origem + ' - ' + filial.nome,
                                             code: filial.id
                                         }))} 
                                         label="Filial"
@@ -327,7 +327,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         valor={centroCusto}
                                         setValor={setCentroCusto} 
                                         options={centros_custo.map(cc => ({
-                                            name: cc.nome,
+                                            name: cc.cc_origem + ' - ' + cc.nome,
                                             code: cc.id
                                         }))} 
                                         label="Centro de Custo"
@@ -343,7 +343,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         valor={departamento}
                                         setValor={setDepartamento} 
                                         options={departamentos.map(dep => ({
-                                            name: dep.nome,
+                                            name: dep.id_origem + ' - ' + dep.nome,
                                             code: dep.id
                                         }))} 
                                         label="Departamento"
@@ -356,7 +356,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         valor={secao}
                                         setValor={setSecao} 
                                         options={secoes.map(sec => ({
-                                            name: sec.nome,
+                                            name: sec.id_origem + ' - ' + sec.nome,
                                             code: sec.id
                                         }))} 
                                         label="Seção"
@@ -372,7 +372,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         valor={cargo}
                                         setValor={setCargo} 
                                         options={cargos.map(cargo => ({
-                                            name: cargo.nome,
+                                            name: cargo.id_origem + ' - ' + cargo.nome,
                                             code: cargo.id
                                         }))} 
                                         label="Cargo"
@@ -385,7 +385,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         valor={horario}
                                         setValor={setHorario} 
                                         options={horarios.map(horario => ({
-                                            name: `${horario.codigo} - ${horario.descricao}`,
+                                            name: `${horario.id_origem} - ${horario.descricao}`,
                                             code: horario.id
                                         }))} 
                                         label="Horário"
@@ -401,7 +401,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         valor={funcao}
                                         setValor={setFuncao} 
                                         options={funcoes.map(funcao => ({
-                                            name: funcao.nome,
+                                            name: funcao.funcao_origem_id + ' - ' + funcao.nome,
                                             code: funcao.id
                                         }))} 
                                         label="Função"
@@ -414,7 +414,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                                         valor={sindicato}
                                         setValor={setSindicato} 
                                         options={sindicatos.map(sindicato => ({
-                                            name: `${sindicato.codigo} - ${sindicato.descricao}`,
+                                            name: `${sindicato.id_origem} - ${sindicato.descricao}`,
                                             code: sindicato.id
                                         }))} 
                                         label="Sindicato"

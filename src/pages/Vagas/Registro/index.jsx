@@ -411,6 +411,7 @@ const VagasRegistro = () => {
 
                 <div style={{textAlign: 'left'}}>
                     <h6>Estrutura Organizacional</h6>
+                    <br />
                     <Col12>
                         <Col6>
                             <DropdownItens 
@@ -423,6 +424,7 @@ const VagasRegistro = () => {
                                     code: filial.id
                                 }))} 
                                 filter
+                                label="Filial"
                                 placeholder="Filial"
                                 required={isCampoObrigatorio(filiais)}
                                 allowClear={true} />
@@ -434,10 +436,11 @@ const VagasRegistro = () => {
                                 valor={centroCusto}
                                 setValor={setCentroCusto} 
                                 options={centros_custo.map(cc => ({
-                                    name: `${cc.id_origem} - ${cc.nome}`,
+                                    name: `${cc.cc_origem} - ${cc.nome}`,
                                     code: cc.id
                                 }))} 
                                 filter
+                                label="Centro de Custo"
                                 placeholder="Centro de Custo"
                                 required={isCampoObrigatorio(centros_custo)}
                                 allowClear={true} />
@@ -456,6 +459,7 @@ const VagasRegistro = () => {
                                     code: dep.id
                                 }))} 
                                 filter
+                                label="Departamento"
                                 placeholder="Departamento"
                                 required={isCampoObrigatorio(departamentos)}
                                 allowClear={true} />
@@ -471,6 +475,7 @@ const VagasRegistro = () => {
                                     code: sec.id
                                 }))} 
                                 filter
+                                label="Seção"
                                 placeholder="Seção"
                                 required={isCampoObrigatorio(secoes)}
                                 allowClear={true} />
@@ -489,6 +494,7 @@ const VagasRegistro = () => {
                                     code: cargo.id
                                 }))} 
                                 filter
+                                label="Cargo"
                                 placeholder="Cargo"
                                 required={isCampoObrigatorio(cargos)}
                                 allowClear={true} />
@@ -504,6 +510,7 @@ const VagasRegistro = () => {
                                     code: horario.id
                                 }))} 
                                 filter
+                                label="Horário"
                                 placeholder="Horário"
                                 required={isCampoObrigatorio(horarios)}
                                 allowClear={true} />
@@ -518,10 +525,11 @@ const VagasRegistro = () => {
                                 valor={funcao}
                                 setValor={setFuncao} 
                                 options={funcoes.map(funcao => ({
-                                    name: funcao.nome,
+                                    name: funcao.funcao_origem_id + ' - ' + funcao.nome,
                                     code: funcao.id
                                 }))} 
                                 filter
+                                label="Função"
                                 placeholder="Função"
                                 required={isCampoObrigatorio(funcoes)}
                                 allowClear={true} />
@@ -537,6 +545,7 @@ const VagasRegistro = () => {
                                     code: sindicato.id
                                 }))} 
                                 filter
+                                label="Sindicato"
                                 placeholder="Sindicato"
                                 required={isCampoObrigatorio(sindicatos)}
                                 allowClear={true} />
