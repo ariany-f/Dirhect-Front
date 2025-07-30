@@ -32,6 +32,38 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
   const [centroCusto, setCentroCusto] = useState("");
   const [camposVazios, setCamposVazios] = useState([]);
 
+  // Função para validar CPF matematicamente
+  const validarCPF = (cpf) => {
+    // Remove caracteres não numéricos
+    const cpfNumerico = cpf.replace(/\D/g, '');
+    
+    // Verifica se tem 11 dígitos
+    if (cpfNumerico.length !== 11) return false;
+    
+    // Verifica se todos os dígitos são iguais (CPF inválido)
+    if (/^(\d)\1{10}$/.test(cpfNumerico)) return false;
+    
+    // Validação do primeiro dígito verificador
+    let soma = 0;
+    for (let i = 0; i < 9; i++) {
+      soma += parseInt(cpfNumerico.charAt(i)) * (10 - i);
+    }
+    let resto = 11 - (soma % 11);
+    let digito1 = resto < 2 ? 0 : resto;
+    
+    // Validação do segundo dígito verificador
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+      soma += parseInt(cpfNumerico.charAt(i)) * (11 - i);
+    }
+    resto = 11 - (soma % 11);
+    let digito2 = resto < 2 ? 0 : resto;
+    
+    // Verifica se os dígitos verificadores estão corretos
+    return parseInt(cpfNumerico.charAt(9)) === digito1 && 
+           parseInt(cpfNumerico.charAt(10)) === digito2;
+  };
+
   const limparCampos = () => {
     setNome("");
     setEmail("");
@@ -76,9 +108,8 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
       camposObrigatorios.push('email');
     }
     
-    // Validação de CPF (mínimo 11 dígitos)
-    const cpfNumerico = cpf.replace(/\D/g, '');
-    if (cpf.trim() && cpfNumerico.length < 11) {
+    // Validação de CPF (validação matemática real)
+    if (cpf.trim() && !validarCPF(cpf)) {
       camposObrigatorios.push('cpf');
     }
     
