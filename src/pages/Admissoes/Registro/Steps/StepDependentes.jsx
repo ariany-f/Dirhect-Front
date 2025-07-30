@@ -62,15 +62,37 @@ const StyledToast = styled(Toast)`
     }
 `;
 
+const SectionTitle = styled.div`
+    grid-column: 1 / -1;
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+    margin: 20px 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+`;
 
 const StepDependentes = ({ classError = [], modoLeitura = false }) => {
     const { candidato, setCandidato } = useCandidatoContext();
     const [grausParentesco, setGrausParentesco] = useState([]);
     const [generos, setGeneros] = useState([]);
     const [estadosCivis, setEstadosCivis] = useState([]);
-    const [abertos, setAbertos] = useState(() => 
-        (candidato.dependentes?.length > 0) ? [candidato.dependentes.length - 1] : []
-    );
+    const [abertos, setAbertos] = useState(() => {
+        if (!candidato.dependentes || candidato.dependentes.length === 0) {
+            return [];
+        }
+        
+        // Verifica se todos os dependentes estão salvos
+        const todosSalvos = candidato.dependentes.every(dep => dep.id);
+        
+        // Se todos estão salvos, retorna array vazio (todos fechados)
+        if (todosSalvos) {
+            return [];
+        }
+        
+        // Se há dependentes não salvos, abre o último
+        return [candidato.dependentes.length - 1];
+    });
     const [salvandoDependente, setSalvandoDependente] = useState(null);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [modalSalvamentoVisible, setModalSalvamentoVisible] = useState(false);
@@ -512,7 +534,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                             border: '1px solid #eee', 
                             borderRadius: 8, 
                             marginBottom: 12, 
-                            padding: 12,
+                            padding: '24px 12px',
                             width: '100%',
                             backgroundColor: isSaved ? '#f8f9fa' : 'white'
                         }}>
@@ -526,6 +548,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                 {isOpen ? (
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <strong>{dependente.nome_depend || `Dependente ${idx + 1}`}</strong>
+                                        <p>{dependente.nrodepend}</p>
                                         {isSaving && <span style={{ color: '#6b7280', fontSize: '12px' }}>(Salvando...)</span>}
                                         {isSaved && <span style={{ color: '#059669', fontSize: '12px' }}>✓ Salvo</span>}
                                     </div>
@@ -538,13 +561,14 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                     {!modoLeitura && (
                                         <BotaoSemBorda
+
                                             aoClicar={(e) => {
                                                 e.stopPropagation();
                                                 confirmarRemocaoDependente(dependente);
                                             }}
                                             color="var(--error-500)"
                                         >
-                                            <FaTrash />
+                                            Remover
                                         </BotaoSemBorda>
                                     )}
                                     {isOpen ? <FaChevronUp /> : <FaChevronDown />}
@@ -554,16 +578,21 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                             {isOpen && (
                                 <div style={{paddingTop: '16px'}}>
                                     <FormGrid>
+
+                                        <SectionTitle>Identificação</SectionTitle>
+
                                         <CampoTexto
                                             camposVazios={isCampoEmErro(`nome_depend_${idx}`) ? [`nome_depend_${idx}`] : []}
-                                            label="Nome Completo *"
+                                            label="Nome Completo"
+                                            required={true}
                                             valor={dependente.nome_depend}
                                             setValor={(valor) => handleUpdateDependente(id, 'nome_depend', valor)}
                                             disabled={modoLeitura || isSaved}
                                         />
                                         <DropdownItens
                                             camposVazios={isCampoEmErro(`grau_parentesco_${idx}`) ? [`grau_parentesco_${idx}`] : []}
-                                            label="Grau de Parentesco *"
+                                            label="Grau de Parentesco"
+                                            required={true}
                                             valor={(() => {
                                                 // Para dependentes salvos, sempre busca na lista completa
                                                 if (dependente.id) {
@@ -607,6 +636,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                                 });
                                                 return valorEncontrado || '';
                                             })()}
+                                            required={true}
                                             setValor={(valor) => handleUpdateDependente(id, 'genero', valor.code)}
                                             options={generos}
                                             placeholder="Selecione o gênero"
@@ -615,6 +645,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                         />
                                         <DropdownItens
                                             label="Estado Civil"
+                                            required={true}
                                             valor={(() => {
                                                 const valorEncontrado = estadosCivis.find(g => {
                                                     return g.code == dependente.estadocivil || g.id_origem == dependente.estadocivil;
@@ -630,7 +661,8 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                     </FormGrid>
                                     
                                     <div style={{marginTop: '24px'}}>
-                                        <h4 style={sectionTitleStyle}>Dados Adicionais</h4>
+
+                                        <SectionTitle>Dados Adicionais</SectionTitle>
                                         <FormGrid>
                                             <CampoTexto label="Nome da Mãe" valor={dependente.nome_mae} setValor={v => handleUpdateDependente(id, 'nome_mae', v)} disabled={modoLeitura || isSaved} />
                                             <CampoTexto label="Cartório" valor={dependente.cartorio} setValor={v => handleUpdateDependente(id, 'cartorio', v)} disabled={modoLeitura || isSaved} />

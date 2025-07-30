@@ -129,7 +129,7 @@ const CampoArea = styled(InputTextarea)`
     }
 `
 
-function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = true, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
+function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = false, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -293,7 +293,9 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
         return (
             <div className={styles.inputContainer}>
                 {label &&
-                    <label htmlFor={name} className={styles.label} style={{ marginBottom: '4px', display: 'block' }}>{label}</label>
+                    <label htmlFor={name} className={styles.label} style={{ marginBottom: '4px', display: 'block' }}>
+                        {label}{required && <span style={{color: 'var(--error)'}}> *</span>}
+                    </label>
                 }
                 <CampoArea
                     id={name}
@@ -329,7 +331,9 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
             <div className={styles.inputContainer}>
                
                 {label &&
-                    <label htmlFor={name} className={styles.label} style={{ marginBottom: '4px', display: 'block' }}>{label}</label>
+                    <label htmlFor={name} className={styles.label} style={{ marginBottom: '4px', display: 'block' }}>
+                        {label}{required && <span style={{color: 'var(--error)'}}> *</span>}
+                    </label>
                 }
                 <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on" maxLength={maxCaracteres}></Campo>
                 {temIcone(type, visibilityPassword)}

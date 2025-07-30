@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { InputOtp } from 'primereact/inputotp';
 import Botao from '@components/Botao';
@@ -16,6 +16,9 @@ function Mfa() {
     const navegar = useNavigate();
     const { confirmed, method } = useParams();
     const [otpCode, setOtpCode] = useState('');
+    const [countdown, setCountdown] = useState(30);
+    const [canResend, setCanResend] = useState(false);
+    const [resendLoading, setResendLoading] = useState(false);
     const { control, handleSubmit, formState: { errors } } = useForm();
 
     const { 
@@ -32,6 +35,19 @@ function Mfa() {
         setName,
         setMfaRequired,
     } = useSessaoUsuarioContext();
+
+    // Contador para o botão de reenvio
+    useEffect(() => {
+        let interval;
+        if (countdown > 0) {
+            interval = setInterval(() => {
+                setCountdown(prev => prev - 1);
+            }, 1000);
+        } else {
+            setCanResend(true);
+        }
+        return () => clearInterval(interval);
+    }, [countdown]);
 
     const customInput = ({events, props}) => (
         <input 
@@ -134,6 +150,31 @@ function Mfa() {
         });
     }
 
+    async function handleResendCode() {
+        setResendLoading(true);
+        try {
+            if (method === 'email') {
+                await http.post('/mfa/email/send/');
+                toast.success('Código de verificação reenviado para o seu e-mail.');
+            } else {
+                await http.post('/mfa/generate/');
+                toast.success('Novo código OTP gerado no seu aplicativo de autenticação.');
+            }
+            
+            // Reset do contador
+            setCountdown(30);
+            setCanResend(false);
+        } catch (error) {
+            if (method === 'email') {
+                toast.error('Erro ao reenviar o código de verificação por e-mail.');
+            } else {
+                toast.error('Erro ao gerar novo código OTP.');
+            }
+        } finally {
+            setResendLoading(false);
+        }
+    }
+
     async function handleVerifyOtp() {
         if (confirmed === 'true') {
             const validationPromise = method === 'email' 
@@ -231,6 +272,38 @@ function Mfa() {
                         className="w-full"
                     />
                     <Botao aoClicar={handleVerifyOtp}>Verificar Código</Botao>
+                    
+                    <div style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        alignItems: 'center', 
+                        gap: '10px',
+                        marginTop: '10px'
+                    }}>
+                        {!canResend ? (
+                            <p style={{ 
+                                fontSize: '14px', 
+                                color: 'var(--surface-600)',
+                                margin: 0
+                            }}>
+                                Reenviar código em {countdown}s
+                            </p>
+                        ) : (
+                            <Botao 
+                                aoClicar={handleResendCode}
+                                disabled={resendLoading}
+                                style={{
+                                    background: 'transparent',
+                                    color: 'var(--primary-color)',
+                                    border: '1px solid var(--primary-color)',
+                                    fontSize: '14px',
+                                    padding: '8px 16px'
+                                }}
+                            >
+                                {resendLoading ? 'Reenviando...' : 'Reenviar Código'}
+                            </Botao>
+                        )}
+                    </div>
                 </Frame>
             </div>
         </div>

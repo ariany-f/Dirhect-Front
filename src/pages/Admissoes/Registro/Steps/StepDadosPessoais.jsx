@@ -214,7 +214,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
         <GridContainer data-tour="panel-step-1">
 
             <SectionTitle>Identificação</SectionTitle>
-            
+
             <CampoTexto
                 camposVazios={classError}
                 name="nome"
@@ -272,6 +272,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             <DropdownItens
                 name="cor_raca"
                 label="Cor/Raça"
+                required={true}
                 valor={getValorSelecionadoFromCandidato('cor_raca', opcoesCorRaca)}
                 setValor={(valor) => setCampo('cor_raca', valor.code)}
                 options={opcoesCorRaca}

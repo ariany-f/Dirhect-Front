@@ -207,13 +207,13 @@ function DataTableAdmissao({
                         {isModoLeitura && (
                             <div
                                 style={{
-                                    backgroundColor: 'var(--neutro-300)',
-                                    color: 'var(--neutro-800)',
-                                    fontWeight: 500,
-                                    fontSize: 10,
+                                    backgroundColor: isFinalizada ? ' rgba(102, 187, 106, 0.15)' : 'rgba(66, 165, 245, 0.15)',
+                                    color: isFinalizada ? 'rgb(102, 187, 106)' : 'rgb(66, 165, 245)',
+                                    fontWeight: 600,
+                                    fontSize: 12,
                                     borderRadius: 6,
-                                    padding: '2px 3px',
-                                    border: '1px solid var(--neutro-400)',
+                                    padding: '4px 8px',
+                                    border: 'none',
                                     display: 'inline-block',
                                     textAlign: 'center',
                                     minWidth: 'fit-content'
