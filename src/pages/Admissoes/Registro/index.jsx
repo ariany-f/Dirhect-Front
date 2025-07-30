@@ -528,6 +528,19 @@ const CandidatoRegistro = () => {
     const [croppedImageSrc, setCroppedImageSrc] = useState('');
     const [isCropped, setIsCropped] = useState(false);
     const [hasCropChanged, setHasCropChanged] = useState(false);
+    
+    // Estado para rastrear campos que foram explicitamente selecionados pelo usuário
+    const [camposSelecionados, setCamposSelecionados] = useState(new Set());
+    
+    // Função para marcar um campo como selecionado pelo usuário
+    const marcarCampoSelecionado = (campo) => {
+        console.log(`🎯 marcarCampoSelecionado chamado para: ${campo}`);
+        setCamposSelecionados(prev => {
+            const novoSet = new Set([...prev, campo]);
+            console.log(`🎯 camposSelecionados atualizado:`, Array.from(novoSet));
+            return novoSet;
+        });
+    };
 
     // Funções para verificar permissões baseadas no perfil
     const verificarPermissaoTarefa = (tipoTarefa) => {
@@ -832,7 +845,11 @@ const CandidatoRegistro = () => {
         }
         
         // Se não há dependentes novos, salva normalmente
-        await executarSalvamento();
+        const salvamentoSucesso = await executarSalvamento();
+        if (salvamentoSucesso === false) {
+            // ❌ ERRO DE VALIDAÇÃO - NÃO CONTINUA
+            return;
+        }
     };
 
     const handleSalvarEContinuar = async () => {
@@ -860,7 +877,13 @@ const CandidatoRegistro = () => {
         }
         
         // Se não há dependentes novos, salva e continua normalmente
-        await executarSalvamento();
+        const salvamentoSucesso = await executarSalvamento();
+        if (salvamentoSucesso === false) {
+            // ❌ ERRO DE VALIDAÇÃO - NÃO CONTINUA PARA O PRÓXIMO STEP
+            return;
+        }
+        
+        // ✅ SALVAMENTO SUCESSO - CONTINUA PARA O PRÓXIMO STEP
         stepperRef.current.nextCallback();
         setActiveIndex(prev => prev + 1);
     };
@@ -1280,15 +1303,53 @@ const CandidatoRegistro = () => {
                 const snapshot = JSON.parse(JSON.stringify(candidatoAtual));
                 setInitialCandidato(snapshot);
             }, 100);
+            
+            // ✅ SALVAMENTO SUCESSO - RETORNA TRUE
+            return true;
 
         } catch (error) {
             console.error('Erro ao salvar:', error);
-            toast.current.show({
-                severity: 'error',
-                summary: 'Erro',
-                detail: 'Erro ao salvar dados. Tente novamente.',
-                life: 3000
-            });
+            
+            // Verifica se o erro tem o formato específico da API
+            if (error && error.admissao_errors) {
+                const admissaoErrors = error.admissao_errors;
+                
+                // Processa os erros para exibir no toast
+                const errosFormatados = Object.entries(admissaoErrors).map(([campo, mensagens]) => {
+                    const mensagem = Array.isArray(mensagens) ? mensagens.join(', ') : mensagens;
+                    return `${campo}: ${mensagem}`;
+                }).join('\n');
+                
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro de Validação',
+                    detail: errosFormatados,
+                    life: 5000
+                });
+                
+                // Atualiza o estado de erro para destacar os campos com problema
+                const camposComErro = Object.keys(admissaoErrors);
+                setClassError(camposComErro);
+                
+                // Log detalhado dos erros
+                console.log('📋 Campos com erro:', camposComErro);
+                console.log('📝 Mensagens de erro:', admissaoErrors);
+                
+                // ❌ INTERROMPE O FLUXO - NÃO CONTINUA PARA O PRÓXIMO STEP
+                return false;
+                
+            } else {
+                // Erro genérico
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao salvar dados. Tente novamente.',
+                    life: 3000
+                });
+                
+                // ❌ INTERROMPE O FLUXO - NÃO CONTINUA PARA O PRÓXIMO STEP
+                return false;
+            }
         }
     };
 
@@ -1394,6 +1455,8 @@ const CandidatoRegistro = () => {
         const dadosCandidato = candidato || {};
         const dadosVaga = candidato.dados_vaga || {};
         const camposObrigatorios = [];
+        
+
         
         // Validação específica por step
         if (activeIndex === 1) { // Step Dados Pessoais
@@ -1502,6 +1565,7 @@ const CandidatoRegistro = () => {
                 }
             });
         } else if (activeIndex === 3 && !self) { // Step Dados Contratuais (apenas se não for self)
+            
             // Validação de dados contratuais obrigatórios baseada no required={true}
             const camposObrigatoriosDadosContratuais = [
                 { campo: 'dt_admissao', nome: 'Data de Admissão' },
@@ -1526,7 +1590,31 @@ const CandidatoRegistro = () => {
             camposObrigatoriosDadosContratuais.forEach(({ campo, nome }) => {
                 // Verifica se o campo existe e tem valor (pode ser objeto ou string)
                 const valor = candidato[campo];
+                
+
+                
+                // Verifica se o campo foi explicitamente selecionado pelo usuário
+                const foiSelecionado = camposSelecionados.has(campo);
+                
+                // Lista de campos que DEVEM ser explicitamente selecionados pelo usuário
+                const camposExplicitos = [];
+                const precisaSelecaoExplicita = camposExplicitos.includes(campo);
+                
+                // Log temporário para debug
+                if (camposExplicitos.includes(campo)) {
+                    console.log(`🔍 VALIDAÇÃO DEBUG - Campo: ${campo}`, {
+                        valor: valor,
+                        foiSelecionado: foiSelecionado,
+                        precisaSelecaoExplicita: precisaSelecaoExplicita,
+                        camposSelecionados: Array.from(camposSelecionados)
+                    });
+                }
+                
                 if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
+                    camposObrigatorios.push(nome);
+                    setClassError(prev => [...prev, campo]);
+                } else if (precisaSelecaoExplicita && !foiSelecionado) {
+                    // Campo específico que precisa ser explicitamente selecionado
                     camposObrigatorios.push(nome);
                     setClassError(prev => [...prev, campo]);
                 }
@@ -1543,6 +1631,9 @@ const CandidatoRegistro = () => {
             }
         } else if (activeIndex === getStepDependentesIndex()) { // Step Dependentes
             // Validação de dependentes obrigatórios
+            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - Iniciando validação dos dependentes');
+            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - Candidato:', candidato);
+            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - Dependentes:', candidato.dependentes);
             if (candidato.dependentes && candidato.dependentes.length > 0) {
                 candidato.dependentes.forEach((dependente, index) => {
                     if (!dependente.nome_depend?.trim()) {
@@ -1851,12 +1942,36 @@ const CandidatoRegistro = () => {
                 aceite_lgpd: false
             }));
 
-            toast.current.show({
-                severity: 'error',
-                summary: 'Erro',
-                detail: 'Erro ao salvar o aceite da LGPD.',
-                life: 3000
-            });
+            // Verifica se o erro tem o formato específico da API
+            if (error.response && error.response.data && error.response.data.admissao_errors) {
+                const admissaoErrors = error.response.data.admissao_errors;
+                console.log('❌ Erros de validação da API (LGPD):', admissaoErrors);
+                
+                // Processa os erros para exibir no toast
+                const errosFormatados = Object.entries(admissaoErrors).map(([campo, mensagens]) => {
+                    const mensagem = Array.isArray(mensagens) ? mensagens.join(', ') : mensagens;
+                    return `${campo}: ${mensagem}`;
+                }).join('\n');
+                
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro de Validação',
+                    detail: errosFormatados,
+                    life: 5000
+                });
+                
+                // Atualiza o estado de erro para destacar os campos com problema
+                const camposComErro = Object.keys(admissaoErrors);
+                setClassError(camposComErro);
+                
+            } else {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Erro ao salvar o aceite da LGPD.',
+                    life: 3000
+                });
+            }
         }
     };
 
@@ -1868,6 +1983,13 @@ const CandidatoRegistro = () => {
     };
 
     const handleAvancar = async () => {
+        // Se estiver em modo leitura, apenas avança
+        if (modoLeitura) {
+            stepperRef.current.nextCallback();
+            setActiveIndex(prev => prev + 1);
+            return;
+        }
+
         // Validação para o step de documentos (step 0)
         if (activeIndex === 0) {
             // Validação de documentos
@@ -1879,6 +2001,14 @@ const CandidatoRegistro = () => {
             if (!validacaoCampos) return;
         }
         
+        // ✅ SALVA DADOS ANTES DE AVANÇAR
+        const salvamentoSucesso = await executarSalvamento();
+        if (salvamentoSucesso === false) {
+            // ❌ ERRO DE VALIDAÇÃO DA API - NÃO AVANÇA
+            return;
+        }
+        
+        // ✅ SALVAMENTO SUCESSO - AVANÇA PARA O PRÓXIMO STEP
         stepperRef.current.nextCallback();
         setActiveIndex(prev => prev + 1);
     };
@@ -2058,7 +2188,13 @@ const CandidatoRegistro = () => {
     const handleConfirmarDependentes = async () => {
         try {
             setShowConfirmacaoDependentes(false);
-            await executarSalvamento(); // Se ocorrer um erro aqui, o catch abaixo será acionado
+            const salvamentoSucesso = await executarSalvamento();
+            
+            if (salvamentoSucesso === false) {
+                // ❌ ERRO DE VALIDAÇÃO - NÃO CONTINUA
+                return;
+            }
+            
             if (acaoSalvamento === 'salvar_continuar') {
                 stepperRef.current.nextCallback();
                 setActiveIndex(prev => prev + 1);
@@ -2084,7 +2220,12 @@ const CandidatoRegistro = () => {
         setCandidato(candidatoAtualizado);
 
         // Executa o salvamento com o objeto atualizado, pulando a verificação de "nenhuma alteração"
-        await executarSalvamento(candidatoAtualizado);
+        const salvamentoSucesso = await executarSalvamento(candidatoAtualizado);
+        
+        if (salvamentoSucesso === false) {
+            // ❌ ERRO DE VALIDAÇÃO - NÃO CONTINUA
+            return;
+        }
 
         if (acaoSalvamento === 'salvar_continuar') {
             stepperRef.current.nextCallback();
@@ -2387,22 +2528,44 @@ const CandidatoRegistro = () => {
         } catch (erro) {
             console.error("Erro ao fazer upload da imagem:", erro);
             
-            let errorMessage = 'Falha ao fazer upload da imagem.';
-            
-            if (erro.response?.data?.admissao_errors?.imagem) {
-                errorMessage = erro.response.data.admissao_errors.imagem[0];
-            } else if (erro.response?.data?.detail) {
-                errorMessage = erro.response.data.detail;
-            } else if (erro.message) {
-                errorMessage = erro.message;
+            // Verifica se o erro tem o formato específico da API
+            if (erro.response && erro.response.data && erro.response.data.admissao_errors) {
+                const admissaoErrors = erro.response.data.admissao_errors;
+                console.log('❌ Erros de validação da API (Upload):', admissaoErrors);
+                
+                // Processa os erros para exibir no toast
+                const errosFormatados = Object.entries(admissaoErrors).map(([campo, mensagens]) => {
+                    const mensagem = Array.isArray(mensagens) ? mensagens.join(', ') : mensagens;
+                    return `${campo}: ${mensagem}`;
+                }).join('\n');
+                
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro de Validação',
+                    detail: errosFormatados,
+                    life: 5000
+                });
+                
+                // Atualiza o estado de erro para destacar os campos com problema
+                const camposComErro = Object.keys(admissaoErrors);
+                setClassError(camposComErro);
+                
+            } else {
+                let errorMessage = 'Falha ao fazer upload da imagem.';
+                
+                if (erro.response?.data?.detail) {
+                    errorMessage = erro.response.data.detail;
+                } else if (erro.message) {
+                    errorMessage = erro.message;
+                }
+                
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro no Upload', 
+                    detail: errorMessage, 
+                    life: 5000 
+                });
             }
-            
-            toast.current.show({ 
-                severity: 'error', 
-                summary: 'Erro no Upload', 
-                detail: errorMessage, 
-                life: 5000 
-            });
         } finally {
             setUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
@@ -2452,12 +2615,37 @@ const CandidatoRegistro = () => {
         })
         .catch(erro => {
             console.error("Erro ao remover imagem:", erro);
-            toast.current.show({ 
-                severity: 'error', 
-                summary: 'Erro', 
-                detail: 'Falha ao remover a imagem.', 
-                life: 3000 
-            });
+            
+            // Verifica se o erro tem o formato específico da API
+            if (erro.response && erro.response.data && erro.response.data.admissao_errors) {
+                const admissaoErrors = erro.response.data.admissao_errors;
+                console.log('❌ Erros de validação da API (Remove):', admissaoErrors);
+                
+                // Processa os erros para exibir no toast
+                const errosFormatados = Object.entries(admissaoErrors).map(([campo, mensagens]) => {
+                    const mensagem = Array.isArray(mensagens) ? mensagens.join(', ') : mensagens;
+                    return `${campo}: ${mensagem}`;
+                }).join('\n');
+                
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro de Validação',
+                    detail: errosFormatados,
+                    life: 5000
+                });
+                
+                // Atualiza o estado de erro para destacar os campos com problema
+                const camposComErro = Object.keys(admissaoErrors);
+                setClassError(camposComErro);
+                
+            } else {
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: 'Falha ao remover a imagem.', 
+                    life: 3000 
+                });
+            }
         });
     };
 
@@ -2861,6 +3049,7 @@ const CandidatoRegistro = () => {
                                             opcoesDominio={opcoesDominio}
                                             availableDominioTables={availableDominioTables}
                                             classError={classError}
+                                            marcarCampoSelecionado={marcarCampoSelecionado}
                                         />
                                     </ScrollPanel>
                                 </div>

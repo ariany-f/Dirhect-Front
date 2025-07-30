@@ -24,6 +24,37 @@ const StepEducacao = ({ classError = [] }) => {
         };
     }, [classError]);
 
+    // Função para obter o valor selecionado no formato correto
+    const getValorGrauInstrucao = useMemo(() => {
+        return () => {
+            if (!candidato.grau_instrucao || !Array.isArray(grausInstrucao)) return '';
+            
+            // Se o valor for um objeto (como estado_civil, genero, etc.)
+            if (typeof candidato.grau_instrucao === 'object' && candidato.grau_instrucao !== null) {
+                // Busca na lista por id
+                const itemEncontrado = grausInstrucao.find(item => item.id === candidato.grau_instrucao.id);
+                if (itemEncontrado) {
+                    return itemEncontrado; // Retorna o item exato da lista
+                }
+                
+                // Fallback: cria um objeto com a estrutura esperada
+                return {
+                    name: candidato.grau_instrucao.descricao || candidato.grau_instrucao.name,
+                    code: candidato.grau_instrucao.id,
+                    id: candidato.grau_instrucao.id
+                };
+            }
+            
+            // Se o valor é um número ou string (ID), tenta encontrar na lista
+            const itemEncontrado = grausInstrucao.find(item => item.code === candidato.grau_instrucao || item.id === candidato.grau_instrucao);
+            if (itemEncontrado) {
+                return itemEncontrado; // Retorna o item exato da lista
+            }
+            
+            return '';
+        };
+    }, [candidato.grau_instrucao, grausInstrucao]);
+
     // Carregar graus de instrução da API
     useEffect(() => {
         const carregarGrausInstrucao = async () => {
@@ -34,23 +65,24 @@ const StepEducacao = ({ classError = [] }) => {
                 if (response && response.registros && Array.isArray(response.registros)) {
                     // Transforma os dados para o formato esperado pelo DropdownItens
                     const dadosFormatados = response.registros.map(item => ({
-                        id: item.id,
-                        name: item.descricao
+                        name: item.descricao,
+                        code: item.id,
+                        id: item.id
                     }));
                     setGrausInstrucao(dadosFormatados);
                 } else if (Array.isArray(response)) {
                     // Transforma os dados para o formato esperado pelo DropdownItens
                     const dadosFormatados = response.map(item => ({
-                        id: item.id,
-                        name: item.descricao
+                        name: item.descricao,
+                        code: item.id,
+                        id: item.id
                     }));
                     setGrausInstrucao(dadosFormatados);
                 } else {
-                    console.error('Estrutura de dados inesperada:', response);
                     setGrausInstrucao([]);
                 }
             } catch (error) {
-                console.error('Erro ao carregar graus de instrução:', error);
+                console.error('❌ Erro ao carregar graus de instrução:', error);
                 setGrausInstrucao([]);
             }
         };
@@ -132,14 +164,7 @@ const StepEducacao = ({ classError = [] }) => {
             }}>
                 <DropdownItens
                     name="grau_instrucao"
-                    valor={(() => {
-                        // Se candidato.grau_instrucao for um ID, busca o objeto correspondente
-                        if (candidato.grau_instrucao && typeof candidato.grau_instrucao === 'string' || typeof candidato.grau_instrucao === 'number') {
-                            return grausInstrucao.find(g => g.id === candidato.grau_instrucao) || null;
-                        }
-                        // Se já for um objeto, retorna como está
-                        return candidato.grau_instrucao;
-                    })()}
+                    valor={getValorGrauInstrucao()}
                     setValor={(valor) => {
                         setCandidato(prev => ({
                             ...prev,

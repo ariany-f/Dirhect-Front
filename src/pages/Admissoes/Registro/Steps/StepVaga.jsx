@@ -29,10 +29,12 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, funcoes_confianca, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [], classError = [] }) => {
+const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, funcoes_confianca, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [], classError = [], marcarCampoSelecionado }) => {
     
     
     const { candidato, setCampo, vaga } = useCandidatoContext();
+
+
 
     // Formata as opções para o formato esperado pelo DropdownItens
     const formatarOpcoes = useMemo(() => {
@@ -50,7 +52,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             if (!Array.isArray(opcoes)) return [];
             return opcoes.map(opcao => ({
                 name: opcao.id_origem ? `${opcao.id_origem} - ${opcao.nome || opcao.descricao}` : opcao.nome || opcao.descricao,
-                code: opcao.id_origem || opcao.codigo
+                code: opcao.id_origem || opcao.codigo,
+                id: opcao.id // Incluir o ID para facilitar a busca
             }));
         };
     }, []);
@@ -127,16 +130,48 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             
             // Verifica se o valor é um objeto (como estado_civil, genero, etc.)
             if (typeof candidato[campo] === 'object' && candidato[campo] !== null) {
-                return {
+                // Busca na lista por id_origem primeiro
+                const itemEncontrado = lista.find(item => item.code === candidato[campo].id_origem);
+                if (itemEncontrado) {
+                    return itemEncontrado; // Retorna o item exato da lista
+                }
+                
+                // Se não encontrar por id_origem, tenta por id
+                const itemEncontradoPorId = lista.find(item => item.id === candidato[campo].id);
+                if (itemEncontradoPorId) {
+                    return itemEncontradoPorId; // Retorna o item exato da lista
+                }
+                
+                // Fallback: cria um objeto com a estrutura esperada
+                const result = {
                     name: candidato[campo].descricao,
                     code: candidato[campo].id_origem || candidato[campo].id
                 };
+                
+                return result;
             }
             
+            // Se o valor é um número (ID), tenta encontrar na lista por ID
+            if (typeof candidato[campo] === 'number') {
+                // Primeiro tenta encontrar por ID (para casos onde a lista tem o ID completo)
+                const itemById = lista.find(item => item.id === candidato[campo]);
+                if (itemById) {
+                    return itemById; // Retorna o item exato da lista
+                }
+                
+                // Se não encontrar por ID, tenta por code (id_origem)
+                const itemByCode = lista.find(item => String(item.code) === String(candidato[campo]));
+                if (itemByCode) {
+                    return itemByCode; // Retorna o item exato da lista
+                }
+            }
+            
+            // Fallback: tenta encontrar por code como string
             const code = String(candidato[campo]);
             const item = lista.find(item => String(item.code) === code);
             
-            return item ? { name: item.name, code: item.code } : '';
+            const result = item ? item : ''; // Retorna o item exato da lista se encontrado
+            return result;
         };
     }, [candidato]);
 
@@ -153,7 +188,9 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     const opcoesTipoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_admissao), [opcoesDominio.tipo_admissao, formatarOpcoesDominio]);
     const opcoesMotivoAdmissao = useMemo(() => formatarOpcoesDominio(opcoesDominio.motivo_admissao), [opcoesDominio.motivo_admissao, formatarOpcoesDominio]);
     const opcoesLetra = useMemo(() => formatarOpcoesDominio(opcoesDominio.letra), [opcoesDominio.letra, formatarOpcoesDominio]);
-    const opcoesSituacaoFgts = useMemo(() => formatarOpcoesDominio(opcoesDominio.codigo_situacao_fgts), [opcoesDominio.codigo_situacao_fgts, formatarOpcoesDominio]);
+    const opcoesSituacaoFgts = useMemo(() => {
+        return formatarOpcoesDominio(opcoesDominio.codigo_situacao_fgts);
+    }, [opcoesDominio.codigo_situacao_fgts, formatarOpcoesDominio]);
     
     // Usando _choices do payload para os campos especificados
     const opcoesContratoTempoParcial = useMemo(() => formatarOpcoesChoices(candidato.contrato_tempo_parcial_choices), [candidato, formatarOpcoesChoices]);
@@ -354,7 +391,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Situação"
                 valor={getValorSelecionadoFromCandidato('tipo_situacao', opcoesTipoSituacao)}
-                setValor={(valor) => setCampo('tipo_situacao', valor.code)}
+                setValor={(valor) => {
+                    setCampo('tipo_situacao', valor.code);
+                    marcarCampoSelecionado('tipo_situacao');
+                }}
                 options={opcoesTipoSituacao}
                 disabled={modoLeitura}
                 filter
@@ -373,7 +413,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Tipo de Funcionário"
                 valor={getValorSelecionadoFromCandidato('tipo_funcionario', opcoesTipoFuncionario)}
-                setValor={(valor) => setCampo('tipo_funcionario', valor.code)}
+                setValor={(valor) => {
+                    setCampo('tipo_funcionario', valor.code);
+                    marcarCampoSelecionado('tipo_funcionario');
+                }}
                 options={opcoesTipoFuncionario} 
                 disabled={modoLeitura}
                 filter
@@ -392,7 +435,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Tipo de Recebimento"
                 valor={getValorSelecionadoFromCandidato('tipo_recebimento', opcoesTipoRecebimento)}
-                setValor={(valor) => setCampo('tipo_recebimento', valor.code)}
+                setValor={(valor) => {
+                    setCampo('tipo_recebimento', valor.code);
+                    marcarCampoSelecionado('tipo_recebimento');
+                }}
                 options={opcoesTipoRecebimento}
                 disabled={modoLeitura}
             />
@@ -479,7 +525,9 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Situação FGTS"
                 valor={getValorSelecionadoFromCandidato('codigo_situacao_fgts', opcoesSituacaoFgts)}
-                setValor={(valor) => setCampo('codigo_situacao_fgts', valor.code)}
+                setValor={(valor) => {
+                    setCampo('codigo_situacao_fgts', valor.code);
+                }}
                 options={opcoesSituacaoFgts}
                 disabled={modoLeitura}
             />
@@ -495,7 +543,9 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 name="codigo_ocorrencia_sefip"
                 label="Código Ocorrência SEFIP"
                 valor={getValorSelecionadoFromCandidato('codigo_ocorrencia_sefip', opcoesCodigoOcorrenciaSefip)}
-                setValor={(valor) => setCampo('codigo_ocorrencia_sefip', valor.code)}
+                setValor={(valor) => {
+                    setCampo('codigo_ocorrencia_sefip', valor.code);
+                }}
                 options={opcoesCodigoOcorrenciaSefip}
                 disabled={modoLeitura}
                 filter
@@ -504,7 +554,9 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 name="codigo_categoria_sefip"
                 label="Código Categoria SEFIP"
                 valor={getValorSelecionadoFromCandidato('codigo_categoria_sefip', opcoesCodigoCategoriaSefip)}
-                setValor={(valor) => setCampo('codigo_categoria_sefip', valor.code)}
+                setValor={(valor) => {
+                    setCampo('codigo_categoria_sefip', valor.code);
+                }}
                 options={opcoesCodigoCategoriaSefip}
                 disabled={modoLeitura}
                 filter
@@ -545,7 +597,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Código Categoria eSocial"
                 valor={getValorSelecionadoFromCandidato('codigo_categoria_esocial', opcoesCodigoCategoriaESocial)}
-                setValor={(valor) => setCampo('codigo_categoria_esocial', valor.code)}
+                setValor={(valor) => {
+                    setCampo('codigo_categoria_esocial', valor.code);
+                    marcarCampoSelecionado('codigo_categoria_esocial');
+                }}
                 options={opcoesCodigoCategoriaESocial}
                 disabled={modoLeitura}
                 filter

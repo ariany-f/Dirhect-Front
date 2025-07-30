@@ -470,6 +470,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                     <CampoTexto
                         camposVazios={isCampoEmErro('estado_natal') ? ['estado_natal'] : []}
                         name="estado_natal"
+                        maxCaracteres={2}
                         required={true}
                         valor={candidato?.estado_natal ?? ''}
                         setValor={valor => setCampo('estado_natal', valor)}
