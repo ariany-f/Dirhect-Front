@@ -1,6 +1,8 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
@@ -18,14 +20,31 @@ import { GrAddCircle } from 'react-icons/gr'
 import { Dropdown } from 'primereact/dropdown';
 import { BiFilter } from 'react-icons/bi';
 import { FaFilterCircleXmark, FaMoneyBill1 } from 'react-icons/fa6';
-import { FaDollarSign, FaMoneyBill, FaPaperPlane, FaRegPaperPlane, FaUmbrellaBeach, FaUserMinus, FaUserPlus } from 'react-icons/fa';
+import { FaDollarSign, FaMoneyBill, FaPaperPlane, FaRegPaperPlane, FaUmbrellaBeach, FaUserMinus, FaUserPlus, FaCheck } from 'react-icons/fa';
+import { MdFilterAltOff } from 'react-icons/md';
 import { LuNewspaper } from 'react-icons/lu';
 import CustomImage from '@components/CustomImage';
 import { Tooltip } from 'primereact/tooltip';
 import { Skeleton } from 'primereact/skeleton';
 import http from '@http';
 
-function DataTableTarefas({ tarefas, colaborador = null }) {
+function DataTableTarefas({ 
+    tarefas, 
+    colaborador = null,
+    // Props para paginação via servidor
+    paginator = false,
+    rows = 10,
+    totalRecords = 0,
+    first = 0,
+    onPage,
+    onSearch,
+    onSort,
+    sortField,
+    sortOrder,
+    showSearch = true,
+    onFilter,
+    serverFilters
+}) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [modalOpened, setModalOpened] = useState(false)
@@ -52,14 +71,14 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     ];
 
     const onGlobalFilterChange = (value) => {
-        let _filters = { ...filters };
-        _filters['global'].value = value;
-        setFilters(_filters);
         setGlobalFilterValue(value);
+        if (onSearch) {
+            onSearch(value);
+        }
     };
 
-    // Filtro aplicado ao array de tarefas
-    const tarefasFiltradas = tarefas.filter(tarefa => {
+    // Filtro aplicado ao array de tarefas (apenas para modo client-side)
+    const tarefasFiltradas = paginator ? tarefas : tarefas.filter(tarefa => {
         const statusOk = statusFiltro === null || tarefa.status_display === statusFiltro;
         const tipoOk = tipoTarefaFiltro === null || tarefa.tipo_codigo === tipoTarefaFiltro;
         const clienteOk = clienteFiltro === null || tarefa.client_id === clienteFiltro;
@@ -145,45 +164,10 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
     // Header customizado
     const headerTemplate = (
         <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', padding: 0 }}>
-            <CampoTexto width={'220px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+            {showSearch && (
+                <CampoTexto width={'220px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+            )}
             <div style={{display: 'flex', gap: 16, alignItems: 'flex-start'}}>
-                <div style={{display: 'flex', gap: 5, alignItems: 'start', flexDirection: 'column'}}>
-                    <Dropdown 
-                        value={statusFiltro} 
-                        options={statusOptions} 
-                        onChange={e => setStatusFiltro(e.value)} 
-                        placeholder="Filtrar por Status" 
-                        style={{ minWidth: 180, minHeight: 40, maxHeight: 40 }}
-                        itemTemplate={statusOptionTemplate}
-                    />
-                </div>
-                <div style={{display: 'flex', gap: 5, alignItems: 'start', flexDirection: 'column'}}>
-                    <Dropdown 
-                        value={tipoTarefaFiltro} 
-                        options={tipoTarefaOptions} 
-                        onChange={e => setTipoTarefaFiltro(e.value)} 
-                        placeholder="Filtrar por Tipo" 
-                        style={{ minWidth: 180, minHeight: 40, maxHeight: 40 }}
-                        itemTemplate={tipoTarefaOptionTemplate}
-                    />
-                </div>
-                {/* <div style={{display: 'flex', gap: 5, alignItems: 'start', flexDirection: 'column'}}>
-                    <Dropdown 
-                        value={clienteFiltro} 
-                        options={clientesUnicos} 
-                        onChange={e => setClienteFiltro(e.value)} 
-                        placeholder="Filtrar por Cliente" 
-                        style={{ minWidth: 180, minHeight: 40, maxHeight: 40 }}
-                        itemTemplate={clienteOptionTemplate}
-                    />
-                </div> */}
-                <button
-                    style={{ padding: '9px 8px', border: 'none', borderRadius: 8, background: 'transparent', color: 'var(--neutro-800)', cursor: 'pointer'}}
-                    onClick={() => { setStatusFiltro(null); setTipoTarefaFiltro(null); setClienteFiltro(null); }}
-                >
-                    <FaFilterCircleXmark size={18}/>
-                </button>
-                
                 <BotaoGrupo align={'space-between'} wrap>
                     {!colaborador && (
                         <>
@@ -204,84 +188,146 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         navegar(`/tarefas/detalhes/${value.id}`)
     }
 
+    const handleSort = (event) => {
+        if (onSort) {
+            onSort({
+                field: event.sortField,
+                order: event.sortOrder === 1 ? 'asc' : 'desc'
+            });
+        }
+    };
+
+    const totalTarefasTemplate = () => {
+        return 'Total de Tarefas: ' + (totalRecords ?? 0);
+    };
+
+    // Template para filtro de tipo de processo
+    const tipoProcessoFilterTemplate = (options) => (
+        <Dropdown
+            value={options.value}
+            options={[
+                { label: 'Admissão', value: 'admissao' },
+                { label: 'Demissão', value: 'demissao' },
+                { label: 'Férias', value: 'ferias' },
+                { label: 'Envio de Variáveis', value: 'envio_variaveis' },
+                { label: 'Adiantamento', value: 'adiantamento' },
+                { label: 'Encargos', value: 'encargos' },
+                { label: 'Folha Mensal', value: 'folha' }
+            ]}
+            onChange={e => options.filterApplyCallback(e.value)}
+            placeholder="Tipo de Processo"
+            style={{ minWidth: '12rem' }}
+        />
+    );
+
+    const filterClearTemplate = (options) => {
+        return (
+            <button 
+                type="button" 
+                onClick={options.filterClearCallback} 
+                style={{
+                    width: '2.5rem', 
+                    height: '2.5rem', 
+                    color: 'var(--white)',
+                    backgroundColor: 'var(--surface-600)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <MdFilterAltOff fill="var(--white)" />
+            </button>
+        );
+    };
+
+    const filterApplyTemplate = (options) => {
+        return (
+            <button 
+                type="button" 
+                onClick={options.filterApplyCallback} 
+                style={{
+                    width: '2.5rem', 
+                    height: '2.5rem', 
+                    color: 'var(--white)',
+                    backgroundColor: 'var(--green-500)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <FaCheck fill="var(--white)" />
+            </button>
+        );
+    };
+
+    // Template para filtro de situação baseado no percentual_conclusao
+    const situacaoFilterTemplate = (options) => (
+        <Dropdown
+            value={options.value}
+            options={[
+                { label: 'Não iniciado', value: 0 },
+                { label: 'Aguardando', value: 'aguardando' },
+                { label: 'Em Andamento', value: 'em_andamento' },
+                { label: 'Concluído', value: 100 }
+            ]}
+            onChange={e => options.filterApplyCallback(e.value)}
+            placeholder="Situação"
+            style={{ minWidth: '12rem' }}
+        />
+    );
+
     const representativStatusTemplate = (rowData) => {
+        const percentualConclusao = rowData?.percentual_conclusao || 0;
         let status = '';
-
-        switch(rowData?.percentual_conclusao)
-        {
-            case 0:
-                status = 'Não iniciado';
-                break;
-            case 100:
-                status = 'Concluído';
-                break;
-            
-            default:
-                if (rowData?.percentual_conclusao < 30) {
-                    status = 'Aguardando';
-                } else {
-                    status = 'Em Andamento';
-                }
-                break;
-        }
-
-        const valueTemplate = (value) => {
-            return (
-                <Texto color="var(--white)">{value}%</Texto>
-            );
-        };
-
-        var feito = rowData.concluidas_atividades;
-        var tarefas = rowData.total_atividades;
-        
-        if(rowData.status_display === 'Aprovada') {
-            var progresso = 100;
-        } else if(rowData.status_display === 'Cancelada') {
-            var progresso = 0;
-        } else if(rowData.status_display === 'Pendente') {
-            var progresso = 0;
-        } else {
-            var progresso = Math.round((feito / tarefas) * 100); // Arredonda a porcentagem concluída
-        }
-    
-        // Define a cor com base no progresso
-        let severity = "rgb(139, 174, 44)";
-        if (progresso <= 30) {
-            severity = "rgb(212, 84, 114)";
-        } else if (progresso <= 99) {
-            severity = "var(--info)";
-        }
-
-        // Define a cor do status baseado no tipo
         let statusColor = '#333';
         let statusBgColor = 'rgba(51, 51, 51, 0.1)';
-        switch(status) {
-            case 'Não iniciado':
+
+        // Determina o status baseado no percentual_conclusao
+        switch(percentualConclusao) {
+            case 0:
+                status = 'Não iniciado';
                 statusColor = '#e53935'; // vermelho
                 statusBgColor = 'rgba(229, 57, 53, 0.15)';
                 break;
-            case 'Aguardando':
-                statusColor = '#FFA726'; // laranja
-                statusBgColor = 'rgba(255, 167, 38, 0.15)';
-                break;
-            case 'Em Andamento':
-                statusColor = '#42A5F5'; // azul
-                statusBgColor = 'rgba(66, 165, 245, 0.15)';
-                break;
-            case 'Concluído':
+            case 100:
+                status = 'Concluído';
                 statusColor = '#66BB6A'; // verde
                 statusBgColor = 'rgba(102, 187, 106, 0.15)';
                 break;
             default:
-                statusColor = '#333'; // cinza padrão
-                statusBgColor = 'rgba(51, 51, 51, 0.1)';
+                if (percentualConclusao < 30) {
+                    status = 'Aguardando';
+                    statusColor = '#FFA726'; // laranja
+                    statusBgColor = 'rgba(255, 167, 38, 0.15)';
+                } else {
+                    status = 'Em Andamento';
+                    statusColor = '#42A5F5'; // azul
+                    statusBgColor = 'rgba(66, 165, 245, 0.15)';
+                }
+                break;
+        }
+
+        // Define a cor da barra de progresso
+        let progressColor = "var(--info)";
+        if (percentualConclusao === 0) {
+            progressColor = "rgb(212, 84, 114)"; // vermelho
+        } else if (percentualConclusao === 100) {
+            progressColor = "rgb(139, 174, 44)"; // verde
+        } else if (percentualConclusao < 30) {
+            progressColor = "rgb(255, 167, 38)"; // laranja
         }
 
         return (
             <div style={{width: '100%'}}>
                 <div style={{ 
                     textAlign: 'left', 
-                    marginBottom: 12
+                    marginBottom: 8
                 }}>
                     <span style={{
                         display: 'inline-block',
@@ -297,8 +343,8 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                 </div>
                 <div style={{ position: 'relative', width: '100%' }}>
                     <ProgressBar 
-                        value={progresso} 
-                        color={severity}
+                        value={percentualConclusao} 
+                        color={progressColor}
                         style={{ height: 8 }}
                         className="custom-progressbar"
                         showValue={false}
@@ -312,7 +358,7 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
                         textAlign: 'right',
                         top: '100%',
                         marginTop: 4
-                    }}>{`${progresso || 0}%`}</span>
+                    }}>{`${percentualConclusao}%`}</span>
                 </div>
             </div>
         )
@@ -532,24 +578,72 @@ function DataTableTarefas({ tarefas, colaborador = null }) {
         <>
             <DataTable 
                 value={tarefasFiltradas} 
-                filters={filters} 
+                filters={serverFilters}
+                onFilter={onFilter}
                 globalFilterFields={['descricao', 'objeto.dados_candidato.nome', 'objeto.dados_candidato.cpf']}  
                 emptyMessage="Não foram encontrados tarefas" 
                 selection={selectedVaga} 
                 onSelectionChange={(e) => verDetalhes(e.value)} 
                 selectionMode="single" 
-                paginator 
-                rows={10}  
+                paginator={paginator}
+                lazy={paginator}
+                rows={rows} 
+                totalRecords={totalRecords}
+                first={first}
+                onPage={onPage}
                 tableStyle={{ minWidth: '68vw' }}
+                sortField={sortField}
+                sortOrder={sortOrder === 'desc' ? -1 : 1}
+                onSort={handleSort}
+                removableSort
                 header={headerTemplate}
+                footerColumnGroup={
+                    paginator ? (
+                        <ColumnGroup>
+                            <Row>
+                                <Column footer={totalTarefasTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                            </Row>
+                        </ColumnGroup>
+                    ) : null
+                }
             >
-                <Column body={tipoTarefaTagTemplate} field="tipo_tarefa" header="Tipo de Processo" style={{ width: '18%' }} />
+                <Column 
+                    body={tipoTarefaTagTemplate} 
+                    field="processo_codigo" 
+                    header="Tipo de Processo" 
+                    style={{ width: '18%' }}
+                    filter
+                    filterField="processo_codigo"
+                    showFilterMenu={true}
+                    filterElement={tipoProcessoFilterTemplate}
+                    filterMatchMode="custom"
+                    showFilterMatchModes={false}
+                    showFilterOperator={false}
+                    showAddButton={false}
+                    filterClear={filterClearTemplate}
+                    filterApply={filterApplyTemplate}
+                />
                 <Column body={clienteTemplate} field="client_nome" header="Cliente" style={{ width: '8%' }} />
                 <Column body={pessoaTemplate} field="pessoa" header="Referência" style={{ width: '15%' }} />
                 <Column body={dataInicioTemplate} field="data_inicio" header="Data de Início" style={{width: '10%'}} />
                 <Column body={dataEntregaTemplate} field="data_entrega" header="Data de Entrega" style={{width: '10%'}} />
                 <Column body={representativeTipoTemplate} field="tipo" header="Concluído" style={{ width: '11%' }}></Column>
-                <Column body={representativStatusTemplate} field="status" header="Situação" style={{ width: '14%' }}></Column>
+                <Column 
+                    body={representativStatusTemplate} 
+                    field="percentual_conclusao" 
+                    header="Situação" 
+                    style={{ width: '14%' }}
+                    filter
+                    filterField="percentual_conclusao"
+                    showFilterMenu={true}
+                    filterElement={situacaoFilterTemplate}
+                    filterMatchMode="custom"
+                    showFilterMatchModes={false}
+                    showFilterOperator={false}
+                    showAddButton={false}
+                    filterClear={filterClearTemplate}
+                    filterApply={filterApplyTemplate}
+                />
             </DataTable>
             <ModalTarefas opened={modalOpened} aoFechar={() => setModalOpened(false)} />
         </>

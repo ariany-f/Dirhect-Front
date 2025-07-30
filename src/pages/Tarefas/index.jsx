@@ -22,29 +22,10 @@ const ConteudoFrame = styled.div`
 const Tarefas = () => {
 
     const location = useLocation();
-    const [listaTarefas, setListaTarefas] = useState([])
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        setLoading(true)
-        http.get('processos/?format=json')
-            .then(response => {
-                setListaTarefas(response)
-                setLoading(false)
-            })
-            .catch(error => {
-                console.log(error)
-                setLoading(false)
-            })
-    }, [])
-
-    if (loading) {
-        return <Loading opened={loading} />
-    }
 
     return (
         <ConteudoFrame>
-            <Outlet context={listaTarefas} />
+            <Outlet />
         </ConteudoFrame>
     );
 };
