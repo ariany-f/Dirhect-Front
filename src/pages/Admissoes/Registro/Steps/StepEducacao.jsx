@@ -132,11 +132,18 @@ const StepEducacao = ({ classError = [] }) => {
             }}>
                 <DropdownItens
                     name="grau_instrucao"
-                    valor={candidato.grau_instrucao}
+                    valor={(() => {
+                        // Se candidato.grau_instrucao for um ID, busca o objeto correspondente
+                        if (candidato.grau_instrucao && typeof candidato.grau_instrucao === 'string' || typeof candidato.grau_instrucao === 'number') {
+                            return grausInstrucao.find(g => g.id === candidato.grau_instrucao) || null;
+                        }
+                        // Se já for um objeto, retorna como está
+                        return candidato.grau_instrucao;
+                    })()}
                     setValor={(valor) => {
                         setCandidato(prev => ({
                             ...prev,
-                            grau_instrucao: valor
+                            grau_instrucao: valor?.id || valor
                         }));
                     }}
                     options={Array.isArray(grausInstrucao) ? grausInstrucao : []}
