@@ -303,6 +303,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <CampoTexto
                 type="date"
                 name="dt_admissao"
+                required={true}
                 label="Data de Admissão"
                 valor={candidato.dt_admissao || ''}
                 setValor={(valor) => setCampo('dt_admissao', valor)}
@@ -318,6 +319,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             />
             <DropdownItens
                 name="tipo_admissao"
+                required={true}
                 label="Tipo de Admissão"
                 valor={getValorSelecionadoFromCandidato('tipo_admissao', opcoesTipoAdmissao)}
                 setValor={(valor) => setCampo('tipo_admissao', valor.code)}
@@ -326,6 +328,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             />
             <DropdownItens
                 name="motivo_admissao"
+                required={true}
                 label="Motivo da Admissão"
                 valor={getValorSelecionadoFromCandidato('motivo_admissao', opcoesMotivoAdmissao)}
                 setValor={(valor) => setCampo('motivo_admissao', valor.code)}
@@ -337,6 +340,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
 
             <DropdownItens
                 name="tipo_situacao"
+                required={true}
                 label="Situação"
                 valor={getValorSelecionadoFromCandidato('tipo_situacao', opcoesTipoSituacao)}
                 setValor={(valor) => setCampo('tipo_situacao', valor.code)}
@@ -354,6 +358,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             />
             <DropdownItens
                 name="tipo_funcionario"
+                required={true}
                 label="Tipo de Funcionário"
                 valor={getValorSelecionadoFromCandidato('tipo_funcionario', opcoesTipoFuncionario)}
                 setValor={(valor) => setCampo('tipo_funcionario', valor.code)}
@@ -371,6 +376,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             />
             <DropdownItens
                 name="tipo_recebimento"
+                required={true}
                 label="Tipo de Recebimento"
                 valor={getValorSelecionadoFromCandidato('tipo_recebimento', opcoesTipoRecebimento)}
                 setValor={(valor) => setCampo('tipo_recebimento', valor.code)}
@@ -387,6 +393,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             />
             <CampoTexto
                 name="jornada"
+                required={true}
                 label="Jornada (HHH:mm)"
                 valor={candidato.jornada || ''}
                 setValor={(valor) => setCampo('jornada', valor)}
@@ -420,6 +427,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
 
             <DropdownItens
                 name="codigo_situacao_fgts"
+                required={true}
                 label="Situação FGTS"
                 valor={getValorSelecionadoFromCandidato('codigo_situacao_fgts', opcoesSituacaoFgts)}
                 setValor={(valor) => setCampo('codigo_situacao_fgts', valor.code)}
@@ -484,6 +492,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             
             <DropdownItens
                 name="codigo_categoria_esocial"
+                required={true}
                 label="Código Categoria eSocial"
                 valor={getValorSelecionadoFromCandidato('codigo_categoria_esocial', opcoesCodigoCategoriaESocial)}
                 setValor={(valor) => setCampo('codigo_categoria_esocial', valor.code)}
@@ -493,6 +502,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             />
             <DropdownItens
                 name="natureza_atividade_esocial"
+                required={true}
                 label="Natureza da Atividade eSocial"
                 valor={getValorSelecionadoFromCandidato('natureza_atividade_esocial', opcoesNaturezaAtividadeESocial)}
                 setValor={(valor) => setCampo('natureza_atividade_esocial', valor.code)}
@@ -501,6 +511,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             />
             <DropdownItens
                 name="letra"
+                required={true}
                 label="Letra"
                 valor={getValorSelecionadoFromCandidato('letra', opcoesLetra)}
                 setValor={(valor) => setCampo('letra', valor.code)}

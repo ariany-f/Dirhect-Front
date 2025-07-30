@@ -525,6 +525,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             
             <CampoTexto
                 name="cep"
+                required={true}
                 patternMask="99999-999"
                 valor={candidato?.cep ?? ''}
                 setValor={handleCepChange}
@@ -533,6 +534,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <DropdownItens
                 name="tipo_rua"
+                required={true}
                 label="Tipo de Logradouro"
                 valor={getValorSelecionadoFromCandidato('tipo_rua', opcoesTipoRua)}
                 setValor={(valor) => setCampo('tipo_rua', valor.code)}
@@ -543,6 +545,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <CampoTexto
                 name="rua"
+                required={true}
                 valor={candidato?.rua ?? ''}
                 setValor={valor => setCampo('rua', valor)}
                 label="Logradouro"
@@ -550,6 +553,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <CampoTexto
                 name="numero"
+                required={true}
                 valor={candidato?.numero ?? ''}
                 setValor={valor => setCampo('numero', valor)}
                 label="Número"
@@ -557,6 +561,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <CampoTexto
                 name="bairro"
+                required={true}
                 valor={candidato?.bairro ?? ''}
                 setValor={valor => setCampo('bairro', valor)}
                 label="Bairro"
@@ -564,6 +569,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <DropdownItens
                 name="tipo_bairro"
+                required={true}
                 label="Tipo de Bairro"
                 valor={getValorSelecionadoFromCandidato('tipo_bairro', opcoesTipoBairro)}
                 setValor={(valor) => setCampo('tipo_bairro', valor.code)}
@@ -581,6 +587,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <CampoTexto
                 name="cidade"
+                required={true}
                 valor={candidato?.cidade ?? ''}
                 setValor={valor => setCampo('cidade', valor)}
                 label="Cidade"
@@ -588,6 +595,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <DropdownItens
                 $margin={'10px'}
+                required={true}
                 valor={getEstadoFormatado('estado')}
                 setValor={valor => setCampo('estado', valor.code)}
                 options={estados}
