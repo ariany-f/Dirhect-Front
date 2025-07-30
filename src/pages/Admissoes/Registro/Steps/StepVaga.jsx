@@ -29,7 +29,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, funcoes_confianca, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [] }) => {
+const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, funcoes_confianca, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [], classError = [] }) => {
     
     
     const { candidato, setCampo, vaga } = useCandidatoContext();
@@ -72,6 +72,13 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             return lista && Array.isArray(lista) && lista.length > 0;
         };
     }, []);
+
+    // Função para verificar se um campo está em erro
+    const isCampoEmErro = useMemo(() => {
+        return (campo) => {
+            return classError.includes(campo);
+        };
+    }, [classError]);
 
     // Função para obter o valor selecionado no formato {name, code}
     const getValorSelecionado = useMemo(() => {
@@ -301,6 +308,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <SectionTitle>Admissão</SectionTitle>
 
             <CampoTexto
+                camposVazios={isCampoEmErro('dt_admissao') ? ['dt_admissao'] : []}
                 type="date"
                 name="dt_admissao"
                 required={true}
@@ -318,6 +326,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('tipo_admissao') ? ['tipo_admissao'] : []}
                 name="tipo_admissao"
                 required={true}
                 label="Tipo de Admissão"
@@ -327,6 +336,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('motivo_admissao') ? ['motivo_admissao'] : []}
                 name="motivo_admissao"
                 required={true}
                 label="Motivo da Admissão"
@@ -339,6 +349,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <SectionTitle>Características</SectionTitle>
 
             <DropdownItens
+                camposVazios={isCampoEmErro('tipo_situacao') ? ['tipo_situacao'] : []}
                 name="tipo_situacao"
                 required={true}
                 label="Situação"
@@ -357,6 +368,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('tipo_funcionario') ? ['tipo_funcionario'] : []}
                 name="tipo_funcionario"
                 required={true}
                 label="Tipo de Funcionário"
@@ -375,6 +387,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('tipo_recebimento') ? ['tipo_recebimento'] : []}
                 name="tipo_recebimento"
                 required={true}
                 label="Tipo de Recebimento"
@@ -392,6 +405,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoEmErro('jornada') ? ['jornada'] : []}
                 name="jornada"
                 required={true}
                 label="Jornada (HHH:mm)"
@@ -402,6 +416,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoEmErro('salario') ? ['salario'] : []}
                 name="salario"
                 required={true}
                 label="Salário"
@@ -445,6 +460,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             
             {Boolean(candidato.confianca) && (
                 <DropdownItens
+                    camposVazios={isCampoEmErro('funcao_confianca') ? ['funcao_confianca'] : []}
                     name="funcao_confianca"
                     required={true}
                     label="Função de Confiança/Cargo em Comissão"
@@ -458,6 +474,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <SectionTitle>FGTS</SectionTitle>
 
             <DropdownItens
+                camposVazios={isCampoEmErro('codigo_situacao_fgts') ? ['codigo_situacao_fgts'] : []}
                 name="codigo_situacao_fgts"
                 required={true}
                 label="Situação FGTS"
@@ -523,6 +540,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <SectionTitle>eSocial</SectionTitle>
             
             <DropdownItens
+                camposVazios={isCampoEmErro('codigo_categoria_esocial') ? ['codigo_categoria_esocial'] : []}
                 name="codigo_categoria_esocial"
                 required={true}
                 label="Código Categoria eSocial"
@@ -533,6 +551,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 filter
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('natureza_atividade_esocial') ? ['natureza_atividade_esocial'] : []}
                 name="natureza_atividade_esocial"
                 required={true}
                 label="Natureza da Atividade eSocial"
@@ -542,6 +561,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('letra') ? ['letra'] : []}
                 name="letra"
                 required={true}
                 label="Letra"

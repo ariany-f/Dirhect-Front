@@ -216,7 +216,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             <SectionTitle>Identificação</SectionTitle>
 
             <CampoTexto
-                camposVazios={classError}
+                camposVazios={isCampoEmErro('nome') ? ['nome'] : []}
                 name="nome"
                 required={true}
                 valor={candidato?.nome ?? ''}
@@ -228,7 +228,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 maxCaracteres={100}
             />
             <CampoTexto
-                camposVazios={classError}
+                camposVazios={isCampoEmErro('cpf') ? ['cpf'] : []}
                 required={true}
                 name="cpf"
                 valor={candidato?.cpf ?? ''}
@@ -256,6 +256,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoEmErro('dt_nascimento') ? ['dt_nascimento'] : []}
                 name="dt_nascimento"
                 required={true}
                 valor={candidato?.dt_nascimento ?? ''}
@@ -265,6 +266,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('genero') ? ['genero'] : []}
                 name="genero"
                 required={true}
                 label="Gênero"
@@ -274,6 +276,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('cor_raca') ? ['cor_raca'] : []}
                 name="cor_raca"
                 required={true}
                 label="Cor/Raça"
@@ -283,6 +286,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('estado_civil') ? ['estado_civil'] : []}
                 name="estado_civil"
                 required={true}
                 label="Estado Civil"
@@ -301,6 +305,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 filter
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('estado_natal') ? ['estado_natal'] : []}
                 name="estado_natal"
                 required={true}
                 label="Estado Natal"
@@ -312,6 +317,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 filter
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('naturalidade') ? ['naturalidade'] : []}
                 name="naturalidade"
                 required={true}
                 label="Naturalidade"
@@ -524,6 +530,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             <SectionTitle>Endereço</SectionTitle>
             
             <CampoTexto
+                camposVazios={isCampoEmErro('cep') ? ['cep'] : []}
                 name="cep"
                 required={true}
                 patternMask="99999-999"
@@ -533,6 +540,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('tipo_rua') ? ['tipo_rua'] : []}
                 name="tipo_rua"
                 required={true}
                 label="Tipo de Logradouro"
@@ -544,6 +552,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 filter
             />
             <CampoTexto
+                camposVazios={isCampoEmErro('rua') ? ['rua'] : []}
                 name="rua"
                 required={true}
                 valor={candidato?.rua ?? ''}
@@ -552,6 +561,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoEmErro('numero') ? ['numero'] : []}
                 name="numero"
                 required={true}
                 valor={candidato?.numero ?? ''}
@@ -560,6 +570,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoEmErro('bairro') ? ['bairro'] : []}
                 name="bairro"
                 required={true}
                 valor={candidato?.bairro ?? ''}
@@ -568,6 +579,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('tipo_bairro') ? ['tipo_bairro'] : []}
                 name="tipo_bairro"
                 required={true}
                 label="Tipo de Bairro"
@@ -586,6 +598,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <CampoTexto
+                camposVazios={isCampoEmErro('cidade') ? ['cidade'] : []}
                 name="cidade"
                 required={true}
                 valor={candidato?.cidade ?? ''}
@@ -594,6 +607,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
             />
             <DropdownItens
+                camposVazios={isCampoEmErro('estado') ? ['estado'] : []}
                 $margin={'10px'}
                 required={true}
                 valor={getEstadoFormatado('estado')}

@@ -1386,27 +1386,32 @@ const CandidatoRegistro = () => {
         
         // Validação específica por step
         if (activeIndex === 1) { // Step Dados Pessoais
-            // Validação de dados pessoais obrigatórios
-            if (!dadosCandidato.nome?.trim()) {
-                camposObrigatorios.push('Nome completo');
-                setClassError(prev => [...prev, 'nome']);
-            }
-            if (!dadosCandidato.cpf?.trim()) {
-                camposObrigatorios.push('CPF');
-                setClassError(prev => [...prev, 'cpf']);
-            }
-            if (!dadosCandidato.email?.trim()) {
-                camposObrigatorios.push('E-mail');
-                setClassError(prev => [...prev, 'email']);
-            }
-            if (!dadosCandidato.telefone?.trim()) {
-                camposObrigatorios.push('Telefone');
-                setClassError(prev => [...prev, 'telefone']);
-            }
-            if (!dadosCandidato.dt_nascimento) {
-                camposObrigatorios.push('Data de nascimento');
-                setClassError(prev => [...prev, 'dt_nascimento']);
-            }
+            // Validação de dados pessoais obrigatórios baseada no required={true}
+            const camposObrigatoriosDadosPessoais = [
+                { campo: 'nome', nome: 'Nome completo' },
+                { campo: 'cpf', nome: 'CPF' },
+                { campo: 'dt_nascimento', nome: 'Data de nascimento' },
+                { campo: 'genero', nome: 'Gênero' },
+                { campo: 'cor_raca', nome: 'Cor/Raça' },
+                { campo: 'estado_civil', nome: 'Estado Civil' },
+                { campo: 'estado_natal', nome: 'Estado Natal' },
+                { campo: 'naturalidade', nome: 'Naturalidade' },
+                { campo: 'cep', nome: 'CEP' },
+                { campo: 'tipo_rua', nome: 'Tipo de Logradouro' },
+                { campo: 'rua', nome: 'Logradouro' },
+                { campo: 'numero', nome: 'Número' },
+                { campo: 'bairro', nome: 'Bairro' },
+                { campo: 'tipo_bairro', nome: 'Tipo de Bairro' },
+                { campo: 'cidade', nome: 'Cidade' },
+                { campo: 'estado', nome: 'Estado' }
+            ];
+
+            camposObrigatoriosDadosPessoais.forEach(({ campo, nome }) => {
+                if (!dadosCandidato[campo]?.toString().trim()) {
+                    camposObrigatorios.push(nome);
+                    setClassError(prev => [...prev, campo]);
+                }
+            });
 
             // Validação de campos obrigatórios baseada nos documentos
             if (dadosCandidato.documentos && Array.isArray(dadosCandidato.documentos)) {
@@ -1479,7 +1484,35 @@ const CandidatoRegistro = () => {
                 setClassError(prev => [...prev, 'conta_corrente']);
             }
         } else if (activeIndex === 3 && !self) { // Step Dados Contratuais (apenas se não for self)
-            // Validação de dados cadastrais obrigatórios
+            // Validação de dados contratuais obrigatórios baseada no required={true}
+            const camposObrigatoriosDadosContratuais = [
+                { campo: 'dt_admissao', nome: 'Data de Admissão' },
+                { campo: 'tipo_admissao', nome: 'Tipo de Admissão' },
+                { campo: 'motivo_admissao', nome: 'Motivo da Admissão' },
+                { campo: 'tipo_situacao', nome: 'Situação' },
+                { campo: 'tipo_funcionario', nome: 'Tipo de Funcionário' },
+                { campo: 'tipo_recebimento', nome: 'Tipo de Recebimento' },
+                { campo: 'jornada', nome: 'Jornada' },
+                { campo: 'salario', nome: 'Salário' },
+                { campo: 'codigo_situacao_fgts', nome: 'Situação FGTS' },
+                { campo: 'codigo_categoria_esocial', nome: 'Código Categoria eSocial' },
+                { campo: 'natureza_atividade_esocial', nome: 'Natureza da Atividade eSocial' },
+                { campo: 'letra', nome: 'Letra' }
+            ];
+
+            // Validação condicional para funcao_confianca
+            if (candidato.confianca) {
+                camposObrigatoriosDadosContratuais.push({ campo: 'funcao_confianca', nome: 'Função de Confiança/Cargo em Comissão' });
+            }
+
+            camposObrigatoriosDadosContratuais.forEach(({ campo, nome }) => {
+                if (!candidato[campo]?.toString().trim()) {
+                    camposObrigatorios.push(nome);
+                    setClassError(prev => [...prev, campo]);
+                }
+            });
+
+            // Validação específica para campos que dependem de listas
             if (filiais && filiais.length > 0 && !dadosVaga.filial_id) {
                 camposObrigatorios.push('Filial');
                 setClassError(prev => [...prev, 'filial_id']);
@@ -1487,10 +1520,6 @@ const CandidatoRegistro = () => {
             if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
                 camposObrigatorios.push('Centro de custo');
                 setClassError(prev => [...prev, 'centro_custo_id']);
-            }
-            if (!dadosVaga.salario?.trim()) {
-                camposObrigatorios.push('Salário');
-                setClassError(prev => [...prev, 'salario']);
             }
         } else if (activeIndex === getStepDependentesIndex()) { // Step Dependentes
             // Validação de dependentes obrigatórios
@@ -2797,6 +2826,7 @@ const CandidatoRegistro = () => {
                                             modoLeitura={modoLeitura}
                                             opcoesDominio={opcoesDominio}
                                             availableDominioTables={availableDominioTables}
+                                            classError={classError}
                                         />
                                     </ScrollPanel>
                                 </div>
