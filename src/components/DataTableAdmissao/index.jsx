@@ -547,11 +547,11 @@ function DataTableAdmissao({
                     ) : null
                 }
             >
-                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '30%' }}></Column>
-                <Column body={vagaTemplate} header="Vaga" style={{ width: '15%' }}></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '30%' }} sortable sortField="nome"></Column>
+                <Column body={vagaTemplate} header="Vaga" style={{ width: '15%' }} sortable sortField="dados_vaga__descricao"></Column>
                 <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: '12%' }}></Column>
-                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '10%' }}></Column>
-                <Column body={representativeFilialTemplate} header="Filial" style={{ width: '10%' }}></Column>
+                <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '10%' }} sortable sortField="salario"></Column>
+                <Column body={representativeFilialTemplate} header="Filial" style={{ width: '10%' }} sortable sortField="filial"></Column>
                 {algumaAdmissaoTemLGPD() && (
                     <Column body={representativeLgpdTemplate} header="LGPD" style={{ width: '8%' }}></Column>
                 )}
