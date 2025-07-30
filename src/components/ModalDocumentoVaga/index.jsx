@@ -137,24 +137,18 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
                             <Col12>
                                 <Col12>
                                     <Col6>
-                                        <CampoTexto
-                                            camposVazios={classError.includes('documento_nome') ? ['documento_nome'] : []}
-                                            name="documento_nome"
-                                            valor={documentoNome}
-                                            setValor={setDocumentoNome}
-                                            type="text"
-                                            label="Nome do Documento*"
-                                            placeholder="Digite o nome do documento"
-                                            disabled={vagaTransferida}
-                                        />
-                                    </Col6>
-                                    <Col6>
                                         <div>
                                             <label style={{ fontWeight: 600, marginBottom: 4, display: 'block' }}>Documento*</label>
                                             <Dropdown 
                                                 value={documentoSelecionado} 
                                                 options={documentosRequeridos} 
-                                                onChange={e => setDocumentoSelecionado(e.value)} 
+                                                onChange={e => {
+                                                    setDocumentoSelecionado(e.value);
+                                                    // Preenche automaticamente o nome com o nome do documento selecionado
+                                                    if (e.value) {
+                                                        setDocumentoNome(e.value.nome);
+                                                    }
+                                                }} 
                                                 optionLabel="nome"
                                                 placeholder="Selecione o documento" 
                                                 style={{ width: '100%' }} 
@@ -171,6 +165,18 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
                                                 </BotaoSemBorda>
                                             </div>
                                         </div>
+                                    </Col6>
+                                    <Col6>
+                                        <CampoTexto
+                                            camposVazios={classError.includes('documento_nome') ? ['documento_nome'] : []}
+                                            name="documento_nome"
+                                            valor={documentoNome}
+                                            setValor={setDocumentoNome}
+                                            type="text"
+                                            label="Nome do Documento*"
+                                            placeholder="Digite o nome do documento"
+                                            disabled={vagaTransferida}
+                                        />
                                     </Col6>
                                 </Col12>
                                 <Col12>

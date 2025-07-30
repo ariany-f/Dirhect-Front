@@ -508,10 +508,10 @@ function DetalhesVaga() {
                             {vaga?.secao_id ?
                                 <Texto weight="800">{vaga?.secao_nome}</Texto>
                                 : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
-                            }   
-                            <Texto>Cargo</Texto>
-                            {vaga?.cargo_id ?
-                                <Texto weight="800">{vaga?.cargo_nome}</Texto>
+                            }
+                            <Texto>Centro de Custo</Texto>
+                            {vaga?.centro_custo_id ?
+                                <Texto weight="800">{vaga?.centro_custo_nome}</Texto>
                                 : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col6>

@@ -122,38 +122,32 @@ const VagasRegistro = () => {
 
     
   const [listaPericulosidades, setListaPericulosidades] = useState([
-    { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
-    { code: 'MP', name: 'Atividades com Máquinas e Equipamentos Pesados' },
-    { code: 'HA', name: 'Trabalho em Altura' },
-    { code: 'RA', name: 'Exposição a Radiação' },
-    { code: 'TE', name: 'Trabalho com Energia Elétrica' },
-    { code: 'CE', name: 'Exposição ao Calor Excessivo' },
-    { code: 'PE', name: 'Atividades com Produtos Explosivos' },
-    { code: 'CA', name: 'Trabalho em Ambientes Confinedos' },
-    { code: 'SA', name: 'Atividades Subaquáticas' },
-    { code: 'RAU', name: 'Exposição a Ruídos Altos' },
-    { code: 'PB', name: 'Perigos Biológicos' },
-    { code: 'TE', name: 'Exposição a Temperaturas Extremas' },
-    { code: 'DA', name: 'Trabalho em Áreas de Desastres ou Emergências' },
-    { code: 'MC', name: 'Manipulação de Materiais Cortantes' },
-    { code: 'SC', name: 'Exposição a Substâncias Cancerígenas' }
+    { code: 'Sim', name: 'Sim' },
+    { code: 'Não', name: 'Não' }
+  ]);
+
+  const [listaInsalubridades, setListaInsalubridades] = useState([
+    { code: '0', name: '0' },
+    { code: '10', name: '10' },
+    { code: '20', name: '20' },
+    { code: '40', name: '40' }
   ]);
   
     const handleSubmit = (e) => {
         e.preventDefault();
 
         // Validação: não pode ter os dois preenchidos
-        if (periculosidade && insalubridade) {
-            setErroPeriInsa(true);
-            toast.current.show({
-                severity: 'error',
-                summary: 'Não é possível preencher periculosidade e insalubridade ao mesmo tempo',
-                life: 3000
-            });
-            return;
-        } else {
-            setErroPeriInsa(false);
-        }
+        // if (periculosidade && insalubridade) {
+        //     setErroPeriInsa(true);
+        //     toast.current.show({
+        //         severity: 'error',
+        //         summary: 'Não é possível preencher periculosidade e insalubridade ao mesmo tempo',
+        //         life: 3000
+        //     });
+        //     return;
+        // } else {
+        //     setErroPeriInsa(false);
+        // }
 
         // Validação dos campos obrigatórios
         const camposObrigatorios = [
@@ -163,11 +157,19 @@ const VagasRegistro = () => {
             { campo: dataEncerramento, nome: 'dt_encerramento' },
             { campo: salario, nome: 'salario' },
             { campo: qtdVagas, nome: 'qtd_vaga' },
-            { campo: filial, nome: 'Filial' },
-            { campo: horario, nome: 'horario' }
+            { campo: filial, nome: 'Filial', obrigatorio: isCampoObrigatorio(filiais) },
+            { campo: centroCusto, nome: 'Centro de Custo', obrigatorio: isCampoObrigatorio(centros_custo) },
+            { campo: secao, nome: 'Seção', obrigatorio: isCampoObrigatorio(secoes) },
+            { campo: funcao, nome: 'Função', obrigatorio: isCampoObrigatorio(funcoes) },
+            { campo: sindicato, nome: 'Sindicato', obrigatorio: isCampoObrigatorio(sindicatos) },
+            { campo: horario, nome: 'horario', obrigatorio: isCampoObrigatorio(horarios) }
         ];
 
-        const camposVazios = camposObrigatorios.filter(campo => !campo.campo);
+        const camposVazios = camposObrigatorios.filter(campo => {
+            // Se o campo tem a propriedade obrigatorio, usa ela, senão é sempre obrigatório
+            const ehObrigatorio = campo.obrigatorio !== undefined ? campo.obrigatorio : true;
+            return ehObrigatorio && !campo.campo;
+        });
         
         if (camposVazios.length > 0) {
             setClassError(camposVazios.map(campo => campo.nome.toLowerCase().replace(/\s+/g, '_')));
@@ -211,7 +213,7 @@ const VagasRegistro = () => {
                 dt_encerramento: dataEncerramento,
                 deficiencia,
                 periculosidade: periculosidade?.code || null,
-                insalubridade: insalubridade || 0,
+                insalubridade: insalubridade?.code || 0,
                 inclusao,
                 inclusao_para: inclusao_para || null,
                 qtd_vaga: qtdVagas ? parseInt(qtdVagas) : null,
@@ -243,7 +245,7 @@ const VagasRegistro = () => {
                     setInclusao(false);
                     setInclusaoPara('');
                     setPericulosidade(null);
-                    setInsalubridade('');
+                    setInsalubridade(null);
                     setSecao(null);
                     setCargo(null);
                     setHorario(null);
@@ -256,7 +258,8 @@ const VagasRegistro = () => {
                         life: 3000
                     });
                     
-                    navegar('/vagas');
+                    // Redireciona para a página de detalhes da vaga criada
+                    navegar(`/vagas/detalhes/${response.id}`);
                 })
                 .catch(() => {
                     // erro
@@ -330,29 +333,22 @@ const VagasRegistro = () => {
                             valor={periculosidade}
                             setValor={valor => { 
                                 setPericulosidade(valor); 
-                                if (valor) setInsalubridade(''); 
-                                setErroPeriInsa(false);
                             }}
                             options={listaPericulosidades}
                             label="Periculosidade"
                             placeholder="Selecione a periculosidade"
-                            disabled={!!insalubridade}
-                            allowClear={true}
                         />
                     </Col6>
                     <Col6>
-                        <CampoTexto
+                        <DropdownItens
                             name="insalubridade"
                             valor={insalubridade}
                             setValor={valor => { 
                                 setInsalubridade(valor); 
-                                if (valor) setPericulosidade(''); 
-                                setErroPeriInsa(false);
                             }}
-                            type="text"
+                            options={listaInsalubridades}
                             label="Insalubridade"
-                            placeholder="Digite a insalubridade"
-                            disabled={!!periculosidade}
+                            placeholder="Selecione a insalubridade"
                         />
                     </Col6>
                 </Col12>
