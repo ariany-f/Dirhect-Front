@@ -95,69 +95,131 @@ function Autenticado() {
     useEffect(() => {        
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {
-             // Buscar clientes
-             http.get(`cliente/?format=json`)
-             .then(async (response) => {
-                 let clientes = response; // Supondo que a resposta seja um array de clientes
+            // Tentar recuperar do cache primeiro
+            const cachedTenants = ArmazenadorToken.getTenantsCache();
+            const cachedCompanies = ArmazenadorToken.getCompaniesCache();
+            const selectedCompany = ArmazenadorToken.UserCompanyPublicId;
 
-                 // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
-                 const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
-                     try {
-                         // Buscar o tenant
-                         const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
-                         const tenant = tenantResponse || {};
+            if (cachedTenants && cachedCompanies && ArmazenadorToken.isCacheValido()) {
+                
+                // Usar dados do cache
+                setTenants(cachedTenants);
+                setEmpresas(cachedCompanies);
+                setCompanies(cachedCompanies);
 
-                         // Buscar a pessoa jurídica
-                         const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
-                         const pessoaJuridica = pessoaJuridicaResponse || {};
+                if(selected == '') {
+                    if(selectedCompany) {
+                        setSelected(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.id_tenant || '');
+                        setEmpresa(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.nome || '');
+                        setSessionCompany(selectedCompany);
+                        setCompanyDomain(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.domain || '');
+                        setCompanyLogo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.logo || '');
+                        setCompanySymbol(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.simbolo || '');
+                    } else {
+                        setSelected(cachedCompanies[0]?.id_tenant || '');
+                        setEmpresa(cachedCompanies[0]?.tenant.nome || '');
+                        setSessionCompany(cachedCompanies[0]?.id_tenant || '');
+                        setCompanyDomain(cachedCompanies[0]?.domain || '');
+                        setCompanyLogo(cachedCompanies[0]?.tenant.logo || '');
+                        setCompanySymbol(cachedCompanies[0]?.tenant.simbolo || '');
+                    }
+                }
+                else {
+                    setEmpresa(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.nome || '');
+                    setSessionCompany(selectedCompany);
+                    setCompanyDomain(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.domain || '');
+                    setCompanyLogo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.logo || '');
+                    setCompanySymbol(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.simbolo || '');
+                }
+            } else {
+                // Buscar dados do servidor
+                http.get(`cliente/?format=json`)
+                .then(async (response) => {
+                    let clientes = response;
 
+                    // Mapear cada cliente para incluir tenant, pessoa_juridica e domain
+                    const clientesCompletos = await Promise.all(clientes.map(async (cliente) => {
+                        try {
+                            // Buscar o tenant
+                            const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
+                            const tenant = tenantResponse || {};
 
-                         // Retornar o objeto consolidado
-                         return {
-                             ...cliente,
-                             tenant,
-                             pessoaJuridica
-                         };
-                     } catch (erro) {
-                         console.error("Erro ao buscar dados do cliente:", erro);
-                         return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
-                     }
-                 }));
+                            // Buscar a pessoa jurídica
+                            const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
+                            const pessoaJuridica = pessoaJuridicaResponse || {};
 
-                 // Atualizar o estado com os clientes completos
-                 setTenants(clientesCompletos);
-                 
-            })
-            .catch(erro => {
-                console.error("Erro ao buscar clientes:", erro);
-            });
+                            // Retornar o objeto consolidado
+                            return {
+                                ...cliente,
+                                tenant,
+                                pessoaJuridica
+                            };
+                        } catch (erro) {
+                            console.error("Erro ao buscar dados do cliente:", erro);
+                            return { ...cliente, tenant: {}, pessoaJuridica: {}, domain: null };
+                        }
+                    }));
+
+                    // Salvar no cache
+                    ArmazenadorToken.salvarTenantsCache(clientesCompletos);
+                    
+                    // Atualizar o estado com os clientes completos
+                    setTenants(clientesCompletos);
+                    
+                })
+                .catch(erro => {
+                    console.error("Erro ao buscar clientes:", erro);
+                });
+            }
         }
 
         if(((!empresas) || empresas.length == 0) && tenants)
         {
-            http.get(`client_domain/?format=json`)
-            .then(domains => {
-                    // Cruzar os dados: adicionar domains correspondentes a cada tenant
-                    const tenantsWithDomain = tenants.map(tenant => ({
+            // Tentar recuperar domains do cache
+            const cachedDomains = ArmazenadorToken.getDomainsCache();
+            
+            if (cachedDomains && ArmazenadorToken.isCacheValido()) {
+                // Usar domains do cache
+                const tenantsWithDomain = tenants.map(tenant => ({
                     ...tenant,
-                    domain: domains.find(domain => domain.tenant === tenant.id_tenant)?.domain || null
+                    domain: cachedDomains.find(domain => domain.tenant === tenant.id_tenant)?.domain || null
                 }));
 
-                setEmpresas(tenantsWithDomain)
-                setCompanies(tenantsWithDomain)
+                setEmpresas(tenantsWithDomain);
+                setCompanies(tenantsWithDomain);
+                ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
 
-                if(selected == '')
-                {
-                    setSelected(tenantsWithDomain[0].id_tenant)
+                if(selected == '') {
+                    setSelected(tenantsWithDomain[0]?.id_tenant || '');
                 }
-            })
-            .catch(erro => {
+            } else {
+                // Buscar domains do servidor
+                http.get(`client_domain/?format=json`)
+                .then(domains => {
+                    // Salvar domains no cache
+                    ArmazenadorToken.salvarDomainsCache(domains);
+                    
+                    // Cruzar os dados: adicionar domains correspondentes a cada tenant
+                    const tenantsWithDomain = tenants.map(tenant => ({
+                        ...tenant,
+                        domain: domains.find(domain => domain.tenant === tenant.id_tenant)?.domain || null
+                    }));
 
-            })
+                    setEmpresas(tenantsWithDomain);
+                    setCompanies(tenantsWithDomain);
+                    ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
+
+                    if(selected == '') {
+                        setSelected(tenantsWithDomain[0]?.id_tenant || '');
+                    }
+                })
+                .catch(erro => {
+                    console.error("Erro ao buscar domains:", erro);
+                });
+            }
         }
 
         var comp = [];
-
         if(selected && empresas && empresas.length > 0)
         {
             comp = empresas.filter(company => company.id_tenant == selected);

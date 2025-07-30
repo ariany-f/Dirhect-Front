@@ -166,9 +166,8 @@ function BarraLateral({ $sidebarOpened }) {
     useEffect(() => {
         if(usuario.tipo) {
             // Se já existe no ArmazenadorToken, usa ele
-            if (ArmazenadorToken.userPermissions && Array.isArray(ArmazenadorToken.userPermissions) && ArmazenadorToken.userPermissions.length > 0) {
-                setGrupos(ArmazenadorToken.userPermissions);
-            
+            if (ArmazenadorToken.UserPermissions && Array.isArray(ArmazenadorToken.UserPermissions) && ArmazenadorToken.UserPermissions.length > 0) {
+                setGrupos(ArmazenadorToken.UserPermissions);
             } else {
                 http.get(`permissao_grupo/?format=json&name=${usuario.tipo}`)
                     .then(response => {

@@ -293,10 +293,12 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                             </ListaEmpresas>
                         </>
                     }
-                        <Frame alinhamento="center">
-                            <AdicionarCnpjBotao style={{opacity: 0.5, pointerEvents: 'none', userSelect: 'none'}} disabled>
-                                <CiCirclePlus size={20} className="icon" />Adicionar uma nova empresa
-                            </AdicionarCnpjBotao>
+                       <Frame alinhamento="center">
+                            {ArmazenadorToken.hasPermission('add_cliente') && (
+                                    <AdicionarCnpjBotao style={{opacity: 0.5, pointerEvents: 'none', userSelect: 'none'}} disabled>
+                                        <CiCirclePlus size={20} className="icon" />Adicionar uma nova empresa
+                                    </AdicionarCnpjBotao>
+                            )}
                         </Frame>
                     </Frame>
                     <form method="dialog">

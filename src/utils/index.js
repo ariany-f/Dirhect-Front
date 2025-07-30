@@ -19,6 +19,11 @@ const USER_TYPE = 'tipo'
 const USER_GROUPS = 'groups'
 const USER_PERMISSIONS = 'group_permissions'
 const USER_PROFILE = 'profile'
+const TENANTS_CACHE = 'tenants_cache'
+const COMPANIES_CACHE = 'companies_cache'
+const DOMAINS_CACHE = 'domains_cache'
+const CACHE_TIMESTAMP = 'cache_timestamp'
+const CACHE_DURATION = 30 * 60 * 1000 // 30 minutos em millisegundos
 
 export class ArmazenadorToken {
     static definirGrupos(groups) {
@@ -133,6 +138,10 @@ export class ArmazenadorToken {
         localStorage.removeItem(COMPANY_DOMAIN)
         localStorage.removeItem(COMPANY_SYMBOL)
         localStorage.removeItem(COMPANY_LOGO)
+        localStorage.removeItem(COMPANIES_CACHE)
+        localStorage.removeItem(DOMAINS_CACHE)
+        localStorage.removeItem(CACHE_TIMESTAMP)
+        localStorage.removeItem(TENANTS_CACHE)
     }
 
     static limparEmpresas() {
@@ -146,6 +155,110 @@ export class ArmazenadorToken {
                 }
             }
             keysToRemove.forEach(key => localStorage.removeItem(key));
+        }
+    }
+
+    // Funções para gerenciar cache de tenants, companies e domains
+    static salvarTenantsCache(tenants) {
+        try {
+            localStorage.setItem(TENANTS_CACHE, JSON.stringify(tenants));
+            localStorage.setItem(CACHE_TIMESTAMP, Date.now().toString());
+        } catch (error) {
+            console.error('Erro ao salvar cache de tenants:', error);
+        }
+    }
+
+    static getTenantsCache() {
+        try {
+            const timestamp = localStorage.getItem(CACHE_TIMESTAMP);
+            if (!timestamp) return null;
+
+            const cacheAge = Date.now() - parseInt(timestamp);
+            if (cacheAge > CACHE_DURATION) {
+                this.limparCache();
+                return null;
+            }
+
+            const tenants = localStorage.getItem(TENANTS_CACHE);
+            return tenants ? JSON.parse(tenants) : null;
+        } catch (error) {
+            console.error('Erro ao recuperar cache de tenants:', error);
+            return null;
+        }
+    }
+
+    static salvarCompaniesCache(companies) {
+        try {
+            localStorage.setItem(COMPANIES_CACHE, JSON.stringify(companies));
+            localStorage.setItem(CACHE_TIMESTAMP, Date.now().toString());
+        } catch (error) {
+            console.error('Erro ao salvar cache de companies:', error);
+        }
+    }
+
+    static getCompaniesCache() {
+        try {
+            const timestamp = localStorage.getItem(CACHE_TIMESTAMP);
+            if (!timestamp) return null;
+
+            const cacheAge = Date.now() - parseInt(timestamp);
+            if (cacheAge > CACHE_DURATION) {
+                this.limparCache();
+                return null;
+            }
+
+            const companies = localStorage.getItem(COMPANIES_CACHE);
+            return companies ? JSON.parse(companies) : null;
+        } catch (error) {
+            console.error('Erro ao recuperar cache de companies:', error);
+            return null;
+        }
+    }
+
+    static salvarDomainsCache(domains) {
+        try {
+            localStorage.setItem(DOMAINS_CACHE, JSON.stringify(domains));
+            localStorage.setItem(CACHE_TIMESTAMP, Date.now().toString());
+        } catch (error) {
+            console.error('Erro ao salvar cache de domains:', error);
+        }
+    }
+
+    static getDomainsCache() {
+        try {
+            const timestamp = localStorage.getItem(CACHE_TIMESTAMP);
+            if (!timestamp) return null;
+
+            const cacheAge = Date.now() - parseInt(timestamp);
+            if (cacheAge > CACHE_DURATION) {
+                this.limparCache();
+                return null;
+            }
+
+            const domains = localStorage.getItem(DOMAINS_CACHE);
+            return domains ? JSON.parse(domains) : null;
+        } catch (error) {
+            console.error('Erro ao recuperar cache de domains:', error);
+            return null;
+        }
+    }
+
+    static limparCache() {
+        localStorage.removeItem(TENANTS_CACHE);
+        localStorage.removeItem(COMPANIES_CACHE);
+        localStorage.removeItem(DOMAINS_CACHE);
+        localStorage.removeItem(CACHE_TIMESTAMP);
+    }
+
+    static isCacheValido() {
+        try {
+            const timestamp = localStorage.getItem(CACHE_TIMESTAMP);
+            if (!timestamp) return false;
+
+            const cacheAge = Date.now() - parseInt(timestamp);
+            return cacheAge <= CACHE_DURATION;
+        } catch (error) {
+            return false;
         }
     }
 
@@ -169,6 +282,8 @@ export class ArmazenadorToken {
         // Limpar dados de empresa
         this.removerCompany()
         this.limparEmpresas()
+        // Limpar cache
+        this.limparCache()
         
         return true;
     }
