@@ -71,7 +71,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [] }) => {
 
     useEffect(() => {
         setLoadingBancos(true);
-        http.get('banco/')
+        http.get('banco/?ordering=id')
             .then(response => {
                 const formattedBancos = response.map(b => ({
                     code: b.id,
@@ -92,7 +92,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [] }) => {
         if (candidato?.banco && !adicionandoAgencia) {
             setLoadingAgencias(true);
             setAgencias([]);
-            http.get(`agencia/?banco_id=${candidato.banco}`)
+            http.get(`agencia/?banco_id=${candidato.banco}&ordering=id`)
                 .then(response => {
                     const formattedAgencias = response.map(ag => ({
                         code: ag.id,
