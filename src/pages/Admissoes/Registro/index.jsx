@@ -1078,8 +1078,6 @@ const CandidatoRegistro = () => {
                 estado_civil: candidatoAtual.estado_civil,
                 
                 // Documentos
-                identidade: candidatoAtual.identidade,
-                uf_identidade: candidatoAtual.uf_identidade,
                 orgao_emissor_ident: candidatoAtual.orgao_emissor_ident,
                 data_emissao_ident: candidatoAtual.data_emissao_ident,
                 titulo_eleitor: candidatoAtual.titulo_eleitor,
@@ -1099,9 +1097,6 @@ const CandidatoRegistro = () => {
                 data_emissao_cnh: candidatoAtual.data_emissao_cnh,
                 identidade: candidatoAtual.identidade,
                 uf_identidade: candidatoAtual.uf_identidade,
-                orgao_emissor_ident: candidatoAtual.orgao_emissor_ident,
-                data_emissao_ident: candidatoAtual.data_emissao_ident,
-                pispasep: candidatoAtual.pispasep,
                 dt_opcao_fgts: candidatoAtual.dt_opcao_fgts,
                 codigo_situacao_fgts: candidatoAtual.codigo_situacao_fgts,
                 numero_cartao_sus: candidatoAtual.nrosus,
@@ -1150,7 +1145,6 @@ const CandidatoRegistro = () => {
                 codigo_ficha_registro: candidatoAtual.codigo_ficha_registro,
                 codigo_jornada: candidatoAtual.codigo_jornada,
                 tipo_funcionario: candidatoAtual.tipo_funcionario,
-                tipo_situacao: candidatoAtual.tipo_situacao,
                 aceite_lgpd: candidatoAtual.aceite_lgpd,
                 anotacoes: candidatoAtual.anotacoes || '',
                 
@@ -1175,9 +1169,7 @@ const CandidatoRegistro = () => {
                 tipo_regime_previdenciario: candidatoAtual.tipo_regime_previdenciario,
                 tipo_contrato_prazo_determinado: candidatoAtual.tipo_contrato_prazo_determinado,
                 tipo_contrato_trabalho: candidatoAtual.tipo_contrato_trabalho,
-                natureza_atividade_esocial: candidatoAtual.natureza_atividade_esocial,
-                codigo_situacao_fgts: candidatoAtual.codigo_situacao_fgts,
-                dt_opcao_fgts: candidatoAtual.dt_opcao_fgts
+                natureza_atividade_esocial: candidatoAtual.natureza_atividade_esocial
             };
 
             // Remove campos vazios do payload antes de enviar
