@@ -23,14 +23,14 @@ const TarefasLista = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [first, setFirst] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortField, setSortField] = useState('');
+    const [sortField, setSortField] = useState('-id');
     const [sortOrder, setSortOrder] = useState('');
     const [filters, setFilters] = useState({
         'processo_codigo': { value: null, matchMode: 'custom' },
         'percentual_conclusao': { value: null, matchMode: 'custom' }
     });
 
-    const loadData = (currentPage, currentPageSize, search = '', sort = '', currentFilters) => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '-id', currentFilters) => {
         setLoading(true);
         let url = `processos/?format=json&page=${currentPage}&page_size=${currentPageSize}`;
         
@@ -40,6 +40,8 @@ const TarefasLista = () => {
         
         const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
         url += orderParam;
+
+        console.log('🔍 Ordenação:', sort);
 
         // Adicionar filtro de processo_codigo
         const processoCodigoFilter = currentFilters?.['processo_codigo']?.value;
