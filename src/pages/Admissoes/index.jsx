@@ -34,7 +34,7 @@ const Admissoes = () => {
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('');
 
-    const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '-id') => {
         setLoading(true);
         const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
         http.get(`admissao/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)

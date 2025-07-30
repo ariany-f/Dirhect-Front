@@ -87,8 +87,8 @@ function DataTableVagas({
             status = 'Aguardando';
             color = 'var(--neutro-400)';
         } else if (hoje > encerramento) {
-            status = 'Encerrada';
-            color = 'var(--error)';
+            status = 'Fora do Prazo';
+            color = 'var(--warning)';
         } else {
             switch (status) {
                 case 'A':

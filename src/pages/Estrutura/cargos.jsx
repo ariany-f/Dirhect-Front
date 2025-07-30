@@ -55,7 +55,7 @@ function CargosLista() {
     const toast = useRef(null)
     const navegar = useNavigate()
     
-    const loadData = (currentPage, currentPageSize, search = '', sort = '', order = '') => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '-id', order = '') => {
         setLoading(true);
         const orderParam = (sort && order) ? `&ordering=${order === 'desc' ? '-' : ''}${sort}` : '';
         http.get(`cargo/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)

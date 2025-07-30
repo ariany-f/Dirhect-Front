@@ -18,7 +18,7 @@ function VagasAbertas() {
     const [sortOrder, setSortOrder] = useState('');
     const context = useOutletContext();
 
-    const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '-id') => {
         setLoading(true);
         const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
         http.get(`vagas/?format=json&status=A&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)

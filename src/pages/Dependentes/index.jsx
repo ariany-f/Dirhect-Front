@@ -25,7 +25,7 @@ function Dependentes() {
         usuario
     } = useSessaoUsuarioContext()
 
-    const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '-id') => {
         setLoading(true);
         let url = `dependente/?format=json&page=${currentPage}&page_size=${currentPageSize}`;
         
