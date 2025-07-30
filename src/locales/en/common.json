@@ -38,5 +38,6 @@
     "password_weak": "The password is too weak",
     "password_medium": "The password is medium",
     "password_strong": "The password is strong",
+    "noAvailableOptions": "No available options",
     "password_prompt": "Enter the password"
 }

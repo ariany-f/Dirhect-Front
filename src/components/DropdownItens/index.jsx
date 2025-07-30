@@ -3,6 +3,7 @@ import styles from './DropdownItens.module.css'
 import styled, { createGlobalStyle } from 'styled-components'
 import * as Yup from 'yup'
 import {Dropdown} from 'primereact/dropdown'
+import { useTranslation } from 'react-i18next'
 
 const GlobalPanelStyle = createGlobalStyle`
     .dropdown-panel-wrapping {
@@ -29,7 +30,7 @@ const Select = styled(Dropdown)`
     font-size: 14px;
     width: ${ props => props.$width ?  props.$width : '100%' };
     height: ${ props => props.$height ?  props.$height : '46px' };
-    max-width: ${ props => props.$maxWidth ?  props.$maxWidth : '36vw' };
+    max-width: ${ props => props.$maxWidth ?  props.$maxWidth : '100%' };
     margin-bottom: ${ props => props.$margin ?  props.$margin : '0px' };
 
     & .p-dropdown-label {
@@ -140,6 +141,7 @@ function DropdownItens({
     emptyMessage
 }) {
 
+    const { t } = useTranslation('common')
     const [erro, setErro] = useState('')
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -199,8 +201,8 @@ function DropdownItens({
                             disabled={disabled}
                             showClear={allowClear && valor}
                             onFilter={onFilter}
-                            emptyFilterMessage={emptyFilterMessage}
-                            emptyMessage={emptyMessage}
+                            emptyFilterMessage={emptyFilterMessage || t('noAvailableOptions')}
+                            emptyMessage={emptyMessage || t('noAvailableOptions')}
                             panelClassName="dropdown-panel-wrapping"
                         />
                     :
@@ -218,6 +220,7 @@ function DropdownItens({
                         valueTemplate={optionTemplate} // Template para o valor selecionado
                         disabled={disabled}
                         showClear={allowClear && valor}
+                        emptyMessage={emptyMessage || t('noAvailableOptions')}
                         panelClassName="dropdown-panel-wrapping"
                     />
                 }

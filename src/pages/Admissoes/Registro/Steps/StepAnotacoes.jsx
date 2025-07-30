@@ -1,6 +1,24 @@
 import React from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
+import styled from 'styled-components';
+
+const InfoBox = styled.div`
+    grid-column: 1 / -1;
+    background: linear-gradient(45deg, #f8fafc, #f1f5f9);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+    
+    .icon {
+        color: #3b82f6;
+        margin-right: 8px;
+    }
+`;
 
 const StepAnotacoes = () => {
     const { candidato, setCandidato } = useCandidatoContext();
@@ -21,7 +39,9 @@ const StepAnotacoes = () => {
                 width: '100%',
                 backgroundColor: '#fafafa'
             }}>
-                <h3 style={{
+
+                
+            <h3 style={{
                     margin: '0 0 16px 0',
                     fontSize: '18px',
                     fontWeight: '600',
@@ -29,17 +49,20 @@ const StepAnotacoes = () => {
                     textAlign: 'center'
                 }}>
                     Anotações e Observações
-                </h3>
-                
-                <p style={{
-                    margin: '0 0 20px 0',
-                    fontSize: '14px',
-                    color: 'var(--text-color-secondary)',
-                    textAlign: 'center',
-                    lineHeight: '1.5'
-                }}>
-                    Adicione aqui qualquer observação ou anotação relevante sobre o processo de admissão.
-                </p>
+            </h3>
+                <InfoBox>
+                    <strong>Dica:</strong> Use este campo para registrar informações importantes como:
+                    <br />
+                    • Observações sobre documentos
+                    <br />
+                    • Observações sobre entrevistas
+                    <br />
+                    • Condições especiais de contratação
+                    <br />
+                    • Observações sobre dependentes
+                    <br />
+                    • Qualquer outra informação relevante
+                </InfoBox>
 
                 <div style={{ marginBottom: '16px' }}>
                     <label style={{ 
@@ -64,33 +87,6 @@ const StepAnotacoes = () => {
                         rows={8}
                         width="100%"
                     />
-                </div>
-
-                <div style={{
-                    background: 'linear-gradient(135deg, #f0f9ff, #e0f2fe)',
-                    border: '1px solid #bae6fd',
-                    borderRadius: 6,
-                    padding: '12px',
-                    marginTop: '16px'
-                }}>
-                    <p style={{
-                        margin: 0,
-                        fontSize: '13px',
-                        color: '#0369a1',
-                        lineHeight: '1.4'
-                    }}>
-                        <strong>💡 Dica:</strong> Use este campo para registrar informações importantes como:
-                        <br />
-                        • Observações sobre documentos
-                        <br />
-                        • Observações sobre entrevistas
-                        <br />
-                        • Condições especiais de contratação
-                        <br />
-                        • Observações sobre dependentes
-                        <br />
-                        • Qualquer outra informação relevante
-                    </p>
                 </div>
             </div>
         </div>

@@ -38,5 +38,6 @@
     "password_weak": "A senha é muito fraca",
     "password_medium": "A senha é média",
     "password_strong": "A senha é forte",
+    "noAvailableOptions": "Nenhuma opção disponível",
     "password_prompt": "Digite a senha"
 }

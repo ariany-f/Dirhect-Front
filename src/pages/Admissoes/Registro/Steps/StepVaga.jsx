@@ -6,15 +6,16 @@ import styled from 'styled-components';
 import CheckboxContainer from '@components/CheckboxContainer';
 
 const GridContainer = styled.div`
-    padding: 20px 10px 10px 10px;
+    padding: 0 24px 24px 24px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    align-items: start;
+    gap: 8px 24px;
+    box-sizing: border-box;
+    width: 100%;
     
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 12px 0;
     }
 `;
 
@@ -332,6 +333,89 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
 
+            <SectionTitle>Características</SectionTitle>
+
+            <DropdownItens
+                name="tipo_situacao"
+                label="Situação"
+                valor={getValorSelecionadoFromCandidato('tipo_situacao', opcoesTipoSituacao)}
+                setValor={(valor) => setCampo('tipo_situacao', valor.code)}
+                options={opcoesTipoSituacao}
+                disabled={modoLeitura}
+                filter
+            />
+            <DropdownItens
+                name="tipo_regime_trabalhista"
+                label="Tipo de Regime Trabalhista"
+                valor={getValorSelecionadoFromCandidato('tipo_regime_trabalhista', opcoesTipoRegimeTrabalhista)}
+                setValor={(valor) => setCampo('tipo_regime_trabalhista', valor.code)}
+                options={opcoesTipoRegimeTrabalhista}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="tipo_funcionario"
+                label="Tipo de Funcionário"
+                valor={getValorSelecionadoFromCandidato('tipo_funcionario', opcoesTipoFuncionario)}
+                setValor={(valor) => setCampo('tipo_funcionario', valor.code)}
+                options={opcoesTipoFuncionario} 
+                disabled={modoLeitura}
+                filter
+            /> 
+            <DropdownItens
+                name="tipo_regime_previdenciario"
+                label="Tipo de Regime Previdenciário"
+                valor={getValorSelecionadoFromCandidato('tipo_regime_previdenciario', opcoesTipoRegimePrevidenciario)}
+                setValor={(valor) => setCampo('tipo_regime_previdenciario', valor.code)}
+                options={opcoesTipoRegimePrevidenciario}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="tipo_recebimento"
+                label="Tipo de Recebimento"
+                valor={getValorSelecionadoFromCandidato('tipo_recebimento', opcoesTipoRecebimento)}
+                setValor={(valor) => setCampo('tipo_recebimento', valor.code)}
+                options={opcoesTipoRecebimento}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="tipo_regime_jornada"
+                label="Tipo de Regime da Jornada"
+                valor={getValorSelecionadoFromCandidato('tipo_regime_jornada', opcoesTipoRegimeJornada)}
+                setValor={(valor) => setCampo('tipo_regime_jornada', valor.code)}
+                options={opcoesTipoRegimeJornada}
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="jornada"
+                label="Jornada (HHH:mm)"
+                valor={candidato.jornada || ''}
+                setValor={(valor) => setCampo('jornada', valor)}
+                patternMask="999:99"
+                placeholder="Ex: 220:30"
+                disabled={modoLeitura}
+            />
+            <div style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
+            {/* Todos os Checkboxes agrupados */}
+            <CheckboxContainer
+                label="Função/Emprego/Cargo Acumulável"
+                checked={candidato.funcao_emprego_cargoacumulavel || false}
+                onChange={(e) => setCampo('funcao_emprego_cargoacumulavel', e.target.checked)}
+                disabled={modoLeitura}
+            />
+            <CheckboxContainer
+                label="Calcula INSS"
+                checked={candidato.calcula_inss || false}
+                onChange={(e) => setCampo('calcula_inss', e.target.checked)}
+                disabled={modoLeitura}
+            />
+            <CheckboxContainer
+                label="Calcula IRRF"
+                checked={candidato.calcula_irrf || false}
+                onChange={(e) => setCampo('calcula_irrf', e.target.checked)}
+                disabled={modoLeitura}
+            />
+            </div>
+
             <SectionTitle>FGTS</SectionTitle>
 
             <DropdownItens
@@ -369,74 +453,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 filter
             />
 
-            
-
-            <DropdownItens
-                name="tipo_funcionario"
-                label="Tipo de Funcionário"
-                valor={getValorSelecionadoFromCandidato('tipo_funcionario', opcoesTipoFuncionario)}
-                setValor={(valor) => setCampo('tipo_funcionario', valor.code)}
-                options={opcoesTipoFuncionario} 
-                disabled={modoLeitura}
-                filter
-            />
-            <DropdownItens
-                name="codigo_categoria_esocial"
-                label="Código Categoria eSocial"
-                valor={getValorSelecionadoFromCandidato('codigo_categoria_esocial', opcoesCodigoCategoriaESocial)}
-                setValor={(valor) => setCampo('codigo_categoria_esocial', valor.code)}
-                options={opcoesCodigoCategoriaESocial}
-                disabled={modoLeitura}
-                filter
-            />
-
-            <DropdownItens
-                name="tipo_regime_trabalhista"
-                label="Tipo de Regime Trabalhista"
-                valor={getValorSelecionadoFromCandidato('tipo_regime_trabalhista', opcoesTipoRegimeTrabalhista)}
-                setValor={(valor) => setCampo('tipo_regime_trabalhista', valor.code)}
-                options={opcoesTipoRegimeTrabalhista}
-                disabled={modoLeitura}
-            />
-            
-            <DropdownItens
-                name="tipo_recebimento"
-                label="Tipo de Recebimento"
-                valor={getValorSelecionadoFromCandidato('tipo_recebimento', opcoesTipoRecebimento)}
-                setValor={(valor) => setCampo('tipo_recebimento', valor.code)}
-                options={opcoesTipoRecebimento}
-                disabled={modoLeitura}
-            />
-
-            <DropdownItens
-                name="tipo_situacao"
-                label="Situação"
-                valor={getValorSelecionadoFromCandidato('tipo_situacao', opcoesTipoSituacao)}
-                setValor={(valor) => setCampo('tipo_situacao', valor.code)}
-                options={opcoesTipoSituacao}
-                disabled={modoLeitura}
-                filter
-            />
-
-           
-            
-            <DropdownItens
-                name="tipo_regime_jornada"
-                label="Tipo de Regime da Jornada"
-                valor={getValorSelecionadoFromCandidato('tipo_regime_jornada', opcoesTipoRegimeJornada)}
-                setValor={(valor) => setCampo('tipo_regime_jornada', valor.code)}
-                options={opcoesTipoRegimeJornada}
-                disabled={modoLeitura}
-            />
-
-            <DropdownItens
-                name="tipo_regime_previdenciario"
-                label="Tipo de Regime Previdenciário"
-                valor={getValorSelecionadoFromCandidato('tipo_regime_previdenciario', opcoesTipoRegimePrevidenciario)}
-                setValor={(valor) => setCampo('tipo_regime_previdenciario', valor.code)}
-                options={opcoesTipoRegimePrevidenciario}
-                disabled={modoLeitura}
-            />
+            <SectionTitle>Contrato</SectionTitle>
             
             <DropdownItens
                 name="contrato_tempo_parcial"
@@ -462,6 +479,18 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 options={opcoesTipoContratoTrabalho}
                 disabled={modoLeitura}
             />
+
+            <SectionTitle>eSocial</SectionTitle>
+            
+            <DropdownItens
+                name="codigo_categoria_esocial"
+                label="Código Categoria eSocial"
+                valor={getValorSelecionadoFromCandidato('codigo_categoria_esocial', opcoesCodigoCategoriaESocial)}
+                setValor={(valor) => setCampo('codigo_categoria_esocial', valor.code)}
+                options={opcoesCodigoCategoriaESocial}
+                disabled={modoLeitura}
+                filter
+            />
             <DropdownItens
                 name="natureza_atividade_esocial"
                 label="Natureza da Atividade eSocial"
@@ -470,49 +499,12 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 options={opcoesNaturezaAtividadeESocial}
                 disabled={modoLeitura}
             />
-
-            {/* Todos os Campos de Texto agrupados */}
-            <CampoTexto
-                name="jornada"
-                label="Jornada (HHH:mm)"
-                valor={candidato.jornada || ''}
-                setValor={(valor) => setCampo('jornada', valor)}
-                patternMask="999:99"
-                placeholder="Ex: 220:30"
-                disabled={modoLeitura}
-            />
             <DropdownItens
                 name="letra"
                 label="Letra"
                 valor={getValorSelecionadoFromCandidato('letra', opcoesLetra)}
                 setValor={(valor) => setCampo('letra', valor.code)}
                 options={opcoesLetra}
-                disabled={modoLeitura}
-            />
-
-            {/* Todos os Checkboxes agrupados */}
-            <CheckboxContainer
-                label="Função/Emprego/Cargo Acumulável"
-                checked={candidato.funcao_emprego_cargoacumulavel || false}
-                onChange={(e) => setCampo('funcao_emprego_cargoacumulavel', e.target.checked)}
-                disabled={modoLeitura}
-            />
-            <CheckboxContainer
-                label="Mensal"
-                checked={candidato.mensal || false}
-                onChange={(e) => setCampo('mensal', e.target.checked)}
-                disabled={modoLeitura}
-            />
-            <CheckboxContainer
-                label="Calcula INSS"
-                checked={candidato.calcula_inss || false}
-                onChange={(e) => setCampo('calcula_inss', e.target.checked)}
-                disabled={modoLeitura}
-            />
-            <CheckboxContainer
-                label="Calcula IRRF"
-                checked={candidato.calcula_irrf || false}
-                onChange={(e) => setCampo('calcula_irrf', e.target.checked)}
                 disabled={modoLeitura}
             />
             
