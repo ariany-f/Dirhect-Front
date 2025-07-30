@@ -309,6 +309,13 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
     const getEstadoFormatado = (campo = 'estado') => {
         if (!candidato?.[campo]) return '';
         
+        // Campos de UF sempre usam estados brasileiros (independente da nacionalidade)
+        const camposUF = ['uf_identidade', 'uf_carteira_trab', 'estado_emissor_tit_eleitor'];
+        if (camposUF.includes(campo)) {
+            const estadoEncontrado = estados.find(e => e.code === candidato[campo]);
+            return estadoEncontrado || '';
+        }
+        
         // Verifica se a nacionalidade é Brasil
         const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
         const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
@@ -551,7 +558,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 label={`UF da CTPS${isCampoObrigatorio('uf_carteira_trab') ? '*' : ''}`}
                 valor={getEstadoFormatado('uf_carteira_trab')}
                 setValor={valor => setCampo('uf_carteira_trab', valor.code)}
-                options={estadosFiltrados}
+                options={estados}
                 placeholder="Selecione a UF"
                 disabled={modoLeitura}
                 filter
@@ -624,7 +631,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 label={`UF da Identidade${isCampoObrigatorio('uf_identidade') ? '*' : ''}`}
                 valor={getEstadoFormatado('uf_identidade')}
                 setValor={valor => setCampo('uf_identidade', valor.code)}
-                options={estadosFiltrados}
+                options={estados}
                 placeholder="Selecione a UF"
                 disabled={modoLeitura}
                 filter
@@ -695,7 +702,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 label={`Estado Emissor do Título${isCampoObrigatorio('estado_emissor_tit_eleitor') ? '*' : ''}`}
                 valor={getEstadoFormatado('estado_emissor_tit_eleitor')}
                 setValor={valor => setCampo('estado_emissor_tit_eleitor', valor.code)}
-                options={estadosFiltrados}
+                options={estados}
                 placeholder="Selecione o estado"
                 disabled={modoLeitura}
                 filter
