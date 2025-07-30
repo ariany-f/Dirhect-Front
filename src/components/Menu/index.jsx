@@ -242,6 +242,18 @@ function Menu({ opened = false, aoFechar }){
                         {/* Divider antes das opções do usuário - Apenas no Mobile */}
                         {!isDesktop && <div className="divider" />}
 
+                        {/* Email do usuário */}
+                        <li style={{ padding: '8px 16px', borderBottom: '1px solid var(--neutro-200)' }}>
+                            <div style={{ 
+                                fontSize: '12px', 
+                                color: 'var(--neutro-500)', 
+                                textAlign: 'right',
+                                fontWeight: '500'
+                            }}>
+                                {usuario.email}
+                            </div>
+                        </li>
+
                         {/* User Options */}
                         <li onClick={() => FecharMenu()}>
                             <Link className="link" to="/usuario">
