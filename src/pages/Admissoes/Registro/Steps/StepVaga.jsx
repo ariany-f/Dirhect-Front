@@ -191,6 +191,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     
     return (
         <GridContainer>
+
+            <SectionTitle>Estrutura Organizacional</SectionTitle>
             {/* Todos os Dropdowns agrupados */}
             <DropdownItens
                 name="filial"
@@ -210,23 +212,6 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
             <DropdownItens
-                name="funcao"
-                valor={getValorSelecionado('funcao_id', funcoes)}
-                setValor={valor => {
-                    setCampo('dados_vaga', { 
-                        ...candidato.dados_vaga, 
-                        funcao_id: valor.code,
-                        funcao_nome: valor.name
-                    });
-                }}
-                options={opcoesFuncoes}
-                label="Função"
-                required={isCampoObrigatorio(funcoes)}
-                search
-                filter
-                disabled={modoLeitura}
-            />
-            <DropdownItens
                 name="secao"
                 valor={getValorSelecionado('secao_id', secoes)}
                 setValor={valor => {
@@ -239,6 +224,23 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 options={opcoesSecoes}
                 label="Seção"
                 required={isCampoObrigatorio(secoes)}
+                search
+                filter
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="funcao"
+                valor={getValorSelecionado('funcao_id', funcoes)}
+                setValor={valor => {
+                    setCampo('dados_vaga', { 
+                        ...candidato.dados_vaga, 
+                        funcao_id: valor.code,
+                        funcao_nome: valor.name
+                    });
+                }}
+                options={opcoesFuncoes}
+                label="Função"
+                required={isCampoObrigatorio(funcoes)}
                 search
                 filter
                 disabled={modoLeitura}
@@ -294,6 +296,25 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 filter
                 disabled={modoLeitura}
             />
+            
+            <SectionTitle>Admissão</SectionTitle>
+
+            <CampoTexto
+                type="date"
+                name="dt_admissao"
+                label="Data de Admissão"
+                valor={candidato.dt_admissao || ''}
+                setValor={(valor) => setCampo('dt_admissao', valor)}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="indicativo_admissao"
+                label="Indicativo de Admissão"
+                valor={getValorSelecionadoFromCandidato('indicativo_admissao', opcoesIndicativoAdmissao)}
+                setValor={(valor) => setCampo('indicativo_admissao', valor.code)}
+                options={opcoesIndicativoAdmissao}
+                disabled={modoLeitura}
+            />
             <DropdownItens
                 name="tipo_admissao"
                 label="Tipo de Admissão"
@@ -311,14 +332,44 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
 
+            <SectionTitle>FGTS</SectionTitle>
+
             <DropdownItens
-                name="indicativo_admissao"
-                label="Indicativo de Admissão"
-                valor={getValorSelecionadoFromCandidato('indicativo_admissao', opcoesIndicativoAdmissao)}
-                setValor={(valor) => setCampo('indicativo_admissao', valor.code)}
-                options={opcoesIndicativoAdmissao}
+                name="codigo_situacao_fgts"
+                label="Situação FGTS"
+                valor={getValorSelecionadoFromCandidato('codigo_situacao_fgts', opcoesSituacaoFgts)}
+                setValor={(valor) => setCampo('codigo_situacao_fgts', valor.code)}
+                options={opcoesSituacaoFgts}
                 disabled={modoLeitura}
             />
+            <CampoTexto
+                type="date"
+                name="dt_opcao_fgts"
+                label="Data de Opção FGTS"
+                valor={candidato.dt_opcao_fgts || ''}
+                setValor={(valor) => setCampo('dt_opcao_fgts', valor)}
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                name="codigo_ocorrencia_sefip"
+                label="Código Ocorrência SEFIP"
+                valor={getValorSelecionadoFromCandidato('codigo_ocorrencia_sefip', opcoesCodigoOcorrenciaSefip)}
+                setValor={(valor) => setCampo('codigo_ocorrencia_sefip', valor.code)}
+                options={opcoesCodigoOcorrenciaSefip}
+                disabled={modoLeitura}
+                filter
+            />
+            <DropdownItens
+                name="codigo_categoria_sefip"
+                label="Código Categoria SEFIP"
+                valor={getValorSelecionadoFromCandidato('codigo_categoria_sefip', opcoesCodigoCategoriaSefip)}
+                setValor={(valor) => setCampo('codigo_categoria_sefip', valor.code)}
+                options={opcoesCodigoCategoriaSefip}
+                disabled={modoLeitura}
+                filter
+            />
+
+            
 
             <DropdownItens
                 name="tipo_funcionario"
@@ -367,24 +418,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 filter
             />
 
-            <DropdownItens
-                name="codigo_ocorrencia_sefip"
-                label="Código Ocorrência SEFIP"
-                valor={getValorSelecionadoFromCandidato('codigo_ocorrencia_sefip', opcoesCodigoOcorrenciaSefip)}
-                setValor={(valor) => setCampo('codigo_ocorrencia_sefip', valor.code)}
-                options={opcoesCodigoOcorrenciaSefip}
-                disabled={modoLeitura}
-                filter
-            />
-            <DropdownItens
-                name="codigo_categoria_sefip"
-                label="Código Categoria SEFIP"
-                valor={getValorSelecionadoFromCandidato('codigo_categoria_sefip', opcoesCodigoCategoriaSefip)}
-                setValor={(valor) => setCampo('codigo_categoria_sefip', valor.code)}
-                options={opcoesCodigoCategoriaSefip}
-                disabled={modoLeitura}
-                filter
-            />
+           
             
             <DropdownItens
                 name="tipo_regime_jornada"
@@ -436,24 +470,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 options={opcoesNaturezaAtividadeESocial}
                 disabled={modoLeitura}
             />
-            <DropdownItens
-                name="codigo_situacao_fgts"
-                label="Situação FGTS"
-                valor={getValorSelecionadoFromCandidato('codigo_situacao_fgts', opcoesSituacaoFgts)}
-                setValor={(valor) => setCampo('codigo_situacao_fgts', valor.code)}
-                options={opcoesSituacaoFgts}
-                disabled={modoLeitura}
-            />
 
             {/* Todos os Campos de Texto agrupados */}
-            <CampoTexto
-                type="date"
-                name="dt_admissao"
-                label="Data de Admissão"
-                valor={candidato.dt_admissao || ''}
-                setValor={(valor) => setCampo('dt_admissao', valor)}
-                disabled={modoLeitura}
-            />
             <CampoTexto
                 name="jornada"
                 label="Jornada (HHH:mm)"
@@ -461,14 +479,6 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => setCampo('jornada', valor)}
                 patternMask="999:99"
                 placeholder="Ex: 220:30"
-                disabled={modoLeitura}
-            />
-            <CampoTexto
-                type="date"
-                name="dt_opcao_fgts"
-                label="Data de Opção FGTS"
-                valor={candidato.dt_opcao_fgts || ''}
-                setValor={(valor) => setCampo('dt_opcao_fgts', valor)}
                 disabled={modoLeitura}
             />
             <DropdownItens

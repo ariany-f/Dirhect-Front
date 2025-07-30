@@ -212,6 +212,9 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
 
     return (
         <GridContainer data-tour="panel-step-1">
+
+            <SectionTitle>Identificação</SectionTitle>
+            
             <CampoTexto
                 camposVazios={classError}
                 name="nome"
