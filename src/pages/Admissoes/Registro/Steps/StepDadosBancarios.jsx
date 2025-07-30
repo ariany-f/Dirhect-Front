@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
@@ -46,7 +46,7 @@ const InfoBox = styled.div`
     }
 `;
 
-const StepDadosBancarios = ({ modoLeitura = false }) => {
+const StepDadosBancarios = ({ modoLeitura = false, classError = [] }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const [bancos, setBancos] = useState([]);
     const [loadingBancos, setLoadingBancos] = useState(false);
@@ -54,6 +54,13 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
     const [loadingAgencias, setLoadingAgencias] = useState(false);
     const [filtroAgencia, setFiltroAgencia] = useState('');
     const [adicionandoAgencia, setAdicionandoAgencia] = useState(false);
+
+    // Função para verificar se um campo está em erro
+    const isCampoEmErro = useMemo(() => {
+        return (campo) => {
+            return classError.includes(campo);
+        };
+    }, [classError]);
 
     useEffect(() => {
         // Se o candidato já tem uma agencia_nova, entra no modo de adição
@@ -130,6 +137,7 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
             </InfoBox>
 
             <DropdownItens
+                camposVazios={isCampoEmErro('banco') ? ['banco'] : []}
                 $margin={'28px'}
                 required={true}
                 valor={candidato?.banco ? (bancos.find(b => b.code === candidato.banco) || null) : null}
@@ -222,6 +230,7 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
             )}
 
             <CampoTexto
+                camposVazios={isCampoEmErro('conta_corrente') ? ['conta_corrente'] : []}
                 name="conta_corrente"
                 required={true}
                 valor={candidato?.conta_corrente ?? ''}

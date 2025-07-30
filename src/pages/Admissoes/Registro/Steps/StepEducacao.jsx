@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import BotaoSemBorda from '@components/BotaoSemBorda';
+import DropdownItens from '@components/DropdownItens';
 import { GrAddCircle } from 'react-icons/gr';
 import { FaTrash, FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import { Dropdown } from 'primereact/dropdown';
 import http from '@http';
 
-const StepEducacao = () => {
+const StepEducacao = ({ classError = [] }) => {
     const { candidato, addArrayItem, updateArrayItem, removeArrayItem, setCandidato } = useCandidatoContext();
     const [abertos, setAbertos] = useState(() => {
         // Se não houver itens, retorna array vazio
@@ -17,16 +17,34 @@ const StepEducacao = () => {
     });
     const [grausInstrucao, setGrausInstrucao] = useState([]);
 
+    // Função para verificar se um campo está em erro
+    const isCampoEmErro = useMemo(() => {
+        return (campo) => {
+            return classError.includes(campo);
+        };
+    }, [classError]);
+
     // Carregar graus de instrução da API
     useEffect(() => {
         const carregarGrausInstrucao = async () => {
             try {
                 const response = await http.get('tabela_dominio/grau_instrucao/');
+                
                 // Verifica se a resposta tem a estrutura esperada
                 if (response && response.registros && Array.isArray(response.registros)) {
-                    setGrausInstrucao(response.registros);
+                    // Transforma os dados para o formato esperado pelo DropdownItens
+                    const dadosFormatados = response.registros.map(item => ({
+                        id: item.id,
+                        name: item.descricao
+                    }));
+                    setGrausInstrucao(dadosFormatados);
                 } else if (Array.isArray(response)) {
-                    setGrausInstrucao(response);
+                    // Transforma os dados para o formato esperado pelo DropdownItens
+                    const dadosFormatados = response.map(item => ({
+                        id: item.id,
+                        name: item.descricao
+                    }));
+                    setGrausInstrucao(dadosFormatados);
                 } else {
                     console.error('Estrutura de dados inesperada:', response);
                     setGrausInstrucao([]);
@@ -112,30 +130,20 @@ const StepEducacao = () => {
                 width: '100%',
                 backgroundColor: '#fafafa'
             }}>
-                <label style={{ 
-                    display: 'block', 
-                    marginBottom: '12px', 
-                    fontWeight: '600', 
-                    color: 'var(--text-color)',
-                    fontSize: '14px'
-                }}>
-                    Grau de Instrução <span style={{color: 'var(--error)'}}> *</span>
-                </label>
-                <Dropdown
-                    required={true}
-                    value={candidato.grau_instrucao}
-                    options={Array.isArray(grausInstrucao) ? grausInstrucao : []}
-                    onChange={(e) => {
+                <DropdownItens
+                    name="grau_instrucao"
+                    valor={candidato.grau_instrucao}
+                    setValor={(valor) => {
                         setCandidato(prev => ({
                             ...prev,
-                            grau_instrucao: e.value
+                            grau_instrucao: valor
                         }));
                     }}
+                    options={Array.isArray(grausInstrucao) ? grausInstrucao : []}
                     placeholder="Selecione o grau de instrução"
-                    optionLabel="descricao"
-                    optionValue="id"
-                    style={{ width: '100%' }}
-                    className="p-inputtext-sm"
+                    label="Grau de Instrução"
+                    required={true}
+                    camposVazios={isCampoEmErro('grau_instrucao') ? ['grau_instrucao'] : []}
                 />
             </div>
 

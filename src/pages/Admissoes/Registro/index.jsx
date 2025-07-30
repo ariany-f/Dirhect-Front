@@ -865,13 +865,20 @@ const CandidatoRegistro = () => {
         setActiveIndex(prev => prev + 1);
     };
 
-    // Função para calcular o índice do step de dependentes
-    const getStepDependentesIndex = () => {
+    // Função para calcular o índice do step de educação
+    const getStepEducacaoIndex = () => {
         let index = 4; // Base: Documentos, Dados Pessoais, Dados Bancários, Educação
         
         if (!self) {
             index += 1; // Dados Cadastrais
         }
+        
+        return index; // Educação
+    };
+
+    // Função para calcular o índice do step de dependentes
+    const getStepDependentesIndex = () => {
+        let index = getStepEducacaoIndex(); // Base: até Educação
         
         if (mostrarHabilidades) {
             index += 1; // Habilidades
@@ -893,7 +900,14 @@ const CandidatoRegistro = () => {
             const valor = obj[key];
             if (valor !== undefined && valor !== null && valor !== '') {
                 if (typeof valor === 'object' && !Array.isArray(valor)) {
-                    normalizado[key] = normalizarObjeto(valor);
+                    // Se é um objeto com id (como grau_instrucao, tipo_situacao, etc.), converte para o id
+                    if (valor.id !== undefined) {
+                        normalizado[key] = valor.id;
+                    } else if (valor.code !== undefined) {
+                        normalizado[key] = valor.code;
+                    } else {
+                        normalizado[key] = normalizarObjeto(valor);
+                    }
                 } else {
                     normalizado[key] = valor;
                 }
@@ -921,6 +935,11 @@ const CandidatoRegistro = () => {
         if (!candidatoOverride) {
             const candidatoNormalizado = normalizarObjeto(candidatoAtual);
             const initialNormalizado = normalizarObjeto(initialCandidato);
+            
+            console.log('Candidato normalizado:', candidatoNormalizado);
+            console.log('Initial normalizado:', initialNormalizado);
+            console.log('grau_instrucao atual:', candidatoNormalizado.grau_instrucao);
+            console.log('grau_instrucao inicial:', initialNormalizado.grau_instrucao);
             
             if (JSON.stringify(candidatoNormalizado) === JSON.stringify(initialNormalizado)) {
                 toast.current.show({
@@ -1406,12 +1425,14 @@ const CandidatoRegistro = () => {
                 { campo: 'estado', nome: 'Estado' }
             ];
 
-            camposObrigatoriosDadosPessoais.forEach(({ campo, nome }) => {
-                if (!dadosCandidato[campo]?.toString().trim()) {
-                    camposObrigatorios.push(nome);
-                    setClassError(prev => [...prev, campo]);
-                }
-            });
+                    camposObrigatoriosDadosPessoais.forEach(({ campo, nome }) => {
+            // Verifica se o campo existe e tem valor (pode ser objeto ou string)
+            const valor = dadosCandidato[campo];
+            if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
+                camposObrigatorios.push(nome);
+                setClassError(prev => [...prev, campo]);
+            }
+        });
 
             // Validação de campos obrigatórios baseada nos documentos
             if (dadosCandidato.documentos && Array.isArray(dadosCandidato.documentos)) {
@@ -1474,15 +1495,20 @@ const CandidatoRegistro = () => {
                 });
             }
         } else if (activeIndex === 2) { // Step Dados Bancários
-            // Validação de dados bancários obrigatórios
-            if (!candidato.banco?.trim()) {
-                camposObrigatorios.push('Banco');
-                setClassError(prev => [...prev, 'banco']);
-            }
-            if (!candidato.conta_corrente?.trim()) {
-                camposObrigatorios.push('Conta corrente');
-                setClassError(prev => [...prev, 'conta_corrente']);
-            }
+            // Validação de dados bancários obrigatórios baseada no required={true}
+            const camposObrigatoriosDadosBancarios = [
+                { campo: 'banco', nome: 'Banco' },
+                { campo: 'conta_corrente', nome: 'Número da Conta' }
+            ];
+
+            camposObrigatoriosDadosBancarios.forEach(({ campo, nome }) => {
+                // Verifica se o campo existe e tem valor (pode ser objeto ou string)
+                const valor = candidato[campo];
+                if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
+                    camposObrigatorios.push(nome);
+                    setClassError(prev => [...prev, campo]);
+                }
+            });
         } else if (activeIndex === 3 && !self) { // Step Dados Contratuais (apenas se não for self)
             // Validação de dados contratuais obrigatórios baseada no required={true}
             const camposObrigatoriosDadosContratuais = [
@@ -1497,7 +1523,7 @@ const CandidatoRegistro = () => {
                 { campo: 'codigo_situacao_fgts', nome: 'Situação FGTS' },
                 { campo: 'codigo_categoria_esocial', nome: 'Código Categoria eSocial' },
                 { campo: 'natureza_atividade_esocial', nome: 'Natureza da Atividade eSocial' },
-                { campo: 'letra', nome: 'Letra' }
+                // { campo: 'letra', nome: 'Letra' }
             ];
 
             // Validação condicional para funcao_confianca
@@ -1506,7 +1532,9 @@ const CandidatoRegistro = () => {
             }
 
             camposObrigatoriosDadosContratuais.forEach(({ campo, nome }) => {
-                if (!candidato[campo]?.toString().trim()) {
+                // Verifica se o campo existe e tem valor (pode ser objeto ou string)
+                const valor = candidato[campo];
+                if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
                     camposObrigatorios.push(nome);
                     setClassError(prev => [...prev, campo]);
                 }
@@ -1533,12 +1561,22 @@ const CandidatoRegistro = () => {
                         camposObrigatorios.push(`Grau de parentesco do dependente ${index + 1}`);
                         setClassError(prev => [...prev, `grau_parentesco_${index}`]);
                     }
-                    // if (!dependente.nrodepend?.trim()) {
-                    //     camposObrigatorios.push(`Número do dependente ${index + 1}`);
-                    //     setClassError(prev => [...prev, `nrodepend_${index}`]);
-                    // }
                 });
             }
+        } else if (activeIndex === getStepEducacaoIndex()) { // Step Educação
+            // Validação de educação obrigatória baseada no required={true}
+            const camposObrigatoriosEducacao = [
+                { campo: 'grau_instrucao', nome: 'Grau de Instrução' }
+            ];
+
+            camposObrigatoriosEducacao.forEach(({ campo, nome }) => {
+                // Verifica se o campo existe e tem valor (pode ser objeto ou string)
+                const valor = candidato[campo];
+                if (!valor || (typeof valor === 'object' && !valor.id) || (typeof valor === 'string' && !valor.trim())) {
+                    camposObrigatorios.push(nome);
+                    setClassError(prev => [...prev, campo]);
+                }
+            });
         }
         
         if (camposObrigatorios.length > 0) {
@@ -1838,11 +1876,15 @@ const CandidatoRegistro = () => {
     };
 
     const handleAvancar = async () => {
-        // Validação apenas para o step de documentos (step 0)
+        // Validação para o step de documentos (step 0)
         if (activeIndex === 0) {
             // Validação de documentos
             const validacaoDocumentos = await validarDocumentos();
             if (!validacaoDocumentos) return;
+        } else {
+            // Validação para todos os outros steps
+            const validacaoCampos = validarCamposObrigatoriosStep();
+            if (!validacaoCampos) return;
         }
         
         stepperRef.current.nextCallback();
@@ -2802,7 +2844,7 @@ const CandidatoRegistro = () => {
                         <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
-                                    <StepDadosBancarios modoLeitura={modoLeitura} />
+                                    <StepDadosBancarios modoLeitura={modoLeitura} classError={classError} />
                                 </ScrollPanel>
                             </div>
                         </Container>
@@ -2838,7 +2880,7 @@ const CandidatoRegistro = () => {
                         <ScrollPanel className="responsive-scroll-panel">
                             <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
                                 <ScrollPanel className="responsive-inner-scroll">
-                                    <StepEducacao modoLeitura={modoLeitura} />
+                                    <StepEducacao modoLeitura={modoLeitura} classError={classError} />
                                 </ScrollPanel>
                             </div>
                         </ScrollPanel>
