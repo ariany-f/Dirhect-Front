@@ -157,6 +157,8 @@ const candidatoInicial = {
     estado_civil: null,
     genero: null,
     funcao_emprego_cargoacumulavel: false,
+    confianca: false,
+    funcao_confianca: null,
     mensal: false,
     calcula_inss: false,
     calcula_irrf: false,

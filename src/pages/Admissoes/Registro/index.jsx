@@ -487,6 +487,7 @@ const CandidatoRegistro = () => {
     const [cargos, setCargos] = useState([]);
     const [horarios, setHorarios] = useState([]);
     const [funcoes, setFuncoes] = useState([]);
+    const [funcoes_confianca, setFuncoesConfianca] = useState([]);
     const [sindicatos, setSindicatos] = useState([]);
     const [estados, setEstados] = useState([]);
     const [opcoesDominio, setOpcoesDominio] = useState({});
@@ -652,6 +653,7 @@ const CandidatoRegistro = () => {
             { endpoint: 'sindicato/?format=json', setter: setSindicatos },
             { endpoint: 'horario/?format=json', setter: setHorarios },
             { endpoint: 'funcao/?format=json', setter: setFuncoes },
+            { endpoint: 'funcao/?format=json&confianca=true', setter: setFuncoesConfianca },
         ];
 
         listasAuxiliares.forEach(({ endpoint, setter }) => {
@@ -1001,19 +1003,10 @@ const CandidatoRegistro = () => {
                 dt_admissao: candidatoAtual.dt_admissao,
                 jornada: candidatoAtual.jornada,
                 pispasep: candidatoAtual.pispasep,
-                salario: (() => {
-                    const salarioCandidato = dadosCandidato?.salario;
-                    const salarioVaga = dadosVaga?.salario;
-                    const salarioPrincipal = candidatoAtual.salario;
-                    
-                    const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
-                    console.log('Salário selecionado para formatar:', salarioParaFormatar);
-                    
-                    return formatarSalario(salarioParaFormatar);
-                })(),
                 status: candidatoAtual.status,
                 grau_instrucao: candidatoAtual.grau_instrucao,
-                
+                confianca: candidatoAtual.confianca,
+                funcao_confianca: candidatoAtual.funcao_confianca,
                 // Endereço
                 cep: candidatoAtual.cep,
                 rua: candidatoAtual.rua,
@@ -1031,21 +1024,21 @@ const CandidatoRegistro = () => {
                 media_sal_maternidade: candidatoAtual.media_sal_maternidade,
                 // Dados do candidato
                 // candidato: {
-                    nome: dadosCandidato.nome,
-                    email: dadosCandidato.email,
-                    telefone: dadosCandidato.telefone,
-                    cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
-                    dt_nascimento: dadosCandidato.dt_nascimento,
-                    salario: (() => {
-                        const salarioCandidato = dadosCandidato?.salario;
-                        const salarioVaga = dadosVaga?.salario;
-                        const salarioPrincipal = candidatoAtual.salario;
-                        
-                        const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
-                        console.log('Salário candidato selecionado para formatar:', salarioParaFormatar);
-                        
-                        return formatarSalario(salarioParaFormatar);
-                    })(),
+                nome: dadosCandidato.nome,
+                email: dadosCandidato.email,
+                telefone: dadosCandidato.telefone,
+                cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
+                dt_nascimento: dadosCandidato.dt_nascimento,
+                salario: (() => {
+                    const salarioCandidato = dadosCandidato?.salario;
+                    const salarioVaga = dadosVaga?.salario;
+                    const salarioPrincipal = candidatoAtual.salario;
+                    
+                    const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
+                    
+                    
+                    return formatarSalario(salarioParaFormatar);
+                })(),
                 // },
                 
                 // Dados pessoais
@@ -2799,6 +2792,7 @@ const CandidatoRegistro = () => {
                                             centros_custo={centros_custo}
                                             horarios={horarios}
                                             funcoes={funcoes}
+                                            funcoes_confianca={funcoes_confianca}
                                             sindicatos={sindicatos}
                                             modoLeitura={modoLeitura}
                                             opcoesDominio={opcoesDominio}

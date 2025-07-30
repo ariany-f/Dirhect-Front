@@ -106,6 +106,11 @@ const Select = styled(Dropdown)`
         pointer-events: none !important;
         visibility: hidden !important;
     }
+    & .p-dropdown-filter-container .p-dropdown-filter.p-inputtext {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
     /* Ajusta a posição do botão de limpar */
     & .p-dropdown-clear-icon {
@@ -113,10 +118,8 @@ const Select = styled(Dropdown)`
         transform: translateY(-50%) !important;
     }
 
-    /* Centraliza o ícone de busca no filtro */
     & .p-dropdown-filter-icon {
-        top: 50%;
-        transform: translateY(-50%);
+        top: 35%;
     }
 `
 

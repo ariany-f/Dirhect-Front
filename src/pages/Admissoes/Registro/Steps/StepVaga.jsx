@@ -29,7 +29,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [] }) => {
+const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, funcoes_confianca, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [] }) => {
     
     
     const { candidato, setCampo, vaga } = useCandidatoContext();
@@ -135,11 +135,11 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
 
     // Memoizar as opções formatadas para evitar recriações desnecessárias
     const opcoesFiliais = useMemo(() => formatarOpcoes(filiais), [filiais, formatarOpcoes]);
-    const opcoesDepartamentos = useMemo(() => formatarOpcoes(departamentos), [departamentos, formatarOpcoes]);
     const opcoesSecoes = useMemo(() => formatarOpcoes(secoes), [secoes, formatarOpcoes]);
     const opcoesCentrosCusto = useMemo(() => formatarOpcoes(centros_custo), [centros_custo, formatarOpcoes]);
     const opcoesHorarios = useMemo(() => formatarOpcoes(horarios, true), [horarios, formatarOpcoes]);
     const opcoesFuncoes = useMemo(() => formatarOpcoes(funcoes), [funcoes, formatarOpcoes]);
+    const opcoesFuncaoConfianca = useMemo(() => formatarOpcoes(funcoes_confianca), [funcoes_confianca, formatarOpcoes]);
     const opcoesSindicatos = useMemo(() => formatarOpcoes(sindicatos, true), [sindicatos, formatarOpcoes]);
 
     // Memoizar as opções de domínio formatadas
@@ -401,27 +401,59 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 placeholder="Ex: 220:30"
                 disabled={modoLeitura}
             />
+            <CampoTexto
+                name="salario"
+                required={true}
+                label="Salário"
+                valor={candidato.salario || ''}
+                setValor={(valor) => setCampo('salario', valor)}
+                patternMask="BRL"
+                placeholder="Ex: 1.000,00"
+                disabled={modoLeitura}
+            />
             <div style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
             {/* Todos os Checkboxes agrupados */}
             <CheckboxContainer
-                label="Função/Emprego/Cargo Acumulável"
-                checked={candidato.funcao_emprego_cargoacumulavel || false}
-                onChange={(e) => setCampo('funcao_emprego_cargoacumulavel', e.target.checked)}
+                label="Considerar Como Função/Emprego/Cargo Acumulável"
+                valor={candidato.funcao_emprego_cargoacumulavel || false}
+                setValor={(valor) => setCampo('funcao_emprego_cargoacumulavel', valor)}
+                name="funcao_emprego_cargoacumulavel"
                 disabled={modoLeitura}
             />
             <CheckboxContainer
                 label="Calcula INSS"
-                checked={candidato.calcula_inss || false}
-                onChange={(e) => setCampo('calcula_inss', e.target.checked)}
+                valor={candidato.calcula_inss || false}
+                setValor={(valor) => setCampo('calcula_inss', valor)}
+                name="calcula_inss"
                 disabled={modoLeitura}
             />
             <CheckboxContainer
                 label="Calcula IRRF"
-                checked={candidato.calcula_irrf || false}
-                onChange={(e) => setCampo('calcula_irrf', e.target.checked)}
+                valor={candidato.calcula_irrf || false}
+                setValor={(valor) => setCampo('calcula_irrf', valor)}
+                name="calcula_irrf"
+                disabled={modoLeitura}
+            />
+            <CheckboxContainer
+                label="Possui Função de Confiança/Cargo em Comissão"
+                valor={candidato.confianca || false}
+                setValor={(valor) => setCampo('confianca', valor)}
+                name="confianca"
                 disabled={modoLeitura}
             />
             </div>
+            
+            {Boolean(candidato.confianca) && (
+                <DropdownItens
+                    name="funcao_confianca"
+                    required={true}
+                    label="Função de Confiança/Cargo em Comissão"
+                    valor={getValorSelecionadoFromCandidato('funcao_confianca', opcoesFuncaoConfianca)}
+                    setValor={(valor) => setCampo('funcao_confianca', valor.code)}
+                    options={opcoesFuncaoConfianca}
+                    disabled={modoLeitura}
+                />
+            )}
 
             <SectionTitle>FGTS</SectionTitle>
 
