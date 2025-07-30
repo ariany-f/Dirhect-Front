@@ -218,6 +218,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             <CampoTexto
                 camposVazios={classError}
                 name="nome"
+                required={true}
                 valor={candidato?.nome ?? ''}
                 setValor={valor => setCampo('nome', valor)}
                 type="text"
@@ -228,6 +229,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <CampoTexto
                 camposVazios={classError}
+                required={true}
                 name="cpf"
                 valor={candidato?.cpf ?? ''}
                 setValor={valor => setCampo('cpf', valor)}
@@ -255,6 +257,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <CampoTexto
                 name="dt_nascimento"
+                required={true}
                 valor={candidato?.dt_nascimento ?? ''}
                 setValor={valor => setCampo('dt_nascimento', valor)}
                 label="Data de Nascimento"
@@ -263,6 +266,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <DropdownItens
                 name="genero"
+                required={true}
                 label="Gênero"
                 valor={getValorSelecionadoFromCandidato('genero', opcoesGenero)}
                 setValor={(valor) => setCampo('genero', valor.code)}
@@ -271,8 +275,8 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <DropdownItens
                 name="cor_raca"
-                label="Cor/Raça"
                 required={true}
+                label="Cor/Raça"
                 valor={getValorSelecionadoFromCandidato('cor_raca', opcoesCorRaca)}
                 setValor={(valor) => setCampo('cor_raca', valor.code)}
                 options={opcoesCorRaca}
@@ -280,6 +284,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <DropdownItens
                 name="estado_civil"
+                required={true}
                 label="Estado Civil"
                 valor={getValorSelecionadoFromCandidato('estado_civil', opcoesEstadoCivil)}
                 setValor={(valor) => setCampo('estado_civil', valor.code)}
@@ -297,6 +302,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <DropdownItens
                 name="estado_natal"
+                required={true}
                 label="Estado Natal"
                 valor={getEstadoFormatado('estado_natal')}
                 setValor={valor => setCampo('estado_natal', valor.code)}
@@ -307,6 +313,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <DropdownItens
                 name="naturalidade"
+                required={true}
                 label="Naturalidade"
                 valor={getNaturalidadeFormatada()}
                 setValor={valor => setCampo('naturalidade', valor.code)}

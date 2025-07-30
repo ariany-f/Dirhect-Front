@@ -119,9 +119,10 @@ const StepEducacao = () => {
                     color: 'var(--text-color)',
                     fontSize: '14px'
                 }}>
-                    Grau de Instrução *
+                    Grau de Instrução 
                 </label>
                 <Dropdown
+                    required={true}
                     value={candidato.grau_instrucao}
                     options={Array.isArray(grausInstrucao) ? grausInstrucao : []}
                     onChange={(e) => {
