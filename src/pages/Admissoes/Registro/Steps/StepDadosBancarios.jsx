@@ -131,6 +131,7 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
 
             <DropdownItens
                 $margin={'28px'}
+                required={true}
                 valor={candidato?.banco ? (bancos.find(b => b.code === candidato.banco) || null) : null}
                 setValor={valor => {
                     setCampo('banco', valor.code);
@@ -222,6 +223,7 @@ const StepDadosBancarios = ({ modoLeitura = false }) => {
 
             <CampoTexto
                 name="conta_corrente"
+                required={true}
                 valor={candidato?.conta_corrente ?? ''}
                 numeroCaracteres={10}
                 maxCaracteres={10}
