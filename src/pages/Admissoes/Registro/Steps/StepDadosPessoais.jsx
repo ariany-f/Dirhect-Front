@@ -512,6 +512,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             <CampoTexto
                 name="pispasep"
                 valor={candidato?.pispasep ?? ''}
+                maxCaracteres={12}
                 setValor={valor => setCampo('pispasep', valor)}
                 patternMask="999.99999.99-9"
                 label="PIS/PASEP"
