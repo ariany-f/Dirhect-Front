@@ -85,41 +85,61 @@ function DetalhesVaga() {
     function getStatusVaga(status, dt_encerramento) {
         const hoje = new Date();
         const encerramento = new Date(dt_encerramento);
-        const inicio = new Date(vaga?.dt_inicio);
+        const inicio = new Date(vaga?.dt_abertura);
         
         if (status === 'T') {
             return 'Transferida';
         }
-        if (hoje > encerramento) {
-            return 'Encerrada';
-        }
         if (inicio && hoje < inicio) {
             return 'Aguardando';
         }
-        return status === 'A' ? 'Aberta' : 'Fechada';
+        if (encerramento && hoje > encerramento) {
+            return 'Fora do Prazo';
+        }
+        
+        switch (status) {
+            case 'A':
+                return 'Aberta';
+            case 'F':
+                return 'Fechada';
+            case 'T':
+                return 'Transferida';
+            default:
+                return 'Desconhecido';
+        }
     }
 
     function getStatusColor(status, dt_encerramento) {
         const hoje = new Date();
         const encerramento = new Date(dt_encerramento);
-        const inicio = new Date(vaga?.dt_inicio);
+        const inicio = new Date(vaga?.dt_abertura);
         
         if (status === 'T') {
-            return 'var(--blue-500)';
-        }
-        if (hoje > encerramento) {
-            return 'var(--error)';
+            return 'var(--warning)';
         }
         if (inicio && hoje < inicio) {
-            return 'var(--yellow-500)';
+            return 'var(--neutro-400)';
         }
-        return status === 'A' ? 'var(--green-500)' : 'var(--error)';
+        if (encerramento && hoje > encerramento) {
+            return 'var(--warning)';
+        }
+        
+        switch (status) {
+            case 'A':
+                return 'var(--green-500)';
+            case 'F':
+                return 'var(--error)';
+            case 'T':
+                return 'var(--warning)';
+            default:
+                return 'var(--neutro-400)';
+        }
     }
 
     // Função para verificar se a vaga está aguardando
     const vagaAguardando = () => {
         const hoje = new Date();
-        const inicio = new Date(vaga?.dt_inicio);
+        const inicio = new Date(vaga?.dt_abertura);
         return inicio && hoje < inicio;
     }
 
@@ -463,53 +483,53 @@ function DetalhesVaga() {
                             <Texto>Titulo</Texto>
                             {vaga?.titulo ?
                                 <Texto weight="800">{vaga?.titulo}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                                : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Descrição</Texto>
                             {vaga ?
                                 (vaga?.descricao ?
                                     <Texto weight="800">{vaga?.descricao}</Texto>
-                                    : '--')
+                                    : '----')
                                 : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Salário</Texto>
                             {vaga?.salario ?
                                 <Texto weight="800">{Real.format(vaga?.salario)}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                                : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col6>
                         <Col6>
                             <Texto>Filial</Texto>
                             {vaga?.filial_id ?
                                 <Texto weight="800">{vaga?.filial_nome}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                                : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }   
                             <Texto>Secao</Texto>
                             {vaga?.secao_id ?
                                 <Texto weight="800">{vaga?.secao_nome}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                                : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }   
                             <Texto>Cargo</Texto>
                             {vaga?.cargo_id ?
                                 <Texto weight="800">{vaga?.cargo_nome}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                                : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                         </Col6>
                         <Col6>
                             <Texto>Horario</Texto>
                             {vaga?.horario_id ?
                                 <Texto weight="800">{vaga?.horario_nome}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                                : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Funcao</Texto>
                             {vaga?.funcao_id ?
                                 <Texto weight="800">{vaga?.funcao_nome}</Texto>
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                                : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }
                             <Texto>Sindicato</Texto>
                             {vaga?.sindicato_id ?  
                                 <Texto weight="800">{vaga?.sindicato_nome}</Texto>   
-                                : <Skeleton variant="rectangular" width={200} height={25} />
+                                : vaga ? '----' : <Skeleton variant="rectangular" width={200} height={25} />
                             }  
                         </Col6>
                     </Col12>
