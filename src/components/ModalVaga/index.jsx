@@ -157,7 +157,7 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
     }, [])
 
     useEffect(() => {
-        if (vaga) {
+        if (vaga && opened) {
             console.log(vaga)
             setTitulo(vaga.titulo || '');
             setDescricao(vaga.descricao || '');
@@ -205,32 +205,35 @@ function ModalVaga({ opened = false, aoFechar, vaga, aoSalvar }) {
                 } : null);
             }
         }
-    }, [vaga, filiais, centros_custo, departamentos, secoes, cargos, horarios, funcoes, sindicatos]);
+    }, [vaga, opened, filiais, centros_custo, departamentos, secoes, cargos, horarios, funcoes, sindicatos, listaPericulosidades]);
 
     // Limpar valores quando o modal for fechado
     useEffect(() => {
         if (!opened) {
-            setTitulo('');
-            setDescricao('');
-            setDataAbertura('');
-            setDataEncerramento('');
-            setSalario('');
-            setDeficiencia(false);
-            setQtdVagas('');
-            setInclusao(false);
-            setInclusaoPara('');
-            setPericulosidade('');
-            setInsalubridade('');
-            setFilial(null);
-            setCentroCusto(null);
-            setDepartamento(null);
-            setSecao(null);
-            setCargo(null);
-            setHorario(null);
-            setFuncao(null);
-            setSindicato(null);
+            // Só limpa os valores se não houver uma vaga para editar
+            if (!vaga) {
+                setTitulo('');
+                setDescricao('');
+                setDataAbertura('');
+                setDataEncerramento('');
+                setSalario('');
+                setDeficiencia(false);
+                setQtdVagas('');
+                setInclusao(false);
+                setInclusaoPara('');
+                setPericulosidade('');
+                setInsalubridade('');
+                setFilial(null);
+                setCentroCusto(null);
+                setDepartamento(null);
+                setSecao(null);
+                setCargo(null);
+                setHorario(null);
+                setFuncao(null);
+                setSindicato(null);
+            }
         }
-    }, [opened]);
+    }, [opened, vaga]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
