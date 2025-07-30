@@ -304,6 +304,7 @@ const VagasRegistro = () => {
                         <CampoTexto 
                             camposVazios={classError}
                             name="dt_abertura" 
+                            required={true}
                             valor={dataAbertura} 
                             setValor={setDataAbertura} 
                             type="date" 
