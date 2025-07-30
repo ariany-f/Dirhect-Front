@@ -166,6 +166,55 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
         if (maxCaracteres && valorCampo.length > maxCaracteres) {
             return; // Não permite digitar mais caracteres
         }
+
+        // Lógica específica para campos de data
+        if (type === 'date' && valorCampo.length >= 8) {
+            const valorAtual = valorCampo.replace(/\D/g, '');
+            if (valorAtual.length >= 8) {
+                // Detecta qual parte da data foi alterada comparando com o valor anterior
+                const valorAnterior = valor.replace(/\D/g, '');
+                let parteAlterada = '';
+                
+                // Compara os dígitos para detectar onde houve mudança
+                for (let i = 0; i < Math.min(valorAtual.length, valorAnterior.length); i++) {
+                    if (valorAtual[i] !== valorAnterior[i]) {
+                        if (i < 4) {
+                            parteAlterada = 'ano';
+                        } else if (i < 6) {
+                            parteAlterada = 'mes';
+                        } else {
+                            parteAlterada = 'dia';
+                        }
+                        break;
+                    }
+                }
+                
+                // Se detectou a parte alterada, aplica a substituição
+                if (parteAlterada) {
+                    let novoValor = '';
+                    
+                    if (parteAlterada === 'ano') {
+                        // Mantém apenas os primeiros 4 dígitos do ano
+                        const mesDia = valorAtual.slice(4, 8);
+                        novoValor = valorAtual.slice(0, 4) + mesDia;
+                    } else if (parteAlterada === 'mes') {
+                        // Mantém apenas os 2 dígitos do mês
+                        const ano = valorAtual.slice(0, 4);
+                        const dia = valorAtual.slice(6, 8);
+                        novoValor = ano + valorAtual.slice(4, 6) + dia;
+                    } else if (parteAlterada === 'dia') {
+                        // Mantém apenas os 2 dígitos do dia
+                        const anoMes = valorAtual.slice(0, 6);
+                        novoValor = anoMes + valorAtual.slice(6, 8);
+                    }
+                    
+                    // Formata para YYYY-MM-DD
+                    const dataFormatada = novoValor.slice(0, 4) + '-' + novoValor.slice(4, 6) + '-' + novoValor.slice(6, 8);
+                    setValor(dataFormatada, evento.target.name);
+                    return;
+                }
+            }
+        }
     
         if(patternMask.length > 0 && type !== 'file')
         {
