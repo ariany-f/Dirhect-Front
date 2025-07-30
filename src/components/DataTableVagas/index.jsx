@@ -83,10 +83,10 @@ function DataTableVagas({
         let status = rowData.status;
         let color = 'var(--green-500)';
 
-        if (hoje < abertura) {
+        if (abertura && hoje < abertura) {
             status = 'Aguardando';
             color = 'var(--neutro-400)';
-        } else if (hoje > encerramento) {
+        } else if (encerramento && hoje > encerramento) {
             status = 'Fora do Prazo';
             color = 'var(--warning)';
         } else {
