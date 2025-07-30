@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { Real } from '@utils/formats'
 import { Tag } from 'primereact/tag';
-import { FaCheck, FaTimes, FaTrash } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaTrash, FaEdit } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import http from '@http';
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -17,7 +17,7 @@ import { confirmDialog } from 'primereact/confirmdialog';
 import ModalEncaminharVaga from '@components/ModalEncaminharVaga';
 import { Toast } from 'primereact/toast';
 
-function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCandidatosUpdate }) {
+function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCandidatosUpdate, onEditarCandidato }) {
     const[selectedCandidato, setSelectedCandidato] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
@@ -428,6 +428,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
         
         const vagaConfigurada = rowData?.vagas_configuradas?.[0];
         const vagaAprovada = vagaConfigurada?.status === 'A';
+        const vagaRejeitada = vagaConfigurada?.status === 'R';
 
         // Conta quantos candidatos já foram aprovados
         const candidatosAprovados = listaCandidatos.filter(c => 
@@ -451,6 +452,24 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                         opacity: vagaEncerrada ? 0.5 : 1,
                     }}
                 /> */}
+                
+                {/* Ícone de edição - só aparece para candidatos não aprovados e não rejeitados */}
+                {!vagaEncerrada && !vagaTransferida && !vagaAprovada && !vagaRejeitada && (
+                    <>
+                        <Tooltip target=".editar" mouseTrack mouseTrackLeft={10} />
+                        <FaEdit 
+                            title="Editar" 
+                            data-pr-tooltip="Editar candidato"
+                            className="editar"
+                            onClick={() => onEditarCandidato && onEditarCandidato(rowData)}
+                            style={{
+                                cursor: 'pointer',
+                                color: 'var(--primaria)',
+                            }}
+                        />
+                    </>
+                )}
+                
                 {!vagaEncerrada && !vagaTransferida && !vagaAprovada && vagaConfigurada?.status !== 'R' && !vagasPreenchidas && (
                     <>
                         <Tooltip target=".aprovar" mouseTrack mouseTrackLeft={10} />

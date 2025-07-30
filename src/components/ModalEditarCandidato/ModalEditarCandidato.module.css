@@ -1,0 +1,7 @@
+.containerBottom {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+} 

@@ -1447,6 +1447,29 @@ const CandidatoRegistro = () => {
         return true;
     };
 
+    // Função para validar PIS
+    const validarPIS = (pis) => {
+        if (!pis || pis.trim() === '') return true; // Campo vazio é válido
+        
+        const pisLimpo = pis.replace(/\D/g, '');
+        
+        // PIS deve ter 11 dígitos
+        if (pisLimpo.length !== 11) return false;
+        
+        // Algoritmo de validação do PIS
+        const pesos = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+        let soma = 0;
+        
+        for (let i = 0; i < 10; i++) {
+            soma += parseInt(pisLimpo[i]) * pesos[i];
+        }
+        
+        const resto = soma % 11;
+        const digitoVerificador = resto < 2 ? 0 : 11 - resto;
+        
+        return parseInt(pisLimpo[10]) === digitoVerificador;
+    };
+
     // Função para validar campos obrigatórios do step atual
     const validarCamposObrigatoriosStep = () => {
         // Limpa os erros anteriores
@@ -1488,6 +1511,12 @@ const CandidatoRegistro = () => {
                 setClassError(prev => [...prev, campo]);
             }
         });
+
+            // Validação de PIS (se preenchido, deve ser válido)
+            if (dadosCandidato.pispasep && dadosCandidato.pispasep.trim() !== '' && !validarPIS(dadosCandidato.pispasep)) {
+                camposObrigatorios.push('PIS/PASEP (inválido)');
+                setClassError(prev => [...prev, 'pispasep']);
+            }
 
             // Validação de campos obrigatórios baseada nos documentos
             if (dadosCandidato.documentos && Array.isArray(dadosCandidato.documentos)) {

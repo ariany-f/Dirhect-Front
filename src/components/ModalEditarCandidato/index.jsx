@@ -7,7 +7,7 @@ import BotaoGrupo from "@components/BotaoGrupo";
 import DropdownItens from "@components/DropdownItens";
 import Titulo from "@components/Titulo";
 import { RiCloseFill } from "react-icons/ri";
-import styles from "./ModalAdicionarCandidato.module.css";
+import styles from "./ModalEditarCandidato.module.css";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 import { Toast } from 'primereact/toast';
 
@@ -23,7 +23,7 @@ const Col6 = styled.div`
   flex-direction: column;
 `;
 
-function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
+function ModalEditarCandidato({ opened = false, aoFechar, aoSalvar, candidato = null }) {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
@@ -77,12 +77,21 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     setCamposVazios([]);
   };
 
-  // Limpa os campos quando o modal é aberto
+  // Preenche os campos quando o modal é aberto com dados do candidato
   useEffect(() => {
-    if (opened) {
+    if (opened && candidato) {
+      setNome(candidato.nome || "");
+      setEmail(candidato.email || "");
+      setCpf(candidato.cpf || "");
+      setNascimento(candidato.dt_nascimento || "");
+      setTelefone(candidato.telefone || "");
+      setFilial(candidato.filial || "");
+      setCentroCusto(candidato.centro_custo || "");
+      setCamposVazios([]);
+    } else if (opened) {
       limparCampos();
     }
-  }, [opened]);
+  }, [opened, candidato]);
 
   // Validação em tempo real quando os campos mudam
   useEffect(() => {
@@ -136,6 +145,7 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     }
 
     aoSalvar({
+      id: candidato?.id,
       nome,
       email,
       cpf,
@@ -150,93 +160,93 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
       <Toast ref={toast} />
       {opened && (
         <Overlay>
-      <DialogEstilizado $width="60vw" $minWidth="40vw" open={opened}>
-        <Frame>
-          <Titulo>
-            <button className="close" onClick={handleFechar}>
-              <RiCloseFill size={20} className="fechar" />  
-            </button>
-            <h6>Adicionar Candidato</h6>
-          </Titulo>
-        </Frame>
-        <Frame padding="24px 0px">
-          <Col12>
-            <Col6>
-              <CampoTexto 
-                patternMask={["999.999.999-99"]} 
-                valor={cpf} 
-                required={true}
-                type="text" 
-                setValor={setCpf} 
-                label="CPF" 
-                camposVazios={camposVazios}
-                name="cpf"
-              />
-              <CampoTexto 
-                valor={nome} 
-                required={true} 
-                type="text" 
-                setValor={setNome} 
-                label="Nome" 
-                camposVazios={camposVazios}
-                name="nome"
-              />
-              <CampoTexto 
-                valor={email} 
-                required={true} 
-                type="text" 
-                setValor={setEmail} 
-                label="E-mail" 
-                camposVazios={camposVazios}
-                name="email"
-              />
-            </Col6>
-            <Col6>
-              <CampoTexto 
-                patternMask={["(99) 99999-9999"]} 
-                valor={telefone} 
-                type="text" 
-                setValor={setTelefone} 
-                label="Telefone" 
-              />
-              <CampoTexto 
-                valor={nascimento} 
-                type="date" 
-                setValor={setNascimento} 
-                label="Data de Nascimento" 
-                required={true}
-                camposVazios={camposVazios}
-                name="nascimento"
-              />
-            </Col6>
-          </Col12>
-        </Frame>
-        <div className={styles.containerBottom}>
-          <BotaoGrupo>
-            <Botao
-              aoClicar={handleFechar}
-              estilo="neutro"
-              size="medium"
-              filled
-            >
-              Cancelar
-            </Botao>
-            <Botao
-              aoClicar={handleSave}
-              estilo="vermilion"
-              size="medium"
-              filled
-              disabled={!nome.trim() || !email.trim() || !cpf.trim() || !nascimento.trim()}
-            >
-              Adicionar
-            </Botao>
-          </BotaoGrupo>
-        </div>
-      </DialogEstilizado>
-    </Overlay>
-    )}
+          <DialogEstilizado $width="60vw" $minWidth="40vw" open={opened}>
+            <Frame>
+              <Titulo>
+                <button className="close" onClick={handleFechar}>
+                  <RiCloseFill size={20} className="fechar" />  
+                </button>
+                <h6>Editar Candidato</h6>
+              </Titulo>
+            </Frame>
+            <Frame padding="24px 0px">
+              <Col12>
+                <Col6>
+                  <CampoTexto 
+                    patternMask={["999.999.999-99"]} 
+                    valor={cpf} 
+                    required={true}
+                    type="text" 
+                    setValor={setCpf} 
+                    label="CPF" 
+                    camposVazios={camposVazios}
+                    name="cpf"
+                  />
+                  <CampoTexto 
+                    valor={nome} 
+                    required={true} 
+                    type="text" 
+                    setValor={setNome} 
+                    label="Nome" 
+                    camposVazios={camposVazios}
+                    name="nome"
+                  />
+                  <CampoTexto 
+                    valor={email} 
+                    required={true} 
+                    type="text" 
+                    setValor={setEmail} 
+                    label="E-mail" 
+                    camposVazios={camposVazios}
+                    name="email"
+                  />
+                </Col6>
+                <Col6>
+                  <CampoTexto 
+                    patternMask={["(99) 99999-9999"]} 
+                    valor={telefone} 
+                    type="text" 
+                    setValor={setTelefone} 
+                    label="Telefone" 
+                  />
+                  <CampoTexto 
+                    valor={nascimento} 
+                    type="date" 
+                    setValor={setNascimento} 
+                    label="Data de Nascimento" 
+                    required={true}
+                    camposVazios={camposVazios}
+                    name="nascimento"
+                  />
+                </Col6>
+              </Col12>
+            </Frame>
+            <div className={styles.containerBottom}>
+              <BotaoGrupo>
+                <Botao
+                  aoClicar={handleFechar}
+                  estilo="neutro"
+                  size="medium"
+                  filled
+                >
+                  Cancelar
+                </Botao>
+                <Botao
+                  aoClicar={handleSave}
+                  estilo="vermilion"
+                  size="medium"
+                  filled
+                  disabled={!nome.trim() || !email.trim() || !cpf.trim() || !nascimento.trim()}
+                >
+                  Salvar
+                </Botao>
+              </BotaoGrupo>
+            </div>
+          </DialogEstilizado>
+        </Overlay>
+      )}
     </>
   );
 }
 
-export default ModalAdicionarCandidato; 
+export default ModalEditarCandidato; 

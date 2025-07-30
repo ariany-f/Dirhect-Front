@@ -28,6 +28,7 @@ import ModalTransferirVaga from '@components/ModalTransferirVaga'
 // import documentos from '@json/documentos_requeridos.json'
 import { unformatCurrency } from '@utils/formats'
 import ModalAdicionarCandidato from '@components/ModalAdicionarCandidato';
+import ModalEditarCandidato from '@components/ModalEditarCandidato';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -58,6 +59,8 @@ function DetalhesVaga() {
     const [modalEditarAberto, setModalEditarAberto] = useState(false);
     const [modalTransferirAberto, setModalTransferirAberto] = useState(false);
     const [modalAdicionarCandidatoAberto, setModalAdicionarCandidatoAberto] = useState(false);
+    const [modalEditarCandidatoAberto, setModalEditarCandidatoAberto] = useState(false);
+    const [candidatoEditando, setCandidatoEditando] = useState(null);
 
     const listaPericulosidades = [
         { code: 'QC', name: 'Trabalho com Substâncias Químicas Perigosas' },
@@ -405,6 +408,51 @@ function DetalhesVaga() {
             });
     };
 
+    const handleEditarCandidato = (candidato) => {
+        setCandidatoEditando(candidato);
+        setModalEditarCandidatoAberto(true);
+    };
+
+    const handleSalvarEdicaoCandidato = (dados) => {
+        const {
+            id: candidatoId,
+            nome,
+            email,
+            cpf,
+            nascimento,
+            telefone
+        } = dados;
+
+        const cpfNumerico = (cpf || '').replace(/\D/g, '');
+
+        const dadosCandidato = {
+            nome: nome || '',
+            email: email || '',
+            cpf: cpfNumerico,
+            dt_nascimento: (nascimento || '2000-01-01'),
+            telefone: telefone || '',
+        };
+
+        http.put(`candidato/${candidatoId}/`, dadosCandidato)
+            .then(response => {
+                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Candidato atualizado com sucesso!', life: 3000 });
+                setModalEditarCandidatoAberto(false);
+                setCandidatoEditando(null);
+                // Recarrega os dados da vaga
+                http.get(`vagas/${id}/?format=json`)
+                    .then(response => {
+                        setVaga(response);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao recarregar vaga:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar candidato:', error);
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar candidato', life: 3000 });
+            });
+    };
+
     return (
         <>
         <Frame>
@@ -574,6 +622,7 @@ function DetalhesVaga() {
                         vaga: vaga
                     }))} 
                     onCandidatosUpdate={handleCandidatosUpdate}
+                    onEditarCandidato={handleEditarCandidato}
                 />
                 <Titulo>
                     <h5>Documentos Requeridos da Vaga</h5>
@@ -623,6 +672,15 @@ function DetalhesVaga() {
                 opened={modalAdicionarCandidatoAberto}
                 aoFechar={() => setModalAdicionarCandidatoAberto(false)}
                 aoSalvar={handleAdicionarCandidato}
+            />
+            <ModalEditarCandidato
+                opened={modalEditarCandidatoAberto}
+                aoFechar={() => {
+                    setModalEditarCandidatoAberto(false);
+                    setCandidatoEditando(null);
+                }}
+                aoSalvar={handleSalvarEdicaoCandidato}
+                candidato={candidatoEditando}
             />
         </Container>
         </Frame>

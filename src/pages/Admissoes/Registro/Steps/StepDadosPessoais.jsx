@@ -133,6 +133,8 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
         };
     }, [classError]);
 
+
+
     useEffect(() => {
 
         if(candidato.dt_admissao && candidato.dt_admissao !== '' && (!candidato.dt_opcao_fgts || candidato.dt_opcao_fgts === ''))
@@ -518,6 +520,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 label="PIS/PASEP"
                 placeholder="Digite o PIS/PASEP"
                 disabled={modoLeitura}
+                camposVazios={isCampoEmErro('pispasep') ? ['pispasep'] : []}
             />
 
             <CampoTexto
