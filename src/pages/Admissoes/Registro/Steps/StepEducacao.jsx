@@ -119,7 +119,7 @@ const StepEducacao = () => {
                     color: 'var(--text-color)',
                     fontSize: '14px'
                 }}>
-                    Grau de Instrução 
+                    Grau de Instrução <span style={{color: 'var(--error)'}}> *</span>
                 </label>
                 <Dropdown
                     required={true}
