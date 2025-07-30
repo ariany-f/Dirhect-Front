@@ -178,7 +178,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                     }))
                     .sort((a, b) => a.name.localeCompare(b.name)); // Ordena alfabeticamente
                 
-                // Adiciona Brasil no início da lista
+                // Adiciona Brasil no início da lista com descrição correta
                 paisesFormatados.unshift({
                     name: 'Brasil',
                     code: '76'
@@ -285,8 +285,15 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
     // Função para obter a naturalidade formatada
     const getNaturalidadeFormatada = () => {
         if (!candidato?.naturalidade) return '';
-        const naturalidadeEncontrada = cidades.find(c => c.code === candidato.naturalidade);
-        return naturalidadeEncontrada || '';
+        
+        // Se for Brasil, busca na lista de cidades
+        if (candidato?.pais === '76') {
+            const naturalidadeEncontrada = cidades.find(c => c.code === candidato.naturalidade);
+            return naturalidadeEncontrada || '';
+        } else {
+            // Para outros países, retorna o valor como texto
+            return { name: candidato.naturalidade, code: candidato.naturalidade };
+        }
     };
 
     return (
@@ -383,30 +390,56 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
                 filter
             />
-            <DropdownItens
-                camposVazios={isCampoEmErro('estado_natal') ? ['estado_natal'] : []}
-                name="estado_natal"
-                required={true}
-                label="Estado Natal"
-                valor={getEstadoFormatado('estado_natal')}
-                setValor={valor => setCampo('estado_natal', valor.code)}
-                options={estadosFiltrados}
-                placeholder="Selecione o estado natal"
-                disabled={modoLeitura || !candidato?.pais}
-                filter
-            />
-            <DropdownItens
-                camposVazios={isCampoEmErro('naturalidade') ? ['naturalidade'] : []}
-                name="naturalidade"
-                required={true}
-                label="Naturalidade"
-                valor={getNaturalidadeFormatada()}
-                setValor={valor => setCampo('naturalidade', valor.code)}
-                options={cidades}
-                placeholder={loadingCidades ? "Carregando cidades..." : "Selecione a naturalidade"}
-                disabled={modoLeitura || !candidato?.estado_natal || loadingCidades}
-                filter
-            />
+            {candidato?.pais === '76' ? (
+                <DropdownItens
+                    camposVazios={isCampoEmErro('estado_natal') ? ['estado_natal'] : []}
+                    name="estado_natal"
+                    required={true}
+                    label="Estado Natal"
+                    valor={getEstadoFormatado('estado_natal')}
+                    setValor={valor => setCampo('estado_natal', valor.code)}
+                    options={estadosFiltrados}
+                    placeholder="Selecione o estado natal"
+                    disabled={modoLeitura || !candidato?.pais}
+                    filter
+                />
+            ) : (
+                <CampoTexto
+                    camposVazios={isCampoEmErro('estado_natal') ? ['estado_natal'] : []}
+                    name="estado_natal"
+                    required={true}
+                    valor={candidato?.estado_natal ?? ''}
+                    setValor={valor => setCampo('estado_natal', valor)}
+                    label="Estado Natal"
+                    placeholder="Digite o estado natal"
+                    disabled={modoLeitura}
+                />
+            )}
+            {candidato?.pais === '76' ? (
+                <DropdownItens
+                    camposVazios={isCampoEmErro('naturalidade') ? ['naturalidade'] : []}
+                    name="naturalidade"
+                    required={true}
+                    label="Naturalidade"
+                    valor={getNaturalidadeFormatada()}
+                    setValor={valor => setCampo('naturalidade', valor.code)}
+                    options={cidades}
+                    placeholder={loadingCidades ? "Carregando cidades..." : "Selecione a naturalidade"}
+                    disabled={modoLeitura || !candidato?.estado_natal || loadingCidades}
+                    filter
+                />
+            ) : (
+                <CampoTexto
+                    camposVazios={isCampoEmErro('naturalidade') ? ['naturalidade'] : []}
+                    name="naturalidade"
+                    required={true}
+                    valor={candidato?.naturalidade ?? ''}
+                    setValor={valor => setCampo('naturalidade', valor)}
+                    label="Naturalidade"
+                    placeholder="Digite a naturalidade"
+                    disabled={modoLeitura}
+                />
+            )}
             <CampoTexto
                 name="pispasep"
                 valor={candidato?.pispasep ?? ''}
