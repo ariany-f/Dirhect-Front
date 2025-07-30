@@ -42,7 +42,6 @@ const candidatoInicial = {
         horario_nome: null,
         sindicato_nome: null
     },
-    candidato: null,
     vagas_configurado: [],
     nome: '',
     cpf: '',
@@ -103,7 +102,6 @@ const candidatoInicial = {
     tipo_carteira_habilit: null,
     data_venc_habilit: null,
     identidade: null,
-    data_emissao_ident: null,
     certificado_reservista: null,
     naturalizado: false,
     data_venc_ctps: null,
