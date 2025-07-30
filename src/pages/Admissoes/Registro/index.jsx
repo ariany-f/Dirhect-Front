@@ -304,9 +304,6 @@ const ConteudoFrame = styled.div`
     /* Altura responsiva para ScrollPanels internos */
     .responsive-inner-scroll {
         width: 100%;
-        height: 340px; /* Altura fixa menor */
-        min-height: 260px;
-        max-height: 340px;
         margin-bottom: 10px;
     }
 
@@ -320,10 +317,6 @@ const ConteudoFrame = styled.div`
             height: 250px;
             min-height: 200px;
         }
-        .responsive-inner-scroll {
-            height: 210px;
-            min-height: 170px;
-        }
     }
 
     /* Para escala 100% com altura maior que 48vh */
@@ -332,8 +325,8 @@ const ConteudoFrame = styled.div`
             height: 470px;
         }
         .responsive-scroll-panel {
-            height: 50vh;
-            min-height: 50vh;
+            height: 45vh;
+            min-height: 45vh;
         }
     }
 
@@ -343,8 +336,8 @@ const ConteudoFrame = styled.div`
             height: 600px;
         }
         .responsive-scroll-panel {
-            height: 60vh;
-            min-height: 60vh;
+            height: 56vh;
+            min-height: 56vh;
         }
     }
 
@@ -355,14 +348,8 @@ const ConteudoFrame = styled.div`
             height: 450px; /* Altura menor para zoom 125% */
         }
         .responsive-scroll-panel {
-            height: 330px; /* Altura menor para zoom 125% */
-            min-height: 280px;
-            max-height: 48vh;
-        }
-        .responsive-inner-scroll {
-            height: 290px;
-            min-height: 240px;
-            max-height: 290px;
+            max-height: 42vh;
+            min-height: 42vh;
         }
     }
 
@@ -372,14 +359,7 @@ const ConteudoFrame = styled.div`
             height: 400px;
         }
         .responsive-scroll-panel {
-            height: 280px;
-            min-height: 250px;
-            max-height: 280px;
-        }
-        .responsive-inner-scroll {
-            height: 240px;
-            min-height: 210px;
-            max-height: 240px;
+            max-height: 30vh;
         }
     }
 `;
@@ -2865,13 +2845,15 @@ const CandidatoRegistro = () => {
                     )}
                     
                     <StepperPanel header="Dependentes">
-                        <ScrollPanel className="responsive-scroll-panel">
-                            <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
-                                <ScrollPanel className="responsive-inner-scroll">
-                                    <StepDependentes classError={classError} modoLeitura={modoLeitura} />
-                                </ScrollPanel>
+                        <Container padding={'0'} gap="10px">
+                            <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
+                                <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
+                                    <ScrollPanel className="responsive-inner-scroll">
+                                        <StepDependentes classError={classError} modoLeitura={modoLeitura} />
+                                    </ScrollPanel>
+                            </ScrollPanel>
                             </div>
-                        </ScrollPanel>
+                        </Container>
                     </StepperPanel>
                     
                     {self && (
