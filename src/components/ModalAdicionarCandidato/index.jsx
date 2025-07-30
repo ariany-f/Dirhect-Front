@@ -30,6 +30,7 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
   const [telefone, setTelefone] = useState("");
   const [filial, setFilial] = useState("");
   const [centroCusto, setCentroCusto] = useState("");
+  const [camposVazios, setCamposVazios] = useState([]);
 
   const limparCampos = () => {
     setNome("");
@@ -39,6 +40,7 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     setTelefone("");
     setFilial("");
     setCentroCusto("");
+    setCamposVazios([]);
   };
 
   // Limpa os campos quando o modal é aberto
@@ -48,12 +50,48 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     }
   }, [opened]);
 
+  // Validação em tempo real quando os campos mudam
+  useEffect(() => {
+    // Só valida se pelo menos um campo foi preenchido
+    if (nome || email || cpf || nascimento) {
+      validarCampos();
+    }
+  }, [nome, email, cpf, nascimento]);
+
   const handleFechar = () => {
     limparCampos();
     aoFechar();
   };
 
+  const validarCampos = () => {
+    const camposObrigatorios = [];
+    
+    if (!nome.trim()) camposObrigatorios.push('nome');
+    if (!email.trim()) camposObrigatorios.push('email');
+    if (!cpf.trim()) camposObrigatorios.push('cpf');
+    if (!nascimento.trim()) camposObrigatorios.push('nascimento');
+    
+    // Validação de email
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      camposObrigatorios.push('email');
+    }
+    
+    // Validação de CPF (mínimo 11 dígitos)
+    const cpfNumerico = cpf.replace(/\D/g, '');
+    if (cpf.trim() && cpfNumerico.length < 11) {
+      camposObrigatorios.push('cpf');
+    }
+    
+    setCamposVazios(camposObrigatorios);
+    
+    return camposObrigatorios.length === 0;
+  };
+
   const handleSave = () => {
+    if (!validarCampos()) {
+      return; // Não prossegue se há campos vazios
+    }
+
     aoSalvar({
       nome,
       email,
@@ -82,16 +120,49 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
               <CampoTexto 
                 patternMask={["999.999.999-99"]} 
                 valor={cpf} 
+                required={true}
                 type="text" 
                 setValor={setCpf} 
                 label="CPF" 
+                camposVazios={camposVazios}
+                name="cpf"
               />
-              <CampoTexto valor={nome} type="text" setValor={setNome} label="Nome" />
-              <CampoTexto valor={email} type="text" setValor={setEmail} label="E-mail" />
+              <CampoTexto 
+                valor={nome} 
+                required={true} 
+                type="text" 
+                setValor={setNome} 
+                label="Nome" 
+                camposVazios={camposVazios}
+                name="nome"
+              />
+              <CampoTexto 
+                valor={email} 
+                required={true} 
+                type="text" 
+                setValor={setEmail} 
+                label="E-mail" 
+                camposVazios={camposVazios}
+                name="email"
+              />
             </Col6>
             <Col6>
-              <CampoTexto patternMask={["(99) 99999-9999"]} valor={telefone} type="text" setValor={setTelefone} label="Telefone" />
-              <CampoTexto valor={nascimento} type="date" setValor={setNascimento} label="Data de Nascimento" />
+              <CampoTexto 
+                patternMask={["(99) 99999-9999"]} 
+                valor={telefone} 
+                type="text" 
+                setValor={setTelefone} 
+                label="Telefone" 
+              />
+              <CampoTexto 
+                valor={nascimento} 
+                type="date" 
+                setValor={setNascimento} 
+                label="Data de Nascimento" 
+                required={true}
+                camposVazios={camposVazios}
+                name="nascimento"
+              />
             </Col6>
           </Col12>
         </Frame>
@@ -110,6 +181,7 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
               estilo="vermilion"
               size="medium"
               filled
+              disabled={!nome.trim() || !email.trim() || !cpf.trim() || !nascimento.trim()}
             >
               Adicionar
             </Botao>
