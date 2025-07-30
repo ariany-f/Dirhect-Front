@@ -18,6 +18,16 @@ const GridContainer = styled.div`
     }
 `;
 
+const SectionTitle = styled.div`
+    grid-column: 1 / -1;
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+    margin: 20px 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+`;
+
 const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [] }) => {
     
     
@@ -493,6 +503,42 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 label="Calcula IRRF"
                 checked={candidato.calcula_irrf || false}
                 onChange={(e) => setCampo('calcula_irrf', e.target.checked)}
+                disabled={modoLeitura}
+            />
+            
+            <SectionTitle>Dados Adicionais</SectionTitle>
+            
+            <CampoTexto
+                name="perc_adiantamento"
+                valor={candidato?.perc_adiantamento ?? ''}
+                setValor={valor => setCampo('perc_adiantamento', valor)}
+                patternMask="999"
+                label="Percentual de Adiantamento"
+                placeholder="Ex: 50"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="ajuda_custo"
+                valor={candidato?.ajuda_custo ?? ''}
+                setValor={valor => setCampo('ajuda_custo', valor)}
+                label="Ajuda de Custo"
+                placeholder="Digite o valor"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="arredondamento"
+                valor={candidato?.arredondamento ?? ''}
+                setValor={valor => setCampo('arredondamento', valor)}
+                label="Arredondamento"
+                placeholder="Digite o valor"
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                name="media_sal_maternidade"
+                valor={candidato?.media_sal_maternidade ?? ''}
+                setValor={valor => setCampo('media_sal_maternidade', valor)}
+                label="Média Salário Maternidade"
+                placeholder="Digite o valor"
                 disabled={modoLeitura}
             />
         </GridContainer>
