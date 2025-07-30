@@ -50,10 +50,25 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
     const formatarOpcoesDominio = useMemo(() => {
         return (opcoes) => {
             if (!Array.isArray(opcoes)) return [];
-            return opcoes.map(opcao => ({
+            let opcoesFormatadas = opcoes.map(opcao => ({
                 name: opcao.descricao,
                 code: opcao.id_origem || opcao.codigo
             }));
+            
+            // Se for nacionalidade, adiciona Brasil se não existir
+            if (opcoes.length > 0 && opcoes[0].descricao && opcoes[0].descricao.includes('nacionalidade')) {
+                const brasilExiste = opcoesFormatadas.some(op => 
+                    op.name === 'Brasil' || op.name === 'Brazil'
+                );
+                if (!brasilExiste) {
+                    opcoesFormatadas.unshift({
+                        name: 'Brasil',
+                        code: '76'
+                    });
+                }
+            }
+            
+            return opcoesFormatadas;
         };
     }, []);
 
@@ -214,12 +229,16 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
 
     // Carrega cidades quando o estado natal muda
     useEffect(() => {
-        if (candidato?.estado_natal) {
+        // Verifica se a nacionalidade é Brasil
+        const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+        const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
+        
+        if (isBrasil && candidato?.estado_natal) {
             buscarCidades(candidato.estado_natal);
         } else {
             setCidades([]);
         }
-    }, [candidato?.estado_natal]);
+    }, [candidato?.estado_natal, candidato?.nacionalidade, opcoesNacionalidade]);
 
     // Carrega países na inicialização
     useEffect(() => {
@@ -234,6 +253,31 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             setEstadosFiltrados(estados);
         }
     }, [candidato?.pais, estados]);
+
+    // Monitora mudanças na nacionalidade para carregar estados quando selecionar Brasil
+    useEffect(() => {
+        if (candidato?.nacionalidade) {
+            // Verifica se a nacionalidade selecionada é Brasil
+            const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato.nacionalidade);
+            if (nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil')) {
+                // Se selecionou Brasil, define o país como Brasil e carrega os estados
+                if (candidato.pais !== '76') {
+                    setCampo('pais', '76');
+                    // Limpa estado natal e naturalidade para forçar nova seleção
+                    setCampo('estado_natal', '');
+                    setCampo('naturalidade', '');
+                }
+            } else {
+                // Se selecionou outro país, define país como vazio para permitir campos de texto
+                if (candidato.pais === '76') {
+                    setCampo('pais', '');
+                    // Limpa estado natal e naturalidade para forçar nova seleção
+                    setCampo('estado_natal', '');
+                    setCampo('naturalidade', '');
+                }
+            }
+        }
+    }, [candidato?.nacionalidade, opcoesNacionalidade, candidato?.pais, setCampo]);
 
     // Função para buscar endereço pelo CEP
     const handleCepChange = async (valor) => {
@@ -265,8 +309,12 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
     const getEstadoFormatado = (campo = 'estado') => {
         if (!candidato?.[campo]) return '';
         
-        // Se for Brasil, busca na lista de estados
-        if (candidato?.pais === '76') {
+        // Verifica se a nacionalidade é Brasil
+        const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+        const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
+        
+        if (isBrasil) {
+            // Se for Brasil, busca na lista de estados
             const estadoEncontrado = estadosFiltrados.find(e => e.code === candidato[campo]);
             return estadoEncontrado || '';
         } else {
@@ -286,8 +334,12 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
     const getNaturalidadeFormatada = () => {
         if (!candidato?.naturalidade) return '';
         
-        // Se for Brasil, busca na lista de cidades
-        if (candidato?.pais === '76') {
+        // Verifica se a nacionalidade é Brasil
+        const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+        const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
+        
+        if (isBrasil) {
+            // Se for Brasil, busca na lista de cidades
             const naturalidadeEncontrada = cidades.find(c => c.code === candidato.naturalidade);
             return naturalidadeEncontrada || '';
         } else {
@@ -390,56 +442,66 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 disabled={modoLeitura}
                 filter
             />
-            {candidato?.pais === '76' ? (
-                <DropdownItens
-                    camposVazios={isCampoEmErro('estado_natal') ? ['estado_natal'] : []}
-                    name="estado_natal"
-                    required={true}
-                    label="Estado Natal"
-                    valor={getEstadoFormatado('estado_natal')}
-                    setValor={valor => setCampo('estado_natal', valor.code)}
-                    options={estadosFiltrados}
-                    placeholder="Selecione o estado natal"
-                    disabled={modoLeitura || !candidato?.pais}
-                    filter
-                />
-            ) : (
-                <CampoTexto
-                    camposVazios={isCampoEmErro('estado_natal') ? ['estado_natal'] : []}
-                    name="estado_natal"
-                    required={true}
-                    valor={candidato?.estado_natal ?? ''}
-                    setValor={valor => setCampo('estado_natal', valor)}
-                    label="Estado Natal"
-                    placeholder="Digite o estado natal"
-                    disabled={modoLeitura}
-                />
-            )}
-            {candidato?.pais === '76' ? (
-                <DropdownItens
-                    camposVazios={isCampoEmErro('naturalidade') ? ['naturalidade'] : []}
-                    name="naturalidade"
-                    required={true}
-                    label="Naturalidade"
-                    valor={getNaturalidadeFormatada()}
-                    setValor={valor => setCampo('naturalidade', valor.code)}
-                    options={cidades}
-                    placeholder={loadingCidades ? "Carregando cidades..." : "Selecione a naturalidade"}
-                    disabled={modoLeitura || !candidato?.estado_natal || loadingCidades}
-                    filter
-                />
-            ) : (
-                <CampoTexto
-                    camposVazios={isCampoEmErro('naturalidade') ? ['naturalidade'] : []}
-                    name="naturalidade"
-                    required={true}
-                    valor={candidato?.naturalidade ?? ''}
-                    setValor={valor => setCampo('naturalidade', valor)}
-                    label="Naturalidade"
-                    placeholder="Digite a naturalidade"
-                    disabled={modoLeitura}
-                />
-            )}
+            {(() => {
+                const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+                const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
+                
+                return isBrasil ? (
+                    <DropdownItens
+                        camposVazios={isCampoEmErro('estado_natal') ? ['estado_natal'] : []}
+                        name="estado_natal"
+                        required={true}
+                        label="Estado Natal"
+                        valor={getEstadoFormatado('estado_natal')}
+                        setValor={valor => setCampo('estado_natal', valor.code)}
+                        options={estadosFiltrados}
+                        placeholder="Selecione o estado natal"
+                        disabled={modoLeitura || !candidato?.nacionalidade}
+                        filter
+                    />
+                ) : (
+                    <CampoTexto
+                        camposVazios={isCampoEmErro('estado_natal') ? ['estado_natal'] : []}
+                        name="estado_natal"
+                        required={true}
+                        valor={candidato?.estado_natal ?? ''}
+                        setValor={valor => setCampo('estado_natal', valor)}
+                        label="Estado Natal"
+                        placeholder="Digite o estado natal"
+                        disabled={modoLeitura || !candidato?.nacionalidade}
+                    />
+                );
+            })()}
+            {(() => {
+                const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+                const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
+                
+                return isBrasil ? (
+                    <DropdownItens
+                        camposVazios={isCampoEmErro('naturalidade') ? ['naturalidade'] : []}
+                        name="naturalidade"
+                        required={true}
+                        label="Naturalidade"
+                        valor={getNaturalidadeFormatada()}
+                        setValor={valor => setCampo('naturalidade', valor.code)}
+                        options={cidades}
+                        placeholder={loadingCidades ? "Carregando cidades..." : "Selecione a naturalidade"}
+                        disabled={modoLeitura || !candidato?.estado_natal || loadingCidades}
+                        filter
+                    />
+                ) : (
+                    <CampoTexto
+                        camposVazios={isCampoEmErro('naturalidade') ? ['naturalidade'] : []}
+                        name="naturalidade"
+                        required={true}
+                        valor={candidato?.naturalidade ?? ''}
+                        setValor={valor => setCampo('naturalidade', valor)}
+                        label="Naturalidade"
+                        placeholder="Digite a naturalidade"
+                        disabled={modoLeitura || !candidato?.nacionalidade}
+                    />
+                );
+            })()}
             <CampoTexto
                 name="pispasep"
                 valor={candidato?.pispasep ?? ''}
