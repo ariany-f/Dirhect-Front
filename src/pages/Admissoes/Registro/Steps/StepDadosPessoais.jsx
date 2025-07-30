@@ -43,6 +43,9 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
     const lastCepRef = useRef('');
     const [cidades, setCidades] = useState([]);
     const [loadingCidades, setLoadingCidades] = useState(false);
+    const [paises, setPaises] = useState([]);
+    const [loadingPaises, setLoadingPaises] = useState(false);
+    const [estadosFiltrados, setEstadosFiltrados] = useState(estados);
 
     const formatarOpcoesDominio = useMemo(() => {
         return (opcoes) => {
@@ -161,6 +164,54 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
         }
     };
 
+    // Função para buscar países da API do IBGE
+    const buscarPaises = async () => {
+        setLoadingPaises(true);
+        try {
+            const response = await axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/paises');
+            if (response.data && Array.isArray(response.data)) {
+                const paisesFormatados = response.data
+                    .filter(pais => pais.nome !== 'Brasil') // Remove Brasil da lista
+                    .map(pais => ({
+                        name: pais.nome,
+                        code: pais.id
+                    }))
+                    .sort((a, b) => a.name.localeCompare(b.name)); // Ordena alfabeticamente
+                
+                // Adiciona Brasil no início da lista
+                paisesFormatados.unshift({
+                    name: 'Brasil',
+                    code: '76'
+                });
+                
+                setPaises(paisesFormatados);
+            } else {
+                setPaises([]);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar países:', error);
+            setPaises([]);
+        } finally {
+            setLoadingPaises(false);
+        }
+    };
+
+    // Função para buscar estados por país
+    const buscarEstadosPorPais = async (paisId) => {
+        if (!paisId) {
+            setEstadosFiltrados(estados);
+            return;
+        }
+        
+        // Se for Brasil (código 76), usa a lista de estados brasileiros
+        if (paisId === '76') {
+            setEstadosFiltrados(estados);
+        } else {
+            // Para outros países, deixa vazio para permitir digitação livre
+            setEstadosFiltrados([]);
+        }
+    };
+
     // Carrega cidades quando o estado natal muda
     useEffect(() => {
         if (candidato?.estado_natal) {
@@ -169,6 +220,20 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             setCidades([]);
         }
     }, [candidato?.estado_natal]);
+
+    // Carrega países na inicialização
+    useEffect(() => {
+        buscarPaises();
+    }, []);
+
+    // Filtra estados quando o país muda
+    useEffect(() => {
+        if (candidato?.pais) {
+            buscarEstadosPorPais(candidato.pais);
+        } else {
+            setEstadosFiltrados(estados);
+        }
+    }, [candidato?.pais, estados]);
 
     // Função para buscar endereço pelo CEP
     const handleCepChange = async (valor) => {
@@ -199,8 +264,22 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
     // Função para obter o estado formatado
     const getEstadoFormatado = (campo = 'estado') => {
         if (!candidato?.[campo]) return '';
-        const estadoEncontrado = estados.find(e => e.code === candidato[campo]);
-        return estadoEncontrado || '';
+        
+        // Se for Brasil, busca na lista de estados
+        if (candidato?.pais === '76') {
+            const estadoEncontrado = estadosFiltrados.find(e => e.code === candidato[campo]);
+            return estadoEncontrado || '';
+        } else {
+            // Para outros países, retorna o valor como texto
+            return { name: candidato[campo], code: candidato[campo] };
+        }
+    };
+
+    // Função para obter o país formatado
+    const getPaisFormatado = () => {
+        if (!candidato?.pais) return '';
+        const paisEncontrado = paises.find(p => p.code === candidato.pais);
+        return paisEncontrado || '';
     };
 
     // Função para obter a naturalidade formatada
@@ -311,9 +390,9 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 label="Estado Natal"
                 valor={getEstadoFormatado('estado_natal')}
                 setValor={valor => setCampo('estado_natal', valor.code)}
-                options={estados}
+                options={estadosFiltrados}
                 placeholder="Selecione o estado natal"
-                disabled={modoLeitura}
+                disabled={modoLeitura || !candidato?.pais}
                 filter
             />
             <DropdownItens
@@ -377,7 +456,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 label={`UF da CTPS${isCampoObrigatorio('uf_carteira_trab') ? '*' : ''}`}
                 valor={getEstadoFormatado('uf_carteira_trab')}
                 setValor={valor => setCampo('uf_carteira_trab', valor.code)}
-                options={estados}
+                options={estadosFiltrados}
                 placeholder="Selecione a UF"
                 disabled={modoLeitura}
                 filter
@@ -450,7 +529,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 label={`UF da Identidade${isCampoObrigatorio('uf_identidade') ? '*' : ''}`}
                 valor={getEstadoFormatado('uf_identidade')}
                 setValor={valor => setCampo('uf_identidade', valor.code)}
-                options={estados}
+                options={estadosFiltrados}
                 placeholder="Selecione a UF"
                 disabled={modoLeitura}
                 filter
@@ -521,7 +600,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 label={`Estado Emissor do Título${isCampoObrigatorio('estado_emissor_tit_eleitor') ? '*' : ''}`}
                 valor={getEstadoFormatado('estado_emissor_tit_eleitor')}
                 setValor={valor => setCampo('estado_emissor_tit_eleitor', valor.code)}
-                options={estados}
+                options={estadosFiltrados}
                 placeholder="Selecione o estado"
                 disabled={modoLeitura}
                 filter
@@ -529,6 +608,20 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             
             <SectionTitle>Endereço</SectionTitle>
             
+            <DropdownItens
+                name="pais"
+                label="País"
+                valor={getPaisFormatado()}
+                setValor={valor => {
+                    setCampo('pais', valor.code);
+                    // Limpa o estado quando muda o país
+                    setCampo('estado', '');
+                }}
+                options={paises}
+                placeholder={loadingPaises ? "Carregando países..." : "Selecione o país"}
+                disabled={modoLeitura || loadingPaises}
+                filter
+            />
             <CampoTexto
                 camposVazios={isCampoEmErro('cep') ? ['cep'] : []}
                 name="cep"
@@ -606,19 +699,32 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 label="Cidade"
                 disabled={modoLeitura}
             />
-            <DropdownItens
-                camposVazios={isCampoEmErro('estado') ? ['estado'] : []}
-                $margin={'10px'}
-                required={true}
-                valor={getEstadoFormatado('estado')}
-                setValor={valor => setCampo('estado', valor.code)}
-                options={estados}
-                name="state"
-                label="Estado"
-                placeholder="Selecione o estado"
-                disabled={modoLeitura}
-                filter
-            />
+            {candidato?.pais === '76' ? (
+                <DropdownItens
+                    camposVazios={isCampoEmErro('estado') ? ['estado'] : []}
+                    $margin={'10px'}
+                    required={true}
+                    valor={getEstadoFormatado('estado')}
+                    setValor={valor => setCampo('estado', valor.code)}
+                    options={estadosFiltrados}
+                    name="state"
+                    label="Estado"
+                    placeholder="Selecione o estado"
+                    disabled={modoLeitura || !candidato?.pais}
+                    filter
+                />
+            ) : (
+                <CampoTexto
+                    camposVazios={isCampoEmErro('estado') ? ['estado'] : []}
+                    name="estado"
+                    required={true}
+                    valor={candidato?.estado ?? ''}
+                    setValor={valor => setCampo('estado', valor)}
+                    label="Estado/Província"
+                    placeholder="Digite o estado ou província"
+                    disabled={modoLeitura || !candidato?.pais}
+                />
+            )}
         </GridContainer>
     );
 };
