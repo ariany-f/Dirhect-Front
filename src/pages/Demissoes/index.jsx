@@ -38,7 +38,7 @@ const Demissoes = () => {
         vagas
     } = useVagasContext()
 
-    const loadData = (currentPage, currentPageSize, search = '', sort = '') => {
+    const loadData = (currentPage, currentPageSize, search = '', sort = '-id') => {
         setLoading(true);
         const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
         http.get(`funcionario/?format=json&situacao=D&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
