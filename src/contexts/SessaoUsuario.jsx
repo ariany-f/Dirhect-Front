@@ -67,6 +67,7 @@ export const SessaoUsuarioContext = createContext({
     retornarCompanySession: () => null,
     dadosUsuario: () => null,
     solicitarCodigo: () => null,
+    setGroups: () => null,
     solicitarCodigoLogin: () => null,
     validarCodigo: () => null,
     submeterLogout: () => null,

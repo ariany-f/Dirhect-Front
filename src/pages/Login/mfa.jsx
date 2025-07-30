@@ -5,6 +5,7 @@ import Botao from '@components/Botao';
 import { toast } from 'react-toastify'
 import Frame from '@components/Frame';
 import BotaoVoltar from '@components/BotaoVoltar';
+import BotaoSemBorda from '@components/BotaoSemBorda';
 import Titulo from '@components/Titulo';
 import SubTitulo from '@components/SubTitulo';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -49,8 +50,9 @@ function Mfa() {
         return () => clearInterval(interval);
     }, [countdown]);
 
-    const customInput = ({events, props}) => (
+    const customInput = ({events, props, key}) => (
         <input 
+            key={key}
             {...events} 
             {...props} 
             type="tel" 
@@ -61,54 +63,59 @@ function Mfa() {
     );
 
     const handleSuccessfulLogin = (response) => {
-        const expiration = new Date();
-        expiration.setMinutes(expiration.getMinutes() + 15);
+        try {
+            
+            const expiration = new Date();
+            expiration.setMinutes(expiration.getMinutes() + 15);
 
-        ArmazenadorToken.definirToken(
-            response.access,
-            expiration,
-            response.refresh,
-            response.permissions
-        );
-        
-        setEmail(response.user.email);
-        setCpf(response.user.cpf ?? '');
-        setUserPublicId(response.user.id);
-        setName(response.user.first_name + ' ' + response.user.last_name);
-        
-        setUsuarioEstaLogado(true);
-        
-        const gruposValidos = response.groups.filter(grupo => !grupo.startsWith('_'));
-        
-        if (gruposValidos.length > 1) {
-            setGroups(response.groups);
-            ArmazenadorToken.definirUsuario(
-                response.user.first_name + ' ' + response.user.last_name,
-                response.user.email,
-                response.user.cpf ?? '',
-                response.user.id,
-                '', '', '', '', '', 
-                response.user.mfa_required,
-                response.user.perfil
+            ArmazenadorToken.definirToken(
+                response.access,
+                expiration,
+                response.refresh,
+                response.permissions
             );
-            ArmazenadorToken.removerTempToken();
-            ArmazenadorToken.definirGrupos(response.groups);
-            navegar('/login/selecionar-grupo');
-        } else {
-            const grupoSelecionado = gruposValidos[0] || response.groups[0];
-            setTipo(grupoSelecionado);
-            ArmazenadorToken.definirUsuario(
-                response.user.first_name + ' ' + response.user.last_name,
-                response.user.email,
-                response.user.cpf ?? '',
-                response.user.id,
-                grupoSelecionado,
-                '', '', '', '', 
-                response.user.mfa_required,
-                response.user.perfil
-            );
-            ArmazenadorToken.removerTempToken();   
-            navegar('/login/selecionar-empresa');
+            
+            setEmail(response.user.email);
+            setCpf(response.user.cpf ?? '');
+            setUserPublicId(response.user.id);
+            setName(response.user.first_name + ' ' + response.user.last_name);
+            
+            setUsuarioEstaLogado(true);
+            
+            const gruposValidos = response.groups.filter(grupo => !grupo.startsWith('_'));
+            
+            if (gruposValidos.length > 1) {
+                setGroups(response.groups);
+                ArmazenadorToken.definirUsuario(
+                    response.user.first_name + ' ' + response.user.last_name,
+                    response.user.email,
+                    response.user.cpf ?? '',
+                    response.user.id,
+                    '', '', '', '', '', 
+                    response.user.mfa_required,
+                    response.user.perfil
+                );
+                ArmazenadorToken.removerTempToken();
+                ArmazenadorToken.definirGrupos(response.groups);
+                navegar('/login/selecionar-grupo');
+            } else {
+                const grupoSelecionado = gruposValidos[0] || response.groups[0];
+                setTipo(grupoSelecionado);
+                ArmazenadorToken.definirUsuario(
+                    response.user.first_name + ' ' + response.user.last_name,
+                    response.user.email,
+                    response.user.cpf ?? '',
+                    response.user.id,
+                    grupoSelecionado,
+                    '', '', '', '', 
+                    response.user.mfa_required,
+                    response.user.perfil
+                );
+                ArmazenadorToken.removerTempToken();   
+                navegar('/login/selecionar-empresa');
+            }
+        } catch (error) {
+            toast.error('Erro ao processar login: ' + error.message);
         }
     };
 
@@ -119,7 +126,6 @@ function Mfa() {
                 resolve(response);
             })
             .catch(error => {
-                toast.error('Erro ao verificar Token!');
                 reject(error);
             });
         });
@@ -129,6 +135,7 @@ function Mfa() {
         return new Promise((resolve, reject) => {
             http.post('/token/', { otp: otpCode })
             .then(response => {
+                console.log(response)
                 resolve(response);
             })
             .catch(error => {
@@ -138,13 +145,15 @@ function Mfa() {
     }
 
     async function handleEmailMfaValidate() {
+        console.log('handleEmailMfaValidate chamado com otpCode:', otpCode);
         return new Promise((resolve, reject) => {
             http.post('/mfa/email/validate/', { otp: otpCode })
                 .then(response => {
+                    console.log('handleEmailMfaValidate sucesso:', response);
                     resolve(response);
                 })
                 .catch(error => {
-                    toast.error('Erro ao verificar Token de e-mail!');
+                    console.log('handleEmailMfaValidate erro:', error);
                     reject(error);
                 });
         });
@@ -176,17 +185,24 @@ function Mfa() {
     }
 
     async function handleVerifyOtp() {
+        console.log('handleVerifyOtp chamado');
+        console.log('confirmed:', confirmed);
+        console.log('method:', method);
+        
         if (confirmed === 'true') {
+            console.log('Usando fluxo confirmed=true');
             const validationPromise = method === 'email' 
                 ? handleEmailMfaValidate() 
                 : handleToken();
 
             validationPromise
                 .then(response => {
+                    console.log('Resposta de sucesso:', response);
                     toast.success('Token verificado com sucesso!');
                     handleSuccessfulLogin(response);
                 })
                 .catch(error => {
+                    console.log('Erro capturado:', error);
                     if (error.otp) {
                         toast.error(error.otp[0]);
                     } else if (error.detail) {
@@ -196,11 +212,14 @@ function Mfa() {
                     }
                 });
         } else {
+            console.log('Usando fluxo confirmed=false');
             await handleMfaValidade()
             .then(response => {
+                console.log('Resposta de sucesso (mfaValidade):', response);
                 handleSuccessfulLogin(response);
             })
             .catch(error => {
+                console.log('Erro capturado (mfaValidade):', error);
                 if(error.otp)
                 {
                     toast.error(error.otp[0]);
@@ -270,6 +289,7 @@ function Mfa() {
                         onChange={(e) => setOtpCode(e.value)} 
                         inputTemplate={customInput}
                         className="w-full"
+                        unstyled={false}
                     />
                     <Botao aoClicar={handleVerifyOtp}>Verificar Código</Botao>
                     
@@ -289,19 +309,13 @@ function Mfa() {
                                 Reenviar código em {countdown}s
                             </p>
                         ) : (
-                            <Botao 
+                            <BotaoSemBorda
                                 aoClicar={handleResendCode}
                                 disabled={resendLoading}
-                                style={{
-                                    background: 'transparent',
-                                    color: 'var(--primary-color)',
-                                    border: '1px solid var(--primary-color)',
-                                    fontSize: '14px',
-                                    padding: '8px 16px'
-                                }}
+                                color="var(--primaria)"
                             >
                                 {resendLoading ? 'Reenviando...' : 'Reenviar Código'}
-                            </Botao>
+                            </BotaoSemBorda>
                         )}
                     </div>
                 </Frame>
