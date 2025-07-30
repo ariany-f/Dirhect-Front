@@ -198,21 +198,21 @@ function DataTableAdmissao({
                     </div>
                 </div>
                 
-                {/* Nome, CPF e etiqueta de modo leitura */}
+                {/* Nome, CPF e etiqueta de status */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'space-between', gap: '4px', flexWrap: 'wrap' }}>
                         <Texto weight={700}>
-                            {rowData?.nome}
+                            {rowData?.nome || '---'}
                         </Texto>
                         {isModoLeitura && (
                             <div
                                 style={{
                                     backgroundColor: isFinalizada ? ' rgba(102, 187, 106, 0.15)' : 'rgba(66, 165, 245, 0.15)',
-                                    color: isFinalizada ? 'rgb(102, 187, 106)' : 'rgb(66, 165, 245)',
-                                    fontWeight: 600,
+                                    color: isFinalizada ? '#28a745' : 'rgb(66, 165, 245)',
+                                    fontWeight: 500,
                                     fontSize: 12,
                                     borderRadius: 6,
-                                    padding: '4px 8px',
+                                    padding: '6px 12px',
                                     border: 'none',
                                     display: 'inline-block',
                                     textAlign: 'center',
@@ -220,6 +220,24 @@ function DataTableAdmissao({
                                 }}
                             >
                                 {isFinalizada ? 'Finalizada' : 'Modo Leitura'}
+                            </div>
+                        )}
+                        {!isModoLeitura && !isFinalizada && (
+                            <div
+                                style={{
+                                    backgroundColor: 'rgb(255, 248, 225)',
+                                    color: 'rgb(255, 160, 0)',
+                                    fontWeight: 500,
+                                    fontSize: 12,
+                                    borderRadius: 6,
+                                    padding: '6px 12px',
+                                    border: 'none',
+                                    display: 'inline-block',
+                                    textAlign: 'center',
+                                    minWidth: 'fit-content'
+                                }}
+                            >
+                                Em Andamento
                             </div>
                         )}
                     </div>
