@@ -612,6 +612,8 @@ function DataTableTarefas({
                     field="processo_codigo" 
                     header="Tipo de Processo" 
                     style={{ width: '18%' }}
+                    sortable
+                    sortField="processo_codigo"
                     filter
                     filterField="processo_codigo"
                     showFilterMenu={true}
@@ -623,16 +625,39 @@ function DataTableTarefas({
                     filterClear={filterClearTemplate}
                     filterApply={filterApplyTemplate}
                 />
-                <Column body={clienteTemplate} field="client_nome" header="Cliente" style={{ width: '8%' }} />
+                <Column 
+                    body={clienteTemplate} 
+                    field="client_nome" 
+                    header="Cliente" 
+                    style={{ width: '8%' }}
+                    sortable
+                    sortField="tenant"
+                />
                 <Column body={pessoaTemplate} field="pessoa" header="Referência" style={{ width: '15%' }} />
-                <Column body={dataInicioTemplate} field="data_inicio" header="Data de Início" style={{width: '10%'}} />
-                <Column body={dataEntregaTemplate} field="data_entrega" header="Data de Entrega" style={{width: '10%'}} />
+                <Column 
+                    body={dataInicioTemplate} 
+                    field="created_at" 
+                    header="Data de Início" 
+                    style={{width: '10%'}}
+                    sortable
+                    sortField="created_at"
+                />
+                <Column 
+                    body={dataEntregaTemplate} 
+                    field="data_entrega" 
+                    header="Data de Entrega" 
+                    style={{width: '10%'}}
+                    sortable
+                    sortField="created_at"
+                />
                 <Column body={representativeTipoTemplate} field="tipo" header="Concluído" style={{ width: '11%' }}></Column>
                 <Column 
                     body={representativStatusTemplate} 
                     field="percentual_conclusao" 
                     header="Situação" 
                     style={{ width: '14%' }}
+                    sortable
+                    sortField="percentual_conclusao"
                     filter
                     filterField="percentual_conclusao"
                     showFilterMenu={true}
