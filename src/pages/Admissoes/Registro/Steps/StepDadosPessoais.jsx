@@ -72,6 +72,26 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
         };
     }, []);
 
+    const formatarOpcoesTipoBairro = useMemo(() => {
+        return (opcoes) => {
+            if (!Array.isArray(opcoes)) return [];
+            return opcoes.map(opcao => ({
+                name: opcao.descricao,
+                code: opcao.id || opcao.codigo
+            }));
+        };
+    }, []);
+
+    const formatarOpcoesTipoRua = useMemo(() => {
+        return (opcoes) => {
+            if (!Array.isArray(opcoes)) return [];
+            return opcoes.map(opcao => ({
+                name: opcao.descricao,
+                code: opcao.id || opcao.codigo
+            }));
+        };
+    }, []);
+
     const getValorSelecionadoFromCandidato = useMemo(() => {
         return (campo, lista) => {
             if (!Array.isArray(lista) || !candidato) return '';
@@ -82,13 +102,15 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             if (typeof candidato[campo] === 'object' && candidato[campo] !== null) {
                 return {
                     name: candidato[campo].descricao,
-                    code: ['tipo_bairro', 'tipo_rua'].includes(campo) ? candidato[campo].id : (candidato[campo].id_origem || candidato[campo].id)
+                    code: candidato[campo].id_origem || candidato[campo].id
                 };
             }
             
             const code = String(candidato[campo]);
             const item = lista.find(item => String(item.code) === code);
-            
+            console.log(item)
+            console.log(code);
+            console.log(lista)
             return item ? { name: item.name, code: item.code } : '';
         };
     }, [candidato]);
@@ -97,8 +119,8 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
     const opcoesCorRaca = useMemo(() => formatarOpcoesDominio(opcoesDominio.cor_raca), [opcoesDominio.cor_raca, formatarOpcoesDominio]);
     const opcoesEstadoCivil = useMemo(() => formatarOpcoesDominio(opcoesDominio.estado_civil), [opcoesDominio.estado_civil, formatarOpcoesDominio]);
     const opcoesNacionalidade = useMemo(() => formatarOpcoesDominio(opcoesDominio.nacionalidade), [opcoesDominio.nacionalidade, formatarOpcoesDominio]);
-    const opcoesTipoRua = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_rua), [opcoesDominio.tipo_rua, formatarOpcoesDominio]);
-    const opcoesTipoBairro = useMemo(() => formatarOpcoesDominio(opcoesDominio.tipo_bairro), [opcoesDominio.tipo_bairro, formatarOpcoesDominio]);
+    const opcoesTipoRua = useMemo(() => formatarOpcoesTipoRua(opcoesDominio.tipo_rua), [opcoesDominio.tipo_rua, formatarOpcoesTipoRua]);
+    const opcoesTipoBairro = useMemo(() => formatarOpcoesTipoBairro(opcoesDominio.tipo_bairro), [opcoesDominio.tipo_bairro, formatarOpcoesTipoBairro]);
 
     // Função para verificar se um campo é obrigatório baseado nos documentos
     const isCampoObrigatorio = useMemo(() => {

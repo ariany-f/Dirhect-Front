@@ -219,6 +219,40 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     const opcoesTipoSituacao = useMemo(() => {
         return formatarOpcoesDominio(opcoesDominio.tipo_situacao);
     }, [opcoesDominio.tipo_situacao, formatarOpcoesDominio]);
+
+    // Função para obter o valor padrão do tipo_situacao
+    const getTipoSituacaoPadrao = useMemo(() => {
+        return () => {
+            if (!candidato?.tipo_situacao && opcoesTipoSituacao.length > 0) {
+                // Procura pela opção "A" na lista
+                const opcaoA = opcoesTipoSituacao.find(opcao => opcao.code === 'A');
+                if (opcaoA) {
+                    return opcaoA;
+                }
+            }
+            return '';
+        };
+    }, [candidato?.tipo_situacao, opcoesTipoSituacao]);
+
+    // Define o valor padrão para tipo_situacao quando não há valor selecionado
+    useEffect(() => {
+        if (!candidato?.tipo_situacao && opcoesTipoSituacao.length > 0) {
+            const opcaoA = opcoesTipoSituacao.find(opcao => opcao.code === 'A');
+            if (opcaoA) {
+                setCampo('tipo_situacao', opcaoA.code);
+            }
+        }
+    }, [candidato?.tipo_situacao, opcoesTipoSituacao, setCampo]);
+
+    // Define valores padrão para calcula_inss e calcula_irrf
+    useEffect(() => {
+        if (candidato.calcula_inss === undefined) {
+            setCampo('calcula_inss', true);
+        }
+        if (candidato.calcula_irrf === undefined) {
+            setCampo('calcula_irrf', true);
+        }
+    }, [candidato.calcula_inss, candidato.calcula_irrf, setCampo]);
     
     const opcoesCodigoOcorrenciaSefip = useMemo(() => {
         if (candidato.codigo_ocorrencia_sefip_choices) {
@@ -390,7 +424,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 name="tipo_situacao"
                 required={true}
                 label="Situação"
-                valor={getValorSelecionadoFromCandidato('tipo_situacao', opcoesTipoSituacao)}
+                valor={getValorSelecionadoFromCandidato('tipo_situacao', opcoesTipoSituacao) || getTipoSituacaoPadrao()}
                 setValor={(valor) => {
                     setCampo('tipo_situacao', valor.code);
                     marcarCampoSelecionado('tipo_situacao');
@@ -483,14 +517,14 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             />
             <CheckboxContainer
                 label="Calcula INSS"
-                valor={candidato.calcula_inss || false}
+                valor={candidato.calcula_inss !== undefined ? candidato.calcula_inss : true}
                 setValor={(valor) => setCampo('calcula_inss', valor)}
                 name="calcula_inss"
                 disabled={modoLeitura}
             />
             <CheckboxContainer
                 label="Calcula IRRF"
-                valor={candidato.calcula_irrf || false}
+                valor={candidato.calcula_irrf !== undefined ? candidato.calcula_irrf : true}
                 setValor={(valor) => setCampo('calcula_irrf', valor)}
                 name="calcula_irrf"
                 disabled={modoLeitura}
