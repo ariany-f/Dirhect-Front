@@ -548,7 +548,7 @@ function DataTableAdmissao({
                 }
             >
                 <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '30%' }} sortable sortField="nome"></Column>
-                <Column body={vagaTemplate} header="Vaga" style={{ width: '15%' }} sortable sortField="dados_vaga__descricao"></Column>
+                <Column body={vagaTemplate} header="Vaga" style={{ width: '15%' }} sortable sortField="vaga"></Column>
                 <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: '12%' }}></Column>
                 <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '10%' }} sortable sortField="salario"></Column>
                 <Column body={representativeFilialTemplate} header="Filial" style={{ width: '10%' }} sortable sortField="filial"></Column>
