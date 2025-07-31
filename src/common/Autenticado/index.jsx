@@ -125,7 +125,7 @@ function Autenticado() {
                     }
                 }
                 else {
-                    setSelected(selected);
+                    setSelected(selectedCompany);
                     setEmpresa(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.nome || '');
                     setSessionCompany(selectedCompany);
                     setCompanyDomain(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.domain || '');
