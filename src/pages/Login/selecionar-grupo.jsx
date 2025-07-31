@@ -136,7 +136,12 @@ function SelecionarGrupo() {
     const handleSelectSave = (value) => {
         setTipo(selected)
         ArmazenadorToken.definirTipo(selected);
-        navegar('/login/selecionar-empresa')
+        http.get(`permissao_grupo/?format=json&name=${selected}`)
+        .then(response => {
+            ArmazenadorToken.definirPermissoes(response);
+            navegar('/login/selecionar-empresa')
+        })
+        .catch(error => console.log('Erro ao buscar grupos:', error));
     }
 
     return (
