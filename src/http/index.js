@@ -287,7 +287,12 @@ http.interceptors.response.use(
             if (connectionErrorCount >= MAX_CONNECTION_ERRORS) {
                 console.error(`Máximo de erros de conexão atingido (${MAX_CONNECTION_ERRORS}). Redirecionando para login.`);
                 ArmazenadorToken.removerToken();
-                window.location.href = '/login';
+                
+                // Verificar se já está na página de login para evitar redirecionamento desnecessário
+                if (window.location.pathname !== '/login') {
+                    window.location.href = '/login';
+                }
+                
                 return Promise.reject(error);
             }
             
