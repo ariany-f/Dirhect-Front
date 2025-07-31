@@ -167,43 +167,44 @@ function Dashboard() {
                         setColaboradores(null);
                     });
                 
-                // Carregar outras informações apenas se necessário
-                await http.get('tarefas/?format=json')
-                    .then(response => {
-                        setAtividadesRaw(response)
-                        // atividades abertas: status diferente de concluida/finalizada
-                        const atividadesAbertas = response.filter(atividade => 
-                            atividade.status !== 'concluida' && 
-                            atividade.status !== 'finalizada'
-                        ).length
-                        setAtividadesAbertas(atividadesAbertas || 0)
-                        // Agrupar por status
-                        const porStatus = response.reduce((acc, atividade) => {
-                            acc[atividade.status] = (acc[atividade.status] || 0) + 1;
-                            return acc;
-                        }, {});
-                        setAtividadesPorStatus(porStatus)
-                        // Agrupar por tipo de atividade
-                        const porTipo = response.reduce((acc, atividade) => {
-                            const tipo = atividade.tipo_display || atividade.entidade_display || atividade.tipo_tarefa || atividade.tipo;
-                            acc[tipo] = (acc[tipo] || 0) + 1;
-                            return acc;
-                        }, {});
-                        setAtividadesPorTipo(porTipo)
-                        // Agrupar por SLA
-                        const porSLA = response.reduce((acc, atividade) => {
-                            const slaInfo = getSLAInfo(atividade);
-                            acc[slaInfo] = (acc[slaInfo] || 0) + 1;
-                            return acc;
-                        }, {});
-                        setAtividadesPorSLA(porSLA)
-                        // Agrupar por entidade
-                        const porEntidade = response.reduce((acc, atividade) => {
-                            const entidade = atividade.entidade_display || atividade.entidade_tipo || 'Outro';
-                            acc[entidade] = (acc[entidade] || 0) + 1;
-                            return acc;
-                        }, {});
-                        setAtividadesPorEntidade(porEntidade);
+                if(ArmazenadorToken.hasPermission('view_tarefas')) {
+                    // Carregar outras informações apenas se necessário
+                    await http.get('tarefas/?format=json')
+                        .then(response => {
+                            setAtividadesRaw(response)
+                            // atividades abertas: status diferente de concluida/finalizada
+                            const atividadesAbertas = response.filter(atividade => 
+                                atividade.status !== 'concluida' && 
+                                atividade.status !== 'finalizada'
+                            ).length
+                            setAtividadesAbertas(atividadesAbertas || 0)
+                            // Agrupar por status
+                            const porStatus = response.reduce((acc, atividade) => {
+                                acc[atividade.status] = (acc[atividade.status] || 0) + 1;
+                                return acc;
+                            }, {});
+                            setAtividadesPorStatus(porStatus)
+                            // Agrupar por tipo de atividade
+                            const porTipo = response.reduce((acc, atividade) => {
+                                const tipo = atividade.tipo_display || atividade.entidade_display || atividade.tipo_tarefa || atividade.tipo;
+                                acc[tipo] = (acc[tipo] || 0) + 1;
+                                return acc;
+                            }, {});
+                            setAtividadesPorTipo(porTipo)
+                            // Agrupar por SLA
+                            const porSLA = response.reduce((acc, atividade) => {
+                                const slaInfo = getSLAInfo(atividade);
+                                acc[slaInfo] = (acc[slaInfo] || 0) + 1;
+                                return acc;
+                            }, {});
+                            setAtividadesPorSLA(porSLA)
+                            // Agrupar por entidade
+                            const porEntidade = response.reduce((acc, atividade) => {
+                                const entidade = atividade.entidade_display || atividade.entidade_tipo || 'Outro';
+                                acc[entidade] = (acc[entidade] || 0) + 1;
+                                return acc;
+                            }, {});
+                            setAtividadesPorEntidade(porEntidade);
                     })
                     .catch(() => {
                         setAtividadesAbertas(0)
@@ -213,17 +214,38 @@ function Dashboard() {
                         setAtividadesPorEntidade({})
                         setAtividadesRaw([])
                     })
-                await http.get('vagas/').then(response => {
-                    setTotalVagas(Array.isArray(response) ? response.length : (response.count || 0));
-                }).catch(() => setTotalVagas(0));
-                await http.get('ferias/').then(response => {
-                    setTotalFerias(Array.isArray(response) ? response.length : (response.count || 0));
-                }).catch(() => setTotalFerias(0));
-                // Total de demissões agora vem do dashboard de funcionários
-                // setTotalDemissoes será calculado usando dados do funcionariosDashboard
-                await http.get('admissao/').then(response => {
-                    setTotalAdmissoes(Array.isArray(response) ? response.length : (response.count || 0));
-                }).catch(() => setTotalAdmissoes(0));
+                }
+                else {
+                    setAtividadesAbertas(0)
+                    setAtividadesPorStatus({})
+                    setAtividadesPorTipo({})
+                    setAtividadesPorSLA({})
+                    setAtividadesPorEntidade({})
+                    setAtividadesRaw([])
+                }
+                if(ArmazenadorToken.hasPermission('view_vagas')) {
+                    await http.get('vagas/').then(response => {
+                        setTotalVagas(Array.isArray(response) ? response.length : (response.count || 0));
+                    }).catch(() => setTotalVagas(0));
+                } else {
+                    setTotalVagas(0)
+                }
+                if(ArmazenadorToken.hasPermission('view_ferias')) {
+                    await http.get('ferias/').then(response => {
+                        setTotalFerias(Array.isArray(response) ? response.length : (response.count || 0));
+                    }).catch(() => setTotalFerias(0));
+                } else {
+                    setTotalFerias(0)
+                }
+                if(ArmazenadorToken.hasPermission('view_admissao')) {
+                    // Total de demissões agora vem do dashboard de funcionários
+                    // setTotalDemissoes será calculado usando dados do funcionariosDashboard
+                    await http.get('admissao/').then(response => {
+                        setTotalAdmissoes(Array.isArray(response) ? response.length : (response.count || 0));
+                    }).catch(() => setTotalAdmissoes(0));
+                } else {
+                    setTotalAdmissoes(0)
+                }
             }
         } finally {
             if (isMounted.current) setRefreshing(false);
