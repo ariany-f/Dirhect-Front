@@ -92,7 +92,8 @@ function Autenticado() {
         setLogo('')
     }, [])
 
-    useEffect(() => {        
+    useEffect(() => { 
+
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {
             // Tentar recuperar do cache primeiro
@@ -101,7 +102,6 @@ function Autenticado() {
             const selectedCompany = ArmazenadorToken.UserCompanyPublicId;
 
             if (cachedTenants && cachedCompanies && ArmazenadorToken.isCacheValido()) {
-                
                 // Usar dados do cache
                 setTenants(cachedTenants);
                 setEmpresas(cachedCompanies);
@@ -190,7 +190,7 @@ function Autenticado() {
                 setCompanies(tenantsWithDomain);
                 ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
 
-                if(selected == '') {
+                if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                     setSelected(tenantsWithDomain[0]?.id_tenant || '');
                 }
             } else {
@@ -210,7 +210,7 @@ function Autenticado() {
                     setCompanies(tenantsWithDomain);
                     ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
 
-                    if(selected == '') {
+                    if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                         setSelected(tenantsWithDomain[0]?.id_tenant || '');
                     }
                 })

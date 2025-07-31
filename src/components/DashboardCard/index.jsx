@@ -96,7 +96,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         // Função para carregar todos os dados de uma vez
         const carregarTodosOsDados = async () => {
             try {
-                console.log('Iniciando carregamento de todos os dados...');
                 
                 // Carregar todos os dados em paralelo
                 const [feriasResponse, admissoesResponse, vagasResponse, processosResponse, tarefasResponse] = await Promise.allSettled([
@@ -116,10 +115,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         dadosFerias = [];
                     }
                     setFeriasData(dadosFerias);
-                    console.log('Dados de férias carregados:', dadosFerias.length);
                 } else {
                     setFeriasData([]);
-                    console.log('Erro ao carregar férias:', feriasResponse.reason);
                 }
 
                 // Processar resposta de admissões
@@ -131,10 +128,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         dadosAdmissoes = [];
                     }
                     setAdmissoesData(dadosAdmissoes);
-                    console.log('Dados de admissões carregados:', dadosAdmissoes.length);
                 } else {
                     setAdmissoesData([]);
-                    console.log('Erro ao carregar admissões:', admissoesResponse.reason);
                 }
 
                 // Processar resposta de vagas
@@ -146,10 +141,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         dadosVagas = [];
                     }
                     setVagasData(dadosVagas);
-                    console.log('Dados de vagas carregados:', dadosVagas.length);
                 } else {
                     setVagasData([]);
-                    console.log('Erro ao carregar vagas:', vagasResponse.reason);
                 }
 
 
@@ -163,10 +156,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         dadosProcessos = [];
                     }
                     setProcessosData(dadosProcessos);
-                    console.log('Dados de processos carregados:', dadosProcessos.length);
                 } else {
                     setProcessosData([]);
-                    console.log('Erro ao carregar processos:', processosResponse.reason);
                 }
 
                 // Processar resposta de tarefas (último para otimizar gráficos)
@@ -178,18 +169,13 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         dadosTarefas = [];
                     }
                     setTarefasData(dadosTarefas);
-                    console.log('Dados de tarefas carregados:', dadosTarefas.length);
                 } else {
                     setTarefasData([]);
-                    console.log('Erro ao carregar tarefas:', tarefasResponse.reason);
                 }
-
-                console.log('Todos os dados carregados com sucesso!');
                 
                 // Marcar dados como prontos após um pequeno delay para garantir que todos os estados foram atualizados
                 setTimeout(() => {
                     setDadosProntos(true);
-                    console.log('Dados marcados como prontos');
                 }, 100);
 
             } catch (error) {
@@ -214,7 +200,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     // Processar dados reais de férias
     const processarDadosFerias = () => {
         if (!feriasData || feriasData.length === 0) {
-            console.log('Nenhum dado de férias encontrado');
             return {
                 feriasVencidas: 0,
                 feriasProximas: 0,
@@ -223,7 +208,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             };
         }
 
-        console.log('Processando dados de férias:', feriasData.length, 'registros');
         const hoje = new Date();
         const proximos30Dias = new Date(hoje.getTime() + (30 * 24 * 60 * 60 * 1000));
         
@@ -235,7 +219,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         feriasData.forEach((ferias, index) => {
             // Validar se os campos necessários existem
             if (!ferias.dt_inicio || !ferias.dt_fim || !ferias.funcionario_nome) {
-                console.log(`Férias ${index + 1}: Campos obrigatórios ausentes`, ferias);
                 return;
             }
 
@@ -248,23 +231,8 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             
             // Validar se as datas são válidas
             if (isNaN(dataInicio.getTime()) || isNaN(dataFim.getTime())) {
-                console.log(`Férias ${index + 1}: Datas inválidas`, {
-                    dt_inicio: ferias.dt_inicio,
-                    dt_fim: ferias.dt_fim
-                });
                 return;
             }
-            
-            console.log(`Férias ${index + 1}:`, {
-                colaborador: colaboradorNome,
-                inicio: ferias.dt_inicio,
-                fim: ferias.dt_fim,
-                situacao: situacao,
-                dias: nrodiasferias,
-                dataFimMenorQueHoje: dataFim < hoje,
-                dataInicioProximos30Dias: dataInicio >= hoje && dataInicio <= proximos30Dias,
-                dataFimMaiorOuIgualHoje: dataFim >= hoje
-            });
             
             // Verificar se as férias já passaram (vencidas) - data fim menor que hoje
             if (dataFim < hoje) {
@@ -298,13 +266,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         // Ordenar férias agendadas por data de início (mais próximas primeiro)
         feriasAgendadas.sort((a, b) => new Date(a.inicio) - new Date(b.inicio));
 
-        console.log('Resultado do processamento:', {
-            feriasVencidas,
-            feriasProximas,
-            pedidosFeriasAberto,
-            feriasAgendadas: feriasAgendadas.length
-        });
-
         return {
             feriasVencidas,
             feriasProximas,
@@ -318,7 +279,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     // Processar dados de admissões
     const processarDadosAdmissoes = () => {
         if (!admissoesData || admissoesData.length === 0) {
-            console.log('Nenhum dado de admissões encontrado');
             return {
                 admissoesAndamento: 0,
                 tempoMedioAdmissao: 0,
@@ -326,8 +286,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 slaAdmissao: 0
             };
         }
-
-        console.log('Processando dados de admissões:', admissoesData.length, 'registros');
         
         // Contar todas as admissões como "em andamento" (sem validar status)
         const admissoesAndamento = admissoesData.length;
@@ -356,21 +314,17 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         // Processar etapas do processo usando dados reais de tarefas
         const processarEtapasAdmissao = () => {
             if (!tarefasData || tarefasData.length === 0) {
-                console.log('Nenhum dado de tarefas encontrado');
                 return [];
             }
 
-            console.log('Processando etapas de admissão com dados reais de tarefas:', tarefasData.length, 'tarefas');
 
             // Filtrar tarefas de admissão
             const tarefasAdmissao = tarefasData.filter(tarefa => 
                 tarefa && (tarefa.entidade_tipo === 'admissao' || tarefa.entidade_display === 'admissao')
             );
 
-            console.log('Tarefas de admissão encontradas:', tarefasAdmissao.length);
 
             if (tarefasAdmissao.length === 0) {
-                console.log('Nenhuma tarefa de admissão encontrada');
                 return [];
             }
 
@@ -385,7 +339,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 return acc;
             }, {});
 
-            console.log('Etapas agrupadas:', Object.keys(etapasAgrupadas));
 
             // Mapear etapas agrupadas para o formato esperado
             const etapas = Object.entries(etapasAgrupadas).map(([tipoDisplay, tarefas], index) => {
@@ -431,18 +384,10 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
             });
 
-            console.log('Etapas processadas:', etapas);
             return etapas.slice(0, 4); // Limitar a 4 etapas para não ficar muito grande
         };
 
         const etapasAdmissao = processarEtapasAdmissao();
-
-        console.log('Resultado do processamento de admissões:', {
-            admissoesAndamento,
-            tempoMedioAdmissao,
-            totalAdmissoes: admissoesData.length,
-            etapasProcessadas: etapasAdmissao.length
-        });
 
         // Calcular SLA baseado no tempo médio
         let slaAdmissao = 0;
@@ -469,18 +414,12 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     // Calcular novos colaboradores baseados na dt_admissao
     const calcularNovosColaboradores = () => {
         if (!colaboradores || colaboradores.length === 0) {
-            console.log('Nenhum colaborador encontrado para calcular novos');
             return 0;
         }
 
         const hoje = new Date();
         const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
         const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
-
-        console.log('Calculando novos colaboradores para o mês:', {
-            inicioMes: inicioMes.toISOString().split('T')[0],
-            fimMes: fimMes.toISOString().split('T')[0]
-        });
 
         const novosColaboradores = colaboradores.filter(colaborador => {
             // Validar se o colaborador não é null/undefined
@@ -491,16 +430,9 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             const dataAdmissao = new Date(colaborador.dt_admissao);
             const isAdmissaoEsteMes = dataAdmissao >= inicioMes && dataAdmissao <= fimMes;
             
-            console.log(`Colaborador ${colaborador.funcionario_pessoa_fisica?.nome || 'N/A'}:`, {
-                dt_admissao: colaborador.dt_admissao,
-                dataAdmissao: dataAdmissao.toISOString().split('T')[0],
-                isAdmissaoEsteMes
-            });
-
             return isAdmissaoEsteMes;
         }).length;
 
-        console.log('Novos colaboradores calculados:', novosColaboradores);
         return novosColaboradores;
     };
 
@@ -509,7 +441,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     // Processar dados de demissões
     const processarDadosDemissoes = () => {
         // Não há API de demissões, usar apenas dados do dashboard e tarefas
-        console.log('Processando dados de demissões usando dashboard e tarefas');
 
         // Usar dados do dashboard para demissões do mês
         const demissoesMes = demitidosNoMes;
@@ -562,15 +493,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
         // Contar por tipo de demissão - removido, agora processado separadamente
         const motivosDemissao = {};
-
-        console.log('Resultado do processamento de demissões:', {
-            demissoesMes,
-            demissoesProcessamento,
-            demissoesConcluidas,
-            tempoMedioDemissao,
-            motivosDemissao
-        });
-
         // Calcular SLA baseado no tempo médio
         let slaDemissao = 0;
         if (tempoMedioDemissao > 0) {
@@ -654,21 +576,15 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     // Processar etapas do processo de demissão usando dados reais de tarefas
     const processarEtapasDemissao = () => {
         if (!tarefasData || tarefasData.length === 0) {
-            console.log('Nenhum dado de tarefas encontrado para demissão');
             return [];
         }
-
-        console.log('Processando etapas de demissão com dados reais de tarefas');
 
         // Filtrar tarefas de demissão
         const tarefasDemissao = tarefasData.filter(tarefa => 
             tarefa && (tarefa.entidade_tipo === 'demissao' || tarefa.entidade_display === 'demissao')
         );
 
-        console.log('Tarefas de demissão encontradas:', tarefasDemissao.length);
-
         if (tarefasDemissao.length === 0) {
-            console.log('Nenhuma tarefa de demissão encontrada');
             return [];
         }
 
@@ -684,8 +600,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             acc[tipoDisplay].push(tarefa);
             return acc;
         }, {});
-
-        console.log('Etapas de demissão agrupadas:', Object.keys(etapasAgrupadas));
 
         // Mapear etapas agrupadas para o formato esperado
         const etapas = Object.entries(etapasAgrupadas).map(([tipoDisplay, tarefas], index) => {
@@ -729,7 +643,6 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
             return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
         });
 
-        console.log('Etapas de demissão processadas:', etapas);
         return etapas.slice(0, 4); // Limitar a 4 etapas
     };
 

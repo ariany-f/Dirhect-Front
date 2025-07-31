@@ -267,7 +267,7 @@ function SelecionarEmpresa() {
                                             name="selected_company"
                                             value={empresa.id_tenant}
                                             checked={selected === empresa.id_tenant}
-                                            onSelected={(id_tenant) => handleSelectChange}
+                                            onSelected={(id_tenant) => handleSelectChange(empresa.id_tenant)}
                                         />
                                     </Item>
                                 )
