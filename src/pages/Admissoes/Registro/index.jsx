@@ -555,6 +555,8 @@ const CandidatoRegistro = () => {
             case 'aguardar_lgpd':
                 // Permite que qualquer perfil aprovado possa aceitar LGPD
                 return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === '' || perfil === null;
+            case 'integracao_admissao_correcao':
+                return perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === '' || perfil === null;
             default:
                 return false;
         }
@@ -1889,6 +1891,8 @@ const CandidatoRegistro = () => {
                 mensagem = 'Documentos aprovados e encaminhados para aprovação da admissão!';
             } else if (tarefaPendente?.tipo_codigo === 'aprovar_admissao') {
                 mensagem = 'Admissão aprovada e integração iniciada com sucesso!';
+            } else if (tarefaPendente?.tipo_codigo === 'integracao_admissao_correcao') {
+                mensagem = 'Integração do colaborador iniciada com sucesso!';
             } else {
                 mensagem = 'Processo finalizado com sucesso!';
             }
@@ -3195,6 +3199,22 @@ const CandidatoRegistro = () => {
                                         return (
                                             <>
                                                 Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
+                                                <br /><br />
+                                                Esta ação irá:
+                                                <br />
+                                                • Aprovar a admissão do candidato
+                                                <br />
+                                                • Iniciar o processo de integração
+                                                <br />
+                                                • Incluir o colaborador no sistema
+                                                <br /><br />
+                                                Deseja continuar com a finalização?
+                                            </>
+                                        );
+                                    } else if (tarefaPendente?.tipo_codigo === 'integracao_admissao_correcao') {
+                                        return (
+                                            <>
+                                                Após esta confirmação, será realizada uma nova <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
                                                 <br /><br />
                                                 Esta ação irá:
                                                 <br />
