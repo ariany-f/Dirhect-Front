@@ -16,9 +16,39 @@ import { GrAddCircle } from 'react-icons/gr'
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias'
 import { ArmazenadorToken } from '@utils'
 import { FaUmbrellaBeach } from 'react-icons/fa'
+import Texto from '@components/Texto'
 
 const DivPrincipal = styled.div`
     width: 65vw;
+`
+
+const TabPanel = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 24px;
+`
+
+const TabButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: ${({ active }) => active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : '#f5f5f5'};
+    color: ${({ active }) => active ? '#fff' : '#333'};
+    border: none;
+    border-radius: 8px 8px 0 0;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 22px;
+    cursor: pointer;
+    margin-right: 2px;
+    box-shadow: ${({ active }) => active ? '0 2px 8px var(--gradient-secundaria)40' : 'none'};
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+    border-bottom: ${({ active }) => active ? '2px solid var(--gradient-secundaria)' : '2px solid transparent'};
+    &:hover {
+        background: ${({ active }) => active ? 'linear-gradient(to left, var(--black), var(--gradient-secundaria))' : '#ececec'};
+    }
 `
 
 function ColabroadorFerias() {
@@ -28,6 +58,7 @@ function ColabroadorFerias() {
     const [loading, setLoading] = useState(false)
     const [eventoSelecionado, setEventoSelecionado] = useState(null)
     const [ferias, setFerias] = useState(null)
+    const [tab, setTab] = useState('abertas') // 'abertas' ou 'fechadas'
     const {usuario} = useSessaoUsuarioContext()
 
     const colaborador = colaboradorDoContexto ? {
@@ -43,19 +74,23 @@ function ColabroadorFerias() {
     } : null;
 
     useEffect(() => {
-        if(!ferias)
-        {
-            http.get(`ferias/?format=json&funcionario=${id}`)
-            .then(response => {
-                setFerias(response)
-            })
-            .catch(erro => {
+        setLoading(true)
+        const periodoAberto = tab === 'abertas' ? true : false
+        const incluirFinalizadas = (periodoAberto ? false : true)
+        http.get(`ferias/?format=json&funcionario=${id}&periodo_aberto=${periodoAberto}&incluir_finalizadas=${incluirFinalizadas}`)
+        .then(response => {
+            setFerias(response)
+            setLoading(false)
+        })
+        .catch(erro => {
+            console.log(erro)
+            setLoading(false)
+        })
+    }, [id, tab])
 
-            })
-            .finally(function() {
-            })
-        }
-    }, [ferias])
+    const handleTabChange = (newTab) => {
+        setTab(newTab)
+    }
 
     const criarSolicitacao = () => {
         if (colaborador && colaborador.feriasARequisitar && colaborador.feriasARequisitar.length > 0) {
@@ -84,14 +119,15 @@ function ColabroadorFerias() {
                         <AiFillQuestionCircle className="question-icon" size={20} />
                     </QuestionCard>
                 </Titulo>
-                {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && 
-                    <BotaoGrupo align="end">
-                        <BotaoGrupo align="center">
-                            <Botao aoClicar={criarSolicitacao} estilo="vermilion" size="small" tab><FaUmbrellaBeach className={styles.icon} fill="var(--secundaria)" color="var(--secundaria)"/> Solicitar Férias</Botao>
-                        </BotaoGrupo>
-                    </BotaoGrupo>
-                }
             </BotaoGrupo>
+            <TabPanel>
+                <TabButton active={tab === 'abertas'} onClick={() => handleTabChange('abertas')}>
+                    <Texto color={tab === 'abertas' ? 'white' : '#000'}>Abertas</Texto>
+                </TabButton>
+                <TabButton active={tab === 'fechadas'} onClick={() => handleTabChange('fechadas')}>
+                    <Texto color={tab === 'fechadas' ? 'white' : '#000'}>Fechadas</Texto>
+                </TabButton>
+            </TabPanel>
             <DataTableFerias colaborador={id} ferias={ferias}/>
             <ModalDetalhesFerias opened={!!eventoSelecionado} evento={eventoSelecionado} aoFechar={() => setEventoSelecionado(null)} />
         </>

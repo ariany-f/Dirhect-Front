@@ -124,8 +124,9 @@ function FeriasListagem() {
 
     const [ferias, setFerias] = useState(null)
     const [loading, setLoading] = useState(true)
-    const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear())
+    const [anoSelecionado, setAnoSelecionado] = useState(null)
     const [searchTerm, setSearchTerm] = useState('')
+    const [periodoAberto, setPeriodoAberto] = useState(true) // true = apenas abertos, false = apenas fechados, null = todos
     const [totalRecords, setTotalRecords] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
@@ -137,10 +138,20 @@ function FeriasListagem() {
 
     // Lista de anos disponíveis (últimos 5 anos + próximos 2)
     const currentYear = new Date().getFullYear()
-    const anosDisponiveis = []
-    for (let y = currentYear - 6; y <= currentYear + 2; y++) {
-        anosDisponiveis.push({ name: y.toString(), value: y })
-    }
+    const anosDisponiveis = [
+        { name: 'Todos os anos', value: null },
+        ...Array.from({ length: 9 }, (_, i) => {
+            const year = currentYear - 6 + i
+            return { name: year.toString(), value: year }
+        })
+    ]
+
+    // Opções do filtro de período aberto
+    const opcoesPeriodoAberto = [
+        { name: 'Apenas Abertos', value: true },
+        { name: 'Apenas Fechados', value: false },
+        { name: 'Todos os Períodos', value: null }
+    ]
 
     useEffect(() => {
         setLoading(true)
@@ -158,8 +169,18 @@ function FeriasListagem() {
         }
         // Se estiver na aba lista, adiciona parâmetros de paginação
         else if (tab === 'lista') {
-            url += `&ano=${anoSelecionado}`
             url += `&page=${currentPage}&page_size=${pageSize}`
+            // Só adiciona filtro de ano se um ano específico foi selecionado
+            if (anoSelecionado !== null && typeof anoSelecionado != 'object') {
+                url += `&ano=${anoSelecionado}`
+            }
+            // Adiciona filtro de período aberto se especificado
+            if (periodoAberto !== null && typeof periodoAberto != 'object') {
+                if(!periodoAberto || periodoAberto === false || periodoAberto === 'false') {
+                    url += `&incluir_finalizadas=1`
+                }
+                url += `&periodo_aberto=${periodoAberto}`
+            }
         }
         
         http.get(url)
@@ -172,7 +193,7 @@ function FeriasListagem() {
             console.log(erro)
             setLoading(false)
         })
-    }, [anoSelecionado, searchTerm, tab, currentPage, pageSize])
+    }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize])
 
     const handleColaboradorSelecionado = (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
@@ -203,10 +224,10 @@ function FeriasListagem() {
         }
     }
 
-    // Reset paginação quando ano ou busca mudar
+    // Reset paginação quando ano, busca ou período aberto mudar
     useEffect(() => {
         setCurrentPage(1)
-    }, [anoSelecionado, searchTerm])
+    }, [anoSelecionado, searchTerm, periodoAberto])
 
 
 
@@ -242,14 +263,24 @@ function FeriasListagem() {
                             </div>
                         )}
                         {tab === 'lista' && 
-                            <DropdownItens
-                                valor={anoSelecionado}
-                                setValor={setAnoSelecionado}
-                                options={anosDisponiveis}
-                                placeholder="Selecione o ano"
-                                name="ano"
-                                allowClear={false}
-                            />
+                            <>
+                                <DropdownItens
+                                    valor={anoSelecionado}
+                                    setValor={setAnoSelecionado}
+                                    options={anosDisponiveis}
+                                    placeholder="Todos os anos"
+                                    name="ano"
+                                    allowClear={false}
+                                />
+                                <DropdownItens
+                                    valor={periodoAberto}
+                                    setValor={setPeriodoAberto}
+                                    options={opcoesPeriodoAberto}
+                                    placeholder="Apenas Abertos"
+                                    name="periodo_aberto"
+                                    allowClear={false}
+                                />
+                            </>
                         }
                         <div style={{ width: '250px' }}>
                             <CampoTexto

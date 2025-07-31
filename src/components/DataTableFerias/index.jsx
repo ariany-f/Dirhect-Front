@@ -6,9 +6,13 @@ import './DataTable.css'
 import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
+import Botao from '@components/Botao';
+import { FaUmbrellaBeach } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
+import { ArmazenadorToken } from '@utils';
+import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import { FaCheckCircle, FaTimesCircle, FaClock, FaExclamationTriangle, FaLock, FaLockOpen } from 'react-icons/fa';
 
 function formatarDataBr(data) {
@@ -35,6 +39,8 @@ function DataTableFerias({
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
+    const [modalDetalhesFeriasOpened, setModalDetalhesFeriasOpened] = useState(false)
+    const [eventoSelecionado, setEventoSelecionado] = useState(null)
     const navegar = useNavigate();
     const { usuario } = useSessaoUsuarioContext();
 
@@ -77,7 +83,7 @@ function DataTableFerias({
     }
 
     const representativePagamentoTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{formatarDataBr(rowData.datapagamento)}</p>;
+        return <p style={{fontWeight: '400'}}>{rowData.datapagamento ? formatarDataBr(rowData.datapagamento) : '-'}</p>;
     }
     
     const representativeFimAquisicaoTemplate = (rowData) => {
@@ -123,12 +129,21 @@ function DataTableFerias({
                 tag = <Tag severity="danger" value="Rejeitada"></Tag>;
                 break;
             default:
-                tag = <Tag severity="info" value={rowData?.situacaoferias || 'N/A'}></Tag>;
+                if(ArmazenadorToken.hasPermission('add_ferias'))
+                {
+                    tag = <Botao aoClicar={() => marcarFerias(rowData)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
+                } else {
+                    tag = <Tag severity="info" value="N/A"></Tag>;
+                }
                 break;
         }
         return <p style={{fontWeight: '400'}}>{tag}</p>
     }
 
+    function marcarFerias(rowData) {
+        setEventoSelecionado(rowData)
+        setModalDetalhesFeriasOpened(true)
+    }
     
     const representativeColaboradorTemplate = (rowData) => {
        
@@ -272,7 +287,7 @@ function DataTableFerias({
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '30%' }}></Column>}
                 <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Inicio Aquisição" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Fim Aquisição" style={{ width: '15%' }}></Column>
-                <Column body={representativePeriodoAbertoTemplate} field="periodo_aberto" header="Período" style={{ width: '12%' }}></Column>
+                <Column body={representativePeriodoAbertoTemplate} field="periodo_aberto" header="Período" style={{ width: '10%' }}></Column>
                 <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '15%' }}></Column>
                 <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '12%' }}></Column>
@@ -283,8 +298,9 @@ function DataTableFerias({
                     </>
                 )} 
                 <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '10%' }}></Column>
-                <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '10%' }}></Column>
+                <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '15%' }}></Column>
             </DataTable>
+            <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={() => setModalDetalhesFeriasOpened(false)} />
         </>
     )
 }
