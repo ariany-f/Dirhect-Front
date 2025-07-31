@@ -82,7 +82,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             if (typeof candidato[campo] === 'object' && candidato[campo] !== null) {
                 return {
                     name: candidato[campo].descricao,
-                    code: in_array(['tipo_bairro', 'tipo_rua'], campo) ? candidato[campo].id : (candidato[campo].id_origem || candidato[campo].id)
+                    code: ['tipo_bairro', 'tipo_rua'].includes(campo) ? candidato[campo].id : (candidato[campo].id_origem || candidato[campo].id)
                 };
             }
             
