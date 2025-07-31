@@ -92,70 +92,100 @@ function DataTableFerias({
 
     const representativeSituacaoTemplate = (rowData) => {
         let tag = rowData?.situacaoferias;
-        switch(rowData?.situacaoferias)
+        if(rowData.dt_fim && rowData.dt_inicio)
         {
-            case 'G': // Aguardando Aprovação do Gestor
-                tag = <Tag severity="warning" value="Aguardando Gestor"></Tag>;
-                break;
-            case 'D': // Aguardando Aprovação do DP
-                tag = <Tag severity="info" value="Aguardando DP"></Tag>;
-                break;
-            case 'M': // Marcadas
-                tag = <Tag severity="success" value="Marcadas"></Tag>;
-                break;
-            case 'P': // Pagas
-                tag = <Tag severity="success" value="Pagas"></Tag>;
-                break;
-            case 'F': // Finalizadas
-                tag = <Tag severity="danger" value="Finalizadas"></Tag>;
-                break;
-            case 'X': // Finalizadas para o próximo mês
-                tag = <Tag severity="danger" value="Finalizadas Próximo Mês"></Tag>;
-                break;
-            // Status antigos (mantidos para compatibilidade)
-            case 'A': // Aprovada
-                tag = <Tag severity="success" value="Aprovada"></Tag>;
-                break;
-            case 'S': // Solicitada
-                tag = <Tag severity="info" value="Solicitada"></Tag>;
-                break;
-            case 'E': // Em Andamento
-                tag = <Tag severity="info" value="Em Andamento"></Tag>;
-                break;
-            case 'C': // Cancelada
-                tag = <Tag severity="danger" value="Cancelada"></Tag>;
-                break;
-            case 'R': // Rejeitada
-                tag = <Tag severity="danger" value="Rejeitada"></Tag>;
-                break;
-            default:
-                if(ArmazenadorToken.hasPermission('add_ferias'))
-                {
-                    let [anoRow, mesRow, diaRow] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
-                    // Subtrai 1 ano
-                    let dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
-                    // Soma 1 dia
-                    dataInicioRow.setDate(dataInicioRow.getDate() + 1);
+            switch(rowData?.situacaoferias)
+            {
+                case 'G': // Aguardando Aprovação do Gestor
+                    tag = <Tag severity="warning" value="Aguardando Gestor"></Tag>;
+                    break;
+                case 'D': // Aguardando Aprovação do DP
+                    tag = <Tag severity="info" value="Aguardando DP"></Tag>;
+                    break;
+                case 'M': // Marcadas
+                    tag = <Tag severity="success" value="Marcadas"></Tag>;
+                    break;
+                case 'P': // Pagas
+                    tag = <Tag severity="success" value="Pagas"></Tag>;
+                    break;
+                case 'F': // Finalizadas
+                    tag = <Tag severity="danger" value="Finalizadas"></Tag>;
+                    break;
+                case 'X': // Finalizadas para o próximo mês
+                    tag = <Tag severity="danger" value="Finalizadas Próximo Mês"></Tag>;
+                    break;
+                // Status antigos (mantidos para compatibilidade)
+                case 'A': // Aprovada
+                    tag = <Tag severity="success" value="Aprovada"></Tag>;
+                    break;
+                case 'S': // Solicitada
+                    tag = <Tag severity="info" value="Solicitada"></Tag>;
+                    break;
+                case 'E': // Em Andamento
+                    tag = <Tag severity="info" value="Em Andamento"></Tag>;
+                    break;
+                case 'C': // Cancelada
+                    tag = <Tag severity="danger" value="Cancelada"></Tag>;
+                    break;
+                case 'R': // Rejeitada
+                    tag = <Tag severity="danger" value="Rejeitada"></Tag>;
+                    break;
+                default:
+                    if(ArmazenadorToken.hasPermission('add_ferias'))
+                    {
+                        let [anoRow, mesRow, diaRow] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
+                        // Subtrai 1 ano
+                        let dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
+                        // Soma 1 dia
+                        dataInicioRow.setDate(dataInicioRow.getDate() + 1);
 
-                    const ev = {
-                        colab: {
-                            id: rowData.funcionario.id,
-                            nome: rowData.funcionario_nome,
-                            gestor: rowData.gestor || null
-                        },
-                        evento: {
-                            periodo_aquisitivo_inicio: dataInicioRow,
-                            periodo_aquisitivo_fim: rowData.fimperaquis,
-                            saldo_dias: rowData.nrodiasferias,
-                            limite: rowData.fimperaquis
-                        },
-                        tipo: 'aSolicitar'
+                        const ev = {
+                            colab: {
+                                id: rowData.funcionario.id,
+                                nome: rowData.funcionario_nome,
+                                gestor: rowData.gestor || null
+                            },
+                            evento: {
+                                periodo_aquisitivo_inicio: dataInicioRow,
+                                periodo_aquisitivo_fim: rowData.fimperaquis,
+                                saldo_dias: rowData.nrodiasferias,
+                                limite: rowData.fimperaquis
+                            },
+                            tipo: 'aSolicitar'
+                        }
+                        tag = <Botao aoClicar={() => marcarFerias(ev)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
+                    } else {
+                        tag = <Tag severity="info" value="N/A"></Tag>;
                     }
-                    tag = <Botao aoClicar={() => marcarFerias(ev)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
-                } else {
-                    tag = <Tag severity="info" value="N/A"></Tag>;
+                    break;
+            }
+        } else {
+            if(ArmazenadorToken.hasPermission('add_ferias'))
+            {
+                let [anoRow, mesRow, diaRow] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
+                // Subtrai 1 ano
+                let dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
+                // Soma 1 dia
+                dataInicioRow.setDate(dataInicioRow.getDate() + 1);
+
+                const ev = {
+                    colab: {
+                        id: rowData.funcionario.id,
+                        nome: rowData.funcionario_nome,
+                        gestor: rowData.gestor || null
+                    },
+                    evento: {
+                        periodo_aquisitivo_inicio: dataInicioRow,
+                        periodo_aquisitivo_fim: rowData.fimperaquis,
+                        saldo_dias: rowData.nrodiasferias,
+                        limite: rowData.fimperaquis
+                    },
+                    tipo: 'aSolicitar'
                 }
-                break;
+                tag = <Botao aoClicar={() => marcarFerias(ev)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
+            } else {
+                tag = <Tag severity="info" value="N/A"></Tag>;
+            }
         }
         return <p style={{fontWeight: '400'}}>{tag}</p>
     }
@@ -196,7 +226,7 @@ function DataTableFerias({
                 tooltipText = '13º Salário: Não';
                 break;
             default:
-                tag = '';
+                tag = '-';
                 tooltipText = '13º Salário: Não informado';
                 break;
         }
