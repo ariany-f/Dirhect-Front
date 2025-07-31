@@ -546,18 +546,33 @@ const CalendarFerias = ({ colaboradores }) => {
     const handleCloseModal = () => setModalEvento(null);
 
     // Função para mapear status para tipo de cor/ícone
-    function mapStatusToType(status) {
+    function mapStatusToType(status, data_inicio, data_fim) {
         switch (status) {
-            case 'A': return 'aprovada';
+            case 'A': 
+                if (data_inicio < new Date() && data_fim > new Date()) {
+                    return 'acontecendo';
+                } else {
+                    return 'aprovada';
+                }
             case 'S': return 'solicitada';
             case 'C': return 'passada';
             case 'E': return 'acontecendo';
             case 'R': return 'rejeitada'; // pode ser ignorado ou adicionar cor especial
-            case 'P': return 'paga';
-            case 'M': return 'marcada';
+            case 'P':
+                if (data_inicio < new Date() && data_fim > new Date()) {
+                    return 'paga';
+                } else {
+                    return 'acontecendo';
+                }
+            case 'M': 
+                if (data_inicio < new Date() && data_fim > new Date()) {
+                    return 'acontecendo';
+                } else {
+                    return 'marcada';
+                }
             case 'F': return 'finalizada';
 
-            default: return 'aprovada';
+            default: return 'aguardando';
         }
     }
 
@@ -801,17 +816,23 @@ const CalendarFerias = ({ colaboradores }) => {
                                         
                                         // Eventos normais com dt_inicio e dt_fim
                                         const status = getFeriasStatus(aus, currentDate);
-                                        const type = mapStatusToType(aus.status);
+                                        const type = mapStatusToType(aus.status, aus.data_inicio, aus.data_fim);
                                         const { startPercent, widthPercent } = getBarPosition(aus.data_inicio, aus.data_fim, startDate, totalDays);
                                         let label = '';
-                                        if (type === 'aprovada' || type === 'passada' || type === 'paga' || type === 'finalizada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
+                                        if (type === 'aprovada' || type === 'passada' || type === 'finalizada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'acontecendo' || type === 'solicitada' || type === 'marcada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'rejeitada') return null; // não exibe
                                         let tooltip = `Início: ${format(new Date(aus.data_inicio), 'dd/MM/yyyy')}\nFim: ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
-                                        if (type === 'solicitada' || type === 'marcada') tooltip = 'Solicitada';
-                                        if (type === 'acontecendo') tooltip = 'Em curso';
-                                        if (type === 'aprovada' || type === 'marcada') tooltip = 'Aprovada';
-                                        if (type === 'passada' || type === 'finalizada' || type === 'paga') tooltip = 'Concluída';
+                                        if (type === 'acontecendo') {
+                                            tooltip = 'Em curso';
+                                        } else if (type === 'solicitada' || type === 'marcada') {
+                                            tooltip = 'Solicitada';
+                                        } else if (type === 'aprovada') {
+                                            tooltip = 'Aprovada';
+                                        } else if (type === 'passada' || type === 'finalizada' || type === 'paga') {
+                                            tooltip = 'Concluída';
+                                        }
+                                        if(type === 'aguardando') return null;
                                         
                                         // Adiciona período aquisitivo ao evento se não existir
                                         const eventoComPeriodo = {
