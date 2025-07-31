@@ -58,6 +58,10 @@ const DialogEstilizado = styled.dialog`
                 background: var(--neutro-100);
             }
 
+            &.no-hover:hover {
+                background: transparent;
+            }
+
             & .link {
                 width: 100%;
                 justify-content: end;
@@ -242,14 +246,28 @@ function Menu({ opened = false, aoFechar }){
                         {/* Divider antes das opções do usuário - Apenas no Mobile */}
                         {!isDesktop && <div className="divider" />}
 
-                        {/* Email do usuário */}
-                        <li style={{ padding: '8px 16px', borderBottom: '1px solid var(--neutro-200)' }}>
+                        {/* Informações do usuário */}
+                        <li className="no-hover" style={{ 
+                            padding: '12px 18px', 
+                            borderBottom: '1px solid var(--neutro-200)',
+                            cursor: 'default'
+                        }}>
                             <div style={{ 
                                 fontSize: '12px', 
                                 color: 'var(--neutro-500)', 
                                 textAlign: 'right',
                                 fontWeight: '500'
                             }}>
+                                {usuario.name && (
+                                    <div style={{ 
+                                        fontSize: '14px', 
+                                        color: 'var(--neutro-950)', 
+                                        fontWeight: '700',
+                                        marginBottom: '4px'
+                                    }}>
+                                        {usuario.name}
+                                    </div>
+                                )}
                                 {usuario.email}
                             </div>
                         </li>

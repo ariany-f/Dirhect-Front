@@ -93,7 +93,10 @@ function Mfa() {
                     response.user.id,
                     '', '', '', '', '', 
                     response.user.mfa_required,
-                    response.user.perfil
+                    response.user.perfil,
+                    response.user.first_name,
+                    response.user.last_name,
+                    response.user.foto_perfil
                 );
                 ArmazenadorToken.removerTempToken();
                 ArmazenadorToken.definirGrupos(response.groups);
@@ -109,7 +112,10 @@ function Mfa() {
                     grupoSelecionado,
                     '', '', '', '', 
                     response.user.mfa_required,
-                    response.user.perfil
+                    response.user.perfil,
+                    response.user.first_name,
+                    response.user.last_name,
+                    response.user.foto_perfil
                 );
                 ArmazenadorToken.removerTempToken();   
                 navegar('/login/selecionar-empresa');

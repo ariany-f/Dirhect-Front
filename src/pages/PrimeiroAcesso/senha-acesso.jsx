@@ -81,7 +81,10 @@ function SenhaDeAcesso() {
                         response.data.user.company_domain.split('.')[0],
                         response.data.user.company_symbol,
                         response.data.user.company_logo,
-                        response.user.perfil
+                        response.user.perfil,
+                        response.data.user.first_name,
+                        response.data.user.last_name,
+                        response.data.user.foto_perfil
                     )
                     usuario.cpf = response.data.user.cpf
                     setModalOpened(true)

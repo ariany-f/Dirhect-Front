@@ -15,6 +15,9 @@ addLocale('en', enCommon);
 
 const usuarioInicial = {
     name: localStorage.getItem('name') ?? '',
+    first_name: localStorage.getItem('first_name') ?? '',
+    last_name: localStorage.getItem('last_name') ?? '',
+    foto_perfil: localStorage.getItem('foto_perfil') ?? '',
     email: localStorage.getItem('email') ?? '',
     password: '',
     cpf: localStorage.getItem('cpf') ?? '',
@@ -57,6 +60,9 @@ export const SessaoUsuarioContext = createContext({
     setCompanySymbol: () => null,
     setEmail: () => null,
     setName: () => null,
+    setFirstName: () => null,
+    setLastName: () => null,
+    setFotoPerfil: () => null,
     setPassword: () => null,
     setCode: () => null,
     setRecuperacaoToken:() => null,
@@ -94,6 +100,9 @@ export const SessaoUsuarioProvider = ({ children }) => {
         // Tenta recuperar os dados do localStorage ou localStorage
         const cpfSalvo = localStorage.getItem('cpf');
         const nameSalvo = localStorage.getItem('name');
+        const firstNameSalvo = localStorage.getItem('first_name');
+        const lastNameSalvo = localStorage.getItem('last_name');
+        const fotoPerfilSalvo = localStorage.getItem('foto_perfil');
         const emailSalvo = localStorage.getItem('email');
         const publicIdSalvo = localStorage.getItem('public_id');
         const tipoSalvo = localStorage.getItem('tipo');
@@ -111,6 +120,9 @@ export const SessaoUsuarioProvider = ({ children }) => {
             tipo: tipoSalvo ?? '',
             groups: groupsSalvo ?? null,
             name: nameSalvo ?? '',
+            first_name: firstNameSalvo ?? '',
+            last_name: lastNameSalvo ?? '',
+            foto_perfil: fotoPerfilSalvo ?? '',
             public_id: publicIdSalvo ?? '',
             company_domain: domainSalvo ?? '',
             company_public_id: companyPublicIdSalvo ?? '',
@@ -211,6 +223,30 @@ export const SessaoUsuarioProvider = ({ children }) => {
             return {
                 ...estadoAnterior,
                 name
+            }
+        })
+    }
+    const setFirstName = (first_name) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                first_name
+            }
+        })
+    }
+    const setLastName = (last_name) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                last_name
+            }
+        })
+    }
+    const setFotoPerfil = (foto_perfil) => {
+        setUsuario(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                foto_perfil
             }
         })
     }
@@ -492,6 +528,9 @@ export const SessaoUsuarioProvider = ({ children }) => {
         setCompanies,
         setCode,
         setName,
+        setFirstName,
+        setLastName,
+        setFotoPerfil,
         setSessionCompany,
         setCompanyDomain,
         setCompanyLogo,

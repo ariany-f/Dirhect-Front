@@ -125,7 +125,10 @@ function LoginMobile() {
                             '', 
                             '', 
                             response.mfa_required,
-                            response.user.perfil
+                            response.user.perfil,
+                            response.user.first_name,
+                            response.user.last_name,
+                            response.user.foto_perfil
                         );
                         ArmazenadorToken.removerTempToken();
 
@@ -149,7 +152,10 @@ function LoginMobile() {
                             '', 
                             '', 
                             response.mfa_required,
-                            response.user.perfil
+                            response.user.perfil,
+                            response.user.first_name,
+                            response.user.last_name,
+                            response.user.foto_perfil
                         );
 
                         ArmazenadorToken.removerTempToken();

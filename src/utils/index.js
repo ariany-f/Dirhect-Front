@@ -7,6 +7,9 @@ const EXPIRATION = 'expires_at'
 const REFRESH_TOKEN = 'refresh_token'
 const PERMISSIONS = 'permissions'
 const USER_NAME = 'name'
+const USER_FIRST_NAME = 'first_name'
+const USER_LAST_NAME = 'last_name'
+const USER_FOTO_PERFIL = 'foto_perfil'
 const USER_EMAIL = 'email'
 const USER_CPF = 'cpf'
 const COMPANY_DOMAIN = 'company_domain'
@@ -112,12 +115,15 @@ export class ArmazenadorToken {
         localStorage.setItem(COMPANY_SYMBOL, company_symbol)
         localStorage.setItem(COMPANY_LOGO, company_logo)
     }
-    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo, mfa_required, profile = '') {
+    static definirUsuario(name, email, cpf, public_id, tipo, company_public_id, company_domain, company_symbol, company_logo, mfa_required, profile = '', first_name = '', last_name = '', foto_perfil = '') {
         if (!email) {
             throw new Error('Email é obrigatório')
         }
         try {
             localStorage.setItem(USER_NAME, name || '')
+            localStorage.setItem(USER_FIRST_NAME, first_name || '')
+            localStorage.setItem(USER_LAST_NAME, last_name || '')
+            localStorage.setItem(USER_FOTO_PERFIL, foto_perfil || '')
             localStorage.setItem(USER_EMAIL, email)
             localStorage.setItem(USER_TYPE, tipo)
             localStorage.setItem(USER_CPF, cpf || '')
@@ -274,6 +280,9 @@ export class ArmazenadorToken {
         localStorage.removeItem(ADMISSAO_TOKEN)
         localStorage.removeItem(ADMISSAO_SECURITY_TOKEN)
         localStorage.removeItem(USER_NAME)
+        localStorage.removeItem(USER_FIRST_NAME)
+        localStorage.removeItem(USER_LAST_NAME)
+        localStorage.removeItem(USER_FOTO_PERFIL)
         localStorage.removeItem(USER_EMAIL)
         localStorage.removeItem(USER_CPF)
         localStorage.removeItem(USER_PUBLIC_ID)
@@ -307,6 +316,15 @@ export class ArmazenadorToken {
     static get UserName() {
         return localStorage.getItem(USER_NAME)
     }
+    static get UserFirstName() {
+        return localStorage.getItem(USER_FIRST_NAME)
+    }
+    static get UserLastName() {
+        return localStorage.getItem(USER_LAST_NAME)
+    }
+    static get UserFotoPerfil() {
+        return localStorage.getItem(USER_FOTO_PERFIL)
+    }
     static get UserEmail() {
         return localStorage.getItem(USER_EMAIL)
     }
@@ -321,6 +339,15 @@ export class ArmazenadorToken {
     }
     static definirTipo(tipo) {
         localStorage.setItem(USER_TYPE, tipo)
+    }
+    static definirFirstName(first_name) {
+        localStorage.setItem(USER_FIRST_NAME, first_name)
+    }
+    static definirLastName(last_name) {
+        localStorage.setItem(USER_LAST_NAME, last_name)
+    }
+    static definirFotoPerfil(foto_perfil) {
+        localStorage.setItem(USER_FOTO_PERFIL, foto_perfil)
     }
     static get UserPublicId() {
         return localStorage.getItem(USER_PUBLIC_ID)

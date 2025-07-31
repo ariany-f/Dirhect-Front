@@ -236,12 +236,25 @@ const ItemUsuario = styled.div`
     display: flex;
     width: 40px;
     height: 40px;
+    overflow: hidden;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+    }
   }
 
   @media screen and (max-width: 768px) {
     & .user {
       width: 32px;
       height: 32px;
+      border-radius: 16px;
+      
+      img {
+        border-radius: 16px;
+      }
     }
   }
 `;
@@ -461,7 +474,27 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
             </ItemPerfil>
             <LanguageSelector />
             <ItemUsuario onClick={toggleMenu}>
-              <div className="user">{(usuario && usuario?.name && usuario?.name !== null && usuario?.name !== undefined && usuario?.name !== '' && usuario?.name.trim() !== '') ? usuario?.name?.charAt(0) : 'U'}</div>
+              <div className="user">
+                {usuario?.foto_perfil ? (
+                  <img 
+                    src={usuario.foto_perfil} 
+                    alt={`Foto de ${usuario?.name || 'Usuário'}`}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div style={{ 
+                  display: usuario?.foto_perfil ? 'none' : 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  height: '100%'
+                }}>
+                  {(usuario && usuario?.name && usuario?.name !== null && usuario?.name !== undefined && usuario?.name !== '' && usuario?.name.trim() !== '') ? usuario?.name?.charAt(0) : 'U'}
+                </div>
+              </div>
               <MdOutlineKeyboardArrowDown />
             </ItemUsuario>
           </div>
