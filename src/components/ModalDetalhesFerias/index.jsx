@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaCalendarAlt, FaCalculator, FaTimesCircle, FaPaperPlane, FaBan } from 'react-icons/fa';
 import http from '@http';
 import SwitchInput from '@components/SwitchInput';
+import { ArmazenadorToken } from '@utils';
 
 const BotaoFechar = styled.button`
     background: none;
@@ -327,7 +328,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         </AlertaAviso>
       );
     }
-    const podeSolicitar = statusType === 'aSolicitar';
+    const temPermissaoAddFerias = ArmazenadorToken.hasPermission('add_ferias');
+    const podeSolicitar = statusType === 'aSolicitar' && temPermissaoAddFerias;
     const solicitarFerias = async () => {
         if (!dataInicio || !dataFim) {
             alert('Por favor, preencha as datas de início e fim.');
@@ -476,6 +478,17 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                 </Frame>
                             )}
                             
+                            {statusType === 'aSolicitar' && !temPermissaoAddFerias && (
+                                <Frame>
+                                    <DetalhesTitulo style={{ marginTop: 0 }}>Solicitar Período</DetalhesTitulo>
+                                    <AlertaAviso>
+                                        <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                        <span>
+                                            Você não tem permissão para solicitar férias. Entre em contato com o seu gestor ou RH.
+                                        </span>
+                                    </AlertaAviso>
+                                </Frame>
+                            )}
                             {podeSolicitar && (
                                 <Frame>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>Solicitar Período</DetalhesTitulo>
