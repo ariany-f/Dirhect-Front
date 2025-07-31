@@ -1308,7 +1308,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                 <Chart type="doughnut" data={chartDataBeneficios} options={getChartOptions()} />
                             ) : (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px', color: '#888', fontSize: '14px'}}>
-                                    Carregando...
+                                    {t("loading...")}
                                 </div>
                             )}
                         </div>
@@ -1320,7 +1320,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <Titulo><h6>⚠️ O que precisa de atenção?</h6></Titulo>
                             <Link to="/alertas">
                                 <Texto weight={500} color={'var(--neutro-500)'}>
-                                    Ver todos os alertas <FaArrowRight />
+                                    {t("see_all")} <FaArrowRight />
                                 </Texto>
                             </Link>
                         </Frame>
@@ -1386,7 +1386,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                         <Titulo><h6>⏳ O que está acontecendo agora?</h6></Titulo>
                         <Link to="/pedidos">
                             <Texto weight={500} color={'var(--neutro-500)'}>
-                                Ver todos os pedidos <FaArrowRight />
+                                {t("see_all")} <FaArrowRight />
                             </Texto>
                         </Link>
                     </Frame>
@@ -1445,7 +1445,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                 <Chart type="line" data={chartDataEvolucao} options={lineChartOptions} />
                             ) : (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px', color: '#888', fontSize: '14px'}}>
-                                    Carregando...
+                                    {t("loading...")}
                                 </div>
                             )}
                         </div>
@@ -1565,10 +1565,10 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 {/* Coluna 1: Métricas principais */}
                 <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
                     <Frame estilo="spaced">
-                        <Titulo><h6>Gestão de Colaboradores</h6></Titulo>
+                        <Titulo><h6>{t("colaborators_management")}</h6></Titulo>
                         <Link to="/colaborador">
                             <Texto weight={500} color={'var(--neutro-500)'}>
-                                Ver todos <FaArrowRight />
+                                {t("see_all")} <FaArrowRight />
                             </Texto>
                         </Link>
                     </Frame>
@@ -1578,7 +1578,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <div className="metric-value metric-primary">
                                 <FaUsers /> {dadosRH.totalColaboradores}
                             </div>
-                            <div className="metric-label">Total Ativos</div>
+                            <div className="metric-label">{t("total_active")}</div>
                         </div>
                         <div className="metric-item">
                             <div className="metric-value metric-success">
@@ -1596,33 +1596,33 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <div className="metric-value metric-warning">
                                 <MdTrendingUp /> {dadosRH.turnover}%
                             </div>
-                            <div className="metric-label">Turnover</div>
+                            <div className="metric-label">{t("turnover")}</div>
                         </div>
                         <div className="metric-item">
                             <div className="metric-value metric-primary">
                                 <MdWork /> {dadosRH.vagasAbertas}
                             </div>
-                            <div className="metric-label">Vagas Abertas</div>
+                            <div className="metric-label">{t("open_positions")}</div>
                         </div>
                     </div>
 
                     <Frame estilo="spaced">
-                        <Titulo><h6>Distribuição</h6></Titulo>
+                        <Titulo><h6>{t("distribution")}</h6></Titulo>
                     </Frame>
                     <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 24}}>
                         <div>
-                            <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>Tipo de Funcionário</div>
+                            <div style={{fontWeight: 600, fontSize: 15, marginBottom: 8}}>{t("employee_type")}</div>
                             {dadosProntos && Object.keys(distribuicaoTipoFuncionario).length > 0 ? (
                                 <div className="chart-container" style={{width: '100%', height: '180px'}}>
                                     <Chart type="bar" data={chartDataDepartamentos} options={chartOptionsNoLegend} style={{width: '100%', height: '100%'}} />
                                 </div>
                             ) : dadosProntos ? (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
-                                    Sem dados
+                                    {t('no_data')}
                                 </div>
                             ) : (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px'}}>
-                                    Carregando...
+                                    {t("loading...")}
                                 </div>
                             )}
                         </div>
@@ -1634,11 +1634,11 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                 </div>
                             ) : dadosProntos ? (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
-                                    Sem dados
+                                    {t('no_data')}
                                 </div>
                             ) : (
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', color: '#888', fontSize: '14px'}}>
-                                    Carregando...
+                                    {t("loading...")}
                                 </div>
                             )}
                         </div>
@@ -1648,10 +1648,10 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 {/* Coluna 2: Admissões */}
                 <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
                     <Frame estilo="spaced">
-                        <Titulo><h6>Admissões</h6></Titulo>
+                        <Titulo><h6>{t("hirings")}</h6></Titulo>
                         <Link to="/admissao">
                             <Texto weight={500} color={'var(--neutro-500)'}>
-                                Ver todas <FaArrowRight />
+                                {t("see_all")} <FaArrowRight />
                             </Texto>
                         </Link>
                     </Frame>
@@ -1667,18 +1667,18 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <div className="metric-value metric-warning">
                                 <FaClock /> {dadosRH.tempoMedioAdmissao}d
                             </div>
-                            <div className="metric-label">Tempo Médio</div>
+                            <div className="metric-label">{t("average_time")}</div>
                         </div>
                         <div className="metric-item">
                             <div className="metric-value metric-success">
                                 <FaChartLine /> {dadosRH.slaAdmissao}%
                             </div>
-                            <div className="metric-label">SLA</div>
+                            <div className="metric-label">{t("sla")}</div>
                         </div>
                     </div>
 
                     <Frame estilo="spaced">
-                        <Titulo><h6>Etapas do Processo</h6></Titulo>
+                        <Titulo><h6>{t("process_steps")}</h6></Titulo>
                     </Frame>
                     <div className="etapas-list" style={{display: 'flex', flexDirection: 'column', gap: 12}}>
                         {dadosRH.etapasAdmissao.length > 0 ? (
@@ -1703,7 +1703,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                             }} />
                                             <span style={{fontWeight: 700, fontSize: 14, color: '#222', lineHeight: 1.1}}>{etapa.etapa}</span>
                                         </div>
-                                        <span style={{fontSize: 13, color: '#888', fontWeight: 500, marginLeft: 20}}>Concluída</span>
+                                        <span style={{fontSize: 13, color: '#888', fontWeight: 500, marginLeft: 20}}>{t("completed")}</span>
                                     </div>
                                     <span style={{
                                         background: `${etapa.cor}10`,
@@ -1720,7 +1720,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                                 </div>
                             ))
                         ) : (
-                            <div style={{textAlign: 'center', color: '#888', fontSize: 14, fontStyle: 'italic', padding: '18px 0'}}>Nenhum processo em andamento</div>
+                            <div style={{textAlign: 'center', color: '#888', fontSize: 14, fontStyle: 'italic', padding: '18px 0'}}>{t("no_processes_in_progress")}</div>
                         )}
                     </div>
                 </div>
@@ -1738,10 +1738,10 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 {/* Coluna 1: Férias */}
                 <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
                     <Frame estilo="spaced">
-                        <Titulo><h6>Férias</h6></Titulo>
+                        <Titulo><h6>{t("vacations")}</h6></Titulo>
                         <Link to="/ferias">
                             <Texto weight={500} color={'var(--neutro-500)'}>
-                                Ver todas <FaArrowRight />
+                                {t("see_all")} <FaArrowRight />
                             </Texto>
                         </Link>
                     </Frame>
@@ -1751,13 +1751,13 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <div className="metric-value metric-danger">
                                 <FaExclamationTriangle /> {dadosRH.feriasVencidas}
                             </div>
-                            <div className="metric-label">Vencidas</div>
+                            <div className="metric-label">{t("expireds")}</div>
                         </div>
                         <div className="metric-item">
                             <div className="metric-value metric-warning">
                                 <FaRegCalendarCheck /> {dadosRH.feriasProximas}
                             </div>
-                            <div className="metric-label">Próximas</div>
+                            <div className="metric-label">{t("nexts")}</div>
                         </div>
                         <div className="metric-item">
                             <div className="metric-value metric-info">
@@ -1774,7 +1774,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                     </div>
 
                     <Frame estilo="spaced">
-                        <Titulo><h6>Próximas Férias Agendadas</h6></Titulo>
+                        <Titulo><h6>{t("next_scheduled_vacations")}</h6></Titulo>
                     </Frame>
                     <div className="ferias-list">
                         {dadosRH.feriasAgendadas.length > 0 ? (
@@ -1817,10 +1817,10 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                 {/* Coluna 2: Demissões */}
                 <div className={`${styles.card_dashboard} dashboard-rh-card ${styles.fadeIn} ${isVisible ? styles.visible : ''}`} style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
                     <Frame estilo="spaced">
-                        <Titulo><h6>Demissões</h6></Titulo>
+                        <Titulo><h6>{t("terminations")}</h6></Titulo>
                         <Link to="/demissao">
                             <Texto weight={500} color={'var(--neutro-500)'}>
-                                Ver todas <FaArrowRight />
+                                {t("see_all")} <FaArrowRight />
                             </Texto>
                         </Link>
                     </Frame>
@@ -1836,41 +1836,41 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
                             <div className="metric-value metric-success">
                                 <FaCheckCircle /> {dadosRH.demissoesConcluidas}
                             </div>
-                            <div className="metric-label">Concluídas</div>
+                            <div className="metric-label">{t("completed")}</div>
                         </div>
                         <div className="metric-item">
                             <div className="metric-value metric-warning">
                                 <FaClock /> {dadosRH.tempoMedioRescisao}d
                             </div>
-                            <div className="metric-label">Tempo Médio</div>
+                            <div className="metric-label">{t("average_time")}</div>
                         </div>
                         <div className="metric-item">
                             <div className="metric-value metric-success">
                                 <FaChartLine /> {dadosRH.slaDemissao}%
                             </div>
-                            <div className="metric-label">SLA</div>
+                            <div className="metric-label">{t("sla")}</div>
                         </div>
                     </div>
 
                     <Frame estilo="spaced">
-                        <Titulo><h6>Motivos de Demissão</h6></Titulo>
+                        <Titulo><h6>{t("termination_reasons")}</h6></Titulo>
                     </Frame>
                     <div className="chart-container" style={{height: '250px', width: '100%'}}>
                         {dadosProntos && Object.keys(dadosRH.motivosDemissao).length > 0 ? (
                             <Chart type="bar" data={chartDataMotivos} options={chartOptionsNoLegend} />
                         ) : dadosProntos ? (
                             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#888', fontSize: '14px', fontStyle: 'italic'}}>
-                                Sem dados
+                                {t('no_data')}
                             </div>
                         ) : (
                             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#888', fontSize: '14px'}}>
-                                Carregando...
+                                {t("loading...")}
                             </div>
                         )}
                     </div>
 
                     <Frame estilo="spaced">
-                        <Titulo><h6>Etapas do Processo</h6></Titulo>
+                        <Titulo><h6>{t("process_steps")}</h6></Titulo>
                     </Frame>
                     <div className="etapas-list" style={{display: 'flex', flexDirection: 'column', gap: 12}}>
                         {dadosRH.etapasDemissao.length > 0 ? (

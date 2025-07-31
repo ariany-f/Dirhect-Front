@@ -361,7 +361,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
       title: "Organização",
       items: [
         { 
-          label: 'Estrutura Organizacional', 
+          label: t("organizational_structure"), 
           url: '/estrutura',
           icon: <RiOrganizationChart size={18}/>
         },
