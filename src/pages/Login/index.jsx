@@ -67,6 +67,11 @@ function Login() {
 
     useEffect(() =>{
         async function init() {
+            // Evita executar novamente se já há erro de conexão
+            if (connectionError) {
+                return;
+            }
+
             ArmazenadorToken.removerToken();
             ArmazenadorToken.removerTempToken();
             ArmazenadorToken.removerPermissoes();
@@ -92,7 +97,7 @@ function Login() {
             setReady(true);
         }
         init();
-    }, [])
+    }, [connectionError])
 
     const onSubmit = async (data) => {
         if(!data.email || !data.password) {
@@ -265,7 +270,14 @@ function Login() {
                                     </Texto>
                                 </div>
                                 <Botao 
-                                    onClick={() => window.location.reload()} 
+                                    onClick={() => {
+                                        setConnectionError(false);
+                                        setReady(false);
+                                        // Limpa o estado e reinicia o processo
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 100);
+                                    }} 
                                     estilo="vermilion" 
                                     size="medium"
                                     style={{ marginTop: '16px' }}
