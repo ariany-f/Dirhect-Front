@@ -477,7 +477,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
               <div className="user">
                 {usuario?.foto_perfil ? (
                   <img 
-                    src={usuario.foto_perfil} 
+                    src={usuario.foto_perfil.includes(import.meta.env.VITE_API_BASE_DOMAIN) ? usuario.foto_perfil : `https://dirhect.${import.meta.env.VITE_API_BASE_DOMAIN}/${usuario.foto_perfil}`}
                     alt={`Foto de ${usuario?.name || 'Usuário'}`}
                     onError={(e) => {
                       e.target.style.display = 'none';

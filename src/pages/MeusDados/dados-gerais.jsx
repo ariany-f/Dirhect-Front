@@ -891,11 +891,11 @@ function MeusDadosDadosGerais() {
                     alignItems: 'center',
                     flexShrink: 0
                 }}>
-                    <div style={{ marginBottom: userProfile?.foto_perfil ? '12px' : '0' }}>
-                        {userProfile?.foto_perfil ? (
+                    <div style={{ marginBottom: userProfile?.foto_perfil && userProfile?.foto_perfil !== "" ? '12px' : '0' }}>
+                        {userProfile?.foto_perfil && userProfile?.foto_perfil !== "" ? (
                             <ImageContainer>
                                 <img 
-                                    src={userProfile.foto_perfil}
+                                    src={userProfile.foto_perfil.includes(import.meta.env.VITE_API_BASE_DOMAIN) ? userProfile.foto_perfil : `https://dirhect.${import.meta.env.VITE_API_BASE_DOMAIN}/${userProfile.foto_perfil}`}
                                     alt={`Foto de ${userProfile?.first_name || userProfile?.name || 'Usuário'}`}
                                     style={{
                                         width: '120px',
@@ -990,7 +990,7 @@ function MeusDadosDadosGerais() {
                     </div>
 
                     {/* Botão de remover quando há foto */}
-                    {userProfile?.foto_perfil && (
+                    {userProfile?.foto_perfil && userProfile?.foto_perfil !== "" && (
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <button
                                 onClick={handleRemoveImage}
@@ -1282,7 +1282,7 @@ function MeusDadosDadosGerais() {
         </Dialog>
 
         {/* Modal de visualização da foto */}
-        {showImageModal && userProfile?.foto_perfil && (
+        {showImageModal && userProfile?.foto_perfil && userProfile?.foto_perfil !== "" && (
             <ImageModal onClick={(e) => {
                 if (e.target === e.currentTarget) {
                     setShowImageModal(false);
