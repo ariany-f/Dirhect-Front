@@ -145,7 +145,7 @@ function FeriasListagem() {
     useEffect(() => {
         setLoading(true)
         
-        let url = `ferias/?format=json&ano=${anoSelecionado}`
+        let url = `ferias/?format=json`
         
         // Adiciona parâmetro de busca se houver termo de pesquisa
         if (searchTerm.trim()) {
@@ -158,6 +158,7 @@ function FeriasListagem() {
         }
         // Se estiver na aba lista, adiciona parâmetros de paginação
         else if (tab === 'lista') {
+            url += `&ano=${anoSelecionado}`
             url += `&page=${currentPage}&page_size=${pageSize}`
         }
         
@@ -240,14 +241,16 @@ function FeriasListagem() {
                                 />
                             </div>
                         )}
-                        <DropdownItens
-                            valor={anoSelecionado}
-                            setValor={setAnoSelecionado}
-                            options={anosDisponiveis}
-                            placeholder="Selecione o ano"
-                            name="ano"
-                            allowClear={false}
-                        />
+                        {tab === 'lista' && 
+                            <DropdownItens
+                                valor={anoSelecionado}
+                                setValor={setAnoSelecionado}
+                                options={anosDisponiveis}
+                                placeholder="Selecione o ano"
+                                name="ano"
+                                allowClear={false}
+                            />
+                        }
                         <div style={{ width: '250px' }}>
                             <CampoTexto
                                 valor={searchTerm}

@@ -221,17 +221,7 @@ function DataTableFerias({
                         }}
                     />
                 ) : (
-                    <FaClock 
-                        className="periodo-perdido-icon"
-                        data-pr-tooltip="Período não perdido"
-                        size={16} 
-                        color="#10B981" 
-                        fill="#10B981"
-                        style={{
-                            filter: 'drop-shadow(0 0 4px rgba(16, 185, 129, 0.3))',
-                            cursor: 'help'
-                        }}
-                    />
+                    <></>
                 )}
             </div>
         );
@@ -286,11 +276,12 @@ function DataTableFerias({
                 <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '15%' }}></Column>
                 <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '12%' }}></Column>
-                {/* {colaborador && ( */}
-                    <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
-                    <Column field="nrodiasferias" header="Férias" style={{ width: '10%' }}></Column>
-                {/* )
-                } */}
+                {colaborador && (
+                    <>
+                        <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
+                        <Column field="nrodiasferias" header="Férias" style={{ width: '10%' }}></Column>
+                    </>
+                )} 
                 <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '10%' }}></Column>
                 <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '10%' }}></Column>
             </DataTable>
