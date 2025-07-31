@@ -9,8 +9,11 @@ import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import { Toast } from 'primereact/toast'
 import { useRef } from "react"
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 function Seguranca() {
+
+    const { t } = useTranslation('common')
     
     // const {
     //     usuario,
@@ -26,7 +29,7 @@ function Seguranca() {
             <Frame gap="16px">
                 <BotaoVoltar />
                 <Titulo>
-                    <h2>Segurança</h2>
+                    <h2>{t('security')}</h2>
                     <SubTitulo>
                         Enviamos um link para o e-mail cadastrado
                     </SubTitulo>

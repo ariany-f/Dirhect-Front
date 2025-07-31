@@ -19,6 +19,7 @@ import { TbBeach, TbBusinessplan, TbTable, TbTableShare } from "react-icons/tb"
 import { MdAllInbox, MdBusiness, MdHandshake, MdShoppingCart, MdShoppingCartCheckout } from "react-icons/md"
 import { GoTasklist } from "react-icons/go"
 import { IoBusiness } from "react-icons/io5"
+import { useTranslation } from 'react-i18next';
 import { PiHandshake } from "react-icons/pi"
 import { Ripple } from 'primereact/ripple'
 import { ArmazenadorToken } from "@utils"
@@ -148,6 +149,7 @@ function BarraLateral({ $sidebarOpened }) {
     const [image, setImage] = useState(false)
     const [breadCrumbItems, setBreadCrumbItems] = useState([])
     const ref = useRef(null)
+    const { t } = useTranslation('common');
 
     const [grupos, setGrupos] = useState([]);
 
@@ -219,15 +221,15 @@ function BarraLateral({ $sidebarOpened }) {
 
     // Mapeamento de permissões para menus
     const permissionMap = {
-        'view_funcionario': ['Colaboradores', 'Demissões'],
-        'view_admissao': ['Admissões'],
-        'view_tarefa': ['Processos'],
-        'view_dependente': ['Dependentes'],
-        'view_ferias': ['Férias'],
-        'view_ausencia': ['Ausências'],
-        'view_contrato': ['Contratos'],
-        'view_contratobeneficioitem': ['Elegibilidade'],
-        'view_vaga': ['Vagas'],
+        'view_funcionario': [t('colaborators'), t('terminations')],
+        'view_admissao': [t('hirings')],
+        'view_tarefa': [t('processes')],
+        'view_dependente': [t('dependents')],
+        'view_ferias': [t('vacations')],
+        'view_ausencia': [t('absences')],
+        'view_contrato': [t('contracts')],
+        'view_contratobeneficioitem': [t('benefits_eligibility')],
+        'view_vaga': [t('positions')],
     };
 
     // Menus sempre visíveis
@@ -235,9 +237,9 @@ function BarraLateral({ $sidebarOpened }) {
         {
             id: 1,
             url: '/',
-            pageTitulo: 'Home',
+            pageTitulo: t('home'),
             icone: <AiFillHome size={20} className="icon" />,
-            itemTitulo: 'Home',
+            itemTitulo: t('home'),
         },
     ];
 
@@ -251,97 +253,97 @@ function BarraLateral({ $sidebarOpened }) {
         {
             id: 3,
             url: '/admissao',
-            pageTitulo: 'Admissões',
+            pageTitulo: t('hirings'),
             icone: <RiUser3Fill size={20} className="icon" />,
-            itemTitulo: 'Admissões',
+            itemTitulo: t('hirings'),
             permission: 'view_admissao',
         },
         {
             id: 7,
             url: '/tarefas',
-            pageTitulo: 'Processos',
+            pageTitulo: t('processes'),
             icone: <GoTasklist size={20} fill="white" />, 
-            itemTitulo: 'Processos',
+            itemTitulo: t('processes'),
             permission: 'view_tarefa',
         },
         {
             id: 19,
             url: '/atividades',
-            pageTitulo: 'Atividades',
+            pageTitulo: t('activities'),
             icone: <BsHourglassSplit size={20} className="icon" />,
-            itemTitulo: 'Atividades',
+            itemTitulo: t('activities'),
             permission: 'view_tarefa',
         },
         {
             id: 11,
             url: '/colaborador',
-            pageTitulo: 'Colaboradores',
+            pageTitulo: t('colaborators'),
             icone: <BiSolidDashboard size={20} className="icon" />,
-            itemTitulo: 'Colaboradores',
+            itemTitulo: t('colaborators'),
             permission: 'view_funcionario',
         },
         {
             id: 12,
             url: '/dependentes',
-            pageTitulo: 'Dependentes',
+            pageTitulo: t('dependents'),
             icone: <FaUserGroup size={20} className="icon" />,
-            itemTitulo: 'Dependentes',
+            itemTitulo: t('dependents'),
             permission: 'view_dependente',
         },
         {
             id: 13,
             url: '/ferias',
-            pageTitulo: 'Programação de Férias',
+            pageTitulo: t('vacation_program'),
             icone: <FaUmbrellaBeach size={20} fill="white"/>,
-            itemTitulo: 'Programação de Férias',
+            itemTitulo: t('vacation_program'),
             permission: 'view_ferias',
         },
         {
             id: 14,
             url: '/ausencias',
-            pageTitulo: 'Ausências',
+            pageTitulo: t('absences'),
             icone: <BsHourglassSplit size={20} className="icon" />,
-            itemTitulo: 'Ausências',
+            itemTitulo: t('absences'),
             permission: 'view_ausencia',
         },
         {
             id: 15,
             url: '/demissoes',
-            pageTitulo: 'Demissões',
+            pageTitulo: t('terminations'),
             icone: <FaUserTimes size={20} className="icon" />,
-            itemTitulo: 'Demissões',
+            itemTitulo: t('terminations'),
             permission: 'view_funcionario',
         },
         {
             id: 16,
             url: '/contratos',
-            pageTitulo: 'Contratos',
+            pageTitulo: t('contracts'),
             icone: <RiFileListFill size={20} className="icon" />,
-            itemTitulo: 'Contratos',
+            itemTitulo: t('contracts'),
             permission: 'view_contrato',
         },
         {
             id: 17,
             url: '/elegibilidade',
-            pageTitulo: 'Elegibilidade',
+            pageTitulo: t('benefits_eligibility'),
             icone: <LuSparkles size={20} className="icon" stroke="white"/>,
-            itemTitulo: 'Elegibilidade',
+            itemTitulo: t('benefits_eligibility'),
             permission: 'view_contratobeneficioitem',
         },
         {
             id: 18,
             url: '/vagas',
-            pageTitulo: 'Vagas',
+            pageTitulo: t('positions'),
             icone: <RiFilePaperFill size={20} className="icon" />,
-            itemTitulo: 'Vagas',
+            itemTitulo: t('positions'),
             permission: 'view_vagas',
         },
         {
             id: 4,
             url: '/pedidos',
-            pageTitulo: 'Pedidos',
+            pageTitulo: t('orders'),
             icone: <HiMiniShoppingBag size={20} fill="white" />, 
-            itemTitulo: 'Pedidos',
+            itemTitulo: t('orders'),
             permission: 'view_pedido',
         },
         {
@@ -398,20 +400,20 @@ function BarraLateral({ $sidebarOpened }) {
 
     // Ordem desejada conforme imagem
     const ordemDesejada = [
-      'Home',
-      'Vagas',
-      'Admissões',
-      'Colaboradores',
-      'Dependentes',
-      'Programação de Férias',
-      'Ausências',
-      'Demissões',
-      'Contratos',
-      'Elegibilidade',
-      'Pedidos',
+      t('home'),
+      t('positions'),
+      t('hirings'),
+      t('colaborators'),
+      t('dependents'),
+      t('vacation_program'),
+      t('absences'),
+      t('terminations'),
+      t('contracts'),
+      t('benefits_eligibility'),
+      t('orders'),
       'Movimentação',
-      'Processos',
-      'Atividades',
+      t('processes'),
+      t('activities'),
       'Lançtos de Folha'
     ];
 

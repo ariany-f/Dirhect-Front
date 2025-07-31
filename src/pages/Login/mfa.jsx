@@ -12,6 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import http from '@http';
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
 import { ArmazenadorToken } from '@utils';
+import { useTranslation } from 'react-i18next'
 
 function Mfa() {
     const navegar = useNavigate();
@@ -21,6 +22,7 @@ function Mfa() {
     const [canResend, setCanResend] = useState(false);
     const [resendLoading, setResendLoading] = useState(false);
     const { control, handleSubmit, formState: { errors } } = useForm();
+    const { t } = useTranslation('common')
 
     const { 
         usuario,
@@ -284,7 +286,7 @@ function Mfa() {
                 <Frame gap="20px">
                     <BotaoVoltar />
                     <Titulo>
-                        <h2>Segurança</h2>
+                        <h2>{t('security')}</h2>
                         <SubTitulo>
                             Digite o código OTP {method == 'email' ? 'enviado para o seu e-mail' : 'gerado no seu aplicativo de autenticação'} para continuar
                         </SubTitulo>
