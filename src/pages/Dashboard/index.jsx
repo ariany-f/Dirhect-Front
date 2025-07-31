@@ -157,7 +157,6 @@ function Dashboard() {
                 // Carregar dados do dashboard de funcionários
                 await http.get('funcionario/dashboard/')
                     .then(response => {
-                        console.log('Dados do dashboard de funcionários:', response);
                         setFuncionariosDashboard(response);
                         // Usar total_funcionarios como colaboradores para manter compatibilidade
                         setColaboradores(Array(response.total_funcionarios).fill(null));
