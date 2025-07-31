@@ -196,8 +196,8 @@ function DataTableFerias({
                 tooltipText = '13º Salário: Não';
                 break;
             default:
-                tag = <Tag severity="danger" value="Não"></Tag>;
-                tooltipText = '13º Salário: Não';
+                tag = '';
+                tooltipText = '13º Salário: Não informado';
                 break;
         }
         return (
