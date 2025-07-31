@@ -45,7 +45,7 @@ function ColabroadorFerias() {
     useEffect(() => {
         if(!ferias)
         {
-            http.get('ferias/?format=json')
+            http.get(`ferias/?format=json&funcionario=${id}`)
             .then(response => {
                 setFerias(response)
             })
