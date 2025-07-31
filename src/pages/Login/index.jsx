@@ -288,9 +288,11 @@ function Login() {
             <Loading opened={loading} />
             <Titulo align="center">
                 <h2>{t('welcome')}</h2>
-                <SubTitulo>
-                    {t('choose_profile')}
-                </SubTitulo>
+                {!errorMessage && (
+                    <SubTitulo>
+                        {t('choose_profile')}
+                    </SubTitulo>
+                )}
             </Titulo>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Frame gap="20px" alinhamento="start">
