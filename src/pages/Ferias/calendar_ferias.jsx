@@ -570,15 +570,7 @@ const CalendarFerias = ({ colaboradores }) => {
             <Tooltip target=".event-bar" />
             <FixedHeader>
                 <ViewToggleBar>
-                    <FiltersContainer>
-                        <div style={{ width: '220px', marginTop: '8px' }}>
-                            <CampoTexto
-                                valor={filtroColaborador}
-                                setValor={setFiltroColaborador}
-                                placeholder="Filtrar colaborador"
-                            />
-                        </div>
-                    </FiltersContainer>
+                    <div></div>
                     <ViewToggleSwitch>
                         <ViewToggleOption
                             active={visualizacao === 'mensal'}

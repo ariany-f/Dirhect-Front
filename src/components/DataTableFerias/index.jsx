@@ -1,6 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { Tooltip } from 'primereact/tooltip';
 import './DataTable.css'
 import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
@@ -8,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
+import { FaCheckCircle, FaTimesCircle, FaClock, FaExclamationTriangle, FaLock, FaLockOpen } from 'react-icons/fa';
 
 function formatarDataBr(data) {
     if (!data) return '-';
@@ -146,23 +148,95 @@ function DataTableFerias({
     
     const representativ13Template = (rowData) => {
         let tag = rowData?.decimo;
+        let tooltipText = '';
+        
         switch(rowData?.decimo)
         {
             case 'Sim':
                 tag = <Tag severity="success" value="Sim"></Tag>;
+                tooltipText = '13º Salário: Sim';
                 break;
             case 'Não':
                 tag = <Tag severity="danger" value="Não"></Tag>;
+                tooltipText = '13º Salário: Não';
                 break;
             default:
                 tag = <Tag severity="danger" value="Não"></Tag>;
+                tooltipText = '13º Salário: Não';
                 break;
         }
         return (
-            <b>{tag}</b>
+            <div style={{ cursor: 'help' }}>
+                <Tooltip target=".decimo-tag" />
+                <div className="decimo-tag" data-pr-tooltip={tooltipText}>
+                    <b>{tag}</b>
+                </div>
+            </div>
         )
     }
-    
+
+    const representativePeriodoAbertoTemplate = (rowData) => {
+        const isPeriodoAberto = rowData?.periodo_aberto === true;
+        const isPeriodoPerdido = rowData?.periodo_perdido === true;
+        
+        return (
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                <Tooltip target=".periodo-aberto-icon" />
+                {isPeriodoAberto ? (
+                    <FaLockOpen 
+                        className="periodo-aberto-icon"
+                        data-pr-tooltip="Período Aberto"
+                        size={16} 
+                        color="#10B981" 
+                        fill="#10B981"
+                        style={{
+                            filter: 'drop-shadow(0 0 4px rgba(16, 185, 129, 0.3))',
+                            cursor: 'help'
+                        }}
+                    />
+                ) : (
+                    <FaLock 
+                        className="periodo-aberto-icon"
+                        data-pr-tooltip="Período Fechado"
+                        size={16} 
+                        color="#F59E0B" 
+                        fill="#F59E0B"
+                        style={{
+                            filter: 'drop-shadow(0 0 4px rgba(245, 158, 11, 0.3))',
+                            cursor: 'help'
+                        }}
+                    />
+                )}
+                <Tooltip target=".periodo-perdido-icon" />
+                {isPeriodoPerdido ? (
+                    <FaExclamationTriangle 
+                        className="periodo-perdido-icon"
+                        data-pr-tooltip="Período Perdido"
+                        size={16} 
+                        color="#EF4444" 
+                        fill="#EF4444"
+                        style={{
+                            filter: 'drop-shadow(0 0 4px rgba(239, 68, 68, 0.3))',
+                            cursor: 'help'
+                        }}
+                    />
+                ) : (
+                    <FaClock 
+                        className="periodo-perdido-icon"
+                        data-pr-tooltip="Período não perdido"
+                        size={16} 
+                        color="#10B981" 
+                        fill="#10B981"
+                        style={{
+                            filter: 'drop-shadow(0 0 4px rgba(16, 185, 129, 0.3))',
+                            cursor: 'help'
+                        }}
+                    />
+                )}
+            </div>
+        );
+    }
+
     useEffect(() => {
         if(ferias)
         {
@@ -189,12 +263,6 @@ function DataTableFerias({
 
     return (
         <>
-            {!colaborador &&
-            <div className="flex justify-content-space-between">
-                <span className="p-input-icon-left">
-                    <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por colaborador" />
-                </span>
-            </div>}
             <DataTable 
                 value={filteredData} 
                 filters={filters} 
@@ -214,15 +282,15 @@ function DataTableFerias({
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '30%' }}></Column>}
                 <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Inicio Aquisição" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Fim Aquisição" style={{ width: '15%' }}></Column>
+                <Column body={representativePeriodoAbertoTemplate} field="periodo_aberto" header="Período" style={{ width: '12%' }}></Column>
                 <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '15%' }}></Column>
-                <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '15%' }}></Column>
-                {colaborador && 
-                <>
+                <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '12%' }}></Column>
+                {/* {colaborador && ( */}
                     <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
                     <Column field="nrodiasferias" header="Férias" style={{ width: '10%' }}></Column>
-                </>
-                }
+                {/* )
+                } */}
                 <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '10%' }}></Column>
                 <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '10%' }}></Column>
             </DataTable>

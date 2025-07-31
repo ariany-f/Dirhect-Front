@@ -2,12 +2,13 @@ import http from '@http'
 import { useEffect, useState } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
-import Loading from '@components/Loading'
+
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Contratos.module.css'
 import styled from "styled-components"
 import { Link, useOutletContext } from "react-router-dom"
 import Management from '@assets/Management.svg'
+import CampoTexto from '@components/CampoTexto'
 import DataTableFerias from '@components/DataTableFerias'
 import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador'
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias'
@@ -16,7 +17,7 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import CalendarFerias from './calendar_ferias'
-import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach } from 'react-icons/fa';
+import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaSpinner } from 'react-icons/fa';
 import Texto from '@components/Texto';
 import { ArmazenadorToken } from '@utils';
 import DropdownItens from '@components/DropdownItens';
@@ -25,6 +26,15 @@ const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+    
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
 `
 
 const ContainerSemRegistro = styled.div`
@@ -115,6 +125,7 @@ function FeriasListagem() {
     const [ferias, setFerias] = useState(null)
     const [loading, setLoading] = useState(true)
     const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear())
+    const [searchTerm, setSearchTerm] = useState('')
     const [totalRecords, setTotalRecords] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
@@ -136,8 +147,17 @@ function FeriasListagem() {
         
         let url = `ferias/?format=json&ano=${anoSelecionado}`
         
+        // Adiciona parâmetro de busca se houver termo de pesquisa
+        if (searchTerm.trim()) {
+            url += `&funcionario_nome=${encodeURIComponent(searchTerm.trim())}`
+        }
+        
+        // Se estiver na aba calendário, adiciona filtro de período aberto
+        if (tab === 'calendario') {
+            url += `&periodo_aberto=true`
+        }
         // Se estiver na aba lista, adiciona parâmetros de paginação
-        if (tab === 'lista') {
+        else if (tab === 'lista') {
             url += `&page=${currentPage}&page_size=${pageSize}`
         }
         
@@ -151,7 +171,7 @@ function FeriasListagem() {
             console.log(erro)
             setLoading(false)
         })
-    }, [anoSelecionado, tab, currentPage, pageSize])
+    }, [anoSelecionado, searchTerm, tab, currentPage, pageSize])
 
     const handleColaboradorSelecionado = (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
@@ -182,14 +202,12 @@ function FeriasListagem() {
         }
     }
 
-    // Reset paginação quando ano mudar
+    // Reset paginação quando ano ou busca mudar
     useEffect(() => {
         setCurrentPage(1)
-    }, [anoSelecionado])
+    }, [anoSelecionado, searchTerm])
 
-    if (loading) {
-        return <Loading opened={loading} />
-    }
+
 
     return (
         <ConteudoFrame>
@@ -205,7 +223,23 @@ function FeriasListagem() {
                     </TabButton>
                 </TabPanel>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{ width: '150px' }}>
+                    <BotaoGrupo verticalalign='flex-start'>
+                        {loading && (
+                            <div style={{
+                                display: 'flex',
+                                marginTop: '10px',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <FaSpinner 
+                                    size={24} 
+                                    color="var(--gradient-secundaria)" 
+                                    style={{
+                                        animation: 'spin 1s linear infinite'
+                                    }}
+                                />
+                            </div>
+                        )}
                         <DropdownItens
                             valor={anoSelecionado}
                             setValor={setAnoSelecionado}
@@ -214,12 +248,18 @@ function FeriasListagem() {
                             name="ano"
                             allowClear={false}
                         />
-                    </div>
-                    {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && (
-                        <BotaoGrupo>
-                            <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill='var(--secundaria)' color='var(--secundaria)' className={styles.icon}/> Solicitar Férias</Botao>
-                        </BotaoGrupo>
-                    )}
+                        <div style={{ width: '250px' }}>
+                            <CampoTexto
+                                valor={searchTerm}
+                                setValor={setSearchTerm}
+                                placeholder="Buscar por colaborador..."
+                                type="search"
+                            />
+                        </div>
+                        {(ArmazenadorToken.hasPermission('add_ferias') || usuario.tipo === 'colaborador') && (
+                            <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="medium" tab><FaUmbrellaBeach fill='var(--secundaria)' color='var(--secundaria)' className={styles.icon}/> Solicitar Férias</Botao>
+                        )}
+                    </BotaoGrupo>
                 </div>
             </HeaderRow>
             <Wrapper>

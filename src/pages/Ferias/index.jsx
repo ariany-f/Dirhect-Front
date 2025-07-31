@@ -27,18 +27,18 @@ function Ferias() {
     const location = useLocation();
 
     useEffect(() => {
-        if(!ausencias) {
-            setLoading(true)
-            http.get('ferias/?format=json')
-            .then(response => {
-                setAusencias(response)
-                setLoading(false)
-            })
-            .catch(erro => {
-                console.log(erro)
-                setLoading(false)
-            })
-        }
+        // if(!ausencias) {
+        //     setLoading(true)
+        //     http.get('ferias/?format=json')
+        //     .then(response => {
+        //         setAusencias(response)
+        //         setLoading(false)
+        //     })
+        //     .catch(erro => {
+        //         console.log(erro)
+        //         setLoading(false)
+        //     })
+        // }
     }, [ausencias])
 
     if (loading) {
@@ -49,7 +49,6 @@ function Ferias() {
         <ContratosProvider>
              <ConteudoFrame>
                 <Outlet context={ausencias} />
-                {/* <CalendarFerias ausencias={ausencias} /> */}
             </ConteudoFrame>
         </ContratosProvider>
     )
