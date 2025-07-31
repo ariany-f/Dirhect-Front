@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { IoMdSync } from 'react-icons/io';
 import { Tooltip } from 'primereact/tooltip';
 import '@pages/Dashboard/DashboardAtividades.css'
+import { ArmazenadorToken } from '@utils'
 
 function Dashboard() {
     const {
