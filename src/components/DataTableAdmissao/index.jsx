@@ -70,7 +70,7 @@ function DataTableAdmissao({
             case 'aguardar_lgpd':
                 // Permite que qualquer perfil aprovado possa aceitar LGPD
                 return perfil === 'analista_tenant' || perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === null;
-            case 'integracao_admissao_correcao':
+            case 'integrar_admissao_correcao':
                 return perfil === 'analista' || perfil === 'supervisor' || perfil === 'gestor' || perfil === null;
             default:
                 return false;

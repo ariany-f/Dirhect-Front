@@ -88,7 +88,7 @@ function DataTableAtividades() {
             if(rowData.status === 'em_andamento') {
                 try {
                     await http.post(`/tarefas/${rowData.id}/concluir/`);
-                    
+                        
                     // Atualiza o estado da tarefa no componente pai
                     atualizarTarefa(rowData.id, {
                         status: 'concluida',
@@ -102,6 +102,7 @@ function DataTableAtividades() {
                         summary: 'Tarefa concluída com sucesso',
                         life: 3000
                     });
+
                 } catch (error) {
                     toast.current.show({
                         severity: 'error',
@@ -150,6 +151,24 @@ function DataTableAtividades() {
             return rowData.status === 'pendente' ? 'Aprovar tarefa' : 'Concluir tarefa';
         };
 
+        const getButtonText = () => {
+            if (rowData.status === 'pendente') {
+                return 'Aprovar';
+            } else if (rowData.status === 'em_andamento') {
+                return 'Concluir';
+            }
+            return '';
+        };
+
+        const getButtonSeverity = () => {
+            if (rowData.status === 'pendente') {
+                return 'success';
+            } else if (rowData.status === 'em_andamento') {
+                return 'info';
+            }
+            return 'secondary';
+        };
+
         const getColaboradorTemplate = (rowData) => {
             if(rowData.objeto?.funcionario_detalhe?.id) {
                 return (
@@ -184,19 +203,37 @@ function DataTableAtividades() {
         }
     
         return (
-            <div style={{display: 'flex', alignItems: 'center'}}>
-                <div 
-                    data-pr-tooltip={getTooltipText()}
-                    data-pr-position="left"
-                    className="tarefa-tooltip"
-                    style={{ display: 'inline-flex' }}
-                >
-                    <CheckboxContainer 
-                        name="feito" 
-                        valor={rowData.status === 'concluida' || rowData.status === 'aprovada'} 
-                        setValor={handleChange} 
-                    />
-                </div>
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                {(rowData.status === 'pendente' || rowData.status === 'em_andamento') && (
+                    <div 
+                        data-pr-tooltip={getTooltipText()}
+                        data-pr-position="left"
+                        className="tarefa-tooltip"
+                        style={{ display: 'inline-flex' }}
+                    >
+                        <Button
+                            label={getButtonText()}
+                            severity={getButtonSeverity()}
+                            size="small"
+                            onClick={() => handleChange(true)}
+                            style={{ 
+                                fontSize: '12px', 
+                                padding: '4px 12px',
+                                height: '28px'
+                            }}
+                        />
+                    </div>
+                )}
+                {(rowData.status === 'concluida' || rowData.status === 'aprovada') && (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <CheckboxContainer 
+                            name="feito" 
+                            valor={true} 
+                            setValor={() => {}} 
+                            disabled={true}
+                        />
+                    </div>
+                )}
                 <Tooltip target=".tarefa-tooltip" />
             </div>
         );

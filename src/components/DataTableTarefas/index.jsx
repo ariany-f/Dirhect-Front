@@ -69,6 +69,7 @@ function DataTableTarefas({
         { label: 'Aceite LGPD', value: 'aguardar_lgpd' },
         { label: 'Documentos Pendentes', value: 'aguardar_documento' },
         { label: 'Integração ERP', value: 'aprovar_admissao' },
+        { label: 'Integração ERP - Correção', value: 'integrar_admissao_correcao' },
     ];
 
     const onGlobalFilterChange = (value) => {
@@ -139,6 +140,9 @@ function DataTableTarefas({
                 icon = <FaUserMinus fill="var(--error)" stroke="white" color="var(--error)" size={16}/>;
                 break;
             case 'aprovar_admissao':
+                icon = <FaPaperPlane fill="var(--green-500)" stroke="white" color="var(--green-500)" size={16}/>;
+                break;
+            case 'integrar_admissao_correcao':
                 icon = <FaPaperPlane fill="var(--green-500)" stroke="white" color="var(--green-500)" size={16}/>;
                 break;
             default:
