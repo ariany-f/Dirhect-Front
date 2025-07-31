@@ -27,6 +27,7 @@ function Login() {
     const [loading, setLoading] = useState(false)
     const [ready, setReady] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const [connectionError, setConnectionError] = useState(false)
     const navegar = useNavigate()
     const { t } = useTranslation('common');
     const {
@@ -83,6 +84,7 @@ function Login() {
                     tentativas++;
                     if (tentativas >= 3) {
                         toast.error('Erro ao conectar com o serviço de autenticação. Tente novamente mais tarde.');
+                        setConnectionError(true);
                         break;
                     }
                 }
@@ -235,6 +237,50 @@ function Login() {
 
     if (!ready) {
         return <Loading opened={true} />;
+    }
+
+    if (connectionError) {
+        return (
+            <>
+                <Titulo align="center">
+                    <h2>{t('welcome')}</h2>
+                    <SubTitulo>
+                        {t('choose_profile')}
+                    </SubTitulo>
+                </Titulo>
+                <Frame gap="20px" alinhamento="center">
+                    <div style={{ 
+                        width: '100%',
+                        textAlign: 'center'
+                    }}>
+                        <Frame 
+                            estilo="error" 
+                            padding="24px" 
+                        >
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                                <CiWarning size={48} color="var(--vermilion-700)" />
+                                <div>
+                                    <Texto weight="600" size="18px" color="var(--neutro-900)" style={{ marginBottom: '8px' }}>
+                                        Erro de Conexão
+                                    </Texto>
+                                    <Texto weight="400" color="var(--neutro-700)">
+                                        Erro ao conectar com o serviço de autenticação. Tente novamente mais tarde.
+                                    </Texto>
+                                </div>
+                                <Botao 
+                                    onClick={() => window.location.reload()} 
+                                    estilo="vermilion" 
+                                    size="medium"
+                                    style={{ marginTop: '16px' }}
+                                >
+                                    Tentar Novamente
+                                </Botao>
+                            </div>
+                        </Frame>
+                    </div>
+                </Frame>
+            </>
+        );
     }
 
     return (

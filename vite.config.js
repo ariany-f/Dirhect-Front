@@ -6,6 +6,18 @@ import path from 'path'
 export default defineConfig({
   base: '/',
   plugins: [react()],
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom']
+        }
+      }
+    }
+  },
   include: [
     'react-dnd',
     'react-dnd-html5-backend'
