@@ -19,6 +19,7 @@ import CalendarFerias from './calendar_ferias'
 import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach } from 'react-icons/fa';
 import Texto from '@components/Texto';
 import { ArmazenadorToken } from '@utils';
+import DropdownItens from '@components/DropdownItens';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -113,26 +114,44 @@ function FeriasListagem() {
 
     const [ferias, setFerias] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear())
+    const [totalRecords, setTotalRecords] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
     const context = useOutletContext()
     const [modalSelecaoColaboradorOpened, setModalSelecaoColaboradorOpened] = useState(false)
     const [eventoSelecionado, setEventoSelecionado] = useState(null)
     const { usuario } = useSessaoUsuarioContext()
     const [tab, setTab] = useState('calendario') // 'lista' ou 'calendario'
 
+    // Lista de anos disponíveis (últimos 5 anos + próximos 2)
+    const currentYear = new Date().getFullYear()
+    const anosDisponiveis = []
+    for (let y = currentYear - 6; y <= currentYear + 2; y++) {
+        anosDisponiveis.push({ name: y.toString(), value: y })
+    }
+
     useEffect(() => {
-        if(!ferias) {
-            setLoading(true)
-            http.get('ferias/?format=json')
-            .then(response => {
-                setFerias(response)
-                setLoading(false)
-            })
-            .catch(erro => {
-                console.log(erro)
-                setLoading(false)
-            })
+        setLoading(true)
+        
+        let url = `ferias/?format=json&ano=${anoSelecionado}`
+        
+        // Se estiver na aba lista, adiciona parâmetros de paginação
+        if (tab === 'lista') {
+            url += `&page=${currentPage}&page_size=${pageSize}`
         }
-    }, [ferias, context])
+        
+        http.get(url)
+        .then(response => {
+            setFerias(response.results || response)
+            setTotalRecords(response.count || (response.results ? response.results.length : 0))
+            setLoading(false)
+        })
+        .catch(erro => {
+            console.log(erro)
+            setLoading(false)
+        })
+    }, [anoSelecionado, tab, currentPage, pageSize])
 
     const handleColaboradorSelecionado = (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
@@ -154,6 +173,20 @@ function FeriasListagem() {
         setEventoSelecionado(evento);
     }
 
+    // Função para lidar com mudança de aba
+    const handleTabChange = (newTab) => {
+        setTab(newTab)
+        // Reset paginação quando mudar para lista
+        if (newTab === 'lista') {
+            setCurrentPage(1)
+        }
+    }
+
+    // Reset paginação quando ano mudar
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [anoSelecionado])
+
     if (loading) {
         return <Loading opened={loading} />
     }
@@ -162,26 +195,45 @@ function FeriasListagem() {
         <ConteudoFrame>
             <HeaderRow>
                 <TabPanel>
-                    <TabButton active={tab === 'calendario'} onClick={() => setTab('calendario')}>
+                    <TabButton active={tab === 'calendario'} onClick={() => handleTabChange('calendario')}>
                         <FaRegCalendarAlt fill={tab === 'calendario' ? 'white' : '#000'} />
                         <Texto color={tab === 'calendario' ? 'white' : '#000'}>Calendário</Texto>
                     </TabButton>
-                    <TabButton active={tab === 'lista'} onClick={() => setTab('lista')}>
+                    <TabButton active={tab === 'lista'} onClick={() => handleTabChange('lista')}>
                         <FaListUl fill={tab === 'lista' ? 'white' : '#000'} />
                         <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
                     </TabButton>
                 </TabPanel>
-                {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && (
-                    <BotaoGrupo>
-                        <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill='var(--secundaria)' color='var(--secundaria)' className={styles.icon}/> Solicitar Férias</Botao>
-                    </BotaoGrupo>
-                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ width: '150px' }}>
+                        <DropdownItens
+                            valor={anoSelecionado}
+                            setValor={setAnoSelecionado}
+                            options={anosDisponiveis}
+                            placeholder="Selecione o ano"
+                            name="ano"
+                            allowClear={false}
+                        />
+                    </div>
+                    {(ArmazenadorToken.hasPermission('view_ferias') || usuario.tipo === 'colaborador') && (
+                        <BotaoGrupo>
+                            <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill='var(--secundaria)' color='var(--secundaria)' className={styles.icon}/> Solicitar Férias</Botao>
+                        </BotaoGrupo>
+                    )}
+                </div>
             </HeaderRow>
             <Wrapper>
                 {ferias ?
                     <>
-                        {tab === 'calendario' && <CalendarFerias colaboradores={ferias} />}
-                        {tab === 'lista' && <DataTableFerias ferias={ferias} />}
+                        {tab === 'calendario' && <CalendarFerias colaboradores={ferias} anoSelecionado={anoSelecionado} />}
+                        {tab === 'lista' && <DataTableFerias 
+                            ferias={ferias} 
+                            totalRecords={totalRecords}
+                            currentPage={currentPage}
+                            setCurrentPage={setCurrentPage}
+                            pageSize={pageSize}
+                            setPageSize={setPageSize}
+                        />}
                     </>
                 :
                 <ContainerSemRegistro>

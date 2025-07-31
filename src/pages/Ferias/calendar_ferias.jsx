@@ -578,14 +578,6 @@ const CalendarFerias = ({ colaboradores }) => {
                                 placeholder="Filtrar colaborador"
                             />
                         </div>
-                        <DropdownItens
-                            valor={anoSelecionado}
-                            setValor={setAnoSelecionado}
-                            options={anosDisponiveis.map(y => ({ name: y.toString(), value: y }))}
-                            placeholder="Selecione o ano"
-                            name="ano"
-                            allowClear={false}
-                        />
                     </FiltersContainer>
                     <ViewToggleSwitch>
                         <ViewToggleOption

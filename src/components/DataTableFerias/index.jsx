@@ -16,7 +16,15 @@ function formatarDataBr(data) {
     return `${dia}/${mes}/${ano}`;
 }
 
-function DataTableFerias({ ferias, colaborador = null }) {
+function DataTableFerias({ 
+    ferias, 
+    colaborador = null,
+    totalRecords = 0,
+    currentPage = 1,
+    setCurrentPage,
+    pageSize = 10,
+    setPageSize
+}) {
     const [colaboradores, setColaboradores] = useState(null)
     const [selectedFerias, setSelectedFerias] = useState(0);
     const [modalOpened, setModalOpened] = useState(false);
@@ -170,6 +178,15 @@ function DataTableFerias({ ferias, colaborador = null }) {
         
      }, [colaborador, ferias])
 
+    // Função para lidar com mudanças de página
+    const onPageChange = (event) => {
+        const newPage = event.page + 1;
+        const newPageSize = event.rows;
+        
+        setCurrentPage(newPage);
+        setPageSize(newPageSize);
+    };
+
     return (
         <>
             {!colaborador &&
@@ -178,7 +195,22 @@ function DataTableFerias({ ferias, colaborador = null }) {
                     <CampoTexto  width={'320px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar por colaborador" />
                 </span>
             </div>}
-            <DataTable value={filteredData} filters={filters} globalFilterFields={['colaborador_id']} emptyMessage="Não foram encontrados férias registradas" selection={selectedFerias} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
+            <DataTable 
+                value={filteredData} 
+                filters={filters} 
+                globalFilterFields={['colaborador_id']} 
+                emptyMessage="Não foram encontrados férias registradas" 
+                selection={selectedFerias} 
+                onSelectionChange={(e) => verDetalhes(e.value)} 
+                selectionMode="single" 
+                paginator 
+                rows={pageSize}
+                totalRecords={totalRecords}
+                lazy
+                first={(currentPage - 1) * pageSize}
+                onPage={onPageChange}
+                tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
+            >
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '30%' }}></Column>}
                 <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Inicio Aquisição" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Fim Aquisição" style={{ width: '15%' }}></Column>

@@ -49,7 +49,7 @@ function Ferias() {
         <ContratosProvider>
              <ConteudoFrame>
                 <Outlet context={ausencias} />
-                <CalendarFerias ausencias={ausencias} />
+                {/* <CalendarFerias ausencias={ausencias} /> */}
             </ConteudoFrame>
         </ContratosProvider>
     )
