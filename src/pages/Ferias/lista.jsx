@@ -171,7 +171,7 @@ function FeriasListagem() {
         if (tab === 'calendario') {
             url += `&periodo_aberto=true`
             url += `&incluir_finalizadas=true`
-            url += `&dt_inicio__gte=${new Date(new Date().getFullYear() - 1, 0, 1).toISOString().split('T')[0]}`
+            url += `&dt_inicio__gte=${new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0]}`
         }
         // Se estiver na aba lista, adiciona parâmetros de paginação
         else if (tab === 'lista') {
