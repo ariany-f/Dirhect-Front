@@ -160,7 +160,7 @@ function FeriasListagem() {
     useEffect(() => {
         setLoading(true)
         
-        let url = `ferias/?format=json`
+        let url = `ferias/?format=json&limit=1000`
         
         // Adiciona parâmetro de busca se houver termo de pesquisa
         if (searchTerm.trim()) {
