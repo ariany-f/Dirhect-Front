@@ -4,6 +4,7 @@ import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMont
 import { ptBR } from 'date-fns/locale';
 import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
+import { toast } from 'react-toastify';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import colaboradoresFake from '@json/ferias.json'; // Dados fake para exemplos de renderização
 import DropdownItens from '@components/DropdownItens'
@@ -172,6 +173,7 @@ const EventBar = styled.div`
     color: #fff;
     background: ${({ type }) => {
         if (type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
+        if (type === 'perdido') return 'linear-gradient(to right, #dc3545, #c82333)';
         if (type === 'solicitada') return 'linear-gradient(to right, #fbb034,rgb(211, 186, 22))';
         if (type === 'aprovada') return GRADIENT;
         if (type === 'acontecendo') return 'linear-gradient(to right,rgb(45, 126, 219),rgb(18, 37, 130))';
@@ -360,6 +362,7 @@ function getFeriasStatus({ data_inicio, data_fim }, hoje = new Date()) {
 
 const statusIcons = {
     aSolicitar: <FaExclamationCircle fill='white' />,
+    perdido: <FaExclamationCircle fill='white' />,
     solicitada: <FaRegClock fill='white'/>,
     aprovada: <FaCalendarCheck fill='white'/>,
     acontecendo: <FaSun fill='white' />,
@@ -424,16 +427,30 @@ const CalendarFerias = ({ colaboradores }) => {
             
             // Adiciona férias como ausências
             if (item.dt_inicio && item.dt_fim) {
+                // Calcula período aquisitivo baseado no ano das férias
+                const anoFerias = new Date(item.dt_inicio).getFullYear();
+                const periodoAquisitivoInicio = new Date(anoFerias, 0, 1); // 01/01 do ano
+                const periodoAquisitivoFim = new Date(anoFerias, 11, 31); // 31/12 do ano
+                
                 colaboradoresMap[id].ausencias.push({
                     data_inicio: item.dt_inicio,
                     data_fim: item.dt_fim,
-                    status: item.situacaoferias || item.status || 'A'
+                    status: item.situacaoferias || item.status || 'A',
+                    periodo_aquisitivo_inicio: periodoAquisitivoInicio,
+                    periodo_aquisitivo_fim: periodoAquisitivoFim,
+                    saldo_dias: item.nrodiasferias || 30
                 });
             } else if (item.fimperaquis) {
                 // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, adiciona para criar barra de férias a requisitar
+                const fimPeriodo = new Date(item.fimperaquis);
+                const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
+                
                 colaboradoresMap[id].ausencias.push({
                     fimperaquis: item.fimperaquis,
-                    nrodiasferias: item.nrodiasferias || 30
+                    nrodiasferias: item.nrodiasferias || 30,
+                    periodo_perdido: item.periodo_perdido || false,
+                    periodo_aquisitivo_inicio: inicioPeriodo,
+                    periodo_aquisitivo_fim: fimPeriodo
                 });
             }
         });
@@ -449,49 +466,23 @@ const CalendarFerias = ({ colaboradores }) => {
     // Para usar apenas dados reais: const allColabs = colabsReais;
     const allColabs = colabsReais;
 
-    // Encontrar a menor data de início e maior data de fim entre todos os eventos
-    let minDate = null;
-    let maxDate = null;
-    
-    if (allColabs.length > 0) {
-        allColabs.forEach(colab => {
-            if (colab.ausencias && colab.ausencias.length > 0) {
-                colab.ausencias.forEach(aus => {
-                    if (aus.data_inicio && aus.data_fim) {
-                        const ini = new Date(aus.data_inicio);
-                        const fim = new Date(aus.data_fim);
-                        if (!minDate || ini < minDate) minDate = ini;
-                        if (!maxDate || fim > maxDate) maxDate = fim;
-                    }
-                });
-            }
-        });
-    }
-    
-    // Se não houver dados, usa o ano atual
+    // Definir período do calendário: 1 ano atrás até 1 ano à frente do ano atual
     const currentDate = new Date();
-    if (!minDate) minDate = new Date(currentDate.getFullYear(), 0, 1);
-    if (!maxDate) maxDate = new Date(currentDate.getFullYear(), 11, 31);
+    const currentYear = currentDate.getFullYear();
+    const minDate = new Date(currentYear - 1, 0, 1); // 01/01 do ano anterior
+    const maxDate = new Date(currentYear + 1, 11, 31); // 31/12 do ano seguinte
 
-    // Lista de anos disponíveis
-    const minYear = minDate.getFullYear();
-    const maxYear = maxDate.getFullYear();
-    const anosDisponiveis = [];
-    for (let y = minYear; y <= maxYear; y++) anosDisponiveis.push(y);
+    // Lista de anos disponíveis (ano anterior, atual e próximo)
+    const anosDisponiveis = [currentYear - 1, currentYear, currentYear + 1];
 
-    // Estado do ano selecionado
-    const [anoSelecionado, setAnoSelecionado] = useState(maxYear);
+    // Estado do ano selecionado (padrão: ano atual)
+    const [anoSelecionado, setAnoSelecionado] = useState(currentYear);
     // Estado do filtro de colaborador
     const [filtroColaborador, setFiltroColaborador] = useState('');
 
-    // Atualiza o ano selecionado se os dados mudarem
-    useEffect(() => {
-        if (anoSelecionado < minYear || anoSelecionado > maxYear) {
-            setAnoSelecionado(maxYear);
-        }
-    }, [minYear, maxYear]);
 
-    // Ajusta para o início e fim do ano selecionado
+
+    // Ajusta para o início e fim do ano selecionado (dentro do período de 3 anos)
     const startDate = startOfMonth(new Date(anoSelecionado, 0, 1));
     const endDate = endOfMonth(new Date(anoSelecionado, 11, 1));
     const daysArray = getDaysArray(startDate, endDate);
@@ -707,50 +698,105 @@ const CalendarFerias = ({ colaboradores }) => {
                                     ))}
                                 </DaysBackgroundGrid>
                                 {/* Eventos */}
-                                {colab.ausencias
-                                    .filter(aus => {
-                                        // Só mostra eventos que têm pelo menos um dia dentro do range do calendário
-                                        if (aus.data_inicio && aus.data_fim) {
-                                            const eventStart = new Date(aus.data_inicio);
-                                            const eventEnd = new Date(aus.data_fim);
-                                            return eventEnd >= startDate && eventStart <= endDate;
-                                        }
-                                        // Se não tem dt_inicio e dt_fim, verifica fimperaquis
-                                        if (aus.fimperaquis) {
-                                            const fimPeriodo = new Date(aus.fimperaquis);
-                                            const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
-                                            return fimPeriodo >= startDate && inicioPeriodo <= endDate;
-                                        }
-                                        return false;
-                                    })
-                                    .map((aus, i) => {
-                                        // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, cria barra de férias a requisitar
+                                {(() => {
+                                    // Ordena os registros: primeiro os que não têm dt_inicio/dt_fim (férias a requisitar), depois os que têm
+                                    const registrosOrdenados = colab.ausencias
+                                        .filter(aus => {
+                                            // Só mostra eventos que têm pelo menos um dia dentro do range do calendário
+                                            if (aus.data_inicio && aus.data_fim) {
+                                                const eventStart = new Date(aus.data_inicio);
+                                                const eventEnd = new Date(aus.data_fim);
+                                                return eventEnd >= startDate && eventStart <= endDate;
+                                            }
+                                            // Se não tem dt_inicio e dt_fim, verifica fimperaquis
+                                            if (aus.fimperaquis) {
+                                                const fimPeriodo = new Date(aus.fimperaquis);
+                                                const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
+                                                const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
+                                                return limiteSolicitacao >= startDate && inicioPeriodo <= endDate;
+                                            }
+                                            return false;
+                                        })
+                                        .sort((a, b) => {
+                                            // Se a não tem dt_inicio/dt_fim e b tem, a vem primeiro
+                                            if (!a.data_inicio && !a.data_fim && b.data_inicio && b.data_fim) return -1;
+                                            // Se b não tem dt_inicio/dt_fim e a tem, b vem primeiro
+                                            if (!b.data_inicio && !b.data_fim && a.data_inicio && a.data_fim) return 1;
+                                            // Se ambos têm ou ambos não têm, ordena por data
+                                            if (a.data_inicio && b.data_inicio) {
+                                                return new Date(a.data_inicio) - new Date(b.data_inicio);
+                                            }
+                                            if (a.fimperaquis && b.fimperaquis) {
+                                                return new Date(a.fimperaquis) - new Date(b.fimperaquis);
+                                            }
+                                            return 0;
+                                        });
+
+                                    return registrosOrdenados.map((aus, i) => {
+                                        // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, verifica se pode solicitar ou se está perdido
                                         if (!aus.data_inicio && !aus.data_fim && aus.fimperaquis) {
                                             const fimPeriodo = new Date(aus.fimperaquis);
                                             const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
-                                            const { startPercent, widthPercent } = getBarPosition(inicioPeriodo, fimPeriodo, startDate, totalDays);
-                                            const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nLimite para solicitar: ${format(fimPeriodo, 'dd/MM/yyyy')}`;
-                                            return (
-                                                <EventBar
-                                                    key={`requisitar-${i}`}
-                                                    startPercent={startPercent}
-                                                    widthPercent={widthPercent}
-                                                    type="aSolicitar"
-                                                    className="event-bar"
-                                                    onClick={() => handleEventClick(colab, {
-                                                        periodo_aquisitivo_inicio: inicioPeriodo,
-                                                        periodo_aquisitivo_fim: fimPeriodo,
-                                                        limite: fimPeriodo,
-                                                        saldo_dias: aus.nrodiasferias || 30
-                                                    }, 'aSolicitar')}
-                                                    style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
-                                                    data-pr-tooltip={tooltip}
-                                                >
-                                                    <IconWrapper fill='white'>{statusIcons['aSolicitar']}</IconWrapper>
-                                                    A solicitar até {format(fimPeriodo, 'dd/MM/yyyy')}
-                                                    <span style={{marginLeft:8, color:'#fff', fontWeight:400, fontSize:13}}>({aus.nrodiasferias || 30} dias)</span>
-                                                </EventBar>
-                                            );
+                                            const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
+                                            
+                                            // Verifica se o período está perdido usando o campo da API
+                                            const isPerdido = aus.periodo_perdido === true;
+                                            
+                                            const { startPercent, widthPercent } = getBarPosition(inicioPeriodo, limiteSolicitacao, startDate, totalDays);
+                                            
+                                            if (isPerdido) {
+                                                // Período perdido - não pode mais solicitar
+                                                const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nPERÍODO PERDIDO - Não é mais possível solicitar férias`;
+                                                return (
+                                                    <EventBar
+                                                        key={`perdido-${i}`}
+                                                        startPercent={startPercent}
+                                                        widthPercent={widthPercent}
+                                                        type="perdido"
+                                                        className="event-bar"
+                                                        onClick={() => {
+                                                            toast.warning(`Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nPERÍODO PERDIDO - Não é mais possível solicitar férias`, {
+                                                                position: "top-right",
+                                                                autoClose: 5000,
+                                                                hideProgressBar: false,
+                                                                closeOnClick: true,
+                                                                pauseOnHover: true,
+                                                                draggable: true,
+                                                            });
+                                                        }}
+                                                        style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
+                                                        data-pr-tooltip={tooltip}
+                                                    >
+                                                        <IconWrapper fill='white'>{statusIcons['perdido']}</IconWrapper>
+                                                        Período Perdido
+                                                        <span style={{marginLeft:8, color:'#fff', fontWeight:400, fontSize:13}}>({aus.nrodiasferias || 30} dias)</span>
+                                                    </EventBar>
+                                                );
+                                            } else {
+                                                // Ainda pode solicitar
+                                                const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nLimite para solicitar: ${format(limiteSolicitacao, 'dd/MM/yyyy')}`;
+                                                return (
+                                                    <EventBar
+                                                        key={`requisitar-${i}`}
+                                                        startPercent={startPercent}
+                                                        widthPercent={widthPercent}
+                                                        type="aSolicitar"
+                                                        className="event-bar"
+                                                        onClick={() => handleEventClick(colab, {
+                                                            periodo_aquisitivo_inicio: inicioPeriodo,
+                                                            periodo_aquisitivo_fim: fimPeriodo,
+                                                            limite: limiteSolicitacao,
+                                                            saldo_dias: aus.nrodiasferias || 30
+                                                        }, 'aSolicitar')}
+                                                        style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
+                                                        data-pr-tooltip={tooltip}
+                                                    >
+                                                        <IconWrapper fill='white'>{statusIcons['aSolicitar']}</IconWrapper>
+                                                        A solicitar até {format(limiteSolicitacao, 'dd/MM/yyyy')}
+                                                        <span style={{marginLeft:8, color:'#fff', fontWeight:400, fontSize:13}}>({aus.nrodiasferias || 30} dias)</span>
+                                                    </EventBar>
+                                                );
+                                            }
                                         }
                                         
                                         // Eventos normais com dt_inicio e dt_fim
@@ -766,6 +812,14 @@ const CalendarFerias = ({ colaboradores }) => {
                                         if (type === 'acontecendo') tooltip = 'Em curso';
                                         if (type === 'aprovada' || type === 'marcada') tooltip = 'Aprovada';
                                         if (type === 'passada' || type === 'finalizada' || type === 'paga') tooltip = 'Concluída';
+                                        
+                                        // Adiciona período aquisitivo ao evento se não existir
+                                        const eventoComPeriodo = {
+                                            ...aus,
+                                            periodo_aquisitivo_inicio: aus.periodo_aquisitivo_inicio,
+                                            periodo_aquisitivo_fim: aus.periodo_aquisitivo_fim
+                                        };
+                                        
                                         return (
                                             <EventBar
                                                 key={i}
@@ -773,7 +827,7 @@ const CalendarFerias = ({ colaboradores }) => {
                                                 widthPercent={widthPercent}
                                                 type={type}
                                                 className="event-bar"
-                                                onClick={() => handleEventClick(colab, aus, type)}
+                                                onClick={() => handleEventClick(colab, eventoComPeriodo, type)}
                                                 style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
                                                 data-pr-tooltip={tooltip}
                                             >
@@ -781,7 +835,8 @@ const CalendarFerias = ({ colaboradores }) => {
                                                 {label}
                                             </EventBar>
                                         );
-                                    })}
+                                    });
+                                })()}
                             </DaysBar>
                         </EmployeeRow>
                     ))}

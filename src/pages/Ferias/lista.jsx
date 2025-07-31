@@ -167,6 +167,7 @@ function FeriasListagem() {
         // Se estiver na aba calendário, adiciona filtro de período aberto
         if (tab === 'calendario') {
             url += `&periodo_aberto=true`
+            url += `&incluir_finalizadas=true`
         }
         // Se estiver na aba lista, adiciona parâmetros de paginação
         else if (tab === 'lista') {
@@ -175,11 +176,12 @@ function FeriasListagem() {
             if (anoSelecionado !== null && typeof anoSelecionado != 'object') {
                 url += `&ano=${anoSelecionado}`
             }
+
+            if(!periodoAberto || periodoAberto === false || periodoAberto === 'false') {
+                url += `&incluir_finalizadas=true`
+            }
             // Adiciona filtro de período aberto se especificado
             if (periodoAberto !== null && typeof periodoAberto != 'object') {
-                if(!periodoAberto || periodoAberto === false || periodoAberto === 'false') {
-                    url += `&incluir_finalizadas=1`
-                }
                 url += `&periodo_aberto=${periodoAberto}`
             }
         }
