@@ -589,6 +589,8 @@ function MeusDadosDadosGerais() {
         })
         .then(() => {
             setUserProfile(prev => ({ ...prev, foto_perfil: null }));
+            setFotoPerfil(null);
+            ArmazenadorToken.definirFotoPerfil(null);
             toast.current.show({ 
                 severity: 'success', 
                 summary: 'Sucesso', 
