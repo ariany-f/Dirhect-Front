@@ -430,6 +430,12 @@ const CalendarFerias = ({ colaboradores }) => {
                     data_fim: item.dt_fim,
                     status: item.situacaoferias || item.status || 'A'
                 });
+            } else if (item.fimperaquis) {
+                // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, adiciona para criar barra de férias a requisitar
+                colaboradoresMap[id].ausencias.push({
+                    fimperaquis: item.fimperaquis,
+                    nrodiasferias: item.nrodiasferias || 30
+                });
             }
         });
         
@@ -705,11 +711,50 @@ const CalendarFerias = ({ colaboradores }) => {
                                 {colab.ausencias
                                     .filter(aus => {
                                         // Só mostra eventos que têm pelo menos um dia dentro do range do calendário
-                                        const eventStart = new Date(aus.data_inicio);
-                                        const eventEnd = new Date(aus.data_fim);
-                                        return eventEnd >= startDate && eventStart <= endDate;
+                                        if (aus.data_inicio && aus.data_fim) {
+                                            const eventStart = new Date(aus.data_inicio);
+                                            const eventEnd = new Date(aus.data_fim);
+                                            return eventEnd >= startDate && eventStart <= endDate;
+                                        }
+                                        // Se não tem dt_inicio e dt_fim, verifica fimperaquis
+                                        if (aus.fimperaquis) {
+                                            const fimPeriodo = new Date(aus.fimperaquis);
+                                            const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
+                                            return fimPeriodo >= startDate && inicioPeriodo <= endDate;
+                                        }
+                                        return false;
                                     })
                                     .map((aus, i) => {
+                                        // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, cria barra de férias a requisitar
+                                        if (!aus.data_inicio && !aus.data_fim && aus.fimperaquis) {
+                                            const fimPeriodo = new Date(aus.fimperaquis);
+                                            const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
+                                            const { startPercent, widthPercent } = getBarPosition(inicioPeriodo, fimPeriodo, startDate, totalDays);
+                                            const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nLimite para solicitar: ${format(fimPeriodo, 'dd/MM/yyyy')}`;
+                                            return (
+                                                <EventBar
+                                                    key={`requisitar-${i}`}
+                                                    startPercent={startPercent}
+                                                    widthPercent={widthPercent}
+                                                    type="aSolicitar"
+                                                    className="event-bar"
+                                                    onClick={() => handleEventClick(colab, {
+                                                        periodo_aquisitivo_inicio: inicioPeriodo,
+                                                        periodo_aquisitivo_fim: fimPeriodo,
+                                                        limite: fimPeriodo,
+                                                        saldo_dias: aus.nrodiasferias || 30
+                                                    }, 'aSolicitar')}
+                                                    style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
+                                                    data-pr-tooltip={tooltip}
+                                                >
+                                                    <IconWrapper fill='white'>{statusIcons['aSolicitar']}</IconWrapper>
+                                                    A solicitar até {format(fimPeriodo, 'dd/MM/yyyy')}
+                                                    <span style={{marginLeft:8, color:'#fff', fontWeight:400, fontSize:13}}>({aus.nrodiasferias || 30} dias)</span>
+                                                </EventBar>
+                                            );
+                                        }
+                                        
+                                        // Eventos normais com dt_inicio e dt_fim
                                         const status = getFeriasStatus(aus, currentDate);
                                         const type = mapStatusToType(aus.status);
                                         const { startPercent, widthPercent } = getBarPosition(aus.data_inicio, aus.data_fim, startDate, totalDays);
