@@ -269,21 +269,6 @@ function Login() {
                                         Erro ao conectar com o serviço de autenticação. Tente novamente mais tarde.
                                     </Texto>
                                 </div>
-                                <Botao 
-                                    onClick={() => {
-                                        setConnectionError(false);
-                                        setReady(false);
-                                        // Limpa o estado e reinicia o processo
-                                        setTimeout(() => {
-                                            window.location.reload();
-                                        }, 100);
-                                    }} 
-                                    estilo="vermilion" 
-                                    size="medium"
-                                    style={{ marginTop: '16px' }}
-                                >
-                                    Tentar Novamente
-                                </Botao>
                             </div>
                         </Frame>
                     </div>
