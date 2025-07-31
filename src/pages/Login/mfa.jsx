@@ -58,7 +58,9 @@ function Mfa() {
             type="tel" 
             inputMode="numeric"
             pattern="[0-9]*"
-            className="custom-otp-input" 
+            className="custom-otp-input"
+            invalid={props.invalid ? "true" : undefined}
+            unstyled={props.unstyled ? "true" : undefined}
         />
     );
 
@@ -290,12 +292,12 @@ function Mfa() {
                 </Frame>
                 <Frame alinhamento="center" gap="20px" alinhamentoLabel="left">
                     <InputOtp 
+                        key="otp-input"
                         length={6} 
                         value={otpCode} 
                         onChange={(e) => setOtpCode(e.value)} 
                         inputTemplate={customInput}
                         className="w-full"
-                        unstyled={false}
                     />
                     <Botao aoClicar={handleVerifyOtp}>Verificar Código</Botao>
                     

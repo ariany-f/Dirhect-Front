@@ -244,6 +244,7 @@ function MeusDadosDadosGerais() {
     const [validatingEmailMFA, setValidatingEmailMFA] = useState(false);
     const [selectedMfaMethod, setSelectedMfaMethod] = useState('app');
     const [isSendingEmail, setIsSendingEmail] = useState(false);
+    const [primaryMfaMethod, setPrimaryMfaMethod] = useState('app');
 
     // Estados para upload de foto de perfil
     const [uploading, setUploading] = useState(false);
@@ -276,14 +277,17 @@ function MeusDadosDadosGerais() {
     const fileInputRef = useRef(null)
     const modalFileInputRef = useRef(null);
 
-    const customInput = ({events, props}) => (
+    const customInput = ({events, props, key}) => (
         <input 
+            key={key}
             {...events} 
             {...props} 
             type="tel" 
             inputMode="numeric"
             pattern="[0-9]*"
-            className="custom-otp-input" 
+            className="custom-otp-input"
+            invalid={props.invalid ? "true" : undefined}
+            unstyled={props.unstyled ? "true" : undefined}
         />
     );
 
@@ -403,7 +407,42 @@ function MeusDadosDadosGerais() {
     const handleToggleMFA = async () => {
         // Abre o modal para pedir o OTP para desativar
         if (mfaAtivo) {
-            setShowDisableMfaModal(true);
+            // Verifica se o método primário é email
+            try {
+                const mfaPreferences = await http.get('/mfa/preferences/');
+                setPrimaryMfaMethod(mfaPreferences?.primary_method || 'app');
+                
+                if (mfaPreferences?.primary_method === 'email') {
+                    // Se for email, envia o código primeiro
+                    setIsSendingEmail(true);
+                    try {
+                        await http.post('/mfa/email/send/');
+                        toast.current.show({ 
+                            severity: 'success', 
+                            summary: 'Enviado', 
+                            detail: 'Um código de verificação foi enviado para o seu e-mail.', 
+                            life: 4000 
+                        });
+                        setShowDisableMfaModal(true);
+                    } catch (error) {
+                        toast.current.show({ 
+                            severity: 'error', 
+                            summary: 'Erro', 
+                            detail: 'Não foi possível enviar o código por e-mail.', 
+                            life: 3000 
+                        });
+                    } finally {
+                        setIsSendingEmail(false);
+                    }
+                } else {
+                    // Se for app, abre o modal diretamente
+                    setShowDisableMfaModal(true);
+                }
+            } catch (error) {
+                // Se não conseguir verificar as preferências, assume que é app
+                setPrimaryMfaMethod('app');
+                setShowDisableMfaModal(true);
+            }
         } else {
             // Abre o modal para escolher o método de ativação
             setShowMethodSelectionModal(true);
@@ -509,7 +548,12 @@ function MeusDadosDadosGerais() {
 
         setDisablingMFA(true);
         try {
-            await http.post('mfa/disable/', { otp: otpForDisable });
+            if(primaryMfaMethod === 'app') {
+                await http.post('mfa/disable/', { otp: otpForDisable });
+            }
+            else {
+                await http.put(`/mfa/preferences/`, { primary_method: 'app' });
+            }
 
             setMfaAtivo(false);
             setShowDisableMfaModal(false);
@@ -1197,7 +1241,13 @@ function MeusDadosDadosGerais() {
         >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', padding: '16px 0' }}>
                 <Texto>Insira o código de 6 dígitos enviado para o seu e-mail para concluir a ativação.</Texto>
-                <InputOtp value={otpForEmail} onChange={(e) => setOtpForEmail(e.value)} length={6} inputTemplate={customInput} />
+                <InputOtp 
+                    key="otp-email"
+                    value={otpForEmail} 
+                    onChange={(e) => setOtpForEmail(e.value)} 
+                    length={6}
+                    inputTemplate={customInput}
+                />
             </div>
         </Dialog>
         <Dialog 
@@ -1215,8 +1265,19 @@ function MeusDadosDadosGerais() {
             }
         >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', padding: '16px 0' }}>
-                <Texto>Insira o código de 6 dígitos do seu aplicativo de autenticação para confirmar a desativação.</Texto>
-                <InputOtp value={otpForDisable} onChange={(e) => setOtpForDisable(e.value)} length={6} inputTemplate={customInput} />
+                <Texto>
+                    {primaryMfaMethod === 'email' 
+                        ? 'Insira o código de 6 dígitos enviado para o seu e-mail para confirmar a desativação.'
+                        : 'Insira o código de 6 dígitos do seu aplicativo de autenticação para confirmar a desativação.'
+                    }
+                </Texto>
+                <InputOtp 
+                    key="otp-disable"
+                    value={otpForDisable} 
+                    onChange={(e) => setOtpForDisable(e.value)} 
+                    length={6}
+                    inputTemplate={customInput}
+                />
             </div>
         </Dialog>
 
