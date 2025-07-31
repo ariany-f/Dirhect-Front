@@ -418,8 +418,7 @@ const CalendarFerias = ({ colaboradores }) => {
                     id: id,
                     nome: item.funcionario_nome || funcionario.nome || funcionario.funcionario_pessoa_fisica?.nome || 'Colaborador',
                     gestor: item.gestor || '', 
-                    ausencias: [],
-                    feriasARequisitar: [] // Mantido para dados fake
+                    ausencias: []
                 };
             }
             
@@ -783,29 +782,6 @@ const CalendarFerias = ({ colaboradores }) => {
                                             </EventBar>
                                         );
                                     })}
-                                {/* Férias a requisitar - funciona com dados fake */}
-                                {colab.feriasARequisitar && colab.feriasARequisitar.map((feria, i) => {
-                                    const dataFim = new Date(feria.limite);
-                                    const dataInicio = addDays(dataFim, -29);
-                                    const { startPercent, widthPercent } = getBarPosition(dataInicio, dataFim, startDate, totalDays);
-                                    const tooltip = `Limite: ${format(new Date(feria.limite), 'dd/MM/yyyy')}`;
-                                    return (
-                                        <EventBar
-                                            key={i}
-                                            startPercent={startPercent}
-                                            widthPercent={widthPercent}
-                                            type="aSolicitar"
-                                            className="event-bar"
-                                            onClick={() => handleEventClick(colab, feria, 'aSolicitar')}
-                                            style={{ cursor: 'pointer' }}
-                                            data-pr-tooltip={tooltip}
-                                        >
-                                            <IconWrapper fill='white'>{statusIcons['aSolicitar']}</IconWrapper>
-                                            A solicitar até {format(new Date(feria.limite), 'dd/MM/yyyy')}
-                                            <span style={{marginLeft:8, color:'#fff', fontWeight:400, fontSize:13}}>(30 dias)</span>
-                                        </EventBar>
-                                    );
-                                })}
                             </DaysBar>
                         </EmployeeRow>
                     ))}

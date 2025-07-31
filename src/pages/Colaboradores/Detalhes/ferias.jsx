@@ -62,15 +62,7 @@ function ColabroadorFerias() {
     const {usuario} = useSessaoUsuarioContext()
 
     const colaborador = colaboradorDoContexto ? {
-        ...colaboradorDoContexto,
-        feriasARequisitar: [
-            {
-                periodo_aquisitivo_inicio: '2024-01-01',
-                periodo_aquisitivo_fim: '2024-12-31',
-                saldo_dias: 30,
-                limite: '2025-11-30',
-            }
-        ]
+        ...colaboradorDoContexto
     } : null;
 
     useEffect(() => {
@@ -90,24 +82,6 @@ function ColabroadorFerias() {
 
     const handleTabChange = (newTab) => {
         setTab(newTab)
-    }
-
-    const criarSolicitacao = () => {
-        if (colaborador && colaborador.feriasARequisitar && colaborador.feriasARequisitar.length > 0) {
-            const periodo = colaborador.feriasARequisitar[0];
-            const evento = {
-                colab: {
-                    id: colaborador.id,
-                    nome: colaborador.funcionario_pessoa_fisica?.nome,
-                    gestor: colaborador.gestor,
-                },
-                evento: { ...periodo },
-                tipo: 'aSolicitar'
-            };
-            setEventoSelecionado(evento);
-        } else {
-            alert("Não há períodos de férias disponíveis para solicitação no momento.");
-        }
     }
 
     return (
