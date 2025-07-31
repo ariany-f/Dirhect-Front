@@ -475,7 +475,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
             <LanguageSelector />
             <ItemUsuario onClick={toggleMenu}>
               <div className="user">
-                {usuario?.foto_perfil ? (
+                {usuario?.foto_perfil && usuario?.foto_perfil !== "" ? (
                   <img 
                     src={usuario.foto_perfil.includes(import.meta.env.VITE_API_BASE_DOMAIN) ? usuario.foto_perfil : `https://dirhect.${import.meta.env.VITE_API_BASE_DOMAIN}/${usuario.foto_perfil}`}
                     alt={`Foto de ${usuario?.name || 'Usuário'}`}
@@ -486,7 +486,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                   />
                 ) : null}
                 <div style={{ 
-                  display: usuario?.foto_perfil ? 'none' : 'flex',
+                  display: usuario?.foto_perfil && usuario?.foto_perfil !== "" ? 'none' : 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   width: '100%',

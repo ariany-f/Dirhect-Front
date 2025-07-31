@@ -1290,7 +1290,7 @@ function MeusDadosDadosGerais() {
             }}>
                 <ImageModalContent>
                     <ImageModalImage 
-                        src={userProfile.foto_perfil} 
+                        src={userProfile.foto_perfil.includes(import.meta.env.VITE_API_BASE_DOMAIN) ? userProfile.foto_perfil : `https://dirhect.${import.meta.env.VITE_API_BASE_DOMAIN}/${userProfile.foto_perfil}`}
                         alt={`Foto de ${userProfile?.first_name || userProfile?.name || 'Usuário'}`} 
                     />
                     <div style={{display: 'flex', gap: '12px'}}>
