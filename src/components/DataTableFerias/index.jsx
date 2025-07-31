@@ -281,8 +281,7 @@ function DataTableFerias({
                         color="#EF4444" 
                         fill="#EF4444"
                         style={{
-                            filter: 'drop-shadow(0 0 4px rgba(239, 68, 68, 0.3))',
-                            cursor: 'help'
+                            filter: 'drop-shadow(0 0 4px rgba(239, 68, 68, 0.3))'
                         }}
                     />
                 ) : (

@@ -141,6 +141,9 @@ function FeriasListagem() {
     const currentYear = new Date().getFullYear()
     const anosDisponiveis = [
         { name: 'Todos os anos', value: null },
+        { name: 'Últimos 2 anos', value: 'ultimos_2' },
+        { name: 'Últimos 3 anos', value: 'ultimos_3' },
+        { name: 'Últimos 4 anos', value: 'ultimos_4' },
         ...Array.from({ length: 9 }, (_, i) => {
             const year = currentYear - 6 + i
             return { name: year.toString(), value: year }
@@ -168,13 +171,22 @@ function FeriasListagem() {
         if (tab === 'calendario') {
             url += `&periodo_aberto=true`
             url += `&incluir_finalizadas=true`
+            url += `&dt_inicio__gte=${new Date(new Date().getFullYear() - 1, 0, 1).toISOString().split('T')[0]}`
         }
         // Se estiver na aba lista, adiciona parâmetros de paginação
         else if (tab === 'lista') {
             url += `&page=${currentPage}&page_size=${pageSize}`
-            // Só adiciona filtro de ano se um ano específico foi selecionado
+            // Adiciona filtro de ano baseado na seleção
             if (anoSelecionado !== null && typeof anoSelecionado != 'object') {
-                url += `&ano=${anoSelecionado}`
+                if (anoSelecionado === 'ultimos_2') {
+                    url += `&dt_inicio__gte=${new Date(currentYear - 1, 0, 1).toISOString().split('T')[0]}`
+                } else if (anoSelecionado === 'ultimos_3') {
+                    url += `&dt_inicio__gte=${new Date(currentYear - 2, 0, 1).toISOString().split('T')[0]}`
+                } else if (anoSelecionado === 'ultimos_4') {
+                    url += `&dt_inicio__gte=${new Date(currentYear - 3, 0, 1).toISOString().split('T')[0]}`
+                } else {
+                    url += `&ano=${anoSelecionado}`
+                }
             }
 
             if(!periodoAberto || periodoAberto === false || periodoAberto === 'false') {
