@@ -27,6 +27,7 @@ import CustomImage from '@components/CustomImage';
 import { Tooltip } from 'primereact/tooltip';
 import { Skeleton } from 'primereact/skeleton';
 import http from '@http';
+import { ArmazenadorToken } from '@utils';
 
 function DataTableTarefas({ 
     tarefas, 
@@ -543,9 +544,25 @@ function DataTableTarefas({
 
         useEffect(() => {
             if (rowData.tenant) {
+                // Buscar do cache primeiro
+                const tenantsCache = ArmazenadorToken.getTenantsCache();
+                if (tenantsCache) {
+                    const clienteEncontrado = tenantsCache.find(tenant => tenant?.tenant?.id === rowData.tenant);
+                    if (clienteEncontrado) {
+                        setCliente(clienteEncontrado?.tenant);
+                        return;
+                    }
+                }
+                
+                // Se não encontrou no cache, buscar da API e atualizar cache
                 http.get(`/client_tenant/${rowData.tenant}/`)
                     .then(response => {
                         setCliente(response);
+                        // Atualizar cache se necessário
+                        if (tenantsCache) {
+                            const novoCache = [...tenantsCache, response];
+                            ArmazenadorToken.salvarTenantsCache(novoCache);
+                        }
                     })
                     .catch(error => {
                         console.error('Erro ao buscar dados do cliente:', error);

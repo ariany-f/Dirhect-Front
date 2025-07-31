@@ -23,6 +23,7 @@ import { PrimeIcons } from 'primereact/api'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import http from '@http'
 import CustomImage from '@components/CustomImage'
+import { ArmazenadorToken } from '@utils'
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -47,9 +48,25 @@ function DetalhesTarefas() {
                 setTarefa(response);
                 // Busca dados do cliente se houver tenant
                 if (response.tenant) {
+                    // Buscar do cache primeiro
+                    const tenantsCache = ArmazenadorToken.getTenantsCache();
+                    if (tenantsCache) {
+                        const clienteEncontrado = tenantsCache.find(tenant => tenant?.tenant?.id === response.tenant);
+                        if (clienteEncontrado) {
+                            setCliente(clienteEncontrado?.tenant);
+                            return;
+                        }
+                    }
+                    
+                    // Se não encontrou no cache, buscar da API e atualizar cache
                     http.get(`/client_tenant/${response.tenant}/`)
                         .then(clienteResponse => {
                             setCliente(clienteResponse);
+                            // Atualizar cache se necessário
+                            if (tenantsCache) {
+                                const novoCache = [...tenantsCache, clienteResponse];
+                                ArmazenadorToken.salvarTenantsCache(novoCache);
+                            }
                         })
                         .catch(error => {
                             console.error('Erro ao buscar dados do cliente:', error);
