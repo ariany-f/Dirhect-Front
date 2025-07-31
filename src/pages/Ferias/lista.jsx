@@ -2,6 +2,7 @@ import http from '@http'
 import { useEffect, useState } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
+import { toast } from 'react-toastify'
 
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Contratos.module.css'
@@ -195,24 +196,43 @@ function FeriasListagem() {
         })
     }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize])
 
-    const handleColaboradorSelecionado = (colaborador) => {
+    const handleColaboradorSelecionado = async (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
 
-        const evento = {
-            colab: {
-                id: colaborador.id,
-                nome: colaborador.funcionario_pessoa_fisica?.nome,
-                gestor: colaborador.gestor,
-            },
-            evento: {
-                periodo_aquisitivo_inicio: '2024-01-01',
-                periodo_aquisitivo_fim: '2024-12-31',
-                saldo_dias: 30,
-                limite: '2025-11-30',
-            },
-            tipo: 'aSolicitar'
-        };
-        setEventoSelecionado(evento);
+        try {
+            const ferias = await http.get(`ferias/?format=json&funcionario=${colaborador.id}`)
+            const feria = ferias[0]
+
+            if(!feria) {
+                toast.error('Não há férias disponíveis para este colaborador')
+                return
+            }
+
+            let [anoRow, mesRow, diaRow] = feria.fimperaquis.split('T')[0].split('-').map(Number);
+            // Subtrai 1 ano
+            let dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
+            // Soma 1 dia
+            dataInicioRow.setDate(dataInicioRow.getDate() + 1);
+            
+            const evento = {
+                colab: {
+                    id: colaborador.id,
+                    nome: colaborador.funcionario_pessoa_fisica?.nome,
+                    gestor: colaborador.gestor,
+                },
+                evento: {
+                    periodo_aquisitivo_inicio: dataInicioRow,
+                    periodo_aquisitivo_fim: feria.fimperaquis,
+                    saldo_dias: feria.nrodiasferias,
+                    limite: feria.fimperaquis,
+                },
+                tipo: 'aSolicitar'
+            };
+            setEventoSelecionado(evento);
+        } catch (error) {
+            console.error('Erro ao buscar férias do colaborador:', error)
+            toast.error('Erro ao buscar férias do colaborador')
+        }
     }
 
     // Função para lidar com mudança de aba

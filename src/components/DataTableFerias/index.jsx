@@ -131,7 +131,27 @@ function DataTableFerias({
             default:
                 if(ArmazenadorToken.hasPermission('add_ferias'))
                 {
-                    tag = <Botao aoClicar={() => marcarFerias(rowData)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
+                    let [anoRow, mesRow, diaRow] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
+                    // Subtrai 1 ano
+                    let dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
+                    // Soma 1 dia
+                    dataInicioRow.setDate(dataInicioRow.getDate() + 1);
+
+                    const ev = {
+                        colab: {
+                            id: rowData.funcionario.id,
+                            nome: rowData.funcionario_nome,
+                            gestor: rowData.gestor || null
+                        },
+                        evento: {
+                            periodo_aquisitivo_inicio: dataInicioRow,
+                            periodo_aquisitivo_fim: rowData.fimperaquis,
+                            saldo_dias: rowData.nrodiasferias,
+                            limite: rowData.fimperaquis
+                        },
+                        tipo: 'aSolicitar'
+                    }
+                    tag = <Botao aoClicar={() => marcarFerias(ev)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
                 } else {
                     tag = <Tag severity="info" value="N/A"></Tag>;
                 }
