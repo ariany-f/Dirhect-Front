@@ -549,7 +549,7 @@ const CalendarFerias = ({ colaboradores }) => {
     function mapStatusToType(status, data_inicio, data_fim) {
         switch (status) {
             case 'A': 
-                if (data_inicio < new Date() && data_fim > new Date()) {
+                if (data_inicio <= new Date() && data_fim >= new Date()) {
                     return 'acontecendo';
                 } else {
                     return 'aprovada';
@@ -559,13 +559,13 @@ const CalendarFerias = ({ colaboradores }) => {
             case 'E': return 'acontecendo';
             case 'R': return 'rejeitada'; // pode ser ignorado ou adicionar cor especial
             case 'P':
-                if (data_inicio < new Date() && data_fim > new Date()) {
+                if (data_inicio <= new Date() && data_fim >= new Date()) {
                     return 'paga';
                 } else {
                     return 'acontecendo';
                 }
             case 'M': 
-                if (data_inicio < new Date() && data_fim > new Date()) {
+                if (data_inicio <= new Date() && data_fim >= new Date()) {
                     return 'acontecendo';
                 } else {
                     return 'marcada';
@@ -822,6 +822,7 @@ const CalendarFerias = ({ colaboradores }) => {
                                         if (type === 'aprovada' || type === 'passada' || type === 'finalizada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'acontecendo' || type === 'solicitada' || type === 'marcada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'rejeitada') return null; // não exibe
+                                        if (type === 'aguardando') return null;
                                         let tooltip = `Início: ${format(new Date(aus.data_inicio), 'dd/MM/yyyy')}\nFim: ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'acontecendo') {
                                             tooltip = 'Em curso';
@@ -832,7 +833,6 @@ const CalendarFerias = ({ colaboradores }) => {
                                         } else if (type === 'passada' || type === 'finalizada' || type === 'paga') {
                                             tooltip = 'Concluída';
                                         }
-                                        if(type === 'aguardando') return null;
                                         
                                         // Adiciona período aquisitivo ao evento se não existir
                                         const eventoComPeriodo = {
