@@ -202,10 +202,12 @@ function FeriasListagem() {
         .then(response => {
             setFerias(response.results || response)
             setTotalRecords(response.count || (response.results ? response.results.length : 0))
-            setLoading(false)
         })
         .catch(erro => {
             console.log(erro)
+            setLoading(false)
+        })
+        .finally(() => {
             setLoading(false)
         })
     }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize])
@@ -331,7 +333,19 @@ function FeriasListagem() {
                 </div>
             </HeaderRow>
             <Wrapper>
-                {ferias ?
+                {loading ? (
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '200px',
+                        fontSize: '16px',
+                        color: 'var(--neutro-500)',
+                        fontWeight: '500'
+                    }}>
+                        Carregando...
+                    </div>
+                ) : (ferias ? (
                     <>
                         {tab === 'calendario' && <CalendarFerias colaboradores={ferias} anoSelecionado={anoSelecionado} />}
                         {tab === 'lista' && <DataTableFerias 
@@ -343,14 +357,15 @@ function FeriasListagem() {
                             setPageSize={setPageSize}
                         />}
                     </>
-                :
-                <ContainerSemRegistro>
-                <section className={styles.container}>
-                        <img src={Management} />
-                        <h6>Não há férias registrados</h6>
-                        <p>Aqui você verá todas as ausências registradas.</p>
-                    </section>
-                </ContainerSemRegistro>}
+                ) : (
+                    <ContainerSemRegistro>
+                        <section className={styles.container}>
+                            <img src={Management} />
+                            <h6>Não há férias registrados</h6>
+                            <p>Aqui você verá todas as ausências registradas.</p>
+                        </section>
+                    </ContainerSemRegistro>
+                ))}
             </Wrapper>
             <ModalSelecionarColaborador 
                 opened={modalSelecaoColaboradorOpened} 
