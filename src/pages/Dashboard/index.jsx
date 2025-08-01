@@ -167,9 +167,9 @@ function Dashboard() {
                         setColaboradores(null);
                     });
                 
-                if(ArmazenadorToken.hasPermission('view_tarefas')) {
+                if(ArmazenadorToken.hasPermission('view_tarefa')) {
                     // Carregar outras informações apenas se necessário
-                    await http.get('tarefas/?format=json')
+                    await http.get('tarefas/?format=json&status__in=pendente,em_andamento,aprovada,erro')
                         .then(response => {
                             setAtividadesRaw(response)
                             // atividades abertas: status diferente de concluida/finalizada

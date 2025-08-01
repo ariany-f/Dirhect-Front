@@ -634,9 +634,9 @@ function DataTableTarefas({
                     header="Tipo de Processo" 
                     style={{ width: '15%' }}
                     sortable
-                    sortField="processo_codigo"
+                    sortField="processo"
                     filter
-                    filterField="processo_codigo"
+                    filterField="processo"
                     showFilterMenu={true}
                     filterElement={tipoProcessoFilterTemplate}
                     filterMatchMode="custom"
