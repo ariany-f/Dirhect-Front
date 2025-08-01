@@ -586,7 +586,10 @@ function DataTableAtividades({
     
     const getSLAInfo = (rowData) => {
         const dataInicio = new Date(rowData.criado_em);
+        
         const dataAgendada = new Date(rowData.agendado_para);
+        dataAgendada.setHours(0, 1, 0, 0);
+
         const hoje = new Date();
         
         if (rowData.status === 'concluida') {
@@ -662,7 +665,10 @@ function DataTableAtividades({
 
     const representativeSLATemplate = (rowData) => {
         const dataInicio = new Date(rowData.criado_em);
+        
         const dataAgendada = new Date(rowData.agendado_para);
+        dataAgendada.setHours(0, 1, 0, 0);
+
         const hoje = new Date();
         const diasEmAberto = Math.ceil((hoje - dataInicio) / (1000 * 60 * 60 * 24));
         
