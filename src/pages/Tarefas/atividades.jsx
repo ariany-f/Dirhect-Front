@@ -192,24 +192,28 @@ const Atividades = () => {
     // Função para mapear filtros de SLA para parâmetros de data
     const mapearFiltroSLAParaParametros = (filtro) => {
         const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+
         const amanha = new Date(hoje);
         amanha.setDate(amanha.getDate() + 1);
+        
         const depoisAmanha = new Date(hoje);
         depoisAmanha.setDate(depoisAmanha.getDate() + 2);
         
         switch (filtro) {
             case 'dentro_prazo':
                 // Tarefas com agendado_para >= depois de amanhã (2+ dias)
-                return { agendado_para__gte: depoisAmanha.toISOString().split('T')[0] };
+                return { agendado_para__gte: depoisAmanha.toISOString().split('T')[0], status__in: 'pendente,em_andamento,aprovada,erro' };
             case 'proximo_prazo':
-                // Tarefas com agendado_para entre hoje e depois de amanhã (0-2 dias)
+                // Tarefas com agendado_para > hoje e <= depois de amanhã
                 return { 
-                    agendado_para__gte: hoje.toISOString().split('T')[0],
-                    agendado_para__lt: depoisAmanha.toISOString().split('T')[0]
+                    agendado_para__gt: hoje.toISOString().split('T')[0],
+                    agendado_para__lte: depoisAmanha.toISOString().split('T')[0],
+                    status__in: 'pendente,em_andamento,aprovada,erro    '
                 };
             case 'atrasado':
                 // Tarefas com agendado_para < hoje
-                return { agendado_para__lt: hoje.toISOString().split('T')[0] };
+                return { agendado_para__lt: hoje.toISOString().split('T')[0], status__in: 'pendente,em_andamento,aprovada,erro' };
             case 'concluido':
                 // Tarefas concluídas (status = concluida)
                 return { status: 'concluida' };
