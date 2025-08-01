@@ -329,34 +329,18 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
             }
         };
         const { cor, texto, background } = getStatusInfo(rowData.status);
-        const logs = rowData.logs || [];
-        const temErro = logs.some(log => !log.sucesso || log.tipo === 'erro');
 
         return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{
-                    display: 'inline-block',
-                    backgroundColor: background,
-                    color: cor,
-                    padding: '4px 12px',
-                    borderRadius: '4px',
-                    fontSize: '13px',
-                    fontWeight: '400'
-                }}>
-                    {texto}
-                </div>
-                {logs.length > 0 && (
-                    <FaHistory
-                        className="history"
-                        data-pr-tooltip={`Ver Histórico (${logs.length} log${logs.length > 1 ? 's' : ''})`}
-                        size={16}
-                        onClick={(e) => handleHistorico(e, rowData)}
-                        style={{
-                            cursor: 'pointer',
-                            color: temErro ? 'var(--error)' : 'var(--primaria)',
-                        }}
-                    />
-                )}
+            <div style={{
+                display: 'inline-block',
+                backgroundColor: background,
+                color: cor,
+                padding: '4px 12px',
+                borderRadius: '4px',
+                fontSize: '13px',
+                fontWeight: '400'
+            }}>
+                {texto}
             </div>
         );
     };
@@ -420,6 +404,28 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
 
     const representativeConcluidoEmTemplate = (rowData) => {
         return rowData.concluido_em ? new Date(rowData.concluido_em).toLocaleDateString('pt-BR') : '-';
+    };
+
+    const representativeHistoricoTemplate = (rowData) => {
+        const logs = rowData.logs || [];
+        const temErro = logs.some(log => !log.sucesso || log.tipo === 'erro');
+
+        if (logs.length === 0) {
+            return <span style={{ color: '#999', fontSize: '12px' }}>-</span>;
+        }
+
+        return (
+            <FaHistory
+                className="history"
+                data-pr-tooltip={`Ver Histórico (${logs.length} log${logs.length > 1 ? 's' : ''})`}
+                size={16}
+                onClick={(e) => handleHistorico(e, rowData)}
+                style={{
+                    cursor: 'pointer',
+                    color: temErro ? 'var(--error)' : 'var(--primaria)',
+                }}
+            />
+        );
     };
     
     const handleUpload = async (arquivoId, file) => {
@@ -575,7 +581,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                     body={representativeStatusTemplate} 
                     field="status" 
                     header="Situação" 
-                    style={{ width: '12%' }}
+                    style={{ width: '10%' }}
                     filter
                     filterField="status"
                     filterElement={statusFilterTemplate}
@@ -592,6 +598,12 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                     filterApply={filterApplyTemplate}
                     filterMenuStyle={{ width: '14rem' }}
                     showFilterMatchModes={false}
+                ></Column>
+                <Column 
+                    body={representativeHistoricoTemplate} 
+                    field="historico" 
+                    header="Histórico" 
+                    style={{ width: '8%' }}
                 ></Column>
                 <Column 
                     body={representativeSLATemplate} 
