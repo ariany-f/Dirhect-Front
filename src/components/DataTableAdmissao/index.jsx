@@ -221,7 +221,7 @@ function DataTableAdmissao({
                                     minWidth: 'fit-content'
                                 }}
                             >
-                                {isFinalizada ? 'Finalizada' : 'Preenchido Concluído'}
+                                {isFinalizada ? 'Finalizada' : 'Preenchimento Concluído'}
                             </div>
                         )}
                         {!isModoLeitura && !isFinalizada && (
@@ -549,8 +549,8 @@ function DataTableAdmissao({
                     ) : null
                 }
             >
-                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '30%' }} sortable sortField="nome"></Column>
                 <Column body={vagaTemplate} header="Vaga" style={{ width: '15%' }} sortable sortField="vaga"></Column>
+                <Column body={representativeCandidatoTemplate} header="Candidato" style={{ width: '30%' }} sortable sortField="nome"></Column>
                 <Column body={representativeStatusTemplate} header="Preenchimento" style={{ width: '12%' }}></Column>
                 <Column body={representativeSalarioTemplate} header="Salário" style={{ width: '10%' }} sortable sortField="salario"></Column>
                 <Column body={representativeFilialTemplate} header="Filial" style={{ width: '10%' }} sortable sortField="filial"></Column>

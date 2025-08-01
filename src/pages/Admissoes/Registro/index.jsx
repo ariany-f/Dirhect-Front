@@ -2922,7 +2922,7 @@ const CandidatoRegistro = () => {
                                         color: '#fff',
                                         opacity: 1
                                     }}>
-                                        {finalizada ? 'Admissão Finalizada' : 'Preenchido Concluído'}
+                                        {finalizada ? 'Admissão Finalizada' : 'Preenchimento Concluído'}
                                     </span>
                                 </div>
                             )}
