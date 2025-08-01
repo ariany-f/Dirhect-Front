@@ -128,27 +128,48 @@ const AtividadesLista = () => {
 
     const contarTarefasPorTipo = (tipo) => {
         if (!listaTarefas) return 0;
-        return listaTarefas.filter(tarefa => 
-            tarefa.entidade_tipo === tipo && 
-            tarefa.status !== 'concluida'
-        ).length;
+        return listaTarefas.filter(tarefa => {
+            return tarefaPertenceAoTipo(tarefa, tipo) && tarefa.status !== 'concluida';
+        }).length;
     };
 
     const contarTotalTarefasPorTipo = (tipo) => {
         if (!listaTarefas) return 0;
-        return listaTarefas.filter(tarefa => 
-            tarefa.entidade_tipo === tipo
-        ).length;
+        return listaTarefas.filter(tarefa => {
+            return tarefaPertenceAoTipo(tarefa, tipo);
+        }).length;
     };
 
     const contarConcluidasPorTipo = (tipo) => {
         if (!listaTarefas) return 0;
-        return listaTarefas.filter(tarefa => tarefa.entidade_tipo === tipo && tarefa.status === 'concluida').length;
+        return listaTarefas.filter(tarefa => {
+            return tarefaPertenceAoTipo(tarefa, tipo) && tarefa.status === 'concluida';
+        }).length;
     };
 
     const contarTotalConcluidas = () => {
         if (!listaTarefas) return 0;
         return listaTarefas.filter(tarefa => tarefa.status === 'concluida').length;
+    };
+
+    // Função para contar tarefas com erro por tipo
+    const contarTarefasComErroPorTipo = (tipo) => {
+        if (!listaTarefas) return 0;
+        return listaTarefas.filter(tarefa => {
+            // Verifica múltiplos status que podem indicar erro
+            const statusComErro = ['erro', 'falha', 'failed', 'error'];
+            return tarefaPertenceAoTipo(tarefa, tipo) && statusComErro.includes(tarefa.status);
+        }).length;
+    };
+
+    // Função auxiliar para verificar se uma tarefa pertence a um tipo específico
+    const tarefaPertenceAoTipo = (tarefa, tipo) => {
+        if (tipo === 'total') return true;
+        
+        // Verifica múltiplos campos que podem identificar o tipo
+        const tipoTarefa = tarefa.entidade_tipo || tarefa.tipo_codigo || tarefa.tipo || tarefa.processo_codigo;
+        
+        return tipoTarefa === tipo;
     };
 
     const getSLAInfo = (tarefa) => {
@@ -212,12 +233,11 @@ const AtividadesLista = () => {
             <Container gap="12px">
                 <CardContainer>
                     {Object.entries(cardConfig).map(([tipo, config]) => {
-                        const total = tipo === 'total' 
-                            ? listaTarefas?.filter(tarefa => tarefa.status !== 'concluida').length || 0
-                            : contarTarefasPorTipo(tipo);
-                        const concluidas = tipo === 'total'
-                            ? contarTotalConcluidas()
-                            : contarConcluidasPorTipo(tipo);
+                        const total = contarTarefasPorTipo(tipo);
+                        const concluidas = contarConcluidasPorTipo(tipo);
+                        const totalGeral = contarTotalTarefasPorTipo(tipo);
+                        const comErro = contarTarefasComErroPorTipo(tipo);
+                        
                         return (
                             <Card 
                                 key={tipo}
@@ -232,11 +252,19 @@ const AtividadesLista = () => {
                                     <div className="titulo">{config.titulo}</div>
                                 </div>
                                 <div className="quantidade">{total}</div>
-                                {/* {concluidas > 0 && ( */}
-                                    <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
-                                        {concluidas} de {tipo === 'total' ? listaTarefas?.length : contarTotalTarefasPorTipo(tipo)} concluída{concluidas > 1 ? 's' : ''}
+                                <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
+                                    {concluidas} de {totalGeral} concluída{concluidas > 1 ? 's' : ''}
+                                </div>
+                                {comErro > 0 && (
+                                    <div style={{ 
+                                        fontSize: 12, 
+                                        color: '#dc3545', 
+                                        marginTop: 4,
+                                        fontWeight: 500
+                                    }}>
+                                        {comErro} com erro{comErro > 1 ? 's' : ''}
                                     </div>
-                                {/* )} */}
+                                )}
                             </Card>
                         );
                     })}

@@ -67,6 +67,7 @@ const Atividades = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
+    const [filtroSituacao, setFiltroSituacao] = useState('nao_concluido');
 
     useEffect(() => {
         setLoading(true);
@@ -75,6 +76,17 @@ const Atividades = () => {
         // Adiciona filtro por tipo se não for 'total'
         if (filtroAtivo !== 'total') {
             url += `&entidade_tipo=${filtroAtivo}`;
+        }
+        
+        // Adiciona filtro de situação
+        const statusFiltro = mapearFiltroSituacaoParaStatus(filtroSituacao);
+        if (statusFiltro) {
+            // Para múltiplos status, usa o formato status__in
+            if (statusFiltro.length > 1) {
+                url += `&status__in=${statusFiltro.join(',')}`;
+            } else {
+                url += `&status=${statusFiltro[0]}`;
+            }
         }
         
         // Adiciona parâmetros de ordenação se existirem
@@ -111,7 +123,7 @@ const Atividades = () => {
                 console.log(error);
                 setLoading(false);
             });
-    }, [filtroAtivo, sortField, sortOrder, currentPage, pageSize, location.pathname])
+    }, [filtroAtivo, filtroSituacao, sortField, sortOrder, currentPage, pageSize, location.pathname])
 
     const atualizarTarefa = (tarefaId, novosDados) => {
         setListaTarefas(prevTarefas => 
@@ -133,6 +145,24 @@ const Atividades = () => {
         setPageSize(size);
     };
 
+    const atualizarFiltroSituacao = (filtro) => {
+        setFiltroSituacao(filtro);
+    };
+
+    // Função para mapear filtros de situação para status específicos
+    const mapearFiltroSituacaoParaStatus = (filtro) => {
+        switch (filtro) {
+            case 'nao_concluido':
+                return ['pendente', 'em_andamento', 'aprovada'];
+            case 'concluido':
+                return ['concluida'];
+            case 'todos':
+                return null; // Não aplica filtro
+            default:
+                return null;
+        }
+    };
+
     // Filtro será aplicado no servidor, então usa listaTarefas diretamente
     const tarefasFiltradas = listaTarefas;
 
@@ -146,7 +176,7 @@ const Atividades = () => {
         if (!location.pathname.includes('/kanban')) {
             setCurrentPage(0);
         }
-    }, [filtroAtivo, location.pathname]);
+    }, [filtroAtivo, filtroSituacao, location.pathname]);
 
     if (loading) {
         return <Loading opened={loading} />
@@ -170,20 +200,22 @@ const Atividades = () => {
                     <Texto color={location.pathname.includes('/kanban') ? 'white' : '#000'}>Cartões</Texto>
                 </TabButton>
             </TabPanel>
-            <Outlet context={{ 
-                listaTarefas, 
-                atualizarTarefa, 
-                filtroAtivo, 
-                setFiltroAtivo, 
-                tarefasFiltradas,
-                sortField,
-                sortOrder,
-                atualizarOrdenacao,
-                currentPage,
-                pageSize,
-                totalRecords,
-                atualizarPaginacao
-            }} />
+                    <Outlet context={{
+            listaTarefas,
+            atualizarTarefa,
+            filtroAtivo,
+            setFiltroAtivo,
+            tarefasFiltradas,
+            sortField,
+            sortOrder,
+            atualizarOrdenacao,
+            currentPage,
+            pageSize,
+            totalRecords,
+            atualizarPaginacao,
+            filtroSituacao,
+            atualizarFiltroSituacao
+        }} />
         </ConteudoFrame>
     );
 };

@@ -24,16 +24,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Skeleton } from 'primereact/skeleton';
 import { ArmazenadorToken } from '@utils';
 
-// Registra o filtro customizado para situação
-FilterService.register('custom_status', (value, filter) => {
-    if (filter === 'nao_concluido') {
-        return ['pendente', 'em_andamento', 'aprovada'].includes(value);
-    }
-    if (filter === 'concluido') {
-        return value === 'concluida';
-    }
-    return true;
-});
+
 
 function DataTableAtividades({ 
     sortField, 
@@ -44,14 +35,20 @@ function DataTableAtividades({
     totalRecords, 
     onPageChange 
 }) {
-    const { listaTarefas, atualizarTarefa, tarefasFiltradas } = useOutletContext();
+    const { 
+        listaTarefas, 
+        atualizarTarefa, 
+        tarefasFiltradas,
+        filtroSituacao,
+        atualizarFiltroSituacao
+    } = useOutletContext();
     const toast = useRef(null);
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         sla: { value: null, matchMode: FilterMatchMode.EQUALS },
-        status: { value: 'nao_concluido', matchMode: FilterMatchMode.CUSTOM }
+        status: { value: filtroSituacao, matchMode: FilterMatchMode.EQUALS }
     })
     const navegar = useNavigate()
 
@@ -276,7 +273,9 @@ function DataTableAtividades({
         );
     };
 
-     const filterClearTemplate = (options) => {
+ 
+
+    const filterClearTemplate = (options) => {
         return (
             <button 
                 type="button" 
@@ -303,7 +302,13 @@ function DataTableAtividades({
         return (
             <button 
                 type="button" 
-                onClick={options.filterApplyCallback} 
+                onClick={() => {
+                    options.filterApplyCallback();
+                    // Aplica o filtro server-side quando clicar em aplicar
+                    if (atualizarFiltroSituacao) {
+                        atualizarFiltroSituacao(options.filterModel.value || 'nao_concluido');
+                    }
+                }} 
                 style={{
                     width: '2.5rem', 
                     height: '2.5rem', 
@@ -330,7 +335,8 @@ function DataTableAtividades({
                         name="status-nao-concluido"
                         valor={options.value === 'nao_concluido'}
                         setValor={(checked) => {
-                            options.filterCallback(checked ? 'nao_concluido' : null);
+                            const novoFiltro = checked ? 'nao_concluido' : null;
+                            options.filterCallback(novoFiltro);
                         }}
                     />
                     <label htmlFor="status-nao-concluido" className="cursor-pointer">Em aberto</label>
@@ -340,7 +346,8 @@ function DataTableAtividades({
                         name="status-concluido"
                         valor={options.value === 'concluido'}
                         setValor={(checked) => {
-                            options.filterCallback(checked ? 'concluido' : null);
+                            const novoFiltro = checked ? 'concluido' : null;
+                            options.filterCallback(novoFiltro);
                         }}
                     />
                     <label htmlFor="status-concluido" className="cursor-pointer">Concluído</label>
@@ -350,7 +357,8 @@ function DataTableAtividades({
                         name="status-todos"
                         valor={options.value === 'todos'}
                         setValor={(checked) => {
-                            options.filterCallback(checked ? 'todos' : null);
+                            const novoFiltro = checked ? 'todos' : null;
+                            options.filterCallback(novoFiltro);
                         }}
                     />
                     <label htmlFor="status-todos" className="cursor-pointer">Todos</label>
@@ -731,6 +739,7 @@ function DataTableAtividades({
             if (rowData.tenant) {
                 // Buscar do cache primeiro
                 const tenantsCache = ArmazenadorToken.getTenantsCache();
+                console.log(tenantsCache)
                 if (tenantsCache) {
                     const clienteEncontrado = tenantsCache.find(tenant => tenant?.tenant?.id === rowData.tenant);
                     if (clienteEncontrado) {
@@ -813,17 +822,18 @@ function DataTableAtividades({
                     header="Prioridade" 
                     style={{ width: '10%' }}
                 ></Column>
-                <Column
-                    body={representativeClienteTemplate}
-                    field="cliente"
-                    header="Cliente"
-                    style={{ width: '12%' }}
+                <Column 
+                    body={representativeReferenciaTemplate}
+                    field="referencia"
+                    header="Referência"
+                    sortable
+                    style={{ width: '15%' }}
                 ></Column>
                 <Column 
                     body={representativeDescricaoTemplate} 
                     field="descricao" 
                     header="Descrição" 
-                    style={{ width: '18%' }}
+                    style={{ width: '19%' }}
                 ></Column>
                 <Column 
                     body={representativePrazoTemplate} 
@@ -831,12 +841,11 @@ function DataTableAtividades({
                     header="Data Agendada" 
                     style={{ width: '12%' }}
                 ></Column>
-                <Column 
-                    body={representativeReferenciaTemplate}
-                    field="referencia"
-                    header="Referência"
-                    sortable
-                    style={{ width: '15%' }}
+                <Column
+                    body={representativeClienteTemplate}
+                    field="cliente"
+                    header="Cliente"
+                    style={{ width: '10%' }}
                 ></Column>
                 <Column 
                     body={representativeStatusTemplate} 
@@ -846,14 +855,6 @@ function DataTableAtividades({
                     filter
                     filterField="status"
                     filterElement={statusFilterTemplate}
-                    filterFunction={(rowData, filter) => {
-                        if (!filter || filter === 'todos') return true;
-                        if (filter === 'nao_concluido') {
-                            return ['pendente', 'em_andamento', 'aprovada'].includes(rowData.status);
-                        }
-                        if (filter === 'concluido') return rowData.status === 'concluida';
-                        return true;
-                    }}
                     showFilterMenu={true}
                     filterClear={filterClearTemplate}
                     filterApply={filterApplyTemplate}
@@ -882,7 +883,7 @@ function DataTableAtividades({
                     body={representativeCheckTemplate} 
                     field="check" 
                     header="Ações" 
-                    style={{ width: '10%' }}
+                    style={{ width: '11%' }}
                 ></Column>
             </DataTable>
         </>

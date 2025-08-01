@@ -632,7 +632,7 @@ function DataTableTarefas({
                     body={tipoTarefaTagTemplate} 
                     field="processo_codigo" 
                     header="Tipo de Processo" 
-                    style={{ width: '18%' }}
+                    style={{ width: '15%' }}
                     sortable
                     sortField="processo_codigo"
                     filter
@@ -646,6 +646,7 @@ function DataTableTarefas({
                     filterClear={filterClearTemplate}
                     filterApply={filterApplyTemplate}
                 />
+                <Column body={pessoaTemplate} field="pessoa" header="Referência" style={{ width: '15%' }} />
                 <Column 
                     body={clienteTemplate} 
                     field="client_nome" 
@@ -654,7 +655,6 @@ function DataTableTarefas({
                     sortable
                     sortField="tenant"
                 />
-                <Column body={pessoaTemplate} field="pessoa" header="Referência" style={{ width: '15%' }} />
                 <Column 
                     body={dataInicioTemplate} 
                     field="created_at" 
