@@ -131,55 +131,52 @@ const AtividadesLista = () => {
         agrupamento
     } = useOutletContext();
 
-    const getCount = (tipo) => {
-        if (!agrupamento) return 0;
+    const getAgrupamentoItem = (tipo) => {
+        if (!agrupamento) return null;
 
         const tipoNormalizado = normalizar(tipo.toLowerCase());
         
-        const item = agrupamento.find(item => {
+        return agrupamento.find(item => {
             const partesEntidade = item.entidade_tipo.split(' | ').map(p => normalizar(p.toLowerCase()));
             return partesEntidade.includes(tipoNormalizado);
         });
-
-        return item ? item.total : 0;
     };
-    
-    const contarTarefasPorTipo = (tipo) => {
+
+    const contarTarefasAbertas = (tipo) => {
         if (tipo === 'total') {
             if (!agrupamento) return 0;
-            return agrupamento.reduce((acc, item) => acc + item.total, 0);
+            return agrupamento.reduce((acc, item) => acc + (item.total_abertos || 0), 0);
         }
-        return getCount(tipo);
+        const item = getAgrupamentoItem(tipo);
+        return item ? item.total_abertos || 0 : 0;
     };
-
+    
     const contarTotalTarefasPorTipo = (tipo) => {
         if (tipo === 'total') {
             if (!agrupamento) return 0;
-            return agrupamento.reduce((acc, item) => acc + item.total, 0);
+            return agrupamento.reduce((acc, item) => acc + (item.total || 0), 0);
         }
-        return getCount(tipo);
+        const item = getAgrupamentoItem(tipo);
+        return item ? item.total || 0 : 0;
     };
 
     const contarConcluidasPorTipo = (tipo) => {
-        if (!listaTarefas) return 0;
-        return listaTarefas.filter(tarefa => {
-            return tarefaPertenceAoTipo(tarefa, tipo) && tarefa.status === 'concluida';
-        }).length;
-    };
-
-    const contarTotalConcluidas = () => {
-        if (!listaTarefas) return 0;
-        return listaTarefas.filter(tarefa => tarefa.status === 'concluida').length;
+        if (tipo === 'total') {
+            if (!agrupamento) return 0;
+            return agrupamento.reduce((acc, item) => acc + (item.total_concluidos || 0), 0);
+        }
+        const item = getAgrupamentoItem(tipo);
+        return item ? item.total_concluidos || 0 : 0;
     };
 
     // Função para contar tarefas com erro por tipo
     const contarTarefasComErroPorTipo = (tipo) => {
-        if (!listaTarefas) return 0;
-        return listaTarefas.filter(tarefa => {
-            // Verifica múltiplos status que podem indicar erro
-            const statusComErro = ['erro', 'falha', 'failed', 'error'];
-            return tarefaPertenceAoTipo(tarefa, tipo) && statusComErro.includes(tarefa.status);
-        }).length;
+        if (tipo === 'total') {
+            if (!agrupamento) return 0;
+            return agrupamento.reduce((acc, item) => acc + (item.total_erro || 0), 0);
+        }
+        const item = getAgrupamentoItem(tipo);
+        return item ? item.total_erro || 0 : 0;
     };
 
     // Função auxiliar para verificar se uma tarefa pertence a um tipo específico
@@ -256,7 +253,7 @@ const AtividadesLista = () => {
             <Container gap="12px">
                 <CardContainer>
                     {Object.entries(cardConfig).map(([tipo, config]) => {
-                        const total = contarTarefasPorTipo(tipo);
+                        const abertas = contarTarefasAbertas(tipo);
                         const concluidas = contarConcluidasPorTipo(tipo);
                         const totalGeral = contarTotalTarefasPorTipo(tipo);
                         const comErro = contarTarefasComErroPorTipo(tipo);
@@ -274,9 +271,9 @@ const AtividadesLista = () => {
                                     </div>
                                     <div className="titulo">{config.titulo}</div>
                                 </div>
-                                <div className="quantidade">{totalGeral}</div>
+                                <div className="quantidade">{abertas}</div>
                                 <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
-                                    {total} em aberto
+                                    {concluidas} de {totalGeral} concluída{concluidas !== 1 ? 's' : ''}
                                 </div>
                                 {comErro > 0 && (
                                     <div style={{ 
