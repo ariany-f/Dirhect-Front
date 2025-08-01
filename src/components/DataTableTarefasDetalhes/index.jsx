@@ -32,25 +32,27 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
         status: { value: null, matchMode: 'custom' }
     })
     const [logsTarefas, setLogsTarefas] = useState({})
+    const [logsLoading, setLogsLoading] = useState(false)
     const [showHistorico, setShowHistorico] = useState(false);
     const [selectedTarefa, setSelectedTarefa] = useState(null);
     const navegar = useNavigate()
 
     // Buscar logs para cada tarefa
     useEffect(() => {
-        if (tarefas && Array.isArray(tarefas)) {
-            const buscarLogsTarefas = async () => {
-                const logsPromises = tarefas.map(async (tarefa) => {
-                    try {
-                        const response = await http.get(`/log_tarefas/?tarefa=${tarefa.id}`);
-                        return { tarefaId: tarefa.id, logs: response };
-                    } catch (error) {
-                        console.error(`Erro ao buscar logs da tarefa ${tarefa.id}:`, error);
-                        return { tarefaId: tarefa.id, logs: [] };
-                    }
-                });
-
+        const buscarLogsTarefas = async () => {
+            if (tarefas && Array.isArray(tarefas)) {
+                setLogsLoading(true);
                 try {
+                    const logsPromises = tarefas.map(async (tarefa) => {
+                        try {
+                            const response = await http.get(`/log_tarefas/?tarefa=${tarefa.id}`);
+                            return { tarefaId: tarefa.id, logs: response };
+                        } catch (error) {
+                            console.error(`Erro ao buscar logs da tarefa ${tarefa.id}:`, error);
+                            return { tarefaId: tarefa.id, logs: [] };
+                        }
+                    });
+
                     const resultados = await Promise.all(logsPromises);
                     const logsMap = {};
                     resultados.forEach(({ tarefaId, logs }) => {
@@ -59,11 +61,13 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                     setLogsTarefas(logsMap);
                 } catch (error) {
                     console.error('Erro ao buscar logs das tarefas:', error);
+                } finally {
+                    setLogsLoading(false);
                 }
-            };
+            }
+        };
 
-            buscarLogsTarefas();
-        }
+        buscarLogsTarefas();
     }, [tarefas]);
 
     const onGlobalFilterChange = (value) => {
@@ -359,7 +363,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                 }}>
                     {texto}
                 </div>
-                {temErro && logs.length > 0 && (
+                {!logsLoading && temErro && logs.length > 0 && (
                     <Button
                         label={`${logs.length} log${logs.length > 1 ? 's' : ''}`}
                         severity="danger"
@@ -618,8 +622,8 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                 onRowClick={handleRowClick}
                 selectionMode={'single'}
             >
-                <Column body={representativePrioridadeTemplate} field="prioridade" header="Prioridade" style={{ width: '8%' }}></Column>
-                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '25%' }}></Column>
+                <Column body={representativePrioridadeTemplate} field="prioridade" header="Prioridade" style={{ width: '10%' }}></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '35%' }}></Column>
                 <Column 
                     body={representativeStatusTemplate} 
                     field="status" 
@@ -660,8 +664,8 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                     filterMenuStyle={{ width: '14rem' }}
                     showFilterMatchModes={false}
                 ></Column>
-                <Column body={representativeConcluidoEmTemplate} field="concluido_em" header="Concluído em" style={{ width: '12%' }}></Column>
-                <Column body={representativeCheckTemplate} field="check" header="Ações" style={{ width: '11%' }}></Column>
+                <Column body={representativeConcluidoEmTemplate} field="concluido_em" header="Concluído em" style={{ width: '15%' }}></Column>
+                <Column body={representativeCheckTemplate} field="check" header="Ações" style={{ width: '15%' }}></Column>
             </DataTable>
             <ModalHistoricoTarefa 
                 opened={showHistorico}
