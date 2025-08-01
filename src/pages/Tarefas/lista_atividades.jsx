@@ -7,6 +7,8 @@ import Container from '@components/Container'
 import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaFileInvoiceDollar, FaTasks } from 'react-icons/fa'
 import { Dropdown } from 'primereact/dropdown';
 
+const normalizar = (texto) => texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
@@ -123,21 +125,39 @@ const AtividadesLista = () => {
         currentPage,
         pageSize,
         totalRecords,
-        atualizarPaginacao
+        atualizarPaginacao,
+        filtroSLA,
+        atualizarFiltroSLA,
+        agrupamento
     } = useOutletContext();
 
+    const getCount = (tipo) => {
+        if (!agrupamento) return 0;
+
+        const tipoNormalizado = normalizar(tipo.toLowerCase());
+        
+        const item = agrupamento.find(item => {
+            const partesEntidade = item.entidade_tipo.split(' | ').map(p => normalizar(p.toLowerCase()));
+            return partesEntidade.includes(tipoNormalizado);
+        });
+
+        return item ? item.total : 0;
+    };
+    
     const contarTarefasPorTipo = (tipo) => {
-        if (!listaTarefas) return 0;
-        return listaTarefas.filter(tarefa => {
-            return tarefaPertenceAoTipo(tarefa, tipo) && tarefa.status !== 'concluida';
-        }).length;
+        if (tipo === 'total') {
+            if (!agrupamento) return 0;
+            return agrupamento.reduce((acc, item) => acc + item.total, 0);
+        }
+        return getCount(tipo);
     };
 
     const contarTotalTarefasPorTipo = (tipo) => {
-        if (!listaTarefas) return 0;
-        return listaTarefas.filter(tarefa => {
-            return tarefaPertenceAoTipo(tarefa, tipo);
-        }).length;
+        if (tipo === 'total') {
+            if (!agrupamento) return 0;
+            return agrupamento.reduce((acc, item) => acc + item.total, 0);
+        }
+        return getCount(tipo);
     };
 
     const contarConcluidasPorTipo = (tipo) => {
@@ -169,7 +189,10 @@ const AtividadesLista = () => {
         // Verifica múltiplos campos que podem identificar o tipo
         const tipoTarefa = tarefa.entidade_tipo || tarefa.tipo_codigo || tarefa.tipo || tarefa.processo_codigo;
         
-        return tipoTarefa === tipo;
+        const tipoNormalizado = normalizar(tipo.toLowerCase());
+        const tipoTarefaNormalizado = String(tipoTarefa).toLowerCase();
+
+        return tipoTarefaNormalizado.includes(tipoNormalizado);
     };
 
     const getSLAInfo = (tarefa) => {
@@ -251,9 +274,9 @@ const AtividadesLista = () => {
                                     </div>
                                     <div className="titulo">{config.titulo}</div>
                                 </div>
-                                <div className="quantidade">{total}</div>
+                                <div className="quantidade">{totalGeral}</div>
                                 <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>
-                                    {concluidas} de {totalGeral} concluída{concluidas > 1 ? 's' : ''}
+                                    {total} em aberto
                                 </div>
                                 {comErro > 0 && (
                                     <div style={{ 

@@ -33,24 +33,39 @@ function DataTableAtividades({
     currentPage, 
     pageSize, 
     totalRecords, 
-    onPageChange 
+    onPageChange
 }) {
     const { 
         listaTarefas, 
         atualizarTarefa, 
         tarefasFiltradas,
         filtroSituacao,
-        atualizarFiltroSituacao
+        atualizarFiltroSituacao,
+        filtroSLA,
+        atualizarFiltroSLA
     } = useOutletContext();
+    
+    // console.log('DataTableAtividades - atualizarFiltroSLA:', atualizarFiltroSLA);
+    // console.log('DataTableAtividades - filtroSLA:', filtroSLA);
+    
     const toast = useRef(null);
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        sla: { value: null, matchMode: FilterMatchMode.EQUALS },
+        sla: { value: filtroSLA, matchMode: FilterMatchMode.EQUALS },
         status: { value: filtroSituacao, matchMode: FilterMatchMode.EQUALS }
     })
     const navegar = useNavigate()
+
+    // Atualiza os filtros quando os valores mudarem
+    useEffect(() => {
+        setFilters(prev => ({
+            ...prev,
+            sla: { value: filtroSLA, matchMode: FilterMatchMode.EQUALS },
+            status: { value: filtroSituacao, matchMode: FilterMatchMode.EQUALS }
+        }));
+    }, [filtroSLA, filtroSituacao]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -299,16 +314,54 @@ function DataTableAtividades({
     };
 
     const filterApplyTemplate = (options) => {
+        const handleApply = () => {
+            options.filterApplyCallback();
+            
+            // Aplica o filtro server-side quando clicar em aplicar
+            if (atualizarFiltroSituacao && options.field === 'status') {
+                atualizarFiltroSituacao(options.filterModel.value || 'nao_concluido');
+            }
+            
+            // Verifica se é o filtro de SLA baseado no contexto
+            if (atualizarFiltroSLA && (options.field === 'sla')) {
+                atualizarFiltroSLA(options.filterModel.value);
+            }
+        };
+
         return (
             <button 
                 type="button" 
-                onClick={() => {
-                    options.filterApplyCallback();
-                    // Aplica o filtro server-side quando clicar em aplicar
-                    if (atualizarFiltroSituacao) {
-                        atualizarFiltroSituacao(options.filterModel.value || 'nao_concluido');
-                    }
-                }} 
+                onClick={handleApply}
+                style={{
+                    width: '2.5rem', 
+                    height: '2.5rem', 
+                    color: 'var(--white)',
+                    backgroundColor: 'var(--green-500)',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <FaCheck fill="var(--white)" />
+            </button>
+        );
+    };
+
+    const slaFilterApplyTemplate = (options) => {
+        const handleApply = () => {
+            options.filterApplyCallback();
+            if (atualizarFiltroSLA) {
+                atualizarFiltroSLA(options.filterModel.value);
+            }
+        };
+
+        return (
+            <button 
+                type="button" 
+                onClick={handleApply}
                 style={{
                     width: '2.5rem', 
                     height: '2.5rem', 
@@ -543,7 +596,7 @@ function DataTableAtividades({
         const diasAteEntrega = Math.ceil((dataAgendada - hoje) / (1000 * 60 * 60 * 24));
         if (diasAteEntrega >= 2) {
             return 'dentro_prazo';
-        } else if (diasAteEntrega > 0) {
+        } else if (diasAteEntrega >= 0) {
             return 'proximo_prazo';
         } else {
             return 'atrasado';
@@ -624,7 +677,7 @@ function DataTableAtividades({
             if (diasAteEntrega >= 2) {
                 cor = 'var(--green-500)';
                 texto = 'Dentro do prazo';
-            } else if (diasAteEntrega > 0) {
+            } else if (diasAteEntrega >= 0) {
                 cor = '#ffa000';
                 texto = 'Próximo do prazo';
             } else {
@@ -869,13 +922,9 @@ function DataTableAtividades({
                     filter
                     filterField="sla"
                     filterElement={slaFilterTemplate}
-                    filterFunction={(rowData, filter) => {
-                        if (!filter) return true;
-                        return getSLAInfo(rowData) === filter;
-                    }}
                     showFilterMenu={true}
                     filterClear={filterClearTemplate}
-                    filterApply={filterApplyTemplate}
+                    filterApply={slaFilterApplyTemplate}
                     filterMenuStyle={{ width: '14rem' }}
                     showFilterMatchModes={false}
                 ></Column>

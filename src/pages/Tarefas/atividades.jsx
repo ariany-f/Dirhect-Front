@@ -12,6 +12,7 @@ import Texto from '@components/Texto'
 import tarefas from '@json/tarefas.json'
 import React, { createContext, useContext } from 'react';
 import http from '@http';
+import { ArmazenadorToken } from '@utils';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -68,6 +69,8 @@ const Atividades = () => {
     const [pageSize, setPageSize] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
     const [filtroSituacao, setFiltroSituacao] = useState('nao_concluido');
+    const [filtroSLA, setFiltroSLA] = useState(null);
+    const [agrupamento, setAgrupamento] = useState(null);
 
     useEffect(() => {
         setLoading(true);
@@ -79,13 +82,26 @@ const Atividades = () => {
         }
         
         // Adiciona filtro de situação
-        const statusFiltro = mapearFiltroSituacaoParaStatus(filtroSituacao);
-        if (statusFiltro) {
-            // Para múltiplos status, usa o formato status__in
-            if (statusFiltro.length > 1) {
-                url += `&status__in=${statusFiltro.join(',')}`;
-            } else {
-                url += `&status=${statusFiltro[0]}`;
+        if (!location.pathname.includes('/kanban')) {
+            const statusFiltro = mapearFiltroSituacaoParaStatus(filtroSituacao);
+            if (statusFiltro) {
+                // Para múltiplos status, usa o formato status__in
+                if (statusFiltro.length > 1) {
+                    url += `&status__in=${statusFiltro.join(',')}`;
+                } else {
+                    url += `&status=${statusFiltro[0]}`;
+                }
+            }
+        }
+        
+        // Adiciona filtro de SLA
+        if (filtroSLA) {
+            const parametrosSLA = mapearFiltroSLAParaParametros(filtroSLA);
+            console.log('Parâmetros SLA:', parametrosSLA);
+            if (parametrosSLA) {
+                Object.entries(parametrosSLA).forEach(([key, value]) => {
+                    url += `&${key}=${value}`;
+                });
             }
         }
         
@@ -117,13 +133,18 @@ const Atividades = () => {
                     setListaTarefas(response);
                     setTotalRecords(response.length || 0);
                 }
+                if (response.agrupamento_por_tipo) {
+                    setAgrupamento(response.agrupamento_por_tipo);
+                } else {
+                    setAgrupamento(null);
+                }
                 setLoading(false);
             })
             .catch(error => {
                 console.log(error);
                 setLoading(false);
             });
-    }, [filtroAtivo, filtroSituacao, sortField, sortOrder, currentPage, pageSize, location.pathname])
+    }, [filtroAtivo, filtroSituacao, filtroSLA, sortField, sortOrder, currentPage, pageSize, location.pathname])
 
     const atualizarTarefa = (tarefaId, novosDados) => {
         setListaTarefas(prevTarefas => 
@@ -149,6 +170,11 @@ const Atividades = () => {
         setFiltroSituacao(filtro);
     };
 
+    const atualizarFiltroSLA = (filtro) => {
+        console.log('atividades.jsx - atualizarFiltroSLA chamado com:', filtro);
+        setFiltroSLA(filtro);
+    };
+
     // Função para mapear filtros de situação para status específicos
     const mapearFiltroSituacaoParaStatus = (filtro) => {
         switch (filtro) {
@@ -160,6 +186,35 @@ const Atividades = () => {
                 return null; // Não aplica filtro
             default:
                 return null;
+        }
+    };
+
+    // Função para mapear filtros de SLA para parâmetros de data
+    const mapearFiltroSLAParaParametros = (filtro) => {
+        const hoje = new Date();
+        const amanha = new Date(hoje);
+        amanha.setDate(amanha.getDate() + 1);
+        const depoisAmanha = new Date(hoje);
+        depoisAmanha.setDate(depoisAmanha.getDate() + 2);
+        
+        switch (filtro) {
+            case 'dentro_prazo':
+                // Tarefas com agendado_para >= depois de amanhã (2+ dias)
+                return { agendado_para__gte: depoisAmanha.toISOString().split('T')[0] };
+            case 'proximo_prazo':
+                // Tarefas com agendado_para entre hoje e depois de amanhã (0-2 dias)
+                return { 
+                    agendado_para__gte: hoje.toISOString().split('T')[0],
+                    agendado_para__lt: depoisAmanha.toISOString().split('T')[0]
+                };
+            case 'atrasado':
+                // Tarefas com agendado_para < hoje
+                return { agendado_para__lt: hoje.toISOString().split('T')[0] };
+            case 'concluido':
+                // Tarefas concluídas (status = concluida)
+                return { status: 'concluida' };
+            default:
+                return null; // Não aplica filtro
         }
     };
 
@@ -176,7 +231,7 @@ const Atividades = () => {
         if (!location.pathname.includes('/kanban')) {
             setCurrentPage(0);
         }
-    }, [filtroAtivo, filtroSituacao, location.pathname]);
+    }, [filtroAtivo, filtroSituacao, filtroSLA, location.pathname]);
 
     if (loading) {
         return <Loading opened={loading} />
@@ -214,7 +269,10 @@ const Atividades = () => {
             totalRecords,
             atualizarPaginacao,
             filtroSituacao,
-            atualizarFiltroSituacao
+            atualizarFiltroSituacao,
+            filtroSLA,
+            atualizarFiltroSLA,
+            agrupamento
         }} />
         </ConteudoFrame>
     );
