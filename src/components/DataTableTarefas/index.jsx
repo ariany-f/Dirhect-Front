@@ -579,7 +579,7 @@ function DataTableTarefas({
                 <>
                     <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
                     <div data-pr-tooltip="Carregando..." className="cliente">
-                        <Skeleton shape="circle" size="24px" />
+                        <Skeleton shape="circle" size="36px" />
                     </div>
                 </>
             );
@@ -589,7 +589,7 @@ function DataTableTarefas({
             <>
                 <Tooltip target=".cliente" mouseTrack mouseTrackLeft={10} />
                 <div data-pr-tooltip={cliente.nome || '-'} className="cliente">
-                    <CustomImage src={cliente.simbolo} width={24} height={24} />
+                    <CustomImage src={cliente.simbolo} width={36} height={36} />
                 </div>
             </>
         );
