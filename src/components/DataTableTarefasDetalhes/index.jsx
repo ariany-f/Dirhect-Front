@@ -21,6 +21,7 @@ import { MdFilterAltOff } from 'react-icons/md';
 import React from 'react';
 import { Tooltip } from 'primereact/tooltip';
 import ModalHistoricoTarefa from '@components/ModalHistoricoTarefa';
+import Loading from '@components/Loading';
 
 function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = null }) {
     const toast = useRef(null);
@@ -33,6 +34,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
     })
     const [showHistorico, setShowHistorico] = useState(false);
     const [selectedTarefa, setSelectedTarefa] = useState(null);
+    const [loadingAction, setLoadingAction] = useState(false);
     const navegar = useNavigate()
 
     const onGlobalFilterChange = (value) => {
@@ -84,8 +86,9 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
         }
         
         const handleChange = async (checked) => {
-            if(rowData.status === 'em_andamento') {
-                try {
+            setLoadingAction(true);
+            try {
+                if(rowData.status === 'em_andamento') {
                     await http.post(`/tarefas/${rowData.id}/concluir/`);
                     rowData.status = 'concluida';
                     rowData.status_display = 'Concluída';
@@ -99,35 +102,19 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
                     if (onTarefaUpdate) {
                         onTarefaUpdate();
                     }
-                } catch (error) {
+                } else if(rowData.status === 'pendente') {
+                    await http.post(`/tarefas/${rowData.id}/aprovar/`);
+                    rowData.status = 'aprovada';
+                    rowData.status_display = 'Aprovada';
+                    rowData.check = true;
                     toast.current.show({
-                        severity: 'error',
-                        summary: 'Erro ao concluir tarefa',
+                        severity: 'success',
+                        summary: 'Tarefa aprovada com sucesso',
                         life: 3000
                     });
-                }
-            } else {
-                if(rowData.status === 'pendente') {
-                    try {
-                        await http.post(`/tarefas/${rowData.id}/aprovar/`);
-                        rowData.status = 'aprovada';
-                        rowData.status_display = 'Aprovada';
-                        rowData.check = true;
-                        toast.current.show({
-                            severity: 'success',
-                            summary: 'Tarefa aprovada com sucesso',
-                            life: 3000
-                        });
-                        // Chama callback para atualizar dados
-                        if (onTarefaUpdate) {
-                            onTarefaUpdate();
-                        }
-                    } catch (error) {
-                        toast.current.show({
-                            severity: 'error',
-                            summary: 'Erro ao aprovar tarefa',
-                            life: 3000
-                        });
+                    // Chama callback para atualizar dados
+                    if (onTarefaUpdate) {
+                        onTarefaUpdate();
                     }
                 } else {
                     toast.current.show({
@@ -136,6 +123,14 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
                         life: 3000
                     });
                 }
+            } catch (error) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro ao processar tarefa',
+                    life: 3000
+                });
+            } finally {
+                setLoadingAction(false);
             }
         };
 
@@ -174,10 +169,12 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
                         style={{ display: 'inline-flex' }}
                     >
                         <Button
-                            label={getButtonText()}
+                            label={loadingAction ? 'Processando...' : getButtonText()}
                             severity={getButtonSeverity()}
                             size="small"
                             onClick={() => handleChange(true)}
+                            disabled={loadingAction}
+                            loading={loadingAction}
                             style={{ 
                                 fontSize: '12px', 
                                 padding: '4px 12px',
@@ -570,6 +567,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
 
     return (
         <>
+            <Loading opened={loadingAction} />
             <Toast ref={toast} />
             <DataTable 
                 value={tarefasOrdenadas} 
