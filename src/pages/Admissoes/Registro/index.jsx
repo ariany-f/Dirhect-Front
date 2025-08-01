@@ -249,7 +249,7 @@ const ModalButton = styled.button`
     }
     
     &:disabled {
-        opacity: 0.6;
+        opacity: 0.8;
         cursor: not-allowed;
         transform: none !important;
     }
@@ -2708,7 +2708,7 @@ const CandidatoRegistro = () => {
                         background-color: #f5f5f5 !important;
                         color: #666 !important;
                         cursor: not-allowed !important;
-                        opacity: 0.7 !important;
+                        opacity: 0.9 !important;
                     }
                     
                     .modo-leitura input:disabled,
@@ -2717,12 +2717,12 @@ const CandidatoRegistro = () => {
                         background-color: #f5f5f5 !important;
                         color: #666 !important;
                         cursor: not-allowed !important;
-                        opacity: 0.7 !important;
+                        opacity: 0.9 !important;
                     }
                     
                     .modo-leitura .p-dropdown {
                         background-color: #f5f5f5 !important;
-                        opacity: 0.7 !important;
+                        opacity: 0.9 !important;
                         pointer-events: none !important;
                     }
                     
@@ -2731,7 +2731,7 @@ const CandidatoRegistro = () => {
                     }
                     
                     .modo-leitura .p-calendar {
-                        opacity: 0.7 !important;
+                        opacity: 0.9 !important;
                         pointer-events: none !important;
                     }
                     
@@ -2742,12 +2742,12 @@ const CandidatoRegistro = () => {
                     }
                     
                     .modo-leitura .p-checkbox {
-                        opacity: 0.7 !important;
+                        opacity: 0.9 !important;
                         pointer-events: none !important;
                     }
                     
                     .modo-leitura .p-switch {
-                        opacity: 0.7 !important;
+                        opacity: 0.9 !important;
                         pointer-events: none !important;
                     }
                     
@@ -2920,9 +2920,9 @@ const CandidatoRegistro = () => {
                                         fontSize: 11,
                                         fontWeight: 600,
                                         color: '#fff',
-                                        opacity: 0.9
+                                        opacity: 1
                                     }}>
-                                        {finalizada ? 'Admissão Finalizada' : 'Modo Leitura'}
+                                        {finalizada ? 'Admissão Finalizada' : 'Preenchido Concluído'}
                                     </span>
                                 </div>
                             )}
@@ -2940,7 +2940,7 @@ const CandidatoRegistro = () => {
                                     fontSize: 11,
                                     fontWeight: 600,
                                     color: '#fff',
-                                    opacity: 0.9
+                                    opacity: 1
                                 }}>
                                     Vaga:
                                 </span>

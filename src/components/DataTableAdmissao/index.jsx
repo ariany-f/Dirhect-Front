@@ -221,7 +221,7 @@ function DataTableAdmissao({
                                     minWidth: 'fit-content'
                                 }}
                             >
-                                {isFinalizada ? 'Finalizada' : 'Modo Leitura'}
+                                {isFinalizada ? 'Finalizada' : 'Preenchido Concluído'}
                             </div>
                         )}
                         {!isModoLeitura && !isFinalizada && (
