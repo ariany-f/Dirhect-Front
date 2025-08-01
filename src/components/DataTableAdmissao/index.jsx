@@ -155,10 +155,6 @@ function DataTableAdmissao({
             formataCPF(rowData?.cpf)
             : '---';
         
-        // Verifica se está em modo leitura usando a mesma lógica do index.jsx
-        const isModoLeitura = verificarModoLeitura(rowData);
-        const isFinalizada = verificarFinalizada(rowData);
-        
         return (
             <div key={rowData.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 {/* Imagem ou Avatar */}
@@ -200,49 +196,11 @@ function DataTableAdmissao({
                     </div>
                 </div>
                 
-                {/* Nome, CPF e etiqueta de status */}
+                {/* Nome e CPF */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'space-between', gap: '4px', flexWrap: 'wrap' }}>
-                        <Texto weight={700}>
-                            {rowData?.nome || '---'}
-                        </Texto>
-                        {isModoLeitura && (
-                            <div
-                                style={{
-                                    backgroundColor: isFinalizada ? ' rgba(102, 187, 106, 0.15)' : 'rgba(66, 165, 245, 0.15)',
-                                    color: isFinalizada ? '#28a745' : 'rgb(66, 165, 245)',
-                                    fontWeight: 500,
-                                    fontSize: 12,
-                                    borderRadius: 6,
-                                    padding: '6px 12px',
-                                    border: 'none',
-                                    display: 'inline-block',
-                                    textAlign: 'center',
-                                    minWidth: 'fit-content'
-                                }}
-                            >
-                                {isFinalizada ? 'Finalizada' : 'Preenchimento Concluído'}
-                            </div>
-                        )}
-                        {!isModoLeitura && !isFinalizada && (
-                            <div
-                                style={{
-                                    backgroundColor: 'rgb(255, 248, 225)',
-                                    color: 'rgb(255, 160, 0)',
-                                    fontWeight: 500,
-                                    fontSize: 12,
-                                    borderRadius: 6,
-                                    padding: '6px 12px',
-                                    border: 'none',
-                                    display: 'inline-block',
-                                    textAlign: 'center',
-                                    minWidth: 'fit-content'
-                                }}
-                            >
-                                Em Andamento
-                            </div>
-                        )}
-                    </div>
+                    <Texto weight={700}>
+                        {rowData?.nome || '---'}
+                    </Texto>
                     <div style={{marginTop: '6px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
                         CPF:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{cpf}</p>
                     </div>
@@ -448,28 +406,74 @@ function DataTableAdmissao({
         );
     };
 
-    const vagaTemplate = (rowData) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {rowData?.dados_vaga?.titulo ?
-                <Link 
-                    to={`/vagas/detalhes/${rowData?.dados_vaga?.id}`}
-                    style={{ 
-                        color: 'var(--primaria)',
-                        textDecoration: 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <span>{rowData?.dados_vaga?.titulo}</span>
-                    <FaExternalLinkAlt size={12} />
-                </Link>
-            :
-                <span>---</span>
-            }
-        </div>
-    );
+    const vagaTemplate = (rowData) => {
+        // Verifica se está em modo leitura usando a mesma lógica do index.jsx
+        const isModoLeitura = verificarModoLeitura(rowData);
+        const isFinalizada = verificarFinalizada(rowData);
+        
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {rowData?.dados_vaga?.titulo ?
+                        <Link 
+                            to={`/vagas/detalhes/${rowData?.dados_vaga?.id}`}
+                            style={{ 
+                                color: 'var(--primaria)',
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px'
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <span>{rowData?.dados_vaga?.titulo}</span>
+                            <FaExternalLinkAlt size={12} />
+                        </Link>
+                    :
+                        <span>---</span>
+                    }
+                </div>
+                
+                {/* Status da admissão */}
+                {isModoLeitura && (
+                    <div
+                        style={{
+                            backgroundColor: isFinalizada ? 'rgba(102, 187, 106, 0.15)' : 'rgba(66, 165, 245, 0.15)',
+                            color: isFinalizada ? '#28a745' : 'rgb(66, 165, 245)',
+                            fontWeight: 500,
+                            fontSize: 11,
+                            borderRadius: 4,
+                            padding: '4px 8px',
+                            border: 'none',
+                            display: 'inline-block',
+                            textAlign: 'center',
+                            width: 'fit-content'
+                        }}
+                    >
+                        {isFinalizada ? 'Finalizada' : 'Preenchimento Concluído'}
+                    </div>
+                )}
+                {!isModoLeitura && !isFinalizada && (
+                    <div
+                        style={{
+                            backgroundColor: 'rgb(255, 248, 225)',
+                            color: 'rgb(255, 160, 0)',
+                            fontWeight: 500,
+                            fontSize: 11,
+                            borderRadius: 4,
+                            padding: '4px 8px',
+                            border: 'none',
+                            display: 'inline-block',
+                            textAlign: 'center',
+                            width: 'fit-content'
+                        }}
+                    >
+                        Em Andamento
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     const handleSort = (event) => {
         if (onSort) {
@@ -491,11 +495,10 @@ function DataTableAdmissao({
                     cursor: pointer;
                 }
                 .datatable-readonly-row {
-                    opacity: 0.7;
-                    background-color: #f8f9fa !important;
+                    opacity: 0.8;
                 }
                 .datatable-readonly-row:hover {
-                    opacity: 0.8;
+                    opacity: 1;
                     background-color: #e9ecef !important;
                 }
             `}</style>
