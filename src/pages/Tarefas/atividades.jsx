@@ -233,12 +233,9 @@ const Atividades = () => {
         }
     }, [filtroAtivo, filtroSituacao, filtroSLA, location.pathname]);
 
-    if (loading) {
-        return <Loading opened={loading} />
-    }
-
     return (
         <ConteudoFrame>
+            <Loading opened={loading} />
             <TabPanel>
                 <TabButton 
                     active={!location.pathname.includes('/kanban')} 
