@@ -34,7 +34,7 @@ const Admissoes = () => {
     const loadData = (currentPage, currentPageSize, search = '', sort = '-id') => {
         setLoading(true);
         const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
-        http.get(`admissao/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&nome=${search}` : ''}${orderParam}`)
+        http.get(`admissao/?format=json&page=${currentPage}&page_size=${currentPageSize}${search ? `&search=${search}` : ''}${orderParam}`)
             .then(response => {
                 setAdmissoes(response.results || response);
                 setTotalRecords(response.count || 0);
