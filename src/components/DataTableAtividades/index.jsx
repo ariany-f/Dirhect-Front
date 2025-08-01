@@ -885,7 +885,6 @@ function DataTableAtividades({
                     body={representativeReferenciaTemplate}
                     field="referencia"
                     header="Referência"
-                    sortable
                     style={{ width: '15%' }}
                 ></Column>
                 <Column 
