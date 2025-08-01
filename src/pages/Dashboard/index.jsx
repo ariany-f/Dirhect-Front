@@ -23,7 +23,6 @@ function Dashboard() {
     const [colaboradores, setColaboradores] = useState(null)
     const [loadingOpened, setLoadingOpened] = useState(true)
     const [dashboardData, setDashboardData] = useState({})
-    const [atividadesAbertas, setAtividadesAbertas] = useState(0)
     const [atividadesPorStatus, setAtividadesPorStatus] = useState({})
     const [atividadesPorTipo, setAtividadesPorTipo] = useState({})
     const [atividadesPorSLA, setAtividadesPorSLA] = useState({})
@@ -32,6 +31,7 @@ function Dashboard() {
     const [totalFerias, setTotalFerias] = useState(0)
     const [totalAdmissoes, setTotalAdmissoes] = useState(0)
     const [atividadesRaw, setAtividadesRaw] = useState([])
+    const [atividadesAgrupadas, setAtividadesAgrupadas] = useState([])
     const [refreshing, setRefreshing] = useState(false)
     const [funcionariosDashboard, setFuncionariosDashboard] = useState(null)
     const isMounted = useRef(true)
@@ -98,36 +98,36 @@ function Dashboard() {
 
     // Calcular dados derivados com useMemo
     const dadosCalculados = useMemo(() => {
-        // Contar abertas criadas esta semana
+        // Contar abertas criadas esta semana (from open tasks)
         const abertasEstaSemana = atividadesRaw.filter(
             atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && isThisWeek(atv.criado_em)
         ).length;
 
-        // Contar abertas com prazo final hoje
+        // Contar abertas com prazo final hoje (from open tasks)
         const abertasPrazoHoje = atividadesRaw.filter(
             atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && atv.agendado_para && isToday(atv.agendado_para)
         ).length;
 
-        // Contar abertas com prioridade alta
+        // Contar abertas com prioridade alta (from open tasks)
         const abertasPrioridadeAlta = atividadesRaw.filter(
             atv => (atv.status !== 'concluida' && atv.status !== 'Concluída') && (atv.prioridade === 1)
         ).length;
 
-        // Calcular atividades concluídas
-        const atividadesConcluidas = atividadesPorStatus['concluida'] || atividadesPorStatus['Concluída'] || 0;
+        // Calcular totais a partir dos dados agrupados
+        const totalAtividades = atividadesAgrupadas.reduce((sum, item) => sum + item.total, 0);
+        const atividadesConcluidas = atividadesAgrupadas.reduce((sum, item) => sum + item.total_concluidos, 0);
+        const totalAbertas = atividadesAgrupadas.reduce((sum, item) => sum + item.total_abertos, 0);
 
-        // Calcular atividades abertas por entidade
+        // Calcular atividades abertas por entidade a partir dos dados agrupados
         const abertasPorEntidade = {};
-        if (Array.isArray(atividadesRaw)) {
-            atividadesRaw.forEach(atividade => {
-                if (atividade.status !== 'concluida' && atividade.status !== 'Concluída') {
-                    const entidade = entidadeDisplayMap?.[atividade.entidade_display || atividade.entidade_tipo] || atividade.entidade_display || atividade.entidade_tipo;
-                    abertasPorEntidade[entidade] = (abertasPorEntidade[entidade] || 0) + 1;
+        if (Array.isArray(atividadesAgrupadas)) {
+            atividadesAgrupadas.forEach(item => {
+                const entidade = item.entidade_tipo.split(' | ').pop().trim();
+                if (item.total_abertos > 0) {
+                    abertasPorEntidade[entidade] = item.total_abertos;
                 }
             });
         }
-
-        const totalAtividades = atividadesRaw.length;
 
         return {
             abertasEstaSemana,
@@ -136,6 +136,7 @@ function Dashboard() {
             atividadesConcluidas,
             abertasPorEntidade,
             totalAtividades,
+            totalAbertas,
             // Dados do dashboard de funcionários
             totalFuncionarios: funcionariosDashboard?.total_funcionarios || 0,
             funcionariosAtivos: funcionariosDashboard?.funcionarios_ativos || 0,
@@ -147,7 +148,7 @@ function Dashboard() {
             totalDemitidos: funcionariosDashboard?.total_demitidos || 0,
             demitidosNoMes: funcionariosDashboard?.demitidos_no_mes || 0
         };
-    }, [atividadesRaw, atividadesPorStatus, entidadeDisplayMap, funcionariosDashboard]);
+    }, [atividadesRaw, atividadesAgrupadas, funcionariosDashboard]);
 
     // Função para buscar todos os dados do dashboard
     const carregarDashboard = async () => {
@@ -171,35 +172,33 @@ function Dashboard() {
                     // Carregar outras informações apenas se necessário
                     await http.get('tarefas/?format=json&status__in=pendente,em_andamento,aprovada,erro')
                         .then(response => {
-                            setAtividadesRaw(response)
-                            // atividades abertas: status diferente de concluida/finalizada
-                            const atividadesAbertas = response.filter(atividade => 
-                                atividade.status !== 'concluida' && 
-                                atividade.status !== 'finalizada'
-                            ).length
-                            setAtividadesAbertas(atividadesAbertas || 0)
+                            setAtividadesRaw(response.results || [])
+                            setAtividadesAgrupadas(response.agrupamento_por_tipo || [])
+
+                            const openTasks = response.results || [];
+                            
                             // Agrupar por status
-                            const porStatus = response.reduce((acc, atividade) => {
+                            const porStatus = openTasks.reduce((acc, atividade) => {
                                 acc[atividade.status] = (acc[atividade.status] || 0) + 1;
                                 return acc;
                             }, {});
                             setAtividadesPorStatus(porStatus)
                             // Agrupar por tipo de atividade
-                            const porTipo = response.reduce((acc, atividade) => {
+                            const porTipo = openTasks.reduce((acc, atividade) => {
                                 const tipo = atividade.tipo_display || atividade.entidade_display || atividade.tipo_tarefa || atividade.tipo;
                                 acc[tipo] = (acc[tipo] || 0) + 1;
                                 return acc;
                             }, {});
                             setAtividadesPorTipo(porTipo)
                             // Agrupar por SLA
-                            const porSLA = response.reduce((acc, atividade) => {
+                            const porSLA = openTasks.reduce((acc, atividade) => {
                                 const slaInfo = getSLAInfo(atividade);
                                 acc[slaInfo] = (acc[slaInfo] || 0) + 1;
                                 return acc;
                             }, {});
                             setAtividadesPorSLA(porSLA)
                             // Agrupar por entidade
-                            const porEntidade = response.reduce((acc, atividade) => {
+                            const porEntidade = openTasks.reduce((acc, atividade) => {
                                 const entidade = atividade.entidade_display || atividade.entidade_tipo || 'Outro';
                                 acc[entidade] = (acc[entidade] || 0) + 1;
                                 return acc;
@@ -207,21 +206,21 @@ function Dashboard() {
                             setAtividadesPorEntidade(porEntidade);
                     })
                     .catch(() => {
-                        setAtividadesAbertas(0)
                         setAtividadesPorStatus({})
                         setAtividadesPorTipo({})
                         setAtividadesPorSLA({})
                         setAtividadesPorEntidade({})
                         setAtividadesRaw([])
+                        setAtividadesAgrupadas([])
                     })
                 }
                 else {
-                    setAtividadesAbertas(0)
                     setAtividadesPorStatus({})
                     setAtividadesPorTipo({})
                     setAtividadesPorSLA({})
                     setAtividadesPorEntidade({})
                     setAtividadesRaw([])
+                    setAtividadesAgrupadas([])
                 }
                 if(ArmazenadorToken.hasPermission('view_vagas')) {
                     await http.get('vagas/').then(response => {
@@ -270,7 +269,7 @@ function Dashboard() {
         
         if (diasAteEntrega >= 2) {
             return 'Dentro do Prazo';
-        } else if (diasAteEntrega > 0) {
+        } else if (diasAteEntrega >= 0) {
             return 'Próximo do Prazo';
         } else {
             return 'Atrasado';
@@ -393,7 +392,8 @@ function Dashboard() {
                 'pendente': 'Pendente',
                 'em_andamento': 'Em Andamento',
                 'concluida': 'Concluída',
-                'Aguardando': 'Aguardando'
+                'Aguardando': 'Aguardando',
+                'erro': 'Erro'
             };
             return statusMap[status] || status;
         }),
@@ -521,7 +521,7 @@ function Dashboard() {
                             </div>
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start', minWidth: 70}}>
                                 <span style={{fontSize: 24, fontWeight: 900, color: '#5472d4', display: 'flex', alignItems: 'center', gap: 2}}>
-                                    <FaRegClock fill="#5472d4" size={22} style={{marginRight: 2, verticalAlign: 'middle'}} /> {atividadesAbertas}
+                                    <FaRegClock fill="#5472d4" size={22} style={{marginRight: 2, verticalAlign: 'middle'}} /> {dadosCalculados.totalAbertas}
                                 </span>
                                 <span style={{fontWeight: 400, fontSize: 12, marginTop: 2}}>Abertas</span>
                             </div>
