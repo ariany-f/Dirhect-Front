@@ -12,7 +12,7 @@ import { Stepper } from 'primereact/stepper';
 import { StepperPanel } from 'primereact/stepperpanel';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { HiArrowLeft, HiArrowRight, HiEye, HiCheckCircle, HiX } from 'react-icons/hi';
-import { FaTrash, FaSave, FaEye, FaUpload } from 'react-icons/fa';
+import { FaTrash, FaSave, FaEye, FaUpload, FaExclamation } from 'react-icons/fa';
 import { Toast } from 'primereact/toast';
 import { CandidatoProvider, useCandidatoContext } from '@contexts/Candidato';
 import StepDocumentos from './Steps/StepDocumentos';
@@ -31,6 +31,8 @@ import { ArmazenadorToken } from '@utils';
 import imageCompression from 'browser-image-compression';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import ModalHistoricoTarefa from '@components/ModalHistoricoTarefa';
 
 // Modal customizado estilizado
 const ModalOverlay = styled.div`
@@ -505,6 +507,8 @@ const CandidatoRegistro = () => {
     const [acaoSalvamento, setAcaoSalvamento] = useState(null); // 'salvar' ou 'salvar_continuar'
     const [showImageModal, setShowImageModal] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [showHistoricoTarefa, setShowHistoricoTarefa] = useState(false);
+    const [selectedTarefaLogs, setSelectedTarefaLogs] = useState([]);
     const fileInputRef = useRef(null);
     const modalFileInputRef = useRef(null);
 
@@ -592,6 +596,25 @@ const CandidatoRegistro = () => {
         });
         
         return tarefasPendentes.length > 0 ? tarefasPendentes[0] : null;
+    };
+
+    // Função para verificar se há erros nas tarefas
+    const verificarErrosTarefas = () => {
+        if (!candidato?.log_tarefas || !ArmazenadorToken.hasPermission('view_tarefa')) {
+            return null;
+        }
+        
+        const erros = candidato.log_tarefas.filter(log => log.tipo === 'erro');
+        return erros.length > 0 ? erros : null;
+    };
+
+    // Função para abrir modal de histórico de tarefa
+    const abrirHistoricoTarefa = (tarefaId) => {
+        if (!candidato?.log_tarefas) return;
+        
+        const logsTarefa = candidato.log_tarefas.filter(log => log.tarefa === tarefaId);
+        setSelectedTarefaLogs(logsTarefa);
+        setShowHistoricoTarefa(true);
     };
 
     // Verificar se deve estar em modo leitura
@@ -2924,6 +2947,40 @@ const CandidatoRegistro = () => {
                                     }}>
                                         {finalizada ? 'Admissão Finalizada' : 'Preenchimento Concluído'}
                                     </span>
+                                    
+                                    {/* Warning para erros nas tarefas */}
+                                    {verificarErrosTarefas() && (
+                                        <button
+                                            onClick={() => {
+                                                const erros = verificarErrosTarefas();
+                                                if (erros && erros.length > 0) {
+                                                    abrirHistoricoTarefa(erros[0].tarefa);
+                                                }
+                                            }}
+                                            style={{
+                                                background: 'rgba(220, 53, 69, 0.2)',
+                                                border: '1px solid rgba(220, 53, 69, 0.4)',
+                                                borderRadius: '50%',
+                                                width: '20px',
+                                                height: '20px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                cursor: 'pointer',
+                                                marginLeft: '4px',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.background = 'rgba(220, 53, 69, 0.3)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.background = 'rgba(220, 53, 69, 0.2)';
+                                            }}
+                                            title="Erro detectado nas tarefas. Clique para ver detalhes."
+                                        >
+                                            <FaExclamation size={10} fill="white" />
+                                        </button>
+                                    )}
                                 </div>
                             )}
                             
@@ -3788,6 +3845,14 @@ const CandidatoRegistro = () => {
                     </div>
                 </div>
             )}
+
+            {/* Modal de Histórico de Tarefa */}
+            <ModalHistoricoTarefa 
+                opened={showHistoricoTarefa}
+                aoFechar={() => setShowHistoricoTarefa(false)}
+                tarefa={null}
+                logs={selectedTarefaLogs}
+            />
         </ConteudoFrame>
     );
 };

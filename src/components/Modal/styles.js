@@ -7,7 +7,7 @@ export const Overlay = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 9;
+    z-index: 1001;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,7 +27,7 @@ export const DialogEstilizado = styled.dialog`
     margin: 0 auto;
     padding: 24px;
     background: white;
-    z-index: 1001;
+    z-index: 1002;
     position: relative;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -110,7 +110,7 @@ export const OverlayRight = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 9;
+    z-index: 1001;
     opacity: ${props => props.$opened ? 1 : 0};
     transition: visibility 0.5s ease-in-out;
     visibility: ${props => props.$opened ? 'visible' : 'hidden'};
@@ -125,7 +125,7 @@ export const DialogEstilizadoRight = styled.dialog`
     align-items: ${props => props.$align || 'center'};
     border-radius: 5px;
     border: none;
-    z-index: 10;
+    z-index: 1002;
     top: 3vh;
     left: ${({ $opened, $width }) => $opened 
         ? `calc(100vw - ${$width || '70vw'})` 
