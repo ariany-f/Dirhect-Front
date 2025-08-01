@@ -179,7 +179,7 @@ const Atividades = () => {
     const mapearFiltroSituacaoParaStatus = (filtro) => {
         switch (filtro) {
             case 'nao_concluido':
-                return ['pendente', 'em_andamento', 'aprovada'];
+                return ['pendente', 'em_andamento', 'aprovada', 'erro'];
             case 'concluido':
                 return ['concluida'];
             case 'todos':
