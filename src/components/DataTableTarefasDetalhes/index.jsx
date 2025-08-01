@@ -12,7 +12,7 @@ import { Checkbox } from 'primereact/checkbox';
 import CheckboxContainer from '@components/CheckboxContainer'
 import { Real } from '@utils/formats'
 import { Button } from 'primereact/button';
-import { FaLink, FaArrowUp, FaArrowDown, FaCircle, FaCheck } from 'react-icons/fa';
+import { FaLink, FaArrowUp, FaArrowDown, FaCircle, FaCheck, FaCheckCircle, FaHistory } from 'react-icons/fa';
 import { RiExchangeFill } from 'react-icons/ri';
 import { Tag } from 'primereact/tag';
 import http from '@http';
@@ -33,6 +33,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
     })
     const [logsTarefas, setLogsTarefas] = useState({})
     const [logsLoading, setLogsLoading] = useState(false)
+    const [logsLoaded, setLogsLoaded] = useState(false)
     const [showHistorico, setShowHistorico] = useState(false);
     const [selectedTarefa, setSelectedTarefa] = useState(null);
     const navegar = useNavigate()
@@ -42,6 +43,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
         const buscarLogsTarefas = async () => {
             if (tarefas && Array.isArray(tarefas)) {
                 setLogsLoading(true);
+                setLogsLoaded(false);
                 try {
                     const logsPromises = tarefas.map(async (tarefa) => {
                         try {
@@ -59,6 +61,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                         logsMap[tarefaId] = logs;
                     });
                     setLogsTarefas(logsMap);
+                    setLogsLoaded(true);
                 } catch (error) {
                     console.error('Erro ao buscar logs das tarefas:', error);
                 } finally {
@@ -102,7 +105,20 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
 
     const representativeCheckTemplate = (rowData) => {
         if (rowData.atividade_automatica) {
-            return <RiExchangeFill size={18} fill="var(--info)" />;
+            return (
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--info)',
+                    color: 'white'
+                }}>
+                    <RiExchangeFill size={20} fill="white" />
+                </div>
+            );
         }
         
         const handleChange = async (checked) => {
@@ -201,13 +217,17 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                     </div>
                 )}
                 {(rowData.status === 'concluida' || rowData.status === 'aprovada') && (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <CheckboxContainer 
-                            name="feito" 
-                            valor={true} 
-                            setValor={() => {}} 
-                            disabled={true}
-                        />
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        backgroundColor: 'var(--green-500)',
+                        color: 'white'
+                    }}>
+                        <FaCheckCircle size={20} fill="white" />
                     </div>
                 )}
                 <Tooltip target=".tarefa-tooltip" />
@@ -348,7 +368,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
         };
         const { cor, texto, background } = getStatusInfo(rowData.status);
         const logs = logsTarefas[rowData.id] || [];
-        const temErro = logs.some(log => log.erro || log.status === 'erro' || log.tipo === 'erro');
+        const temErro = logs.some(log => !log.sucesso || log.tipo === 'erro');
 
         return (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -363,16 +383,15 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                 }}>
                     {texto}
                 </div>
-                {!logsLoading && temErro && logs.length > 0 && (
-                    <Button
-                        label={`${logs.length} log${logs.length > 1 ? 's' : ''}`}
-                        severity="danger"
-                        size="small"
+                {logsLoaded && logs.length > 0 && (
+                    <FaHistory
+                        className="history"
+                        data-pr-tooltip={`Ver Histórico (${logs.length} log${logs.length > 1 ? 's' : ''})`}
+                        size={16}
                         onClick={(e) => handleHistorico(e, rowData)}
-                        style={{ 
-                            fontSize: '10px', 
-                            padding: '2px 6px',
-                            height: '20px'
+                        style={{
+                            cursor: 'pointer',
+                            color: temErro ? 'var(--error)' : 'var(--primaria)',
                         }}
                     />
                 )}
@@ -611,6 +630,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
         <>
             <Toast ref={toast} />
             <DataTable 
+                key={`tarefas-${logsLoaded}`}
                 value={tarefasOrdenadas} 
                 filters={filters} 
                 globalFilterFields={['funcionario']}  
@@ -667,6 +687,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                 <Column body={representativeConcluidoEmTemplate} field="concluido_em" header="Concluído em" style={{ width: '15%' }}></Column>
                 <Column body={representativeCheckTemplate} field="check" header="Ações" style={{ width: '15%' }}></Column>
             </DataTable>
+            <Tooltip target=".history" mouseTrack mouseTrackLeft={10} />
             <ModalHistoricoTarefa 
                 opened={showHistorico}
                 aoFechar={() => setShowHistorico(false)}
