@@ -20,6 +20,7 @@ import { Toast } from 'primereact/toast';
 import { MdFilterAltOff } from 'react-icons/md';
 import React from 'react';
 import { Tooltip } from 'primereact/tooltip';
+import ModalHistoricoTarefa from '@components/ModalHistoricoTarefa';
 
 function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
     const toast = useRef(null);
@@ -30,7 +31,40 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
         sla: { value: null, matchMode: FilterMatchMode.EQUALS },
         status: { value: null, matchMode: 'custom' }
     })
+    const [logsTarefas, setLogsTarefas] = useState({})
+    const [showHistorico, setShowHistorico] = useState(false);
+    const [selectedTarefa, setSelectedTarefa] = useState(null);
     const navegar = useNavigate()
+
+    // Buscar logs para cada tarefa
+    useEffect(() => {
+        if (tarefas && Array.isArray(tarefas)) {
+            const buscarLogsTarefas = async () => {
+                const logsPromises = tarefas.map(async (tarefa) => {
+                    try {
+                        const response = await http.get(`/log_tarefas/?tarefa=${tarefa.id}`);
+                        return { tarefaId: tarefa.id, logs: response };
+                    } catch (error) {
+                        console.error(`Erro ao buscar logs da tarefa ${tarefa.id}:`, error);
+                        return { tarefaId: tarefa.id, logs: [] };
+                    }
+                });
+
+                try {
+                    const resultados = await Promise.all(logsPromises);
+                    const logsMap = {};
+                    resultados.forEach(({ tarefaId, logs }) => {
+                        logsMap[tarefaId] = logs;
+                    });
+                    setLogsTarefas(logsMap);
+                } catch (error) {
+                    console.error('Erro ao buscar logs das tarefas:', error);
+                }
+            };
+
+            buscarLogsTarefas();
+        }
+    }, [tarefas]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -56,10 +90,17 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
         }
     };
 
+    const handleHistorico = (e, rowData) => {
+        e.stopPropagation();
+        setSelectedTarefa(rowData);
+        setShowHistorico(true);
+    };
+
     const representativeCheckTemplate = (rowData) => {
         if (rowData.atividade_automatica) {
             return <RiExchangeFill size={18} fill="var(--info)" />;
         }
+        
         const handleChange = async (checked) => {
             if(rowData.status === 'em_andamento') {
                 try {
@@ -107,27 +148,65 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                 }
             }
         };
-    
+
         const getTooltipText = () => {
             if (rowData.status === 'concluida' || rowData.status === 'aprovada') {
                 return null;
             }
             return rowData.status === 'pendente' ? 'Aprovar tarefa' : 'Concluir tarefa';
         };
+
+        const getButtonText = () => {
+            if (rowData.status === 'pendente') {
+                return 'Aprovar';
+            } else if (rowData.status === 'em_andamento') {
+                return 'Concluir';
+            }
+            return '';
+        };
+
+        const getButtonSeverity = () => {
+            if (rowData.status === 'pendente') {
+                return 'success';
+            } else if (rowData.status === 'em_andamento') {
+                return 'info';
+            }
+            return 'secondary';
+        };
+
         return (
-            <div className="flex align-items-center">
-                <div 
-                    data-pr-tooltip={getTooltipText()}
-                    data-pr-position="left"
-                    style={{ display: 'inline-flex' }}
-                >
-                    <CheckboxContainer 
-                        name="feito" 
-                        valor={rowData.status === 'concluida'} 
-                        setValor={handleChange} 
-                    />
-                </div>
-                <Tooltip target="[data-pr-tooltip]" />
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                {(rowData.status === 'pendente' || rowData.status === 'em_andamento') && (
+                    <div 
+                        data-pr-tooltip={getTooltipText()}
+                        data-pr-position="left"
+                        className="tarefa-tooltip"
+                        style={{ display: 'inline-flex' }}
+                    >
+                        <Button
+                            label={getButtonText()}
+                            severity={getButtonSeverity()}
+                            size="small"
+                            onClick={() => handleChange(true)}
+                            style={{ 
+                                fontSize: '12px', 
+                                padding: '4px 12px',
+                                height: '28px'
+                            }}
+                        />
+                    </div>
+                )}
+                {(rowData.status === 'concluida' || rowData.status === 'aprovada') && (
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <CheckboxContainer 
+                            name="feito" 
+                            valor={true} 
+                            setValor={() => {}} 
+                            disabled={true}
+                        />
+                    </div>
+                )}
+                <Tooltip target=".tarefa-tooltip" />
             </div>
         );
     };
@@ -247,6 +326,13 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                         background: '#fff5f5',
                         icon: null
                     };
+                case 'erro':
+                    return { 
+                        cor: '#dc3545', 
+                        texto: 'Erro',
+                        background: '#ffe0e0',
+                        icon: null
+                    };
                 default:
                     return { 
                         cor: '#666', 
@@ -257,17 +343,35 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
             }
         };
         const { cor, texto, background } = getStatusInfo(rowData.status);
+        const logs = logsTarefas[rowData.id] || [];
+        const temErro = logs.some(log => log.erro || log.status === 'erro' || log.tipo === 'erro');
+
         return (
-            <div style={{
-                display: 'inline-block',
-                backgroundColor: background,
-                color: cor,
-                padding: '4px 12px',
-                borderRadius: '4px',
-                fontSize: '13px',
-                fontWeight: '400'
-            }}>
-                {texto}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{
+                    display: 'inline-block',
+                    backgroundColor: background,
+                    color: cor,
+                    padding: '4px 12px',
+                    borderRadius: '4px',
+                    fontSize: '13px',
+                    fontWeight: '400'
+                }}>
+                    {texto}
+                </div>
+                {temErro && logs.length > 0 && (
+                    <Button
+                        label={`${logs.length} log${logs.length > 1 ? 's' : ''}`}
+                        severity="danger"
+                        size="small"
+                        onClick={(e) => handleHistorico(e, rowData)}
+                        style={{ 
+                            fontSize: '10px', 
+                            padding: '2px 6px',
+                            height: '20px'
+                        }}
+                    />
+                )}
             </div>
         );
     };
@@ -340,6 +444,42 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
     const representativeDescricaoTemplate = (rowData) => {
         return <Texto width="100%" weight={600}>{rowData.descricao}</Texto>;
     }
+
+    const representativeLogsTemplate = (rowData) => {
+        const logs = logsTarefas[rowData.id] || [];
+        
+        if (logs.length === 0) {
+            return <span style={{ color: '#999', fontSize: '12px' }}>Nenhum log</span>;
+        }
+
+        // Verifica se há algum log com erro
+        const temErro = logs.some(log => log.erro || log.status === 'erro' || log.tipo === 'erro');
+        
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Button
+                    label={`${logs.length} log${logs.length > 1 ? 's' : ''}`}
+                    severity={temErro ? 'danger' : 'info'}
+                    size="small"
+                    onClick={(e) => handleHistorico(e, rowData)}
+                    style={{ 
+                        fontSize: '11px', 
+                        padding: '4px 8px',
+                        height: '24px'
+                    }}
+                />
+                {temErro && (
+                    <div style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: '#dc3545',
+                        boxShadow: '0 0 4px #dc3545'
+                    }} />
+                )}
+            </div>
+        );
+    };
     
     // Ordena as tarefas por prioridade
     const tarefasOrdenadas = Array.isArray(tarefas) ? [...tarefas].sort((a, b) => a.prioridade - b.prioridade) : [];
@@ -478,13 +618,13 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                 onRowClick={handleRowClick}
                 selectionMode={'single'}
             >
-                <Column body={representativePrioridadeTemplate} field="prioridade" header="Prioridade" style={{ width: '10%' }}></Column>
-                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '30%' }}></Column>
+                <Column body={representativePrioridadeTemplate} field="prioridade" header="Prioridade" style={{ width: '8%' }}></Column>
+                <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '25%' }}></Column>
                 <Column 
                     body={representativeStatusTemplate} 
                     field="status" 
                     header="Situação" 
-                    style={{ width: '15%' }}
+                    style={{ width: '12%' }}
                     filter
                     filterField="status"
                     filterElement={statusFilterTemplate}
@@ -506,7 +646,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                     body={representativeSLATemplate} 
                     field="sla" 
                     header="SLA" 
-                    style={{ width: '15%' }}
+                    style={{ width: '12%' }}
                     filter
                     filterField="sla"
                     filterElement={slaFilterTemplate}
@@ -520,9 +660,15 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                     filterMenuStyle={{ width: '14rem' }}
                     showFilterMatchModes={false}
                 ></Column>
-                <Column body={representativeConcluidoEmTemplate} field="concluido_em" header="Concluído em" style={{ width: '15%' }}></Column>
-                <Column body={representativeCheckTemplate} field="check" header="Ações" style={{ width: '15%' }}></Column>
+                <Column body={representativeConcluidoEmTemplate} field="concluido_em" header="Concluído em" style={{ width: '12%' }}></Column>
+                <Column body={representativeCheckTemplate} field="check" header="Ações" style={{ width: '11%' }}></Column>
             </DataTable>
+            <ModalHistoricoTarefa 
+                opened={showHistorico}
+                aoFechar={() => setShowHistorico(false)}
+                tarefa={selectedTarefa}
+                logs={selectedTarefa ? logsTarefas[selectedTarefa.id] || [] : []}
+            />
         </>
     )
 }
