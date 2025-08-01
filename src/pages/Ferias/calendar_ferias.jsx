@@ -39,6 +39,7 @@ const CalendarScrollArea = styled.div`
     position: relative;
     border-radius: 8px;
     background: #fff;
+    min-height: 66vh;
     scrollbar-width: thin;
     scrollbar-color: #d1d5db #f5f5f5;
     user-select: none;
@@ -86,6 +87,8 @@ const MonthTitle = styled.h2`
 
 const CalendarGrid = styled.div`
     min-width: ${({ totalDays, dayWidth }) => totalDays * dayWidth + 200}px;
+    min-height: 100%;
+    position: relative;
 `;
 
 const WeekDaysRow = styled.div`
@@ -129,6 +132,7 @@ const EmployeeCell = styled.div`
     background: #f5f5f5;
     border: 1px solid #eee;
     min-height: 44px;
+    height: 44px;
     position: sticky;
     left: 0;
     z-index: 3;
@@ -617,6 +621,18 @@ const CalendarFerias = ({ colaboradores }) => {
                     </div>
                 ) : (
                     <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative', minHeight: '100%'}}>
+                    {/* Fundo cinza para a coluna dos colaboradores */}
+                    <div style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        width: '200px',
+                        minwidth: '200px',
+                        height: `${Math.max(colabsFiltrados.length * 44, 25 * 16)}px`,
+                        background: '#f5f5f5',
+                        borderRight: '1px solid #eee',
+                        zIndex: 1
+                    }}></div>
                     {/* Linhas roxas de separação dos meses */}
                     {monthsArray.map((m, idx) => {
                         if (idx === 0) return null; // não desenha antes do primeiro mês

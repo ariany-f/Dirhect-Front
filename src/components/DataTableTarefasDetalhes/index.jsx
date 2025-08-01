@@ -31,47 +31,9 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
         sla: { value: null, matchMode: FilterMatchMode.EQUALS },
         status: { value: null, matchMode: 'custom' }
     })
-    const [logsTarefas, setLogsTarefas] = useState({})
-    const [logsLoading, setLogsLoading] = useState(false)
-    const [logsLoaded, setLogsLoaded] = useState(false)
     const [showHistorico, setShowHistorico] = useState(false);
     const [selectedTarefa, setSelectedTarefa] = useState(null);
     const navegar = useNavigate()
-
-    // Buscar logs para cada tarefa
-    useEffect(() => {
-        const buscarLogsTarefas = async () => {
-            if (tarefas && Array.isArray(tarefas)) {
-                setLogsLoading(true);
-                setLogsLoaded(false);
-                try {
-                    const logsPromises = tarefas.map(async (tarefa) => {
-                        try {
-                            const response = await http.get(`/log_tarefas/?tarefa=${tarefa.id}`);
-                            return { tarefaId: tarefa.id, logs: response };
-                        } catch (error) {
-                            console.error(`Erro ao buscar logs da tarefa ${tarefa.id}:`, error);
-                            return { tarefaId: tarefa.id, logs: [] };
-                        }
-                    });
-
-                    const resultados = await Promise.all(logsPromises);
-                    const logsMap = {};
-                    resultados.forEach(({ tarefaId, logs }) => {
-                        logsMap[tarefaId] = logs;
-                    });
-                    setLogsTarefas(logsMap);
-                    setLogsLoaded(true);
-                } catch (error) {
-                    console.error('Erro ao buscar logs das tarefas:', error);
-                } finally {
-                    setLogsLoading(false);
-                }
-            }
-        };
-
-        buscarLogsTarefas();
-    }, [tarefas]);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -367,7 +329,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
             }
         };
         const { cor, texto, background } = getStatusInfo(rowData.status);
-        const logs = logsTarefas[rowData.id] || [];
+        const logs = rowData.logs || [];
         const temErro = logs.some(log => !log.sucesso || log.tipo === 'erro');
 
         return (
@@ -383,7 +345,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                 }}>
                     {texto}
                 </div>
-                {logsLoaded && logs.length > 0 && (
+                {logs.length > 0 && (
                     <FaHistory
                         className="history"
                         data-pr-tooltip={`Ver Histórico (${logs.length} log${logs.length > 1 ? 's' : ''})`}
@@ -468,41 +430,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
         return <Texto width="100%" weight={600}>{rowData.descricao}</Texto>;
     }
 
-    const representativeLogsTemplate = (rowData) => {
-        const logs = logsTarefas[rowData.id] || [];
-        
-        if (logs.length === 0) {
-            return <span style={{ color: '#999', fontSize: '12px' }}>Nenhum log</span>;
-        }
 
-        // Verifica se há algum log com erro
-        const temErro = logs.some(log => log.erro || log.status === 'erro' || log.tipo === 'erro');
-        
-        return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Button
-                    label={`${logs.length} log${logs.length > 1 ? 's' : ''}`}
-                    severity={temErro ? 'danger' : 'info'}
-                    size="small"
-                    onClick={(e) => handleHistorico(e, rowData)}
-                    style={{ 
-                        fontSize: '11px', 
-                        padding: '4px 8px',
-                        height: '24px'
-                    }}
-                />
-                {temErro && (
-                    <div style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        backgroundColor: '#dc3545',
-                        boxShadow: '0 0 4px #dc3545'
-                    }} />
-                )}
-            </div>
-        );
-    };
     
     // Ordena as tarefas por prioridade
     const tarefasOrdenadas = Array.isArray(tarefas) ? [...tarefas].sort((a, b) => a.prioridade - b.prioridade) : [];
@@ -630,7 +558,6 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
         <>
             <Toast ref={toast} />
             <DataTable 
-                key={`tarefas-${logsLoaded}`}
                 value={tarefasOrdenadas} 
                 filters={filters} 
                 globalFilterFields={['funcionario']}  
@@ -692,7 +619,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                 opened={showHistorico}
                 aoFechar={() => setShowHistorico(false)}
                 tarefa={selectedTarefa}
-                logs={selectedTarefa ? logsTarefas[selectedTarefa.id] || [] : []}
+                logs={selectedTarefa ? selectedTarefa.logs || [] : []}
             />
         </>
     )
