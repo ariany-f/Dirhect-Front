@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator, FilterService } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MdOutlineKeyboardArrowRight, MdFilterAltOff } from 'react-icons/md'
-import { FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaTimes, FaCheck, FaUser } from 'react-icons/fa';
+import { FaUserPlus, FaSignOutAlt, FaUmbrellaBeach, FaFileInvoiceDollar, FaTimes, FaCheck, FaUser, FaCheckCircle } from 'react-icons/fa';
 import { RiExchangeFill } from 'react-icons/ri';
 import './DataTable.css'
 import CampoArquivo from '@components/CampoArquivo';
@@ -35,7 +35,15 @@ FilterService.register('custom_status', (value, filter) => {
     return true;
 });
 
-function DataTableAtividades() {
+function DataTableAtividades({ 
+    sortField, 
+    sortOrder, 
+    onSortChange, 
+    currentPage, 
+    pageSize, 
+    totalRecords, 
+    onPageChange 
+}) {
     const { listaTarefas, atualizarTarefa, tarefasFiltradas } = useOutletContext();
     const toast = useRef(null);
     const[selectedVaga, setSelectedVaga] = useState(0)
@@ -60,6 +68,18 @@ function DataTableAtividades() {
         setFilters(_filters);
     };
 
+    const onSort = (event) => {
+        if (onSortChange) {
+            onSortChange(event.sortField, event.sortOrder);
+        }
+    };
+
+    const onPage = (event) => {
+        if (onPageChange) {
+            onPageChange(event.page, event.rows);
+        }
+    };
+
     const representativePrazoTemplate = (rowData) => {
         return (
             <div>
@@ -82,7 +102,20 @@ function DataTableAtividades() {
 
     const representativeCheckTemplate = (rowData) => {
         if (rowData.atividade_automatica) {
-            return <RiExchangeFill size={18} fill="var(--info)" />;
+            return (
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--info)',
+                    color: 'white'
+                }}>
+                    <RiExchangeFill size={20} fill="white" />
+                </div>
+            );
         }
         const handleChange = async (checked) => {
             if(rowData.status === 'em_andamento') {
@@ -225,13 +258,17 @@ function DataTableAtividades() {
                     </div>
                 )}
                 {(rowData.status === 'concluida' || rowData.status === 'aprovada') && (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <CheckboxContainer 
-                            name="feito" 
-                            valor={true} 
-                            setValor={() => {}} 
-                            disabled={true}
-                        />
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        backgroundColor: 'var(--green-500)',
+                        color: 'white'
+                    }}>
+                        <FaCheckCircle size={20} fill="white" />
                     </div>
                 )}
                 <Tooltip target=".tarefa-tooltip" />
@@ -347,6 +384,12 @@ function DataTableAtividades() {
                     return { 
                         cor: '#dc3545', 
                         texto: 'Pendente',
+                        background: '#fff5f5'
+                    };
+                case 'erro':
+                    return { 
+                        cor: '#dc3545', 
+                        texto: 'Erro',
                         background: '#fff5f5'
                     };
                 default:
@@ -477,8 +520,8 @@ function DataTableAtividades() {
         return <Texto width="100%" weight={600}>{rowData.descricao}</Texto>;
     }
     
-    // Ordena as tarefas por prioridade
-    const tarefasOrdenadas = Array.isArray(tarefasFiltradas) ? [...tarefasFiltradas].sort((a, b) => a.prioridade - b.prioridade) : [];
+    // Usa as tarefas filtradas diretamente (ordenação será feita no servidor)
+    const tarefasOrdenadas = Array.isArray(tarefasFiltradas) ? tarefasFiltradas : [];
     
     const getSLAInfo = (rowData) => {
         const dataInicio = new Date(rowData.criado_em);
@@ -742,13 +785,20 @@ function DataTableAtividades() {
                 globalFilterFields={['descricao', 'tipo_display']}  
                 emptyMessage="Não foram encontradas tarefas" 
                 paginator 
-                rows={10}  
+                rows={pageSize}
+                totalRecords={totalRecords}
+                first={currentPage * pageSize}
                 tableStyle={{ minWidth: '68vw' }}
                 filterDisplay="menu"
                 showGridlines
                 className="p-datatable-sm"
                 onRowClick={handleRowClick}
                 selectionMode={'single'}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                onSort={onSort}
+                onPage={onPage}
+                lazy
             >
                 <Column 
                     body={representativeTipoTemplate} 
@@ -785,6 +835,7 @@ function DataTableAtividades() {
                     body={representativeReferenciaTemplate}
                     field="referencia"
                     header="Referência"
+                    sortable
                     style={{ width: '15%' }}
                 ></Column>
                 <Column 

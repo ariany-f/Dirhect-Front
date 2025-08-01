@@ -62,19 +62,56 @@ const Atividades = () => {
     const [filtroAtivo, setFiltroAtivo] = useState('total');
     const [activeTab, setActiveTab] = useState('lista'); // 'lista' ou 'kanban'
     const [loading, setLoading] = useState(true);
+    const [sortField, setSortField] = useState(null);
+    const [sortOrder, setSortOrder] = useState(1);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalRecords, setTotalRecords] = useState(0);
 
     useEffect(() => {
         setLoading(true);
-        http.get('tarefas/?format=json')
+        let url = 'tarefas/?format=json';
+        
+        // Adiciona filtro por tipo se não for 'total'
+        if (filtroAtivo !== 'total') {
+            url += `&entidade_tipo=${filtroAtivo}`;
+        }
+        
+        // Adiciona parâmetros de ordenação se existirem
+        if (sortField) {
+            url += `&ordering=${sortOrder === -1 ? '-' : ''}${sortField}`;
+        }
+        
+        // Adiciona parâmetros de paginação apenas se não estiver na aba kanban
+        if (!location.pathname.includes('/kanban')) {
+            url += `&page=${currentPage + 1}&page_size=${pageSize}`;
+        }
+        
+        // Adiciona filtro de data para kanban (últimos 3 meses)
+        if (location.pathname.includes('/kanban')) {
+            const tresMesesAtras = new Date();
+            tresMesesAtras.setMonth(tresMesesAtras.getMonth() - 1);
+            const dataFormatada = tresMesesAtras.toISOString().split('T')[0];
+            url += `&atualizado_em__gte=${dataFormatada}&atividade_automatica=false`;
+        }
+        
+        http.get(url)
             .then(response => {
-                setListaTarefas(response);
+                // Verifica se a resposta tem estrutura paginada
+                if (response.results) {
+                    setListaTarefas(response.results);
+                    setTotalRecords(response.count || 0);
+                } else {
+                    setListaTarefas(response);
+                    setTotalRecords(response.length || 0);
+                }
                 setLoading(false);
             })
             .catch(error => {
                 console.log(error);
                 setLoading(false);
             });
-    }, [])
+    }, [filtroAtivo, sortField, sortOrder, currentPage, pageSize, location.pathname])
 
     const atualizarTarefa = (tarefaId, novosDados) => {
         setListaTarefas(prevTarefas => 
@@ -86,18 +123,30 @@ const Atividades = () => {
         );
     };
 
-    const tarefasFiltradas = listaTarefas?.filter(tarefa => {
-        // Filtro por tipo
-        if (filtroAtivo !== 'total' && tarefa.entidade_tipo !== filtroAtivo) {
-            return false;
-        }
-        return true;
-    });
+    const atualizarOrdenacao = (field, order) => {
+        setSortField(field);
+        setSortOrder(order);
+    };
+
+    const atualizarPaginacao = (page, size) => {
+        setCurrentPage(page);
+        setPageSize(size);
+    };
+
+    // Filtro será aplicado no servidor, então usa listaTarefas diretamente
+    const tarefasFiltradas = listaTarefas;
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         navigate(tab === 'lista' ? '/atividades' : '/atividades/kanban');
     };
+
+    // Reset da página quando filtro mudar (apenas na aba lista)
+    useEffect(() => {
+        if (!location.pathname.includes('/kanban')) {
+            setCurrentPage(0);
+        }
+    }, [filtroAtivo, location.pathname]);
 
     if (loading) {
         return <Loading opened={loading} />
@@ -121,7 +170,20 @@ const Atividades = () => {
                     <Texto color={location.pathname.includes('/kanban') ? 'white' : '#000'}>Cartões</Texto>
                 </TabButton>
             </TabPanel>
-            <Outlet context={{ listaTarefas, atualizarTarefa, filtroAtivo, setFiltroAtivo, tarefasFiltradas }} />
+            <Outlet context={{ 
+                listaTarefas, 
+                atualizarTarefa, 
+                filtroAtivo, 
+                setFiltroAtivo, 
+                tarefasFiltradas,
+                sortField,
+                sortOrder,
+                atualizarOrdenacao,
+                currentPage,
+                pageSize,
+                totalRecords,
+                atualizarPaginacao
+            }} />
         </ConteudoFrame>
     );
 };

@@ -111,7 +111,20 @@ const Card = styled.div`
 
 const AtividadesLista = () => {
     const location = useLocation();
-    const { listaTarefas, atualizarTarefa, filtroAtivo, setFiltroAtivo, tarefasFiltradas } = useOutletContext();
+    const { 
+        listaTarefas, 
+        atualizarTarefa, 
+        filtroAtivo, 
+        setFiltroAtivo, 
+        tarefasFiltradas,
+        sortField,
+        sortOrder,
+        atualizarOrdenacao,
+        currentPage,
+        pageSize,
+        totalRecords,
+        atualizarPaginacao
+    } = useOutletContext();
 
     const contarTarefasPorTipo = (tipo) => {
         if (!listaTarefas) return 0;
@@ -229,7 +242,15 @@ const AtividadesLista = () => {
                     })}
                 </CardContainer>
                 
-                <DataTableAtividades />
+                <DataTableAtividades 
+                    sortField={sortField}
+                    sortOrder={sortOrder}
+                    onSortChange={atualizarOrdenacao}
+                    currentPage={currentPage}
+                    pageSize={pageSize}
+                    totalRecords={totalRecords}
+                    onPageChange={atualizarPaginacao}
+                />
             </Container>
         </Frame>
     );
