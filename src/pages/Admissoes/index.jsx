@@ -63,6 +63,7 @@ const Admissoes = () => {
         const newPage = event.page + 1;
         const newPageSize = event.rows;
         
+        setLoading(true);
         setFirst(event.first);
         setPage(newPage);
         setPageSize(newPageSize);
@@ -71,6 +72,7 @@ const Admissoes = () => {
     };
 
     const onSearch = (search) => {
+        setLoading(true);
         setSearchTerm(search);
         setPage(1);
         setFirst(0);
@@ -83,12 +85,13 @@ const Admissoes = () => {
     };
 
     const onSort = ({ field, order }) => {
+        setLoading(true);
         setSortField(field);
         setSortOrder(order);
         loadData(page, pageSize, searchTerm, `${order === 'desc' ? '-' : ''}${field}`);
     };
 
-    if (loading && !admissoes.length) {
+    if (loading) {
         return <Loading opened={loading} />
     }
 
