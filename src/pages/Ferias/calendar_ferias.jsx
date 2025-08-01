@@ -616,7 +616,7 @@ const CalendarFerias = ({ colaboradores }) => {
                         <p style={{ fontSize: '14px', marginTop: '8px' }}>Os dados aparecerão aqui quando houver férias registradas.</p>
                     </div>
                 ) : (
-                    <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative'}}>
+                    <CalendarGrid totalDays={totalDays} dayWidth={dayWidth} style={{position: 'relative', minHeight: '100%'}}>
                     {/* Linhas roxas de separação dos meses */}
                     {monthsArray.map((m, idx) => {
                         if (idx === 0) return null; // não desenha antes do primeiro mês
