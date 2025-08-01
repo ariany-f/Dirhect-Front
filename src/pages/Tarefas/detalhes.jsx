@@ -310,7 +310,7 @@ function DetalhesTarefas() {
         let statusPrazo = '';
         let cor = '';
         
-        if (tarefa?.status === 'Concluída') {
+        if (porcentagem == 1) {
             statusPrazo = 'Concluída';
             cor = 'var(--green-500)';
         } else {
@@ -449,7 +449,24 @@ function DetalhesTarefas() {
                 <Titulo>
                     <Texto size={20} weight={700}>Atividades</Texto>
                 </Titulo>
-                <DataTableTarefasDetalhes objeto={tarefa?.objeto} tarefas={tarefa?.tarefas} />
+                <DataTableTarefasDetalhes 
+                    objeto={tarefa?.objeto} 
+                    tarefas={tarefa?.tarefas}
+                    onTarefaUpdate={() => {
+                        // Recarrega os dados da tarefa após atualização
+                        setLoading(true);
+                        http.get(`processos/${id}/`)
+                            .then(response => {
+                                setTarefa(response);
+                            })
+                            .catch(error => {
+                                console.error('Erro ao recarregar processo:', error);
+                            })
+                            .finally(() => {
+                                setLoading(false);
+                            });
+                    }}
+                />
             </Container>
         </Frame>
         </>

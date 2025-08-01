@@ -22,7 +22,7 @@ import React from 'react';
 import { Tooltip } from 'primereact/tooltip';
 import ModalHistoricoTarefa from '@components/ModalHistoricoTarefa';
 
-function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
+function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = null }) {
     const toast = useRef(null);
     const[selectedVaga, setSelectedVaga] = useState(0)
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -95,6 +95,10 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                         summary: 'Tarefa concluída com sucesso',
                         life: 3000
                     });
+                    // Chama callback para atualizar dados
+                    if (onTarefaUpdate) {
+                        onTarefaUpdate();
+                    }
                 } catch (error) {
                     toast.current.show({
                         severity: 'error',
@@ -111,13 +115,17 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null }) {
                         rowData.check = true;
                         toast.current.show({
                             severity: 'success',
-                            summary: 'Tarefa concluída com sucesso',
+                            summary: 'Tarefa aprovada com sucesso',
                             life: 3000
                         });
+                        // Chama callback para atualizar dados
+                        if (onTarefaUpdate) {
+                            onTarefaUpdate();
+                        }
                     } catch (error) {
                         toast.current.show({
                             severity: 'error',
-                            summary: 'Erro ao concluir tarefa',
+                            summary: 'Erro ao aprovar tarefa',
                             life: 3000
                         });
                     }

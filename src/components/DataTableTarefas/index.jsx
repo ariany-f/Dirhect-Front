@@ -471,11 +471,11 @@ function DataTableTarefas({
         const totalDias = Math.ceil((dataEntrega - dataInicio) / (1000 * 60 * 60 * 24));
         const diasPassados = Math.ceil((hoje - dataInicio) / (1000 * 60 * 60 * 24));
         const porcentagem = totalDias > 0 ? (diasPassados / totalDias) : 1;
-        
+
         let statusPrazo = '';
         let cor = '';
         
-        if (rowData.status === 'Concluída') {
+        if (porcentagem == 1) {
             statusPrazo = 'Concluída';
             cor = 'var(--green-500)';
         } else {
