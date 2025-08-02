@@ -39,7 +39,6 @@ function ColaboradorDadosContratuais() {
 
     let { id } = useParams()
     const [colaborador, setColaborador] = useState(null)
-    const [secao, setSecao] = useState(null)
     const [departamento, setDepartamento] = useState(null)
     const [centroCusto, setCentroCusto] = useState(null)
     const context = useOutletContext()
@@ -58,14 +57,7 @@ function ColaboradorDadosContratuais() {
             setColaborador(context);
             console.log(context)
         } else if(colaborador) {
-            if((!secao) && colaborador.id_secao)
-            {
-                http.get(`secao/${colaborador.id_secao}/?format=json`)
-                    .then(response => {
-                        setSecao(response);
-                    })
-                    .catch(erro => console.log(erro))
-            }
+           
             if((!departamento) && colaborador.departamento)
             {
                 http.get(`departamento/${colaborador.departamento}/?format=json`)
@@ -83,7 +75,7 @@ function ColaboradorDadosContratuais() {
                     .catch(erro => console.log(erro))
             }
         }
-    }, [colaborador, context, secao, departamento, centroCusto])
+    }, [colaborador, context, departamento, centroCusto])
 
     function editarEmail(email) {
       
@@ -180,7 +172,7 @@ function ColaboradorDadosContratuais() {
                 </div>  
             </Col6>
             <Col6>    
-                <Titulo><h6>Informações de Localização</h6></Titulo>   
+                <Titulo><h6>Estrutura Organizacional</h6></Titulo>   
                 <div className={styles.card_dashboard}>
                     {!colaborador ? (
                         <>
@@ -191,9 +183,15 @@ function ColaboradorDadosContratuais() {
                     ) : (
                         <>
                             <Frame gap="2px" alinhamento="start">
+                                <Texto size={'14px'} weight={600}>Filial</Texto>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
+                                    <Tag severity="info" value={colaborador?.filial_nome?? 'Não definida'}></Tag>
+                                </div>
+                            </Frame>
+                            <Frame gap="2px" alinhamento="start">
                                 <Texto size={'14px'} weight={600}>Seção</Texto>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '2px', justifyContent: 'end'}}>
-                                    <Tag severity="info" value={secao?.nome ?? 'Não definida'}></Tag>
+                                    <Tag severity="info" value={colaborador?.secao_nome ?? 'Não definida'}></Tag>
                                 </div>
                             </Frame>
                             
