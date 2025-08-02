@@ -9,11 +9,9 @@ import { useEffect, useState } from 'react'
 import http from '@http'
 import Loading from '@components/Loading'
 import styles from './Detalhes.module.css'
-import DataTableDependentes from '@components/DataTableDependentes'
 import DataTableFerias from '@components/DataTableFerias'
 import { useSessaoUsuarioContext } from '../../../contexts/SessaoUsuario'
 import { GrAddCircle } from 'react-icons/gr'
-import ModalDetalhesFerias from '@components/ModalDetalhesFerias'
 import { ArmazenadorToken } from '@utils'
 import { FaUmbrellaBeach } from 'react-icons/fa'
 import Texto from '@components/Texto'
@@ -56,7 +54,6 @@ function ColabroadorFerias() {
     let { id } = useParams()
     const colaboradorDoContexto = useOutletContext();
     const [loading, setLoading] = useState(false)
-    const [eventoSelecionado, setEventoSelecionado] = useState(null)
     const [ferias, setFerias] = useState(null)
     const [tab, setTab] = useState('abertas') // 'abertas' ou 'fechadas'
     const {usuario} = useSessaoUsuarioContext()
@@ -103,7 +100,6 @@ function ColabroadorFerias() {
                 </TabButton>
             </TabPanel>
             <DataTableFerias colaborador={id} ferias={ferias}/>
-            <ModalDetalhesFerias opened={!!eventoSelecionado} evento={eventoSelecionado} aoFechar={() => setEventoSelecionado(null)} />
         </>
     )
 }

@@ -1,5 +1,5 @@
 import { DataTable } from 'primereact/datatable';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { FilterMatchMode } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { Tooltip } from 'primereact/tooltip';
 import './DataTable.css'
@@ -8,12 +8,13 @@ import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import Botao from '@components/Botao';
 import { FaUmbrellaBeach } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
 import { ArmazenadorToken } from '@utils';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import { FaCheckCircle, FaTimesCircle, FaClock, FaExclamationTriangle, FaLock, FaLockOpen } from 'react-icons/fa';
+import { Toast } from 'primereact/toast';
 
 function formatarDataBr(data) {
     if (!data) return '-';
@@ -34,7 +35,6 @@ function DataTableFerias({
     const [colaboradores, setColaboradores] = useState(null)
     const [selectedFerias, setSelectedFerias] = useState(0);
     const [modalOpened, setModalOpened] = useState(false);
-    const [filteredData, setFilteredData] = useState([])
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -43,6 +43,7 @@ function DataTableFerias({
     const [eventoSelecionado, setEventoSelecionado] = useState(null)
     const navegar = useNavigate();
     const { usuario } = useSessaoUsuarioContext();
+    const toast = useRef(null);
 
     const onGlobalFilterChange = (value) => {
         let _filters = { ...filters };
@@ -81,6 +82,23 @@ function DataTableFerias({
         const anoStr = dataInicio.getFullYear();
         return <p style={{fontWeight: '400'}}>{`${diaStr}/${mesStr}/${anoStr}`}</p>;
     }
+
+    const fecharModal = (resultado) => {
+        setModalDetalhesFeriasOpened(false);
+        setEventoSelecionado(null);
+        if (resultado) {
+            if (resultado.sucesso) {
+                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
+                // Adicione uma callback para atualizar a lista se necessário
+            } else if (resultado.erro) {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
+            } else if (resultado.aviso) {
+                toast.current.show({ severity: 'warn', summary: 'Atenção', detail: resultado.mensagem, life: 3000 });
+            } else if (resultado.info) {
+                toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
+            }
+        }
+    };
 
     const representativePagamentoTemplate = (rowData) => {
         return <p style={{fontWeight: '400'}}>{rowData.datapagamento ? formatarDataBr(rowData.datapagamento) : '-'}</p>;
@@ -296,11 +314,11 @@ function DataTableFerias({
         {
             if(colaborador)
             {
-                setFilteredData(ferias.filter(feria => feria.funcionario.id == colaborador))
+                // setFilteredData(ferias.filter(feria => feria.funcionario.id == colaborador))
             }
             else
             {
-                setFilteredData(ferias)
+                // setFilteredData(ferias)
             }
         }
         
@@ -317,8 +335,9 @@ function DataTableFerias({
 
     return (
         <>
+            <Toast ref={toast} />
             <DataTable 
-                value={filteredData} 
+                value={ferias || []} 
                 filters={filters} 
                 globalFilterFields={['colaborador_id']} 
                 emptyMessage="Não foram encontrados férias registradas" 
@@ -349,7 +368,7 @@ function DataTableFerias({
                 <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '10%' }}></Column>
                 <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '15%' }}></Column>
             </DataTable>
-            <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={() => setModalDetalhesFeriasOpened(false)} />
+            <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={fecharModal} />
         </>
     )
 }

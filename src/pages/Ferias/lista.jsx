@@ -1,8 +1,7 @@
 import http from '@http'
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
-import { toast } from 'react-toastify'
 
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Contratos.module.css'
@@ -22,6 +21,7 @@ import { FaListUl, FaRegCalendarAlt, FaUmbrellaBeach, FaSpinner } from 'react-ic
 import Texto from '@components/Texto';
 import { ArmazenadorToken } from '@utils';
 import DropdownItens from '@components/DropdownItens';
+import { Toast } from 'primereact/toast';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -136,6 +136,7 @@ function FeriasListagem() {
     const [eventoSelecionado, setEventoSelecionado] = useState(null)
     const { usuario } = useSessaoUsuarioContext()
     const [tab, setTab] = useState('calendario') // 'lista' ou 'calendario'
+    const toast = useRef(null);
 
     // Lista de anos disponíveis (últimos 5 anos + próximos 2)
     const currentYear = new Date().getFullYear()
@@ -220,7 +221,7 @@ function FeriasListagem() {
             const feria = ferias[0]
 
             if(!feria) {
-                toast.error('Não há férias disponíveis para este colaborador')
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Não há férias disponíveis para este colaborador', life: 3000 });
                 return
             }
 
@@ -247,9 +248,27 @@ function FeriasListagem() {
             setEventoSelecionado(evento);
         } catch (error) {
             console.error('Erro ao buscar férias do colaborador:', error)
-            toast.error('Erro ao buscar férias do colaborador')
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Erro ao buscar férias do colaborador', life: 3000 });
         }
     }
+
+    const fecharModal = (resultado) => {
+        setEventoSelecionado(null);
+        if (resultado) {
+            if (resultado.sucesso) {
+                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
+                // Atualiza a lista para refletir a nova solicitação
+                const event = new Event('fetchFerias'); // Dispara um evento para recarregar
+                document.dispatchEvent(event);
+            } else if (resultado.erro) {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
+            } else if (resultado.aviso) {
+                toast.current.show({ severity: 'warn', summary: 'Atenção', detail: resultado.mensagem, life: 3000 });
+            } else if (resultado.info) {
+                toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
+            }
+        }
+    };
 
     // Função para lidar com mudança de aba
     const handleTabChange = (newTab) => {
@@ -269,6 +288,7 @@ function FeriasListagem() {
 
     return (
         <ConteudoFrame>
+            <Toast ref={toast} />
             <HeaderRow>
                 <TabPanel>
                     <TabButton active={tab === 'calendario'} onClick={() => handleTabChange('calendario')}>
@@ -375,7 +395,7 @@ function FeriasListagem() {
             <ModalDetalhesFerias 
                 opened={!!eventoSelecionado} 
                 evento={eventoSelecionado} 
-                aoFechar={() => setEventoSelecionado(null)} 
+                aoFechar={fecharModal} 
             />
         </ConteudoFrame>
     )

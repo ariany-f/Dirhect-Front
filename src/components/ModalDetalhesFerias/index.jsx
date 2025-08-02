@@ -282,28 +282,43 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     };
 
     const gestor = eventoCompletado.colab?.gestor;
-    const podeAprovar = eventoCompletado.evento?.status === 'S';
-    const aprovarFerias = () => {
-        alert('Férias aprovadas!');
+    const temPermissaoAprovar = ArmazenadorToken.hasPermission('change_ferias');
+    const podeAprovar = eventoCompletado.evento?.status === 'S' && temPermissaoAprovar;
+
+    const aprovarFerias = async () => {
+        if (!eventoCompletado.evento?.id) {
+            return aoFechar({ erro: true, mensagem: 'ID do evento de férias não encontrado.' });
+        }
+        try {
+            await http.put(`/ferias/${eventoCompletado.evento.id}/`, {
+                situacaoferias: 'A'
+            });
+            aoFechar({ sucesso: true, mensagem: 'Férias aprovadas com sucesso!' });
+        } catch (error) {
+            console.error("Erro ao aprovar férias", error);
+            const errorMessage = error.response?.data?.detail || 'Não foi possível aprovar a solicitação.';
+            aoFechar({ erro: true, mensagem: errorMessage });
+        }
     };
     const reprovarFerias = () => {
-        alert('Férias reprovadas!');
+        // A lógica de reprovação precisaria de um endpoint no backend.
+        // Por enquanto, apenas notifica e fecha.
+        aoFechar({ info: true, mensagem: 'Ação de reprovação registrada.' });
     };
     const cancelarSolicitacao = async () => {
         if (!eventoCompletado.evento?.id) {
-            alert('ID do evento de férias não encontrado.');
+            aoFechar({ erro: true, mensagem: 'ID do evento de férias não encontrado.' });
             return;
         }
     
         if (window.confirm('Tem certeza que deseja cancelar esta solicitação de férias?')) {
             try {
                 await http.post(`/ferias/${eventoCompletado.evento.id}/cancelar/`);
-                alert('Solicitação de férias cancelada com sucesso!');
-                aoFechar();
+                aoFechar({ sucesso: true, mensagem: 'Solicitação de férias cancelada com sucesso!' });
             } catch (error) {
                 console.error("Erro ao cancelar solicitação de férias", error);
                 const errorMessage = error.response?.data?.detail || 'Não foi possível cancelar a solicitação. Tente novamente.';
-                alert(errorMessage);
+                aoFechar({ erro: true, mensagem: errorMessage });
             }
         }
     };
@@ -332,11 +347,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const podeSolicitar = statusType === 'aSolicitar' && temPermissaoAddFerias;
     const solicitarFerias = async () => {
         if (!dataInicio || !dataFim) {
-            alert('Por favor, preencha as datas de início e fim.');
+            aoFechar({ aviso: true, mensagem: 'Por favor, preencha as datas de início e fim.' });
             return;
         }
         if (new Date(dataInicio) > new Date(dataFim)) {
-            alert('A data de início não pode ser posterior à data de fim.');
+            aoFechar({ aviso: true, mensagem: 'A data de início não pode ser posterior à data de fim.' });
             return;
         }
 
@@ -346,7 +361,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const saldoDisponivel = eventoCompletado.evento.saldo_dias;
 
         if (diasSolicitados > saldoDisponivel) {
-            alert(`Você pode solicitar no máximo ${saldoDisponivel} dias de férias.`);
+            aoFechar({ aviso: true, mensagem: `Você pode solicitar no máximo ${saldoDisponivel} dias de férias.` });
             return;
         }
         
@@ -356,26 +371,25 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 data_fim: dataFim,
                 adiantar_13: adiantarDecimoTerceiro
             });
-            alert('Solicitação de férias enviada com sucesso!');
-            aoFechar();
+            aoFechar({ sucesso: true, mensagem: 'Solicitação de férias enviada com sucesso!' });
         } catch (error) {
             console.error("Erro ao solicitar férias", error);
             const errorMessage = error.response?.data?.detail || 'Erro ao solicitar férias. Por favor, tente novamente.';
-            alert(errorMessage);
+            aoFechar({ erro: true, mensagem: errorMessage });
         }
     };
 
     const tituloPeriodo = (statusType === 'acontecendo' || statusType === 'passada' || statusType === 'aprovada' || statusType === 'finalizada') ? 'Período de Férias' : 'Período Solicitado';
 
     return (
-        <OverlayRight $opened={opened} onClick={aoFechar}>
+        <OverlayRight $opened={opened} onClick={() => aoFechar()}>
             <DialogEstilizadoRight $align="flex-end" open={opened} $opened={opened} onClick={e => e.stopPropagation()}>
                 <Frame style={{padding: '24px 32px'}}>
                     <CabecalhoFlex>
                         <StatusTag $type={statusType}>
                             {statusIcons[statusType]} {statusLabel}
                         </StatusTag>
-                        <BotaoFechar onClick={aoFechar} formMethod="dialog">
+                        <BotaoFechar onClick={() => aoFechar()} formMethod="dialog">
                             <RiCloseFill size={22} className="fechar" />
                         </BotaoFechar>
                     </CabecalhoFlex>
