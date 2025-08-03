@@ -597,6 +597,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                 return isAcontecendo() ? 'acontecendo' : 'aprovada';
             case 'M':
                 return isAcontecendo() ? 'acontecendo' : 'marcada';
+            case 'F':
+                return 'finalizada';
             case 'S':
             case 'I':
             case 'G':
@@ -881,7 +883,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                             tooltip = 'Marcada';
                                         } else if (type === 'aprovada') {
                                             tooltip = 'Aprovada';
-                                        } else if (type === 'passada' || type === 'finalizada' || type === 'paga') {
+                                        } else if (type === 'finalizada') {
+                                            tooltip = 'Finalizada';
+                                        } else if (type === 'passada' || type === 'paga') {
                                             tooltip = 'Concluída';
                                         }
                                         
