@@ -618,12 +618,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                 <Frame estilo="end" padding={'20px 20px 0px 0px'}>
                                     <BotaoGrupo style={{ marginTop: '12px' }}>
                                         <span className="botao-aprovar-wrapper" data-pr-tooltip={tooltipMensagem} style={{width: '100%', display: 'inline-block'}}>
-                                            <Botao estilo="success" size="small" aoClicar={aprovarFerias} largura="100%" disabled={botaoAprovarDesabilitado}>
-                                                <FaCheckCircle fill="white" /> Aprovar
+                                            <Botao estilo="success_claro" size="small" aoClicar={aprovarFerias} largura="100%" disabled={botaoAprovarDesabilitado}>
+                                                <FaCheckCircle fill="var(--success-500)" /> Aprovar
                                             </Botao>
                                         </span>
-                                        <Botao estilo="danger" size="small" aoClicar={reprovarFerias} largura="100%">
-                                            <FaTimesCircle fill="white" /> Reprovar
+                                        <Botao estilo="danger_claro" size="small" aoClicar={reprovarFerias} largura="100%">
+                                            <FaTimesCircle fill="var(--danger-500)" /> Reprovar
                                         </Botao>
                                     </BotaoGrupo>
                                 </Frame>

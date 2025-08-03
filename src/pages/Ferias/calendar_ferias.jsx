@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMonth, getYear, differenceInCalendarDays, isAfter, isBefore, isWithinInterval, format as formatDateFns } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList } from 'react-icons/fa';
+import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList, FaCalendarAlt } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
 import { Toast } from 'primereact/toast';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
@@ -179,6 +179,7 @@ const EventBar = styled.div`
         if (type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
         if (type === 'perdido') return 'linear-gradient(to right, #dc3545, #c82333)';
         if (type === 'solicitada') return 'linear-gradient(to right, #fbb034,rgb(211, 186, 22))';
+        if (type === 'marcada') return 'linear-gradient(to right, #20c997, #17a2b8)';
         if (type === 'aprovada') return GRADIENT;
         if (type === 'acontecendo') return 'linear-gradient(to right,rgb(45, 126, 219),rgb(18, 37, 130))';
         if (type === 'passada') return 'linear-gradient(to right, #bdbdbd, #757575)';
@@ -319,6 +320,16 @@ const MonthSeparator = styled.div`
     opacity: 0.5;
 `;
 
+function parseDateAsLocal(dateString) {
+    if (!dateString) return null;
+    if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}/)) {
+        const [datePart] = dateString.split('T');
+        const [year, month, day] = datePart.split('-').map(Number);
+        return new Date(year, month - 1, day);
+    }
+    return new Date(dateString);
+}
+
 function getDaysArray(start, end) {
     const arr = [];
     let dt = new Date(start);
@@ -372,7 +383,7 @@ const statusIcons = {
     acontecendo: <FaSun fill='white' />,
     passada: <FaCheckCircle fill='white' />,
     paga: <FaCheckCircle fill='white' />,
-    marcada: <FaRegClock fill='white' />,
+    marcada: <FaCalendarAlt fill='white' />,
     finalizada: <FaCheckCircle fill='white' />,
 };
 
@@ -569,32 +580,35 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
 
     // Função para mapear status para tipo de cor/ícone
     function mapStatusToType(status, data_inicio, data_fim) {
-        switch (status) {
-            case 'A': 
-                if (data_inicio <= new Date() && data_fim >= new Date()) {
-                    return 'acontecendo';
-                } else {
-                    return 'aprovada';
-                }
-            case 'S': return 'solicitada';
-            case 'C': return 'passada';
-            case 'E': return 'acontecendo';
-            case 'R': return 'rejeitada'; // pode ser ignorado ou adicionar cor especial
-            case 'P':
-                if (data_inicio <= new Date() && data_fim >= new Date()) {
-                    return 'paga';
-                } else {
-                    return 'acontecendo';
-                }
-            case 'M': 
-                if (data_inicio <= new Date() && data_fim >= new Date()) {
-                    return 'acontecendo';
-                } else {
-                    return 'marcada';
-                }
-            case 'F': return 'finalizada';
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
 
-            default: return 'aguardando';
+        const isAcontecendo = () => {
+            if (!data_inicio || !data_fim) return false;
+            const inicio = parseDateAsLocal(data_inicio);
+            inicio.setHours(0, 0, 0, 0);
+            const fim = parseDateAsLocal(data_fim);
+            fim.setHours(0, 0, 0, 0);
+            return hoje >= inicio && hoje <= fim;
+        };
+    
+        switch (status) {
+            case 'A':
+                return isAcontecendo() ? 'acontecendo' : 'aprovada';
+            case 'M':
+                return isAcontecendo() ? 'acontecendo' : 'marcada';
+            case 'S':
+            case 'I':
+            case 'G':
+            case 'D':
+            case 'E':
+                return 'solicitada';
+            case 'C':
+                return 'passada';
+            case 'R':
+                return 'rejeitada';
+            default:
+                return isAcontecendo() ? 'acontecendo' : 'aprovada';
         }
     }
 
