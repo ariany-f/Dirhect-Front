@@ -570,9 +570,9 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                             {(eventoCompletado.evento?.data_inicio || totalDias) && (
                                 <Frame>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>{tituloPeriodo}</DetalhesTitulo>
-                                    <div style={{display: 'flex', gap: '12px', marginTop: '12px'}}>
+                                    <BlocoDatas>
                                         {eventoCompletado.evento?.data_inicio && (
-                                            <BlocoData style={{flex: 1}}>
+                                            <BlocoData>
                                                 <BlocoDataIcone><FaCalendarCheck size={20}/></BlocoDataIcone>
                                                 <BlocoDataTexto>
                                                     <DataTitulo>Início</DataTitulo>
@@ -582,7 +582,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                             </BlocoData>
                                         )}
                                         {eventoCompletado.evento?.data_fim && (
-                                            <BlocoData style={{flex: 1}}>
+                                            <BlocoData>
                                                 <BlocoDataIcone><FaCalendarCheck size={20}/></BlocoDataIcone>
                                                 <BlocoDataTexto>
                                                     <DataTitulo>Fim</DataTitulo>
@@ -592,7 +592,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                             </BlocoData>
                                         )}
                                         {totalDias && (
-                                            <BlocoData style={{flex: 1}}>
+                                            <BlocoData>
                                                 <BlocoDataIcone><FaCalculator size={20}/></BlocoDataIcone>
                                                 <BlocoDataTexto>
                                                     <DataTitulo>Total de dias</DataTitulo>
@@ -600,7 +600,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 </BlocoDataTexto>
                                             </BlocoData>
                                         )}
-                                    </div>
+                                    </BlocoDatas>
                                 </Frame>
                             )}
                             
