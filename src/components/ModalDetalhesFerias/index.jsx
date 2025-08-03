@@ -450,9 +450,9 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
 
     const aprovarFerias = async () => {
-        console.log(eventoCompletado);
+        
         const tarefaPendente = eventoCompletado.evento?.tarefas?.find(
-            t => t.status === 'pendente' || t.status === 'em_andamento'
+            t => t.status === 'pendente' && t.tipo_codigo == 'aprovar_ferias'
         );
 
         if (!tarefaPendente) {
@@ -470,7 +470,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     };
     const reprovarFerias = async () => {
         const tarefaPendente = eventoCompletado.evento?.tarefas?.find(
-            t => t.status === 'pendente' || t.status === 'em_andamento'
+            t => t.status === 'pendente' && t.tipo_codigo == 'aprovar_ferias'
         );
 
         if (!tarefaPendente) {
