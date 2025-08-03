@@ -4,7 +4,7 @@ import { format, addMonths, startOfMonth, endOfMonth, addDays, isMonday, getMont
 import { ptBR } from 'date-fns/locale';
 import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaThLarge, FaThList } from 'react-icons/fa';
 import { Tooltip } from 'primereact/tooltip';
-import { toast } from 'react-toastify';
+import { Toast } from 'primereact/toast';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import colaboradoresFake from '@json/ferias.json'; // Dados fake para exemplos de renderização
 import DropdownItens from '@components/DropdownItens'
@@ -381,7 +381,7 @@ const DAYS_BATCH = 30; // Carrega mais 1 mês por vez
 const INITIAL_COLABS = 3;
 const COLABS_BATCH = 2;
 
-const CalendarFerias = ({ colaboradores }) => {
+const CalendarFerias = ({ colaboradores, onUpdate }) => {
     const [visualizacao, setVisualizacao] = useState('trimestral'); // 'mensal' ou 'trimestral'
     const [modalEvento, setModalEvento] = useState(null); // {colab, evento, tipo}
     const [isDragging, setIsDragging] = useState(false);
@@ -389,6 +389,7 @@ const CalendarFerias = ({ colaboradores }) => {
     const dragScrollLeft = useRef(0);
     const scrollRef = useRef();
     const containerRef = useRef();
+    const toast = useRef(null);
     const [containerWidth, setContainerWidth] = useState(1200);
 
     useEffect(() => {
@@ -547,7 +548,24 @@ const CalendarFerias = ({ colaboradores }) => {
     const handleEventClick = (colab, evento, tipo) => {
         setModalEvento({ colab, evento, tipo });
     };
-    const handleCloseModal = () => setModalEvento(null);
+    
+    const fecharModal = (resultado) => {
+        setModalEvento(null);
+        if (resultado) {
+            if (resultado.sucesso) {
+                toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
+                if (onUpdate) {
+                    onUpdate();
+                }
+            } else if (resultado.erro) {
+                toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
+            } else if (resultado.aviso) {
+                toast.current.show({ severity: 'warn', summary: 'Atenção', detail: resultado.mensagem, life: 3000 });
+            } else if (resultado.info) {
+                toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
+            }
+        }
+    };
 
     // Função para mapear status para tipo de cor/ícone
     function mapStatusToType(status, data_inicio, data_fim) {
@@ -582,6 +600,7 @@ const CalendarFerias = ({ colaboradores }) => {
 
     return (
         <CalendarContainer ref={containerRef}>
+            <Toast ref={toast} />
             <Tooltip target=".event-bar" />
             <FixedHeader>
                 <ViewToggleBar>
@@ -786,13 +805,11 @@ const CalendarFerias = ({ colaboradores }) => {
                                                         type="perdido"
                                                         className="event-bar"
                                                         onClick={() => {
-                                                            toast.warning(`Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nPERÍODO PERDIDO - Não é mais possível solicitar férias`, {
-                                                                position: "top-right",
-                                                                autoClose: 5000,
-                                                                hideProgressBar: false,
-                                                                closeOnClick: true,
-                                                                pauseOnHover: true,
-                                                                draggable: true,
+                                                            toast.current.show({
+                                                                severity: 'warn',
+                                                                summary: 'Período Perdido',
+                                                                detail: `Não é mais possível solicitar férias para o período aquisitivo de ${format(inicioPeriodo, 'dd/MM/yyyy')} a ${format(fimPeriodo, 'dd/MM/yyyy')}.`,
+                                                                life: 5000
                                                             });
                                                         }}
                                                         style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
@@ -883,7 +900,7 @@ const CalendarFerias = ({ colaboradores }) => {
             <ModalDetalhesFerias
                 opened={!!modalEvento}
                 evento={modalEvento}
-                aoFechar={handleCloseModal}
+                aoFechar={fecharModal}
             />
         </CalendarContainer>
     );

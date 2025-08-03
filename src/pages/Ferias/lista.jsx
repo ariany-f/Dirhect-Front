@@ -131,6 +131,7 @@ function FeriasListagem() {
     const [totalRecords, setTotalRecords] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
+    const [forceUpdate, setForceUpdate] = useState(0)
     const context = useOutletContext()
     const [modalSelecaoColaboradorOpened, setModalSelecaoColaboradorOpened] = useState(false)
     const [eventoSelecionado, setEventoSelecionado] = useState(null)
@@ -211,7 +212,7 @@ function FeriasListagem() {
         .finally(() => {
             setLoading(false)
         })
-    }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize])
+    }, [anoSelecionado, searchTerm, periodoAberto, tab, currentPage, pageSize, forceUpdate])
 
     const handleColaboradorSelecionado = async (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
@@ -258,8 +259,7 @@ function FeriasListagem() {
             if (resultado.sucesso) {
                 toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
                 // Atualiza a lista para refletir a nova solicitação
-                const event = new Event('fetchFerias'); // Dispara um evento para recarregar
-                document.dispatchEvent(event);
+                setForceUpdate(p => p + 1);
             } else if (resultado.erro) {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
             } else if (resultado.aviso) {
@@ -367,7 +367,11 @@ function FeriasListagem() {
                     </div>
                 ) : (ferias ? (
                     <>
-                        {tab === 'calendario' && <CalendarFerias colaboradores={ferias} anoSelecionado={anoSelecionado} />}
+                        {tab === 'calendario' && <CalendarFerias 
+                            colaboradores={ferias} 
+                            anoSelecionado={anoSelecionado} 
+                            onUpdate={() => setForceUpdate(p => p + 1)}
+                        />}
                         {tab === 'lista' && <DataTableFerias 
                             ferias={ferias} 
                             totalRecords={totalRecords}

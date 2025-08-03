@@ -14,6 +14,22 @@ import { FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck,
 import http from '@http';
 import SwitchInput from '@components/SwitchInput';
 import { ArmazenadorToken } from '@utils';
+import { Tooltip } from 'primereact/tooltip';
+
+// Helper function to parse dates and avoid timezone issues
+function parseDateAsLocal(dateString) {
+    if (!dateString) return null;
+    // For YYYY-MM-DD or ISO strings, which JS can treat as UTC.
+    // We parse them manually to treat them as local dates.
+    if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}/)) {
+        const [datePart] = dateString.split('T');
+        const [year, month, day] = datePart.split('-').map(Number);
+        // new Date(year, monthIndex, day)
+        return new Date(year, month - 1, day);
+    }
+    // For other formats or existing Date objects
+    return new Date(dateString);
+}
 
 const BotaoFechar = styled.button`
     background: none;
@@ -85,6 +101,7 @@ const StatusTag = styled.span`
   background: ${({ $type }) => {
     if ($type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
     if ($type === 'solicitada') return 'linear-gradient(to right, #fbb034,rgb(211, 186, 22))';
+    if ($type === 'marcada') return 'linear-gradient(to right, #20c997, #17a2b8)';
     if ($type === 'aprovada') return 'linear-gradient(to left, var(--black), var(--gradient-secundaria))';
     if ($type === 'acontecendo') return 'linear-gradient(to right,rgb(45, 126, 219),rgb(18, 37, 130))';
     if ($type === 'passada') return 'linear-gradient(to right, #bdbdbd, #757575)';
@@ -100,17 +117,40 @@ const statusIcons = {
   aprovada: <FaCalendarCheck fill='white' size={14}/>,
   acontecendo: <FaSun fill='white' size={14}/>,
   passada: <FaCheckCircle fill='white' size={14}/>,
+  marcada: <FaCalendarAlt fill='white' size={14}/>,
 };
 
-function mapStatusToType(status) {
-  switch (status) {
-    case 'A': return 'aprovada';
-    case 'S': return 'solicitada';
-    case 'C': return 'passada';
-    case 'E': return 'acontecendo';
-    case 'R': return 'rejeitada';
-    default: return 'aprovada';
-  }
+function mapStatusToType(status, data_inicio, data_fim) {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const isAcontecendo = () => {
+        if (!data_inicio || !data_fim) return false;
+        const inicio = parseDateAsLocal(data_inicio);
+        inicio.setHours(0, 0, 0, 0);
+        const fim = parseDateAsLocal(data_fim);
+        fim.setHours(0, 0, 0, 0);
+        return hoje >= inicio && hoje <= fim;
+    };
+
+    switch (status) {
+        case 'A':
+            return isAcontecendo() ? 'acontecendo' : 'aprovada';
+        case 'M':
+            return isAcontecendo() ? 'acontecendo' : 'marcada';
+        case 'S':
+        case 'I':
+        case 'G':
+        case 'D':
+        case 'E':
+            return 'solicitada';
+        case 'C':
+            return 'passada';
+        case 'R':
+            return 'rejeitada';
+        default:
+            return 'aprovada';
+    }
 }
 
 const CabecalhoFlex = styled.div`
@@ -255,35 +295,64 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
     if (!evento) return null;
 
-    const statusType = evento.tipo || mapStatusToType(evento.evento?.status);
+    const eventoNormalizado = {
+        ...evento,
+        evento: {
+            ...evento.evento,
+            data_inicio: evento.evento?.dt_inicio || evento.evento?.data_inicio,
+            data_fim: evento.evento?.dt_fim || evento.evento?.data_fim,
+        }
+    };
+
+    const statusType = eventoNormalizado.tipo || mapStatusToType(eventoNormalizado.evento?.status, eventoNormalizado.evento?.data_inicio, eventoNormalizado.evento?.data_fim);
 
     let totalDias = null;
-    if (evento.evento?.data_inicio && evento.evento?.data_fim) {
-        const inicio = new Date(evento.evento.data_inicio);
-        const fim = new Date(evento.evento.data_fim);
+    if (eventoNormalizado.evento?.data_inicio && eventoNormalizado.evento?.data_fim) {
+        const inicio = parseDateAsLocal(eventoNormalizado.evento.data_inicio);
+        const fim = parseDateAsLocal(eventoNormalizado.evento.data_fim);
         totalDias = Math.floor((fim - inicio) / (1000 * 60 * 60 * 24)) + 1;
     }
 
     const saldoBase = 30;
-    let saldoFinal = evento.evento?.saldo_dias ?? saldoBase;
+    let saldoFinal = eventoNormalizado.evento?.saldo_dias ?? eventoNormalizado.evento?.nrodiasferias ?? saldoBase;
     if ((statusType === 'passada' || statusType === 'finalizada' || statusType === 'acontecendo') && totalDias !== null) {
         saldoFinal = saldoBase - totalDias;
     }
     
     const eventoCompletado = {
-        ...evento,
+        ...eventoNormalizado,
         evento: {
-            ...evento.evento,
-            periodo_aquisitivo_inicio: evento.evento?.periodo_aquisitivo_inicio || '2023-01-01',
-            periodo_aquisitivo_fim: evento.evento?.periodo_aquisitivo_fim || '2023-12-31',
+            ...eventoNormalizado.evento,
+            periodo_aquisitivo_inicio: eventoNormalizado.evento?.periodo_aquisitivo_inicio,
+            periodo_aquisitivo_fim: eventoNormalizado.evento?.periodo_aquisitivo_fim,
             saldo_dias: saldoFinal,
-            data_solicitacao: evento.evento?.data_solicitacao || '2024-05-20T10:00:00Z'
+            data_solicitacao: eventoNormalizado.evento?.data_solicitacao || eventoNormalizado.evento?.criado_em
         }
     };
 
     const gestor = eventoCompletado.colab?.gestor;
-    const temPermissaoAprovar = ArmazenadorToken.hasPermission('change_ferias');
-    const podeAprovar = eventoCompletado.evento?.status === 'S' && temPermissaoAprovar;
+
+    const userPerfil = ArmazenadorToken.UserProfile;
+    const hoje = new Date();
+    const diaDoMes = hoje.getDate();
+
+    const perfisSempreAprovam = ['analista', 'supervisor', 'gestor'];
+    let temPermissaoParaVerBotao = false;
+    let botaoAprovarDesabilitado = false;
+    let tooltipMensagem = '';
+
+    if (perfisSempreAprovam.includes(userPerfil)) {
+        temPermissaoParaVerBotao = true;
+    } else if (userPerfil === 'analista_tenant') {
+        temPermissaoParaVerBotao = true;
+        if (diaDoMes > 20) {
+            botaoAprovarDesabilitado = true;
+            tooltipMensagem = 'Aprovação de férias não permitida após o dia 20 do mês.';
+        }
+    }
+
+    const isStatusPendente = eventoCompletado.evento?.status === 'E' || eventoCompletado.evento?.status === 'S';
+    const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
 
     const aprovarFerias = async () => {
         if (!eventoCompletado.evento?.id) {
@@ -327,6 +396,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     switch (statusType) {
       case 'aSolicitar': statusLabel = 'Recesso a vencer'; break;
       case 'solicitada': statusLabel = 'Aprovação pendente'; break;
+      case 'marcada': statusLabel = 'Férias Marcadas'; break;
       case 'aprovada': statusLabel = 'Férias aprovadas'; break;
       case 'acontecendo': statusLabel = 'Em férias'; break;
       case 'passada': statusLabel = 'Férias concluídas'; break;
@@ -338,7 +408,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         <AlertaAviso>
           <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
           <span>
-            Os dias de descanso gozados após o período legal de concessão deverão ser remunerados em dobro. O colaborador deve solicitar as férias até <b>{format(new Date(eventoCompletado.evento.limite), 'dd/MM/yyyy')}</b>
+            Os dias de descanso gozados após o período legal de concessão deverão ser remunerados em dobro. O colaborador deve solicitar as férias até <b>{format(parseDateAsLocal(eventoCompletado.evento.limite), 'dd/MM/yyyy')}</b>
           </span>
         </AlertaAviso>
       );
@@ -355,8 +425,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             return;
         }
 
-        const inicio = new Date(dataInicio);
-        const fim = new Date(dataFim);
+        const inicio = parseDateAsLocal(dataInicio);
+        const fim = parseDateAsLocal(dataFim);
         const diasSolicitados = Math.floor((fim - inicio) / (1000 * 60 * 60 * 24)) + 1;
         const saldoDisponivel = eventoCompletado.evento.saldo_dias;
 
@@ -379,7 +449,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         }
     };
 
-    const tituloPeriodo = (statusType === 'acontecendo' || statusType === 'passada' || statusType === 'aprovada' || statusType === 'finalizada') ? 'Período de Férias' : 'Período Solicitado';
+    const tituloPeriodo = (statusType === 'acontecendo' || statusType === 'passada' || statusType === 'aprovada' || statusType === 'finalizada' || statusType === 'solicitada' || statusType === 'marcada') ? 'Período de Férias' : 'Período Solicitado';
 
     return (
         <OverlayRight $opened={opened} onClick={() => aoFechar()}>
@@ -402,14 +472,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         <BlocoDataIcone><FaCalendarAlt size={20}/></BlocoDataIcone>
                                         <BlocoDataTexto>
                                             <DataTitulo>Início</DataTitulo>
-                                            <DataValor>{format(new Date(eventoCompletado.evento.periodo_aquisitivo_inicio), 'dd/MM/yyyy')}</DataValor>
+                                            <DataValor>{format(parseDateAsLocal(eventoCompletado.evento.periodo_aquisitivo_inicio), 'dd/MM/yyyy')}</DataValor>
                                         </BlocoDataTexto>
                                     </BlocoData>
                                     <BlocoData>
                                         <BlocoDataIcone><FaCalendarAlt size={20}/></BlocoDataIcone>
                                         <BlocoDataTexto>
                                             <DataTitulo>Fim</DataTitulo>
-                                            <DataValor>{format(new Date(eventoCompletado.evento.periodo_aquisitivo_fim), 'dd/MM/yyyy')}</DataValor>
+                                            <DataValor>{format(parseDateAsLocal(eventoCompletado.evento.periodo_aquisitivo_fim), 'dd/MM/yyyy')}</DataValor>
                                         </BlocoDataTexto>
                                     </BlocoData>
                                     <BlocoData>
@@ -445,7 +515,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         <Linha>
                                             <Label>Data da Solicitação</Label>
                                             <Valor>
-                                                {format(new Date(eventoCompletado.evento.data_solicitacao), "dd/MM/yyyy 'às' HH:mm")}
+                                                {format(parseDateAsLocal(eventoCompletado.evento.data_solicitacao), "dd/MM/yyyy 'às' HH:mm")}
                                             </Valor>
                                         </Linha>
                                     )}
@@ -455,6 +525,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                         </DetalhesContainer>
 
                         <AcoesContainer>
+                            <Tooltip target=".botao-aprovar-wrapper" />
                             {(eventoCompletado.evento?.data_inicio || totalDias) && (
                                 <Frame>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>{tituloPeriodo}</DetalhesTitulo>
@@ -464,8 +535,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 <BlocoDataIcone><FaCalendarCheck size={20}/></BlocoDataIcone>
                                                 <BlocoDataTexto>
                                                     <DataTitulo>Início</DataTitulo>
-                                                    <DataValor>{format(new Date(eventoCompletado.evento.data_inicio), 'dd/MM/yyyy')}</DataValor>
-                                                    <DataDiaSemana>{format(new Date(eventoCompletado.evento.data_inicio), 'EEEE', { locale: ptBR })}</DataDiaSemana>
+                                                    <DataValor>{format(parseDateAsLocal(eventoCompletado.evento.data_inicio), 'dd/MM/yyyy')}</DataValor>
+                                                    <DataDiaSemana>{format(parseDateAsLocal(eventoCompletado.evento.data_inicio), 'EEEE', { locale: ptBR })}</DataDiaSemana>
                                                 </BlocoDataTexto>
                                             </BlocoData>
                                         )}
@@ -474,8 +545,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 <BlocoDataIcone><FaCalendarCheck size={20}/></BlocoDataIcone>
                                                 <BlocoDataTexto>
                                                     <DataTitulo>Fim</DataTitulo>
-                                                    <DataValor>{format(new Date(eventoCompletado.evento.data_fim), 'dd/MM/yyyy')}</DataValor>
-                                                    <DataDiaSemana>{format(new Date(eventoCompletado.evento.data_fim), 'EEEE', { locale: ptBR })}</DataDiaSemana>
+                                                    <DataValor>{format(parseDateAsLocal(eventoCompletado.evento.data_fim), 'dd/MM/yyyy')}</DataValor>
+                                                    <DataDiaSemana>{format(parseDateAsLocal(eventoCompletado.evento.data_fim), 'EEEE', { locale: ptBR })}</DataDiaSemana>
                                                 </BlocoDataTexto>
                                             </BlocoData>
                                         )}
@@ -546,17 +617,15 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                             {podeAprovar && (
                                 <Frame estilo="end" padding={'20px 20px 0px 0px'}>
                                     <BotaoGrupo style={{ marginTop: '12px' }}>
-                                        <Botao estilo="success" size="small" aoClicar={aprovarFerias} largura="100%">
-                                            <FaCheckCircle /> Aprovar
-                                        </Botao>
+                                        <span className="botao-aprovar-wrapper" data-pr-tooltip={tooltipMensagem} style={{width: '100%', display: 'inline-block'}}>
+                                            <Botao estilo="success" size="small" aoClicar={aprovarFerias} largura="100%" disabled={botaoAprovarDesabilitado}>
+                                                <FaCheckCircle fill="white" /> Aprovar
+                                            </Botao>
+                                        </span>
                                         <Botao estilo="danger" size="small" aoClicar={reprovarFerias} largura="100%">
-                                            <FaTimesCircle /> Reprovar
+                                            <FaTimesCircle fill="white" /> Reprovar
                                         </Botao>
                                     </BotaoGrupo>
-                                    <div style={{borderTop: '1px solid #e9ecef', margin: '20px 0 16px'}}></div>
-                                    <Botao estilo="cinza" size="small" aoClicar={cancelarSolicitacao} largura="100%">
-                                        <FaBan /> Cancelar Solicitação
-                                    </Botao>
                                 </Frame>
                             )}
                         </AcoesContainer>

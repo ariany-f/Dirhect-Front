@@ -52,8 +52,39 @@ function DataTableFerias({
         setGlobalFilterValue(value);
     };
 
-    function verDetalhes(value) {
-        setSelectedFerias(value.id);
+    function verDetalhes(rowData) {
+        if (!rowData) {
+            return;
+        }
+    
+        let dataInicioAquisitivo;
+        if (rowData.fimperaquis) {
+            const [ano, mes, dia] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
+            let dataInicio = new Date(ano - 1, mes - 1, dia);
+            dataInicio.setDate(dataInicio.getDate() + 1);
+            dataInicioAquisitivo = dataInicio;
+        }
+    
+        const eventoParaModal = {
+            colab: {
+                id: rowData.funcionario.id,
+                nome: rowData.funcionario_nome,
+                gestor: rowData.gestor || null
+            },
+            evento: {
+                ...rowData,
+                status: rowData.situacaoferias,
+                periodo_aquisitivo_inicio: dataInicioAquisitivo,
+                periodo_aquisitivo_fim: rowData.fimperaquis,
+            }
+        };
+    
+        if (!rowData.dt_inicio && !rowData.dt_fim) {
+            eventoParaModal.tipo = 'aSolicitar';
+        }
+    
+        setEventoSelecionado(eventoParaModal);
+        setModalDetalhesFeriasOpened(true);
     }
 
     function formataCPF(cpf) {
@@ -133,14 +164,18 @@ function DataTableFerias({
                     tag = <Tag severity="danger" value="Finalizadas Próximo Mês"></Tag>;
                     break;
                 // Status antigos (mantidos para compatibilidade)
+                case 'I': // Aprovada
+                    tag = <Tag severity="success" value="Iniciada Solicitação"></Tag>;
+                    break;
+                // Status antigos (mantidos para compatibilidade)
                 case 'A': // Aprovada
                     tag = <Tag severity="success" value="Aprovada"></Tag>;
                     break;
                 case 'S': // Solicitada
                     tag = <Tag severity="info" value="Solicitada"></Tag>;
                     break;
-                case 'E': // Em Andamento
-                    tag = <Tag severity="info" value="Em Andamento"></Tag>;
+                case 'E': // Em Análise
+                    tag = <Tag severity="info" value="Em Análise"></Tag>;
                     break;
                 case 'C': // Cancelada
                     tag = <Tag severity="danger" value="Cancelada"></Tag>;
@@ -171,7 +206,7 @@ function DataTableFerias({
                             },
                             tipo: 'aSolicitar'
                         }
-                        tag = <Botao aoClicar={() => marcarFerias(ev)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
+                        tag = <Botao aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
                     } else {
                         tag = <Tag severity="info" value="N/A"></Tag>;
                     }
@@ -180,37 +215,12 @@ function DataTableFerias({
         } else {
             if(ArmazenadorToken.hasPermission('add_ferias'))
             {
-                let [anoRow, mesRow, diaRow] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
-                // Subtrai 1 ano
-                let dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
-                // Soma 1 dia
-                dataInicioRow.setDate(dataInicioRow.getDate() + 1);
-
-                const ev = {
-                    colab: {
-                        id: rowData.funcionario.id,
-                        nome: rowData.funcionario_nome,
-                        gestor: rowData.gestor || null
-                    },
-                    evento: {
-                        periodo_aquisitivo_inicio: dataInicioRow,
-                        periodo_aquisitivo_fim: rowData.fimperaquis,
-                        saldo_dias: rowData.nrodiasferias,
-                        limite: rowData.fimperaquis
-                    },
-                    tipo: 'aSolicitar'
-                }
-                tag = <Botao aoClicar={() => marcarFerias(ev)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
+                tag = <Botao aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
             } else {
                 tag = <Tag severity="info" value="N/A"></Tag>;
             }
         }
         return <p style={{fontWeight: '400'}}>{tag}</p>
-    }
-
-    function marcarFerias(rowData) {
-        setEventoSelecionado(rowData)
-        setModalDetalhesFeriasOpened(true)
     }
     
     const representativeColaboradorTemplate = (rowData) => {
