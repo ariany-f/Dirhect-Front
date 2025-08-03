@@ -75,6 +75,8 @@ const Atividades = () => {
     useEffect(() => {
         setLoading(true);
         let url = 'tarefas/?format=json';
+
+        url += `&atividade_automatica=false`;
         
         // Adiciona filtro por tipo se não for 'total'
         if (filtroAtivo !== 'total') {
@@ -120,7 +122,7 @@ const Atividades = () => {
             const tresMesesAtras = new Date();
             tresMesesAtras.setMonth(tresMesesAtras.getMonth() - 1);
             const dataFormatada = tresMesesAtras.toISOString().split('T')[0];
-            url += `&atualizado_em__gte=${dataFormatada}&atividade_automatica=false`;
+            url += `&atualizado_em__gte=${dataFormatada}`;
         }
         
         http.get(url)

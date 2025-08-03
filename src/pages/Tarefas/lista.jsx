@@ -33,8 +33,6 @@ const TarefasLista = () => {
     const loadData = (currentPage, currentPageSize, search = '', sort = '-id', currentFilters) => {
         setLoading(true);
         let url = `processos/?format=json&page=${currentPage}&page_size=${currentPageSize}`;
-
-        url += `&atividade_automatica=false`;
         
         if (search) {
             url += `&search=${search}`;
