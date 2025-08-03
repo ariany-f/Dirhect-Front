@@ -3,6 +3,7 @@ import CampoTexto from "@components/CampoTexto"
 import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import { RiCloseFill } from 'react-icons/ri'
+import { FaExclamationCircle } from 'react-icons/fa'
 import { useState, useEffect } from "react"
 import styled from "styled-components"
 import DropdownItens from "@components/DropdownItens"; 
@@ -10,6 +11,7 @@ import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles';
 import http from "@http"
 import BotaoGrupo from "@components/BotaoGrupo"
 import Frame from "@components/Frame"
+import { ArmazenadorToken } from "@utils"
 
 const Cabecalho = styled.div`
     padding: 24px 32px;
@@ -97,6 +99,18 @@ const BotaoFechar = styled.button`
     }
 `;
 
+const AlertaAviso = styled.div`
+    background: #fffbeb;
+    color: #664d03;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    padding: 16px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+`;
+
 function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostrarColaborador = true }) {
     const [dataDemissao, setDataDemissao] = useState('');
     const [tipoDemissao, setTipoDemissao] = useState(null);
@@ -105,6 +119,12 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
 
     const [tiposDemissaoOptions, setTiposDemissaoOptions] = useState([]);
     const [motivosDemissaoOptions, setMotivosDemissaoOptions] = useState([]);
+
+    const userPerfil = ArmazenadorToken.UserProfile;
+    const hoje = new Date();
+    const diaDoMes = hoje.getDate();
+    
+    const bloquearSolicitacao = userPerfil === 'analista_tenant' && diaDoMes > 20;
 
     useEffect(() => {
         if (opened) {
@@ -130,6 +150,9 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     }, [opened]);
 
     const handleSalvar = () => {
+        if (bloquearSolicitacao) {
+            return;
+        }
         if (!dataDemissao || !tipoDemissao || !motivoDemissao) {
             alert('Por favor, preencha todos os campos obrigatórios.');
             return;
@@ -190,43 +213,52 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                             </DetalhesContainer>
                             }
                             <AcoesContainer>
-                                <Frame>
-                                    <CampoTexto
-                                        name="data_demissao"
-                                        valor={dataDemissao}
-                                        setValor={setDataDemissao}
-                                        type="date"
-                                        label="Data da Demissão"
-                                        placeholder="Selecione a data"
-                                    />
-                                    <DropdownItens
-                                        valor={tipoDemissao}
-                                        setValor={setTipoDemissao}
-                                        options={tiposDemissaoOptions}
-                                        label="Tipo de Demissão"
-                                        name="tipo_demissao"
-                                        placeholder="Selecione o tipo"
-                                        $margin="20px"
-                                    />
-                                    <DropdownItens
-                                        valor={motivoDemissao}
-                                        setValor={setMotivoDemissao}
-                                        options={motivosDemissaoOptions}
-                                        label="Motivo da Demissão"
-                                        name="motivo_demissao"
-                                        placeholder="Selecione o motivo"
-                                        $margin="15px"
-                                    />
-                                    <CampoTexto
-                                        name="observacao"
-                                        valor={observacao}
-                                        setValor={setObservacao}
-                                        label="Observação"
-                                        placeholder="Digite uma observação (opcional)"
-                                        type="textarea"
-                                        rows={4}
-                                    />
-                                </Frame>
+                                {bloquearSolicitacao ? (
+                                    <AlertaAviso>
+                                        <FaExclamationCircle size={24} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                        <span>
+                                            Como <b>analista tenant</b>, você só pode solicitar demissões entre o dia 1 e o dia 20 de cada mês. Para solicitações fora deste período, por favor, entre em contato com o responsável pelo processo.
+                                        </span>
+                                    </AlertaAviso>
+                                ) : (
+                                    <Frame>
+                                        <CampoTexto
+                                            name="data_demissao"
+                                            valor={dataDemissao}
+                                            setValor={setDataDemissao}
+                                            type="date"
+                                            label="Data da Demissão"
+                                            placeholder="Selecione a data"
+                                        />
+                                        <DropdownItens
+                                            valor={tipoDemissao}
+                                            setValor={setTipoDemissao}
+                                            options={tiposDemissaoOptions}
+                                            label="Tipo de Demissão"
+                                            name="tipo_demissao"
+                                            placeholder="Selecione o tipo"
+                                            $margin="20px"
+                                        />
+                                        <DropdownItens
+                                            valor={motivoDemissao}
+                                            setValor={setMotivoDemissao}
+                                            options={motivosDemissaoOptions}
+                                            label="Motivo da Demissão"
+                                            name="motivo_demissao"
+                                            placeholder="Selecione o motivo"
+                                            $margin="15px"
+                                        />
+                                        <CampoTexto
+                                            name="observacao"
+                                            valor={observacao}
+                                            setValor={setObservacao}
+                                            label="Observação"
+                                            placeholder="Digite uma observação (opcional)"
+                                            type="textarea"
+                                            rows={4}
+                                        />
+                                    </Frame>
+                                )}
                             </AcoesContainer>
                         </ConteudoContainer>
                         <Frame estilo="spaced">
@@ -236,7 +268,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                 </Botao>
                             </BotaoGrupo>
                             <BotaoGrupo align="space-between" wrap>
-                                <Botao aoClicar={handleSalvar} estilo="vermilion" size="small">
+                                <Botao aoClicar={handleSalvar} estilo="vermilion" size="small" disabled={bloquearSolicitacao}>
                                     Confirmar
                                 </Botao>
                             </BotaoGrupo>

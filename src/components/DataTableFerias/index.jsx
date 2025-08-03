@@ -241,16 +241,16 @@ function DataTableFerias({
 
     
     const representativ13Template = (rowData) => {
-        let tag = rowData?.decimo;
+        let tag = rowData?.adiantar_13;
         let tooltipText = '';
         
-        switch(rowData?.decimo)
+        switch(rowData?.adiantar_13)
         {
-            case 'Sim':
+            case true:
                 tag = <Tag severity="success" value="Sim"></Tag>;
                 tooltipText = '13º Salário: Sim';
                 break;
-            case 'Não':
+            case false:
                 tag = <Tag severity="danger" value="Não"></Tag>;
                 tooltipText = '13º Salário: Não';
                 break;
