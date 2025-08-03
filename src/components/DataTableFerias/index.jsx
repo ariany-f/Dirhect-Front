@@ -76,6 +76,7 @@ function DataTableFerias({
                 status: rowData.situacaoferias,
                 periodo_aquisitivo_inicio: dataInicioAquisitivo,
                 periodo_aquisitivo_fim: rowData.fimperaquis,
+                tarefas: rowData.tarefas
             }
         };
     

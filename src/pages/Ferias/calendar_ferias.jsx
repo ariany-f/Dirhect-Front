@@ -848,7 +848,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                             periodo_aquisitivo_inicio: inicioPeriodo,
                                                             periodo_aquisitivo_fim: fimPeriodo,
                                                             limite: limiteSolicitacao,
-                                                            saldo_dias: aus.nrodiasferias || 30
+                                                            saldo_dias: aus.nrodiasferias || 30,
+                                                            tarefas: aus.tarefas
                                                         }, 'aSolicitar')}
                                                         style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}
                                                         data-pr-tooltip={tooltip}
@@ -885,7 +886,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         const eventoComPeriodo = {
                                             ...aus,
                                             periodo_aquisitivo_inicio: aus.periodo_aquisitivo_inicio,
-                                            periodo_aquisitivo_fim: aus.periodo_aquisitivo_fim
+                                            periodo_aquisitivo_fim: aus.periodo_aquisitivo_fim,
+                                            tarefas: aus.tarefas
                                         };
                                         
                                         return (
