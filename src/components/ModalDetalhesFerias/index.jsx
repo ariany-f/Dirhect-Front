@@ -383,24 +383,37 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
 
     const aprovarFerias = async () => {
+        const tarefaPendente = eventoCompletado.evento?.tarefas?.find(
+            t => t.status === 'pendente' || t.status === 'em_andamento'
+        );
+
+        if (!tarefaPendente) {
+            return aoFechar({ erro: true, mensagem: 'Nenhuma tarefa pendente encontrada para aprovação.' });
+        }
+
+        try {
+            await http.post(`/tarefas/${tarefaPendente.id}/aprovar/`);
+            aoFechar({ sucesso: true, mensagem: 'Férias aprovadas com sucesso!' });
+        } catch (error) {
+            console.error("Erro ao aprovar tarefa de férias", error);
+            const errorMessage = error.response?.data?.detail || 'Não foi possível aprovar a solicitação.';
+            aoFechar({ erro: true, mensagem: errorMessage });
+        }
+    };
+    const reprovarFerias = async () => {
         if (!eventoCompletado.evento?.id) {
             return aoFechar({ erro: true, mensagem: 'ID do evento de férias não encontrado.' });
         }
         try {
             await http.put(`/ferias/${eventoCompletado.evento.id}/`, {
-                situacaoferias: 'A'
+                situacaoferias: 'R' // 'R' de Rejeitada
             });
-            aoFechar({ sucesso: true, mensagem: 'Férias aprovadas com sucesso!' });
+            aoFechar({ sucesso: true, mensagem: 'Solicitação de férias reprovada.' });
         } catch (error) {
-            console.error("Erro ao aprovar férias", error);
-            const errorMessage = error.response?.data?.detail || 'Não foi possível aprovar a solicitação.';
+            console.error("Erro ao reprovar férias", error);
+            const errorMessage = error.response?.data?.detail || 'Não foi possível reprovar a solicitação.';
             aoFechar({ erro: true, mensagem: errorMessage });
         }
-    };
-    const reprovarFerias = () => {
-        // A lógica de reprovação precisaria de um endpoint no backend.
-        // Por enquanto, apenas notifica e fecha.
-        aoFechar({ info: true, mensagem: 'Ação de reprovação registrada.' });
     };
     const cancelarSolicitacao = async () => {
         if (!eventoCompletado.evento?.id) {
