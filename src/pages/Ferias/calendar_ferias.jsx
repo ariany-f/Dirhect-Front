@@ -454,7 +454,11 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     status: item.situacaoferias || item.status || 'A',
                     periodo_aquisitivo_inicio: periodoAquisitivoInicio,
                     periodo_aquisitivo_fim: periodoAquisitivoFim,
-                    saldo_dias: item.nrodiasferias || 30
+                    saldo_dias: item.nrodiasferias || 30,
+                    nrodiasabono: item.nrodiasabono || 0,
+                    nrodiasferias: item.nrodiasferias || 30,
+                    adiantar_13: item.adiantar_13 || false,
+                    tarefas: item.tarefas || [] // Adicionando o objeto tarefas
                 });
             } else if (item.fimperaquis) {
                 // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, adiciona para criar barra de férias a requisitar
@@ -466,7 +470,11 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     nrodiasferias: item.nrodiasferias || 30,
                     periodo_perdido: item.periodo_perdido || false,
                     periodo_aquisitivo_inicio: inicioPeriodo,
-                    periodo_aquisitivo_fim: fimPeriodo
+                    periodo_aquisitivo_fim: fimPeriodo,
+                    nrodiasabono: item.nrodiasabono || 0,
+                    nrodiasferias: item.nrodiasferias || 30,
+                    adiantar_13: item.adiantar_13 || false,
+                    tarefas: item.tarefas || [] // Adicionando o objeto tarefas
                 });
             }
         });
@@ -575,6 +583,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             } else if (resultado.info) {
                 toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
             }
+            onUpdate();
         }
     };
 

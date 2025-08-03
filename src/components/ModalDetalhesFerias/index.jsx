@@ -450,6 +450,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
 
     const aprovarFerias = async () => {
+        console.log(eventoCompletado);
         const tarefaPendente = eventoCompletado.evento?.tarefas?.find(
             t => t.status === 'pendente' || t.status === 'em_andamento'
         );
