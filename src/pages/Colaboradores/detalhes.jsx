@@ -938,20 +938,40 @@ function ColaboradorDetalhes() {
                                 }}>
                                     Status:
                                 </span>
-                                <span style={{
-                                    background: colaborador.tipo_situacao_descricao === 'Ativo' ? '#4CAF50' : '#FF9800',
-                                    color: '#fff',
-                                    padding: '4px 8px',
-                                    borderRadius: 12,
-                                    fontSize: 11,
-                                    fontWeight: 400,
-                                    textTransform: 'capitalize'
-                                }}>
-                                    {colaborador.tipo_situacao_descricao || 'Status não informado'}
-                                </span>
+                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <span style={{
+                                        background: colaborador.tipo_situacao_descricao === 'Ativo' ? '#4CAF50' : '#FF9800',
+                                        color: '#fff',
+                                        padding: '4px 8px',
+                                        borderRadius: 12,
+                                        fontSize: 11,
+                                        fontWeight: 400,
+                                        textTransform: 'capitalize'
+                                    }}>
+                                        {colaborador.tipo_situacao_descricao || 'Status não informado'}
+                                    </span>
+                                    {colaborador.marcado_demissao && (
+                                        <span style={{
+                                            background: '#dc2626',
+                                            color: '#fff',
+                                            padding: '4px 8px',
+                                            borderRadius: 12,
+                                            fontSize: 11,
+                                            fontWeight: 400,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px'
+                                        }}>
+                                            <FaUserTimes fill='var(--white)' size={12} />
+                                            Marcado para Demissão
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                             
-                            {colaborador?.tipo_situacao_descricao == 'Ativo' && ArmazenadorToken.hasPermission('add_demissao') && (
+                            {colaborador?.tipo_situacao_descricao == 'Ativo' && 
+                             ArmazenadorToken.hasPermission('add_demissao') && 
+                             !colaborador.marcado_demissao && (
                                 <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="vermilion" size="small">
                                     <FaUserTimes fill='var(--secundaria)' size={16} style={{marginRight: '8px'}} /> 
                                     Solicitar Demissão
