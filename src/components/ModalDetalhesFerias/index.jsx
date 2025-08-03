@@ -320,6 +320,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [dataInicio, setDataInicio] = useState('');
     const [dataFim, setDataFim] = useState('');
     const [adiantarDecimoTerceiro, setAdiantarDecimoTerceiro] = useState(false);
+    const [numeroDiasAbono, setNumeroDiasAbono] = useState('');
 
     if (!evento) return null;
 
@@ -364,20 +365,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const hoje = new Date();
     const diaDoMes = hoje.getDate();
 
-    const perfisSempreAprovam = ['analista', 'supervisor', 'gestor'];
-    let temPermissaoParaVerBotao = false;
-    let botaoAprovarDesabilitado = false;
-    let tooltipMensagem = '';
-
-    if (perfisSempreAprovam.includes(userPerfil)) {
-        temPermissaoParaVerBotao = true;
-    } else if (userPerfil === 'analista_tenant') {
-        temPermissaoParaVerBotao = true;
-        if (diaDoMes > 20) {
-            botaoAprovarDesabilitado = true;
-            tooltipMensagem = 'Aprovação de férias não permitida após o dia 20 do mês.';
-        }
-    }
+    const perfisQueAprovam = ['analista', 'supervisor', 'gestor', 'analista_tenant'];
+    const temPermissaoParaVerBotao = perfisQueAprovam.includes(userPerfil);
 
     const isStatusPendente = eventoCompletado.evento?.status === 'E' || eventoCompletado.evento?.status === 'S';
     const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
@@ -401,35 +390,21 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         }
     };
     const reprovarFerias = async () => {
-        if (!eventoCompletado.evento?.id) {
-            return aoFechar({ erro: true, mensagem: 'ID do evento de férias não encontrado.' });
+        const tarefaPendente = eventoCompletado.evento?.tarefas?.find(
+            t => t.status === 'pendente' || t.status === 'em_andamento'
+        );
+
+        if (!tarefaPendente) {
+            return aoFechar({ erro: true, mensagem: 'Nenhuma tarefa pendente encontrada para rejeição.' });
         }
+
         try {
-            await http.put(`/ferias/${eventoCompletado.evento.id}/`, {
-                situacaoferias: 'R' // 'R' de Rejeitada
-            });
+            await http.post(`/tarefas/${tarefaPendente.id}/rejeitar/`);
             aoFechar({ sucesso: true, mensagem: 'Solicitação de férias reprovada.' });
         } catch (error) {
             console.error("Erro ao reprovar férias", error);
             const errorMessage = error.response?.data?.detail || 'Não foi possível reprovar a solicitação.';
             aoFechar({ erro: true, mensagem: errorMessage });
-        }
-    };
-    const cancelarSolicitacao = async () => {
-        if (!eventoCompletado.evento?.id) {
-            aoFechar({ erro: true, mensagem: 'ID do evento de férias não encontrado.' });
-            return;
-        }
-    
-        if (window.confirm('Tem certeza que deseja cancelar esta solicitação de férias?')) {
-            try {
-                await http.post(`/ferias/${eventoCompletado.evento.id}/cancelar/`);
-                aoFechar({ sucesso: true, mensagem: 'Solicitação de férias cancelada com sucesso!' });
-            } catch (error) {
-                console.error("Erro ao cancelar solicitação de férias", error);
-                const errorMessage = error.response?.data?.detail || 'Não foi possível cancelar a solicitação. Tente novamente.';
-                aoFechar({ erro: true, mensagem: errorMessage });
-            }
         }
     };
     
@@ -475,12 +450,30 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             aoFechar({ aviso: true, mensagem: `Você pode solicitar no máximo ${saldoDisponivel} dias de férias.` });
             return;
         }
+
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+        const diffTime = inicio - hoje;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 45) {
+            const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
+            if (perfisEspeciais.includes(userPerfil)) {
+                if (!window.confirm('A data de início das férias está a menos de 45 dias do dia de hoje. Deseja continuar com a solicitação?')) {
+                    return;
+                }
+            } else {
+                aoFechar({ aviso: true, mensagem: 'A solicitação de férias deve ser feita com no mínimo 45 dias de antecedência.' });
+                return;
+            }
+        }
         
         try {
             await http.post(`/funcionario/${eventoCompletado.colab.id}/solicita_ferias/`, {
                 data_inicio: dataInicio,
                 data_fim: dataFim,
-                adiantar_13: adiantarDecimoTerceiro
+                adiantar_13: adiantarDecimoTerceiro,
+                nrodiasabono: parseInt(numeroDiasAbono, 10) || 0
             });
             aoFechar({ sucesso: true, mensagem: 'Solicitação de férias enviada com sucesso!' });
         } catch (error) {
@@ -566,7 +559,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                         </DetalhesContainer>
 
                         <AcoesContainer>
-                            <Tooltip target=".botao-aprovar-wrapper" />
                             {(eventoCompletado.evento?.data_inicio || totalDias) && (
                                 <Frame>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>{tituloPeriodo}</DetalhesTitulo>
@@ -637,6 +629,15 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 />
                                             </Linha>
                                         </div>
+                                        <Linha>
+                                            <Label>Número de dias de Abono</Label>
+                                            <DataInput
+                                                type="number"
+                                                value={numeroDiasAbono}
+                                                onChange={e => setNumeroDiasAbono(e.target.value)}
+                                                placeholder="0"
+                                            />
+                                        </Linha>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                             <SwitchInput 
                                                 id="adiantar13"
@@ -658,11 +659,9 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                             {podeAprovar && (
                                 <Frame estilo="end" padding={'20px 20px 0px 0px'}>
                                     <BotaoGrupo style={{ marginTop: '12px' }}>
-                                        <span className="botao-aprovar-wrapper" data-pr-tooltip={tooltipMensagem} style={{width: '100%', display: 'inline-block'}}>
-                                            <BotaoAprovarCustom size="small" aoClicar={aprovarFerias} largura="100%" disabled={botaoAprovarDesabilitado}>
-                                                <FaCheckCircle /> Aprovar
-                                            </BotaoAprovarCustom>
-                                        </span>
+                                        <BotaoAprovarCustom size="small" aoClicar={aprovarFerias} largura="100%">
+                                            <FaCheckCircle /> Aprovar
+                                        </BotaoAprovarCustom>
                                         <BotaoReprovarCustom size="small" aoClicar={reprovarFerias} largura="100%">
                                             <FaTimesCircle /> Reprovar
                                         </BotaoReprovarCustom>
