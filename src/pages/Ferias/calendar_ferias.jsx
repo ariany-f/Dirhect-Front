@@ -871,11 +871,14 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         if (type === 'acontecendo' || type === 'solicitada' || type === 'marcada') label = `${format(parseDateAsLocal(aus.data_inicio), 'dd/MM/yyyy')} até ${format(parseDateAsLocal(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'rejeitada') return null; // não exibe
                                         if (type === 'aguardando') return null;
+                                        
                                         let tooltip = `Início: ${format(parseDateAsLocal(aus.data_inicio), 'dd/MM/yyyy')}\nFim: ${format(parseDateAsLocal(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'acontecendo') {
                                             tooltip = 'Em curso';
-                                        } else if (type === 'solicitada' || type === 'marcada') {
+                                        } else if (type === 'solicitada') {
                                             tooltip = 'Solicitada';
+                                        } else if (type === 'marcada') {
+                                            tooltip = 'Marcada';
                                         } else if (type === 'aprovada') {
                                             tooltip = 'Aprovada';
                                         } else if (type === 'passada' || type === 'finalizada' || type === 'paga') {
