@@ -322,6 +322,9 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [adiantarDecimoTerceiro, setAdiantarDecimoTerceiro] = useState(false);
     const [numeroDiasAbono, setNumeroDiasAbono] = useState('');
     const [mostrarErro45Dias, setMostrarErro45Dias] = useState(false);
+    const [mostrarErroDatas, setMostrarErroDatas] = useState(false);
+    const [mostrarErroDiasMinimos, setMostrarErroDiasMinimos] = useState(false);
+    const [mostrarErroSaldoDias, setMostrarErroSaldoDias] = useState(false);
     const [botaoEnviarDesabilitado, setBotaoEnviarDesabilitado] = useState(false);
 
     const userPerfil = ArmazenadorToken.UserProfile;
@@ -351,10 +354,47 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         }
     };
 
+    const validarDatas = (inicio, fim) => {
+        if (!inicio || !fim) return;
+
+        const dataInicio = parseDateAsLocal(inicio);
+        const dataFim = parseDateAsLocal(fim);
+
+        // Validar ordem das datas
+        const datasInvalidas = dataInicio > dataFim;
+        setMostrarErroDatas(datasInvalidas);
+
+        // Validar quantidade mínima de dias
+        const diffTime = dataFim - dataInicio;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        const diasInsuficientes = diffDays < 5;
+        setMostrarErroDiasMinimos(diasInsuficientes);
+
+        // Validar saldo de dias disponíveis
+        const saldoDisponivel = eventoCompletado?.evento?.saldo_dias ?? 30;
+        const excedeSaldo = diffDays > saldoDisponivel;
+        setMostrarErroSaldoDias(excedeSaldo);
+
+        // Desabilitar botão se houver qualquer erro
+        setBotaoEnviarDesabilitado(
+            datasInvalidas || 
+            diasInsuficientes || 
+            excedeSaldo || 
+            (mostrarErro45Dias && !isPerfilEspecial)
+        );
+    };
+
     const handleDataInicioChange = (e) => {
         const novaData = e.target.value;
         setDataInicio(novaData);
         verificar45Dias(novaData);
+        validarDatas(novaData, dataFim);
+    };
+
+    const handleDataFimChange = (e) => {
+        const novaData = e.target.value;
+        setDataFim(novaData);
+        validarDatas(dataInicio, novaData);
     };
 
     if (!evento) return null;
@@ -658,10 +698,37 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 <DataInput 
                                                     type="date" 
                                                     value={dataFim} 
-                                                    onChange={e => setDataFim(e.target.value)} 
+                                                    onChange={handleDataFimChange}
                                                 />
                                             </Linha>
                                         </div>
+
+                                        {mostrarErroDatas && (
+                                            <AlertaAviso>
+                                                <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                                <span>
+                                                    A data de início não pode ser posterior à data de fim das férias.
+                                                </span>
+                                            </AlertaAviso>
+                                        )}
+
+                                        {mostrarErroDiasMinimos && (
+                                            <AlertaAviso>
+                                                <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                                <span>
+                                                    O período de férias deve ter no mínimo 5 dias.
+                                                </span>
+                                            </AlertaAviso>
+                                        )}
+
+                                        {mostrarErroSaldoDias && (
+                                            <AlertaAviso>
+                                                <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                                <span>
+                                                    O período selecionado excede o saldo de dias disponíveis ({eventoCompletado?.evento?.saldo_dias ?? 30} dias).
+                                                </span>
+                                            </AlertaAviso>
+                                        )}
 
                                         {mostrarErro45Dias && (
                                             <AlertaAviso>
