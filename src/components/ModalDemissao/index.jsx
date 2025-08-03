@@ -99,16 +99,73 @@ const BotaoFechar = styled.button`
     }
 `;
 
-const AlertaAviso = styled.div`
-    background: #fffbeb;
-    color: #664d03;
-    border-left: 4px solid #ffc107;
-    border-radius: 4px;
-    padding: 16px;
-    font-size: 14px;
+const FormContainer = styled.div`
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px 0;
+`;
+
+const FormRow = styled.div`
+    display: flex;
+    gap: 24px;
+    
+    > * {
+        flex: 1;
+        min-width: 0;
+    }
+`;
+
+const FormGroup = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    ${props => props.fullWidth && `
+        width: 100%;
+    `}
+`;
+
+const FormLabel = styled.label`
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+`;
+
+const AlertaAviso = styled.div`
+    display: flex;
+    align-items: flex-start;
     gap: 12px;
+    padding: 16px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 4px;
+    margin-bottom: 24px;
+
+    span {
+        font-size: 14px;
+        color: #856404;
+        line-height: 1.5;
+    }
+`;
+
+const TextArea = styled.textarea`
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical;
+
+    &::placeholder {
+        color: #6c757d;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
 `;
 
 function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostrarColaborador = true }) {
@@ -123,8 +180,15 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     const userPerfil = ArmazenadorToken.UserProfile;
     const hoje = new Date();
     const diaDoMes = hoje.getDate();
+
+    const foraDoPrazo = diaDoMes > 20;
+    const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
     
-    const bloquearSolicitacao = userPerfil === 'analista_tenant' && diaDoMes > 20;
+    const isAnalistaTenant = userPerfil === 'analista_tenant';
+    const isPerfilEspecial = perfisEspeciais.includes(userPerfil);
+
+    const mostrarAviso = foraDoPrazo && (isAnalistaTenant || isPerfilEspecial);
+    const bloquearFormulario = foraDoPrazo && isAnalistaTenant;
 
     useEffect(() => {
         if (opened) {
@@ -150,7 +214,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     }, [opened]);
 
     const handleSalvar = () => {
-        if (bloquearSolicitacao) {
+        if (bloquearFormulario) {
             return;
         }
         if (!dataDemissao || !tipoDemissao || !motivoDemissao) {
@@ -213,51 +277,65 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                             </DetalhesContainer>
                             }
                             <AcoesContainer>
-                                {bloquearSolicitacao ? (
+                                {mostrarAviso && (
                                     <AlertaAviso>
-                                        <FaExclamationCircle size={24} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                        <FaExclamationCircle size={24} style={{ color: '#856404', flexShrink: 0 }}/>
                                         <span>
-                                            Como <b>analista tenant</b>, você só pode solicitar demissões entre o dia 1 e o dia 20 de cada mês. Para solicitações fora deste período, por favor, entre em contato com o responsável pelo processo.
+                                            {isAnalistaTenant 
+                                                ? "Como analista tenant, você só pode solicitar demissões entre o dia 1 e o dia 20 de cada mês. Para solicitações fora deste período, por favor, entre em contato com o responsável pelo processo."
+                                                : "A solicitação de demissão está sendo feita fora do período recomendado (do dia 1 ao dia 20). Por favor, prossiga com atenção."
+                                            }
                                         </span>
                                     </AlertaAviso>
-                                ) : (
-                                    <Frame>
-                                        <CampoTexto
-                                            name="data_demissao"
-                                            valor={dataDemissao}
-                                            setValor={setDataDemissao}
-                                            type="date"
-                                            label="Data da Demissão"
-                                            placeholder="Selecione a data"
-                                        />
-                                        <DropdownItens
-                                            valor={tipoDemissao}
-                                            setValor={setTipoDemissao}
-                                            options={tiposDemissaoOptions}
-                                            label="Tipo de Demissão"
-                                            name="tipo_demissao"
-                                            placeholder="Selecione o tipo"
-                                            $margin="20px"
-                                        />
-                                        <DropdownItens
-                                            valor={motivoDemissao}
-                                            setValor={setMotivoDemissao}
-                                            options={motivosDemissaoOptions}
-                                            label="Motivo da Demissão"
-                                            name="motivo_demissao"
-                                            placeholder="Selecione o motivo"
-                                            $margin="15px"
-                                        />
-                                        <CampoTexto
-                                            name="observacao"
-                                            valor={observacao}
-                                            setValor={setObservacao}
-                                            label="Observação"
-                                            placeholder="Digite uma observação (opcional)"
-                                            type="textarea"
-                                            rows={4}
-                                        />
-                                    </Frame>
+                                )}
+                                {!bloquearFormulario && (
+                                    <FormContainer>
+                                        <FormRow>
+                                            <FormGroup>
+                                                <CampoTexto
+                                                    name="data_demissao"
+                                                    valor={dataDemissao}
+                                                    setValor={setDataDemissao}
+                                                    type="date"
+                                                    label="Data da Demissão"
+                                                    placeholder="Selecione a data"
+                                                />
+                                            </FormGroup>
+
+                                            <FormGroup>
+                                                <DropdownItens
+                                                    valor={tipoDemissao}
+                                                    setValor={setTipoDemissao}
+                                                    options={tiposDemissaoOptions}
+                                                    label="Tipo de Demissão"
+                                                    name="tipo_demissao"
+                                                    placeholder="Selecione o tipo"
+                                                />
+                                            </FormGroup>
+                                        </FormRow>
+
+                                        <FormRow>
+                                            <FormGroup>
+                                                <DropdownItens
+                                                    valor={motivoDemissao}
+                                                    setValor={setMotivoDemissao}
+                                                    options={motivosDemissaoOptions}
+                                                    label="Motivo da Demissão"
+                                                    name="motivo_demissao"
+                                                    placeholder="Selecione o motivo"
+                                                />
+                                            </FormGroup>
+                                        </FormRow>
+
+                                        <FormGroup fullWidth>
+                                            <FormLabel>Observação</FormLabel>
+                                            <TextArea
+                                                value={observacao}
+                                                onChange={(e) => setObservacao(e.target.value)}
+                                                placeholder="Digite uma observação (opcional)"
+                                            />
+                                        </FormGroup>
+                                    </FormContainer>
                                 )}
                             </AcoesContainer>
                         </ConteudoContainer>
@@ -268,7 +346,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                 </Botao>
                             </BotaoGrupo>
                             <BotaoGrupo align="space-between" wrap>
-                                <Botao aoClicar={handleSalvar} estilo="vermilion" size="small" disabled={bloquearSolicitacao}>
+                                <Botao aoClicar={handleSalvar} estilo="vermilion" size="small" disabled={bloquearFormulario}>
                                     Confirmar
                                 </Botao>
                             </BotaoGrupo>

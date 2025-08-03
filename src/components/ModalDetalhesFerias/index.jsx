@@ -321,6 +321,41 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [dataFim, setDataFim] = useState('');
     const [adiantarDecimoTerceiro, setAdiantarDecimoTerceiro] = useState(false);
     const [numeroDiasAbono, setNumeroDiasAbono] = useState('');
+    const [mostrarErro45Dias, setMostrarErro45Dias] = useState(false);
+    const [botaoEnviarDesabilitado, setBotaoEnviarDesabilitado] = useState(false);
+
+    const userPerfil = ArmazenadorToken.UserProfile;
+    const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
+    const isPerfilEspecial = perfisEspeciais.includes(userPerfil);
+
+    const verificar45Dias = (novaData) => {
+        if (!novaData) {
+            setMostrarErro45Dias(false);
+            setBotaoEnviarDesabilitado(false);
+            return;
+        }
+
+        const inicio = parseDateAsLocal(novaData);
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+        const diffTime = inicio - hoje;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 45) {
+            setMostrarErro45Dias(true);
+            // Só desabilita o botão para perfis não especiais
+            setBotaoEnviarDesabilitado(!isPerfilEspecial);
+        } else {
+            setMostrarErro45Dias(false);
+            setBotaoEnviarDesabilitado(false);
+        }
+    };
+
+    const handleDataInicioChange = (e) => {
+        const novaData = e.target.value;
+        setDataInicio(novaData);
+        verificar45Dias(novaData);
+    };
 
     if (!evento) return null;
 
@@ -360,8 +395,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     };
 
     const gestor = eventoCompletado.colab?.gestor;
-
-    const userPerfil = ArmazenadorToken.UserProfile;
     const hoje = new Date();
     const diaDoMes = hoje.getDate();
 
@@ -617,7 +650,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 <DataInput 
                                                     type="date" 
                                                     value={dataInicio} 
-                                                    onChange={e => setDataInicio(e.target.value)} 
+                                                    onChange={handleDataInicioChange}
                                                 />
                                             </Linha>
                                             <Linha style={{flex: 1}}>
@@ -629,6 +662,19 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 />
                                             </Linha>
                                         </div>
+
+                                        {mostrarErro45Dias && (
+                                            <AlertaAviso>
+                                                <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                                <span>
+                                                    A solicitação de férias deve ser feita com no mínimo 45 dias de antecedência. 
+                                                    {!isPerfilEspecial 
+                                                        ? " Entre em contato com o seu gestor ou RH para solicitar uma exceção."
+                                                        : " Você tem permissão para prosseguir com a solicitação mesmo assim."}
+                                                </span>
+                                            </AlertaAviso>
+                                        )}
+
                                         <Linha>
                                             <Label>Número de dias de Abono</Label>
                                             <DataInput
@@ -649,7 +695,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                             </label>
                                         </div>
                                         <BotaoGrupo align="end">
-                                            <Botao estilo="vermilion" size="small" aoClicar={solicitarFerias}>
+                                            <Botao 
+                                                estilo="vermilion" 
+                                                size="small" 
+                                                aoClicar={solicitarFerias}
+                                                disabled={botaoEnviarDesabilitado}
+                                            >
                                                 <FaPaperPlane fill="var(--secundaria)" /> Enviar Solicitação
                                             </Botao>
                                         </BotaoGrupo>
