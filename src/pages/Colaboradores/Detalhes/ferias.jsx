@@ -56,6 +56,7 @@ function ColabroadorFerias() {
     const [loading, setLoading] = useState(false)
     const [ferias, setFerias] = useState(null)
     const [tab, setTab] = useState('abertas') // 'abertas' ou 'fechadas'
+    const [forceUpdate, setForceUpdate] = useState(0)
     const {usuario} = useSessaoUsuarioContext()
 
     const colaborador = colaboradorDoContexto ? {
@@ -75,7 +76,7 @@ function ColabroadorFerias() {
             console.log(erro)
             setLoading(false)
         })
-    }, [id, tab])
+    }, [id, tab, forceUpdate])
 
     const handleTabChange = (newTab) => {
         setTab(newTab)
@@ -99,7 +100,11 @@ function ColabroadorFerias() {
                     <Texto color={tab === 'fechadas' ? 'white' : '#000'}>Fechadas</Texto>
                 </TabButton>
             </TabPanel>
-            <DataTableFerias colaborador={id} ferias={ferias}/>
+            <DataTableFerias 
+                colaborador={id} 
+                ferias={ferias}
+                onUpdate={() => setForceUpdate(prev => prev + 1)}
+            />
         </>
     )
 }

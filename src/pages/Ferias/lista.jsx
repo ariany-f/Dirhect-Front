@@ -380,6 +380,7 @@ function FeriasListagem() {
                             setCurrentPage={setCurrentPage}
                             pageSize={pageSize}
                             setPageSize={setPageSize}
+                            onUpdate={() => setForceUpdate(p => p + 1)}
                         />}
                     </>
                 ) : (
@@ -400,7 +401,21 @@ function FeriasListagem() {
             <ModalDetalhesFerias 
                 opened={!!eventoSelecionado} 
                 evento={eventoSelecionado} 
-                aoFechar={fecharModal} 
+                aoFechar={(resultado) => {
+                    setEventoSelecionado(null);
+                    if (resultado) {
+                        if (resultado.sucesso) {
+                            toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
+                            setForceUpdate(p => p + 1);
+                        } else if (resultado.erro) {
+                            toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
+                        } else if (resultado.aviso) {
+                            toast.current.show({ severity: 'warn', summary: 'Atenção', detail: resultado.mensagem, life: 3000 });
+                        } else if (resultado.info) {
+                            toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
+                        }
+                    }
+                }}
             />
         </ConteudoFrame>
     )

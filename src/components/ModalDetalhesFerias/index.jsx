@@ -315,7 +315,6 @@ const BotaoReprovarCustom = styled(Botao)`
 `;
 
 export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
-    console.log(evento);
 
     const [dataInicio, setDataInicio] = useState('');
     const [dataFim, setDataFim] = useState('');
@@ -330,6 +329,15 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const userPerfil = ArmazenadorToken.UserProfile;
     const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
     const isPerfilEspecial = perfisEspeciais.includes(userPerfil);
+    const isAnalistaTenant = userPerfil === 'analista_tenant';
+    const podeAnalistaTenantAprovar = import.meta.env.VITE_OPTIONS_ACESSO_COLABORADOR !== 'false';
+
+    const perfisQueAprovam = ['analista', 'supervisor', 'gestor'];
+    if (podeAnalistaTenantAprovar) {
+        perfisQueAprovam.push('analista_tenant');
+    }
+    
+    const temPermissaoParaVerBotao = perfisQueAprovam.includes(userPerfil);
 
     const verificar45Dias = (novaData) => {
         if (!novaData) {
@@ -437,9 +445,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const gestor = eventoCompletado.colab?.gestor;
     const hoje = new Date();
     const diaDoMes = hoje.getDate();
-
-    const perfisQueAprovam = ['analista', 'supervisor', 'gestor', 'analista_tenant'];
-    const temPermissaoParaVerBotao = perfisQueAprovam.includes(userPerfil);
 
     const isStatusPendente = eventoCompletado.evento?.status === 'E' || eventoCompletado.evento?.status === 'S';
     const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;

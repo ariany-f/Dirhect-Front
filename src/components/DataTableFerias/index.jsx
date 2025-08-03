@@ -30,7 +30,8 @@ function DataTableFerias({
     currentPage = 1,
     setCurrentPage,
     pageSize = 10,
-    setPageSize
+    setPageSize,
+    onUpdate // nova prop para atualização
 }) {
     const [colaboradores, setColaboradores] = useState(null)
     const [selectedFerias, setSelectedFerias] = useState(0);
@@ -121,7 +122,7 @@ function DataTableFerias({
         if (resultado) {
             if (resultado.sucesso) {
                 toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
-                // Adicione uma callback para atualizar a lista se necessário
+                if (onUpdate) onUpdate(); // Chama callback de atualização
             } else if (resultado.erro) {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
             } else if (resultado.aviso) {
