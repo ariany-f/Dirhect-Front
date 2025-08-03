@@ -33,6 +33,8 @@ const TarefasLista = () => {
     const loadData = (currentPage, currentPageSize, search = '', sort = '-id', currentFilters) => {
         setLoading(true);
         let url = `processos/?format=json&page=${currentPage}&page_size=${currentPageSize}`;
+
+        url += `&atividade_automatica=false`;
         
         if (search) {
             url += `&search=${search}`;
@@ -40,8 +42,6 @@ const TarefasLista = () => {
         
         const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
         url += orderParam;
-
-        console.log('🔍 Ordenação:', sort);
 
         // Adicionar filtro de processo_codigo
         const processoCodigoFilter = currentFilters?.['processo_codigo']?.value;
@@ -109,7 +109,6 @@ const TarefasLista = () => {
     };
     
     const onFilter = (event) => {
-        console.log("Filtro aplicado:", event.filters);
         const newFilters = { ...event.filters };
         setFilters(newFilters);
         setPage(1);
