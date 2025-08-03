@@ -367,8 +367,8 @@ function getMonthsInRange(start, end) {
 
 // Determina o status do evento de férias
 function getFeriasStatus({ data_inicio, data_fim }, hoje = new Date()) {
-    const inicio = new Date(data_inicio);
-    const fim = new Date(data_fim);
+    const inicio = parseDateAsLocal(data_inicio);
+    const fim = parseDateAsLocal(data_fim);
     if (isAfter(inicio, hoje)) return 'aprovada'; // futura
     if (isWithinInterval(hoje, { start: inicio, end: fim })) return 'acontecendo';
     if (isBefore(fim, hoje)) return 'passada';
@@ -444,7 +444,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             // Adiciona férias como ausências
             if (item.dt_inicio && item.dt_fim) {
                 // Calcula período aquisitivo baseado no ano das férias
-                const anoFerias = new Date(item.dt_inicio).getFullYear();
+                const anoFerias = parseDateAsLocal(item.dt_inicio).getFullYear();
                 const periodoAquisitivoInicio = new Date(anoFerias, 0, 1); // 01/01 do ano
                 const periodoAquisitivoFim = new Date(anoFerias, 11, 31); // 31/12 do ano
                 
@@ -458,7 +458,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                 });
             } else if (item.fimperaquis) {
                 // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, adiciona para criar barra de férias a requisitar
-                const fimPeriodo = new Date(item.fimperaquis);
+                const fimPeriodo = parseDateAsLocal(item.fimperaquis);
                 const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                 
                 colaboradoresMap[id].ausencias.push({
@@ -548,8 +548,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
 
     // Função para calcular a posição e largura da barra
     const getBarPosition = (start, end, startDate, totalDays) => {
-        const startDay = Math.max(0, Math.floor((new Date(start) - startDate) / (1000 * 60 * 60 * 24)));
-        const endDay = Math.min(totalDays - 1, Math.floor((new Date(end) - startDate) / (1000 * 60 * 60 * 24)));
+        const startDay = Math.max(0, Math.floor((parseDateAsLocal(start) - startDate) / (1000 * 60 * 60 * 24)));
+        const endDay = Math.min(totalDays - 1, Math.floor((parseDateAsLocal(end) - startDate) / (1000 * 60 * 60 * 24)));
         const startPercent = (startDay / totalDays) * 100;
         const widthPercent = ((endDay - startDay + 1) / totalDays) * 100;
         return { startPercent, widthPercent };
@@ -768,13 +768,13 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         .filter(aus => {
                                             // Só mostra eventos que têm pelo menos um dia dentro do range do calendário
                                             if (aus.data_inicio && aus.data_fim) {
-                                                const eventStart = new Date(aus.data_inicio);
-                                                const eventEnd = new Date(aus.data_fim);
+                                                const eventStart = parseDateAsLocal(aus.data_inicio);
+                                                const eventEnd = parseDateAsLocal(aus.data_fim);
                                                 return eventEnd >= startDate && eventStart <= endDate;
                                             }
                                             // Se não tem dt_inicio e dt_fim, verifica fimperaquis
                                             if (aus.fimperaquis) {
-                                                const fimPeriodo = new Date(aus.fimperaquis);
+                                                const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
                                                 const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                                                 const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
                                                 return limiteSolicitacao >= startDate && inicioPeriodo <= endDate;
@@ -788,10 +788,10 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                             if (!b.data_inicio && !b.data_fim && a.data_inicio && a.data_fim) return 1;
                                             // Se ambos têm ou ambos não têm, ordena por data
                                             if (a.data_inicio && b.data_inicio) {
-                                                return new Date(a.data_inicio) - new Date(b.data_inicio);
+                                                return parseDateAsLocal(a.data_inicio) - parseDateAsLocal(b.data_inicio);
                                             }
                                             if (a.fimperaquis && b.fimperaquis) {
-                                                return new Date(a.fimperaquis) - new Date(b.fimperaquis);
+                                                return parseDateAsLocal(a.fimperaquis) - parseDateAsLocal(b.fimperaquis);
                                             }
                                             return 0;
                                         });
@@ -799,7 +799,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                     return registrosOrdenados.map((aus, i) => {
                                         // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, verifica se pode solicitar ou se está perdido
                                         if (!aus.data_inicio && !aus.data_fim && aus.fimperaquis) {
-                                            const fimPeriodo = new Date(aus.fimperaquis);
+                                            const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
                                             const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                                             const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
                                             
@@ -866,11 +866,11 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         const type = mapStatusToType(aus.status, aus.data_inicio, aus.data_fim);
                                         const { startPercent, widthPercent } = getBarPosition(aus.data_inicio, aus.data_fim, startDate, totalDays);
                                         let label = '';
-                                        if (type === 'aprovada' || type === 'passada' || type === 'finalizada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
-                                        if (type === 'acontecendo' || type === 'solicitada' || type === 'marcada') label = `${format(new Date(aus.data_inicio), 'dd/MM/yyyy')} até ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
+                                        if (type === 'aprovada' || type === 'passada' || type === 'finalizada') label = `${format(parseDateAsLocal(aus.data_inicio), 'dd/MM/yyyy')} até ${format(parseDateAsLocal(aus.data_fim), 'dd/MM/yyyy')}`;
+                                        if (type === 'acontecendo' || type === 'solicitada' || type === 'marcada') label = `${format(parseDateAsLocal(aus.data_inicio), 'dd/MM/yyyy')} até ${format(parseDateAsLocal(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'rejeitada') return null; // não exibe
                                         if (type === 'aguardando') return null;
-                                        let tooltip = `Início: ${format(new Date(aus.data_inicio), 'dd/MM/yyyy')}\nFim: ${format(new Date(aus.data_fim), 'dd/MM/yyyy')}`;
+                                        let tooltip = `Início: ${format(parseDateAsLocal(aus.data_inicio), 'dd/MM/yyyy')}\nFim: ${format(parseDateAsLocal(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'acontecendo') {
                                             tooltip = 'Em curso';
                                         } else if (type === 'solicitada' || type === 'marcada') {

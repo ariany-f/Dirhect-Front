@@ -286,6 +286,34 @@ const AcoesContainer = styled.div`
     }
 `;
 
+const BotaoAprovarCustom = styled(Botao)`
+    background: #e6f7f2 !important;
+    color: #007a5a !important;
+    border: none !important;
+
+    &:hover:not(:disabled) {
+        background: #d1f0e8 !important;
+    }
+
+    svg {
+        fill: #007a5a !important;
+    }
+`;
+
+const BotaoReprovarCustom = styled(Botao)`
+    background: #fff1f0 !important;
+    color: #d92d20 !important;
+    border: none !important;
+
+    &:hover:not(:disabled) {
+        background: #ffe2e0 !important;
+    }
+
+    svg {
+        fill: #d92d20 !important;
+    }
+`;
+
 export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     console.log(evento);
 
@@ -618,13 +646,13 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                 <Frame estilo="end" padding={'20px 20px 0px 0px'}>
                                     <BotaoGrupo style={{ marginTop: '12px' }}>
                                         <span className="botao-aprovar-wrapper" data-pr-tooltip={tooltipMensagem} style={{width: '100%', display: 'inline-block'}}>
-                                            <Botao estilo="success_claro" size="small" aoClicar={aprovarFerias} largura="100%" disabled={botaoAprovarDesabilitado}>
-                                                <FaCheckCircle fill="var(--success-500)" /> Aprovar
-                                            </Botao>
+                                            <BotaoAprovarCustom size="small" aoClicar={aprovarFerias} largura="100%" disabled={botaoAprovarDesabilitado}>
+                                                <FaCheckCircle /> Aprovar
+                                            </BotaoAprovarCustom>
                                         </span>
-                                        <Botao estilo="danger_claro" size="small" aoClicar={reprovarFerias} largura="100%">
-                                            <FaTimesCircle fill="var(--danger-500)" /> Reprovar
-                                        </Botao>
+                                        <BotaoReprovarCustom size="small" aoClicar={reprovarFerias} largura="100%">
+                                            <FaTimesCircle /> Reprovar
+                                        </BotaoReprovarCustom>
                                     </BotaoGrupo>
                                 </Frame>
                             )}

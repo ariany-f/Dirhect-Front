@@ -152,7 +152,7 @@ function DataTableFerias({
                     tag = <Tag severity="info" value="Aguardando DP"></Tag>;
                     break;
                 case 'M': // Marcadas
-                    tag = <Tag severity="success" value="Marcadas"></Tag>;
+                    tag = <Tag severity="info" value="Marcadas"></Tag>;
                     break;
                 case 'P': // Pagas
                     tag = <Tag severity="success" value="Pagas"></Tag>;
@@ -175,7 +175,7 @@ function DataTableFerias({
                     tag = <Tag severity="info" value="Solicitada"></Tag>;
                     break;
                 case 'E': // Em Análise
-                    tag = <Tag severity="info" value="Em Análise"></Tag>;
+                    tag = <Tag severity="warning" value="Em Análise"></Tag>;
                     break;
                 case 'C': // Cancelada
                     tag = <Tag severity="danger" value="Cancelada"></Tag>;
