@@ -950,7 +950,7 @@ function ColaboradorDetalhes() {
                                     }}>
                                         {colaborador.tipo_situacao_descricao || 'Status não informado'}
                                     </span>
-                                    {colaborador.marcado_demissao && (
+                                    {colaborador.marcado_demissao && ['analista', 'supervisor', 'gestor'].includes(ArmazenadorToken.UserProfile) && (
                                         <span style={{
                                             background: '#dc2626',
                                             color: '#fff',
@@ -963,7 +963,7 @@ function ColaboradorDetalhes() {
                                             gap: '4px'
                                         }}>
                                             <FaUserTimes fill='var(--white)' size={12} />
-                                            Marcado para Demissão
+                                            Demissão Solicitada
                                         </span>
                                     )}
                                 </div>
