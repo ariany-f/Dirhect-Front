@@ -551,8 +551,23 @@ function ColaboradorDetalhes() {
     }, [showImageModal]);
 
     const handleSalvarDemissao = (dadosDemissao) => {
-        http.post(`funcionario/${id}/solicita_demissao/`, {
-            ...dadosDemissao
+        const formData = new FormData();
+        
+        // Adiciona os dados básicos
+        formData.append('dt_demissao', dadosDemissao.dt_demissao);
+        formData.append('tipo_demissao', dadosDemissao.tipo_demissao);
+        formData.append('motivo_demissao', dadosDemissao.motivo_demissao);
+        formData.append('observacao', dadosDemissao.observacao || '');
+        
+        // Adiciona o anexo se existir
+        if (dadosDemissao.anexo) {
+            formData.append('anexo', dadosDemissao.anexo);
+        }
+        
+        http.post(`funcionario/${id}/solicita_demissao/`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
         })
         .then(() => {
             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: 'Solicitação de demissão enviada com sucesso!', life: 3000 });

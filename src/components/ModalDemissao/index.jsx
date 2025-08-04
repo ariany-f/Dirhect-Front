@@ -12,6 +12,7 @@ import http from "@http"
 import BotaoGrupo from "@components/BotaoGrupo"
 import Frame from "@components/Frame"
 import { ArmazenadorToken } from "@utils"
+import CampoArquivo from "@components/CampoArquivo"
 
 const Cabecalho = styled.div`
     padding: 24px 32px;
@@ -173,6 +174,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     const [tipoDemissao, setTipoDemissao] = useState(null);
     const [motivoDemissao, setMotivoDemissao] = useState(null);
     const [observacao, setObservacao] = useState('');
+    const [anexo, setAnexo] = useState(null);
 
     const [tiposDemissaoOptions, setTiposDemissaoOptions] = useState([]);
     const [motivosDemissaoOptions, setMotivosDemissaoOptions] = useState([]);
@@ -210,6 +212,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             setTipoDemissao(null);
             setMotivoDemissao(null);
             setObservacao('');
+            setAnexo(null);
         }
     }, [opened]);
 
@@ -226,6 +229,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             tipo_demissao: tipoDemissao.code,
             motivo_demissao: motivoDemissao.code,
             observacao: observacao,
+            anexo: anexo,
         });
     }
 
@@ -310,6 +314,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     label="Tipo de Demissão"
                                                     name="tipo_demissao"
                                                     placeholder="Selecione o tipo"
+                                                    filter
                                                 />
                                             </FormGroup>
                                         </FormRow>
@@ -323,9 +328,21 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     label="Motivo da Demissão"
                                                     name="motivo_demissao"
                                                     placeholder="Selecione o motivo"
+                                                    filter
                                                 />
                                             </FormGroup>
                                         </FormRow>
+
+                                        <FormGroup fullWidth>
+                                            <CampoArquivo
+                                                name="anexo"
+                                                valor={anexo}
+                                                setValor={setAnexo}
+                                                label="Anexo"
+                                                placeholder="Selecione um arquivo (opcional)"
+                                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                            />
+                                        </FormGroup>
 
                                         <FormGroup fullWidth>
                                             <FormLabel>Observação</FormLabel>
