@@ -149,6 +149,23 @@ const AlertaAviso = styled.div`
     }
 `;
 
+const AlertaCipa = styled.div`
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-bottom: 24px;
+
+    span {
+        font-size: 14px;
+        color: #721c24;
+        line-height: 1.5;
+    }
+`;
+
 const TextArea = styled.textarea`
     width: 100%;
     min-height: 100px;
@@ -175,6 +192,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     const [motivoDemissao, setMotivoDemissao] = useState(null);
     const [observacao, setObservacao] = useState('');
     const [anexo, setAnexo] = useState(null);
+    const [diasAvisoPrevio, setDiasAvisoPrevio] = useState('');
 
     const [tiposDemissaoOptions, setTiposDemissaoOptions] = useState([]);
     const [motivosDemissaoOptions, setMotivosDemissaoOptions] = useState([]);
@@ -213,6 +231,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             setMotivoDemissao(null);
             setObservacao('');
             setAnexo(null);
+            setDiasAvisoPrevio('');
         }
     }, [opened]);
 
@@ -224,12 +243,25 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             alert('Por favor, preencha todos os campos obrigatórios.');
             return;
         }
+        
+        // Validação dos dias de aviso prévio
+        const diasAviso = parseInt(diasAvisoPrevio) || 0;
+        if (diasAviso < 0) {
+            alert('Os dias de aviso prévio não podem ser negativos.');
+            return;
+        }
+        if (diasAviso > 30) {
+            alert('Os dias de aviso prévio não podem ser maiores que 30 dias.');
+            return;
+        }
+        
         aoSalvar({
             dt_demissao: dataDemissao,
             tipo_demissao: tipoDemissao.code,
             motivo_demissao: motivoDemissao.code,
             observacao: observacao,
             anexo: anexo,
+            dias_aviso_previo: diasAviso,
         });
     }
 
@@ -252,6 +284,19 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                             <div>
                                 <h6 style={{ fontSize: '1.2rem', fontWeight: 700, margin: 0 }}>
                                     Solicitação de Demissão {colaborador?.chapa} - {colaborador?.funcionario_pessoa_fisica?.nome}
+                                    {colaborador?.membro_cipa && (
+                                        <span style={{
+                                            background: '#721c24',
+                                            color: '#fff',
+                                            padding: '4px 8px',
+                                            borderRadius: '4px',
+                                            fontSize: '12px',
+                                            marginLeft: '12px',
+                                            fontWeight: '600'
+                                        }}>
+                                            MEMBRO CIPA
+                                        </span>
+                                    )}
                                 </h6>
                             </div>
                             <BotaoFechar onClick={aoFechar}>
@@ -292,6 +337,16 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                         </span>
                                     </AlertaAviso>
                                 )}
+                                {colaborador?.membro_cipa && (
+                                    <AlertaCipa>
+                                        <FaExclamationCircle size={24} style={{ color: '#721c24', flexShrink: 0 }}/>
+                                        <span>
+                                            <strong>Atenção:</strong> Este colaborador é membro da CIPA (Comissão Interna de Prevenção de Acidentes). 
+                                            A demissão de membros da CIPA pode ter implicações legais e operacionais. 
+                                            Verifique se há necessidade de substituição antes de prosseguir com a demissão.
+                                        </span>
+                                    </AlertaCipa>
+                                )}
                                 {!bloquearFormulario && (
                                     <FormContainer>
                                         <FormRow>
@@ -328,7 +383,21 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     label="Motivo da Demissão"
                                                     name="motivo_demissao"
                                                     placeholder="Selecione o motivo"
-                                                    filter
+                                                />
+                                            </FormGroup>
+                                        </FormRow>
+
+                                        <FormRow>
+                                            <FormGroup>
+                                                <CampoTexto
+                                                    name="dias_aviso_previo"
+                                                    valor={diasAvisoPrevio}
+                                                    setValor={setDiasAvisoPrevio}
+                                                    type="number"
+                                                    label="Dias de Aviso Prévio"
+                                                    placeholder="Ex: 30 (máximo 30 dias, 0 para desconto)"
+                                                    min="0"
+                                                    max="30"
                                                 />
                                             </FormGroup>
                                         </FormRow>

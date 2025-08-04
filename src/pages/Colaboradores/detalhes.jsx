@@ -558,6 +558,7 @@ function ColaboradorDetalhes() {
         formData.append('tipo_demissao', dadosDemissao.tipo_demissao);
         formData.append('motivo_demissao', dadosDemissao.motivo_demissao);
         formData.append('observacao', dadosDemissao.observacao || '');
+        formData.append('dias_aviso_previo', dadosDemissao.dias_aviso_previo || '0');
         
         // Adiciona o anexo se existir
         if (dadosDemissao.anexo) {
@@ -987,10 +988,25 @@ function ColaboradorDetalhes() {
                             {colaborador?.tipo_situacao_descricao == 'Ativo' && 
                              ArmazenadorToken.hasPermission('add_demissao') && 
                              !colaborador.marcado_demissao && (
-                                <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="danger" size="small">
-                                    <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> 
-                                    Solicitar Demissão
-                                </Botao>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="danger" size="small">
+                                        <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> 
+                                        Solicitar Demissão
+                                    </Botao>
+                                    {colaborador?.membro_cipa && (
+                                        <span style={{
+                                            background: '#721c24',
+                                            color: '#fff',
+                                            padding: '4px 8px',
+                                            borderRadius: '4px',
+                                            fontSize: '11px',
+                                            fontWeight: '600',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            MEMBRO CIPA
+                                        </span>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </div>
