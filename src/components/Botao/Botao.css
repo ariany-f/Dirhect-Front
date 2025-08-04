@@ -224,3 +224,42 @@
     width: fit-content!important;
     transition: all .1s linear;
 }
+
+/** Danger */
+.danger.filled {
+    background-color: #dc2626;
+    color: var(--white);
+    font-weight: 600;
+    width: -webkit-fill-available;
+}
+.danger.filled:hover {
+    background-color: #b91c1c;
+}
+.danger.filled:active {
+    background-color: #991b1b;
+}
+
+.danger.outlined {
+    background-color: var(--white);
+    color: #dc2626;
+    border: 1px solid #dc2626;
+}
+.danger.outlined:hover {
+    background-color: #fef2f2;
+    border: 1px solid #dc2626;
+}
+.danger.outlined:active {
+    background-color: #fee2e2;
+    border: 1px solid #dc2626;
+}
+
+.danger.text-only {
+    background-color: transparent;
+    color: #dc2626;
+}
+.danger.text-only:hover {
+    background-color: #fef2f2;
+}
+.danger.text-only:active {
+    background-color: #fee2e2;
+}
