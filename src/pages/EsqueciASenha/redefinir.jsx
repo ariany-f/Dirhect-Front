@@ -10,7 +10,8 @@ import http from '@http'
 import { toast } from 'react-toastify'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import Loading from "@components/Loading"
-import CampoTexto from "@components/CampoTexto"
+import Input from "@components/Input"
+import { useForm } from "react-hook-form"
 
 function RedefinirSenha() {
     
@@ -29,14 +30,10 @@ function RedefinirSenha() {
     } = useSessaoUsuarioContext()
     
     const navegar = useNavigate()
-
-    const validationSchema = Yup.object().shape({
-        password: Yup.string().required('Necessário digitar senha'),
-        passwordConfirmation: 
-        Yup.string()
-        .required('Necessário digitar confirmação de senha')
-        .oneOf([Yup.ref('password')], 'As senhas devem coincidir'),
-    });
+    const { control, handleSubmit, formState: { errors }, watch } = useForm();
+    
+    // Observa o valor da senha em tempo real para o componente RegrasCriacaoSenha
+    const watchedPassword = watch('password', '');
 
     useEffect(() => {
         http.get(`/password/reset/${uid}/${token}/`)
@@ -60,40 +57,44 @@ function RedefinirSenha() {
         })
     }, [])
 
-    const sendData = (evento) => {
-        evento.preventDefault()
-        if(!recuperacaoSenha.password) {
+    const onSubmit = async (data) => {
+        if(!data.password) {
             toast.error('Necessário digitar senha')
             return
         }
-        if(!recuperacaoSenha.confirm_password) {
+        if(!data.confirm_password) {
             toast.error('Necessário digitar confirmação de senha')
             return
         }
-        if(recuperacaoSenha.password !== recuperacaoSenha.confirm_password) {
+        if(data.password !== data.confirm_password) {
             toast.error('As senhas devem coincidir')
             return
         }
-        if(recuperacaoSenha.password.length < 8) {
+        if(data.password.length < 8) {
             toast.error('A senha deve ter pelo menos 8 caracteres')
             return
         }
-        if(!/[a-z]/.test(recuperacaoSenha.password)) {
+        if(!/[a-z]/.test(data.password)) {
             toast.error('A senha deve conter pelo menos 1 letra minúscula')
             return
         }
-        if(!/[A-Z]/.test(recuperacaoSenha.password)) {
+        if(!/[A-Z]/.test(data.password)) {
             toast.error('A senha deve conter pelo menos 1 letra maiúscula')
             return
         }
-        if(!/[0-9]/.test(recuperacaoSenha.password)) {
+        if(!/[0-9]/.test(data.password)) {
             toast.error('A senha deve conter pelo menos 1 número')
             return
         }
-        if(!/[!@#$%^&*]/.test(recuperacaoSenha.password)) {
+        if(!/[!@#$%^&*]/.test(data.password)) {
             toast.error('A senha deve conter pelo menos 1 caractere especial')
             return
         }
+
+        // Atualiza o contexto com os valores do formulário
+        setRecuperacaoPassword(data.password)
+        setRecuperacaoConfirmPassword(data.confirm_password)
+
         redefinirSenha()
             .then((response) => {
                 if(response.detail && response.detail != "Senha redefinida com sucesso")
@@ -135,26 +136,52 @@ function RedefinirSenha() {
                             </SubTitulo>
                         </Titulo>
                     </Frame>
-                    <Frame gap="16px">
-                        <CampoTexto
-                            type="password"
-                            name="password"
-                            label="Senha"
-                            valor={recuperacaoSenha.password}
-                            setValor={(valor, name) => setRecuperacaoPassword(valor)}
-                            required={true}
-                        />
-                        <CampoTexto
-                            type="password"
-                            name="confirm_password"
-                            label="Confirmar Senha"
-                            valor={recuperacaoSenha.confirm_password}
-                            setValor={(valor, name) => setRecuperacaoConfirmPassword(valor)}
-                            required={true}
-                        />
-                        <RegrasCriacaoSenha senha={recuperacaoSenha.password || ""} />
-                    </Frame>
-                    <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <Frame gap="16px">
+                            <Input
+                                control={control}
+                                type="password"
+                                id="password"
+                                name="password"
+                                label="Senha"
+                                icon="pi pi-lock"
+                                toggleMask={true}
+                                showPasswordFeedback={false}
+                                required
+                                rules={{
+                                    required: 'Senha é obrigatória',
+                                    minLength: {
+                                        value: 8,
+                                        message: 'A senha deve ter pelo menos 8 caracteres'
+                                    },
+                                    pattern: {
+                                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
+                                        message: 'A senha deve conter pelo menos 1 letra minúscula, 1 maiúscula, 1 número e 1 caractere especial'
+                                    }
+                                }}
+                            />
+                            <Input
+                                control={control}
+                                type="password"
+                                id="confirm_password"
+                                name="confirm_password"
+                                label="Confirmar Senha"
+                                icon="pi pi-lock"
+                                toggleMask={true}
+                                showPasswordFeedback={false}
+                                required
+                                rules={{
+                                    required: 'Confirmação de senha é obrigatória',
+                                    validate: (value, formValues) => {
+                                        return value === formValues.password || 'As senhas devem coincidir'
+                                    }
+                                }}
+                            />
+                            <RegrasCriacaoSenha senha={watchedPassword || ""} />
+                        </Frame>
+                        <br />
+                        <Botao type="submit" estilo="vermilion" size="medium" filled>Confirmar</Botao>
+                    </form>
                 </>
             :
                 <Loading opened={true}/>
