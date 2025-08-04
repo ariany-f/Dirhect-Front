@@ -63,7 +63,7 @@ const Atividades = () => {
     const [filtroAtivo, setFiltroAtivo] = useState('total');
     const [activeTab, setActiveTab] = useState('lista'); // 'lista' ou 'kanban'
     const [loading, setLoading] = useState(true);
-    const [sortField, setSortField] = useState(null);
+    const [sortField, setSortField] = useState('agendado_para');
     const [sortOrder, setSortOrder] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);

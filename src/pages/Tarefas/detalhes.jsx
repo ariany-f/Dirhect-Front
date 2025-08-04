@@ -20,7 +20,7 @@ import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import { Real } from '@utils/formats'
 import { PrimeIcons } from 'primereact/api'
-import { FaExternalLinkAlt } from 'react-icons/fa'
+import { FaExternalLinkAlt, FaSync } from 'react-icons/fa'
 import http from '@http'
 import CustomImage from '@components/CustomImage'
 import { ArmazenadorToken } from '@utils'
@@ -30,6 +30,15 @@ const ConteudoFrame = styled.div`
     flex-direction: column;
     gap: 24px;
     width: 100%;
+    
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
 `
 
 function DetalhesTarefas() {
@@ -41,7 +50,7 @@ function DetalhesTarefas() {
     const toast = useRef(null)
     const [loading, setLoading] = useState(true)
    
-    useEffect(() => {
+    const carregarDados = () => {
         setLoading(true);
         http.get(`processos/${id}/`)
             .then(response => {
@@ -85,6 +94,10 @@ function DetalhesTarefas() {
             .finally(() => {
                 setLoading(false);
             });
+    };
+
+    useEffect(() => {
+        carregarDados();
     }, [id]);
 
     function representativSituacaoTemplate() {
@@ -446,9 +459,33 @@ function DetalhesTarefas() {
                     </>
                     : <></>
                 }
-                <Titulo>
-                    <Texto size={20} weight={700}>Atividades</Texto>
-                </Titulo>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Titulo>
+                        <Texto size={20} weight={700}>Atividades</Texto>
+                    </Titulo>
+                    <button 
+                        onClick={carregarDados} 
+                        disabled={loading}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: loading ? 'not-allowed' : 'pointer',
+                            color: loading ? '#ccc' : 'var(--primaria)',
+                            fontSize: '18px',
+                            padding: '8px',
+                            borderRadius: '4px',
+                            transition: 'all 0.2s'
+                        }}
+                        title="Atualizar dados"
+                    >
+                        <FaSync 
+                            size={18} 
+                            style={{ 
+                                animation: loading ? 'spin 1s linear infinite' : 'none'
+                            }} 
+                        />
+                    </button>
+                </div>
                 <DataTableTarefasDetalhes 
                     objeto={tarefa?.objeto} 
                     tarefas={tarefa?.tarefas}

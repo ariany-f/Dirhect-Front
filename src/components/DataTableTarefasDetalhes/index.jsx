@@ -12,7 +12,7 @@ import { Checkbox } from 'primereact/checkbox';
 import CheckboxContainer from '@components/CheckboxContainer'
 import { Real } from '@utils/formats'
 import { Button } from 'primereact/button';
-import { FaLink, FaArrowUp, FaArrowDown, FaCircle, FaCheck, FaCheckCircle, FaHistory } from 'react-icons/fa';
+import { FaLink, FaArrowUp, FaArrowDown, FaCircle, FaCheck, FaCheckCircle, FaHistory, FaSync } from 'react-icons/fa';
 import { RiExchangeFill } from 'react-icons/ri';
 import { Tag } from 'primereact/tag';
 import http from '@http';
@@ -50,16 +50,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
         )
     }
 
-    const handleRowClick = (e) => {
-        if(objeto)
-        {
-            if(objeto?.funcionario_detalhe?.id) {
-                navegar(`/colaborador/detalhes/${objeto.funcionario_detalhe.id}`);
-            } else if(objeto?.dados_candidato?.id) {
-                navegar(`/admissao/registro/${objeto.id}`);
-            }
-        }
-    };
+
 
     const handleHistorico = (e, rowData) => {
         e.stopPropagation();
@@ -569,6 +560,7 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
         <>
             <Loading opened={loadingAction} />
             <Toast ref={toast} />
+
             <DataTable 
                 value={tarefasOrdenadas} 
                 filters={filters} 
@@ -578,8 +570,6 @@ function DataTableTarefasDetalhes({ tarefas, objeto = null, onTarefaUpdate = nul
                 rows={10}  
                 tableStyle={{ minWidth: '68vw' }}
                 onFilter={(e) => setFilters(e.filters)}
-                onRowClick={handleRowClick}
-                selectionMode={'single'}
             >
                 <Column body={representativePrioridadeTemplate} field="prioridade" header="Prioridade" style={{ width: '10%' }}></Column>
                 <Column body={representativeDescricaoTemplate} field="descricao" header="Descrição" style={{ width: '35%' }}></Column>

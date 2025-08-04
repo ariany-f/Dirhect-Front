@@ -924,6 +924,8 @@ function DataTableAtividades({
                     field="sla" 
                     header="SLA" 
                     style={{ width: '12%' }}
+                    sortable
+                    sortField="agendado_para"
                     filter
                     filterField="sla"
                     filterElement={slaFilterTemplate}
