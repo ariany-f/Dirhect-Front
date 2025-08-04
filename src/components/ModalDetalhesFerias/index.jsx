@@ -320,10 +320,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [dataFim, setDataFim] = useState('');
     const [adiantarDecimoTerceiro, setAdiantarDecimoTerceiro] = useState(false);
     const [numeroDiasAbono, setNumeroDiasAbono] = useState('');
+    const [dataPagamento, setDataPagamento] = useState('');
     const [mostrarErro45Dias, setMostrarErro45Dias] = useState(false);
     const [mostrarErroDatas, setMostrarErroDatas] = useState(false);
     const [mostrarErroDiasMinimos, setMostrarErroDiasMinimos] = useState(false);
     const [mostrarErroSaldoDias, setMostrarErroSaldoDias] = useState(false);
+    const [mostrarErroAbono, setMostrarErroAbono] = useState(false);
     const [botaoEnviarDesabilitado, setBotaoEnviarDesabilitado] = useState(false);
 
     const userPerfil = ArmazenadorToken.UserProfile;
@@ -383,26 +385,76 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const excedeSaldo = diffDays > saldoDisponivel;
         setMostrarErroSaldoDias(excedeSaldo);
 
+        // Validar dias de abono
+        const abonoDias = parseInt(numeroDiasAbono) || 0;
+        const maxAbono = Math.min(10, diffDays, saldoDisponivel);
+        const abonoInvalido = abonoDias > maxAbono;
+        setMostrarErroAbono(abonoInvalido);
+
         // Desabilitar botão se houver qualquer erro
         setBotaoEnviarDesabilitado(
             datasInvalidas || 
             diasInsuficientes || 
             excedeSaldo || 
+            abonoInvalido ||
             (mostrarErro45Dias && !isPerfilEspecial)
         );
+    };
+
+    const calcularDataFim = (dataInicio, diasSolicitados) => {
+        if (!dataInicio || !diasSolicitados) return '';
+        
+        const inicio = parseDateAsLocal(dataInicio);
+        const fim = new Date(inicio);
+        fim.setDate(fim.getDate() + diasSolicitados - 1); // -1 porque inclui o dia inicial
+        
+        return fim.toISOString().split('T')[0];
     };
 
     const handleDataInicioChange = (e) => {
         const novaData = e.target.value;
         setDataInicio(novaData);
         verificar45Dias(novaData);
-        validarDatas(novaData, dataFim);
+        
+        // Auto-preenche a data de fim baseada no saldo disponível
+        if (novaData) {
+            const saldoDisponivel = eventoCompletado?.evento?.saldo_dias ?? 30;
+            const dataFimCalculada = calcularDataFim(novaData, saldoDisponivel);
+            setDataFim(dataFimCalculada);
+            validarDatas(novaData, dataFimCalculada);
+        } else {
+            setDataFim('');
+            validarDatas('', dataFim);
+        }
     };
 
     const handleDataFimChange = (e) => {
         const novaData = e.target.value;
         setDataFim(novaData);
         validarDatas(dataInicio, novaData);
+    };
+
+    const handleAbonoChange = (e) => {
+        const novoAbono = e.target.value;
+        setNumeroDiasAbono(novoAbono);
+        
+        // Validar abono
+        const abonoDias = parseInt(novoAbono) || 0;
+        const saldoDisponivel = eventoCompletado?.evento?.saldo_dias ?? 30;
+        const diasSolicitados = dataInicio && dataFim ? 
+            Math.ceil((parseDateAsLocal(dataFim) - parseDateAsLocal(dataInicio)) / (1000 * 60 * 60 * 24)) + 1 : 0;
+        const maxAbono = Math.min(10, diasSolicitados, saldoDisponivel);
+        
+        const abonoInvalido = abonoDias > maxAbono;
+        setMostrarErroAbono(abonoInvalido);
+        
+        setBotaoEnviarDesabilitado(
+            mostrarErroDatas || 
+            mostrarErroDiasMinimos || 
+            mostrarErroSaldoDias || 
+            abonoInvalido ||
+            (mostrarErro45Dias && !isPerfilEspecial)
+        );
     };
 
     if (!evento) return null;
@@ -538,9 +590,9 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         if (diffDays < 45) {
             const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
             if (perfisEspeciais.includes(userPerfil)) {
-                if (!window.confirm('A data de início das férias está a menos de 45 dias do dia de hoje. Deseja continuar com a solicitação?')) {
-                    return;
-                }
+                // Para perfis especiais, apenas avisa mas permite continuar
+                aoFechar({ aviso: true, mensagem: 'A data de início das férias está a menos de 45 dias do dia de hoje. A solicitação será processada mesmo assim.' });
+                return;
             } else {
                 aoFechar({ aviso: true, mensagem: 'A solicitação de férias deve ser feita com no mínimo 45 dias de antecedência.' });
                 return;
@@ -552,7 +604,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 data_inicio: dataInicio,
                 data_fim: dataFim,
                 adiantar_13: adiantarDecimoTerceiro,
-                nrodiasabono: parseInt(numeroDiasAbono, 10) || 0
+                nrodiasabono: parseInt(numeroDiasAbono, 10) || 0,
+                data_pagamento: dataPagamento || null
             });
             aoFechar({ sucesso: true, mensagem: 'Solicitação de férias enviada com sucesso!' });
         } catch (error) {
@@ -736,6 +789,15 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                             </AlertaAviso>
                                         )}
 
+                                        {mostrarErroAbono && (
+                                            <AlertaAviso>
+                                                <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                                <span>
+                                                    O número de dias de abono não pode ser maior que o número de dias solicitados ou o saldo disponível.
+                                                </span>
+                                            </AlertaAviso>
+                                        )}
+
                                         {mostrarErro45Dias && (
                                             <AlertaAviso>
                                                 <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
@@ -753,8 +815,19 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                             <DataInput
                                                 type="number"
                                                 value={numeroDiasAbono}
-                                                onChange={e => setNumeroDiasAbono(e.target.value)}
+                                                onChange={handleAbonoChange}
                                                 placeholder="0"
+                                                min="0"
+                                                max="10"
+                                            />
+                                        </Linha>
+                                        <Linha>
+                                            <Label>Data de Pagamento (opcional)</Label>
+                                            <DataInput
+                                                type="date"
+                                                value={dataPagamento}
+                                                onChange={e => setDataPagamento(e.target.value)}
+                                                placeholder="Selecione a data"
                                             />
                                         </Linha>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
