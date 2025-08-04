@@ -183,6 +183,8 @@ const EventBar = styled.div`
         if (type === 'aprovada') return GRADIENT;
         if (type === 'acontecendo') return 'linear-gradient(to right,rgb(45, 126, 219),rgb(18, 37, 130))';
         if (type === 'passada') return 'linear-gradient(to right, #bdbdbd, #757575)';
+        if (type === 'finalizada') return 'linear-gradient(to right, #6c757d, #495057)';
+        if (type === 'paga') return 'linear-gradient(to right, #28a745, #20c997)';
         return GRADIENT;
     }};
     border: ${({ type }) => type === 'aSolicitar' ? '2px dashed #fff' : 'none'};
@@ -608,6 +610,10 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                 return isAcontecendo() ? 'acontecendo' : 'marcada';
             case 'F':
                 return 'finalizada';
+            case 'P':
+                return 'paga';
+            case 'X':
+                return 'finalizada';
             case 'S':
             case 'I':
             case 'G':
@@ -878,7 +884,7 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         const type = mapStatusToType(aus.status, aus.data_inicio, aus.data_fim);
                                         const { startPercent, widthPercent } = getBarPosition(aus.data_inicio, aus.data_fim, startDate, totalDays);
                                         let label = '';
-                                        if (type === 'aprovada' || type === 'passada' || type === 'finalizada') label = `${format(parseDateAsLocal(aus.data_inicio), 'dd/MM/yyyy')} até ${format(parseDateAsLocal(aus.data_fim), 'dd/MM/yyyy')}`;
+                                        if (type === 'aprovada' || type === 'passada' || type === 'finalizada' || type === 'paga') label = `${format(parseDateAsLocal(aus.data_inicio), 'dd/MM/yyyy')} até ${format(parseDateAsLocal(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'acontecendo' || type === 'solicitada' || type === 'marcada') label = `${format(parseDateAsLocal(aus.data_inicio), 'dd/MM/yyyy')} até ${format(parseDateAsLocal(aus.data_fim), 'dd/MM/yyyy')}`;
                                         if (type === 'rejeitada') return null; // não exibe
                                         if (type === 'aguardando') return null;
@@ -894,7 +900,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                             tooltip = 'Aprovada';
                                         } else if (type === 'finalizada') {
                                             tooltip = 'Finalizada';
-                                        } else if (type === 'passada' || type === 'paga') {
+                                        } else if (type === 'paga') {
+                                            tooltip = 'Paga';
+                                        } else if (type === 'passada') {
                                             tooltip = 'Concluída';
                                         }
                                         
