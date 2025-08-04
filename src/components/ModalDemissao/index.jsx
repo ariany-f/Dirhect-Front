@@ -4,7 +4,7 @@ import Titulo from "@components/Titulo"
 import SubTitulo from "@components/SubTitulo"
 import { RiCloseFill } from 'react-icons/ri'
 import { FaExclamationCircle } from 'react-icons/fa'
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import styled from "styled-components"
 import DropdownItens from "@components/DropdownItens"; 
 import { OverlayRight, DialogEstilizadoRight } from '@components/Modal/styles';
@@ -13,6 +13,7 @@ import BotaoGrupo from "@components/BotaoGrupo"
 import Frame from "@components/Frame"
 import { ArmazenadorToken } from "@utils"
 import CampoArquivo from "@components/CampoArquivo"
+import { Toast } from 'primereact/toast'
 
 const Cabecalho = styled.div`
     padding: 24px 32px;
@@ -196,6 +197,8 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
 
     const [tiposDemissaoOptions, setTiposDemissaoOptions] = useState([]);
     const [motivosDemissaoOptions, setMotivosDemissaoOptions] = useState([]);
+    
+    const toast = useRef(null);
 
     const userPerfil = ArmazenadorToken.UserProfile;
     const hoje = new Date();
@@ -240,18 +243,18 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             return;
         }
         if (!dataDemissao || !tipoDemissao || !motivoDemissao) {
-            alert('Por favor, preencha todos os campos obrigatórios.');
+            toast.current.show({ severity: 'warn', summary: 'Aviso', detail: 'Por favor, preencha todos os campos obrigatórios.' });
             return;
         }
         
         // Validação dos dias de aviso prévio
         const diasAviso = parseInt(diasAvisoPrevio) || 0;
         if (diasAviso < 0) {
-            alert('Os dias de aviso prévio não podem ser negativos.');
+            toast.current.show({ severity: 'warn', summary: 'Aviso', detail: 'Os dias de aviso prévio não podem ser negativos.' });
             return;
         }
         if (diasAviso > 30) {
-            alert('Os dias de aviso prévio não podem ser maiores que 30 dias.');
+            toast.current.show({ severity: 'warn', summary: 'Aviso', detail: 'Os dias de aviso prévio não podem ser maiores que 30 dias.' });
             return;
         }
         
@@ -271,6 +274,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
 
     return(
         <>
+            <Toast ref={toast} />
             {opened &&
             <>
                 <OverlayRight $opened={opened} onClick={aoFechar}>
