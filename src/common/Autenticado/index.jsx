@@ -105,7 +105,6 @@ function Autenticado() {
                 setTenants(cachedTenants);
                 setEmpresas(cachedCompanies);
                 setCompanies(cachedCompanies);
-
                 if(selected == '') {
                     if(selectedCompany) {
                         setSelected(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.id_tenant || '');
@@ -114,6 +113,8 @@ function Autenticado() {
                         setCompanyDomain(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.domain || '');
                         setCompanyLogo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.logo || '');
                         setCompanySymbol(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.simbolo || '');
+                        setSimbolo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.simbolo || '');
+                        setLogo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.logo || '');
                         
                         if(!localStorage.getItem('layoutColors')) {
                             // Buscar parâmetros de layout da empresa selecionada
@@ -134,6 +135,8 @@ function Autenticado() {
                         setCompanyDomain(cachedCompanies[0]?.domain || '');
                         setCompanyLogo(cachedCompanies[0]?.tenant.logo || '');
                         setCompanySymbol(cachedCompanies[0]?.tenant.simbolo || '');
+                        setSimbolo(cachedCompanies[0]?.tenant.simbolo || '');
+                        setLogo(cachedCompanies[0]?.tenant.logo || '');
                         
                         if(!localStorage.getItem('layoutColors')) {
                             
@@ -157,6 +160,8 @@ function Autenticado() {
                     setCompanyDomain(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.domain || '');
                     setCompanyLogo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.logo || '');
                     setCompanySymbol(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.simbolo || '');
+                    setSimbolo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.simbolo || '');
+                    setLogo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.logo || '');
                     
                     if(!localStorage.getItem('layoutColors')) {
                         // Buscar parâmetros de layout da empresa selecionada

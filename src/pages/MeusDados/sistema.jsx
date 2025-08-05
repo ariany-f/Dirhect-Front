@@ -204,12 +204,10 @@ function MeusDadosSistema() {
         corSecundaria: BrandColors.getBrandColors().secondary,
         corAcento: BrandColors.getBrandColors().accent,
         corTerciaria: BrandColors.getBrandColors().tertiary,
-        colaboradorPodeEditar: true,
+        candidatoPodeEditar: true,
         habilidadesCandidato: import.meta.env.VITE_OPTION_HABILIDADES === 'true',
         experienciaCandidato: import.meta.env.VITE_OPTION_EXPERIENCIA === 'true',
         educacaoCandidato: import.meta.env.VITE_OPTION_EDUCACAO === 'true',
-        moduloLinhasTransporte: import.meta.env.VITE_OPTIONS_LINHAS_TRANSPORTE === 'true',
-        moduloMarketplace: import.meta.env.VITE_OPTIONs_MARKETPLACE === 'true',
         timezone: 'America/Sao_Paulo',
         feriadosTipo: 'nacionais',
         feriadosUF: '',
@@ -231,86 +229,92 @@ function MeusDadosSistema() {
     useEffect(() => {
         setLoading(true);
         
-        // Buscar parâmetros de layout da API
-        http.get('parametros/por-assunto/?assunto=LAYOUT')
+        // Buscar parâmetros de layout da API apenas se não existirem dados locais
+        const existingLayoutColors = localStorage.getItem('layoutColors');
+        
+        // Buscar parâmetros de admissão da API
+        const fetchAdmissaoParams = http.get('parametros/por-assunto/?assunto=ADMISSAO')
             .then(response => {
-                console.log(response);
                 if (response && response.parametros) {
-                    const layoutParams = response.parametros;
-                    
+                    return response.parametros;
+                }
+                return null;
+            })
+            .catch(error => {
+                console.error('Erro ao buscar parâmetros de admissão:', error);
+                return null;
+            });
+        
+        if (!existingLayoutColors) {
+            // Buscar parâmetros de layout
+            const fetchLayoutParams = http.get('parametros/por-assunto/?assunto=LAYOUT')
+                .then(response => {
+                    if (response && response.parametros) {
+                        return response.parametros;
+                    }
+                    return null;
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar parâmetros de layout:', error);
+                    return null;
+                });
+            
+            // Aguardar ambas as requisições
+            Promise.all([fetchLayoutParams, fetchAdmissaoParams])
+                .then(([layoutParams, admissaoParams]) => {
                     // Carrega configurações salvas do localStorage (apenas para campos não relacionados ao layout)
                     const savedSettings = JSON.parse(localStorage.getItem('systemSettings'));
                     
                     setSistema(prev => ({
                         ...prev,
-                        brandName: layoutParams.NOME_SISTEMA || BrandColors.getBrandName(),
-                        corPrimaria: layoutParams.COR_PRIMARIA || BrandColors.getBrandColors().primary,
-                        corSecundaria: layoutParams.COR_SECUNDARIA || BrandColors.getBrandColors().secondary,
-                        corAcento: layoutParams.COR_ACENTO || BrandColors.getBrandColors().accent,
-                        corTerciaria: layoutParams.COR_TERCIARIA || BrandColors.getBrandColors().tertiary,
+                        brandName: layoutParams?.NOME_SISTEMA || BrandColors.getBrandName(),
+                        corPrimaria: layoutParams?.COR_PRIMARIA || BrandColors.getBrandColors().primary,
+                        corSecundaria: layoutParams?.COR_SECUNDARIA || BrandColors.getBrandColors().secondary,
+                        corAcento: layoutParams?.COR_ACENTO || BrandColors.getBrandColors().accent,
+                        corTerciaria: layoutParams?.COR_TERCIARIA || BrandColors.getBrandColors().tertiary,
+                        // Parâmetros de admissão da API
+                        candidatoPodeEditar: admissaoParams?.CANDIDATO_PREENCHE_DADOS === 'true',
+                        habilidadesCandidato: admissaoParams?.PREENCHER_HABILIDADES === 'true',
+                        experienciaCandidato: admissaoParams?.PREENCHER_EXPERIENCIA === 'true',
+                        educacaoCandidato: admissaoParams?.PREENCHER_EDUCACAO === 'true',
                         // Manter outras configurações do localStorage
-                        colaboradorPodeEditar: savedSettings?.colaboradorPodeEditar ?? prev.colaboradorPodeEditar,
-                        habilidadesCandidato: savedSettings?.habilidadesCandidato ?? prev.habilidadesCandidato,
-                        experienciaCandidato: savedSettings?.experienciaCandidato ?? prev.experienciaCandidato,
-                        educacaoCandidato: savedSettings?.educacaoCandidato ?? prev.educacaoCandidato,
-                        moduloLinhasTransporte: savedSettings?.moduloLinhasTransporte ?? prev.moduloLinhasTransporte,
-                        moduloMarketplace: savedSettings?.moduloMarketplace ?? prev.moduloMarketplace,
                         timezone: savedSettings?.timezone ?? prev.timezone,
                         feriadosTipo: savedSettings?.feriadosTipo ?? prev.feriadosTipo,
                         feriadosUF: savedSettings?.feriadosUF ?? prev.feriadosUF,
                         idioma: savedSettings?.idioma ?? prev.idioma,
                     }));
-                } else {
-                    // Fallback para valores padrão se não houver dados da API
-                    const savedSettings = JSON.parse(localStorage.getItem('systemSettings'));
-                    setSistema(prev => ({
-                        ...prev,
-                        brandName: BrandColors.getBrandName(),
-                        corPrimaria: BrandColors.getBrandColors().primary,
-                        corSecundaria: BrandColors.getBrandColors().secondary,
-                        corAcento: BrandColors.getBrandColors().accent,
-                        corTerciaria: BrandColors.getBrandColors().tertiary,
-                        // Manter outras configurações do localStorage
-                        colaboradorPodeEditar: savedSettings?.colaboradorPodeEditar ?? prev.colaboradorPodeEditar,
-                        habilidadesCandidato: savedSettings?.habilidadesCandidato ?? prev.habilidadesCandidato,
-                        experienciaCandidato: savedSettings?.experienciaCandidato ?? prev.experienciaCandidato,
-                        educacaoCandidato: savedSettings?.educacaoCandidato ?? prev.educacaoCandidato,
-                        moduloLinhasTransporte: savedSettings?.moduloLinhasTransporte ?? prev.moduloLinhasTransporte,
-                        moduloMarketplace: savedSettings?.moduloMarketplace ?? prev.moduloMarketplace,
-                        timezone: savedSettings?.timezone ?? prev.timezone,
-                        feriadosTipo: savedSettings?.feriadosTipo ?? prev.feriadosTipo,
-                        feriadosUF: savedSettings?.feriadosUF ?? prev.feriadosUF,
-                        idioma: savedSettings?.idioma ?? prev.idioma,
-                    }));
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao buscar parâmetros de layout:', error);
-                // Fallback para valores padrão em caso de erro
-                const savedSettings = JSON.parse(localStorage.getItem('systemSettings'));
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        } else {
+            // Usar dados existentes de layout e buscar apenas admissão
+            const layoutColors = JSON.parse(existingLayoutColors);
+            const savedSettings = JSON.parse(localStorage.getItem('systemSettings'));
+            
+            fetchAdmissaoParams.then(admissaoParams => {
                 setSistema(prev => ({
                     ...prev,
-                    brandName: BrandColors.getBrandName(),
-                    corPrimaria: BrandColors.getBrandColors().primary,
-                    corSecundaria: BrandColors.getBrandColors().secondary,
-                    corAcento: BrandColors.getBrandColors().accent,
-                    corTerciaria: BrandColors.getBrandColors().tertiary,
+                    brandName: layoutColors.NOME_SISTEMA || BrandColors.getBrandName(),
+                    corPrimaria: layoutColors.COR_PRIMARIA || BrandColors.getBrandColors().primary,
+                    corSecundaria: layoutColors.COR_SECUNDARIA || BrandColors.getBrandColors().secondary,
+                    corAcento: layoutColors.COR_ACENTO || BrandColors.getBrandColors().accent,
+                    corTerciaria: layoutColors.COR_TERCIARIA || BrandColors.getBrandColors().tertiary,
+                    // Parâmetros de admissão da API
+                    candidatoPodeEditar: admissaoParams?.CANDIDATO_PREENCHE_DADOS === 'true',
+                    habilidadesCandidato: admissaoParams?.PREENCHER_HABILIDADES === 'true',
+                    experienciaCandidato: admissaoParams?.PREENCHER_EXPERIENCIA === 'true',
+                    educacaoCandidato: admissaoParams?.PREENCHER_EDUCACAO === 'true',
                     // Manter outras configurações do localStorage
-                    colaboradorPodeEditar: savedSettings?.colaboradorPodeEditar ?? prev.colaboradorPodeEditar,
-                    habilidadesCandidato: savedSettings?.habilidadesCandidato ?? prev.habilidadesCandidato,
-                    experienciaCandidato: savedSettings?.experienciaCandidato ?? prev.experienciaCandidato,
-                    educacaoCandidato: savedSettings?.educacaoCandidato ?? prev.educacaoCandidato,
-                    moduloLinhasTransporte: savedSettings?.moduloLinhasTransporte ?? prev.moduloLinhasTransporte,
-                    moduloMarketplace: savedSettings?.moduloMarketplace ?? prev.moduloMarketplace,
                     timezone: savedSettings?.timezone ?? prev.timezone,
                     feriadosTipo: savedSettings?.feriadosTipo ?? prev.feriadosTipo,
                     feriadosUF: savedSettings?.feriadosUF ?? prev.feriadosUF,
                     idioma: savedSettings?.idioma ?? prev.idioma,
                 }));
-            })
-            .finally(() => {
+            }).finally(() => {
                 setLoading(false);
             });
+        }
 
         // Carrega logo salva
         const savedLogo = BrandColors.getBrandLogo();
@@ -475,6 +479,31 @@ function MeusDadosSistema() {
                     chave: 'FAVICON_URL',
                     valor: BrandColors.getBrandFaviconBaseUrl() || '',
                     descricao: 'URL do favicon'
+                },
+                // Parâmetros de admissão
+                {
+                    assunto: 'ADMISSAO',
+                    chave: 'CANDIDATO_PREENCHE_DADOS',
+                    valor: sistema.candidatoPodeEditar.toString(),
+                    descricao: 'Permitir que o candidato preencha seus próprios dados'
+                },
+                {
+                    assunto: 'ADMISSAO',
+                    chave: 'PREENCHER_HABILIDADES',
+                    valor: sistema.habilidadesCandidato.toString(),
+                    descricao: 'Habilitar dados de habilidade do candidato'
+                },
+                {
+                    assunto: 'ADMISSAO',
+                    chave: 'PREENCHER_EXPERIENCIA',
+                    valor: sistema.experienciaCandidato.toString(),
+                    descricao: 'Habilitar dados de experiência do candidato'
+                },
+                {
+                    assunto: 'ADMISSAO',
+                    chave: 'PREENCHER_EDUCACAO',
+                    valor: sistema.educacaoCandidato.toString(),
+                    descricao: 'Habilitar dados de educação do candidato'
                 }
             ];
 
@@ -510,12 +539,6 @@ function MeusDadosSistema() {
                 corSecundaria: sistema.corSecundaria,
                 corAcento: sistema.corAcento,
                 corTerciaria: sistema.corTerciaria,
-                colaboradorPodeEditar: sistema.colaboradorPodeEditar,
-                habilidadesCandidato: sistema.habilidadesCandidato,
-                experienciaCandidato: sistema.experienciaCandidato,
-                educacaoCandidato: sistema.educacaoCandidato,
-                moduloLinhasTransporte: sistema.moduloLinhasTransporte,
-                moduloMarketplace: sistema.moduloMarketplace,
                 timezone: sistema.timezone,
                 feriadosTipo: sistema.feriadosTipo,
                 feriadosUF: sistema.feriadosUF,
@@ -738,8 +761,8 @@ function MeusDadosSistema() {
                                 <SwitchContainer>
                                     <Texto>Permitir que o candidato preencha seus próprios dados?</Texto>
                                     <SwitchInput
-                                        checked={sistema.colaboradorPodeEditar}
-                                        onChange={valor => handleChange('colaboradorPodeEditar', valor)}
+                                        checked={sistema.candidatoPodeEditar}
+                                        onChange={valor => handleChange('candidatoPodeEditar', valor)}
                                     />
                                 </SwitchContainer>
                                 <SwitchContainer>
@@ -761,29 +784,6 @@ function MeusDadosSistema() {
                                     <SwitchInput
                                         checked={sistema.educacaoCandidato}
                                         onChange={valor => handleChange('educacaoCandidato', valor)}
-                                    />
-                                </SwitchContainer>
-                            </>
-                        )}
-                    </Col6>
-                </Col12>
-                <Col12>
-                    <Col6>
-                        <SubTitulo>Módulos</SubTitulo>
-                        {loading ? <Skeleton width={200} height={25} /> : (
-                            <>
-                                <SwitchContainer>
-                                    <Texto>Linhas de Transporte</Texto>
-                                    <SwitchInput
-                                        checked={sistema.moduloLinhasTransporte}
-                                        onChange={valor => handleChange('moduloLinhasTransporte', valor)}
-                                    />
-                                </SwitchContainer>
-                                <SwitchContainer>
-                                    <Texto>Marketplace</Texto>
-                                    <SwitchInput
-                                        checked={sistema.moduloMarketplace}
-                                        onChange={valor => handleChange('moduloMarketplace', valor)}
                                     />
                                 </SwitchContainer>
                             </>
