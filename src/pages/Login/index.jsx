@@ -57,6 +57,11 @@ function Login() {
             const response = await http.post(`/app-login/`, data);
             ArmazenadorToken.definirToken(response.access, null, null, null);
             
+            // Salvar dados do layout se disponíveis
+            if (response.layout) {
+                localStorage.setItem('brandColors', JSON.stringify(response.layout));
+            }
+            
             return response;
         } catch (error) {
             setLoading(false);

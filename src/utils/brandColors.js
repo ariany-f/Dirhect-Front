@@ -11,16 +11,17 @@ export class BrandColors {
     // Obter cores do localStorage, .env ou usar padrão
     static getBrandColors() {
       const storedColors = JSON.parse(localStorage.getItem('brandColors')) || {};
+      const layoutColors = JSON.parse(localStorage.getItem('layoutColors')) || {};
       const envPrimary = import.meta.env.VITE_BRAND_PRIMARY_COLOR;
       const envSecondary = import.meta.env.VITE_BRAND_SECONDARY_COLOR;
       const envAccent = import.meta.env.VITE_BRAND_ACCENT_COLOR;
       const envTertiary = import.meta.env.VITE_BRAND_TERTIARY_COLOR;
       
       return {
-        primary: storedColors.primary || envPrimary || this.defaultColors.primary,
-        secondary: storedColors.secondary || envSecondary || this.defaultColors.secondary,
-        accent: storedColors.accent || envAccent || this.defaultColors.accent,
-        tertiary: storedColors.tertiary || envTertiary || this.defaultColors.tertiary
+        primary: layoutColors.COR_PRIMARIA || storedColors.primary || envPrimary || this.defaultColors.primary,
+        secondary: layoutColors.COR_SECUNDARIA || storedColors.secondary || envSecondary || this.defaultColors.secondary,
+        accent: layoutColors.COR_ACENTO || storedColors.accent || envAccent || this.defaultColors.accent,
+        tertiary: layoutColors.COR_TERCIARIA || storedColors.tertiary || envTertiary || this.defaultColors.tertiary
       };
     }
 
@@ -153,13 +154,15 @@ export class BrandColors {
 
     // Obter logo da marca
     static getBrandLogo() {
-      return import.meta.env.VITE_BRAND_LOGO_URL || '/imagens/logo.png';
+      const layoutColors = JSON.parse(localStorage.getItem('layoutColors')) || {};
+      return layoutColors.LOGO_URL || import.meta.env.VITE_BRAND_LOGO_URL || '/imagens/logo.png';
     }
 
     // Obter nome da marca
     static getBrandName() {
       const storedName = localStorage.getItem('brandName');
-      return storedName || import.meta.env.VITE_BRAND_NAME || 'Dirhect';
+      const layoutColors = JSON.parse(localStorage.getItem('layoutColors')) || {};
+      return storedName || layoutColors.NOME_SISTEMA || import.meta.env.VITE_BRAND_NAME || 'Dirhect';
     }
 
     static setBrandName(name) {
@@ -183,7 +186,20 @@ export class BrandColors {
 
     // Obter URL base do favicon
     static getBrandFaviconBaseUrl() {
-        return import.meta.env.VITE_BRAND_FAVICON || '/imagens/cropped-Favicon';
+        const layoutColors = JSON.parse(localStorage.getItem('layoutColors')) || {};
+        return layoutColors.FAVICON_URL || import.meta.env.VITE_BRAND_FAVICON || '/imagens/cropped-Favicon';
+    }
+
+    // Limpar dados do layout
+    static clearLayoutData() {
+        localStorage.removeItem('layoutColors');
+    }
+
+    // Salvar dados do layout
+    static setLayoutData(layoutData) {
+        localStorage.setItem('layoutColors', JSON.stringify(layoutData));
+        // Aplicar as cores automaticamente
+        this.applyBrandColors();
     }
   }
   

@@ -114,6 +114,19 @@ function Autenticado() {
                         setCompanyDomain(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.domain || '');
                         setCompanyLogo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.logo || '');
                         setCompanySymbol(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.simbolo || '');
+                        
+                        if(!localStorage.getItem('layoutColors')) {
+                            // Buscar parâmetros de layout da empresa selecionada
+                            http.get('parametros/por-assunto/?assunto=LAYOUT')
+                            .then(response => {
+                                if (response && response.parametros) {
+                                    BrandColors.setLayoutData(response.parametros);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar parâmetros de layout:', error);
+                            });
+                        }
                     } else {
                         setSelected(cachedCompanies[0]?.id_tenant || '');
                         setEmpresa(cachedCompanies[0]?.tenant.nome || '');
@@ -121,6 +134,20 @@ function Autenticado() {
                         setCompanyDomain(cachedCompanies[0]?.domain || '');
                         setCompanyLogo(cachedCompanies[0]?.tenant.logo || '');
                         setCompanySymbol(cachedCompanies[0]?.tenant.simbolo || '');
+                        
+                        if(!localStorage.getItem('layoutColors')) {
+                            
+                            // Buscar parâmetros de layout da primeira empresa
+                            http.get('parametros/por-assunto/?assunto=LAYOUT')
+                            .then(response => {
+                                if (response && response.parametros) {
+                                    BrandColors.setLayoutData(response.parametros);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar parâmetros de layout:', error);
+                            });
+                        }
                     }
                 }
                 else {
@@ -130,6 +157,19 @@ function Autenticado() {
                     setCompanyDomain(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.domain || '');
                     setCompanyLogo(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.logo || '');
                     setCompanySymbol(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.simbolo || '');
+                    
+                    if(!localStorage.getItem('layoutColors')) {
+                        // Buscar parâmetros de layout da empresa selecionada
+                        http.get('parametros/por-assunto/?assunto=LAYOUT')
+                        .then(response => {
+                            if (response && response.parametros) {
+                                BrandColors.setLayoutData(response.parametros);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar parâmetros de layout:', error);
+                        });
+                    }
                 }
             } else {
                 // Buscar dados do servidor
@@ -192,6 +232,22 @@ function Autenticado() {
                 if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                     setSelected(tenantsWithDomain[0]?.id_tenant || '');
                     setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
+                    setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
+                    setLogo(tenantsWithDomain[0]?.tenant.logo || '');
+                    
+                    if(!localStorage.getItem('layoutColors')) {
+                        
+                        // Buscar parâmetros de layout da primeira empresa
+                        http.get('parametros/por-assunto/?assunto=LAYOUT')
+                        .then(response => {
+                            if (response && response.parametros) {
+                                BrandColors.setLayoutData(response.parametros);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar parâmetros de layout:', error);
+                        });
+                    }
                 }
             } else {
                 // Buscar domains do servidor
@@ -213,6 +269,8 @@ function Autenticado() {
                     if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                         setSelected(tenantsWithDomain[0]?.id_tenant || '');
                         setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
+                        setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
+                        setLogo(tenantsWithDomain[0]?.tenant.logo || '');
                     }
                 })
                 .catch(erro => {
@@ -230,8 +288,23 @@ function Autenticado() {
                 setEmpresa(comp[0].tenant.nome)
                 setSessionCompany(comp[0].id_tenant)
                 setCompanyDomain(comp[0].domain)
-                setCompanyLogo(comp[0].tenant.logo)
-                setCompanySymbol(comp[0].tenant.simbolo)
+                setLogo(comp[0].tenant.logo)
+                setSimbolo(comp[0].tenant.simbolo)
+
+                if(!localStorage.getItem('layoutColors')) {
+                    
+                    // Buscar parâmetros de layout da empresa selecionada
+                    http.get('parametros/por-assunto/?assunto=LAYOUT')
+                    .then(response => {
+                        if (response && response.parametros) {
+                            // Salvar e aplicar as cores do layout
+                            BrandColors.setLayoutData(response.parametros);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar parâmetros de layout:', error);
+                    });
+                }
             }
         }
 
@@ -255,7 +328,7 @@ function Autenticado() {
 
     
     const selectCompany = () => {
-        setModalOpened(true)
+        setModalOpened(true);
     }
 
     function changeCompany(id) {
@@ -272,6 +345,18 @@ function Autenticado() {
                 setSimbolo(comp[0].tenant.simbolo)
                 setLogo(comp[0].tenant.logo)
                 setSelected(id)
+
+                // Buscar parâmetros de layout da nova empresa selecionada
+                http.get('parametros/por-assunto/?assunto=LAYOUT')
+                .then(response => {
+                    if (response && response.parametros) {
+                        // Salvar e aplicar as cores do layout
+                        BrandColors.setLayoutData(response.parametros);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar parâmetros de layout:', error);
+                });
             }
         }
     }
