@@ -126,6 +126,9 @@ const FormGroup = styled.div`
     ${props => props.fullWidth && `
         width: 100%;
     `}
+    ${props => props.flex3 && `
+        flex: 3;
+    `}
     ${props => props.flex2 && `
         flex: 2;
     `}
@@ -378,7 +381,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                         </FormRow>
 
                                         <FormRow>
-                                            <FormGroup flex2>
+                                            <FormGroup flex3>
                                                 <DropdownItens
                                                     valor={motivoDemissao}
                                                     setValor={setMotivoDemissao}
@@ -389,13 +392,13 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     filter
                                                 />
                                             </FormGroup>
-                                            <FormGroup flex1>
+                                            <FormGroup flex2>
                                                 <CampoTexto
                                                     name="data_inicio_aviso"
                                                     valor={dataInicioAviso}
                                                     setValor={setDataInicioAviso}
                                                     type="date"
-                                                    label="Data de Início do Aviso Prévio"
+                                                    label="Início do Aviso Prévio"
                                                     placeholder="Selecione a data"
                                                 />
                                             </FormGroup>
