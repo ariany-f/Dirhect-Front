@@ -199,6 +199,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     const [anexo, setAnexo] = useState(null);
     const [dataInicioAviso, setDataInicioAviso] = useState('');
     const [avisoIndenizado, setAvisoIndenizado] = useState(false);
+    const [dataPagamento, setDataPagamento] = useState('');
 
     const [tiposDemissaoOptions, setTiposDemissaoOptions] = useState([]);
     const [motivosDemissaoOptions, setMotivosDemissaoOptions] = useState([]);
@@ -241,6 +242,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             setAnexo(null);
             setDataInicioAviso('');
             setAvisoIndenizado(false);
+            setDataPagamento('');
         }
     }, [opened]);
 
@@ -261,6 +263,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             anexo: anexo,
             data_inicio_aviso: dataInicioAviso,
             aviso_indenizado: avisoIndenizado,
+            data_pagamento: dataPagamento,
         });
     }
 
@@ -278,6 +281,20 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
         return `${ano}-${mes}-${dia}`;
     };
 
+    const calcularDataPagamento = (dataDemissao) => {
+        if (!dataDemissao) return '';
+        
+        const data = new Date(dataDemissao);
+        data.setDate(data.getDate() + 10);
+        
+        // Formatar para YYYY-MM-DD
+        const ano = data.getFullYear();
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const dia = String(data.getDate()).padStart(2, '0');
+        
+        return `${ano}-${mes}-${dia}`;
+    };
+
     const handleDataDemissaoChange = (novaData) => {
         setDataDemissao(novaData);
         
@@ -285,6 +302,12 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
         if (!dataInicioAviso) {
             const dataSugerida = calcularDataInicioAviso(novaData);
             setDataInicioAviso(dataSugerida);
+        }
+        
+        // Se não houver data de pagamento preenchida, sugerir automaticamente
+        if (!dataPagamento) {
+            const dataPagamentoSugerida = calcularDataPagamento(novaData);
+            setDataPagamento(dataPagamentoSugerida);
         }
     };
 
@@ -399,7 +422,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                         </FormRow>
 
                                         <FormRow>
-                                            <FormGroup flex3>
+                                            <FormGroup flex1>
                                                 <DropdownItens
                                                     valor={motivoDemissao}
                                                     setValor={setMotivoDemissao}
@@ -410,7 +433,20 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     filter
                                                 />
                                             </FormGroup>
-                                            <FormGroup flex2>
+                                            <FormGroup flex1>
+                                                <CampoTexto
+                                                    name="data_pagamento"
+                                                    valor={dataPagamento}
+                                                    setValor={setDataPagamento}
+                                                    type="date"
+                                                    label="Data de Pagamentos"
+                                                    placeholder="Selecione a data"
+                                                />
+                                            </FormGroup>
+                                        </FormRow>
+
+                                        <FormRow>
+                                            <FormGroup flex1>
                                                 <CampoTexto
                                                     name="data_inicio_aviso"
                                                     valor={dataInicioAviso}
