@@ -271,7 +271,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
         if (!dataDemissao) return '';
         
         const data = new Date(dataDemissao);
-        data.setDate(data.getDate() + 1);
+        data.setDate(data.getDate() + 2);
         
         // Formatar para YYYY-MM-DD
         const ano = data.getFullYear();
