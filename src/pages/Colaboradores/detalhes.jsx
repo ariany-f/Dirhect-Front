@@ -559,7 +559,7 @@ function ColaboradorDetalhes() {
         formData.append('motivo_demissao', dadosDemissao.motivo_demissao);
         formData.append('observacao', dadosDemissao.observacao || '');
         formData.append('data_inicio_aviso', dadosDemissao.data_inicio_aviso || '');
-        formData.append('aviso_indenizado', dadosDemissao.aviso_indenizado || false);
+        formData.append('aviso_indenizado', Boolean(dadosDemissao.aviso_indenizado));
         formData.append('data_pagamento', dadosDemissao.data_pagamento || '');
         
         // Adiciona o anexo se existir

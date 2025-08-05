@@ -262,7 +262,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             observacao: observacao,
             anexo: anexo,
             data_inicio_aviso: dataInicioAviso,
-            aviso_indenizado: avisoIndenizado,
+            aviso_indenizado: Boolean(avisoIndenizado),
             data_pagamento: dataPagamento,
         });
     }
