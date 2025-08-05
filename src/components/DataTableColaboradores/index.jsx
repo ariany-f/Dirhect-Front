@@ -59,10 +59,22 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     }
 
     const representativeNumeroDependentesTemplate = (rowData) => {
-    
+        const numDependentes = rowData?.dependentes?.length || 0;
+        
+        if (numDependentes === 0) {
+            return (
+                <Texto weight={400} style={{ color: '#9ca3af', fontSize: '13px' }}>Nenhum</Texto>
+            );
+        }
+        
         return (
-            <Texto weight={600}>{rowData?.dependentes ? (rowData?.dependentes.length > 0 ? rowData?.dependentes.length : 'Nenhum') : '---'}</Texto>
-        )
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Texto weight={600} style={{ color: '#374151' }}>{numDependentes}</Texto>
+                <Texto weight={500} style={{ color: '#6b7280', fontSize: '12px' }}>
+                    {numDependentes === 1 ? 'dependente' : 'dependentes'}
+                </Texto>
+            </div>
+        );
     }
     
     const representativeCPFTemplate = (rowData) => {
