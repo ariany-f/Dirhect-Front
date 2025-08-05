@@ -968,6 +968,17 @@ function ColaboradorDetalhes() {
                                     }}>
                                         {colaborador.tipo_situacao_descricao || 'Status não informado'}
                                     </span>
+                                    <span style={{
+                                        background: 'rgba(255, 255, 255, 0.2)',
+                                        color: '#fff',
+                                        padding: '4px 8px',
+                                        borderRadius: 12,
+                                        fontSize: 11,
+                                        fontWeight: 400,
+                                        textTransform: 'capitalize'
+                                    }}>
+                                        {colaborador.funcao_nome || 'Função não informada'}
+                                    </span>
                                     {colaborador.marcado_demissao && ['analista', 'supervisor', 'gestor'].includes(ArmazenadorToken.UserProfile) && (
                                         <span style={{
                                             background: '#dc2626',
@@ -1238,51 +1249,6 @@ function ColaboradorDetalhes() {
                                 <CopyButton onClick={() => copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}>
                                     <IoCopyOutline size={12} />
                                 </CopyButton>
-                            </InfoValue>
-                        </InfoItem>
-                        
-                        <InfoItem>
-                            <InfoLabel>
-                                Filial
-                            </InfoLabel>
-                            <InfoValue>
-                                <CustomTag 
-                                    bg="linear-gradient(135deg, #eff6ff, #dbeafe)"
-                                    color="#1e40af"
-                                    border="#93c5fd"
-                                >
-                                    {colaborador?.filial_nome ?? 'Não definida'}
-                                </CustomTag>
-                            </InfoValue>
-                        </InfoItem>
-                        
-                        <InfoItem>
-                            <InfoLabel>
-                                Função
-                            </InfoLabel>
-                            <InfoValue>
-                                <CustomTag 
-                                    bg="linear-gradient(135deg, #f0fdf4, #dcfce7)"
-                                    color="#166534"
-                                    border="#86efac"
-                                >
-                                    {colaborador?.funcao_nome ?? 'Não definida'}
-                                </CustomTag>
-                            </InfoValue>
-                        </InfoItem>
-                        
-                        <InfoItem>
-                            <InfoLabel>
-                                Tipo de Funcionário
-                            </InfoLabel>
-                            <InfoValue>
-                                <CustomTag 
-                                    bg="linear-gradient(135deg, #fefce8, #fef3c7)"
-                                    color="#92400e"
-                                    border="#fbbf24"
-                                >
-                                    {tipoFuncionario ?? 'Não definida'}
-                                </CustomTag>
                             </InfoValue>
                         </InfoItem>
                     </Col4Vertical>

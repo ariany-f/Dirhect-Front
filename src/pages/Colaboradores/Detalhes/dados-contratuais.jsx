@@ -147,6 +147,11 @@ function ColaboradorDadosContratuais() {
                                 ? <Skeleton variant="rectangular" width={200} height={25} />
                                 : <Texto weight="800">{colaborador.salario ? Real.format(colaborador.salario) : '---'}</Texto>
                             }
+                            <Texto>Tipo de Funcionário</Texto>
+                            {!colaborador
+                                ? <Skeleton variant="rectangular" width={200} height={25} />
+                                : <Texto weight="800">{colaborador.tipo_funcionario_descricao || '---'}</Texto>
+                            }
                             <Texto>Deficiente Físico</Texto>
                             {!colaborador
                                 ? <Skeleton variant="rectangular" width={200} height={25} />
