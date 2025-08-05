@@ -14,6 +14,7 @@ import Frame from "@components/Frame"
 import { ArmazenadorToken } from "@utils"
 import CampoArquivo from "@components/CampoArquivo"
 import { Toast } from 'primereact/toast'
+import SwitchInput from "@components/SwitchInput"
 
 const Cabecalho = styled.div`
     padding: 24px 32px;
@@ -125,6 +126,12 @@ const FormGroup = styled.div`
     ${props => props.fullWidth && `
         width: 100%;
     `}
+    ${props => props.flex2 && `
+        flex: 2;
+    `}
+    ${props => props.flex1 && `
+        flex: 1;
+    `}
 `;
 
 const FormLabel = styled.label`
@@ -193,7 +200,8 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     const [motivoDemissao, setMotivoDemissao] = useState(null);
     const [observacao, setObservacao] = useState('');
     const [anexo, setAnexo] = useState(null);
-    const [diasAvisoPrevio, setDiasAvisoPrevio] = useState('');
+    const [dataInicioAviso, setDataInicioAviso] = useState('');
+    const [avisoIndenizado, setAvisoIndenizado] = useState(false);
 
     const [tiposDemissaoOptions, setTiposDemissaoOptions] = useState([]);
     const [motivosDemissaoOptions, setMotivosDemissaoOptions] = useState([]);
@@ -234,7 +242,8 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             setMotivoDemissao(null);
             setObservacao('');
             setAnexo(null);
-            setDiasAvisoPrevio('');
+            setDataInicioAviso('');
+            setAvisoIndenizado(false);
         }
     }, [opened]);
 
@@ -247,24 +256,14 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             return;
         }
         
-        // Validação dos dias de aviso prévio
-        const diasAviso = parseInt(diasAvisoPrevio) || 0;
-        if (diasAviso < 0) {
-            toast.current.show({ severity: 'warn', summary: 'Aviso', detail: 'Os dias de aviso prévio não podem ser negativos.' });
-            return;
-        }
-        if (diasAviso > 30) {
-            toast.current.show({ severity: 'warn', summary: 'Aviso', detail: 'Os dias de aviso prévio não podem ser maiores que 30 dias.' });
-            return;
-        }
-        
         aoSalvar({
             dt_demissao: dataDemissao,
             tipo_demissao: tipoDemissao.code,
             motivo_demissao: motivoDemissao.code,
             observacao: observacao,
             anexo: anexo,
-            dias_aviso_previo: diasAviso,
+            data_inicio_aviso: dataInicioAviso,
+            aviso_indenizado: avisoIndenizado,
         });
     }
 
@@ -379,7 +378,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                         </FormRow>
 
                                         <FormRow>
-                                            <FormGroup>
+                                            <FormGroup flex2>
                                                 <DropdownItens
                                                     valor={motivoDemissao}
                                                     setValor={setMotivoDemissao}
@@ -387,21 +386,24 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     label="Motivo da Demissão"
                                                     name="motivo_demissao"
                                                     placeholder="Selecione o motivo"
+                                                    filter
                                                 />
                                             </FormGroup>
-                                        </FormRow>
-
-                                        <FormRow>
-                                            <FormGroup>
+                                            <FormGroup flex1>
                                                 <CampoTexto
-                                                    name="dias_aviso_previo"
-                                                    valor={diasAvisoPrevio}
-                                                    setValor={setDiasAvisoPrevio}
-                                                    type="number"
-                                                    label="Dias de Aviso Prévio"
-                                                    placeholder="Ex: 30 (máximo 30 dias, 0 para desconto)"
-                                                    min="0"
-                                                    max="30"
+                                                    name="data_inicio_aviso"
+                                                    valor={dataInicioAviso}
+                                                    setValor={setDataInicioAviso}
+                                                    type="date"
+                                                    label="Data de Início do Aviso Prévio"
+                                                    placeholder="Selecione a data"
+                                                />
+                                            </FormGroup>
+                                            <FormGroup flex1>
+                                                <FormLabel>Aviso Indenizado</FormLabel>
+                                                <SwitchInput
+                                                    checked={avisoIndenizado}
+                                                    onChange={setAvisoIndenizado}
                                                 />
                                             </FormGroup>
                                         </FormRow>
