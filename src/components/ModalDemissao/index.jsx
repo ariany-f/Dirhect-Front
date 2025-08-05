@@ -397,18 +397,18 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                 {!bloquearFormulario && (
                                     <FormContainer>
                                         <FormRow>
-                                            <FormGroup>
-                                                <CampoTexto
-                                                    name="data_demissao"
-                                                    valor={dataDemissao}
-                                                    setValor={handleDataDemissaoChange}
-                                                    type="date"
-                                                    label="Data da Demissão"
-                                                    placeholder="Selecione a data"
+                                            <FormGroup flex1>
+                                                <DropdownItens
+                                                    valor={motivoDemissao}
+                                                    setValor={setMotivoDemissao}
+                                                    options={motivosDemissaoOptions}
+                                                    label="Motivo da Demissão"
+                                                    name="motivo_demissao"
+                                                    placeholder="Selecione o motivo"
+                                                    filter
                                                 />
                                             </FormGroup>
-
-                                            <FormGroup>
+                                            <FormGroup flex1>
                                                 <DropdownItens
                                                     valor={tipoDemissao}
                                                     setValor={setTipoDemissao}
@@ -423,14 +423,13 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
 
                                         <FormRow>
                                             <FormGroup flex1>
-                                                <DropdownItens
-                                                    valor={motivoDemissao}
-                                                    setValor={setMotivoDemissao}
-                                                    options={motivosDemissaoOptions}
-                                                    label="Motivo da Demissão"
-                                                    name="motivo_demissao"
-                                                    placeholder="Selecione o motivo"
-                                                    filter
+                                                <CampoTexto
+                                                    name="data_demissao"
+                                                    valor={dataDemissao}
+                                                    setValor={handleDataDemissaoChange}
+                                                    type="date"
+                                                    label="Data da Demissão"
+                                                    placeholder="Selecione a data"
                                                 />
                                             </FormGroup>
                                             <FormGroup flex1>
