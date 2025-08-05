@@ -61,7 +61,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const representativeNumeroDependentesTemplate = (rowData) => {
     
         return (
-            <Texto weight={600}>{rowData?.dependentes.length}</Texto>
+            <Texto weight={600}>{rowData?.dependentes ? (rowData?.dependentes.length > 0 ? rowData?.dependentes.length : 'Nenhum') : '---'}</Texto>
         )
     }
     
@@ -186,18 +186,12 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         
         if(!rowData?.tipo_situacao_descricao) {
             return (
-                <>
-                    <Texto weight={600}><Tag severity={null} style={{backgroundColor: cor}} value={'Não informado'}></Tag></Texto>
-                    <small>{rowData?.dependentes.length} dependente(s)</small>
-                </>
+                <Texto weight={600}><Tag severity={null} style={{backgroundColor: cor}} value={'Não informado'}></Tag></Texto>
             );
         }
         
         situacao = (
-            <>
             <Texto weight={600}><Tag severity={null} style={{backgroundColor: cor}} value={situacao}></Tag></Texto>
-            <small>{rowData?.dependentes.length} dependente(s)</small>
-            </>
         );
         return situacao
     }
@@ -459,28 +453,29 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     </ColumnGroup>
                 }
             >
-                <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '10%' }}></Column>
-                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header="Nome Completo" sortable style={{ width: '25%' }}></Column>
+                <Column body={representativeChapaTemplate} field="chapa" header="Matrícula" sortable style={{ width: '8%' }}></Column>
+                <Column body={representativeNomeTemplate} field="funcionario_pessoa_fisica.nome" sortField="id_pessoafisica__nome" header="Nome Completo" sortable style={{ width: '22%' }}></Column>
                 <Column 
                     body={representativeFilialTemplate} 
                     field="filial" 
                     header="Filial" 
                     sortable 
-                    style={{ width: '10%' }} 
+                    style={{ width: '8%' }} 
                     filter 
                     sortField="filial__nome" 
                     filterField="filial" 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '25%' }}></Column>
-                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '10%' }}></Column>
-                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '10%' }}></Column>
+                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '22%' }}></Column>
+                <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '8%' }}></Column>
+                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '8%' }}></Column>
+                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dependentes" style={{ width: '8%' }}></Column>
                 <Column 
                     body={representativSituacaoTemplate} 
                     field="situacao" 
                     header="Situação" 
-                    style={{ width: '15%' }}
+                    style={{ width: '12%' }}
                     filter
                     filterField="situacao"
                     showFilterMenu={true}
