@@ -270,6 +270,30 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
         });
     }
 
+    const calcularDataInicioAviso = (dataDemissao) => {
+        if (!dataDemissao) return '';
+        
+        const data = new Date(dataDemissao);
+        data.setDate(data.getDate() + 1);
+        
+        // Formatar para YYYY-MM-DD
+        const ano = data.getFullYear();
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const dia = String(data.getDate()).padStart(2, '0');
+        
+        return `${ano}-${mes}-${dia}`;
+    };
+
+    const handleDataDemissaoChange = (novaData) => {
+        setDataDemissao(novaData);
+        
+        // Se não houver data de início do aviso preenchida, sugerir automaticamente
+        if (!dataInicioAviso) {
+            const dataSugerida = calcularDataInicioAviso(novaData);
+            setDataInicioAviso(dataSugerida);
+        }
+    };
+
     function formatarCPF(cpf) {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
@@ -360,7 +384,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                 <CampoTexto
                                                     name="data_demissao"
                                                     valor={dataDemissao}
-                                                    setValor={setDataDemissao}
+                                                    setValor={handleDataDemissaoChange}
                                                     type="date"
                                                     label="Data da Demissão"
                                                     placeholder="Selecione a data"
@@ -414,10 +438,8 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                         <FormGroup fullWidth>
                                             <CampoArquivo
                                                 name="anexo"
-                                                valor={anexo}
-                                                setValor={setAnexo}
+                                                onFileChange={setAnexo}
                                                 label="Anexo"
-                                                placeholder="Selecione um arquivo (opcional)"
                                                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                                             />
                                         </FormGroup>
