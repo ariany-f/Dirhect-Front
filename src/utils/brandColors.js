@@ -155,7 +155,31 @@ export class BrandColors {
     // Obter logo da marca
     static getBrandLogo() {
       const layoutColors = JSON.parse(localStorage.getItem('layoutColors')) || {};
-      return layoutColors.LOGO_URL || import.meta.env.VITE_BRAND_LOGO_URL || '/imagens/logo.png';
+      const storedLogo = localStorage.getItem('brandLogo');
+      return storedLogo || layoutColors.LOGO_URL || import.meta.env.VITE_BRAND_LOGO_URL || '/imagens/logo.png';
+    }
+
+    // Salvar logo da marca
+    static setBrandLogo(logoUrl) {
+        if (logoUrl) {
+            localStorage.setItem('brandLogo', logoUrl);
+            
+            // Atualizar também nos layoutColors
+            const currentLayout = JSON.parse(localStorage.getItem('layoutColors')) || {};
+            const updatedLayout = {
+                ...currentLayout,
+                LOGO_URL: logoUrl
+            };
+            localStorage.setItem('layoutColors', JSON.stringify(updatedLayout));
+        } else {
+            localStorage.removeItem('brandLogo');
+            
+            // Remover também dos layoutColors
+            const currentLayout = JSON.parse(localStorage.getItem('layoutColors')) || {};
+            const updatedLayout = { ...currentLayout };
+            delete updatedLayout.LOGO_URL;
+            localStorage.setItem('layoutColors', JSON.stringify(updatedLayout));
+        }
     }
 
     // Obter nome da marca
@@ -168,8 +192,22 @@ export class BrandColors {
     static setBrandName(name) {
         if (name) {
             localStorage.setItem('brandName', name);
+            
+            // Atualizar também nos layoutColors
+            const currentLayout = JSON.parse(localStorage.getItem('layoutColors')) || {};
+            const updatedLayout = {
+                ...currentLayout,
+                NOME_SISTEMA: name
+            };
+            localStorage.setItem('layoutColors', JSON.stringify(updatedLayout));
         } else {
             localStorage.removeItem('brandName');
+            
+            // Remover também dos layoutColors
+            const currentLayout = JSON.parse(localStorage.getItem('layoutColors')) || {};
+            const updatedLayout = { ...currentLayout };
+            delete updatedLayout.NOME_SISTEMA;
+            localStorage.setItem('layoutColors', JSON.stringify(updatedLayout));
         }
     }
   
@@ -198,6 +236,25 @@ export class BrandColors {
     // Salvar dados do layout
     static setLayoutData(layoutData) {
         localStorage.setItem('layoutColors', JSON.stringify(layoutData));
+        // Aplicar as cores automaticamente
+        this.applyBrandColors();
+    }
+
+    // Atualizar layoutColors após confirmar alterações
+    static updateLayoutColors(newColors, newName, newLogo) {
+        const currentLayout = JSON.parse(localStorage.getItem('layoutColors')) || {};
+        
+        const updatedLayout = {
+            ...currentLayout,
+            COR_PRIMARIA: newColors.primary,
+            COR_SECUNDARIA: newColors.secondary,
+            COR_ACENTO: newColors.accent,
+            COR_TERCIARIA: newColors.tertiary,
+            NOME_SISTEMA: newName,
+            LOGO_URL: newLogo || currentLayout.LOGO_URL
+        };
+
+        localStorage.setItem('layoutColors', JSON.stringify(updatedLayout));
         // Aplicar as cores automaticamente
         this.applyBrandColors();
     }

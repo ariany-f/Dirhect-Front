@@ -18,6 +18,7 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import imageCompression from 'browser-image-compression';
 import { HiX } from 'react-icons/hi';
+import http from '@http';
 
 const Col12 = styled.div`
     display: flex;
@@ -228,17 +229,88 @@ function MeusDadosSistema() {
     const { usuario } = useSessaoUsuarioContext();
 
     useEffect(() => {
-        // Carrega configurações salvas do localStorage
-        const savedSettings = JSON.parse(localStorage.getItem('systemSettings'));
-        if (savedSettings) {
-            setSistema(prev => ({ ...prev, ...savedSettings }));
-        }
-
-        // Carrega nome salvo
-        setSistema(prev => ({
-            ...prev,
-            brandName: BrandColors.getBrandName(),
-        }));
+        setLoading(true);
+        
+        // Buscar parâmetros de layout da API
+        http.get('parametros/por-assunto/?assunto=LAYOUT')
+            .then(response => {
+                console.log(response);
+                if (response && response.parametros) {
+                    const layoutParams = response.parametros;
+                    
+                    // Carrega configurações salvas do localStorage (apenas para campos não relacionados ao layout)
+                    const savedSettings = JSON.parse(localStorage.getItem('systemSettings'));
+                    
+                    setSistema(prev => ({
+                        ...prev,
+                        brandName: layoutParams.NOME_SISTEMA || BrandColors.getBrandName(),
+                        corPrimaria: layoutParams.COR_PRIMARIA || BrandColors.getBrandColors().primary,
+                        corSecundaria: layoutParams.COR_SECUNDARIA || BrandColors.getBrandColors().secondary,
+                        corAcento: layoutParams.COR_ACENTO || BrandColors.getBrandColors().accent,
+                        corTerciaria: layoutParams.COR_TERCIARIA || BrandColors.getBrandColors().tertiary,
+                        // Manter outras configurações do localStorage
+                        colaboradorPodeEditar: savedSettings?.colaboradorPodeEditar ?? prev.colaboradorPodeEditar,
+                        habilidadesCandidato: savedSettings?.habilidadesCandidato ?? prev.habilidadesCandidato,
+                        experienciaCandidato: savedSettings?.experienciaCandidato ?? prev.experienciaCandidato,
+                        educacaoCandidato: savedSettings?.educacaoCandidato ?? prev.educacaoCandidato,
+                        moduloLinhasTransporte: savedSettings?.moduloLinhasTransporte ?? prev.moduloLinhasTransporte,
+                        moduloMarketplace: savedSettings?.moduloMarketplace ?? prev.moduloMarketplace,
+                        timezone: savedSettings?.timezone ?? prev.timezone,
+                        feriadosTipo: savedSettings?.feriadosTipo ?? prev.feriadosTipo,
+                        feriadosUF: savedSettings?.feriadosUF ?? prev.feriadosUF,
+                        idioma: savedSettings?.idioma ?? prev.idioma,
+                    }));
+                } else {
+                    // Fallback para valores padrão se não houver dados da API
+                    const savedSettings = JSON.parse(localStorage.getItem('systemSettings'));
+                    setSistema(prev => ({
+                        ...prev,
+                        brandName: BrandColors.getBrandName(),
+                        corPrimaria: BrandColors.getBrandColors().primary,
+                        corSecundaria: BrandColors.getBrandColors().secondary,
+                        corAcento: BrandColors.getBrandColors().accent,
+                        corTerciaria: BrandColors.getBrandColors().tertiary,
+                        // Manter outras configurações do localStorage
+                        colaboradorPodeEditar: savedSettings?.colaboradorPodeEditar ?? prev.colaboradorPodeEditar,
+                        habilidadesCandidato: savedSettings?.habilidadesCandidato ?? prev.habilidadesCandidato,
+                        experienciaCandidato: savedSettings?.experienciaCandidato ?? prev.experienciaCandidato,
+                        educacaoCandidato: savedSettings?.educacaoCandidato ?? prev.educacaoCandidato,
+                        moduloLinhasTransporte: savedSettings?.moduloLinhasTransporte ?? prev.moduloLinhasTransporte,
+                        moduloMarketplace: savedSettings?.moduloMarketplace ?? prev.moduloMarketplace,
+                        timezone: savedSettings?.timezone ?? prev.timezone,
+                        feriadosTipo: savedSettings?.feriadosTipo ?? prev.feriadosTipo,
+                        feriadosUF: savedSettings?.feriadosUF ?? prev.feriadosUF,
+                        idioma: savedSettings?.idioma ?? prev.idioma,
+                    }));
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar parâmetros de layout:', error);
+                // Fallback para valores padrão em caso de erro
+                const savedSettings = JSON.parse(localStorage.getItem('systemSettings'));
+                setSistema(prev => ({
+                    ...prev,
+                    brandName: BrandColors.getBrandName(),
+                    corPrimaria: BrandColors.getBrandColors().primary,
+                    corSecundaria: BrandColors.getBrandColors().secondary,
+                    corAcento: BrandColors.getBrandColors().accent,
+                    corTerciaria: BrandColors.getBrandColors().tertiary,
+                    // Manter outras configurações do localStorage
+                    colaboradorPodeEditar: savedSettings?.colaboradorPodeEditar ?? prev.colaboradorPodeEditar,
+                    habilidadesCandidato: savedSettings?.habilidadesCandidato ?? prev.habilidadesCandidato,
+                    experienciaCandidato: savedSettings?.experienciaCandidato ?? prev.experienciaCandidato,
+                    educacaoCandidato: savedSettings?.educacaoCandidato ?? prev.educacaoCandidato,
+                    moduloLinhasTransporte: savedSettings?.moduloLinhasTransporte ?? prev.moduloLinhasTransporte,
+                    moduloMarketplace: savedSettings?.moduloMarketplace ?? prev.moduloMarketplace,
+                    timezone: savedSettings?.timezone ?? prev.timezone,
+                    feriadosTipo: savedSettings?.feriadosTipo ?? prev.feriadosTipo,
+                    feriadosUF: savedSettings?.feriadosUF ?? prev.feriadosUF,
+                    idioma: savedSettings?.idioma ?? prev.idioma,
+                }));
+            })
+            .finally(() => {
+                setLoading(false);
+            });
 
         // Carrega logo salva
         const savedLogo = BrandColors.getBrandLogo();
@@ -246,12 +318,29 @@ function MeusDadosSistema() {
             ...prev,
             logoPreview: savedLogo || (usuario && usuario.company_logo)
         }));
-        
-        setLoading(false);
     }, [usuario]);
 
     const handleChange = (campo, valor) => {
         setSistema(prev => ({ ...prev, [campo]: valor }));
+    };
+
+    // Função para validar e formatar cores hex
+    const handleColorChange = (campo, valor) => {
+        // Remover # se existir
+        let cleanValue = valor.replace('#', '');
+        
+        // Validar se é um hex válido (6 caracteres, apenas números e letras A-F)
+        if (cleanValue.length === 6 && /^[0-9A-Fa-f]{6}$/.test(cleanValue)) {
+            // Adicionar # e converter para maiúsculas
+            const formattedValue = '#' + cleanValue.toUpperCase();
+            setSistema(prev => ({ ...prev, [campo]: formattedValue }));
+        } else if (cleanValue.length === 0) {
+            // Permitir campo vazio
+            setSistema(prev => ({ ...prev, [campo]: '' }));
+        } else if (cleanValue.length <= 6) {
+            // Permitir digitação parcial
+            setSistema(prev => ({ ...prev, [campo]: valor }));
+        }
     };
 
     const compressImage = async (file) => {
@@ -324,42 +413,133 @@ function MeusDadosSistema() {
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
-    const handleSalvar = () => {
-        // Salva as cores para aplicação imediata
-        const newColors = {
-            primary: sistema.corPrimaria,
-            secondary: sistema.corSecundaria,
-            accent: sistema.corAcento,
-            tertiary: sistema.corTerciaria
-        };
-        BrandColors.setBrandColors(newColors);
-
-        // Salva o nome do sistema
-        BrandColors.setBrandName(sistema.brandName);
-
-        // Salva logo se foi alterada - REMOVIDO, pois salva no crop
+    const handleSalvar = async () => {
+        setLoading(true);
         
-        // Prepara e salva todas as configurações no localStorage
-        const settingsToSave = {
-            brandName: sistema.brandName,
-            corPrimaria: sistema.corPrimaria,
-            corSecundaria: sistema.corSecundaria,
-            corAcento: sistema.corAcento,
-            corTerciaria: sistema.corTerciaria,
-            colaboradorPodeEditar: sistema.colaboradorPodeEditar,
-            habilidadesCandidato: sistema.habilidadesCandidato,
-            experienciaCandidato: sistema.experienciaCandidato,
-            educacaoCandidato: sistema.educacaoCandidato,
-            moduloLinhasTransporte: sistema.moduloLinhasTransporte,
-            moduloMarketplace: sistema.moduloMarketplace,
-            timezone: sistema.timezone,
-            feriadosTipo: sistema.feriadosTipo,
-            feriadosUF: sistema.feriadosUF,
-            idioma: sistema.idioma,
-        };
-        localStorage.setItem('systemSettings', JSON.stringify(settingsToSave));
+        try {
+            // Validar se todas as cores são hex válidas
+            const cores = [sistema.corPrimaria, sistema.corSecundaria, sistema.corAcento, sistema.corTerciaria];
+            const coresInvalidas = cores.filter(cor => !cor || !/^#[0-9A-F]{6}$/i.test(cor));
+            
+            if (coresInvalidas.length > 0) {
+                toast.current.show({ 
+                    severity: 'error', 
+                    summary: 'Erro', 
+                    detail: 'Por favor, insira cores hex válidas (ex: #FF0000) para todos os campos.', 
+                    life: 5000 
+                });
+                setLoading(false);
+                return;
+            }
 
-        toast.current.show({ severity: 'success', summary: 'Salvo', detail: 'Configurações do sistema salvas!', life: 3000 });
+            // Definir cada parâmetro individualmente usando POST /api/parametros/definir/
+            const parametros = [
+                {
+                    assunto: 'LAYOUT',
+                    chave: 'NOME_SISTEMA',
+                    valor: sistema.brandName,
+                    descricao: 'Nome do sistema'
+                },
+                {
+                    assunto: 'LAYOUT',
+                    chave: 'COR_PRIMARIA',
+                    valor: sistema.corPrimaria,
+                    descricao: 'Cor primária da marca'
+                },
+                {
+                    assunto: 'LAYOUT',
+                    chave: 'COR_SECUNDARIA',
+                    valor: sistema.corSecundaria,
+                    descricao: 'Cor secundária da marca'
+                },
+                {
+                    assunto: 'LAYOUT',
+                    chave: 'COR_ACENTO',
+                    valor: sistema.corAcento,
+                    descricao: 'Cor de acento da marca'
+                },
+                {
+                    assunto: 'LAYOUT',
+                    chave: 'COR_TERCIARIA',
+                    valor: sistema.corTerciaria,
+                    descricao: 'Cor terciária da marca'
+                },
+                {
+                    assunto: 'LAYOUT',
+                    chave: 'LOGO_URL',
+                    valor: sistema.logoPreview || '',
+                    descricao: 'URL da logo da empresa'
+                },
+                {
+                    assunto: 'LAYOUT',
+                    chave: 'FAVICON_URL',
+                    valor: BrandColors.getBrandFaviconBaseUrl() || '',
+                    descricao: 'URL do favicon'
+                }
+            ];
+
+            // Fazer POST para cada parâmetro
+            for (const parametro of parametros) {
+                await http.post('parametros/definir/', parametro);
+            }
+
+            // Salva as cores para aplicação imediata
+            const newColors = {
+                primary: sistema.corPrimaria,
+                secondary: sistema.corSecundaria,
+                accent: sistema.corAcento,
+                tertiary: sistema.corTerciaria
+            };
+            BrandColors.setBrandColors(newColors);
+
+            // Salva o nome do sistema
+            BrandColors.setBrandName(sistema.brandName);
+
+            // Salva logo se foi alterada
+            if (sistema.logoPreview) {
+                BrandColors.setBrandLogo(sistema.logoPreview);
+            }
+
+            // Atualizar layoutColors após confirmar as alterações
+            BrandColors.updateLayoutColors(newColors, sistema.brandName, sistema.logoPreview);
+
+            // Prepara e salva todas as configurações no localStorage
+            const settingsToSave = {
+                brandName: sistema.brandName,
+                corPrimaria: sistema.corPrimaria,
+                corSecundaria: sistema.corSecundaria,
+                corAcento: sistema.corAcento,
+                corTerciaria: sistema.corTerciaria,
+                colaboradorPodeEditar: sistema.colaboradorPodeEditar,
+                habilidadesCandidato: sistema.habilidadesCandidato,
+                experienciaCandidato: sistema.experienciaCandidato,
+                educacaoCandidato: sistema.educacaoCandidato,
+                moduloLinhasTransporte: sistema.moduloLinhasTransporte,
+                moduloMarketplace: sistema.moduloMarketplace,
+                timezone: sistema.timezone,
+                feriadosTipo: sistema.feriadosTipo,
+                feriadosUF: sistema.feriadosUF,
+                idioma: sistema.idioma,
+            };
+            localStorage.setItem('systemSettings', JSON.stringify(settingsToSave));
+
+            toast.current.show({ 
+                severity: 'success', 
+                summary: 'Salvo', 
+                detail: 'Configurações do sistema salvas com sucesso!', 
+                life: 3000 
+            });
+        } catch (error) {
+            console.error('Erro ao salvar configurações:', error);
+            toast.current.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Erro ao salvar configurações. Tente novamente.', 
+                life: 5000 
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const feriadosOptions = [
@@ -454,30 +634,50 @@ function MeusDadosSistema() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                                     <ColorPicker value={sistema.corPrimaria} onChange={e => handleChange('corPrimaria', '#' + e.value)} style={{ height: 40 }} />
-                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
                                         <span>Cor Primária</span>
-                                        <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{sistema.corPrimaria}</span>
+                                        <CampoTexto
+                                            valor={sistema.corPrimaria}
+                                            setValor={valor => handleColorChange('corPrimaria', valor)}
+                                            placeholder="#000000"
+                                            style={{ fontFamily: 'monospace', fontSize: 12 }}
+                                        />
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                                     <ColorPicker value={sistema.corSecundaria} onChange={e => handleChange('corSecundaria', '#' + e.value)} style={{ height: 40 }} />
-                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
                                         <span>Cor Secundária</span>
-                                        <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{sistema.corSecundaria}</span>
+                                        <CampoTexto
+                                            valor={sistema.corSecundaria}
+                                            setValor={valor => handleColorChange('corSecundaria', valor)}
+                                            placeholder="#000000"
+                                            style={{ fontFamily: 'monospace', fontSize: 12 }}
+                                        />
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                                     <ColorPicker value={sistema.corAcento} onChange={e => handleChange('corAcento', '#' + e.value)} style={{ height: 40 }} />
-                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
                                         <span>Cor de Acento</span>
-                                        <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{sistema.corAcento}</span>
+                                        <CampoTexto
+                                            valor={sistema.corAcento}
+                                            setValor={valor => handleColorChange('corAcento', valor)}
+                                            placeholder="#000000"
+                                            style={{ fontFamily: 'monospace', fontSize: 12 }}
+                                        />
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                                     <ColorPicker value={sistema.corTerciaria} onChange={e => handleChange('corTerciaria', '#' + e.value)} style={{ height: 40 }} />
-                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
                                         <span>Cor Terciária</span>
-                                        <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{sistema.corTerciaria}</span>
+                                        <CampoTexto
+                                            valor={sistema.corTerciaria}
+                                            setValor={valor => handleColorChange('corTerciaria', valor)}
+                                            placeholder="#000000"
+                                            style={{ fontFamily: 'monospace', fontSize: 12 }}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -591,7 +791,14 @@ function MeusDadosSistema() {
                     </Col6>
                 </Col12>
                 <ContainerButton>
-                    <Botao estilo="vermilion" size="medium" aoClicar={handleSalvar}>Salvar Configurações</Botao>
+                    <Botao 
+                        estilo="vermilion" 
+                        size="medium" 
+                        aoClicar={handleSalvar}
+                        disabled={loading}
+                    >
+                        {loading ? 'Salvando...' : 'Salvar Configurações'}
+                    </Botao>
                 </ContainerButton>
             </form>
                 {/* Modal de Corte */}
