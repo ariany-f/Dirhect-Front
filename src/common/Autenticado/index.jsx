@@ -93,7 +93,6 @@ function Autenticado() {
     }, [])
 
     useEffect(() => { 
-
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {
             // Tentar recuperar do cache primeiro
@@ -192,6 +191,7 @@ function Autenticado() {
 
                 if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                     setSelected(tenantsWithDomain[0]?.id_tenant || '');
+                    setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
                 }
             } else {
                 // Buscar domains do servidor
@@ -212,6 +212,7 @@ function Autenticado() {
 
                     if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                         setSelected(tenantsWithDomain[0]?.id_tenant || '');
+                        setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
                     }
                 })
                 .catch(erro => {
