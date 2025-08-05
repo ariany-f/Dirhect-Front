@@ -558,7 +558,8 @@ function ColaboradorDetalhes() {
         formData.append('tipo_demissao', dadosDemissao.tipo_demissao);
         formData.append('motivo_demissao', dadosDemissao.motivo_demissao);
         formData.append('observacao', dadosDemissao.observacao || '');
-        formData.append('dias_aviso_previo', dadosDemissao.dias_aviso_previo || '0');
+        formData.append('data_inicio_aviso', dadosDemissao.data_inicio_aviso || '');
+        formData.append('aviso_indenizado', dadosDemissao.aviso_indenizado || false);
         
         // Adiciona o anexo se existir
         if (dadosDemissao.anexo) {

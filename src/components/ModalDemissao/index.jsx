@@ -12,9 +12,10 @@ import http from "@http"
 import BotaoGrupo from "@components/BotaoGrupo"
 import Frame from "@components/Frame"
 import { ArmazenadorToken } from "@utils"
-import CampoArquivo from "@components/CampoArquivo"
 import { Toast } from 'primereact/toast'
 import SwitchInput from "@components/SwitchInput"
+import { FaUpload } from 'react-icons/fa'
+import { HiX } from 'react-icons/hi'
 
 const Cabecalho = styled.div`
     padding: 24px 32px;
@@ -42,16 +43,9 @@ const DetalhesContainer = styled.div`
 const AcoesContainer = styled.div`
     flex: 1 1 calc(50% - 24px);
     width: 100%;
-    & > ${Frame} {
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-        border-radius: 12px;
-        padding: 32px;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 `;
 
 const DetalhesTitulo = styled.h4`
@@ -436,12 +430,108 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                         </FormRow>
 
                                         <FormGroup fullWidth>
-                                            <CampoArquivo
-                                                name="anexo"
-                                                onFileChange={setAnexo}
-                                                label="Anexo"
-                                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                            />
+                                            <FormLabel>Anexo</FormLabel>
+                                            <div style={{
+                                                border: '2px dashed #aaa',
+                                                borderRadius: '15px',
+                                                padding: '12px',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                minHeight: '60px',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.3s ease',
+                                                background: 'var(--neutro-50)'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.borderColor = 'var(--primaria)';
+                                                e.target.style.backgroundColor = 'var(--neutro-100)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.borderColor = '#aaa';
+                                                e.target.style.backgroundColor = 'var(--neutro-50)';
+                                            }}
+                                            onClick={() => document.getElementById('anexo-input').click()}
+                                            >
+                                                <input
+                                                    id="anexo-input"
+                                                    type="file"
+                                                    accept=".pdf"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files[0];
+                                                        console.log('Arquivo selecionado:', file); // Debug
+                                                        setAnexo(file);
+                                                    }}
+                                                    style={{ display: 'none' }}
+                                                />
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    gap: '8px'
+                                                }}>
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '8px',
+                                                        color: 'var(--primaria)'
+                                                    }}>
+                                                        <FaUpload size={16} />
+                                                        <span style={{
+                                                            fontSize: '14px',
+                                                            fontWeight: '600',
+                                                            color: 'var(--neutro-600)'
+                                                        }}>
+                                                            Selecionar arquivo PDF
+                                                        </span>
+                                                    </div>
+                                                    {anexo && (
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '8px'
+                                                        }}>
+                                                            <span style={{
+                                                                fontSize: '12px',
+                                                                color: 'var(--primaria)',
+                                                                fontWeight: '500'
+                                                            }}>
+                                                                Arquivo selecionado: {anexo.name}
+                                                            </span>
+                                                            <button
+                                                                type="button"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setAnexo(null);
+                                                                    document.getElementById('anexo-input').value = '';
+                                                                }}
+                                                                style={{
+                                                                    background: 'transparent',
+                                                                    border: 'none',
+                                                                    color: '#ef4444',
+                                                                    cursor: 'pointer',
+                                                                    padding: '4px',
+                                                                    borderRadius: '4px',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    transition: 'all 0.2s ease'
+                                                                }}
+                                                                onMouseEnter={(e) => {
+                                                                    e.target.style.background = '#fef2f2';
+                                                                }}
+                                                                onMouseLeave={(e) => {
+                                                                    e.target.style.background = 'transparent';
+                                                                }}
+                                                                title="Remover arquivo"
+                                                            >
+                                                                <HiX size={14} />
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </FormGroup>
 
                                         <FormGroup fullWidth>
