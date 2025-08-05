@@ -518,7 +518,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                             fontWeight: '600',
                                                             color: 'var(--neutro-600)'
                                                         }}>
-                                                            Selecionar arquivo PDF
+                                                            Selecionar arquivo
                                                         </span>
                                                     </div>
                                                     {anexo && (
