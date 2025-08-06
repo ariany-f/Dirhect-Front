@@ -107,7 +107,7 @@ function mapStatusToType(status, data_inicio, data_fim) {
 }
 
 function formatarDataBr(data) {
-    if (!data) return '-';
+    if (!data) return '---------';
     // Aceita formatos YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss
     const [ano, mes, dia] = data.split('T')[0].split('-');
     return `${dia}/${mes}/${ano}`;
@@ -224,11 +224,11 @@ function DataTableFerias({
     };
 
     const representativePagamentoTemplate = (rowData) => {
-        return <p style={{fontWeight: '400', fontSize: '13px'}}>{rowData.datapagamento ? formatarDataBr(rowData.datapagamento) : '-'}</p>;
+        return <p style={{fontWeight: '400', fontSize: '13px'}}>{rowData.datapagamento ? formatarDataBr(rowData.datapagamento) : '---------'}</p>;
     }
     
     const representativeAvisoFeriasTemplate = (rowData) => {
-        return <p style={{fontWeight: '400', fontSize: '13px'}}>{rowData.aviso_ferias ? formatarDataBr(rowData.aviso_ferias) : '-'}</p>;
+        return <p style={{fontWeight: '400', fontSize: '13px'}}>{rowData.aviso_ferias ? formatarDataBr(rowData.aviso_ferias) : '---------'}</p>;
     }
     
     const representativeAbonoPecuniarioTemplate = (rowData) => {
@@ -556,20 +556,20 @@ function DataTableFerias({
                 tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '25%' }}></Column>}
-                <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Inicio Aquisição" style={{ width: '12%' }}></Column>
-                <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Fim Aquisição" style={{ width: '12%' }}></Column>
+                <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Inicio Aquisição" style={{ width: '13%' }}></Column>
+                <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Fim Aquisição" style={{ width: '13%' }}></Column>
                 {!colaborador && ( 
-                    <Column body={representativePeriodoAbertoTemplate} field="periodo_aberto" header="Período" style={{ width: '10%' }}></Column>
+                    <Column body={representativePeriodoAbertoTemplate} field="periodo_aberto" header="Período" style={{ width: '8%' }}></Column>
                 )}
-                <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '12%' }}></Column>
-                <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '12%' }}></Column>
-                <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '12%' }}></Column>
+                <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '13%' }}></Column>
+                <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '13%' }}></Column>
+                <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '13%' }}></Column>
                 {!colaborador && ( 
                     <>
-                        <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '10%' }}></Column>
+                        <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '8' }}></Column>
                     </>
                 )}
-                <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletiva" style={{ width: '10%' }}></Column>
+                <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }}></Column>
                 <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
                 {colaborador && (
                     <Column field="nrodiasferias" header="Férias" style={{ width: '10%' }}></Column>
