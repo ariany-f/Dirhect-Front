@@ -25,6 +25,19 @@ import { ArmazenadorToken } from '@utils';
 import { Toast } from 'primereact/toast';
 import CheckboxContainer from '@components/CheckboxContainer';
 import { RadioButton } from 'primereact/radiobutton';
+import styled from 'styled-components';
+
+const DependentesTag = styled(Tag)`
+    color: var(--black) !important;
+    background-color: var(--neutro-200) !important;
+    font-size: 13px !important;
+    padding: 4px 12px !important;
+    
+    .p-tag-value {
+        color: var(--black) !important;
+        font-weight: ${props => props.value === "Nenhum" ? "400" : "500"} !important;
+    }
+`;
 
 function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, first, onPage, totalPages, onSearch, showSearch = true, onSort, sortField, sortOrder, onFilter, filters, situacoesUnicas }) {
     const[selectedCollaborator, setSelectedCollaborator] = useState(0)
@@ -68,12 +81,10 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         }
         
         return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Texto weight={600} style={{ color: '#374151' }}>{numDependentes}</Texto>
-                <Texto weight={500} style={{ color: '#6b7280', fontSize: '12px' }}>
-                    dep.
-                </Texto>
-            </div>
+            <DependentesTag 
+                value={numDependentes.toString()} 
+                severity="secondary" 
+            />
         );
     }
     
@@ -198,7 +209,17 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
         
         if(!rowData?.tipo_situacao_descricao) {
             return (
-                <Texto weight={600}><Tag severity={null} style={{backgroundColor: cor}} value={'Não informado'}></Tag></Texto>
+                <div style={{
+                    backgroundColor: cor || '#f3f4f6',
+                    color: '#6b7280',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    display: 'inline-block'
+                }}>
+                    N/A
+                </div>
             );
         }
         
@@ -482,7 +503,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '18%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '8%' }}></Column>
                 {/* <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '8%' }}></Column> */}
-                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dependentes" style={{ width: '8%' }}></Column>
+                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dep." style={{ width: '8%' }}></Column>
                 <Column 
                     body={representativSituacaoTemplate} 
                     field="situacao" 
