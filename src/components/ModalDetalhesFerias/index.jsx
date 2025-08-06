@@ -105,6 +105,8 @@ const StatusTag = styled.span`
     if ($type === 'aprovada') return 'linear-gradient(to left, var(--black), var(--gradient-secundaria))';
     if ($type === 'acontecendo') return 'linear-gradient(to right,rgb(45, 126, 219),rgb(18, 37, 130))';
     if ($type === 'passada') return 'linear-gradient(to right, #bdbdbd, #757575)';
+    if ($type === 'finalizada') return 'linear-gradient(to right, #6c757d, #495057)';
+    if ($type === 'paga') return 'linear-gradient(to right, #28a745, #20c997)';
     return 'linear-gradient(to left, var(--black), var(--gradient-secundaria))';
   }};
   color: #fff;

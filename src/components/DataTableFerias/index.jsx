@@ -16,15 +16,18 @@ import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import { Toast } from 'primereact/toast';
 import styled from 'styled-components';
 
-// Styled component para o status igual ao calendário
+// Styled component para o status seguindo o formato do botão
 const StatusTag = styled.span`
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 8px;
+  font-size: 14px;
   font-weight: 500;
-  border-radius: 6px;
-  padding: 4px 12px;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: var(--fonte-primaria);
+  line-height: 150%;
+  transition: all .1s linear;
   background: ${({ $type }) => {
     if ($type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
     if ($type === 'solicitada') return 'linear-gradient(to right, #fbb034,rgb(211, 186, 22))';
@@ -38,6 +41,7 @@ const StatusTag = styled.span`
   }};
   color: #fff;
   border: none;
+  width: fit-content;
 `;
 
 const statusIcons = {
@@ -318,25 +322,25 @@ function DataTableFerias({
                 statusText = 'Em análise';
                 break;
             case 'marcada':
-                statusText = 'Marcadas';
+                statusText = 'Marcada';
                 break;
             case 'aprovada':
-                statusText = 'Aprovadas';
+                statusText = 'Aprovada';
                 break;
             case 'finalizada':
-                statusText = 'Finalizadas';
+                statusText = 'Finalizada';
                 break;
             case 'paga':
-                statusText = 'Pagas';
+                statusText = 'Paga';
                 break;
             case 'acontecendo':
                 statusText = 'Em férias';
                 break;
             case 'passada':
-                statusText = 'Concluídas';
+                statusText = 'Concluída';
                 break;
             case 'rejeitada':
-                statusText = 'Rejeitadas';
+                statusText = 'Rejeitada';
                 break;
             default:
                 statusText = 'N/A';
