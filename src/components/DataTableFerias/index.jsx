@@ -555,7 +555,7 @@ function DataTableFerias({
                 onPage={onPageChange}
                 tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
             >
-                {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '30%' }}></Column>}
+                {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '25%' }}></Column>}
                 <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Inicio Aquisição" style={{ width: '12%' }}></Column>
                 <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Fim Aquisição" style={{ width: '12%' }}></Column>
                 {!colaborador && ( 
