@@ -56,21 +56,16 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     for (let i = 0; i < 9; i++) {
       soma += parseInt(cpfNumerico.charAt(i)) * (10 - i);
     }
-    let resto = 11 - (soma % 11);
-    let digito1 = resto < 2 ? 0 : resto;
+    let resto = soma % 11;
+    let digito1 = resto < 2 ? 0 : 11 - resto;
     
     // Validação do segundo dígito verificador
     soma = 0;
     for (let i = 0; i < 10; i++) {
       soma += parseInt(cpfNumerico.charAt(i)) * (11 - i);
     }
-    resto = 11 - (soma % 11);
-    let digito2 = resto < 2 ? 0 : resto;
-    
-    // Correção: se o resto for 11, o dígito deve ser 0
-    if (digito2 === 11) {
-      digito2 = 0;
-    }
+    resto = soma % 11;
+    let digito2 = resto < 2 ? 0 : 11 - resto;
     
     // Verifica se os dígitos verificadores estão corretos
     const digito9 = parseInt(cpfNumerico.charAt(9));
@@ -88,24 +83,6 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     });
     
     return valido;
-  };
-
-  // Função de teste para CPF (remover depois)
-  const testarCPF = () => {
-    const cpfsTeste = [
-      '529.982.247-25', // CPF válido conhecido
-      '111.444.777-35', // CPF válido
-      '123.456.789-01', // CPF inválido
-      '000.000.000-00', // CPF inválido (todos iguais)
-      '111.111.111-11'  // CPF inválido (todos iguais)
-    ];
-    
-    console.log('=== TESTE DE VALIDAÇÃO DE CPF ===');
-    cpfsTeste.forEach(cpf => {
-      const valido = validarCPF(cpf);
-      console.log(`CPF: ${cpf} - Válido: ${valido}`);
-    });
-    console.log('=== FIM DO TESTE ===');
   };
 
   const limparCampos = () => {
@@ -269,20 +246,6 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
                 camposVazios={camposVazios}
                 name="nascimento"
               />
-              {/* Botão de teste temporário - REMOVER DEPOIS */}
-              <button 
-                onClick={testarCPF}
-                style={{
-                  marginTop: '10px',
-                  padding: '5px 10px',
-                  backgroundColor: '#f0f0f0',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Testar CPF (Console)
-              </button>
             </Col6>
           </Col12>
         </Frame>
