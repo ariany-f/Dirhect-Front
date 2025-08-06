@@ -71,7 +71,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <Texto weight={600} style={{ color: '#374151' }}>{numDependentes}</Texto>
                 <Texto weight={500} style={{ color: '#6b7280', fontSize: '12px' }}>
-                    {numDependentes === 1 ? 'dependente' : 'dependentes'}
+                    dep.
                 </Texto>
             </div>
         );
@@ -481,7 +481,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                 />
                 <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '18%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '8%' }}></Column>
-                <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '8%' }}></Column>
+                {/* <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '8%' }}></Column> */}
                 <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dependentes" style={{ width: '8%' }}></Column>
                 <Column 
                     body={representativSituacaoTemplate} 
