@@ -94,9 +94,9 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
 
     const getValorSelecionadoFromCandidato = useMemo(() => {
         return (campo, lista) => {
-            if (!Array.isArray(lista) || !candidato) return '';
+            if (!Array.isArray(lista) || !candidato) return null;
             
-            if (!candidato[campo]) return '';
+            if (!candidato[campo] || candidato[campo] === '') return null;
             
             // Verifica se o valor é um objeto (como genero, estado_civil, etc.)
             if (typeof candidato[campo] === 'object' && candidato[campo] !== null) {
@@ -108,10 +108,14 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             
             const code = String(candidato[campo]);
             const item = lista.find(item => String(item.code) === code);
-            console.log(item)
-            console.log(code);
-            console.log(lista)
-            return item ? { name: item.name, code: item.code } : '';
+            
+            // Verificação de segurança adicional
+            if (!item) {
+                console.warn(`Item não encontrado para campo ${campo} com código ${code}`);
+                return null;
+            }
+            
+            return { name: item.name, code: item.code };
         };
     }, [candidato]);
 
@@ -745,16 +749,14 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 placeholder="Digite o número do passaporte"
                 disabled={modoLeitura}
             />
-            <DropdownItens
+            <CampoTexto
                 camposVazios={isCampoObrigatorio('pais_origem') && isCampoEmErro('pais_origem') ? ['pais_origem'] : []}
                 name="pais_origem"
+                valor={candidato?.pais_origem ?? ''}
+                setValor={valor => setCampo('pais_origem', valor)}
                 label={`País de Origem${isCampoObrigatorio('pais_origem') ? '*' : ''}`}
-                valor={getValorSelecionadoFromCandidato('pais_origem', paises)}
-                setValor={(valor) => setCampo('pais_origem', valor.code)}
-                options={paises}
-                placeholder="Selecione o país de origem"
+                placeholder="Digite o nome do país de origem"
                 disabled={modoLeitura}
-                filter
             />
             <CampoTexto
                 camposVazios={isCampoObrigatorio('data_emissao_passaporte') && isCampoEmErro('data_emissao_passaporte') ? ['data_emissao_passaporte'] : []}
