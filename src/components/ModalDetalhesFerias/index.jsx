@@ -816,7 +816,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                             )}
                             
                             {/* Seção de detalhes adicionais para férias finalizadas, aprovadas ou marcadas */}
-                            {(statusType === 'finalizada' || statusType === 'aprovada' || statusType === 'marcada' || statusType === 'passada' || statusType === 'acontecendo' || statusType === 'paga') && (
+                            {(statusType === 'finalizada' || statusType === 'aprovada' || statusType === 'marcada' || statusType === 'passada' || statusType === 'acontecendo' || statusType === 'paga' || statusType === 'solicitada') && (
                                 <Frame>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>Detalhes Adicionais</DetalhesTitulo>
                                     <BlocoDatas>
