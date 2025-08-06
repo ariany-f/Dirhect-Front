@@ -820,46 +820,56 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                 <Frame>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>Detalhes Adicionais</DetalhesTitulo>
                                     <BlocoDatas>
+                                        {/* Datas importantes */}
                                         <BlocoData>
-                                            <BlocoDataIcone><FaCalendarCheck size={20}/></BlocoDataIcone>
                                             <BlocoDataTexto>
-                                                <DataTitulo>Pagamento</DataTitulo>
-                                                <DataValor>{eventoCompletado.evento?.data_pagamento ? format(parseDateAsLocal(eventoCompletado.evento.data_pagamento), 'dd/MM/yyyy') : '---'}</DataValor>
+                                                <DataTitulo>Data de Pagamento</DataTitulo>
+                                                <DataValor>
+                                                    {eventoCompletado.evento?.data_pagamento 
+                                                        ? format(parseDateAsLocal(eventoCompletado.evento.data_pagamento), 'dd/MM/yyyy')
+                                                        : 'Não informada'
+                                                    }
+                                                </DataValor>
                                             </BlocoDataTexto>
                                         </BlocoData>
                                         <BlocoData>
-                                            <BlocoDataIcone><FaCalendarAlt size={20}/></BlocoDataIcone>
                                             <BlocoDataTexto>
-                                                <DataTitulo>Aviso</DataTitulo>
-                                                <DataValor>{eventoCompletado.evento?.aviso_ferias ? format(parseDateAsLocal(eventoCompletado.evento.aviso_ferias), 'dd/MM/yyyy') : '---'}</DataValor>
+                                                <DataTitulo>Data do Aviso</DataTitulo>
+                                                <DataValor>
+                                                    {eventoCompletado.evento?.aviso_ferias 
+                                                        ? format(parseDateAsLocal(eventoCompletado.evento.aviso_ferias), 'dd/MM/yyyy')
+                                                        : 'Não informada'
+                                                    }
+                                                </DataValor>
                                             </BlocoDataTexto>
                                         </BlocoData>
+                                        {/* Abono pecuniário */}
                                         <BlocoData>
-                                            <BlocoDataIcone><FaCalculator size={20}/></BlocoDataIcone>
-                                            <BlocoDataTexto>
-                                                <DataTitulo>Dias Abono</DataTitulo>
-                                                <DataValor>{eventoCompletado?.evento?.nrodiasabono ?? 0} dias</DataValor>
-                                            </BlocoDataTexto>
-                                        </BlocoData>
-                                        <BlocoData>
-                                            <BlocoDataIcone><FaCheckCircle size={20}/></BlocoDataIcone>
                                             <BlocoDataTexto>
                                                 <DataTitulo>Abono Pecuniário</DataTitulo>
-                                                <DataValor>{eventoCompletado.evento?.abono_pecuniario ? 'Sim' : 'Não'}</DataValor>
+                                                <DataValor>
+                                                    {eventoCompletado.evento?.abono_pecuniario 
+                                                        ? `${eventoCompletado?.evento?.nrodiasabono ?? 0} dias`
+                                                        : 'Não solicitado'
+                                                    }
+                                                </DataValor>
                                             </BlocoDataTexto>
                                         </BlocoData>
+                                        {/* Benefícios */}
                                         <BlocoData>
-                                            <BlocoDataIcone><FaCheckCircle size={20}/></BlocoDataIcone>
                                             <BlocoDataTexto>
-                                                <DataTitulo>13º Salário</DataTitulo>
-                                                <DataValor>{eventoCompletado.evento?.adiantar_13 ? 'Sim' : 'Não'}</DataValor>
+                                                <DataTitulo>Adiantamento 13º</DataTitulo>
+                                                <DataValor>
+                                                    {eventoCompletado.evento?.adiantar_13 ? 'Sim' : 'Não'}
+                                                </DataValor>
                                             </BlocoDataTexto>
                                         </BlocoData>
                                         <BlocoData>
-                                            <BlocoDataIcone><FaCheckCircle size={20}/></BlocoDataIcone>
                                             <BlocoDataTexto>
                                                 <DataTitulo>Férias Coletivas</DataTitulo>
-                                                <DataValor>{eventoCompletado.evento?.ferias_coletivas ? 'Sim' : 'Não'}</DataValor>
+                                                <DataValor>
+                                                    {eventoCompletado.evento?.ferias_coletivas ? 'Sim' : 'Não'}
+                                                </DataValor>
                                             </BlocoDataTexto>
                                         </BlocoData>
                                     </BlocoDatas>
