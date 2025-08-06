@@ -845,23 +845,51 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     </label>
                                                 </div>
                                             </Linha>
-                                            <Linha style={{flex: 3}}>
-                                                <Label>Número de dias de Abono</Label>
-                                                <DataInput
-                                                    type="number"
-                                                    value={numeroDiasAbono}
-                                                    onChange={handleAbonoChange}
-                                                    placeholder="0"
-                                                    min="0"
-                                                    max={abonoPecuniario ? 10 : (eventoCompletado?.evento?.saldo_dias ?? 30)}
-                                                    disabled={!abonoPecuniario}
-                                                />
+                                            {abonoPecuniario && (
+                                                <Linha style={{flex: 3}}>
+                                                    <Label>Número de dias de Abono</Label>
+                                                    <DataInput
+                                                        type="number"
+                                                        value={numeroDiasAbono}
+                                                        onChange={handleAbonoChange}
+                                                        placeholder="0"
+                                                        min="0"
+                                                        max={abonoPecuniario ? 10 : (eventoCompletado?.evento?.saldo_dias ?? 30)}
+                                                    />
+                                                </Linha>
+                                            )}
+                                        </div>
+
+                                        <div style={{display: 'flex', gap: 16}}>
+                                            <Linha style={{flex: 1}}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                    <SwitchInput 
+                                                        id="adiantar13"
+                                                        checked={adiantarDecimoTerceiro} 
+                                                        onChange={() => setAdiantarDecimoTerceiro(!adiantarDecimoTerceiro)}
+                                                    />
+                                                    <label htmlFor="adiantar13" style={{ cursor: 'pointer', fontWeight: 500, color: '#495057', fontSize: '14px' }}>
+                                                        Deseja adiantar o 13º salário?
+                                                    </label>
+                                                </div>
+                                            </Linha>
+                                            <Linha style={{flex: 1}}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                    <SwitchInput 
+                                                        id="feriasColetivas"
+                                                        checked={feriasColetivas} 
+                                                        onChange={() => setFeriasColetivas(!feriasColetivas)}
+                                                    />
+                                                    <label htmlFor="feriasColetivas" style={{ cursor: 'pointer', fontWeight: 500, color: '#495057', fontSize: '14px' }}>
+                                                        Férias Coletivas?
+                                                    </label>
+                                                </div>
                                             </Linha>
                                         </div>
 
                                         <div style={{display: 'flex', gap: 16}}>
                                             <Linha style={{flex: 1}}>
-                                                <Label>Data de Pagamento (opcional)</Label>
+                                                <Label>Data de Pagamento</Label>
                                                 <DataInput
                                                     type="date"
                                                     value={dataPagamento}
@@ -874,14 +902,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     <FaExclamationCircle size={16} style={{ color: '#ffc107', flexShrink: 0 }}/>
                                                     <span>
                                                         <strong>Dias úteis:</strong> Consideramos apenas sábado e domingo como não úteis. 
-                                                        <strong>Valide se há feriados na data sugerida.</strong>
+                                                        <strong>Valide se há feriados na data sugerida e corrija se necessário.</strong>
                                                     </span>
                                                 </AlertaAviso>
                                             </Linha>
                                         </div>
                                         
                                         <Linha>
-                                            <Label>Aviso de Férias (opcional)</Label>
+                                            <Label>Aviso de Férias</Label>
                                             <DataInput
                                                 type="date"
                                                 value={avisoFerias}
@@ -889,28 +917,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 placeholder="Selecione a data"
                                             />
                                         </Linha>
-
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <SwitchInput 
-                                                id="adiantar13"
-                                                checked={adiantarDecimoTerceiro} 
-                                                onChange={() => setAdiantarDecimoTerceiro(!adiantarDecimoTerceiro)}
-                                            />
-                                            <label htmlFor="adiantar13" style={{ cursor: 'pointer', fontWeight: 500, color: '#495057', fontSize: '14px' }}>
-                                                Deseja adiantar o 13º salário?
-                                            </label>
-                                        </div>
-
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <SwitchInput 
-                                                id="feriasColetivas"
-                                                checked={feriasColetivas} 
-                                                onChange={() => setFeriasColetivas(!feriasColetivas)}
-                                            />
-                                            <label htmlFor="feriasColetivas" style={{ cursor: 'pointer', fontWeight: 500, color: '#495057', fontSize: '14px' }}>
-                                                Férias Coletivas?
-                                            </label>
-                                        </div>
 
                                         {/* Infoboxes de avisos */}
                                         {mostrarErroDatas && (

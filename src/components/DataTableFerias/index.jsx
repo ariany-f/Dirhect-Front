@@ -433,9 +433,13 @@ function DataTableFerias({
                 <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '15%' }}></Column>
                 <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '12%' }}></Column>
-                <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '10%' }}></Column>
-                <Column body={representativeAbonoPecuniarioTemplate} field="abono_pecuniario" header="Abono Pec." style={{ width: '10%' }}></Column>
-                <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletivas" style={{ width: '10%' }}></Column>
+                {!colaborador && ( 
+                    <>
+                        <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '10%' }}></Column>
+                        <Column body={representativeAbonoPecuniarioTemplate} field="abono_pecuniario" header="Abono Pec." style={{ width: '10%' }}></Column>
+                        <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletivas" style={{ width: '10%' }}></Column>
+                    </>
+                )}
                 {colaborador && (
                     <>
                         <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
