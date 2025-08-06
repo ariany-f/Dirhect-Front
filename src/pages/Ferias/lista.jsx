@@ -331,6 +331,7 @@ function FeriasListagem() {
                                     options={anosDisponiveis}
                                     placeholder="Todos os anos"
                                     name="ano"
+                                    $height="40px"
                                     allowClear={false}
                                 />
                                 <DropdownItens
@@ -339,6 +340,7 @@ function FeriasListagem() {
                                     options={opcoesPeriodoAberto}
                                     placeholder="Apenas Abertos"
                                     name="periodo_aberto"
+                                    $height="40px"
                                     allowClear={false}
                                 />
                             </>
@@ -349,6 +351,7 @@ function FeriasListagem() {
                                 setValor={setSearchTerm}
                                 placeholder="Buscar por colaborador..."
                                 type="search"
+                                padding="8px 16px"
                             />
                         </div>
                         {(ArmazenadorToken.hasPermission('add_ferias') || usuario.tipo === 'colaborador') && (
