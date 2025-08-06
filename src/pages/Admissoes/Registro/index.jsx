@@ -1590,7 +1590,11 @@ const CandidatoRegistro = () => {
                     data_emissao_cnh: 'Data de Emissão da CNH',
                     pispasep: 'PIS/PASEP',
                     dt_opcao_fgts: 'Data de Opção FGTS',
-                    codigo_situacao_fgts: 'Código Situação FGTS'
+                    codigo_situacao_fgts: 'Código Situação FGTS',
+                    numero_passaporte: 'Número do Passaporte',
+                    pais_origem: 'País de Origem',
+                    data_emissao_passaporte: 'Data de Emissão do Passaporte',
+                    data_validade_passaporte: 'Data de Validade do Passaporte'
                 };
 
                 Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {
@@ -1823,7 +1827,11 @@ const CandidatoRegistro = () => {
                 data_emissao_cnh: 'Data de Emissão da CNH',
                 pispasep: 'PIS/PASEP',
                 dt_opcao_fgts: 'Data de Opção FGTS',
-                codigo_situacao_fgts: 'Código Situação FGTS'
+                codigo_situacao_fgts: 'Código Situação FGTS',
+                numero_passaporte: 'Número do Passaporte',
+                pais_origem: 'País de Origem',
+                data_emissao_passaporte: 'Data de Emissão do Passaporte',
+                data_validade_passaporte: 'Data de Validade do Passaporte'
             };
 
             Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {

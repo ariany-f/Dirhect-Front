@@ -734,6 +734,47 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 filter
             />
             
+            <SectionTitle>Documento Estrangeiro/RNM</SectionTitle>
+
+            <CampoTexto
+                camposVazios={isCampoObrigatorio('numero_passaporte') && isCampoEmErro('numero_passaporte') ? ['numero_passaporte'] : []}
+                name="numero_passaporte"
+                valor={candidato?.numero_passaporte ?? ''}
+                setValor={valor => setCampo('numero_passaporte', valor)}
+                label={`Número do Passaporte${isCampoObrigatorio('numero_passaporte') ? '*' : ''}`}
+                placeholder="Digite o número do passaporte"
+                disabled={modoLeitura}
+            />
+            <DropdownItens
+                camposVazios={isCampoObrigatorio('pais_origem') && isCampoEmErro('pais_origem') ? ['pais_origem'] : []}
+                name="pais_origem"
+                label={`País de Origem${isCampoObrigatorio('pais_origem') ? '*' : ''}`}
+                valor={getValorSelecionadoFromCandidato('pais_origem', paises)}
+                setValor={(valor) => setCampo('pais_origem', valor.code)}
+                options={paises}
+                placeholder="Selecione o país de origem"
+                disabled={modoLeitura}
+                filter
+            />
+            <CampoTexto
+                camposVazios={isCampoObrigatorio('data_emissao_passaporte') && isCampoEmErro('data_emissao_passaporte') ? ['data_emissao_passaporte'] : []}
+                name="data_emissao_passaporte"
+                valor={candidato?.data_emissao_passaporte ?? ''}
+                setValor={valor => setCampo('data_emissao_passaporte', valor)}
+                type="date"
+                label={`Data de Emissão do Passaporte${isCampoObrigatorio('data_emissao_passaporte') ? '*' : ''}`}
+                disabled={modoLeitura}
+            />
+            <CampoTexto
+                camposVazios={isCampoObrigatorio('data_validade_passaporte') && isCampoEmErro('data_validade_passaporte') ? ['data_validade_passaporte'] : []}
+                name="data_validade_passaporte"
+                valor={candidato?.data_validade_passaporte ?? ''}
+                setValor={valor => setCampo('data_validade_passaporte', valor)}
+                type="date"
+                label={`Data de Validade do Passaporte${isCampoObrigatorio('data_validade_passaporte') ? '*' : ''}`}
+                disabled={modoLeitura}
+            />
+            
             <SectionTitle>Endereço</SectionTitle>
             
             <DropdownItens
