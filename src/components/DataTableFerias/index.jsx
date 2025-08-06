@@ -198,7 +198,7 @@ function DataTableFerias({
                     fontSize: '12px',
                     whiteSpace: 'nowrap',
                     width: '100%',
-                    textAlign: 'center',
+                    textAlign: 'left',
                     margin: 0
                 }}>
                     {formatarDataBr(rowData.dt_inicio)}
@@ -208,7 +208,7 @@ function DataTableFerias({
                     fontSize: '12px',
                     whiteSpace: 'nowrap',
                     width: '100%',
-                    textAlign: 'center',
+                    textAlign: 'left',
                     margin: 0
                 }}>
                     {formatarDataBr(rowData.dt_fim)}
@@ -223,7 +223,7 @@ function DataTableFerias({
             fontSize: '12px',
             whiteSpace: 'nowrap',
             width: '100%',
-            textAlign: 'center'
+            textAlign: 'left'
         }}>-</p>;
         
         const [ano, mes, dia] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
@@ -240,6 +240,10 @@ function DataTableFerias({
         const diaFimStr = String(dia).padStart(2, '0');
         const mesFimStr = String(mes).padStart(2, '0');
         const anoFimStr = ano;
+
+        // Lógica dos ícones de período
+        const isPeriodoAberto = rowData?.periodo_aberto === true;
+        const isPeriodoPerdido = rowData?.periodo_perdido === true;
         
         return (
             <div style={{
@@ -248,26 +252,87 @@ function DataTableFerias({
                 gap: '6px',
                 width: '100%'
             }}>
-                <p style={{
-                    fontWeight: '400', 
-                    fontSize: '12px',
-                    whiteSpace: 'nowrap',
-                    width: '100%',
-                    textAlign: 'center',
-                    margin: 0
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2px',
+                    width: '100%'
                 }}>
-                    {`${diaInicioStr}/${mesInicioStr}/${anoInicioStr}`}
-                </p>
-                <p style={{
-                    fontWeight: '400', 
-                    fontSize: '12px',
-                    whiteSpace: 'nowrap',
-                    width: '100%',
-                    textAlign: 'center',
-                    margin: 0
-                }}>
-                    {`${diaFimStr}/${mesFimStr}/${anoFimStr}`}
-                </p>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '2px',
+                        flex: 1
+                    }}>
+                        <p style={{
+                            fontWeight: '400', 
+                            fontSize: '12px',
+                            whiteSpace: 'nowrap',
+                            width: '100%',
+                            textAlign: 'left',
+                            margin: 0
+                        }}>
+                            {`${diaInicioStr}/${mesInicioStr}/${anoInicioStr}`}
+                        </p>
+                        <p style={{
+                            fontWeight: '400', 
+                            fontSize: '12px',
+                            whiteSpace: 'nowrap',
+                            width: '100%',
+                            textAlign: 'left',
+                            margin: 0
+                        }}>
+                            {`${diaFimStr}/${mesFimStr}/${anoFimStr}`}
+                        </p>
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: '1px',
+                        alignItems: 'center'
+                    }}>
+                        <Tooltip target=".periodo-aberto-icon" />
+                        {isPeriodoAberto ? (
+                            <FaLockOpen 
+                                className="periodo-aberto-icon"
+                                data-pr-tooltip="Período Aberto"
+                                size={12} 
+                                color="#10B981" 
+                                fill="#10B981"
+                                style={{
+                                    filter: 'drop-shadow(0 0 2px rgba(16, 185, 129, 0.3))',
+                                    cursor: 'help'
+                                }}
+                            />
+                        ) : (
+                            <FaLock 
+                                className="periodo-aberto-icon"
+                                data-pr-tooltip="Período Fechado"
+                                size={12} 
+                                color="#F59E0B" 
+                                fill="#F59E0B"
+                                style={{
+                                    filter: 'drop-shadow(0 0 2px rgba(245, 158, 11, 0.3))',
+                                    cursor: 'help'
+                                }}
+                            />
+                        )}
+                        <Tooltip target=".periodo-perdido-icon" />
+                        {isPeriodoPerdido ? (
+                            <FaExclamationTriangle 
+                                className="periodo-perdido-icon"
+                                data-pr-tooltip="Período Perdido"
+                                size={12} 
+                                color="#EF4444" 
+                                fill="#EF4444"
+                                style={{
+                                    filter: 'drop-shadow(0 0 2px rgba(239, 68, 68, 0.3))',
+                                    cursor: 'help'
+                                }}
+                            />
+                        ) : null}
+                    </div>
+                </div>
             </div>
         );
     }
@@ -295,7 +360,7 @@ function DataTableFerias({
             fontSize: '12px',
             whiteSpace: 'nowrap',
             width: '100%',
-            textAlign: 'center'
+            textAlign: 'left'
         }}>{rowData.datapagamento ? formatarDataBr(rowData.datapagamento) : '-------'}</p>;
     }
     
@@ -305,7 +370,7 @@ function DataTableFerias({
             fontSize: '12px',
             whiteSpace: 'nowrap',
             width: '100%',
-            textAlign: 'center'
+            textAlign: 'left'
         }}>{rowData.aviso_ferias ? formatarDataBr(rowData.aviso_ferias) : '-------'}</p>;
     }
     
@@ -329,7 +394,7 @@ function DataTableFerias({
                 break;
         }
         return (
-            <div style={{ cursor: 'help', textAlign: 'center', width: '100%' }}>
+            <div style={{ cursor: 'help', textAlign: 'left', width: '100%' }}>
                 <Tooltip target=".abono-pecuniario-tag" />
                 <div className="abono-pecuniario-tag" data-pr-tooltip={tooltipText}>
                     <b>{tag}</b>
@@ -358,7 +423,7 @@ function DataTableFerias({
                 break;
         }
         return (
-            <div style={{ cursor: 'help', textAlign: 'center', width: '100%' }}>
+            <div style={{ cursor: 'help', textAlign: 'left', width: '100%' }}>
                 <Tooltip target=".ferias-coletivas-tag" />
                 <div className="ferias-coletivas-tag" data-pr-tooltip={tooltipText}>
                     <b>{tag}</b>
@@ -510,12 +575,6 @@ function DataTableFerias({
             <Texto weight={700} width={'100%'}>
                 {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario_nome}
             </Texto>
-            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                Dias de Férias:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.nrodiasferias ?? 0}</p>
-            </div>
-            <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                Dias de Abono:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.nrodiasabono ?? 0}</p>
-            </div>
         </div>
     }
 
@@ -528,76 +587,25 @@ function DataTableFerias({
         {
             case true:
                 tag = <Tag severity="success" value="Sim"></Tag>;
-                tooltipText = '13º Salário: Sim';
+                tooltipText = 'Adiantamento: Sim';
                 break;
             case false:
                 tag = <Tag severity="danger" value="Não"></Tag>;
-                tooltipText = '13º Salário: Não';
+                tooltipText = 'Adiantamento: Não';
                 break;
             default:
                 tag = '-';
-                tooltipText = '13º Salário: Não informado';
+                tooltipText = 'Adiantamento: Não informado';
                 break;
         }
         return (
-            <div style={{ cursor: 'help', textAlign: 'center', width: '100%' }}>
+            <div style={{ cursor: 'help', textAlign: 'left', width: '100%' }}>
                 <Tooltip target=".decimo-tag" />
                 <div className="decimo-tag" data-pr-tooltip={tooltipText}>
                     <b>{tag}</b>
                 </div>
             </div>
         )
-    }
-
-    const representativePeriodoAbertoTemplate = (rowData) => {
-        const isPeriodoAberto = rowData?.periodo_aberto === true;
-        const isPeriodoPerdido = rowData?.periodo_perdido === true;
-        
-        return (
-            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                <Tooltip target=".periodo-aberto-icon" />
-                {isPeriodoAberto ? (
-                    <FaLockOpen 
-                        className="periodo-aberto-icon"
-                        data-pr-tooltip="Período Aberto"
-                        size={16} 
-                        color="#10B981" 
-                        fill="#10B981"
-                        style={{
-                            filter: 'drop-shadow(0 0 4px rgba(16, 185, 129, 0.3))',
-                            cursor: 'help'
-                        }}
-                    />
-                ) : (
-                    <FaLock 
-                        className="periodo-aberto-icon"
-                        data-pr-tooltip="Período Fechado"
-                        size={16} 
-                        color="#F59E0B" 
-                        fill="#F59E0B"
-                        style={{
-                            filter: 'drop-shadow(0 0 4px rgba(245, 158, 11, 0.3))',
-                            cursor: 'help'
-                        }}
-                    />
-                )}
-                <Tooltip target=".periodo-perdido-icon" />
-                {isPeriodoPerdido ? (
-                    <FaExclamationTriangle 
-                        className="periodo-perdido-icon"
-                        data-pr-tooltip="Período Perdido"
-                        size={16} 
-                        color="#EF4444" 
-                        fill="#EF4444"
-                        style={{
-                            filter: 'drop-shadow(0 0 4px rgba(239, 68, 68, 0.3))'
-                        }}
-                    />
-                ) : (
-                    <></>
-                )}
-            </div>
-        );
     }
 
     useEffect(() => {
@@ -644,10 +652,7 @@ function DataTableFerias({
                 tableStyle={{ minWidth: (!colaborador ? '68vw' : '40vw') }}
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
-                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: '12%' }}></Column>
-                {!colaborador && ( 
-                    <Column body={representativePeriodoAbertoTemplate} field="periodo_aberto" header="Período" style={{ width: '6%' }}></Column>
-                )}
+                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: '18%' }}></Column>
                 <Column body={representativeInicioTemplate} field="data_inicio" header="Férias" style={{ width: '12%' }}></Column>
                 <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '10%' }}></Column>
                 {!colaborador && ( 
@@ -655,9 +660,7 @@ function DataTableFerias({
                         <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '8%' }}></Column>
                     </>
                 )}
-                {colaborador && (
-                    <Column field="nrodiasferias" header="Dias" style={{ width: '8%' }}></Column>
-                )} 
+                <Column field="nrodiasferias" header="Dias" style={{ width: '8%' }}></Column>
                 <Column field="nrodiasabono" header="Abono" style={{ width: '8%' }}></Column>
                 <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '8%' }}></Column>
                 <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }}></Column>
