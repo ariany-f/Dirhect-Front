@@ -275,6 +275,7 @@ function Autenticado() {
 
                 console.log('selected', selected)
                 console.log('tenantsWithDomain', tenantsWithDomain)
+                console.log('ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId)
                 if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                     setSelected(tenantsWithDomain[0]?.id_tenant || '');
                     setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
@@ -296,6 +297,7 @@ function Autenticado() {
                     }
                 }
                 else {
+                    console.log('ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId)
                     setSelected(ArmazenadorToken.UserCompanyPublicId);
                     setEmpresa(tenants.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
                     setSimbolo(tenants.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
