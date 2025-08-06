@@ -738,7 +738,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                     <BlocoData>
                                         <BlocoDataIcone><FaCalculator size={20}/></BlocoDataIcone>
                                         <BlocoDataTexto>
-                                            <DataTitulo>Saldo</DataTitulo>
+                                            <DataTitulo>{statusType === 'finalizada' ? 'Saldo Remanescente' : 'Saldo'}</DataTitulo>
                                             <DataValor>{eventoCompletado.evento.saldo_dias} dias</DataValor>
                                         </BlocoDataTexto>
                                     </BlocoData>
