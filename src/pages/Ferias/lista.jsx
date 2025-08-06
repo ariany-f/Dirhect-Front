@@ -59,14 +59,15 @@ const ContainerSemRegistro = styled.div`
 const HeaderRow = styled.div`
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 24px;
 `;
 
 const TabPanel = styled.div`
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0;
+    padding-top: 2px;
 `
 
 const TabButton = styled.button`
@@ -304,7 +305,7 @@ function FeriasListagem() {
                         <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
                     </TabButton>
                 </TabPanel>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', paddingTop: '2px' }}>
                     <BotaoGrupo verticalalign='flex-start'>
                         {loading && (
                             <div style={{
