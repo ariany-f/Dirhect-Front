@@ -318,6 +318,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
     const [dataInicio, setDataInicio] = useState('');
     const [dataFim, setDataFim] = useState('');
+    const [numeroDiasFerias, setNumeroDiasFerias] = useState('');
     const [adiantarDecimoTerceiro, setAdiantarDecimoTerceiro] = useState(false);
     const [numeroDiasAbono, setNumeroDiasAbono] = useState('');
     const [dataPagamento, setDataPagamento] = useState('');
@@ -374,20 +375,19 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const datasInvalidas = dataInicio > dataFim;
         setMostrarErroDatas(datasInvalidas);
 
-        // Validar quantidade mínima de dias
-        const diffTime = dataFim - dataInicio;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-        const diasInsuficientes = diffDays < 5;
+        // Validar quantidade mínima de dias usando numeroDiasFerias
+        const diasSolicitados = parseInt(numeroDiasFerias) || 0;
+        const diasInsuficientes = diasSolicitados < 5;
         setMostrarErroDiasMinimos(diasInsuficientes);
 
         // Validar saldo de dias disponíveis
         const saldoDisponivel = eventoCompletado?.evento?.saldo_dias ?? 30;
-        const excedeSaldo = diffDays > saldoDisponivel;
+        const excedeSaldo = diasSolicitados > saldoDisponivel;
         setMostrarErroSaldoDias(excedeSaldo);
 
         // Validar dias de abono
         const abonoDias = parseInt(numeroDiasAbono) || 0;
-        const maxAbono = Math.min(10, diffDays, saldoDisponivel);
+        const maxAbono = Math.min(10, diasSolicitados, saldoDisponivel);
         const abonoInvalido = abonoDias > maxAbono;
         setMostrarErroAbono(abonoInvalido);
 
@@ -411,20 +411,48 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         return fim.toISOString().split('T')[0];
     };
 
+    const calcularDataPagamento = (dataInicio) => {
+        if (!dataInicio) return '';
+        
+        const inicio = parseDateAsLocal(dataInicio);
+        const dataPagamento = new Date(inicio);
+        
+        // Subtrai 2 dias úteis (segunda a sexta)
+        let diasSubtraidos = 0;
+        let diasParaSubtrair = 2;
+        
+        while (diasSubtraidos < diasParaSubtrair) {
+            dataPagamento.setDate(dataPagamento.getDate() - 1);
+            
+            // Verifica se é dia útil (segunda = 1, terça = 2, ..., sexta = 5)
+            const diaSemana = dataPagamento.getDay();
+            if (diaSemana >= 1 && diaSemana <= 5) {
+                diasSubtraidos++;
+            }
+        }
+        
+        return dataPagamento.toISOString().split('T')[0];
+    };
+
     const handleDataInicioChange = (e) => {
         const novaData = e.target.value;
         setDataInicio(novaData);
         verificar45Dias(novaData);
         
-        // Auto-preenche a data de fim baseada no saldo disponível
-        if (novaData) {
-            const saldoDisponivel = eventoCompletado?.evento?.saldo_dias ?? 30;
-            const dataFimCalculada = calcularDataFim(novaData, saldoDisponivel);
+        // Auto-preenche a data de fim baseada no número de dias de férias
+        if (novaData && numeroDiasFerias) {
+            const dataFimCalculada = calcularDataFim(novaData, parseInt(numeroDiasFerias));
             setDataFim(dataFimCalculada);
             validarDatas(novaData, dataFimCalculada);
         } else {
             setDataFim('');
             validarDatas('', dataFim);
+        }
+        
+        // Sugere data de pagamento como 2 dias úteis antes do início
+        if (novaData && !dataPagamento) {
+            const dataPagamentoSugerida = calcularDataPagamento(novaData);
+            setDataPagamento(dataPagamentoSugerida);
         }
     };
 
@@ -434,6 +462,18 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         validarDatas(dataInicio, novaData);
     };
 
+    const handleNumeroDiasFeriasChange = (e) => {
+        const novoNumero = e.target.value;
+        setNumeroDiasFerias(novoNumero);
+        
+        // Recalcula a data de fim se já tiver data de início
+        if (dataInicio && novoNumero) {
+            const dataFimCalculada = calcularDataFim(dataInicio, parseInt(novoNumero));
+            setDataFim(dataFimCalculada);
+            validarDatas(dataInicio, dataFimCalculada);
+        }
+    };
+
     const handleAbonoChange = (e) => {
         const novoAbono = e.target.value;
         setNumeroDiasAbono(novoAbono);
@@ -441,8 +481,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         // Validar abono
         const abonoDias = parseInt(novoAbono) || 0;
         const saldoDisponivel = eventoCompletado?.evento?.saldo_dias ?? 30;
-        const diasSolicitados = dataInicio && dataFim ? 
-            Math.ceil((parseDateAsLocal(dataFim) - parseDateAsLocal(dataInicio)) / (1000 * 60 * 60 * 24)) + 1 : 0;
+        const diasSolicitados = parseInt(numeroDiasFerias) || 0;
         const maxAbono = Math.min(10, diasSolicitados, saldoDisponivel);
         
         const abonoInvalido = abonoDias > maxAbono;
@@ -456,6 +495,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             (mostrarErro45Dias && !isPerfilEspecial)
         );
     };
+
+    // Inicializar numeroDiasFerias com o saldo disponível quando o modal abrir
+    React.useEffect(() => {
+        if (opened && evento) {
+            const saldoDisponivel = evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30;
+            setNumeroDiasFerias(saldoDisponivel.toString());
+        }
+    }, [opened, evento]);
 
     if (!evento) return null;
 
@@ -563,8 +610,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const temPermissaoAddFerias = ArmazenadorToken.hasPermission('add_ferias');
     const podeSolicitar = statusType === 'aSolicitar' && temPermissaoAddFerias;
     const solicitarFerias = async () => {
-        if (!dataInicio || !dataFim) {
-            aoFechar({ aviso: true, mensagem: 'Por favor, preencha as datas de início e fim.' });
+        if (!dataInicio || !dataFim || !numeroDiasFerias) {
+            aoFechar({ aviso: true, mensagem: 'Por favor, preencha as datas de início e fim e o número de dias.' });
             return;
         }
         if (new Date(dataInicio) > new Date(dataFim)) {
@@ -572,9 +619,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             return;
         }
 
-        const inicio = parseDateAsLocal(dataInicio);
-        const fim = parseDateAsLocal(dataFim);
-        const diasSolicitados = Math.floor((fim - inicio) / (1000 * 60 * 60 * 24)) + 1;
+        const diasSolicitados = parseInt(numeroDiasFerias);
         const saldoDisponivel = eventoCompletado.evento.saldo_dias;
 
         if (diasSolicitados > saldoDisponivel) {
@@ -584,6 +629,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
+        const inicio = parseDateAsLocal(dataInicio);
         const diffTime = inicio - hoje;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -744,7 +790,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                     <DetalhesTitulo style={{ marginTop: 0 }}>Solicitar Período</DetalhesTitulo>
                                     <div style={{display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '12px', width: '100%'}}>
                                         <div style={{display: 'flex', gap: 16}}>
-                                            <Linha style={{flex: 1}}>
+                                            <Linha style={{flex: 2}}>
                                                 <Label>Data de Início</Label>
                                                 <DataInput 
                                                     type="date" 
@@ -753,6 +799,17 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 />
                                             </Linha>
                                             <Linha style={{flex: 1}}>
+                                                <Label>Dias de férias</Label>
+                                                <DataInput
+                                                    type="number"
+                                                    value={numeroDiasFerias}
+                                                    onChange={handleNumeroDiasFeriasChange}
+                                                    placeholder="0"
+                                                    min="1"
+                                                    max={eventoCompletado?.evento?.saldo_dias ?? 30}
+                                                />
+                                            </Linha>
+                                            <Linha style={{flex: 2}}>
                                                 <Label>Data de Fim</Label>
                                                 <DataInput 
                                                     type="date" 
@@ -830,6 +887,17 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 placeholder="Selecione a data"
                                             />
                                         </Linha>
+                                        
+                                        {dataPagamento && (
+                                            <AlertaAviso>
+                                                <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                                <span>
+                                                    A data de pagamento foi sugerida como <strong>2 dias úteis antes do início das férias</strong>. 
+                                                    Você pode alterar esta data conforme necessário. <strong>Valide se há feriados ou outros impedimentos na data sugerida.</strong>
+                                                </span>
+                                            </AlertaAviso>
+                                        )}
+
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                             <SwitchInput 
                                                 id="adiantar13"

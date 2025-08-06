@@ -397,18 +397,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                 {!bloquearFormulario && (
                                     <FormContainer>
                                         <FormRow>
-                                            <FormGroup flex1>
-                                                <DropdownItens
-                                                    valor={motivoDemissao}
-                                                    setValor={setMotivoDemissao}
-                                                    options={motivosDemissaoOptions}
-                                                    label="Motivo da Demissão"
-                                                    name="motivo_demissao"
-                                                    placeholder="Selecione o motivo"
-                                                    filter
-                                                />
-                                            </FormGroup>
-                                            <FormGroup flex1>
+                                            <FormGroup fullWidth>
                                                 <DropdownItens
                                                     valor={tipoDemissao}
                                                     setValor={setTipoDemissao}
@@ -445,7 +434,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                         </FormRow>
 
                                         <FormRow>
-                                            <FormGroup flex1>
+                                            <FormGroup flex2>
                                                 <CampoTexto
                                                     name="data_inicio_aviso"
                                                     valor={dataInicioAviso}
@@ -460,6 +449,17 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                 <SwitchInput
                                                     checked={avisoIndenizado}
                                                     onChange={setAvisoIndenizado}
+                                                />
+                                            </FormGroup>
+                                            <FormGroup flex2>
+                                                <DropdownItens
+                                                    valor={motivoDemissao}
+                                                    setValor={setMotivoDemissao}
+                                                    options={motivosDemissaoOptions}
+                                                    label="Motivo da Demissão"
+                                                    name="motivo_demissao"
+                                                    placeholder="Selecione o motivo"
+                                                    filter
                                                 />
                                             </FormGroup>
                                         </FormRow>

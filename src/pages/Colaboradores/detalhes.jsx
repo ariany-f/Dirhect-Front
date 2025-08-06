@@ -948,6 +948,18 @@ function ColaboradorDetalhes() {
                                 borderRadius: 6,
                                 backdropFilter: 'blur(10px)'
                             }}>
+                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <span style={{
+                                        background: 'rgba(255, 255, 255, 0.2)',
+                                        color: '#fff',
+                                        padding: '4px 8px',
+                                        borderRadius: 12,
+                                        fontSize: 11,
+                                        fontWeight: 600,
+                                        textTransform: 'capitalize'
+                                    }}>
+                                        {colaborador.funcao_nome || 'Função não informada'}
+                                    </span>
                                 <span style={{
                                     fontSize: 11,
                                     fontWeight: 600,
@@ -956,7 +968,6 @@ function ColaboradorDetalhes() {
                                 }}>
                                     Status:
                                 </span>
-                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                     <span style={{
                                         background: colaborador.tipo_situacao_descricao === 'Ativo' ? '#4CAF50' : '#FF9800',
                                         color: '#fff',
@@ -967,17 +978,6 @@ function ColaboradorDetalhes() {
                                         textTransform: 'capitalize'
                                     }}>
                                         {colaborador.tipo_situacao_descricao || 'Status não informado'}
-                                    </span>
-                                    <span style={{
-                                        background: 'rgba(255, 255, 255, 0.2)',
-                                        color: '#fff',
-                                        padding: '4px 8px',
-                                        borderRadius: 12,
-                                        fontSize: 11,
-                                        fontWeight: 400,
-                                        textTransform: 'capitalize'
-                                    }}>
-                                        {colaborador.funcao_nome || 'Função não informada'}
                                     </span>
                                     {colaborador.marcado_demissao && ['analista', 'supervisor', 'gestor'].includes(ArmazenadorToken.UserProfile) && (
                                         <span style={{
