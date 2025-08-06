@@ -25,7 +25,6 @@ import { Skeleton } from 'primereact/skeleton';
 import { ArmazenadorToken } from '@utils';
 
 
-
 function DataTableAtividades({ 
     sortField, 
     sortOrder, 
@@ -129,6 +128,13 @@ function DataTableAtividades({
                 </div>
             );
         }
+        
+        // Verificar se deve ocultar o botão para analista em aprovação de admissão
+        const perfil = ArmazenadorToken.UserProfile;
+        const isAnalista = perfil === 'analista';
+        const isAprovarAdmissao = rowData.tipo_codigo === 'aprovar_admissao';
+        const shouldHideButton = isAnalista && isAprovarAdmissao && rowData.status === 'pendente';
+        
         const handleChange = async (checked) => {
             if(rowData.status === 'em_andamento') {
                 try {
@@ -249,7 +255,7 @@ function DataTableAtividades({
     
         return (
             <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                {(rowData.status === 'pendente' || rowData.status === 'em_andamento') && (
+                {(rowData.status === 'pendente' || rowData.status === 'em_andamento') && !shouldHideButton && (
                     <div 
                         data-pr-tooltip={getTooltipText()}
                         data-pr-position="left"

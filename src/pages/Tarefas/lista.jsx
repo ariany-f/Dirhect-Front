@@ -4,12 +4,42 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import DataTableTarefas from '@components/DataTableTarefas'
 import http from '@http'
 import Loading from '@components/Loading'
+import { FaSync } from 'react-icons/fa';
 
 const ConteudoFrame = styled.div`
     display: flex;
     flex-direction: column;
     gap: 24px;
     width: 100%;
+`
+
+const RefreshContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+`
+
+const RefreshButton = styled.button`
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    
+    &:hover {
+        background-color: var(--neutro-100);
+    }
+    
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
 `
 
 const TarefasLista = () => {
@@ -114,25 +144,46 @@ const TarefasLista = () => {
         loadData(1, pageSize, searchTerm, getSortParam(), newFilters);
     };
 
+    const handleRefresh = () => {
+        loadData(page, pageSize, searchTerm, getSortParam(), filters);
+    };
+
     return (
         <ConteudoFrame>
             <Loading opened={loading} />
             {tarefas && (
-                <DataTableTarefas 
-                    tarefas={tarefas} 
-                    paginator={true} 
-                    rows={pageSize} 
-                    totalRecords={totalRecords} 
-                    totalPages={totalPages}
-                    first={first} 
-                    onPage={onPage}
-                    onSearch={onSearch}
-                    onSort={onSort}
-                    sortField={sortField}
-                    sortOrder={sortOrder}
-                    onFilter={onFilter}
-                    serverFilters={filters}
-                />
+                <>
+                    <RefreshContainer>
+                        <RefreshButton 
+                            onClick={handleRefresh}
+                            disabled={loading}
+                            title="Atualizar dados"
+                        >
+                            <FaSync 
+                                size={16} 
+                                color="var(--gradient-secundaria)" 
+                                style={{
+                                    animation: loading ? 'spin 1s linear infinite' : 'none'
+                                }}
+                            />
+                        </RefreshButton>
+                    </RefreshContainer>
+                    <DataTableTarefas 
+                        tarefas={tarefas} 
+                        paginator={true} 
+                        rows={pageSize} 
+                        totalRecords={totalRecords} 
+                        totalPages={totalPages}
+                        first={first} 
+                        onPage={onPage}
+                        onSearch={onSearch}
+                        onSort={onSort}
+                        sortField={sortField}
+                        sortOrder={sortOrder}
+                        onFilter={onFilter}
+                        serverFilters={filters}
+                    />
+                </>
             )}
         </ConteudoFrame>
     );
