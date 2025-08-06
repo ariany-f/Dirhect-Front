@@ -118,6 +118,8 @@ const statusIcons = {
   acontecendo: <FaSun fill='white' size={14}/>,
   passada: <FaCheckCircle fill='white' size={14}/>,
   marcada: <FaCalendarAlt fill='white' size={14}/>,
+  finalizada: <FaCheckCircle fill='white' size={14}/>,
+  paga: <FaCheckCircle fill='white' size={14}/>,
 };
 
 function mapStatusToType(status, data_inicio, data_fim) {
@@ -138,6 +140,12 @@ function mapStatusToType(status, data_inicio, data_fim) {
             return isAcontecendo() ? 'acontecendo' : 'aprovada';
         case 'M':
             return isAcontecendo() ? 'acontecendo' : 'marcada';
+        case 'F':
+            return 'finalizada';
+        case 'P':
+            return 'paga';
+        case 'X':
+            return 'finalizada';
         case 'S':
         case 'I':
         case 'G':
@@ -149,7 +157,7 @@ function mapStatusToType(status, data_inicio, data_fim) {
         case 'R':
             return 'rejeitada';
         default:
-            return 'aprovada';
+            return isAcontecendo() ? 'acontecendo' : 'aprovada';
     }
 }
 
@@ -620,6 +628,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
       case 'solicitada': statusLabel = 'Aprovação pendente'; break;
       case 'marcada': statusLabel = 'Férias Marcadas'; break;
       case 'aprovada': statusLabel = 'Férias aprovadas'; break;
+      case 'finalizada': statusLabel = 'Férias finalizadas'; break;
+      case 'paga': statusLabel = 'Férias pagas'; break;
       case 'acontecendo': statusLabel = 'Em férias'; break;
       case 'passada': statusLabel = 'Férias concluídas'; break;
       default: statusLabel = 'Férias';
@@ -805,6 +815,56 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                 </Frame>
                             )}
                             
+                            {/* Seção de detalhes adicionais para férias finalizadas, aprovadas ou marcadas */}
+                            {(statusType === 'finalizada' || statusType === 'aprovada' || statusType === 'marcada' || statusType === 'passada' || statusType === 'acontecendo' || statusType === 'paga') && (
+                                <Frame>
+                                    <DetalhesTitulo style={{ marginTop: 0 }}>Detalhes Adicionais</DetalhesTitulo>
+                                    <BlocoDatas>
+                                        <BlocoData>
+                                            <BlocoDataIcone><FaCalendarCheck size={20}/></BlocoDataIcone>
+                                            <BlocoDataTexto>
+                                                <DataTitulo>Pagamento</DataTitulo>
+                                                <DataValor>{eventoCompletado.evento?.data_pagamento ? format(parseDateAsLocal(eventoCompletado.evento.data_pagamento), 'dd/MM/yyyy') : '---'}</DataValor>
+                                            </BlocoDataTexto>
+                                        </BlocoData>
+                                        <BlocoData>
+                                            <BlocoDataIcone><FaCalendarAlt size={20}/></BlocoDataIcone>
+                                            <BlocoDataTexto>
+                                                <DataTitulo>Aviso</DataTitulo>
+                                                <DataValor>{eventoCompletado.evento?.aviso_ferias ? format(parseDateAsLocal(eventoCompletado.evento.aviso_ferias), 'dd/MM/yyyy') : '---'}</DataValor>
+                                            </BlocoDataTexto>
+                                        </BlocoData>
+                                        <BlocoData>
+                                            <BlocoDataIcone><FaCalculator size={20}/></BlocoDataIcone>
+                                            <BlocoDataTexto>
+                                                <DataTitulo>Dias Abono</DataTitulo>
+                                                <DataValor>{eventoCompletado?.evento?.nrodiasabono ?? 0} dias</DataValor>
+                                            </BlocoDataTexto>
+                                        </BlocoData>
+                                        <BlocoData>
+                                            <BlocoDataIcone><FaCheckCircle size={20}/></BlocoDataIcone>
+                                            <BlocoDataTexto>
+                                                <DataTitulo>Abono Pecuniário</DataTitulo>
+                                                <DataValor>{eventoCompletado.evento?.abono_pecuniario ? 'Sim' : 'Não'}</DataValor>
+                                            </BlocoDataTexto>
+                                        </BlocoData>
+                                        <BlocoData>
+                                            <BlocoDataIcone><FaCheckCircle size={20}/></BlocoDataIcone>
+                                            <BlocoDataTexto>
+                                                <DataTitulo>13º Salário</DataTitulo>
+                                                <DataValor>{eventoCompletado.evento?.adiantar_13 ? 'Sim' : 'Não'}</DataValor>
+                                            </BlocoDataTexto>
+                                        </BlocoData>
+                                        <BlocoData>
+                                            <BlocoDataIcone><FaCheckCircle size={20}/></BlocoDataIcone>
+                                            <BlocoDataTexto>
+                                                <DataTitulo>Férias Coletivas</DataTitulo>
+                                                <DataValor>{eventoCompletado.evento?.ferias_coletivas ? 'Sim' : 'Não'}</DataValor>
+                                            </BlocoDataTexto>
+                                        </BlocoData>
+                                    </BlocoDatas>
+                                </Frame>
+                            )}
                             {statusType === 'aSolicitar' && !temPermissaoAddFerias && (
                                 <Frame>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>Solicitar Período</DetalhesTitulo>
