@@ -387,8 +387,18 @@ function DataTableFerias({
                 break;
         }
 
-        // Verifica se os textos são diferentes
-        const textosDiferentes = statusText !== statusOriginalText;
+        // Verifica se os textos são diferentes (normalizando singular/plural)
+        const normalizarTexto = (texto) => {
+            return texto.toLowerCase()
+                .replace(/marcadas?/g, 'marcada')
+                .replace(/pagas?/g, 'paga')
+                .replace(/aprovadas?/g, 'aprovada')
+                .replace(/finalizadas?/g, 'finalizada')
+                .replace(/concluídas?/g, 'concluída')
+                .replace(/rejeitadas?/g, 'rejeitada');
+        };
+
+        const textosDiferentes = normalizarTexto(statusText) !== normalizarTexto(statusOriginalText);
 
         return (
             <div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
