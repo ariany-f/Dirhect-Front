@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState } from 'react';
 import DataTableAtividades from '@components/DataTableAtividades'
 import Frame from '@components/Frame'
 import Container from '@components/Container'
-import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaFileInvoiceDollar, FaTasks } from 'react-icons/fa'
+import { FaUserPlus, FaUserMinus, FaUmbrellaBeach, FaFileInvoiceDollar, FaTasks, FaSync } from 'react-icons/fa'
 import { Dropdown } from 'primereact/dropdown';
 
 const normalizar = (texto) => texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -111,6 +111,45 @@ const Card = styled.div`
     }
 `
 
+const RefreshButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    margin: 0 0 16px auto;
+    transition: background 0.2s, transform 0.2s;
+    outline: none;
+    
+    &:hover {
+        background: #ececec;
+        transform: scale(1.05);
+    }
+    
+    &:active {
+        transform: scale(0.95);
+    }
+
+    svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    &.loading {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+`
+
 const AtividadesLista = () => {
     const location = useLocation();
     const { 
@@ -128,7 +167,8 @@ const AtividadesLista = () => {
         atualizarPaginacao,
         filtroSLA,
         atualizarFiltroSLA,
-        agrupamento
+        agrupamento,
+        recarregarDados
     } = useOutletContext();
 
     const getAgrupamentoItem = (tipo) => {
@@ -289,6 +329,13 @@ const AtividadesLista = () => {
                         );
                     })}
                 </CardContainer>
+                
+                <RefreshButton 
+                    onClick={recarregarDados}
+                    title="Recarregar dados"
+                >
+                    <FaSync />
+                </RefreshButton>
                 
                 <DataTableAtividades 
                     sortField={sortField}

@@ -295,6 +295,26 @@ function Autenticado() {
                         });
                     }
                 }
+                else {
+                    setSelected(ArmazenadorToken.UserCompanyPublicId);
+                    setEmpresa(tenants.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
+                    setSimbolo(tenants.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
+                    setLogo(tenants.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
+                    
+                    if(!localStorage.getItem('layoutColors')) {
+                        
+                        // Buscar parâmetros de layout da primeira empresa
+                        http.get('parametros/por-assunto/?assunto=LAYOUT')
+                        .then(response => {
+                            if (response && response.parametros) {
+                                BrandColors.setLayoutData(response.parametros);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar parâmetros de layout:', error);
+                        });
+                    }
+                }
             } else {
                 console.log('buscando domains do servidor')
                 // Buscar domains do servidor
@@ -349,6 +369,7 @@ function Autenticado() {
                     .then(response => {
                         if (response && response.parametros) {
                             // Salvar e aplicar as cores do layout
+
                             BrandColors.setLayoutData(response.parametros);
                         }
                     })

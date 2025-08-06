@@ -239,6 +239,83 @@ const Atividades = () => {
         }
     }, [filtroAtivo, filtroSituacao, filtroSLA, location.pathname]);
 
+    // Função para recarregar os dados
+    const recarregarDados = () => {
+        setLoading(true);
+        let url = 'tarefas/?format=json';
+
+        url += `&atividade_automatica=false`;
+        
+        // Adiciona filtro por tipo se não for 'total'
+        if (filtroAtivo !== 'total') {
+            url += `&entidade_tipo=${filtroAtivo}`;
+        }
+        
+        // Adiciona filtro de situação
+        if (!location.pathname.includes('/kanban')) {
+            const statusFiltro = mapearFiltroSituacaoParaStatus(filtroSituacao);
+            if (statusFiltro) {
+                // Para múltiplos status, usa o formato status__in
+                if (statusFiltro.length > 1) {
+                    url += `&status__in=${statusFiltro.join(',')}`;
+                } else {
+                    url += `&status=${statusFiltro[0]}`;
+                }
+            }
+        }
+        
+        // Adiciona filtro de SLA
+        if (filtroSLA) {
+            const parametrosSLA = mapearFiltroSLAParaParametros(filtroSLA);
+            console.log('Parâmetros SLA:', parametrosSLA);
+            if (parametrosSLA) {
+                Object.entries(parametrosSLA).forEach(([key, value]) => {
+                    url += `&${key}=${value}`;
+                });
+            }
+        }
+        
+        // Adiciona parâmetros de ordenação se existirem
+        if (sortField) {
+            url += `&ordering=${sortOrder === -1 ? '-' : ''}${sortField}`;
+        }
+        
+        // Adiciona parâmetros de paginação apenas se não estiver na aba kanban
+        if (!location.pathname.includes('/kanban')) {
+            url += `&page=${currentPage + 1}&page_size=${pageSize}`;
+        }
+        
+        // Adiciona filtro de data para kanban (últimos 3 meses)
+        if (location.pathname.includes('/kanban')) {
+            const tresMesesAtras = new Date();
+            tresMesesAtras.setMonth(tresMesesAtras.getMonth() - 1);
+            const dataFormatada = tresMesesAtras.toISOString().split('T')[0];
+            url += `&atualizado_em__gte=${dataFormatada}`;
+        }
+        
+        http.get(url)
+            .then(response => {
+                // Verifica se a resposta tem estrutura paginada
+                if (response.results) {
+                    setListaTarefas(response.results);
+                    setTotalRecords(response.count || 0);
+                } else {
+                    setListaTarefas(response);
+                    setTotalRecords(response.length || 0);
+                }
+                if (response.agrupamento_por_tipo) {
+                    setAgrupamento(response.agrupamento_por_tipo);
+                } else {
+                    setAgrupamento(null);
+                }
+                setLoading(false);
+            })
+            .catch(error => {
+                console.log(error);
+                setLoading(false);
+            });
+    };
+
     return (
         <ConteudoFrame>
             <Loading opened={loading} />
@@ -275,7 +352,8 @@ const Atividades = () => {
             atualizarFiltroSituacao,
             filtroSLA,
             atualizarFiltroSLA,
-            agrupamento
+            agrupamento,
+            recarregarDados
         }} />
         </ConteudoFrame>
     );
