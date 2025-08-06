@@ -637,6 +637,8 @@ function DataTableFerias({
             <Toast ref={toast} />
             <DataTable 
                 value={ferias || []} 
+                scrollable 
+                scrollHeight="65vh"
                 filters={filters} 
                 globalFilterFields={['colaborador_id']} 
                 emptyMessage="Não foram encontrados férias registradas" 

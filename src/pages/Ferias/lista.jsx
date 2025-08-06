@@ -96,8 +96,6 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    overflow-y: auto;
-    max-height: 73vh;
     
     &::-webkit-scrollbar {
         height: 8px;
