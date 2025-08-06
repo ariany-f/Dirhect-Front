@@ -500,10 +500,10 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     filterElement={filialFilterTemplate} 
                     showFilterMenu={false} 
                 />
-                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '18%' }}></Column>
+                <Column body={representativeFuncaoTemplate} filter showFilterMenu={false} field="id_funcao" sortable sortField="id_funcao_id" header="Função" style={{ width: '22%' }}></Column>
                 <Column body={representativeAdmissaoTemplate} field="dt_admissao" header="Admissão" style={{ width: '8%' }}></Column>
                 {/* <Column body={representativeDataNascimentoTemplate} field="funcionario_pessoa_fisica.data_nascimento" header="Nascimento" style={{ width: '8%' }}></Column> */}
-                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dep." style={{ width: '8%' }}></Column>
+                <Column body={representativeNumeroDependentesTemplate} field="dependentes.length" header="Dep." style={{ width: '5%' }}></Column>
                 <Column 
                     body={representativSituacaoTemplate} 
                     field="situacao" 
