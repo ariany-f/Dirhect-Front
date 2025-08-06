@@ -192,64 +192,9 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                 acceptLabel: 'Sim, continuar',
                 rejectLabel: 'Não, cancelar',
                 accept: () => {
+                    // Se não deve abrir modal, executa diretamente
                     if (!deveAbrirModal) {
-                        // Se não deve abrir modal, mostra confirmação antes de enviar
-                        confirmDialog({
-                            message: ' Tem certeza que deseja aprovar este candidato?',
-                            header: 'Confirmação',
-                            icon: 'pi pi-info-circle',
-                            acceptLabel: 'Sim, aprovar',
-                            rejectLabel: 'Não, cancelar',
-                            accept: async () => {
-                                try {
-                                    const vagaConfigurada = rowData?.vagas_configuradas?.[0];
-                                    if (!vagaConfigurada) return;
-                                    
-                                    const payload = {
-                                        html: '',
-                                        assunto: "",
-                                        dt_inscricao: new Date().toISOString().slice(0, 10),
-                                        status: "S",
-                                        vaga_candidato_id: vagaConfigurada.id,
-                                        candidato: rowData.id,
-                                        vaga: vagaId
-                                    };
-                                    
-                                    await http.post(`vagas_candidatos/${payload.vaga_candidato_id}/seguir/`, payload);
-                                    
-                                    toast.current.show({
-                                        severity: 'success',
-                                        summary: 'Sucesso',
-                                        detail: 'Candidato encaminhado com sucesso!',
-                                        life: 3000
-                                    });
-
-                                    // Atualiza a lista local
-                                    setListaCandidatos(listaCandidatos.map(c =>
-                                        c === rowData ? { 
-                                            ...c, 
-                                            vagas_configuradas: [{ ...c.vagas_configuradas?.[0], status: 'S' }]
-                                        } : c
-                                    ));
-
-                                    // Notifica o componente pai para atualizar os dados
-                                    if (onCandidatosUpdate) {
-                                        onCandidatosUpdate();
-                                    }
-                                } catch (error) {
-                                    console.error('Erro ao encaminhar candidato:', error);
-                                    toast.current.show({
-                                        severity: 'error',
-                                        summary: 'Erro',
-                                        detail: 'Erro ao encaminhar candidato',
-                                        life: 3000
-                                    });
-                                }
-                            },
-                            reject: () => {
-                                // Não faz nada se o usuário cancelar
-                            }
-                        });
+                        executarAprovacao(rowData);
                     } else {
                         // Se deve abrir modal, abre normalmente
                         setCandidatoParaAprovar(rowData);
@@ -267,56 +212,13 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
         if (!deveAbrirModal) {
             // Se não deve abrir modal, mostra confirmação antes de enviar
             confirmDialog({
-                message: ' Tem certeza que deseja aprovar este candidato?',
+                message: 'Tem certeza que deseja aprovar este candidato?',
                 header: 'Confirmação',
                 icon: 'pi pi-info-circle',
                 acceptLabel: 'Sim, aprovar',
                 rejectLabel: 'Não, cancelar',
-                accept: async () => {
-                    try {
-                        const vagaConfigurada = rowData?.vagas_configuradas?.[0];
-                        if (!vagaConfigurada) return;
-                        
-                        const payload = {
-                            html: '',
-                            assunto: "",
-                            dt_inscricao: new Date().toISOString().slice(0, 10),
-                            status: "S",
-                            vaga_candidato_id: vagaConfigurada.id,
-                            candidato: rowData.id,
-                            vaga: vagaId
-                        };
-                        
-                        await http.post(`vagas_candidatos/${payload.vaga_candidato_id}/seguir/`, payload);
-                        
-                        toast.current.show({
-                            severity: 'success',
-                            summary: 'Sucesso',
-                            detail: 'Candidato encaminhado com sucesso!',
-                            life: 3000
-                        });
-
-                        // Atualiza a lista local
-                        setListaCandidatos(listaCandidatos.map(c =>
-                            c === rowData ? { 
-                                ...c, 
-                                vagas_configuradas: [{ ...c.vagas_configuradas?.[0], status: 'S' }]
-                            } : c
-                        ));
-
-                        // Notifica o componente pai para atualizar os dados
-                        if (onCandidatosUpdate) {
-                            onCandidatosUpdate();
-                        }
-                    } catch (error) {
-                        console.error('Erro ao encaminhar candidato:', error);
-                        toast.current.show({
-                            severity: 'error',
-                            summary: 'Erro',
-                            detail: 'Erro ao encaminhar candidato',
-                            life: 3000
-                        });
-                    }
+                accept: () => {
+                    executarAprovacao(rowData);
                 },
                 reject: () => {
                     // Não faz nada se o usuário cancelar
@@ -326,6 +228,54 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
             // Se deve abrir modal, abre normalmente
             setCandidatoParaAprovar(rowData);
             setModalEncaminharAberto(true);
+        }
+    };
+
+    // Função auxiliar para executar a aprovação
+    const executarAprovacao = async (rowData) => {
+        try {
+            const vagaConfigurada = rowData?.vagas_configuradas?.[0];
+            if (!vagaConfigurada) return;
+            
+            const payload = {
+                html: '',
+                assunto: "",
+                dt_inscricao: new Date().toISOString().slice(0, 10),
+                status: "S",
+                vaga_candidato_id: vagaConfigurada.id,
+                candidato: rowData.id,
+                vaga: vagaId
+            };
+            
+            await http.post(`vagas_candidatos/${payload.vaga_candidato_id}/seguir/`, payload);
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Candidato encaminhado com sucesso!',
+                life: 3000
+            });
+
+            // Atualiza a lista local
+            setListaCandidatos(listaCandidatos.map(c =>
+                c === rowData ? { 
+                    ...c, 
+                    vagas_configuradas: [{ ...c.vagas_configuradas?.[0], status: 'S' }]
+                } : c
+            ));
+
+            // Notifica o componente pai para atualizar os dados
+            if (onCandidatosUpdate) {
+                onCandidatosUpdate();
+            }
+        } catch (error) {
+            console.error('Erro ao encaminhar candidato:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao encaminhar candidato',
+                life: 3000
+            });
         }
     };
 
