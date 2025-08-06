@@ -322,6 +322,9 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [adiantarDecimoTerceiro, setAdiantarDecimoTerceiro] = useState(false);
     const [numeroDiasAbono, setNumeroDiasAbono] = useState('');
     const [dataPagamento, setDataPagamento] = useState('');
+    const [avisoFerias, setAvisoFerias] = useState('');
+    const [abonoPecuniario, setAbonoPecuniario] = useState(false);
+    const [feriasColetivas, setFeriasColetivas] = useState(false);
     const [mostrarErro45Dias, setMostrarErro45Dias] = useState(false);
     const [mostrarErroDatas, setMostrarErroDatas] = useState(false);
     const [mostrarErroDiasMinimos, setMostrarErroDiasMinimos] = useState(false);
@@ -388,7 +391,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         // Validar dias de abono
         const abonoDias = parseInt(numeroDiasAbono) || 0;
         const maxAbono = Math.min(10, diasSolicitados, saldoDisponivel);
-        const abonoInvalido = abonoDias > maxAbono;
+        const abonoInvalido = abonoPecuniario && abonoDias > maxAbono;
         setMostrarErroAbono(abonoInvalido);
 
         // Desabilitar botão se houver qualquer erro
@@ -484,7 +487,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const diasSolicitados = parseInt(numeroDiasFerias) || 0;
         const maxAbono = Math.min(10, diasSolicitados, saldoDisponivel);
         
-        const abonoInvalido = abonoDias > maxAbono;
+        const abonoInvalido = abonoPecuniario && abonoDias > maxAbono;
         setMostrarErroAbono(abonoInvalido);
         
         setBotaoEnviarDesabilitado(
@@ -503,6 +506,13 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             setNumeroDiasFerias(saldoDisponivel.toString());
         }
     }, [opened, evento]);
+
+    // Limpar campo de abono quando abonoPecuniario for false
+    React.useEffect(() => {
+        if (!abonoPecuniario) {
+            setNumeroDiasAbono('');
+        }
+    }, [abonoPecuniario]);
 
     if (!evento) return null;
 
@@ -650,8 +660,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 data_inicio: dataInicio,
                 data_fim: dataFim,
                 adiantar_13: adiantarDecimoTerceiro,
-                nrodiasabono: parseInt(numeroDiasAbono, 10) || 0,
-                data_pagamento: dataPagamento || null
+                nrodiasabono: abonoPecuniario ? (parseInt(numeroDiasAbono, 10) || 0) : 0,
+                data_pagamento: dataPagamento || null,
+                aviso_ferias: avisoFerias || null,
+                abono_pecuniario: abonoPecuniario,
+                ferias_coletivas: feriasColetivas
             });
             aoFechar({ sucesso: true, mensagem: 'Solicitação de férias enviada com sucesso!' });
         } catch (error) {
@@ -665,7 +678,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
     return (
         <OverlayRight $opened={opened} onClick={() => aoFechar()}>
-            <DialogEstilizadoRight $align="flex-end" open={opened} $opened={opened} onClick={e => e.stopPropagation()}>
+            <DialogEstilizadoRight $width={'80vw'} $align="flex-end" open={opened} $opened={opened} onClick={e => e.stopPropagation()}>
                 <Frame style={{padding: '24px 32px'}}>
                     <CabecalhoFlex>
                         <StatusTag $type={statusType}>
@@ -819,6 +832,87 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                             </Linha>
                                         </div>
 
+                                        <div style={{display: 'flex', gap: 16}}>
+                                            <Linha style={{flex: 2, display: 'flex', alignItems: 'flex-start', paddingBottom: '8px'}}>
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '12px', marginTop: '24px' }}>
+                                                    <SwitchInput 
+                                                        id="abonoPecuniario"
+                                                        checked={abonoPecuniario} 
+                                                        onChange={() => setAbonoPecuniario(!abonoPecuniario)}
+                                                    />
+                                                    <label htmlFor="abonoPecuniario" style={{ cursor: 'pointer', fontWeight: 500, color: '#495057', fontSize: '14px' }}>
+                                                        Abono Pecuniário?
+                                                    </label>
+                                                </div>
+                                            </Linha>
+                                            <Linha style={{flex: 3}}>
+                                                <Label>Número de dias de Abono</Label>
+                                                <DataInput
+                                                    type="number"
+                                                    value={numeroDiasAbono}
+                                                    onChange={handleAbonoChange}
+                                                    placeholder="0"
+                                                    min="0"
+                                                    max={abonoPecuniario ? 10 : (eventoCompletado?.evento?.saldo_dias ?? 30)}
+                                                    disabled={!abonoPecuniario}
+                                                />
+                                            </Linha>
+                                        </div>
+
+                                        <div style={{display: 'flex', gap: 16}}>
+                                            <Linha style={{flex: 1}}>
+                                                <Label>Data de Pagamento (opcional)</Label>
+                                                <DataInput
+                                                    type="date"
+                                                    value={dataPagamento}
+                                                    onChange={e => setDataPagamento(e.target.value)}
+                                                    placeholder="Selecione a data"
+                                                />
+                                            </Linha>
+                                            <Linha style={{flex: 1}}>
+                                                <AlertaAviso style={{margin: 0, padding: '12px', fontSize: '12px'}}>
+                                                    <FaExclamationCircle size={16} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                                    <span>
+                                                        <strong>Dias úteis:</strong> Consideramos apenas sábado e domingo como não úteis. 
+                                                        <strong>Valide se há feriados na data sugerida.</strong>
+                                                    </span>
+                                                </AlertaAviso>
+                                            </Linha>
+                                        </div>
+                                        
+                                        <Linha>
+                                            <Label>Aviso de Férias (opcional)</Label>
+                                            <DataInput
+                                                type="date"
+                                                value={avisoFerias}
+                                                onChange={e => setAvisoFerias(e.target.value)}
+                                                placeholder="Selecione a data"
+                                            />
+                                        </Linha>
+
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <SwitchInput 
+                                                id="adiantar13"
+                                                checked={adiantarDecimoTerceiro} 
+                                                onChange={() => setAdiantarDecimoTerceiro(!adiantarDecimoTerceiro)}
+                                            />
+                                            <label htmlFor="adiantar13" style={{ cursor: 'pointer', fontWeight: 500, color: '#495057', fontSize: '14px' }}>
+                                                Deseja adiantar o 13º salário?
+                                            </label>
+                                        </div>
+
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <SwitchInput 
+                                                id="feriasColetivas"
+                                                checked={feriasColetivas} 
+                                                onChange={() => setFeriasColetivas(!feriasColetivas)}
+                                            />
+                                            <label htmlFor="feriasColetivas" style={{ cursor: 'pointer', fontWeight: 500, color: '#495057', fontSize: '14px' }}>
+                                                Férias Coletivas?
+                                            </label>
+                                        </div>
+
+                                        {/* Infoboxes de avisos */}
                                         {mostrarErroDatas && (
                                             <AlertaAviso>
                                                 <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
@@ -867,47 +961,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                             </AlertaAviso>
                                         )}
 
-                                        <Linha>
-                                            <Label>Número de dias de Abono</Label>
-                                            <DataInput
-                                                type="number"
-                                                value={numeroDiasAbono}
-                                                onChange={handleAbonoChange}
-                                                placeholder="0"
-                                                min="0"
-                                                max="10"
-                                            />
-                                        </Linha>
-                                        <Linha>
-                                            <Label>Data de Pagamento (opcional)</Label>
-                                            <DataInput
-                                                type="date"
-                                                value={dataPagamento}
-                                                onChange={e => setDataPagamento(e.target.value)}
-                                                placeholder="Selecione a data"
-                                            />
-                                        </Linha>
-                                        
-                                        {dataPagamento && (
-                                            <AlertaAviso>
-                                                <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
-                                                <span>
-                                                    A data de pagamento foi sugerida como <strong>2 dias úteis antes do início das férias</strong>. 
-                                                    Você pode alterar esta data conforme necessário. <strong>Valide se há feriados ou outros impedimentos na data sugerida.</strong>
-                                                </span>
-                                            </AlertaAviso>
-                                        )}
-
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <SwitchInput 
-                                                id="adiantar13"
-                                                checked={adiantarDecimoTerceiro} 
-                                                onChange={() => setAdiantarDecimoTerceiro(!adiantarDecimoTerceiro)}
-                                            />
-                                            <label htmlFor="adiantar13" style={{ cursor: 'pointer', fontWeight: 500, color: '#495057', fontSize: '14px' }}>
-                                                Deseja adiantar o 13º salário?
-                                            </label>
-                                        </div>
                                         <BotaoGrupo align="end">
                                             <Botao 
                                                 estilo="vermilion" 
@@ -940,3 +993,4 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         </OverlayRight>
     );
 }
+

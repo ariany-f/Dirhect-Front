@@ -243,6 +243,9 @@ function FeriasListagem() {
                     periodo_aquisitivo_fim: feria.fimperaquis,
                     saldo_dias: feria.nrodiasferias,
                     limite: feria.fimperaquis,
+                    aviso_ferias: feria.aviso_ferias || null,
+                    abono_pecuniario: feria.abono_pecuniario || false,
+                    ferias_coletivas: feria.ferias_coletivas || false,
                     tarefas: feria.tarefas
                 },
                 tipo: 'aSolicitar'

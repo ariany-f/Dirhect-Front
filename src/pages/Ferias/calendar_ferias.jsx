@@ -460,6 +460,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     nrodiasabono: item.nrodiasabono || 0,
                     nrodiasferias: item.nrodiasferias || 30,
                     adiantar_13: item.adiantar_13 || false,
+                    aviso_ferias: item.aviso_ferias || null,
+                    abono_pecuniario: item.abono_pecuniario || false,
+                    ferias_coletivas: item.ferias_coletivas || false,
                     tarefas: item.tarefas || [] // Adicionando o objeto tarefas
                 });
             } else if (item.fimperaquis) {
@@ -476,6 +479,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     nrodiasabono: item.nrodiasabono || 0,
                     nrodiasferias: item.nrodiasferias || 30,
                     adiantar_13: item.adiantar_13 || false,
+                    aviso_ferias: item.aviso_ferias || null,
+                    abono_pecuniario: item.abono_pecuniario || false,
+                    ferias_coletivas: item.ferias_coletivas || false,
                     tarefas: item.tarefas || [] // Adicionando o objeto tarefas
                 });
             }
@@ -866,6 +872,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                             periodo_aquisitivo_fim: fimPeriodo,
                                                             limite: limiteSolicitacao,
                                                             saldo_dias: aus.nrodiasferias || 30,
+                                                            aviso_ferias: aus.aviso_ferias || null,
+                                                            abono_pecuniario: aus.abono_pecuniario || false,
+                                                            ferias_coletivas: aus.ferias_coletivas || false,
                                                             tarefas: aus.tarefas
                                                         }, 'aSolicitar')}
                                                         style={{ cursor: 'pointer', position: 'relative', zIndex: 1 }}

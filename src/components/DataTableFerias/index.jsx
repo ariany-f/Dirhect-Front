@@ -137,6 +137,68 @@ function DataTableFerias({
         return <p style={{fontWeight: '400'}}>{rowData.datapagamento ? formatarDataBr(rowData.datapagamento) : '-'}</p>;
     }
     
+    const representativeAvisoFeriasTemplate = (rowData) => {
+        return <p style={{fontWeight: '400'}}>{rowData.aviso_ferias ? formatarDataBr(rowData.aviso_ferias) : '-'}</p>;
+    }
+    
+    const representativeAbonoPecuniarioTemplate = (rowData) => {
+        let tag = rowData?.abono_pecuniario;
+        let tooltipText = '';
+        
+        switch(rowData?.abono_pecuniario)
+        {
+            case true:
+                tag = <Tag severity="success" value="Sim"></Tag>;
+                tooltipText = 'Abono Pecuniário: Sim';
+                break;
+            case false:
+                tag = <Tag severity="danger" value="Não"></Tag>;
+                tooltipText = 'Abono Pecuniário: Não';
+                break;
+            default:
+                tag = '-';
+                tooltipText = 'Abono Pecuniário: Não informado';
+                break;
+        }
+        return (
+            <div style={{ cursor: 'help' }}>
+                <Tooltip target=".abono-pecuniario-tag" />
+                <div className="abono-pecuniario-tag" data-pr-tooltip={tooltipText}>
+                    <b>{tag}</b>
+                </div>
+            </div>
+        )
+    }
+    
+    const representativeFeriasColetivasTemplate = (rowData) => {
+        let tag = rowData?.ferias_coletivas;
+        let tooltipText = '';
+        
+        switch(rowData?.ferias_coletivas)
+        {
+            case true:
+                tag = <Tag severity="success" value="Sim"></Tag>;
+                tooltipText = 'Férias Coletivas: Sim';
+                break;
+            case false:
+                tag = <Tag severity="danger" value="Não"></Tag>;
+                tooltipText = 'Férias Coletivas: Não';
+                break;
+            default:
+                tag = '-';
+                tooltipText = 'Férias Coletivas: Não informado';
+                break;
+        }
+        return (
+            <div style={{ cursor: 'help' }}>
+                <Tooltip target=".ferias-coletivas-tag" />
+                <div className="ferias-coletivas-tag" data-pr-tooltip={tooltipText}>
+                    <b>{tag}</b>
+                </div>
+            </div>
+        )
+    }
+    
     const representativeFimAquisicaoTemplate = (rowData) => {
         return <p style={{fontWeight: '400'}}>{formatarDataBr(rowData.fimperaquis)}</p>;
     }
@@ -371,6 +433,9 @@ function DataTableFerias({
                 <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '15%' }}></Column>
                 <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '15%' }}></Column>
                 <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '12%' }}></Column>
+                <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '10%' }}></Column>
+                <Column body={representativeAbonoPecuniarioTemplate} field="abono_pecuniario" header="Abono Pec." style={{ width: '10%' }}></Column>
+                <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletivas" style={{ width: '10%' }}></Column>
                 {colaborador && (
                     <>
                         <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
