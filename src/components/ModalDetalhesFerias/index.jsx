@@ -340,6 +340,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [mostrarErroDiasMinimos, setMostrarErroDiasMinimos] = useState(false);
     const [mostrarErroSaldoDias, setMostrarErroSaldoDias] = useState(false);
     const [mostrarErroAbono, setMostrarErroAbono] = useState(false);
+    const [mostrarErroSaldoTotal, setMostrarErroSaldoTotal] = useState(false);
     const [botaoEnviarDesabilitado, setBotaoEnviarDesabilitado] = useState(false);
 
     const userPerfil = ArmazenadorToken.UserProfile;
@@ -370,7 +371,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
         if (diffDays < 45) {
             setMostrarErro45Dias(true);
-            // Só desabilita o botão para perfis não especiais
+            // Desabilita o botão se não for perfil especial (analista, supervisor, gestor)
             setBotaoEnviarDesabilitado(!isPerfilEspecial);
         } else {
             setMostrarErro45Dias(false);
@@ -398,11 +399,16 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const excedeSaldo = diasSolicitados > saldoDisponivel;
         setMostrarErroSaldoDias(excedeSaldo);
 
-        // Validar dias de abono
+        // Validar dias de abono individualmente
         const abonoDias = parseInt(numeroDiasAbono) || 0;
         const maxAbono = Math.min(10, diasSolicitados, saldoDisponivel);
         const abonoInvalido = abonoPecuniario && abonoDias > maxAbono;
         setMostrarErroAbono(abonoInvalido);
+
+        // Nova validação: soma de abono + férias não pode ultrapassar saldo
+        const somaTotal = diasSolicitados + (abonoPecuniario ? abonoDias : 0);
+        const excedeSaldoTotal = somaTotal > saldoDisponivel;
+        setMostrarErroSaldoTotal(excedeSaldoTotal);
 
         // Desabilitar botão se houver qualquer erro
         setBotaoEnviarDesabilitado(
@@ -410,6 +416,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             diasInsuficientes || 
             excedeSaldo || 
             abonoInvalido ||
+            excedeSaldoTotal ||
             (mostrarErro45Dias && !isPerfilEspecial)
         );
     };
@@ -503,6 +510,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             setDataFim(dataFimCalculada);
             validarDatas(dataInicio, dataFimCalculada);
         }
+        
+        // Validar soma total também quando mudar os dias de férias
+        const diasSolicitados = parseInt(novoNumero) || 0;
+        const abonoDias = parseInt(numeroDiasAbono) || 0;
+        const saldoDisponivel = eventoCompletado?.evento?.saldo_dias ?? 30;
+        const somaTotal = diasSolicitados + (abonoPecuniario ? abonoDias : 0);
+        const excedeSaldoTotal = somaTotal > saldoDisponivel;
+        setMostrarErroSaldoTotal(excedeSaldoTotal);
     };
 
     const handleAbonoChange = (e) => {
@@ -518,11 +533,17 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const abonoInvalido = abonoPecuniario && abonoDias > maxAbono;
         setMostrarErroAbono(abonoInvalido);
         
+        // Nova validação: soma de abono + férias não pode ultrapassar saldo
+        const somaTotal = diasSolicitados + (abonoPecuniario ? abonoDias : 0);
+        const excedeSaldoTotal = somaTotal > saldoDisponivel;
+        setMostrarErroSaldoTotal(excedeSaldoTotal);
+        
         setBotaoEnviarDesabilitado(
             mostrarErroDatas || 
             mostrarErroDiasMinimos || 
             mostrarErroSaldoDias || 
             abonoInvalido ||
+            excedeSaldoTotal ||
             (mostrarErro45Dias && !isPerfilEspecial)
         );
     };
@@ -539,8 +560,17 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     React.useEffect(() => {
         if (!abonoPecuniario) {
             setNumeroDiasAbono('');
+            setMostrarErroSaldoTotal(false);
+        } else {
+            // Revalidar soma total quando ativar abono pecuniário
+            const diasSolicitados = parseInt(numeroDiasFerias) || 0;
+            const abonoDias = parseInt(numeroDiasAbono) || 0;
+            const saldoDisponivel = eventoCompletado?.evento?.saldo_dias ?? 30;
+            const somaTotal = diasSolicitados + abonoDias;
+            const excedeSaldoTotal = somaTotal > saldoDisponivel;
+            setMostrarErroSaldoTotal(excedeSaldoTotal);
         }
-    }, [abonoPecuniario]);
+    }, [abonoPecuniario, numeroDiasFerias, numeroDiasAbono, eventoCompletado?.evento?.saldo_dias]);
 
     if (!evento) return null;
 
@@ -661,9 +691,17 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
         const diasSolicitados = parseInt(numeroDiasFerias);
         const saldoDisponivel = eventoCompletado.evento.saldo_dias;
+        const abonoDias = parseInt(numeroDiasAbono) || 0;
 
         if (diasSolicitados > saldoDisponivel) {
             aoFechar({ aviso: true, mensagem: `Você pode solicitar no máximo ${saldoDisponivel} dias de férias.` });
+            return;
+        }
+
+        // Nova validação: soma de abono + férias não pode ultrapassar saldo
+        const somaTotal = diasSolicitados + (abonoPecuniario ? abonoDias : 0);
+        if (somaTotal > saldoDisponivel) {
+            aoFechar({ aviso: true, mensagem: `A soma dos dias de férias e abono pecuniário (${somaTotal}) não pode exceder o saldo disponível (${saldoDisponivel} dias).` });
             return;
         }
 
@@ -674,12 +712,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         if (diffDays < 45) {
-            const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
-            if (perfisEspeciais.includes(userPerfil)) {
-                // Para perfis especiais, apenas avisa mas permite continuar
-                aoFechar({ aviso: true, mensagem: 'A data de início das férias está a menos de 45 dias do dia de hoje. A solicitação será processada mesmo assim.' });
-                return;
-            } else {
+            if (!isPerfilEspecial) {
                 aoFechar({ aviso: true, mensagem: 'A solicitação de férias deve ser feita com no mínimo 45 dias de antecedência.' });
                 return;
             }
@@ -1056,6 +1089,15 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                 <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
                                                 <span>
                                                     O número de dias de abono não pode ser maior que o número de dias solicitados ou o saldo disponível.
+                                                </span>
+                                            </AlertaAviso>
+                                        )}
+
+                                        {mostrarErroSaldoTotal && (
+                                            <AlertaAviso>
+                                                <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                                <span>
+                                                    A soma do número de dias de férias e abono pecuniário não pode exceder o saldo disponível.
                                                 </span>
                                             </AlertaAviso>
                                         )}

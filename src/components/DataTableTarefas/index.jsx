@@ -25,6 +25,7 @@ import { MdFilterAltOff } from 'react-icons/md';
 import { LuNewspaper } from 'react-icons/lu';
 import CustomImage from '@components/CustomImage';
 import { Tooltip } from 'primereact/tooltip';
+import { FaSync } from 'react-icons/fa';
 import { Skeleton } from 'primereact/skeleton';
 import http from '@http';
 import { ArmazenadorToken } from '@utils';
@@ -44,7 +45,9 @@ function DataTableTarefas({
     sortOrder,
     showSearch = true,
     onFilter,
-    serverFilters
+    serverFilters,
+    onRefresh,
+    loading = false
 }) {
 
     const[selectedVaga, setSelectedVaga] = useState(0)
@@ -169,8 +172,44 @@ function DataTableTarefas({
     // Header customizado
     const headerTemplate = (
         <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', padding: 0 }}>
+            <style>
+                {`
+                    @keyframes spin {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
+                    }
+                `}
+            </style>
             {showSearch && (
-                <CampoTexto width={'220px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'space-between', width: '100%'}}>
+                    <CampoTexto width={'220px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+                    {onRefresh && (
+                        <button
+                            onClick={onRefresh}
+                            disabled={loading}
+                            title="Atualizar dados"
+                            style={{
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                padding: '8px',
+                                borderRadius: '4px',
+                                transition: 'background-color 0.2s',
+                                opacity: loading ? 0.5 : 1
+                            }}
+                            onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--neutro-100)')}
+                            onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+                        >
+                            <FaSync 
+                                size={16} 
+                                color="var(--gradient-secundaria)" 
+                                style={{
+                                    animation: loading ? 'spin 1s linear infinite' : 'none'
+                                }}
+                            />
+                        </button>
+                    )}
+                </div>
             )}
             <div style={{display: 'flex', gap: 16, alignItems: 'flex-start'}}>
                 <BotaoGrupo align={'space-between'} wrap>
