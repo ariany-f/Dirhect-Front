@@ -437,6 +437,18 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         return dataPagamento.toISOString().split('T')[0];
     };
 
+    const calcularDataAvisoFerias = (dataInicio) => {
+        if (!dataInicio) return '';
+        
+        const inicio = parseDateAsLocal(dataInicio);
+        const dataAviso = new Date(inicio);
+        
+        // Subtrai 30 dias corridos
+        dataAviso.setDate(dataAviso.getDate() - 30);
+        
+        return dataAviso.toISOString().split('T')[0];
+    };
+
     const handleDataInicioChange = (e) => {
         const novaData = e.target.value;
         setDataInicio(novaData);
@@ -456,6 +468,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         if (novaData && !dataPagamento) {
             const dataPagamentoSugerida = calcularDataPagamento(novaData);
             setDataPagamento(dataPagamentoSugerida);
+        }
+        
+        // Sugere data de aviso de férias como 30 dias corridos antes do início
+        if (novaData && !avisoFerias) {
+            const dataAvisoSugerida = calcularDataAvisoFerias(novaData);
+            setAvisoFerias(dataAvisoSugerida);
         }
     };
 
@@ -845,19 +863,23 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     </label>
                                                 </div>
                                             </Linha>
-                                            {abonoPecuniario && (
-                                                <Linha style={{flex: 3}}>
-                                                    <Label>Número de dias de Abono</Label>
-                                                    <DataInput
-                                                        type="number"
-                                                        value={numeroDiasAbono}
-                                                        onChange={handleAbonoChange}
-                                                        placeholder="0"
-                                                        min="0"
-                                                        max={abonoPecuniario ? 10 : (eventoCompletado?.evento?.saldo_dias ?? 30)}
-                                                    />
-                                                </Linha>
-                                            )}
+                                            <Linha style={{flex: 3}}>
+                                                <Label>Número de dias de Abono</Label>
+                                                <DataInput
+                                                    type="number"
+                                                    value={numeroDiasAbono}
+                                                    onChange={handleAbonoChange}
+                                                    placeholder="0"
+                                                    min="0"
+                                                    max={abonoPecuniario ? 10 : (eventoCompletado?.evento?.saldo_dias ?? 30)}
+                                                    readOnly={!abonoPecuniario}
+                                                    style={{
+                                                        backgroundColor: !abonoPecuniario ? '#f8f9fa' : '#fff',
+                                                        color: !abonoPecuniario ? '#6c757d' : '#212529',
+                                                        cursor: !abonoPecuniario ? 'not-allowed' : 'text'
+                                                    }}
+                                                />
+                                            </Linha>
                                         </div>
 
                                         <div style={{display: 'flex', gap: 16}}>
@@ -908,15 +930,26 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                             </Linha>
                                         </div>
                                         
-                                        <Linha>
-                                            <Label>Aviso de Férias</Label>
-                                            <DataInput
-                                                type="date"
-                                                value={avisoFerias}
-                                                onChange={e => setAvisoFerias(e.target.value)}
-                                                placeholder="Selecione a data"
-                                            />
-                                        </Linha>
+                                        <div style={{display: 'flex', gap: 16}}>
+                                            <Linha style={{flex: 1}}>
+                                                <Label>Aviso de Férias</Label>
+                                                <DataInput
+                                                    type="date"
+                                                    value={avisoFerias}
+                                                    onChange={e => setAvisoFerias(e.target.value)}
+                                                    placeholder="Selecione a data"
+                                                />
+                                            </Linha>
+                                            <Linha style={{flex: 1}}>
+                                                <AlertaAviso style={{margin: 0, padding: '12px', fontSize: '12px'}}>
+                                                    <FaExclamationCircle size={16} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                                    <span>
+                                                        <strong>Aviso de férias:</strong> Sugerido como <strong>30 dias corridos</strong> antes do início das férias. 
+                                                        <strong>Valide se a data sugerida é adequada.</strong>
+                                                    </span>
+                                                </AlertaAviso>
+                                            </Linha>
+                                        </div>
 
                                         {/* Infoboxes de avisos */}
                                         {mostrarErroDatas && (
