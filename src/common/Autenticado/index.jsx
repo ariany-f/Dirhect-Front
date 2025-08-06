@@ -73,14 +73,46 @@ function Autenticado() {
 
     const location = useLocation()
 
+    // Debounce para evitar múltiplas execuções durante o redimensionamento
     useEffect(() => {
+        let timeoutId;
+        
         const handleResize = () => {
-            setSidebarOpened(window.innerWidth > 760)
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                const newIsDesktop = window.innerWidth > 1024;
+                const newSidebarOpened = window.innerWidth > 760;
+                
+                setIsDesktop(newIsDesktop);
+                setSidebarOpened(newSidebarOpened);
+                
+                // Fechar menu mobile se redimensionar para desktop
+                if (newIsDesktop && menuOpened) {
+                    setMenuOpened(false);
+                }
+            }, 150); // Debounce de 150ms
         }
 
-        window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
-    }, [])
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            clearTimeout(timeoutId);
+        }
+    }, [menuOpened]);
+
+    // Verificação inicial dos estados de responsividade
+    useEffect(() => {
+        const initialIsDesktop = window.innerWidth > 1024;
+        const initialSidebarOpened = window.innerWidth > 760;
+        
+        setIsDesktop(initialIsDesktop);
+        setSidebarOpened(initialSidebarOpened);
+        
+        // Garantir que o menu mobile esteja fechado em desktop
+        if (initialIsDesktop && menuOpened) {
+            setMenuOpened(false);
+        }
+    }, []);
 
     useEffect(() => {
         // Limpar dados antigos de empresas ao montar o componente
@@ -334,11 +366,13 @@ function Autenticado() {
     }
     
     function fechaMenu(){
+        // Fechar menu mobile
         if(menuOpened)
         {
             setMenuOpened(false)
         }
 
+        // Fechar sidebar em telas pequenas
         if(sidebarOpened && window.innerWidth <= 760)
         {
             setSidebarOpened(false)
