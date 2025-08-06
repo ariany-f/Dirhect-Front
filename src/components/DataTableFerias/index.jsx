@@ -641,28 +641,27 @@ function DataTableFerias({
                 lazy
                 first={(currentPage - 1) * pageSize}
                 onPage={onPageChange}
-                tableStyle={{ minWidth: (!colaborador ? '68vw' : '45vw') }}
+                tableStyle={{ minWidth: (!colaborador ? '68vw' : '40vw') }}
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
-                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: '6%' }}></Column>
+                <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: '12%' }}></Column>
                 {!colaborador && ( 
                     <Column body={representativePeriodoAbertoTemplate} field="periodo_aberto" header="Período" style={{ width: '6%' }}></Column>
                 )}
-                <Column body={representativeInicioTemplate} field="data_inicio" header="Férias" style={{ width: '6%' }}></Column>
-                <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '6%' }}></Column>
+                <Column body={representativeInicioTemplate} field="data_inicio" header="Férias" style={{ width: '12%' }}></Column>
+                <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '10%' }}></Column>
                 {!colaborador && ( 
                     <>
-                        <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '5%' }}></Column>
+                        <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '8%' }}></Column>
                     </>
                 )}
-
                 {colaborador && (
-                    <Column field="nrodiasferias" header="Dias" style={{ width: '2%' }}></Column>
+                    <Column field="nrodiasferias" header="Dias" style={{ width: '8%' }}></Column>
                 )} 
-                <Column field="nrodiasabono" header="Abono" style={{ width: '3%' }}></Column>
-                <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '3%' }}></Column>
-                <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletiva" style={{ width: '3%' }}></Column>
-                <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '12%' }}></Column>
+                <Column field="nrodiasabono" header="Abono" style={{ width: '8%' }}></Column>
+                <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '8%' }}></Column>
+                <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }}></Column>
+                <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '18%' }}></Column>
             </DataTable>
             <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={fecharModal} />
         </>
