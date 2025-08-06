@@ -185,15 +185,15 @@ function DataTableFerias({
     }
     
     const representativeInicioTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{formatarDataBr(rowData.dt_inicio)}</p>;
+        return <p style={{fontWeight: '400', fontSize: '13px'}}>{formatarDataBr(rowData.dt_inicio)}</p>;
     }
     
     const representativeFimTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{formatarDataBr(rowData.dt_fim)}</p>;
+        return <p style={{fontWeight: '400', fontSize: '13px'}}>{formatarDataBr(rowData.dt_fim)}</p>;
     }
     
     const representativeInicioAquisicaoTemplate = (rowData) => {
-        if (!rowData.fimperaquis) return <p style={{fontWeight: '400'}}>-</p>;
+        if (!rowData.fimperaquis) return <p style={{fontWeight: '400', fontSize: '13px'}}>-</p>;
         const [ano, mes, dia] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
         // Subtrai 1 ano
         let dataInicio = new Date(ano - 1, mes - 1, dia);
@@ -203,7 +203,7 @@ function DataTableFerias({
         const diaStr = String(dataInicio.getDate()).padStart(2, '0');
         const mesStr = String(dataInicio.getMonth() + 1).padStart(2, '0');
         const anoStr = dataInicio.getFullYear();
-        return <p style={{fontWeight: '400'}}>{`${diaStr}/${mesStr}/${anoStr}`}</p>;
+        return <p style={{fontWeight: '400', fontSize: '13px'}}>{`${diaStr}/${mesStr}/${anoStr}`}</p>;
     }
 
     const fecharModal = (resultado) => {
@@ -224,11 +224,11 @@ function DataTableFerias({
     };
 
     const representativePagamentoTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.datapagamento ? formatarDataBr(rowData.datapagamento) : '-'}</p>;
+        return <p style={{fontWeight: '400', fontSize: '13px'}}>{rowData.datapagamento ? formatarDataBr(rowData.datapagamento) : '-'}</p>;
     }
     
     const representativeAvisoFeriasTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.aviso_ferias ? formatarDataBr(rowData.aviso_ferias) : '-'}</p>;
+        return <p style={{fontWeight: '400', fontSize: '13px'}}>{rowData.aviso_ferias ? formatarDataBr(rowData.aviso_ferias) : '-'}</p>;
     }
     
     const representativeAbonoPecuniarioTemplate = (rowData) => {
@@ -290,7 +290,7 @@ function DataTableFerias({
     }
     
     const representativeFimAquisicaoTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{formatarDataBr(rowData.fimperaquis)}</p>;
+        return <p style={{fontWeight: '400', fontSize: '13px'}}>{formatarDataBr(rowData.fimperaquis)}</p>;
     }
 
     const representativeSituacaoTemplate = (rowData) => {
@@ -298,14 +298,14 @@ function DataTableFerias({
             // Férias a solicitar
             if (ArmazenadorToken.hasPermission('add_ferias')) {
                 return (
-                    <p style={{fontWeight: '400'}}>
+                    <p style={{fontWeight: '400', fontSize: '13px'}}>
                         <Botao aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab>
                             <FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar
                         </Botao>
                     </p>
                 );
             } else {
-                return <p style={{fontWeight: '400'}}>N/A</p>;
+                return <p style={{fontWeight: '400', fontSize: '13px'}}>N/A</p>;
             }
         }
 
@@ -410,7 +410,7 @@ function DataTableFerias({
                     {statusIcons[statusType]} {statusText}
                 </StatusTag>
                 {textosDiferentes && (
-                    <p style={{fontWeight: '400', fontSize: '12px', color: '#666', margin: 0}}>{statusOriginalText}</p>
+                    <p style={{fontWeight: '400', fontSize: '13px', color: '#666', margin: 0}}>{statusOriginalText}</p>
                 )}
             </div>
         );
@@ -556,26 +556,26 @@ function DataTableFerias({
                 tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '30%' }}></Column>}
-                <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Inicio Aquisição" style={{ width: '15%' }}></Column>
-                <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Fim Aquisição" style={{ width: '15%' }}></Column>
-                <Column body={representativePeriodoAbertoTemplate} field="periodo_aberto" header="Período" style={{ width: '10%' }}></Column>
-                <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '15%' }}></Column>
-                <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '15%' }}></Column>
+                <Column body={representativeInicioAquisicaoTemplate} field="data_inicio_aquisicao" header="Inicio Aquisição" style={{ width: '12%' }}></Column>
+                <Column body={representativeFimAquisicaoTemplate} field="data_fim_aquisicao" header="Fim Aquisição" style={{ width: '12%' }}></Column>
+                {!colaborador && ( 
+                    <Column body={representativePeriodoAbertoTemplate} field="periodo_aberto" header="Período" style={{ width: '10%' }}></Column>
+                )}
+                <Column body={representativeInicioTemplate} field="data_inicio" header="Inicio Férias" style={{ width: '12%' }}></Column>
+                <Column body={representativeFimTemplate} field="data_fim" header="Fim Férias" style={{ width: '12%' }}></Column>
                 <Column body={representativePagamentoTemplate} field="datapagamento" header="Pagamento" style={{ width: '12%' }}></Column>
                 {!colaborador && ( 
                     <>
                         <Column body={representativeAvisoFeriasTemplate} field="aviso_ferias" header="Aviso" style={{ width: '10%' }}></Column>
                     </>
                 )}
-                <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletivas" style={{ width: '10%' }}></Column>
+                <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletiva" style={{ width: '10%' }}></Column>
+                <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
                 {colaborador && (
-                    <>
-                        <Column field="nrodiasabono" header="Abono" style={{ width: '10%' }}></Column>
-                        <Column field="nrodiasferias" header="Férias" style={{ width: '10%' }}></Column>
-                    </>
+                    <Column field="nrodiasferias" header="Férias" style={{ width: '10%' }}></Column>
                 )} 
                 <Column body={representativ13Template} field="decimo" header="13º" style={{ width: '10%' }}></Column>
-                <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '15%' }}></Column>
+                <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '16%' }}></Column>
             </DataTable>
             <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={fecharModal} />
         </>
