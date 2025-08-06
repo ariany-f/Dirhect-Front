@@ -342,6 +342,12 @@ function Autenticado() {
                         setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
                         setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
                         setLogo(tenantsWithDomain[0]?.tenant.logo || '');
+                    } else {
+                        console.log('ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId)
+                        setSelected(ArmazenadorToken.UserCompanyPublicId);
+                        setEmpresa(tenantsWithDomain.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
+                        setSimbolo(tenantsWithDomain.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
+                        setLogo(tenantsWithDomain.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.logo || '');
                     }
                 })
                 .catch(erro => {
