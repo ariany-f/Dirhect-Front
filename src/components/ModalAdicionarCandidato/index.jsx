@@ -40,10 +40,16 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     const cpfNumerico = cpf.replace(/\D/g, '');
     
     // Verifica se tem 11 dígitos
-    if (cpfNumerico.length !== 11) return false;
+    if (cpfNumerico.length !== 11) {
+      console.log('CPF inválido: não tem 11 dígitos', cpfNumerico);
+      return false;
+    }
     
     // Verifica se todos os dígitos são iguais (CPF inválido)
-    if (/^(\d)\1{10}$/.test(cpfNumerico)) return false;
+    if (/^(\d)\1{10}$/.test(cpfNumerico)) {
+      console.log('CPF inválido: todos os dígitos são iguais', cpfNumerico);
+      return false;
+    }
     
     // Validação do primeiro dígito verificador
     let soma = 0;
@@ -61,9 +67,45 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     resto = 11 - (soma % 11);
     let digito2 = resto < 2 ? 0 : resto;
     
+    // Correção: se o resto for 11, o dígito deve ser 0
+    if (digito2 === 11) {
+      digito2 = 0;
+    }
+    
     // Verifica se os dígitos verificadores estão corretos
-    return parseInt(cpfNumerico.charAt(9)) === digito1 && 
-           parseInt(cpfNumerico.charAt(10)) === digito2;
+    const digito9 = parseInt(cpfNumerico.charAt(9));
+    const digito10 = parseInt(cpfNumerico.charAt(10));
+    
+    const valido = digito9 === digito1 && digito10 === digito2;
+    
+    console.log('Validação CPF detalhada:', {
+      cpf: cpfNumerico,
+      digito9,
+      digito10,
+      digito1,
+      digito2,
+      valido
+    });
+    
+    return valido;
+  };
+
+  // Função de teste para CPF (remover depois)
+  const testarCPF = () => {
+    const cpfsTeste = [
+      '529.982.247-25', // CPF válido conhecido
+      '111.444.777-35', // CPF válido
+      '123.456.789-01', // CPF inválido
+      '000.000.000-00', // CPF inválido (todos iguais)
+      '111.111.111-11'  // CPF inválido (todos iguais)
+    ];
+    
+    console.log('=== TESTE DE VALIDAÇÃO DE CPF ===');
+    cpfsTeste.forEach(cpf => {
+      const valido = validarCPF(cpf);
+      console.log(`CPF: ${cpf} - Válido: ${valido}`);
+    });
+    console.log('=== FIM DO TESTE ===');
   };
 
   const limparCampos = () => {
@@ -100,6 +142,7 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
   const validarCampos = () => {
     const camposObrigatorios = [];
     
+    // Validação de campos obrigatórios
     if (!nome.trim()) camposObrigatorios.push('nome');
     if (!email.trim()) camposObrigatorios.push('email');
     if (!cpf.trim()) camposObrigatorios.push('cpf');
@@ -111,17 +154,26 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
     }
     
     // Validação de CPF (validação matemática real)
-    if (cpf.trim() && !validarCPF(cpf)) {
-      camposObrigatorios.push('cpf');
+    if (cpf.trim()) {
+      const cpfValido = validarCPF(cpf);
+      console.log('Validação CPF:', { cpf: cpf.trim(), valido: cpfValido });
+      if (!cpfValido) {
+        camposObrigatorios.push('cpf');
+      }
     }
     
+    console.log('Campos obrigatórios:', camposObrigatorios);
     setCamposVazios(camposObrigatorios);
     
     return camposObrigatorios.length === 0;
   };
 
   const handleSave = () => {
+    console.log('Tentando salvar candidato:', { nome, email, cpf, nascimento, telefone });
+    
     if (!validarCampos()) {
+      console.log('Validação falhou, campos obrigatórios:', camposVazios);
+      
       // Verifica especificamente se o CPF é inválido
       if (cpf.trim() && !validarCPF(cpf)) {
         toast.current.show({
@@ -132,9 +184,18 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
         });
         return;
       }
+      
+      // Mostra erro geral para outros campos
+      toast.current.show({
+        severity: 'error',
+        summary: 'Campos Obrigatórios',
+        detail: 'Por favor, preencha todos os campos obrigatórios.',
+        life: 3000
+      });
       return; // Não prossegue se há campos vazios
     }
 
+    console.log('Validação passou, salvando candidato...');
     aoSalvar({
       nome,
       email,
@@ -208,6 +269,20 @@ function ModalAdicionarCandidato({ opened = false, aoFechar, aoSalvar }) {
                 camposVazios={camposVazios}
                 name="nascimento"
               />
+              {/* Botão de teste temporário - REMOVER DEPOIS */}
+              <button 
+                onClick={testarCPF}
+                style={{
+                  marginTop: '10px',
+                  padding: '5px 10px',
+                  backgroundColor: '#f0f0f0',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Testar CPF (Console)
+              </button>
             </Col6>
           </Col12>
         </Frame>
