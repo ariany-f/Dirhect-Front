@@ -7,14 +7,100 @@ import Texto from '@components/Texto';
 import CampoTexto from '@components/CampoTexto';
 import { useNavigate } from 'react-router-dom';
 import Botao from '@components/Botao';
-import { FaUmbrellaBeach } from 'react-icons/fa';
+import { FaUmbrellaBeach, FaExclamationCircle, FaRegClock, FaCheckCircle, FaSun, FaCalendarCheck, FaCalendarAlt, FaTimesCircle, FaClock, FaExclamationTriangle, FaLock, FaLockOpen } from 'react-icons/fa';
 import { useEffect, useState, useRef } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { Tag } from 'primereact/tag';
 import { ArmazenadorToken } from '@utils';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
-import { FaCheckCircle, FaTimesCircle, FaClock, FaExclamationTriangle, FaLock, FaLockOpen } from 'react-icons/fa';
 import { Toast } from 'primereact/toast';
+import styled from 'styled-components';
+
+// Styled component para o status igual ao calendário
+const StatusTag = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 4px 12px;
+  background: ${({ $type }) => {
+    if ($type === 'aSolicitar') return 'linear-gradient(to right, #ff5ca7, #ffb6c1)';
+    if ($type === 'solicitada') return 'linear-gradient(to right, #fbb034,rgb(211, 186, 22))';
+    if ($type === 'marcada') return 'linear-gradient(to right, #20c997, #17a2b8)';
+    if ($type === 'aprovada') return 'linear-gradient(to left, var(--black), var(--gradient-secundaria))';
+    if ($type === 'acontecendo') return 'linear-gradient(to right,rgb(45, 126, 219),rgb(18, 37, 130))';
+    if ($type === 'passada') return 'linear-gradient(to right, #bdbdbd, #757575)';
+    if ($type === 'finalizada') return 'linear-gradient(to right, #6c757d, #495057)';
+    if ($type === 'paga') return 'linear-gradient(to right, #28a745, #20c997)';
+    return 'linear-gradient(to left, var(--black), var(--gradient-secundaria))';
+  }};
+  color: #fff;
+  border: none;
+`;
+
+const statusIcons = {
+  aSolicitar: <FaExclamationCircle fill='white' size={14} />,
+  solicitada: <FaRegClock fill='white' size={14}/>,
+  aprovada: <FaCalendarCheck fill='white' size={14}/>,
+  acontecendo: <FaSun fill='white' size={14}/>,
+  passada: <FaCheckCircle fill='white' size={14}/>,
+  marcada: <FaCalendarAlt fill='white' size={14}/>,
+  finalizada: <FaCheckCircle fill='white' size={14}/>,
+  paga: <FaCheckCircle fill='white' size={14}/>,
+};
+
+// Helper function to parse dates and avoid timezone issues
+function parseDateAsLocal(dateString) {
+    if (!dateString) return null;
+    if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}/)) {
+        const [datePart] = dateString.split('T');
+        const [year, month, day] = datePart.split('-').map(Number);
+        return new Date(year, month - 1, day);
+    }
+    return new Date(dateString);
+}
+
+// Função mapStatusToType igual ao calendar_ferias.jsx
+function mapStatusToType(status, data_inicio, data_fim) {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const isAcontecendo = () => {
+        if (!data_inicio || !data_fim) return false;
+        const inicio = parseDateAsLocal(data_inicio);
+        inicio.setHours(0, 0, 0, 0);
+        const fim = parseDateAsLocal(data_fim);
+        fim.setHours(0, 0, 0, 0);
+        return hoje >= inicio && hoje <= fim;
+    };
+
+    switch (status) {
+        case 'A':
+            return isAcontecendo() ? 'acontecendo' : 'aprovada';
+        case 'M':
+            return isAcontecendo() ? 'acontecendo' : 'marcada';
+        case 'F':
+            return 'finalizada';
+        case 'P':
+            return 'paga';
+        case 'X':
+            return 'finalizada';
+        case 'S':
+        case 'I':
+        case 'G':
+        case 'D':
+        case 'E':
+            return 'solicitada';
+        case 'C':
+            return 'passada';
+        case 'R':
+            return 'rejeitada';
+        default:
+            return isAcontecendo() ? 'acontecendo' : 'aprovada';
+    }
+}
 
 function formatarDataBr(data) {
     if (!data) return '-';
@@ -204,87 +290,116 @@ function DataTableFerias({
     }
 
     const representativeSituacaoTemplate = (rowData) => {
-        let tag = rowData?.situacaoferias;
-        if(rowData.dt_fim && rowData.dt_inicio)
-        {
-            switch(rowData?.situacaoferias)
-            {
-                case 'G': // Aguardando Aprovação do Gestor
-                    tag = <Tag severity="warning" value="Aguardando Gestor"></Tag>;
-                    break;
-                case 'D': // Aguardando Aprovação do DP
-                    tag = <Tag severity="info" value="Aguardando DP"></Tag>;
-                    break;
-                case 'M': // Marcadas
-                    tag = <Tag severity="info" value="Marcadas"></Tag>;
-                    break;
-                case 'P': // Pagas
-                    tag = <Tag severity="success" value="Pagas"></Tag>;
-                    break;
-                case 'F': // Finalizadas
-                    tag = <Tag severity="danger" value="Finalizadas"></Tag>;
-                    break;
-                case 'X': // Finalizadas para o próximo mês
-                    tag = <Tag severity="danger" value="Finalizadas Próximo Mês"></Tag>;
-                    break;
-                // Status antigos (mantidos para compatibilidade)
-                case 'I': // Aprovada
-                    tag = <Tag severity="success" value="Iniciada Solicitação"></Tag>;
-                    break;
-                // Status antigos (mantidos para compatibilidade)
-                case 'A': // Aprovada
-                    tag = <Tag severity="success" value="Aprovada"></Tag>;
-                    break;
-                case 'S': // Solicitada
-                    tag = <Tag severity="info" value="Solicitada"></Tag>;
-                    break;
-                case 'E': // Em Análise
-                    tag = <Tag severity="warning" value="Em Análise"></Tag>;
-                    break;
-                case 'C': // Cancelada
-                    tag = <Tag severity="danger" value="Cancelada"></Tag>;
-                    break;
-                case 'R': // Rejeitada
-                    tag = <Tag severity="danger" value="Rejeitada"></Tag>;
-                    break;
-                default:
-                    if(ArmazenadorToken.hasPermission('add_ferias'))
-                    {
-                        let [anoRow, mesRow, diaRow] = rowData.fimperaquis.split('T')[0].split('-').map(Number);
-                        // Subtrai 1 ano
-                        let dataInicioRow = new Date(anoRow - 1, mesRow - 1, diaRow);
-                        // Soma 1 dia
-                        dataInicioRow.setDate(dataInicioRow.getDate() + 1);
-
-                        const ev = {
-                            colab: {
-                                id: rowData.funcionario.id,
-                                nome: rowData.funcionario_nome,
-                                gestor: rowData.gestor || null
-                            },
-                            evento: {
-                                periodo_aquisitivo_inicio: dataInicioRow,
-                                periodo_aquisitivo_fim: rowData.fimperaquis,
-                                saldo_dias: rowData.nrodiasferias,
-                                limite: rowData.fimperaquis
-                            },
-                            tipo: 'aSolicitar'
-                        }
-                        tag = <Botao aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
-                    } else {
-                        tag = <Tag severity="info" value="N/A"></Tag>;
-                    }
-                    break;
-            }
-        } else {
-            if(ArmazenadorToken.hasPermission('add_ferias'))
-            {
-                tag = <Botao aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar</Botao>;
+        if (!rowData.dt_fim && !rowData.dt_inicio) {
+            // Férias a solicitar
+            if (ArmazenadorToken.hasPermission('add_ferias')) {
+                return (
+                    <p style={{fontWeight: '400'}}>
+                        <Botao aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab>
+                            <FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar
+                        </Botao>
+                    </p>
+                );
             } else {
-                tag = <Tag severity="info" value="N/A"></Tag>;
+                return <p style={{fontWeight: '400'}}>N/A</p>;
             }
         }
-        return <p style={{fontWeight: '400'}}>{tag}</p>
+
+        // Usa a função mapStatusToType para determinar o status
+        const statusType = mapStatusToType(rowData.situacaoferias, rowData.dt_inicio, rowData.dt_fim);
+        
+        // Mapeia o statusType para o texto oficial
+        let statusText = '';
+        switch (statusType) {
+            case 'aSolicitar':
+                statusText = 'A solicitar';
+                break;
+            case 'solicitada':
+                statusText = 'Em análise';
+                break;
+            case 'marcada':
+                statusText = 'Marcadas';
+                break;
+            case 'aprovada':
+                statusText = 'Aprovadas';
+                break;
+            case 'finalizada':
+                statusText = 'Finalizadas';
+                break;
+            case 'paga':
+                statusText = 'Pagas';
+                break;
+            case 'acontecendo':
+                statusText = 'Em férias';
+                break;
+            case 'passada':
+                statusText = 'Concluídas';
+                break;
+            case 'rejeitada':
+                statusText = 'Rejeitadas';
+                break;
+            default:
+                statusText = 'N/A';
+                break;
+        }
+
+        // Mapeia o status original para texto
+        let statusOriginalText = '';
+        switch (rowData.situacaoferias) {
+            case 'A':
+                statusOriginalText = 'Aprovada';
+                break;
+            case 'M':
+                statusOriginalText = 'Marcada';
+                break;
+            case 'F':
+                statusOriginalText = 'Finalizada';
+                break;
+            case 'P':
+                statusOriginalText = 'Paga';
+                break;
+            case 'X':
+                statusOriginalText = 'Finalizada Próximo Mês';
+                break;
+            case 'S':
+                statusOriginalText = 'Solicitada';
+                break;
+            case 'I':
+                statusOriginalText = 'Iniciada Solicitação';
+                break;
+            case 'G':
+                statusOriginalText = 'Aguardando Gestor';
+                break;
+            case 'D':
+                statusOriginalText = 'Aguardando DP';
+                break;
+            case 'E':
+                statusOriginalText = 'Em Análise';
+                break;
+            case 'C':
+                statusOriginalText = 'Cancelada';
+                break;
+            case 'R':
+                statusOriginalText = 'Rejeitada';
+                break;
+            default:
+                statusOriginalText = 'N/A';
+                break;
+        }
+
+        // Verifica se os textos são diferentes
+        const textosDiferentes = statusText !== statusOriginalText;
+
+        return (
+            <div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
+                <StatusTag $type={statusType}>
+                    {statusIcons[statusType]} {statusText}
+                </StatusTag>
+                {textosDiferentes && (
+                    <p style={{fontWeight: '400', fontSize: '12px', color: '#666', margin: 0}}>{statusOriginalText}</p>
+                )}
+            </div>
+        );
     }
     
     const representativeColaboradorTemplate = (rowData) => {
