@@ -408,7 +408,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [mostrarErroSaldoTotal, setMostrarErroSaldoTotal] = useState(false);
     const [botaoEnviarDesabilitado, setBotaoEnviarDesabilitado] = useState(false);
     const [parametrosFerias, setParametrosFerias] = useState({});
-    const [podeAnalistaTenantAprovar, setPodeAnalistaTenantAprovar] = useState(true); // Default true
+    const [podeAnalistaTenantAprovar, setPodeAnalistaTenantAprovar] = useState(false); // Default false - sem acesso até confirmar
 
     const userPerfil = ArmazenadorToken.UserProfile;
     const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
@@ -747,13 +747,13 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                     const parametrosAcessos = response.parametros || {};
                     // Se COLABORADOR não existir ou for true, então pode aprovar
                     const colaboradorParam = parametrosAcessos.COLABORADOR;
-                    const podeAprovar = colaboradorParam === undefined || colaboradorParam === true;
+                    const podeAprovar = colaboradorParam === true;
                     setPodeAnalistaTenantAprovar(podeAprovar);
                 })
                 .catch(error => {
                     console.log('Erro ao buscar parâmetros de acessos:', error);
-                    // Em caso de erro, mantém o default como true
-                    setPodeAnalistaTenantAprovar(true);
+                    // Em caso de erro ou sem resposta, assume que não tem acesso
+                    setPodeAnalistaTenantAprovar(false);
                 });
         }
     }, [opened, evento]);
