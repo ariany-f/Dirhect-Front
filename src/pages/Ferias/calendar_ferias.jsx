@@ -432,7 +432,10 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
         colaboradores.forEach(item => {
             // Agora usa funcionario_id diretamente
             const funcionarioId = item.funcionario_id;
-            if (!funcionarioId) return;
+            if (!funcionarioId) {
+                console.warn('Item sem funcionario_id encontrado:', item);
+                return;
+            }
             
             if (!colaboradoresMap[funcionarioId]) {
                 colaboradoresMap[funcionarioId] = {
@@ -495,7 +498,14 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
             }
         });
         
-        return Object.values(colaboradoresMap);
+        // Filtra colaboradores inválidos antes de retornar
+        return Object.values(colaboradoresMap).filter(colab => {
+            if (!colab || !colab.id || !colab.nome) {
+                console.warn('Colaborador inválido filtrado:', colab);
+                return false;
+            }
+            return true;
+        });
     }
 
     // Usa a função para garantir o formato correto
@@ -581,6 +591,13 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
 
     // Modal evento
     const handleEventClick = (colab, evento, tipo) => {
+        // Verificação de segurança para garantir que colab é válido
+        if (!colab || !colab.id) {
+            console.warn('Colaborador inválido no handleEventClick:', colab);
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Dados do colaborador inválidos', life: 3000 });
+            return;
+        }
+        
         setModalEvento({ colab, evento, tipo });
     };
     
@@ -782,7 +799,14 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                             </WeekDaysRow>
                         )}
                     </CalendarTableHeader>
-                    {colabsFiltrados.map((colab, idx) => (
+                    {colabsFiltrados.map((colab, idx) => {
+                        // Verificação de segurança para garantir que colab tem dados necessários
+                        if (!colab || !colab.id || !colab.nome) {
+                            console.warn('Colaborador inválido encontrado:', colab);
+                            return null;
+                        }
+                        
+                        return (
                         <EmployeeRow key={colab.nome}>
                             <EmployeeCell>{colab.nome}</EmployeeCell>
                             <DaysBar style={{ minWidth: '100%', position: 'relative' }}>
@@ -950,7 +974,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                 })()}
                             </DaysBar>
                         </EmployeeRow>
-                    ))}
+                        );
+                    })}
                 </CalendarGrid>
                 )}
             </CalendarScrollArea>

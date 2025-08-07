@@ -216,6 +216,12 @@ function FeriasListagem() {
     const handleColaboradorSelecionado = async (colaborador) => {
         setModalSelecaoColaboradorOpened(false);
 
+        // Verificação de segurança para garantir que colaborador existe
+        if (!colaborador || !colaborador.id) {
+            toast.current.show({ severity: 'error', summary: 'Erro', detail: 'Colaborador inválido selecionado', life: 3000 });
+            return;
+        }
+
         try {
             const ferias = await http.get(`ferias/?format=json&funcionario=${colaborador.id}`)
             const feria = ferias[0]

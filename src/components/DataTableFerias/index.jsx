@@ -145,7 +145,14 @@ function DataTableFerias({
     };
 
     function verDetalhes(rowData) {
-        if (!rowData) {
+        if (!rowData || !rowData.funcionario_id) {
+            console.warn('Dados inválidos para verDetalhes:', rowData);
+            toast.current?.show({ 
+                severity: 'error', 
+                summary: 'Erro', 
+                detail: 'Dados do registro de férias estão incompletos', 
+                life: 3000 
+            });
             return;
         }
     
@@ -570,10 +577,14 @@ function DataTableFerias({
     }
     
     const representativeColaboradorTemplate = (rowData) => {
+        // Verificação de segurança para garantir que rowData é válido
+        if (!rowData) {
+            return <div>-</div>;
+        }
        
         return <div key={rowData.id}>
             <Texto weight={700} width={'100%'}>
-                {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario_nome}
+                {rowData?.dados_pessoa_fisica?.nome ?? rowData.funcionario_nome ?? 'Colaborador'}
             </Texto>
         </div>
     }
@@ -613,7 +624,7 @@ function DataTableFerias({
         {
             if(colaborador)
             {
-                // setFilteredData(ferias.filter(feria => feria.funcionario.id == colaborador))
+                // setFilteredData(ferias.filter(feria => feria.funcionario_id == colaborador))
             }
             else
             {
