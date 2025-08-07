@@ -413,25 +413,8 @@ function BarraLateral({ $sidebarOpened }) {
 
     // Função para verificar se um menu deve ser exibido baseado nos parâmetros
     const menuDeveSerExibido = (menu) => {
-        // Mapeamento de tradução dos nomes dos menus (sem acentos)
-        const menuTranslations = {
-            'terminations': 'DEMISSOES',
-            'hirings': 'ADMISSOES',
-            'colaborators': 'COLABORADORES',
-            'dependents': 'DEPENDENTES',
-            'vacations': 'FERIAS',
-            'absences': 'AUSENCIAS',
-            'contracts': 'CONTRATOS',
-            'benefits_eligibility': 'ELEGIBILIDADE_BENEFICIOS',
-            'positions': 'VAGAS',
-            'orders': 'PEDIDOS',
-            'processes': 'PROCESSOS',
-            'activities': 'ATIVIDADES',
-            'home': 'INICIO'
-        };
-        
-        // Traduz o nome do menu para português e normaliza
-        const menuNameTranslated = menuTranslations[menu.itemTitulo.toLowerCase()] || normalizarTexto(menu.itemTitulo);
+        // Traduz o nome do menu usando i18n e normaliza
+        const menuNameTranslated = normalizarTexto(t(menu.itemTitulo.toLowerCase()));
         
         const perfilMenu = `${userGroups.toUpperCase()}_${menuNameTranslated}`;
         const todosMenu = `TODOS_${menuNameTranslated}`;
