@@ -414,14 +414,10 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
     const isAnalistaTenant = userPerfil === 'analista_tenant';
     
-    // Incluir analista_tenant nos perfis especiais se tiver permissão
-    const perfisEspeciaisCompleto = [...perfisEspeciais];
-    if (podeAnalistaTenantAprovar) {
-        perfisEspeciaisCompleto.push('analista_tenant');
-    }
-    
-    const isPerfilEspecial = perfisEspeciaisCompleto.includes(userPerfil);
+    // Perfis especiais que podem ignorar a validação de dias de antecedência
+    const isPerfilEspecial = perfisEspeciais.includes(userPerfil);
 
+    // Perfis que podem aprovar férias (inclui analista_tenant se tiver permissão)
     const perfisQueAprovam = ['analista', 'supervisor', 'gestor'];
     if (podeAnalistaTenantAprovar) {
         perfisQueAprovam.push('analista_tenant');
@@ -443,6 +439,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         hoje.setHours(0, 0, 0, 0);
         const diffTime = inicio - hoje;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        console.log('Debug verificarDiasAntecedencia:', {
+            userPerfil,
+            isPerfilEspecial,
+            diffDays,
+            diasMinimosAntecedencia,
+            podeAnalistaTenantAprovar
+        });
 
         if (diffDays < diasMinimosAntecedencia) {
             setMostrarErro45Dias(true);
@@ -912,6 +916,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45; // Fallback para 45 se não houver parâmetro
+        
+        console.log('Debug solicitarFerias - validação antecedência:', {
+            userPerfil,
+            isPerfilEspecial,
+            diffDays,
+            diasMinimosAntecedencia,
+            podeAnalistaTenantAprovar
+        });
         
         if (diffDays < diasMinimosAntecedencia) {
             if (!isPerfilEspecial) {
