@@ -430,14 +430,14 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
         // Normaliza dados da API de férias
         const colaboradoresMap = {};
         colaboradores.forEach(item => {
-            const funcionario = item.funcionario;
-            if (!funcionario) return;
+            // Agora usa funcionario_id diretamente
+            const funcionarioId = item.funcionario_id;
+            if (!funcionarioId) return;
             
-            const id = funcionario.id;
-            if (!colaboradoresMap[id]) {
-                colaboradoresMap[id] = {
-                    id: id,
-                    nome: item.funcionario_nome || funcionario.nome || funcionario.funcionario_pessoa_fisica?.nome || 'Colaborador',
+            if (!colaboradoresMap[funcionarioId]) {
+                colaboradoresMap[funcionarioId] = {
+                    id: funcionarioId,
+                    nome: item.funcionario_nome || 'Colaborador',
                     gestor: item.gestor || '', 
                     ausencias: []
                 };
@@ -450,7 +450,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                 const periodoAquisitivoInicio = new Date(anoFerias, 0, 1); // 01/01 do ano
                 const periodoAquisitivoFim = new Date(anoFerias, 11, 31); // 31/12 do ano
                 
-                colaboradoresMap[id].ausencias.push({
+                colaboradoresMap[funcionarioId].ausencias.push({
+                    id: item.id,
                     data_inicio: item.dt_inicio,
                     data_fim: item.dt_fim,
                     status: item.situacaoferias || item.status || 'A',
@@ -463,14 +464,19 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     aviso_ferias: item.aviso_ferias || null,
                     abono_pecuniario: item.abono_pecuniario || false,
                     ferias_coletivas: item.ferias_coletivas || false,
-                    tarefas: item.tarefas || [] // Adicionando o objeto tarefas
+                    periodo_aberto: item.periodo_aberto || false,
+                    periodo_perdido: item.periodo_perdido || false,
+                    datapagamento: item.datapagamento || null,
+                    fimperaquis: item.fimperaquis || null,
+                    tarefas: item.tarefas || [] // Tarefas agora vêm diretamente do item
                 });
             } else if (item.fimperaquis) {
                 // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, adiciona para criar barra de férias a requisitar
                 const fimPeriodo = parseDateAsLocal(item.fimperaquis);
                 const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                 
-                colaboradoresMap[id].ausencias.push({
+                colaboradoresMap[funcionarioId].ausencias.push({
+                    id: item.id,
                     fimperaquis: item.fimperaquis,
                     nrodiasferias: item.nrodiasferias || 30,
                     periodo_perdido: item.periodo_perdido || false,
@@ -482,7 +488,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     aviso_ferias: item.aviso_ferias || null,
                     abono_pecuniario: item.abono_pecuniario || false,
                     ferias_coletivas: item.ferias_coletivas || false,
-                    tarefas: item.tarefas || [] // Adicionando o objeto tarefas
+                    periodo_aberto: item.periodo_aberto || false,
+                    datapagamento: item.datapagamento || null,
+                    tarefas: item.tarefas || [] // Tarefas agora vêm diretamente do item
                 });
             }
         });

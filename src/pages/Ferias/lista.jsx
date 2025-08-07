@@ -234,7 +234,7 @@ function FeriasListagem() {
             const evento = {
                 colab: {
                     id: colaborador.id,
-                    nome: colaborador.funcionario_pessoa_fisica?.nome,
+                    nome: colaborador.nome || colaborador.funcionario_nome || colaborador.funcionario_pessoa_fisica?.nome,
                     gestor: colaborador.gestor,
                 },
                 evento: {
