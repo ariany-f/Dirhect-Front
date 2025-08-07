@@ -7,6 +7,7 @@ import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import Texto from '@components/Texto';
 import BotaoGrupo from '@components/BotaoGrupo';
+import Botao from '@components/Botao';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
@@ -15,7 +16,7 @@ import ModalImportarPlanilha from '@components/ModalImportarPlanilha'
 import ModalSelecionarColaborador from '../ModalSelecionarColaborador';
 import ModalEncaminharVaga from '@components/ModalEncaminharVaga';
 import { Tag } from 'primereact/tag';
-import { FaTrash, FaUserTimes, FaUmbrella, FaDownload, FaUmbrellaBeach, FaCheck } from 'react-icons/fa';
+import { FaTrash, FaUserTimes, FaUmbrella, FaDownload, FaUmbrellaBeach, FaCheck, FaFileExcel } from 'react-icons/fa';
 import { MdFilterAltOff } from 'react-icons/md';
 import { Tooltip } from 'primereact/tooltip';
 import { GrAddCircle } from 'react-icons/gr';
@@ -50,6 +51,7 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const [funcoes, setFuncoes] = useState([]);
     const [key, setKey] = useState(0); // Chave para forçar re-renderização
     const [dadosCarregados, setDadosCarregados] = useState(false);
+    const [exportingExcel, setExportingExcel] = useState(false);
     const toast = useRef(null);
 
     const navegar = useNavigate()
@@ -58,6 +60,51 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
     const onGlobalFilterChange = (value) => {
         setGlobalFilterValue(value);
         onSearch(value);
+    };
+
+    const exportarExcel = async () => {
+        setExportingExcel(true);
+        try {
+            const response = await http.get('funcionario/export-excel/', {
+                responseType: 'blob'
+            });
+            
+            // Cria um link para download
+            const url = window.URL.createObjectURL(new Blob([response]));
+            const link = document.createElement('a');
+            link.href = url;
+            
+            // Gera um nome de arquivo com data/hora
+            const dataAtual = new Date();
+            const dataFormatada = dataAtual.toLocaleDateString('pt-BR').replace(/\//g, '-');
+            const horaFormatada = dataAtual.toLocaleTimeString('pt-BR').replace(/:/g, '-');
+            link.setAttribute('download', `colaboradores_${dataFormatada}_${horaFormatada}.xlsx`);
+            
+            // Adiciona ao DOM, clica e remove
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Limpa a URL criada
+            window.URL.revokeObjectURL(url);
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Planilha exportada com sucesso!',
+                life: 3000
+            });
+        } catch (error) {
+            console.error('Erro ao exportar Excel:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Erro',
+                detail: 'Erro ao exportar planilha de colaboradores',
+                life: 3000
+            });
+        } finally {
+            setExportingExcel(false);
+        }
     };
 
     function verDetalhes(value)
@@ -454,6 +501,24 @@ function DataTableColaboradores({ colaboradores, paginator, rows, totalRecords, 
                     </div>
                     </>
                 )}
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    {ArmazenadorToken.hasPermission('view_funcionario') && (
+                        <Botao 
+                            aoClicar={exportarExcel} 
+                            estilo="vermilion" 
+                            size="small" 
+                            tab
+                            disabled={exportingExcel}
+                        >
+                            <FaFileExcel 
+                                fill={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                color={exportingExcel ? '#9ca3af' : 'var(--secundaria)'} 
+                                size={16}
+                            />
+                            {exportingExcel ? 'Exportando...' : 'Exportar Excel'}
+                        </Botao>
+                    )}
+                </div>
             </BotaoGrupo>
             <DataTable 
                 key={key}
