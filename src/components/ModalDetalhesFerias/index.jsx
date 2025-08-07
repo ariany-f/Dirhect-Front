@@ -411,9 +411,16 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
     const userPerfil = ArmazenadorToken.UserProfile;
     const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
-    const isPerfilEspecial = perfisEspeciais.includes(userPerfil);
     const isAnalistaTenant = userPerfil === 'analista_tenant';
     const podeAnalistaTenantAprovar = import.meta.env.VITE_OPTIONS_ACESSO_COLABORADOR !== 'false';
+    
+    // Incluir analista_tenant nos perfis especiais se tiver permissão
+    const perfisEspeciaisCompleto = [...perfisEspeciais];
+    if (podeAnalistaTenantAprovar) {
+        perfisEspeciaisCompleto.push('analista_tenant');
+    }
+    
+    const isPerfilEspecial = perfisEspeciaisCompleto.includes(userPerfil);
 
     const perfisQueAprovam = ['analista', 'supervisor', 'gestor'];
     if (podeAnalistaTenantAprovar) {
