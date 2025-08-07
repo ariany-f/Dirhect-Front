@@ -172,7 +172,11 @@ function FeriasListagem() {
         if (tab === 'calendario') {
             url += `&periodo_aberto=true`
             url += `&incluir_finalizadas=true`
-            url += `&dt_inicio__gte=${new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0]}`
+            // Filtrar por fim do período aquisitivo: fim do ano passado + 11 meses
+            const anoAtual = new Date().getFullYear();
+            const fimAnoPassado = new Date(anoAtual - 1, 11, 31); // 31/12 do ano passado
+            fimAnoPassado.setMonth(fimAnoPassado.getMonth() + 11); // + 11 meses
+            url += `&fimperaquis_lte=${fimAnoPassado.toISOString().split('T')[0]}`
         }
         // Se estiver na aba lista, adiciona parâmetros de paginação
         else if (tab === 'lista') {
