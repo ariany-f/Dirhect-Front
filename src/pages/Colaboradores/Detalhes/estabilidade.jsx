@@ -9,41 +9,39 @@ import { useEffect, useState } from 'react'
 import http from '@http'
 import Loading from '@components/Loading'
 import styles from './Detalhes.module.css'
-import DataTableDependentes from '@components/DataTableDependentes'
-import DataTableFerias from '@components/DataTableFerias'
+import DataTableEstabilidade from '@components/DataTableEstabilidade'
 import { useSessaoUsuarioContext } from '../../../contexts/SessaoUsuario'
 import { GrAddCircle } from 'react-icons/gr'
 import ModalSelecionarColaborador from '@components/ModalSelecionarColaborador'
-import DataTableAusencias from '@components/DataTableAusencias'
 
 const DivPrincipal = styled.div`
     width: 65vw;
 `
 
-function ColaboradorAusencias() {
+function ColaboradorEstabilidade() {
 
     let { id } = useParams()
     const [loading, setLoading] = useState(false)
     const [modalOpened, setModalOpened] = useState(false)
-    const [ausencias, setAusencias] = useState(null)
+    const [estabilidades, setEstabilidades] = useState(null)
     const {usuario} = useSessaoUsuarioContext()
 
     useEffect(() => {
-        const buscarAusencias = async () => {
+        const buscarEstabilidades = async () => {
             setLoading(true)
             try {
-                const response = await http.get(`ausencias/?colaborador=${id}`)
-                setAusencias(response)
+                const response = await http.get(`estabilidade/?colaborador=${id}`)
+                setEstabilidades(response)
             } catch (error) {
-                console.error('Erro ao buscar ausências:', error)
-                setAusencias([])
+                console.error('Erro ao buscar estabilidades:', error)
+                setEstabilidades([])
             } finally {
                 setLoading(false)
             }
         }
 
         if (id) {
-            buscarAusencias()
+            buscarEstabilidades()
         }
     }, [id])
 
@@ -51,20 +49,20 @@ function ColaboradorAusencias() {
         <>
             <Loading opened={loading} />
             <Titulo>
-                <QuestionCard alinhamento="start" element={<h6>Ausências</h6>}>
+                <QuestionCard alinhamento="start" element={<h6>Estabilidade</h6>}>
                     <AiFillQuestionCircle className="question-icon" size={20} />
                 </QuestionCard>
             </Titulo>
             {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') && 
                 <BotaoGrupo align="end">
                     <BotaoGrupo align="center">
-                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" color="var(--secundaria)"/> Registrar Ausência</Botao>
+                        <Botao aoClicar={() => setModalOpened(true)} estilo="vermilion" size="small" tab><GrAddCircle className={styles.icon} fill="var(--secundaria)" color="var(--secundaria)"/> Registrar Estabilidade</Botao>
                     </BotaoGrupo>
                 </BotaoGrupo>}
-            <DataTableAusencias colaborador={id} ausencias={ausencias}/>
+            <DataTableEstabilidade colaborador={id} estabilidades={estabilidades}/>
             <ModalSelecionarColaborador opened={modalOpened} colaborador={id} aoFechar={() => setModalOpened(false)} />
         </>
     )
 }
 
-export default ColaboradorAusencias
+export default ColaboradorEstabilidade

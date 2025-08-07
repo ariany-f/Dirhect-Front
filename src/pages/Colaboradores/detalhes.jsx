@@ -468,6 +468,7 @@ function ColaboradorDetalhes() {
             { url: `/colaborador/detalhes/${id}/dependentes`, permission: 'view_dependente', useStartsWith: true },
             { url: `/colaborador/detalhes/${id}/ferias`, permission: 'view_ferias' },
             { url: `/colaborador/detalhes/${id}/ausencias`, permission: 'view_ausencia' },
+            { url: `/colaborador/detalhes/${id}/estabilidade`, permission: 'view_estabilidade' },
             { url: `/colaborador/detalhes/${id}/ciclos`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
             { url: `/colaborador/detalhes/${id}/esocial`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
             { url: `/colaborador/detalhes/${id}/pedidos`, permission: null, condition: () => usuario.tipo === 'grupo_rh' || usuario.tipo === 'global' },
@@ -498,6 +499,7 @@ function ColaboradorDetalhes() {
             { url: `/colaborador/detalhes/${id}/dependentes`, permission: 'view_dependente' },
             { url: `/colaborador/detalhes/${id}/ferias`, permission: 'view_ferias' },
             { url: `/colaborador/detalhes/${id}/ausencias`, permission: 'view_ausencia' },
+            { url: `/colaborador/detalhes/${id}/estabilidade`, permission: 'view_estabilidade' },
             { url: `/colaborador/detalhes/${id}/ciclos`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
             { url: `/colaborador/detalhes/${id}/esocial`, permission: null, condition: () => usuario.tipo === 'cliente' || usuario.tipo === 'equipeFolhaPagamento' },
             { url: `/colaborador/detalhes/${id}/pedidos`, permission: null, condition: () => usuario.tipo === 'grupo_rh' || usuario.tipo === 'global' },
@@ -1284,6 +1286,10 @@ function ColaboradorDetalhes() {
                     {ArmazenadorToken.hasPermission('view_ausencia') &&
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
+                    </Link>}
+                    {ArmazenadorToken.hasPermission('view_estabilidade') &&
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/estabilidade`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/estabilidade` ? 'black':''} size="small" tab>Estabilidade</Botao>
                     </Link>}
                     {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') &&
                         <>

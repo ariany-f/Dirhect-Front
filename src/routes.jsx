@@ -189,6 +189,7 @@ import CodigoSituacaoRais from './pages/TabelasSistema/codigo_situacao_rais'
 import DePara from './pages/TabelasSistema/depara'
 import MeusDadosEmpresa from './pages/MeusDados/empresa'
 import usePageMetadata from '@hooks/usePageMetadata';
+import ColaboradorEstabilidade from './pages/Colaboradores/Detalhes/estabilidade'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -262,6 +263,7 @@ function AppRouter() {
                   <Route path="dependentes/:codigo" element={<ColaboradorDependentesDetalhes />} />
                   <Route path="ferias" element={<ColabroadorFerias />} />
                   <Route path="ausencias" element={<ColaboradorAusencias />} />
+                  <Route path="estabilidade" element={<ColaboradorEstabilidade />} />
                   <Route path="esocial" element={<ColabroadorESocial />} />
                   <Route path="demissoes" element={<ColabroadorDemissoes />} />
                   <Route path="ciclos" element={<ColabroadorCiclos />} />
