@@ -159,7 +159,7 @@ function DataTableFerias({
     
         const eventoParaModal = {
             colab: {
-                id: rowData.funcionario.id,
+                id: rowData.funcionario_id,
                 nome: rowData.funcionario_nome,
                 gestor: rowData.gestor || null
             },
