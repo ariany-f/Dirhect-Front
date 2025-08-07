@@ -747,6 +747,32 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const isStatusPendente = eventoCompletado.evento?.status === 'E' || eventoCompletado.evento?.status === 'S';
     const podeAprovar = isStatusPendente && temPermissaoParaVerBotao;
 
+    const limparDados = () => {
+        setDataInicio('');
+        setDataFim('');
+        setNumeroDiasFerias('');
+        setAdiantarDecimoTerceiro(false);
+        setNumeroDiasAbono('');
+        setDataPagamento('');
+        setAvisoFerias('');
+        setAbonoPecuniario(false);
+        setFeriasColetivas(false);
+        
+        // Limpar todos os estados de erro
+        setMostrarErro45Dias(false);
+        setMostrarErroDatas(false);
+        setMostrarErroDiasMinimos(false);
+        setMostrarErroSaldoDias(false);
+        setMostrarErroAbono(false);
+        setMostrarErroSaldoTotal(false);
+        setBotaoEnviarDesabilitado(false);
+    };
+
+    const fecharComLimpeza = (resultado) => {
+        limparDados();
+        aoFechar(resultado);
+    };
+
     const aprovarFerias = async () => {
         
         const tarefaPendente = eventoCompletado.evento?.tarefas?.find(
@@ -754,16 +780,16 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         );
 
         if (!tarefaPendente) {
-            return aoFechar({ erro: true, mensagem: 'Nenhuma tarefa pendente encontrada para aprovação.' });
+            return fecharComLimpeza({ erro: true, mensagem: 'Nenhuma tarefa pendente encontrada para aprovação.' });
         }
 
         try {
             await http.post(`/tarefas/${tarefaPendente.id}/aprovar/`);
-            aoFechar({ sucesso: true, mensagem: 'Férias aprovadas com sucesso!' });
+            fecharComLimpeza({ sucesso: true, mensagem: 'Férias aprovadas com sucesso!' });
         } catch (error) {
             console.error("Erro ao aprovar tarefa de férias", error);
             const errorMessage = error.response?.data?.detail || 'Não foi possível aprovar a solicitação.';
-            aoFechar({ erro: true, mensagem: errorMessage });
+            fecharComLimpeza({ erro: true, mensagem: errorMessage });
         }
     };
     const reprovarFerias = async () => {
@@ -772,16 +798,16 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         );
 
         if (!tarefaPendente) {
-            return aoFechar({ erro: true, mensagem: 'Nenhuma tarefa pendente encontrada para rejeição.' });
+            return fecharComLimpeza({ erro: true, mensagem: 'Nenhuma tarefa pendente encontrada para rejeição.' });
         }
 
         try {
             await http.post(`/tarefas/${tarefaPendente.id}/rejeitar/`);
-            aoFechar({ sucesso: true, mensagem: 'Solicitação de férias reprovada.' });
+            fecharComLimpeza({ sucesso: true, mensagem: 'Solicitação de férias reprovada.' });
         } catch (error) {
             console.error("Erro ao reprovar férias", error);
             const errorMessage = error.response?.data?.detail || 'Não foi possível reprovar a solicitação.';
-            aoFechar({ erro: true, mensagem: errorMessage });
+            fecharComLimpeza({ erro: true, mensagem: errorMessage });
         }
     };
     
@@ -812,11 +838,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const podeSolicitar = statusType === 'aSolicitar' && temPermissaoAddFerias;
     const solicitarFerias = async () => {
         if (!dataInicio || !dataFim || !numeroDiasFerias) {
-            aoFechar({ aviso: true, mensagem: 'Por favor, preencha as datas de início e fim e o número de dias.' });
+            fecharComLimpeza({ aviso: true, mensagem: 'Por favor, preencha as datas de início e fim e o número de dias.' });
             return;
         }
         if (new Date(dataInicio) > new Date(dataFim)) {
-            aoFechar({ aviso: true, mensagem: 'A data de início não pode ser posterior à data de fim.' });
+            fecharComLimpeza({ aviso: true, mensagem: 'A data de início não pode ser posterior à data de fim.' });
             return;
         }
 
@@ -825,20 +851,20 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const abonoDias = parseInt(numeroDiasAbono) || 0;
 
         if (diasSolicitados > saldoDisponivel) {
-            aoFechar({ aviso: true, mensagem: `Você pode solicitar no máximo ${saldoDisponivel} dias de férias.` });
+            fecharComLimpeza({ aviso: true, mensagem: `Você pode solicitar no máximo ${saldoDisponivel} dias de férias.` });
             return;
         }
 
         // Nova validação: soma de abono + férias não pode ultrapassar saldo
         const somaTotal = diasSolicitados + (abonoPecuniario ? abonoDias : 0);
         if (somaTotal > saldoDisponivel) {
-            aoFechar({ aviso: true, mensagem: `A soma dos dias de férias e abono pecuniário (${somaTotal}) não pode exceder o saldo disponível (${saldoDisponivel} dias).` });
+            fecharComLimpeza({ aviso: true, mensagem: `A soma dos dias de férias e abono pecuniário (${somaTotal}) não pode exceder o saldo disponível (${saldoDisponivel} dias).` });
             return;
         }
 
         // Validação adicional: abono não pode exceder 10 dias
         if (abonoPecuniario && abonoDias > 10) {
-            aoFechar({ aviso: true, mensagem: 'O abono pecuniário não pode exceder 10 dias.' });
+            fecharComLimpeza({ aviso: true, mensagem: 'O abono pecuniário não pode exceder 10 dias.' });
             return;
         }
 
@@ -850,7 +876,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
         if (diffDays < 45) {
             if (!isPerfilEspecial) {
-                aoFechar({ aviso: true, mensagem: 'A solicitação de férias deve ser feita com no mínimo 45 dias de antecedência.' });
+                fecharComLimpeza({ aviso: true, mensagem: 'A solicitação de férias deve ser feita com no mínimo 45 dias de antecedência.' });
                 return;
             }
         }
@@ -866,25 +892,25 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 abono_pecuniario: abonoPecuniario,
                 ferias_coletivas: feriasColetivas
             });
-            aoFechar({ sucesso: true, mensagem: 'Solicitação de férias enviada com sucesso!' });
+            fecharComLimpeza({ sucesso: true, mensagem: 'Solicitação de férias enviada com sucesso!' });
         } catch (error) {
             console.error("Erro ao solicitar férias", error);
             const errorMessage = error.response?.data?.detail || 'Erro ao solicitar férias. Por favor, tente novamente.';
-            aoFechar({ erro: true, mensagem: errorMessage });
+            fecharComLimpeza({ erro: true, mensagem: errorMessage });
         }
     };
 
     const tituloPeriodo = (statusType === 'acontecendo' || statusType === 'passada' || statusType === 'aprovada' || statusType === 'finalizada' || statusType === 'solicitada' || statusType === 'marcada') ? 'Período de Férias' : 'Período Solicitado';
 
     return (
-        <OverlayRight $opened={opened} onClick={() => aoFechar()}>
+        <OverlayRight $opened={opened} onClick={() => fecharComLimpeza()}>
             <DialogEstilizadoRight $width={'80vw'} $align="flex-end" open={opened} $opened={opened} onClick={e => e.stopPropagation()}>
                 <Frame style={{padding: '24px 32px', maxHeight: '90vh', display: 'flex', flexDirection: 'column'}}>
                     <CabecalhoFlex>
                         <StatusTag $type={statusType}>
                             {statusIcons[statusType]} {statusLabel}
                         </StatusTag>
-                        <BotaoFechar onClick={() => aoFechar()} formMethod="dialog">
+                        <BotaoFechar onClick={() => fecharComLimpeza()} formMethod="dialog">
                             <RiCloseFill size={22} className="fechar" />
                         </BotaoFechar>
                     </CabecalhoFlex>

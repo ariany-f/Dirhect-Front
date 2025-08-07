@@ -1,6 +1,8 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import './DataTable.css'
 import CampoTexto from '@components/CampoTexto';
 import BotaoGrupo from '@components/BotaoGrupo';
@@ -425,6 +427,10 @@ function DataTableContratos({
         }
     };
 
+    const totalContratosTemplate = () => {
+        return 'Total de Contratos: ' + (totalRecords ?? 0);
+    };
+
     return (
         <>
             <div className="flex justify-content-end">
@@ -465,6 +471,13 @@ function DataTableContratos({
                 onSort={handleSort}
                 removableSort 
                 tableStyle={{ minWidth: '68vw' }}
+                footerColumnGroup={
+                    <ColumnGroup>
+                        <Row>
+                            <Column footer={totalContratosTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                        </Row>
+                    </ColumnGroup>
+                }
             >
                 <Column body={representativeNomeTemplate} header="Operadora" field="dados_operadora.nome" sortField="operadora" sortable style={{ width: '18%' }}></Column>
                 <Column field="observacao" sortable sortField="observacao" header="Observação" style={{ width: '10%' }}></Column>

@@ -1,6 +1,8 @@
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 import { Tooltip } from 'primereact/tooltip';
 import './DataTable.css'
 import Texto from '@components/Texto';
@@ -643,6 +645,10 @@ function DataTableFerias({
         setPageSize(newPageSize);
     };
 
+    const totalFeriasTemplate = () => {
+        return 'Total de Férias: ' + (totalRecords ?? 0);
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -663,6 +669,13 @@ function DataTableFerias({
                 first={(currentPage - 1) * pageSize}
                 onPage={onPageChange}
                 tableStyle={{ minWidth: (!colaborador ? '68vw' : '40vw') }}
+                footerColumnGroup={
+                    <ColumnGroup>
+                        <Row>
+                            <Column footer={totalFeriasTemplate} style={{ textAlign: 'right', fontWeight: 600 }} />
+                        </Row>
+                    </ColumnGroup>
+                }
             >
                 {!colaborador && <Column body={representativeColaboradorTemplate} field="colaborador_id" header="Colaborador" style={{ width: '15%' }}></Column>}
                 <Column body={representativeAquisicaoTemplate} field="fimperaquis" header="Aquisição" style={{ width: '18%' }}></Column>
