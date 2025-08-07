@@ -152,6 +152,7 @@ function BarraLateral({ $sidebarOpened }) {
     const { t } = useTranslation('common');
 
     const [grupos, setGrupos] = useState([]);
+    const [parametrosMenus, setParametrosMenus] = useState({});
 
     const {
         usuario,
@@ -178,6 +179,14 @@ function BarraLateral({ $sidebarOpened }) {
                     })
                     .catch(error => console.log('Erro ao buscar grupos:', error));
             }
+
+            // Buscar parâmetros de menus
+            http.get('parametros/por-assunto/?assunto=MENUS')
+                .then(response => {
+                    console.log('Parâmetros de menus:', response);
+                    setParametrosMenus(response.parametros || {});
+                })
+                .catch(error => console.log('Erro ao buscar parâmetros de menus:', error));
         }
     }, [usuario]);
 
@@ -392,8 +401,93 @@ function BarraLateral({ $sidebarOpened }) {
     }
 
 
-    // Filtrar menus condicionais pelas permissões do usuário
-    const filteredConditionalMenus = conditionalMenus.filter(menu => userPermissions.includes(menu.permission));
+    // Função para normalizar texto (remover acentos e caracteres especiais)
+    const normalizarTexto = (texto) => {
+        return texto
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+            .replace(/[^a-zA-Z0-9\s]/g, '') // Remove caracteres especiais
+            .replace(/\s+/g, '_') // Substitui espaços por underscore
+            .toUpperCase();
+    };
+
+    // Função para verificar se um menu deve ser exibido baseado nos parâmetros
+    const menuDeveSerExibido = (menu) => {
+        // Mapeamento de tradução dos nomes dos menus (sem acentos)
+        const menuTranslations = {
+            'terminations': 'DEMISSOES',
+            'hirings': 'ADMISSOES',
+            'colaborators': 'COLABORADORES',
+            'dependents': 'DEPENDENTES',
+            'vacations': 'FERIAS',
+            'absences': 'AUSENCIAS',
+            'contracts': 'CONTRATOS',
+            'benefits_eligibility': 'ELEGIBILIDADE_BENEFICIOS',
+            'positions': 'VAGAS',
+            'orders': 'PEDIDOS',
+            'processes': 'PROCESSOS',
+            'activities': 'ATIVIDADES',
+            'home': 'INICIO'
+        };
+        
+        // Traduz o nome do menu para português e normaliza
+        const menuNameTranslated = menuTranslations[menu.itemTitulo.toLowerCase()] || normalizarTexto(menu.itemTitulo);
+        
+        const perfilMenu = `${userGroups.toUpperCase()}_${menuNameTranslated}`;
+        const todosMenu = `TODOS_${menuNameTranslated}`;
+        
+        // Também verifica versões no singular/plural para compatibilidade
+        const menuNameSingular = menuNameTranslated.replace(/S$/, ''); // Remove 'S' final
+        const menuNamePlural = menuNameTranslated.endsWith('S') ? menuNameTranslated : `${menuNameTranslated}S`; // Adiciona 'S' se não terminar
+        
+        const perfilMenuSingular = `${userGroups.toUpperCase()}_${menuNameSingular}`;
+        const perfilMenuPlural = `${userGroups.toUpperCase()}_${menuNamePlural}`;
+        const todosMenuSingular = `TODOS_${menuNameSingular}`;
+        const todosMenuPlural = `TODOS_${menuNamePlural}`;
+        
+        console.log(`Verificando menu: ${menu.itemTitulo}`, {
+            originalName: menu.itemTitulo,
+            translatedName: menuNameTranslated,
+            perfilMenu,
+            todosMenu,
+            perfilMenuSingular,
+            perfilMenuPlural,
+            todosMenuSingular,
+            todosMenuPlural,
+            perfilValue: parametrosMenus[perfilMenu] || parametrosMenus[perfilMenuSingular] || parametrosMenus[perfilMenuPlural],
+            todosValue: parametrosMenus[todosMenu] || parametrosMenus[todosMenuSingular] || parametrosMenus[todosMenuPlural]
+        });
+        
+        // Verifica se existe parâmetro específico para o perfil (original, singular e plural)
+        if (parametrosMenus[perfilMenu] !== undefined) {
+            return parametrosMenus[perfilMenu] === 'true';
+        }
+        if (parametrosMenus[perfilMenuSingular] !== undefined) {
+            return parametrosMenus[perfilMenuSingular] === 'true';
+        }
+        if (parametrosMenus[perfilMenuPlural] !== undefined) {
+            return parametrosMenus[perfilMenuPlural] === 'true';
+        }
+        
+        // Verifica se existe parâmetro para todos os perfis (original, singular e plural)
+        if (parametrosMenus[todosMenu] !== undefined) {
+            return parametrosMenus[todosMenu] === 'true';
+        }
+        if (parametrosMenus[todosMenuSingular] !== undefined) {
+            return parametrosMenus[todosMenuSingular] === 'true';
+        }
+        if (parametrosMenus[todosMenuPlural] !== undefined) {
+            return parametrosMenus[todosMenuPlural] === 'true';
+        }
+        
+        // Se não há parâmetro específico, permite o menu (comportamento padrão)
+        return true;
+    };
+
+    // Filtrar menus condicionais pelas permissões do usuário E pelos parâmetros
+    const filteredConditionalMenus = conditionalMenus.filter(menu => 
+        userPermissions.includes(menu.permission) && menuDeveSerExibido(menu)
+    );
 
     // Juntar menus sempre visíveis e condicionais
     const menus = [...alwaysVisible, ...filteredConditionalMenus];
