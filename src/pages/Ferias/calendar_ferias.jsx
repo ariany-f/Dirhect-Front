@@ -486,7 +486,6 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     periodo_aquisitivo_inicio: inicioPeriodo,
                     periodo_aquisitivo_fim: fimPeriodo,
                     nrodiasabono: item.nrodiasabono || 0,
-                    nrodiasferias: item.nrodiasferias || 30,
                     adiantar_13: item.adiantar_13 || false,
                     aviso_ferias: item.aviso_ferias || null,
                     abono_pecuniario: item.abono_pecuniario || false,
