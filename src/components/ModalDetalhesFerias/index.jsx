@@ -408,11 +408,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [mostrarErroSaldoTotal, setMostrarErroSaldoTotal] = useState(false);
     const [botaoEnviarDesabilitado, setBotaoEnviarDesabilitado] = useState(false);
     const [parametrosFerias, setParametrosFerias] = useState({});
+    const [podeAnalistaTenantAprovar, setPodeAnalistaTenantAprovar] = useState(true); // Default true
 
     const userPerfil = ArmazenadorToken.UserProfile;
     const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
     const isAnalistaTenant = userPerfil === 'analista_tenant';
-    const podeAnalistaTenantAprovar = import.meta.env.VITE_OPTIONS_ACESSO_COLABORADOR !== 'false';
     
     // Incluir analista_tenant nos perfis especiais se tiver permissão
     const perfisEspeciaisCompleto = [...perfisEspeciais];
@@ -681,6 +681,21 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                     setParametrosFerias(response.parametros || {});
                 })
                 .catch(error => console.log('Erro ao buscar parâmetros de férias:', error));
+            
+            // Buscar parâmetros de acessos
+            http.get('shared/parametros/por-assunto/?assunto=ACESSOS')
+                .then(response => {
+                    const parametrosAcessos = response.parametros || {};
+                    // Se COLABORADOR não existir ou for true, então pode aprovar
+                    const colaboradorParam = parametrosAcessos.COLABORADOR;
+                    const podeAprovar = colaboradorParam === undefined || colaboradorParam === true;
+                    setPodeAnalistaTenantAprovar(podeAprovar);
+                })
+                .catch(error => {
+                    console.log('Erro ao buscar parâmetros de acessos:', error);
+                    // Em caso de erro, mantém o default como true
+                    setPodeAnalistaTenantAprovar(true);
+                });
         }
     }, [opened, evento]);
 
@@ -723,7 +738,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 (mostrarErro45Dias && !isPerfilEspecial)
             );
         }
-    }, [abonoPecuniario, numeroDiasFerias, numeroDiasAbono, evento?.evento?.saldo_dias, evento?.evento?.nrodiasferias, mostrarErroDatas, mostrarErroDiasMinimos, mostrarErroSaldoDias, mostrarErro45Dias, isPerfilEspecial]);
+    }, [abonoPecuniario, numeroDiasFerias, numeroDiasAbono, evento?.evento?.saldo_dias, evento?.evento?.nrodiasferias, mostrarErroDatas, mostrarErroDiasMinimos, mostrarErroSaldoDias, mostrarErro45Dias, isPerfilEspecial, podeAnalistaTenantAprovar]);
 
     if (!evento) return null;
 
