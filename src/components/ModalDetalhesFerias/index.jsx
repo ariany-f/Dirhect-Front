@@ -184,6 +184,19 @@ const AlertaAviso = styled.div`
     gap: 12px;
 `;
 
+const AlertaErro = styled.div`
+    background: #fef2f2;
+    color: #dc2626;
+    border-left: 4px solid #dc2626;
+    border-radius: 4px;
+    padding: 16px;
+    font-size: 14px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+`;
+
 const BlocoDatas = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -400,7 +413,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [avisoFerias, setAvisoFerias] = useState('');
     const [abonoPecuniario, setAbonoPecuniario] = useState(false);
     const [feriasColetivas, setFeriasColetivas] = useState(false);
-    const [mostrarErro45Dias, setMostrarErro45Dias] = useState(false);
+    const [mostrarErroAntecedencia, setMostrarErro45Dias] = useState(false);
     const [mostrarErroDatas, setMostrarErroDatas] = useState(false);
     const [mostrarErroDiasMinimos, setMostrarErroDiasMinimos] = useState(false);
     const [mostrarErroSaldoDias, setMostrarErroSaldoDias] = useState(false);
@@ -809,7 +822,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 (erroAntecedencia && !isPerfilEspecial)
             );
         }
-    }, [abonoPecuniario, numeroDiasFerias, numeroDiasAbono, evento?.evento?.saldo_dias, evento?.evento?.nrodiasferias, mostrarErroDatas, mostrarErroDiasMinimos, mostrarErroSaldoDias, mostrarErro45Dias, isPerfilEspecial, podeAnalistaTenantAprovar, dataInicio, parametrosFerias]);
+    }, [abonoPecuniario, numeroDiasFerias, numeroDiasAbono, evento?.evento?.saldo_dias, evento?.evento?.nrodiasferias, mostrarErroDatas, mostrarErroDiasMinimos, mostrarErroSaldoDias, mostrarErroAntecedencia, isPerfilEspecial, podeAnalistaTenantAprovar, dataInicio, parametrosFerias]);
 
     if (!evento) return null;
 
@@ -1094,60 +1107,68 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                 {alerta}
                                 {/* Infoboxes de avisos */}
                                 {mostrarErroDatas && (
-                                    <AlertaAviso>
-                                        <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                    <AlertaErro>
+                                        <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
                                         <span>
                                             A data de início não pode ser posterior à data de fim das férias.
                                         </span>
-                                    </AlertaAviso>
+                                    </AlertaErro>
                                 )}
 
                                 {mostrarErroDiasMinimos && (
-                                    <AlertaAviso>
-                                        <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                    <AlertaErro>
+                                        <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
                                         <span>
                                             O período de férias deve ter no mínimo 5 dias.
                                         </span>
-                                    </AlertaAviso>
+                                    </AlertaErro>
                                 )}
 
                                 {mostrarErroSaldoDias && (
-                                    <AlertaAviso>
-                                        <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                    <AlertaErro>
+                                        <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
                                         <span>
                                             O período selecionado excede o saldo de dias disponíveis ({evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30} dias).
                                         </span>
-                                    </AlertaAviso>
+                                    </AlertaErro>
                                 )}
 
                                 {mostrarErroAbono && (
-                                    <AlertaAviso>
-                                        <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                    <AlertaErro>
+                                        <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
                                         <span>
                                             O abono pecuniário não pode exceder 10 dias.
                                         </span>
-                                    </AlertaAviso>
+                                    </AlertaErro>
                                 )}
 
                                 {mostrarErroSaldoTotal && (
-                                    <AlertaAviso>
-                                        <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                    <AlertaErro>
+                                        <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
                                         <span>
                                             A soma dos dias de férias e abono pecuniário não pode exceder o saldo disponível. O abono reduz os dias disponíveis para férias.
                                         </span>
-                                    </AlertaAviso>
+                                    </AlertaErro>
                                 )}
 
-                                {mostrarErro45Dias && (
-                                    <AlertaAviso>
-                                        <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
-                                        <span>
-                                            A solicitação de férias deve ser feita com no mínimo {parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45} dias de antecedência. 
-                                            {!isPerfilEspecial 
-                                                ? " Entre em contato com o seu gestor ou RH para solicitar uma exceção."
-                                                : " Você tem permissão para prosseguir com a solicitação mesmo assim."}
-                                        </span>
-                                    </AlertaAviso>
+                                {mostrarErroAntecedencia && (
+                                    !isPerfilEspecial ? (
+                                        <AlertaErro>
+                                            <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
+                                            <span>
+                                                A solicitação de férias deve ser feita com no mínimo {parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45} dias de antecedência. 
+                                                Entre em contato com o seu gestor ou RH para solicitar uma exceção.
+                                            </span>
+                                        </AlertaErro>
+                                    ) : (
+                                        <AlertaAviso>
+                                            <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
+                                            <span>
+                                                A solicitação de férias deve ser feita com no mínimo {parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45} dias de antecedência. 
+                                                Você tem permissão para prosseguir com a solicitação mesmo assim.
+                                            </span>
+                                        </AlertaAviso>
+                                    )
                                 )}
                             </DetalhesCard>
                         </DetalhesContainer>
