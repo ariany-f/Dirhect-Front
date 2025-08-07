@@ -490,6 +490,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const excedeSaldoTotal = somaTotal > saldoDisponivel;
         setMostrarErroSaldoTotal(excedeSaldoTotal);
 
+        // Validar dias de antecedência diretamente aqui
+        const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45;
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+        const diffTime = dataInicio - hoje;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const erroAntecedencia = diffDays < diasMinimosAntecedencia;
+
         // Desabilitar botão se houver qualquer erro
         setBotaoEnviarDesabilitado(
             datasInvalidas || 
@@ -497,7 +505,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             excedeSaldo || 
             abonoExcede10 ||
             excedeSaldoTotal ||
-            (mostrarErro45Dias && !isPerfilEspecial)
+            (erroAntecedencia && !isPerfilEspecial)
         );
     };
 
@@ -626,11 +634,32 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 const somaTotal = diasSolicitados + (abonoPecuniario ? abonoDias : 0);
                 const excedeSaldoTotal = somaTotal > saldoDisponivel;
                 setMostrarErroSaldoTotal(excedeSaldoTotal);
+                
+                // Validar dias de antecedência se tiver data de início
+                let erroAntecedencia = false;
+                if (dataInicio) {
+                    const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45;
+                    const hoje = new Date();
+                    hoje.setHours(0, 0, 0, 0);
+                    const inicio = parseDateAsLocal(dataInicio);
+                    const diffTime = inicio - hoje;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    erroAntecedencia = diffDays < diasMinimosAntecedencia;
+                }
+                
+                // Atualizar estado do botão
+                setBotaoEnviarDesabilitado(
+                    diasInsuficientes || 
+                    excedeSaldo || 
+                    excedeSaldoTotal ||
+                    (erroAntecedencia && !isPerfilEspecial)
+                );
             } else {
                 // Se campo vazio, limpar erros
                 setMostrarErroDiasMinimos(false);
                 setMostrarErroSaldoDias(false);
                 setMostrarErroSaldoTotal(false);
+                setBotaoEnviarDesabilitado(false);
             }
         }
     };
@@ -662,13 +691,25 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const excedeSaldoTotal = somaTotal > saldoDisponivel;
         setMostrarErroSaldoTotal(excedeSaldoTotal);
         
+        // Validar dias de antecedência se tiver data de início
+        let erroAntecedencia = false;
+        if (dataInicio) {
+            const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45;
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const inicio = parseDateAsLocal(dataInicio);
+            const diffTime = inicio - hoje;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            erroAntecedencia = diffDays < diasMinimosAntecedencia;
+        }
+        
         setBotaoEnviarDesabilitado(
             mostrarErroDatas || 
             mostrarErroDiasMinimos || 
             mostrarErroSaldoDias || 
             abonoExcede10 ||
             excedeSaldoTotal ||
-            (mostrarErro45Dias && !isPerfilEspecial)
+            (erroAntecedencia && !isPerfilEspecial)
         );
     };
 
@@ -732,6 +773,18 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             const excedeSaldoTotal = somaTotal > saldoDisponivel;
             setMostrarErroSaldoTotal(excedeSaldoTotal);
             
+            // Validar dias de antecedência se tiver data de início
+            let erroAntecedencia = false;
+            if (dataInicio) {
+                const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45;
+                const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0);
+                const inicio = parseDateAsLocal(dataInicio);
+                const diffTime = inicio - hoje;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                erroAntecedencia = diffDays < diasMinimosAntecedencia;
+            }
+            
             // Atualizar estado do botão
             setBotaoEnviarDesabilitado(
                 mostrarErroDatas || 
@@ -739,10 +792,10 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 mostrarErroSaldoDias || 
                 abonoExcede10 ||
                 excedeSaldoTotal ||
-                (mostrarErro45Dias && !isPerfilEspecial)
+                (erroAntecedencia && !isPerfilEspecial)
             );
         }
-    }, [abonoPecuniario, numeroDiasFerias, numeroDiasAbono, evento?.evento?.saldo_dias, evento?.evento?.nrodiasferias, mostrarErroDatas, mostrarErroDiasMinimos, mostrarErroSaldoDias, mostrarErro45Dias, isPerfilEspecial, podeAnalistaTenantAprovar]);
+    }, [abonoPecuniario, numeroDiasFerias, numeroDiasAbono, evento?.evento?.saldo_dias, evento?.evento?.nrodiasferias, mostrarErroDatas, mostrarErroDiasMinimos, mostrarErroSaldoDias, mostrarErro45Dias, isPerfilEspecial, podeAnalistaTenantAprovar, dataInicio, parametrosFerias]);
 
     if (!evento) return null;
 
