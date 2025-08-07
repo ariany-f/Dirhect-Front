@@ -610,6 +610,13 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const handleNumeroDiasFeriasChange = (e) => {
         const novoNumero = e.target.value;
         console.log('Debug handleNumeroDiasFeriasChange:', { novoNumero, numeroDiasFerias });
+        
+        // Validar se é um número válido e não negativo
+        const numeroInt = parseInt(novoNumero);
+        if (novoNumero !== '' && (isNaN(numeroInt) || numeroInt < 0)) {
+            return; // Não atualiza o estado se for inválido
+        }
+        
         setNumeroDiasFerias(novoNumero);
         
         // Recalcula a data de fim se já tiver data de início
@@ -666,6 +673,13 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
     const handleAbonoChange = (e) => {
         const novoAbono = e.target.value;
+        
+        // Validar se é um número válido e não negativo
+        const numeroInt = parseInt(novoAbono);
+        if (novoAbono !== '' && (isNaN(numeroInt) || numeroInt < 0)) {
+            return; // Não atualiza o estado se for inválido
+        }
+        
         setNumeroDiasAbono(novoAbono);
         
         // Validar abono
@@ -1269,6 +1283,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     placeholder="0"
                                                     min="1"
                                                     max={evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30}
+                                                    onKeyPress={(e) => {
+                                                        // Impedir digitação de hífen (números negativos)
+                                                        if (e.key === '-') {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
                                                 />
                                             </Linha>
                                             <Linha style={{flex: 2}}>
@@ -1304,6 +1324,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     min="0"
                                                     max="10"
                                                     readOnly={!abonoPecuniario}
+                                                    onKeyPress={(e) => {
+                                                        // Impedir digitação de hífen (números negativos)
+                                                        if (e.key === '-') {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
                                                     style={{
                                                         backgroundColor: !abonoPecuniario ? '#f8f9fa' : '#fff',
                                                         color: !abonoPecuniario ? '#6c757d' : '#212529',
