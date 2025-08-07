@@ -47,9 +47,9 @@ function DataTableEstabilidade({ estabilidades, colaborador = null }) {
 
    
     function representativSituacaoTemplate(rowData) {
-        let estabilidade = rowData?.estabilidade_nome[0].toUpperCase() + rowData?.estabilidade_nome.substring(1);
+        let estabilidade = rowData?.tipo_descricao;
         
-        switch(rowData?.estabilidade_nome)
+        switch(rowData?.tipo_descricao)
         {
             case 'Estabilidade':
                 estabilidade = <Tag severity="success" value="Estabilidade"></Tag>;
@@ -67,17 +67,23 @@ function DataTableEstabilidade({ estabilidades, colaborador = null }) {
                 {rowData?.funcionario_nome}
             </Texto>
             <div style={{marginTop: '10px', width: '100%', fontWeight: '500', fontSize:'13px', display: 'flex', color: 'var(--neutro-500)'}}>
-                Tipo de Estabilidade:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.estabilidade_nome}</p>
+                Chapa:&nbsp;<p style={{fontWeight: '600', color: 'var(--neutro-500)'}}>{rowData.funcionario_chapa}</p>
             </div>
         </div>
     }
 
     const representativeInicioTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{new Date(rowData.dt_inicio).toLocaleDateString("pt-BR")}</p>
+        return <p style={{fontWeight: '400'}}>{new Date(rowData.data_inicio).toLocaleDateString("pt-BR")}</p>
     }
     
     const representativeFimTemplate = (rowData) => {
-        return <p style={{fontWeight: '400'}}>{rowData.dt_fim ? new Date(rowData.dt_fim).toLocaleDateString("pt-BR") : 'Em andamento'}</p>
+        return <p style={{fontWeight: '400'}}>{rowData.data_fim ? new Date(rowData.data_fim).toLocaleDateString("pt-BR") : 'Em andamento'}</p>
+    }
+
+    const representativeStatusTemplate = (rowData) => {
+        return rowData.ativo ? 
+            <Tag severity="success" value="Ativo"></Tag> : 
+            <Tag severity="danger" value="Inativo"></Tag>
     }
     
     return (
@@ -97,11 +103,12 @@ function DataTableEstabilidade({ estabilidades, colaborador = null }) {
                 )
                 }
             </BotaoGrupo>
-            <DataTable value={estabilidades} filters={filters} globalFilterFields={['funcionario']} emptyMessage="Não foram encontradas estabilidades registradas" selection={selectedEstabilidade} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
-                {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario" header="Colaborador" style={{ width: '30%' }}></Column>}
-                <Column body={representativSituacaoTemplate} field="estabilidade_nome" header="Estabilidade" style={{ width: '20%' }}></Column>
-                <Column body={representativeInicioTemplate} field="dt_inicio" header="Data Início" style={{ width: '15%' }}></Column>
-                <Column body={representativeFimTemplate} field="dt_fim" header="Data Fim" style={{ width: '15%' }}></Column>
+            <DataTable value={estabilidades} filters={filters} globalFilterFields={['funcionario_nome', 'funcionario_chapa']} emptyMessage="Não foram encontradas estabilidades registradas" selection={selectedEstabilidade} onSelectionChange={(e) => verDetalhes(e.value)} selectionMode="single" paginator rows={10} tableStyle={{ minWidth: (!colaborador ? '68vw' : '48vw') }}>
+                {!colaborador && <Column body={representativeColaboradorTemplate} field="funcionario_nome" header="Colaborador" style={{ width: '25%' }}></Column>}
+                <Column body={representativSituacaoTemplate} field="tipo_descricao" header="Estabilidade" style={{ width: '20%' }}></Column>
+                <Column body={representativeInicioTemplate} field="data_inicio" header="Data Início" style={{ width: '15%' }}></Column>
+                <Column body={representativeFimTemplate} field="data_fim" header="Data Fim" style={{ width: '15%' }}></Column>
+                <Column body={representativeStatusTemplate} field="ativo" header="Status" style={{ width: '10%' }}></Column>
             </DataTable>
             <ModalSelecionarColaborador opened={modalOpened} aoFechar={() => setModalOpened(false)} />
 
