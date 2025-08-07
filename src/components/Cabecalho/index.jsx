@@ -34,7 +34,7 @@ const MegaMenuWrapper = styled.div`
 const MenuTrigger = styled.button`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   cursor: pointer;
   padding: 8px 16px;
   border-radius: 8px;
@@ -160,7 +160,7 @@ const HeaderBottom = styled.div`
 const RightItems = styled.nav`
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: 18px;
   flex-wrap: wrap;
 
   @media screen and (max-width: 1024px) {

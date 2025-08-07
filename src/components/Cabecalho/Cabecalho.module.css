@@ -9,7 +9,7 @@
 .divisor {
     display: flex;
     align-items: center;
-    gap: 48px;
+    gap: 24px;
 }
 
 .link {
