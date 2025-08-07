@@ -623,8 +623,17 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         
         // Validar abono
         const abonoDias = parseInt(novoAbono) || 0;
-        const saldoDisponivel = evento?.evento?.saldo_dias ?? 30;
+        const saldoDisponivel = evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30;
         const diasSolicitados = parseInt(numeroDiasFerias) || 0;
+        
+        console.log('Debug handleAbonoChange:', { 
+            novoAbono, 
+            abonoDias, 
+            diasSolicitados, 
+            saldoDisponivel, 
+            abonoPecuniario,
+            somaTotal: diasSolicitados + (abonoPecuniario ? abonoDias : 0)
+        });
         
         // Abono não pode exceder 10 dias
         const abonoExcede10 = abonoPecuniario && abonoDias > 10;
@@ -635,32 +644,12 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const excedeSaldoTotal = somaTotal > saldoDisponivel;
         setMostrarErroSaldoTotal(excedeSaldoTotal);
         
-        // Se exceder o saldo, ajustar automaticamente os dias de férias
-        // Mas sempre limitando o abono a no máximo 10 dias
-        if (excedeSaldoTotal && abonoPecuniario && abonoDias > 0 && abonoDias <= 10) {
-            const novosDiasFerias = saldoDisponivel - abonoDias;
-            if (novosDiasFerias >= 5) { // Mínimo de 5 dias de férias
-                setNumeroDiasFerias(novosDiasFerias.toString());
-                setMostrarErroSaldoTotal(false);
-                
-                // Recalcular data de fim se já tiver data de início
-                if (dataInicio) {
-                    const dataFimCalculada = calcularDataFim(dataInicio, novosDiasFerias);
-                    setDataFim(dataFimCalculada);
-                }
-            } else {
-                setMostrarErroSaldoTotal(true);
-            }
-        } else {
-            setMostrarErroSaldoTotal(excedeSaldoTotal);
-        }
-        
         setBotaoEnviarDesabilitado(
             mostrarErroDatas || 
             mostrarErroDiasMinimos || 
             mostrarErroSaldoDias || 
             abonoExcede10 ||
-            mostrarErroSaldoTotal ||
+            excedeSaldoTotal ||
             (mostrarErro45Dias && !isPerfilEspecial)
         );
     };
@@ -673,21 +662,46 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         }
     }, [opened, evento]);
 
-    // Limpar campo de abono quando abonoPecuniario for false
+    // Limpar campo de abono quando abonoPecuniario for false e revalidar quando ativar
     React.useEffect(() => {
         if (!abonoPecuniario) {
             setNumeroDiasAbono('');
             setMostrarErroSaldoTotal(false);
+            setMostrarErroAbono(false);
         } else {
-            // Revalidar soma total quando ativar abono pecuniário
+            // Revalidar quando ativar abono pecuniário
             const diasSolicitados = parseInt(numeroDiasFerias) || 0;
             const abonoDias = parseInt(numeroDiasAbono) || 0;
-            const saldoDisponivel = evento?.evento?.saldo_dias ?? 30;
+            const saldoDisponivel = evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30;
+            
+            console.log('Debug useEffect abono:', { 
+                abonoPecuniario, 
+                diasSolicitados, 
+                abonoDias, 
+                saldoDisponivel, 
+                somaTotal: diasSolicitados + abonoDias 
+            });
+            
+            // Validar abono não exceder 10 dias
+            const abonoExcede10 = abonoDias > 10;
+            setMostrarErroAbono(abonoExcede10);
+            
+            // Validar soma total
             const somaTotal = diasSolicitados + abonoDias;
             const excedeSaldoTotal = somaTotal > saldoDisponivel;
             setMostrarErroSaldoTotal(excedeSaldoTotal);
+            
+            // Atualizar estado do botão
+            setBotaoEnviarDesabilitado(
+                mostrarErroDatas || 
+                mostrarErroDiasMinimos || 
+                mostrarErroSaldoDias || 
+                abonoExcede10 ||
+                excedeSaldoTotal ||
+                (mostrarErro45Dias && !isPerfilEspecial)
+            );
         }
-    }, [abonoPecuniario, numeroDiasFerias, numeroDiasAbono, evento?.evento?.saldo_dias]);
+    }, [abonoPecuniario, numeroDiasFerias, numeroDiasAbono, evento?.evento?.saldo_dias, evento?.evento?.nrodiasferias, mostrarErroDatas, mostrarErroDiasMinimos, mostrarErroSaldoDias, mostrarErro45Dias, isPerfilEspecial]);
 
     if (!evento) return null;
 
@@ -957,7 +971,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                     <AlertaAviso>
                                         <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
                                         <span>
-                                            O período selecionado excede o saldo de dias disponíveis ({evento?.evento?.saldo_dias ?? 30} dias).
+                                            O período selecionado excede o saldo de dias disponíveis ({evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30} dias).
                                         </span>
                                     </AlertaAviso>
                                 )}
