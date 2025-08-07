@@ -407,6 +407,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [mostrarErroAbono, setMostrarErroAbono] = useState(false);
     const [mostrarErroSaldoTotal, setMostrarErroSaldoTotal] = useState(false);
     const [botaoEnviarDesabilitado, setBotaoEnviarDesabilitado] = useState(false);
+    const [parametrosFerias, setParametrosFerias] = useState({});
 
     const userPerfil = ArmazenadorToken.UserProfile;
     const perfisEspeciais = ['analista', 'supervisor', 'gestor'];
@@ -421,12 +422,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     
     const temPermissaoParaVerBotao = perfisQueAprovam.includes(userPerfil);
 
-    const verificar45Dias = (novaData) => {
+    const verificarDiasAntecedencia = (novaData) => {
         if (!novaData) {
             setMostrarErro45Dias(false);
             setBotaoEnviarDesabilitado(false);
             return;
         }
+
+        const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45; // Fallback para 45 se não houver parâmetro
 
         const inicio = parseDateAsLocal(novaData);
         const hoje = new Date();
@@ -434,7 +437,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const diffTime = inicio - hoje;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        if (diffDays < 45) {
+        if (diffDays < diasMinimosAntecedencia) {
             setMostrarErro45Dias(true);
             // Desabilita o botão se não for perfil especial (analista, supervisor, gestor)
             setBotaoEnviarDesabilitado(!isPerfilEspecial);
@@ -535,7 +538,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const handleDataInicioChange = (e) => {
         const novaData = e.target.value;
         setDataInicio(novaData);
-        verificar45Dias(novaData);
+        verificarDiasAntecedencia(novaData);
         
         // Auto-preenche a data de fim baseada no número de dias de férias
         if (novaData && numeroDiasFerias) {
@@ -663,6 +666,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         if (opened && evento) {
             const saldoDisponivel = evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30;
             setNumeroDiasFerias(saldoDisponivel.toString());
+            
+            // Buscar parâmetros de férias quando o modal abrir
+            http.get('parametros/por-assunto/?assunto=FERIAS')
+                .then(response => {
+                    console.log('Parâmetros de férias:', response);
+                    setParametrosFerias(response.parametros || {});
+                })
+                .catch(error => console.log('Erro ao buscar parâmetros de férias:', error));
         }
     }, [opened, evento]);
 
@@ -878,9 +889,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const diffTime = inicio - hoje;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        if (diffDays < 45) {
+        const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45; // Fallback para 45 se não houver parâmetro
+        
+        if (diffDays < diasMinimosAntecedencia) {
             if (!isPerfilEspecial) {
-                fecharComLimpeza({ aviso: true, mensagem: 'A solicitação de férias deve ser feita com no mínimo 45 dias de antecedência.' });
+                fecharComLimpeza({ aviso: true, mensagem: `A solicitação de férias deve ser feita com no mínimo ${diasMinimosAntecedencia} dias de antecedência.` });
                 return;
             }
         }
@@ -1028,7 +1041,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                     <AlertaAviso>
                                         <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
                                         <span>
-                                            A solicitação de férias deve ser feita com no mínimo 45 dias de antecedência. 
+                                            A solicitação de férias deve ser feita com no mínimo {parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45} dias de antecedência. 
                                             {!isPerfilEspecial 
                                                 ? " Entre em contato com o seu gestor ou RH para solicitar uma exceção."
                                                 : " Você tem permissão para prosseguir com a solicitação mesmo assim."}
