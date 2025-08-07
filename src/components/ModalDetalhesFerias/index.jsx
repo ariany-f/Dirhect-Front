@@ -547,16 +547,20 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             validarDatas('', dataFim);
         }
         
-        // Sugere data de pagamento como 2 dias úteis antes do início
-        if (novaData && !dataPagamento) {
+        // Recalcula data de pagamento como 2 dias úteis antes do início
+        if (novaData) {
             const dataPagamentoSugerida = calcularDataPagamento(novaData);
             setDataPagamento(dataPagamentoSugerida);
+        } else {
+            setDataPagamento('');
         }
         
-        // Sugere data de aviso de férias como 30 dias corridos antes do início
-        if (novaData && !avisoFerias) {
+        // Recalcula data de aviso de férias como 30 dias corridos antes do início
+        if (novaData) {
             const dataAvisoSugerida = calcularDataAvisoFerias(novaData);
             setAvisoFerias(dataAvisoSugerida);
+        } else {
+            setAvisoFerias('');
         }
     };
 
