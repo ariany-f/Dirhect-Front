@@ -428,6 +428,24 @@ function BarraLateral({ $sidebarOpened }) {
         const todosMenuSingular = `TODOS_${menuNameSingular}`;
         const todosMenuPlural = `TODOS_${menuNamePlural}`;
         
+        // Função para buscar parâmetro de forma case-insensitive
+        const buscarParametro = (chave) => {
+            // Primeiro tenta a chave exata
+            if (parametrosMenus[chave] !== undefined) {
+                return parametrosMenus[chave];
+            }
+            
+            // Depois tenta case-insensitive
+            const chaveLower = chave.toLowerCase();
+            for (const [key, value] of Object.entries(parametrosMenus)) {
+                if (key.toLowerCase() === chaveLower) {
+                    return value;
+                }
+            }
+            
+            return undefined;
+        };
+        
         console.log(`Verificando menu: ${menu.itemTitulo}`, {
             originalName: menu.itemTitulo,
             translatedName: menuNameTranslated,
@@ -437,30 +455,20 @@ function BarraLateral({ $sidebarOpened }) {
             perfilMenuPlural,
             todosMenuSingular,
             todosMenuPlural,
-            perfilValue: parametrosMenus[perfilMenu] || parametrosMenus[perfilMenuSingular] || parametrosMenus[perfilMenuPlural],
-            todosValue: parametrosMenus[todosMenu] || parametrosMenus[todosMenuSingular] || parametrosMenus[todosMenuPlural]
+            perfilValue: buscarParametro(perfilMenu) || buscarParametro(perfilMenuSingular) || buscarParametro(perfilMenuPlural),
+            todosValue: buscarParametro(todosMenu) || buscarParametro(todosMenuSingular) || buscarParametro(todosMenuPlural)
         });
         
         // Verifica se existe parâmetro específico para o perfil (original, singular e plural)
-        if (parametrosMenus[perfilMenu] !== undefined) {
-            return parametrosMenus[perfilMenu] === 'true';
-        }
-        if (parametrosMenus[perfilMenuSingular] !== undefined) {
-            return parametrosMenus[perfilMenuSingular] === 'true';
-        }
-        if (parametrosMenus[perfilMenuPlural] !== undefined) {
-            return parametrosMenus[perfilMenuPlural] === 'true';
+        const perfilValue = buscarParametro(perfilMenu) || buscarParametro(perfilMenuSingular) || buscarParametro(perfilMenuPlural);
+        if (perfilValue !== undefined) {
+            return perfilValue === 'true' || perfilValue === '1';
         }
         
         // Verifica se existe parâmetro para todos os perfis (original, singular e plural)
-        if (parametrosMenus[todosMenu] !== undefined) {
-            return parametrosMenus[todosMenu] === 'true';
-        }
-        if (parametrosMenus[todosMenuSingular] !== undefined) {
-            return parametrosMenus[todosMenuSingular] === 'true';
-        }
-        if (parametrosMenus[todosMenuPlural] !== undefined) {
-            return parametrosMenus[todosMenuPlural] === 'true';
+        const todosValue = buscarParametro(todosMenu) || buscarParametro(todosMenuSingular) || buscarParametro(todosMenuPlural);
+        if (todosValue !== undefined) {
+            return todosValue === 'true' || todosValue === '1';
         }
         
         // Se não há parâmetro específico, permite o menu (comportamento padrão)
