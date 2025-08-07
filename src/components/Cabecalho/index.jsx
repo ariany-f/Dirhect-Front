@@ -217,6 +217,52 @@ const ItemPerfil = styled(ItemEmpresa)`
   }
 `;
 
+const TituloResponsivo = styled.h6`
+  margin: 0;
+  font-size: ${({ $tituloLength }) => {
+    if ($tituloLength > 35) return '14px';
+    if ($tituloLength > 25) return '16px';
+    if ($tituloLength > 20) return '18px';
+    return '20px';
+  }};
+  font-weight: 600;
+  color: var(--black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+  line-height: 1.2;
+
+  @media screen and (max-width: 1200px) {
+    max-width: 300px;
+    font-size: ${({ $tituloLength }) => {
+      if ($tituloLength > 30) return '12px';
+      if ($tituloLength > 20) return '14px';
+      if ($tituloLength > 15) return '16px';
+      return '18px';
+    }};
+  }
+
+  @media screen and (max-width: 992px) {
+    max-width: 250px;
+    font-size: ${({ $tituloLength }) => {
+      if ($tituloLength > 25) return '11px';
+      if ($tituloLength > 18) return '12px';
+      if ($tituloLength > 12) return '14px';
+      return '16px';
+    }};
+  }
+
+  @media screen and (max-width: 768px) {
+    max-width: 200px;
+    font-size: ${({ $tituloLength }) => {
+      if ($tituloLength > 20) return '10px';
+      if ($tituloLength > 15) return '12px';
+      return '14px';
+    }};
+  }
+`;
+
 const ItemUsuario = styled.div`
   font-family: var(--fonte-secundaria);
   color: var(--black);
@@ -390,7 +436,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           ) : (
             <FaBars style={{ cursor: 'pointer' }} size={24} onClick={() => setSidebarOpened(!sidebarOpened)} />
           )}
-          {isDesktop ? <h6>{titulo}</h6> : <>&nbsp;</>}
+          {isDesktop ? (
+            <TituloResponsivo $tituloLength={titulo?.length || 0}>
+              {titulo}
+            </TituloResponsivo>
+          ) : <>&nbsp;</>}
         </div>
         <RightItems>
             {isDesktop && (
