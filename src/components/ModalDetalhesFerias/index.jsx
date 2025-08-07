@@ -1272,6 +1272,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     type="date" 
                                                     value={dataInicio} 
                                                     onChange={handleDataInicioChange}
+                                                    min={new Date().toISOString().split('T')[0]}
                                                 />
                                             </Linha>
                                             <Linha style={{flex: 1}}>
@@ -1297,6 +1298,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     type="date" 
                                                     value={dataFim} 
                                                     onChange={handleDataFimChange}
+                                                    min={dataInicio || new Date().toISOString().split('T')[0]}
                                                 />
                                             </Linha>
                                         </div>
@@ -1374,6 +1376,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     value={dataPagamento}
                                                     onChange={e => setDataPagamento(e.target.value)}
                                                     placeholder="Selecione a data"
+                                                    min={new Date().toISOString().split('T')[0]}
                                                 />
                                             </Linha>
                                             <Linha style={{flex: 1}}>
@@ -1395,6 +1398,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     value={avisoFerias}
                                                     onChange={e => setAvisoFerias(e.target.value)}
                                                     placeholder="Selecione a data"
+                                                    min={new Date().toISOString().split('T')[0]}
                                                 />
                                             </Linha>
                                             <Linha style={{flex: 1}}>
