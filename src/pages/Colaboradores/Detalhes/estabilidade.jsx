@@ -30,7 +30,7 @@ function ColaboradorEstabilidade() {
         const buscarEstabilidades = async () => {
             setLoading(true)
             try {
-                const response = await http.get(`estabilidade/?colaborador=${id}`)
+                const response = await http.get(`estabilidade/por-funcionario/?funcionario_id=${id}`)
                 setEstabilidades(response)
             } catch (error) {
                 console.error('Erro ao buscar estabilidades:', error)
