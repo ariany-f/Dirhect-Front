@@ -690,6 +690,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 valor={candidato?.ajuda_custo ?? ''}
                 setValor={valor => setCampo('ajuda_custo', valor)}
                 label="Ajuda de Custo"
+                patternMask="BRL"
                 placeholder="Digite o valor"
                 disabled={modoLeitura}
             />
@@ -698,6 +699,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 valor={candidato?.arredondamento ?? ''}
                 setValor={valor => setCampo('arredondamento', valor)}
                 label="Arredondamento"
+                patternMask="BRL"
                 placeholder="Digite o valor"
                 disabled={modoLeitura}
             />
@@ -706,6 +708,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 valor={candidato?.media_sal_maternidade ?? ''}
                 setValor={valor => setCampo('media_sal_maternidade', valor)}
                 label="Média Salário Maternidade"
+                patternMask="BRL"
                 placeholder="Digite o valor"
                 disabled={modoLeitura}
             />
