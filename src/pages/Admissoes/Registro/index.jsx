@@ -1128,6 +1128,35 @@ const CandidatoRegistro = () => {
                 console.log('formatarSalario - resultado final:', resultado);
                 return resultado;
             };
+
+            // Função para formatar percentual corretamente
+            const formatarPercentual = (valor) => {
+                if (!valor) return '';
+                
+                // Se já é um número, retorna formatado
+                if (typeof valor === 'number') {
+                    return valor.toFixed(2);
+                }
+                
+                // Se é string, remove formatação e converte
+                let valorLimpo = valor.toString();
+                
+                // Remove %, espaços e outros caracteres não numéricos
+                valorLimpo = valorLimpo.replace(/[%\s]/g, '');
+                
+                // Se tem vírgula (formato brasileiro: 50,00)
+                if (valorLimpo.includes(',')) {
+                    // Troca vírgula por ponto
+                    valorLimpo = valorLimpo.replace(',', '.');
+                }
+                
+                // Converte para número
+                const numero = parseFloat(valorLimpo);
+                
+                if (isNaN(numero)) return '';
+                
+                return numero.toFixed(2);
+            };
             
             // Função para remover campos null, undefined ou string vazia
             const removerCamposVazios = (obj) => {
@@ -1170,10 +1199,10 @@ const CandidatoRegistro = () => {
                 cidade: candidatoAtual.cidade,
                 estado: candidatoAtual.estado,
                 pais: candidatoAtual.pais,
-                perc_adiantamento: candidatoAtual.perc_adiantamento,
-                ajuda_custo: candidatoAtual.ajuda_custo,
-                arredondamento: candidatoAtual.arredondamento,
-                media_sal_maternidade: candidatoAtual.media_sal_maternidade,
+                perc_adiantamento: formatarPercentual(candidatoAtual.perc_adiantamento),
+                ajuda_custo: formatarSalario(candidatoAtual.ajuda_custo),
+                arredondamento: formatarSalario(candidatoAtual.arredondamento),
+                media_sal_maternidade: formatarSalario(candidatoAtual.media_sal_maternidade),
                 // Dados do candidato
                 // candidato: {
                 nome: dadosCandidato.nome,

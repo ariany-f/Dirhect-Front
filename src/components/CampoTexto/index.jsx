@@ -240,6 +240,44 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                     }
                 }
             }
+            else if(patternMask === 'PERCENT')
+            {
+                if(valorCampo.length > 0)
+                {
+                    try {
+                        // Garante que valorCampo seja uma string válida antes de usar replace
+                        const valorString = typeof valorCampo === 'string' ? valorCampo : String(valorCampo || '');
+                        
+                        // Remove todos os caracteres não numéricos
+                        const valorLimpo = valorString.replace(/\D/g, '');
+                        
+                        if (valorLimpo.length > 0) {
+                            // Converte para número e divide por 100 para obter o percentual
+                            const valorNumerico = parseFloat(valorLimpo) / 100;
+                            
+                            // Formata com vírgula como separador decimal e adiciona %
+                            const valorFormatado = valorNumerico.toFixed(2).replace('.', ',') + '%';
+                            setValor(valorFormatado, evento.target.name);
+                            
+                            // Ajusta a posição do cursor para antes do %
+                            setTimeout(() => {
+                                const input = evento.target;
+                                const cursorPosition = valorFormatado.length - 1; // Posição antes do %
+                                input.setSelectionRange(cursorPosition, cursorPosition);
+                            }, 0);
+                        } else {
+                            setValor('', evento.target.name);
+                        }
+                    } catch (error) {
+                        console.error('Erro ao processar valor PERCENT:', error);
+                        setValor(valorCampo, evento.target.name);
+                    }
+                }
+                else
+                {
+                    setValor('', evento.target.name);
+                }
+            }
             else
             {
                 try {
@@ -252,6 +290,24 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                         
                         if (!numeros) {
                             setValor('', evento.target.name);
+                            return;
+                        }
+                        
+                        // Tratamento especial para PERCENT reverso
+                        if (patternMask === 'PERCENT') {
+                            // Converte para número e divide por 100 para obter o percentual
+                            const valorNumerico = parseFloat(numeros) / 100;
+                            
+                            // Formata com vírgula como separador decimal e adiciona %
+                            const valorFormatado = valorNumerico.toFixed(2).replace('.', ',') + '%';
+                            setValor(valorFormatado, evento.target.name);
+                            
+                            // Ajusta a posição do cursor para antes do %
+                            setTimeout(() => {
+                                const input = evento.target;
+                                const cursorPosition = valorFormatado.length - 1; // Posição antes do %
+                                input.setSelectionRange(cursorPosition, cursorPosition);
+                            }, 0);
                             return;
                         }
                         
@@ -360,6 +416,31 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                         currency: 'BRL', 
                         value: valorUnmasked 
                     });
+                } else if (patternMask === 'PERCENT') {
+                    // Garante que valor seja uma string válida antes de usar replace
+                    const valorString = typeof valor === 'string' ? valor : String(valor || '');
+                    
+                    // Remove todos os caracteres não numéricos
+                    const valorLimpo = valorString.replace(/\D/g, '');
+                    
+                    if (valorLimpo.length > 0) {
+                        // Converte para número e divide por 100 para obter o percentual
+                        const valorNumerico = parseFloat(valorLimpo) / 100;
+                        
+                        // Formata com vírgula como separador decimal e adiciona %
+                        valorFormatado = valorNumerico.toFixed(2).replace('.', ',') + '%';
+                        
+                        // Ajusta a posição do cursor para antes do % no useEffect
+                        setTimeout(() => {
+                            const input = document.getElementById(name);
+                            if (input && input === document.activeElement) {
+                                const cursorPosition = valorFormatado.length - 1; // Posição antes do %
+                                input.setSelectionRange(cursorPosition, cursorPosition);
+                            }
+                        }, 0);
+                    } else {
+                        valorFormatado = valor;
+                    }
                 } else {
                     // Garante que valor seja uma string válida antes de usar unMask
                     const valorString = typeof valor === 'string' ? valor : String(valor || '');

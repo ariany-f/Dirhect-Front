@@ -678,11 +678,28 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             
             <CampoTexto
                 name="perc_adiantamento"
-                valor={candidato?.perc_adiantamento ?? ''}
+                valor={(() => {
+                    const valor = candidato?.perc_adiantamento;
+                    if (!valor) return '';
+                    
+                    // Se é string, verifica se já tem formatação
+                    if (typeof valor === 'string' && valor.includes('%')) {
+                        return valor;
+                    }
+                    
+                    // Se é número ou string numérica, converte para percentual
+                    const numero = parseFloat(valor);
+                    if (!isNaN(numero)) {
+                        // O valor já está em percentual, só formata
+                        return numero.toFixed(2).replace('.', ',') + '%';
+                    }
+                    
+                    return valor;
+                })()}
                 setValor={valor => setCampo('perc_adiantamento', valor)}
-                patternMask="999"
                 label="Percentual de Adiantamento"
                 placeholder="Ex: 50"
+                patternMask="PERCENT"
                 disabled={modoLeitura}
             />
             <CampoTexto
