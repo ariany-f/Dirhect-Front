@@ -650,7 +650,7 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="identidade"
                 valor={candidato?.identidade ?? ''}
                 setValor={valor => setCampo('identidade', valor)}
-                patternMask="999999999"
+                patternMask="99999999S"
                 label={`Identidade (RG)${isCampoObrigatorio('identidade') ? '*' : ''}`}
                 placeholder="Digite o número do RG"
                 disabled={modoLeitura}

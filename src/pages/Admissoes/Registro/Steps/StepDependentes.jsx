@@ -106,12 +106,14 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
         };
     }, [classError]);
 
-    // Função para verificar se um campo é obrigatório baseado nas incidências
+    // Função para verificar se um campo é obrigatório baseado nas incidências ou grau de parentesco
     const isCampoObrigatorioPorIncidencia = (dependente, campo) => {
         const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
+        const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
+                              dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
         
         if (campo === 'cpf' || campo === 'dt_nascimento') {
-            return incidenciasQueRequeremCPF;
+            return incidenciasQueRequeremCPF || grauRequerCPF;
         }
         
         return false;
@@ -269,12 +271,15 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
 
         // Verifica se alguma incidência que requer CPF e data de nascimento está marcada
         const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
+        const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
+                              dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
         
-        if (incidenciasQueRequeremCPF && (!dependente.cpf || !dependente.dt_nascimento)) {
+        if ((incidenciasQueRequeremCPF || grauRequerCPF) && (!dependente.cpf || !dependente.dt_nascimento)) {
+            const motivo = grauRequerCPF ? 'o grau de parentesco é Pai ou Mãe' : 'há incidências de IRRF, Assistência Médica ou Assistência Odontológica';
             toast.current?.show({
                 severity: 'warn',
                 summary: 'Atenção',
-                detail: 'CPF e Data de Nascimento são obrigatórios quando há incidências de IRRF, Assistência Médica ou Assistência Odontológica.',
+                detail: `CPF e Data de Nascimento são obrigatórios quando ${motivo}.`,
                 life: 4000
             });
             return;
@@ -554,8 +559,10 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
 
         // Verifica se alguma incidência que requer CPF e data de nascimento está marcada
         const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
+        const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
+                              dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
         
-        if (incidenciasQueRequeremCPF) {
+        if (incidenciasQueRequeremCPF || grauRequerCPF) {
             return dependente.cpf && dependente.dt_nascimento;
         }
 
@@ -720,7 +727,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                         <CampoTexto
                                             camposVazios={isCampoEmErro(`cpf_${idx}`) || isCampoEmErroPorIncidencia(dependente, 'cpf') ? [`cpf_${idx}`] : []}
                                             label="CPF"
-                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto}
+                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto || dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7}
                                             valor={dependente.cpf}
                                             setValor={(valor) => handleUpdateDependente(id, 'cpf', valor)}
                                             patternMask="999.999.999-99"
@@ -729,7 +736,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                         <CampoTexto
                                             camposVazios={isCampoEmErro(`dt_nascimento_${idx}`) || isCampoEmErroPorIncidencia(dependente, 'dt_nascimento') ? [`dt_nascimento_${idx}`] : []}
                                             label="Data de Nascimento"
-                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto}
+                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto || dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7}
                                             valor={dependente.dt_nascimento}
                                             setValor={(valor) => handleUpdateDependente(id, 'dt_nascimento', valor)}
                                             type="date"
