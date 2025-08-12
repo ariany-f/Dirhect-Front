@@ -740,7 +740,9 @@ const CandidatoRegistro = () => {
 
             const verificarCarregamentoCompleto = () => {
                 requisicoesConcluidas++;
+                console.log(`Requisicao ${requisicoesConcluidas}/${totalRequisicoes} concluída`);
                 if (requisicoesConcluidas >= totalRequisicoes) {
+                    console.log('Todas as requisições foram concluídas');
                     setDadosCarregados(true);
                 }
             };
@@ -748,7 +750,10 @@ const CandidatoRegistro = () => {
             // Carregar listas auxiliares em paralelo
             const promisesListas = listasAuxiliares.map(({ endpoint, setter }) =>
                 http.get(endpoint)
-                    .then(response => setter(response))
+                    .then(response => {
+                        console.log(`Carregado: ${endpoint}`);
+                        setter(response);
+                    })
                     .catch(error => {
                         console.error(`Erro ao carregar ${endpoint}:`, error);
                         setter([]);
@@ -758,24 +763,30 @@ const CandidatoRegistro = () => {
 
             // Carregar tabelas de domínio
             try {
+                console.log('Iniciando carregamento de tabelas de domínio');
                 const response = await http.get('tabela_dominio/');
                 const availableTables = response?.tabelas_disponiveis || [];
+                console.log(`Tabelas disponíveis: ${availableTables.length}`);
                 setAvailableDominioTables(availableTables);
 
-                // Carregar registros das tabelas de domínio em paralelo
-                const promisesDominio = availableTables.map(async (tabela) => {
-                    try {
-                        const res = await http.get(`tabela_dominio/${tabela}/`);
-                        return { [tabela]: res?.registros || [] };
-                    } catch (error) {
-                        console.error(`Erro ao buscar tabela_dominio/${tabela}/`, error);
-                        return { [tabela]: [] };
-                    }
-                });
+                if (availableTables.length > 0) {
+                    // Carregar registros das tabelas de domínio em paralelo
+                    const promisesDominio = availableTables.map(async (tabela) => {
+                        try {
+                            console.log(`Carregando tabela: ${tabela}`);
+                            const res = await http.get(`tabela_dominio/${tabela}/`);
+                            return { [tabela]: res?.registros || [] };
+                        } catch (error) {
+                            console.error(`Erro ao buscar tabela_dominio/${tabela}/`, error);
+                            return { [tabela]: [] };
+                        }
+                    });
 
-                const resultados = await Promise.all(promisesDominio);
-                const novasOpcoes = resultados.reduce((acc, curr) => ({ ...acc, ...curr }), {});
-                setOpcoesDominio(novasOpcoes);
+                    const resultados = await Promise.all(promisesDominio);
+                    const novasOpcoes = resultados.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+                    setOpcoesDominio(novasOpcoes);
+                    console.log('Tabelas de domínio carregadas com sucesso');
+                }
                 verificarCarregamentoCompleto();
             } catch (error) {
                 console.error("Erro ao buscar a lista de tabelas de domínio:", error);
@@ -791,47 +802,24 @@ const CandidatoRegistro = () => {
         } finally {
             setCarregamentoEmAndamento(false);
         }
-    }, [estados.length, listasAuxiliares, carregamentoEmAndamento]);
+    }, []); // Removidas as dependências problemáticas
 
     useEffect(() => {
         carregarDados();
-    }, [carregarDados]);
+    }, []); // Executar apenas uma vez na montagem
 
-    // Detectar mudanças de visibilidade da aba com debounce
+    // Detectar mudanças de visibilidade da aba
     useEffect(() => {
-        let timeoutId;
-        
         const handleVisibilityChange = () => {
-            if (document.hidden) {
-                setIsVisible(false);
-                // Limpar timeout se existir
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                }
-            } else {
-                setIsVisible(true);
-                // Debounce para evitar múltiplas chamadas
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                }
-                timeoutId = setTimeout(() => {
-                    // Se os dados não foram carregados e a aba volta a ficar visível, recarregar
-                    if (!dadosCarregados && !carregamentoEmAndamento) {
-                        carregarDados();
-                    }
-                }, 300); // 300ms de debounce
-            }
+            setIsVisible(!document.hidden);
         };
 
         document.addEventListener('visibilitychange', handleVisibilityChange);
         
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
         };
-    }, [dadosCarregados, carregamentoEmAndamento, carregarDados]);
+    }, []); // Executar apenas uma vez
 
     // Fechar modal com ESC
     useEffect(() => {
