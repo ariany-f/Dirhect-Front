@@ -419,6 +419,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
     const [mostrarErroSaldoDias, setMostrarErroSaldoDias] = useState(false);
     const [mostrarErroAbono, setMostrarErroAbono] = useState(false);
     const [mostrarErroSaldoTotal, setMostrarErroSaldoTotal] = useState(false);
+    const [mostrarErroAdiantamento13, setMostrarErroAdiantamento13] = useState(false);
     const [botaoEnviarDesabilitado, setBotaoEnviarDesabilitado] = useState(false);
     const [parametrosFerias, setParametrosFerias] = useState({});
     const [podeAnalistaTenantAprovar, setPodeAnalistaTenantAprovar] = useState(false); // Default false - sem acesso até confirmar
@@ -503,6 +504,11 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         const excedeSaldoTotal = somaTotal > saldoDisponivel;
         setMostrarErroSaldoTotal(excedeSaldoTotal);
 
+        // Validar adiantamento do 13º salário
+        const mesInicio = dataInicio.getMonth() + 1; // getMonth() retorna 0-11, então +1 para 1-12
+        const adiantamentoInvalido = adiantarDecimoTerceiro && (mesInicio === 1 || mesInicio === 12);
+        setMostrarErroAdiantamento13(adiantamentoInvalido);
+
         // Validar dias de antecedência diretamente aqui
         const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45;
         const hoje = new Date();
@@ -518,6 +524,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             excedeSaldo || 
             abonoExcede10 ||
             excedeSaldoTotal ||
+            adiantamentoInvalido ||
             (erroAntecedencia && !isPerfilEspecial)
         );
     };
@@ -596,6 +603,16 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             setAvisoFerias(dataAvisoSugerida);
         } else {
             setAvisoFerias('');
+        }
+        
+        // Validar adiantamento do 13º salário quando a data de início muda
+        if (novaData && adiantarDecimoTerceiro) {
+            const dataInicio = parseDateAsLocal(novaData);
+            const mesInicio = dataInicio.getMonth() + 1;
+            const adiantamentoInvalido = mesInicio === 1 || mesInicio === 12;
+            setMostrarErroAdiantamento13(adiantamentoInvalido);
+        } else {
+            setMostrarErroAdiantamento13(false);
         }
     };
 
@@ -886,6 +903,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         setMostrarErroSaldoDias(false);
         setMostrarErroAbono(false);
         setMostrarErroSaldoTotal(false);
+        setMostrarErroAdiantamento13(false);
         setBotaoEnviarDesabilitado(false);
     };
 
@@ -987,6 +1005,16 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         if (abonoPecuniario && abonoDias > 10) {
             fecharComLimpeza({ aviso: true, mensagem: 'O abono pecuniário não pode exceder 10 dias.' });
             return;
+        }
+
+        // Validação do adiantamento do 13º salário
+        if (adiantarDecimoTerceiro) {
+            const dataInicio = parseDateAsLocal(dataInicio);
+            const mesInicio = dataInicio.getMonth() + 1;
+            if (mesInicio === 1 || mesInicio === 12) {
+                fecharComLimpeza({ aviso: true, mensagem: 'O adiantamento do 13º salário não é permitido para férias em janeiro ou dezembro, conforme a Lei nº 4.749/65.' });
+                return;
+            }
         }
 
         const hoje = new Date();
@@ -1147,6 +1175,15 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
                                         <span>
                                             A soma dos dias de férias e abono pecuniário não pode exceder o saldo disponível. O abono reduz os dias disponíveis para férias.
+                                        </span>
+                                    </AlertaErro>
+                                )}
+
+                                {mostrarErroAdiantamento13 && (
+                                    <AlertaErro>
+                                        <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
+                                        <span>
+                                            O adiantamento do 13º salário não é permitido para férias em janeiro ou dezembro, conforme a Lei nº 4.749/65. O adiantamento só pode ser feito entre fevereiro e novembro.
                                         </span>
                                     </AlertaErro>
                                 )}
@@ -1368,7 +1405,68 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     <SwitchInput 
                                                         id="adiantar13"
                                                         checked={adiantarDecimoTerceiro} 
-                                                        onChange={() => setAdiantarDecimoTerceiro(!adiantarDecimoTerceiro)}
+                                                        onChange={() => {
+                                                            const novoValor = !adiantarDecimoTerceiro;
+                                                            setAdiantarDecimoTerceiro(novoValor);
+                                                            
+                                                            // Validar adiantamento quando o switch é ativado
+                                                            if (novoValor && dataInicio) {
+                                                                const dataInicio = parseDateAsLocal(dataInicio);
+                                                                const mesInicio = dataInicio.getMonth() + 1;
+                                                                const adiantamentoInvalido = mesInicio === 1 || mesInicio === 12;
+                                                                setMostrarErroAdiantamento13(adiantamentoInvalido);
+                                                            } else {
+                                                                setMostrarErroAdiantamento13(false);
+                                                            }
+                                                            
+                                                            // Revalidar todas as condições para atualizar o estado do botão
+                                                            if (dataInicio && dataFim) {
+                                                                const dataInicioObj = parseDateAsLocal(dataInicio);
+                                                                const dataFimObj = parseDateAsLocal(dataFim);
+                                                                
+                                                                // Validar ordem das datas
+                                                                const datasInvalidas = dataInicioObj > dataFimObj;
+                                                                
+                                                                // Validar quantidade mínima de dias
+                                                                const diasSolicitados = parseInt(numeroDiasFerias) || 0;
+                                                                const diasInsuficientes = diasSolicitados < 5;
+                                                                
+                                                                // Validar saldo de dias disponíveis
+                                                                const saldoDisponivel = evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30;
+                                                                const excedeSaldo = diasSolicitados > saldoDisponivel;
+                                                                
+                                                                // Validar dias de abono
+                                                                const abonoDias = parseInt(numeroDiasAbono) || 0;
+                                                                const abonoExcede10 = abonoPecuniario && abonoDias > 10;
+                                                                
+                                                                // Validar soma total
+                                                                const somaTotal = diasSolicitados + (abonoPecuniario ? abonoDias : 0);
+                                                                const excedeSaldoTotal = somaTotal > saldoDisponivel;
+                                                                
+                                                                // Validar adiantamento do 13º salário
+                                                                const mesInicio = dataInicioObj.getMonth() + 1;
+                                                                const adiantamentoInvalido = novoValor && (mesInicio === 1 || mesInicio === 12);
+                                                                
+                                                                // Validar dias de antecedência
+                                                                const diasMinimosAntecedencia = parseInt(parametrosFerias.DIAS_MINIMOS_ANTECEDENCIA) || 45;
+                                                                const hoje = new Date();
+                                                                hoje.setHours(0, 0, 0, 0);
+                                                                const diffTime = dataInicioObj - hoje;
+                                                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                                                const erroAntecedencia = diffDays < diasMinimosAntecedencia;
+                                                                
+                                                                // Atualizar estado do botão
+                                                                setBotaoEnviarDesabilitado(
+                                                                    datasInvalidas || 
+                                                                    diasInsuficientes || 
+                                                                    excedeSaldo || 
+                                                                    abonoExcede10 ||
+                                                                    excedeSaldoTotal ||
+                                                                    adiantamentoInvalido ||
+                                                                    (erroAntecedencia && !isPerfilEspecial)
+                                                                );
+                                                            }
+                                                        }}
                                                     />
                                                     <label htmlFor="adiantar13" style={{ cursor: 'pointer', fontWeight: 500, color: '#495057', fontSize: '14px' }}>
                                                         Deseja adiantar o 13º salário?
