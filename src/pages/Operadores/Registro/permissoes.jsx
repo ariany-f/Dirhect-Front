@@ -339,6 +339,12 @@ function OperadorRegistroPermissoes () {
     }
 
     useEffect(() => {
+        // Verificar se há nome e email do operador
+        if (!operador.first_name || !operador.email) {
+            navegar('/operador/registro/selecionar');
+            return;
+        }
+
         if(ArmazenadorToken.UserGroups) {
             const gruposDisponiveis = ArmazenadorToken.UserGroups;
             setGrupos(gruposDisponiveis);
@@ -357,7 +363,7 @@ function OperadorRegistroPermissoes () {
         
         // Buscar tenants
         buscarTenants();
-    }, []);
+    }, [operador.first_name, operador.email, navegar]);
 
     return (
         <div style={{ width: '100%'}}>

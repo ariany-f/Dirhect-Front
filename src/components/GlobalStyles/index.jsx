@@ -382,6 +382,10 @@ template {
     }
   }
 }
+.p-radiobutton.p-highlight .p-radiobutton-box {
+  background-color: var(--white);
+  border-color: var(--primaria);
+}
 .p-inputswitch.p-highlight .p-inputswitch-slider {
   background-color: var(--primaria);
 }

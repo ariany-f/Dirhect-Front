@@ -33,6 +33,8 @@ function ModalOperadores({ opened = false, aoFechar, aoSalvar }) {
         let erros = [];
         if (!firstName.trim()) erros.push('first_name');
         if (!lastName.trim()) erros.push('last_name');
+        if (!email.trim()) erros.push('email');
+        if (!password.trim()) erros.push('password');
         setClassError(erros);
         if (erros.length === 0) {
             aoSalvar(email, firstName, lastName, password);

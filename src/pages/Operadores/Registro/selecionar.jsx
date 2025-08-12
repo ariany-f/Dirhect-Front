@@ -88,6 +88,17 @@ function OperadorRegistroSelecionar() {
             setPassword(password)
         }
         else {
+            // Verificar se há um colaborador selecionado
+            if (!selectedColaborador) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Selecione um colaborador para continuar',
+                    life: 3000
+                });
+                return;
+            }
+            
             setEmail(selectedColaborador.funcionario_pessoa_fisica.email)
             setFirstName(selectedColaborador.funcionario_pessoa_fisica.nome.split(' ')[0])
             if (selectedColaborador.funcionario_pessoa_fisica.nome.split(' ').length > 1) {
@@ -147,8 +158,8 @@ function OperadorRegistroSelecionar() {
             <ContainerButton>
                 <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Cancelar</Botao>
                 <LadoALado>
-                    <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>1</Texto></span>
-                    <Botao aoClicar={adicionarColaborador} estilo="vermilion" size="medium" filled>Continuar</Botao>
+                    <span>Selecionado&nbsp;<Texto color='var(--primaria)' weight={700}>{selectedColaborador ? '1' : '0'}</Texto></span>
+                    <Botao aoClicar={adicionarColaborador} estilo="vermilion" size="medium" filled disabled={!selectedColaborador && !modalOperador}>Continuar</Botao>
                 </LadoALado>
             </ContainerButton>
             <ModalOperadores opened={modalOperador} aoFechar={() => setModalOperador(false)} aoSalvar={adicionarColaborador} />
