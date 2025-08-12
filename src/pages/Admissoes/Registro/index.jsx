@@ -711,8 +711,8 @@ const CandidatoRegistro = () => {
 
     // Função otimizada para carregar dados
     const carregarDados = useCallback(async () => {
-        // Evitar múltiplas chamadas simultâneas
-        if (carregamentoEmAndamento) {
+        // Evitar múltiplas chamadas simultâneas ou se já carregou
+        if (carregamentoEmAndamento || dadosCarregados) {
             return;
         }
         
@@ -740,9 +740,7 @@ const CandidatoRegistro = () => {
 
             const verificarCarregamentoCompleto = () => {
                 requisicoesConcluidas++;
-                console.log(`Requisicao ${requisicoesConcluidas}/${totalRequisicoes} concluída`);
                 if (requisicoesConcluidas >= totalRequisicoes) {
-                    console.log('Todas as requisições foram concluídas');
                     setDadosCarregados(true);
                 }
             };
@@ -750,10 +748,7 @@ const CandidatoRegistro = () => {
             // Carregar listas auxiliares em paralelo
             const promisesListas = listasAuxiliares.map(({ endpoint, setter }) =>
                 http.get(endpoint)
-                    .then(response => {
-                        console.log(`Carregado: ${endpoint}`);
-                        setter(response);
-                    })
+                    .then(response => setter(response))
                     .catch(error => {
                         console.error(`Erro ao carregar ${endpoint}:`, error);
                         setter([]);
@@ -763,17 +758,14 @@ const CandidatoRegistro = () => {
 
             // Carregar tabelas de domínio
             try {
-                console.log('Iniciando carregamento de tabelas de domínio');
                 const response = await http.get('tabela_dominio/');
                 const availableTables = response?.tabelas_disponiveis || [];
-                console.log(`Tabelas disponíveis: ${availableTables.length}`);
                 setAvailableDominioTables(availableTables);
 
                 if (availableTables.length > 0) {
                     // Carregar registros das tabelas de domínio em paralelo
                     const promisesDominio = availableTables.map(async (tabela) => {
                         try {
-                            console.log(`Carregando tabela: ${tabela}`);
                             const res = await http.get(`tabela_dominio/${tabela}/`);
                             return { [tabela]: res?.registros || [] };
                         } catch (error) {
@@ -785,7 +777,6 @@ const CandidatoRegistro = () => {
                     const resultados = await Promise.all(promisesDominio);
                     const novasOpcoes = resultados.reduce((acc, curr) => ({ ...acc, ...curr }), {});
                     setOpcoesDominio(novasOpcoes);
-                    console.log('Tabelas de domínio carregadas com sucesso');
                 }
                 verificarCarregamentoCompleto();
             } catch (error) {
