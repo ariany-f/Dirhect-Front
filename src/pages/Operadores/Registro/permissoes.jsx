@@ -340,8 +340,8 @@ function OperadorRegistroPermissoes () {
 
     useEffect(() => {
         // Verificar se há nome e email do operador
-        if (!operador.first_name || !operador.email) {
-            navegar('/operador/registro/selecionar');
+        if (!operador.first_name) {
+            navegar('/operador/registro');
             return;
         }
 
