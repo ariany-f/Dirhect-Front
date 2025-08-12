@@ -97,6 +97,14 @@ const ModalHeader = styled.div`
     }
 `;
 
+// CSS para animação de carregamento
+const LoadingSpinner = styled.div`
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+
 const ModalTitle = styled.h2`
     margin: 0;
     font-size: 16px;
@@ -506,6 +514,7 @@ const CandidatoRegistro = () => {
     const [estados, setEstados] = useState([]);
     const [opcoesDominio, setOpcoesDominio] = useState({});
     const [availableDominioTables, setAvailableDominioTables] = useState([]);
+    const [dadosCarregados, setDadosCarregados] = useState(false);
     const toast = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [showModalConfirmacao, setShowModalConfirmacao] = useState(false);
@@ -676,6 +685,9 @@ const CandidatoRegistro = () => {
     ]);
 
     useEffect(() => {
+        // Resetar estado de carregamento quando o componente montar
+        setDadosCarregados(false);
+        
         if (!estados.length) {
             http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
                 .then(response => {
@@ -705,11 +717,22 @@ const CandidatoRegistro = () => {
             { endpoint: 'funcao/?format=json&confianca=true', setter: setFuncoesConfianca },
         ];
 
+        // Contador para rastrear quantas requisições foram concluídas
+        let requisicoesConcluidas = 0;
+        const totalRequisicoes = listasAuxiliares.length + 1; // +1 para a requisição de tabela_dominio
+
+        const verificarCarregamentoCompleto = () => {
+            requisicoesConcluidas++;
+            if (requisicoesConcluidas >= totalRequisicoes) {
+                setDadosCarregados(true);
+            }
+        };
+
         listasAuxiliares.forEach(({ endpoint, setter }) => {
             http.get(endpoint)
                 .then(response => setter(response))
                 .catch(() => {})
-                .finally(() => {});
+                .finally(() => verificarCarregamentoCompleto());
         });
 
         // 1. Fetch the list of available domain tables
@@ -731,10 +754,12 @@ const CandidatoRegistro = () => {
                 ).then(resultados => {
                     const novasOpcoes = resultados.reduce((acc, curr) => ({ ...acc, ...curr }), {});
                     setOpcoesDominio(novasOpcoes);
+                    verificarCarregamentoCompleto();
                 });
             })
             .catch(error => {
                 console.error("Erro ao buscar a lista de tabelas de domínio:", error);
+                verificarCarregamentoCompleto();
             });
     }, [])
 
@@ -2148,10 +2173,38 @@ const CandidatoRegistro = () => {
                     )}
                 </div>
 
-                <div style={{ display: 'flex', gap: 12 }}>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                    {/* Indicador de carregamento */}
+                    {!dadosCarregados && (
+                        <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '8px', 
+                            color: '#6b7280', 
+                            fontSize: '14px',
+                            fontStyle: 'italic'
+                        }}>
+                            <div style={{
+                                width: '16px',
+                                height: '16px',
+                                border: '2px solid #e5e7eb',
+                                borderTop: '2px solid #3b82f6',
+                                borderRadius: '50%',
+                                animation: 'spin 1s linear infinite'
+                            }}></div>
+                            Carregando dados...
+                        </div>
+                    )}
+                    
                     {/* Botões específicos por step */}
                     {activeIndex === 0 && (
-                        <Botao size="small" label="Next" iconPos="right" aoClicar={handleAvancar}>
+                        <Botao 
+                            size="small" 
+                            label="Next" 
+                            iconPos="right" 
+                            aoClicar={handleAvancar}
+                            disabled={!dadosCarregados}
+                        >
                             <HiArrowRight fill="var(--secundaria)"/> Continuar
                         </Botao>
                     )}
@@ -2163,7 +2216,7 @@ const CandidatoRegistro = () => {
                                 size="small" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarAdmissao}
-                                disabled={modoLeitura}
+                                disabled={modoLeitura || !dadosCarregados}
                             >
                                 <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
@@ -2172,6 +2225,7 @@ const CandidatoRegistro = () => {
                                 label="Next" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarEContinuar}
+                                disabled={!dadosCarregados}
                             >
                                 <HiArrowRight size={20} fill="var(--secundaria)"/> Próximo
                             </Botao>
@@ -2185,7 +2239,7 @@ const CandidatoRegistro = () => {
                                 size="small" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarAdmissao}
-                                disabled={modoLeitura}
+                                disabled={modoLeitura || !dadosCarregados}
                             >
                                 <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
