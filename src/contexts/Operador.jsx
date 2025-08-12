@@ -9,7 +9,9 @@ const OperadorInicial = {
     tenant_id: '',
     username: '',
     password: '',
-    groups: {}
+    groups: {},
+    global_user: false,
+    permissions: []
 }
 
 export const OperadorContext = createContext({
