@@ -46,6 +46,21 @@
     color-scheme: light;
   }
 
+/* Estilos customizados para ConfirmDialog */
+.p-confirm-dialog-message {
+    margin-left: 1rem !important;
+}
+
+.p-confirm-dialog-icon {
+    margin-right: 0.5rem !important;
+}
+
+.p-confirm-dialog-content {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+}
+
   :root {
     --blue-50:#f6fbfd;
     --blue-100:#d6eaf5;

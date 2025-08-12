@@ -105,6 +105,17 @@ const LoadingSpinner = styled.div`
     }
 `;
 
+// CSS customizado para ConfirmDialog
+const StyledConfirmDialog = styled.div`
+    .p-confirm-dialog-message {
+        margin-left: 1rem !important;
+    }
+    
+    .p-confirm-dialog-icon {
+        margin-right: 0.5rem !important;
+    }
+`;
+
 const ModalTitle = styled.h2`
     margin: 0;
     font-size: 16px;
@@ -2850,6 +2861,21 @@ const CandidatoRegistro = () => {
                     @keyframes spin {
                         0% { transform: rotate(0deg); }
                         100% { transform: rotate(360deg); }
+                    }
+                    
+                    /* Estilos customizados para ConfirmDialog */
+                    .p-confirm-dialog-message {
+                        margin-left: 1rem !important;
+                    }
+                    
+                    .p-confirm-dialog-icon {
+                        margin-right: 0.5rem !important;
+                    }
+                    
+                    .p-confirm-dialog-content {
+                        display: flex !important;
+                        align-items: flex-start !important;
+                        gap: 0.75rem !important;
                     }
                 `}
             </style>
