@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
 import Container from '@components/Container'; // Importando o componente Container
 import Botao from '@components/Botao'; // Importando o componente Container
@@ -526,6 +526,8 @@ const CandidatoRegistro = () => {
     const [opcoesDominio, setOpcoesDominio] = useState({});
     const [availableDominioTables, setAvailableDominioTables] = useState([]);
     const [dadosCarregados, setDadosCarregados] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
+    const [carregamentoEmAndamento, setCarregamentoEmAndamento] = useState(false);
     const toast = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [showModalConfirmacao, setShowModalConfirmacao] = useState(false);
@@ -695,84 +697,141 @@ const CandidatoRegistro = () => {
         { code: '70%', name: '70%' },   
     ]);
 
-    useEffect(() => {
-        // Resetar estado de carregamento quando o componente montar
-        setDadosCarregados(false);
-        
-        if (!estados.length) {
-            http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-                .then(response => {
-                    response.map((item) => {
-                        let obj = {
-                            name: item.nome,
-                            code: item.sigla
-                        }
-                        if (!estados.includes(obj)) {
-                            setEstados(estadoAnterior => [...estadoAnterior, obj]);
-                        }
-                    })
-                })
-                .catch(() => {})
-                .finally(() => {});
+    // Memoizar as listas auxiliares para evitar recriação desnecessária
+    const listasAuxiliares = useMemo(() => [
+        { endpoint: 'filial/?format=json', setter: setFiliais },
+        { endpoint: 'departamento/?format=json', setter: setDepartamentos },
+        { endpoint: 'cargo/?format=json', setter: setCargos },
+        { endpoint: 'centro_custo/?format=json', setter: setCentrosCusto },
+        { endpoint: 'sindicato/?format=json', setter: setSindicatos },
+        { endpoint: 'horario/?format=json', setter: setHorarios },
+        { endpoint: 'funcao/?format=json', setter: setFuncoes },
+        { endpoint: 'funcao/?format=json&confianca=true', setter: setFuncoesConfianca },
+    ], []);
+
+    // Função otimizada para carregar dados
+    const carregarDados = useCallback(async () => {
+        // Evitar múltiplas chamadas simultâneas
+        if (carregamentoEmAndamento) {
+            return;
         }
-
-        // Refatoração: array de endpoints e setters
-        const listasAuxiliares = [
-            { endpoint: 'filial/?format=json', setter: setFiliais },
-            { endpoint: 'departamento/?format=json', setter: setDepartamentos },
-            { endpoint: 'cargo/?format=json', setter: setCargos },
-            { endpoint: 'centro_custo/?format=json', setter: setCentrosCusto },
-            { endpoint: 'sindicato/?format=json', setter: setSindicatos },
-            { endpoint: 'horario/?format=json', setter: setHorarios },
-            { endpoint: 'funcao/?format=json', setter: setFuncoes },
-            { endpoint: 'funcao/?format=json&confianca=true', setter: setFuncoesConfianca },
-        ];
-
-        // Contador para rastrear quantas requisições foram concluídas
-        let requisicoesConcluidas = 0;
-        const totalRequisicoes = listasAuxiliares.length + 1; // +1 para a requisição de tabela_dominio
-
-        const verificarCarregamentoCompleto = () => {
-            requisicoesConcluidas++;
-            if (requisicoesConcluidas >= totalRequisicoes) {
-                setDadosCarregados(true);
+        
+        try {
+            setCarregamentoEmAndamento(true);
+            setDadosCarregados(false);
+            
+            // Carregar estados apenas se não estiverem carregados
+            if (!estados.length) {
+                try {
+                    const response = await http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados');
+                    const novosEstados = response.map((item) => ({
+                        name: item.nome,
+                        code: item.sigla
+                    }));
+                    setEstados(novosEstados);
+                } catch (error) {
+                    console.error('Erro ao carregar estados:', error);
+                }
             }
-        };
 
-        listasAuxiliares.forEach(({ endpoint, setter }) => {
-            http.get(endpoint)
-                .then(response => setter(response))
-                .catch(() => {})
-                .finally(() => verificarCarregamentoCompleto());
-        });
+            // Contador para rastrear quantas requisições foram concluídas
+            let requisicoesConcluidas = 0;
+            const totalRequisicoes = listasAuxiliares.length + 1; // +1 para a requisição de tabela_dominio
 
-        // 1. Fetch the list of available domain tables
-        http.get('tabela_dominio/')
-            .then(response => {
+            const verificarCarregamentoCompleto = () => {
+                requisicoesConcluidas++;
+                if (requisicoesConcluidas >= totalRequisicoes) {
+                    setDadosCarregados(true);
+                }
+            };
+
+            // Carregar listas auxiliares em paralelo
+            const promisesListas = listasAuxiliares.map(({ endpoint, setter }) =>
+                http.get(endpoint)
+                    .then(response => setter(response))
+                    .catch(error => {
+                        console.error(`Erro ao carregar ${endpoint}:`, error);
+                        setter([]);
+                    })
+                    .finally(() => verificarCarregamentoCompleto())
+            );
+
+            // Carregar tabelas de domínio
+            try {
+                const response = await http.get('tabela_dominio/');
                 const availableTables = response?.tabelas_disponiveis || [];
                 setAvailableDominioTables(availableTables);
 
-                // 2. Fetch records only for available tables
-                Promise.all(
-                    availableTables.map(tabela =>
-                        http.get(`tabela_dominio/${tabela}/`)
-                            .then(res => ({ [tabela]: res?.registros || [] }))
-                            .catch(error => {
-                                console.error(`Erro ao buscar tabela_dominio/${tabela}/`, error);
-                                return { [tabela]: [] };
-                            })
-                    )
-                ).then(resultados => {
-                    const novasOpcoes = resultados.reduce((acc, curr) => ({ ...acc, ...curr }), {});
-                    setOpcoesDominio(novasOpcoes);
-                    verificarCarregamentoCompleto();
+                // Carregar registros das tabelas de domínio em paralelo
+                const promisesDominio = availableTables.map(async (tabela) => {
+                    try {
+                        const res = await http.get(`tabela_dominio/${tabela}/`);
+                        return { [tabela]: res?.registros || [] };
+                    } catch (error) {
+                        console.error(`Erro ao buscar tabela_dominio/${tabela}/`, error);
+                        return { [tabela]: [] };
+                    }
                 });
-            })
-            .catch(error => {
+
+                const resultados = await Promise.all(promisesDominio);
+                const novasOpcoes = resultados.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+                setOpcoesDominio(novasOpcoes);
+                verificarCarregamentoCompleto();
+            } catch (error) {
                 console.error("Erro ao buscar a lista de tabelas de domínio:", error);
                 verificarCarregamentoCompleto();
-            });
-    }, [])
+            }
+
+            // Aguardar todas as requisições de listas auxiliares
+            await Promise.all(promisesListas);
+
+        } catch (error) {
+            console.error('Erro geral ao carregar dados:', error);
+            setDadosCarregados(true); // Garantir que o componente não fique travado
+        } finally {
+            setCarregamentoEmAndamento(false);
+        }
+    }, [estados.length, listasAuxiliares, carregamentoEmAndamento]);
+
+    useEffect(() => {
+        carregarDados();
+    }, [carregarDados]);
+
+    // Detectar mudanças de visibilidade da aba com debounce
+    useEffect(() => {
+        let timeoutId;
+        
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                setIsVisible(false);
+                // Limpar timeout se existir
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+            } else {
+                setIsVisible(true);
+                // Debounce para evitar múltiplas chamadas
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+                timeoutId = setTimeout(() => {
+                    // Se os dados não foram carregados e a aba volta a ficar visível, recarregar
+                    if (!dadosCarregados && !carregamentoEmAndamento) {
+                        carregarDados();
+                    }
+                }, 300); // 300ms de debounce
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+        };
+    }, [dadosCarregados, carregamentoEmAndamento, carregarDados]);
 
     // Fechar modal com ESC
     useEffect(() => {
@@ -2125,7 +2184,7 @@ const CandidatoRegistro = () => {
     };
 
     // Função para renderizar os botões baseado no step atual
-    const renderFooterButtons = () => {
+    const renderFooterButtons = useCallback(() => {
         const isFirstStep = activeIndex === 0;
         
         // Calcular o último step dinamicamente baseado nas variáveis de ambiente
@@ -2278,7 +2337,7 @@ const CandidatoRegistro = () => {
                 </div>
             </div>
         );
-    };
+    }, [activeIndex, dadosCarregados, isVisible, sidebarOpened, self, mostrarHabilidades, mostrarExperiencia, modoLeitura, obterTarefaPendente, handleVoltar, handleAvancar, handleSalvarEContinuar, handleSalvarAdmissao, handleFinalizarDocumentos]);
 
     // Detectar cliques nos headers do stepper - DESABILITADO TEMPORARIAMENTE
     // useEffect(() => {
