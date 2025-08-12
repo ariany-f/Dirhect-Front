@@ -59,7 +59,7 @@ const Campo = styled(InputText)`
     }
 
     &::placeholder {
-        color: var(--neutro-400);
+        color: var(--neutro-500);
         font-feature-settings: 'clig' off, 'liga' off;
         font-family: var(--font-secondaria);
         font-size: 14px;
