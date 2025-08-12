@@ -48,11 +48,11 @@ export const OperadorProvider = ({ children }) => {
         })
     }   
     
-    const setEmail = (collaborator_public_id) => {
+    const setEmail = (email) => {
         setOperador(estadoAnterior => {
             return {
                 ...estadoAnterior,
-                collaborator_public_id
+                email
             }
         })
     }

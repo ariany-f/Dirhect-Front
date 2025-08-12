@@ -98,7 +98,6 @@ function OperadorRegistroSelecionar() {
                 });
                 return;
             }
-            
             setEmail(selectedColaborador.funcionario_pessoa_fisica.email)
             setFirstName(selectedColaborador.funcionario_pessoa_fisica.nome.split(' ')[0])
             if (selectedColaborador.funcionario_pessoa_fisica.nome.split(' ').length > 1) {
