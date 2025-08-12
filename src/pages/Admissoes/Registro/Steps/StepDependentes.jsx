@@ -5,7 +5,7 @@ import { GrAddCircle } from 'react-icons/gr';
 import { v4 as uuidv4 } from 'uuid';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
-import CheckboxContainer from '@components/CheckboxContainer';
+import SwitchInput from '@components/SwitchInput';
 import http from '@http';
 import BotaoSemBorda from '@components/BotaoSemBorda';
 import styled from 'styled-components';
@@ -105,6 +105,34 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
             return classError.includes(campo);
         };
     }, [classError]);
+
+    // Função para verificar se um campo é obrigatório baseado nas incidências
+    const isCampoObrigatorioPorIncidencia = (dependente, campo) => {
+        const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
+        
+        if (campo === 'cpf' || campo === 'dt_nascimento') {
+            return incidenciasQueRequeremCPF;
+        }
+        
+        return false;
+    };
+
+    // Função para verificar se um campo está em erro por validação de incidência
+    const isCampoEmErroPorIncidencia = (dependente, campo) => {
+        if (!isCampoObrigatorioPorIncidencia(dependente, campo)) {
+            return false;
+        }
+        
+        if (campo === 'cpf' && !dependente.cpf) {
+            return true;
+        }
+        
+        if (campo === 'dt_nascimento' && !dependente.dt_nascimento) {
+            return true;
+        }
+        
+        return false;
+    };
 
     useEffect(() => {
         // Carregar graus de parentesco
@@ -235,6 +263,19 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                 summary: 'Atenção',
                 detail: 'Preencha todos os campos obrigatórios antes de salvar.',
                 life: 3000
+            });
+            return;
+        }
+
+        // Verifica se alguma incidência que requer CPF e data de nascimento está marcada
+        const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
+        
+        if (incidenciasQueRequeremCPF && (!dependente.cpf || !dependente.dt_nascimento)) {
+            toast.current?.show({
+                severity: 'warn',
+                summary: 'Atenção',
+                detail: 'CPF e Data de Nascimento são obrigatórios quando há incidências de IRRF, Assistência Médica ou Assistência Odontológica.',
+                life: 4000
             });
             return;
         }
@@ -505,7 +546,20 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
     };
 
     const podeSalvarDependente = (dependente) => {
-        return dependente.nome_depend && dependente.grau_parentesco && dependente.nrodepend && !dependente.id;
+        const camposObrigatorios = dependente.nome_depend && dependente.grau_parentesco && dependente.nrodepend;
+        
+        if (!camposObrigatorios || dependente.id) {
+            return false;
+        }
+
+        // Verifica se alguma incidência que requer CPF e data de nascimento está marcada
+        const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
+        
+        if (incidenciasQueRequeremCPF) {
+            return dependente.cpf && dependente.dt_nascimento;
+        }
+
+        return true;
     };
 
     const ResumoDependente = ({ dep }) => {
@@ -611,18 +665,71 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                             })()}
                                             setValor={(valor) => handleUpdateDependente(id, 'grau_parentesco', valor.code)}
                                             options={dependente.id ? grausParentesco : getGrausParentescoDisponiveis(dependente)}
-                                            $margin="23px"
+                                            $margin="0px"
                                             disabled={modoLeitura || isSaved}
                                         />
+                                    </FormGrid>
+                                    <div style={{marginTop: '4px', width: '100%', marginBottom: '32px'}}>
+                                        <h4 style={sectionTitleStyle}>Incidências</h4>
+                                        <FormGrid>
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0'}}>
+                                                <SwitchInput
+                                                    checked={dependente.incidencia_irrf}
+                                                    onChange={(checked) => handleUpdateDependente(id, 'incidencia_irrf', checked)}
+                                                />
+                                                <span style={{fontSize: '14px', color: '#374151'}}>Incidência IRRF</span>
+                                            </div>
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0'}}>
+                                                <SwitchInput
+                                                    checked={dependente.incidencia_assist_medica}
+                                                    onChange={(checked) => handleUpdateDependente(id, 'incidencia_assist_medica', checked)}
+                                                />
+                                                <span style={{fontSize: '14px', color: '#374151'}}>Incidência Assistência Médica</span>
+                                            </div>
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0'}}>
+                                                <SwitchInput
+                                                    checked={dependente.incidencia_inss}
+                                                    onChange={(checked) => handleUpdateDependente(id, 'incidencia_inss', checked)}
+                                                />
+                                                <span style={{fontSize: '14px', color: '#374151'}}>Incidência INSS</span>
+                                            </div>
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0'}}>
+                                                <SwitchInput
+                                                    checked={dependente.incidencia_assist_odonto}
+                                                    onChange={(checked) => handleUpdateDependente(id, 'incidencia_assist_odonto', checked)}
+                                                />
+                                                <span style={{fontSize: '14px', color: '#374151'}}>Incidência Assistência Odontológica</span>
+                                            </div>
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0'}}>
+                                                <SwitchInput
+                                                    checked={dependente.incidencia_sal_familia}
+                                                    onChange={(checked) => handleUpdateDependente(id, 'incidencia_sal_familia', checked)}
+                                                />
+                                                <span style={{fontSize: '14px', color: '#374151'}}>Incidência Salário Família</span>
+                                            </div>
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0'}}>
+                                                <SwitchInput
+                                                    checked={dependente.incidencia_pensao}
+                                                    onChange={(checked) => handleUpdateDependente(id, 'incidencia_pensao', checked)}
+                                                />
+                                                <span style={{fontSize: '14px', color: '#374151'}}>Incidência Pensão</span>
+                                            </div>
+                                        </FormGrid>
+                                    </div>
+                                    <FormGrid>
                                         <CampoTexto
+                                            camposVazios={isCampoEmErro(`cpf_${idx}`) || isCampoEmErroPorIncidencia(dependente, 'cpf') ? [`cpf_${idx}`] : []}
                                             label="CPF"
+                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto}
                                             valor={dependente.cpf}
                                             setValor={(valor) => handleUpdateDependente(id, 'cpf', valor)}
                                             patternMask="999.999.999-99"
                                             disabled={modoLeitura || isSaved}
                                         />
                                         <CampoTexto
+                                            camposVazios={isCampoEmErro(`dt_nascimento_${idx}`) || isCampoEmErroPorIncidencia(dependente, 'dt_nascimento') ? [`dt_nascimento_${idx}`] : []}
                                             label="Data de Nascimento"
+                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto}
                                             valor={dependente.dt_nascimento}
                                             setValor={(valor) => handleUpdateDependente(id, 'dt_nascimento', valor)}
                                             type="date"
@@ -669,56 +776,15 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                             <CampoTexto label="Número do Registro" valor={dependente.nroregistro} setValor={v => handleUpdateDependente(id, 'nroregistro', v)} disabled={modoLeitura || isSaved} />
                                             <CampoTexto label="Número do Livro" valor={dependente.nrolivro} setValor={v => handleUpdateDependente(id, 'nrolivro', v)} disabled={modoLeitura || isSaved} />
                                             <CampoTexto label="Número da Folha" valor={dependente.nrofolha} setValor={v => handleUpdateDependente(id, 'nrofolha', v)} disabled={modoLeitura || isSaved} />
-                                            <CheckboxContainer
-                                                label="Cartão de Vacina"
-                                                valor={dependente.cartao_vacina}
-                                                setValor={(checked) => handleUpdateDependente(id, 'cartao_vacina', checked)}
-                                                disabled={modoLeitura || isSaved}
-                                            />
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0'}}>
+                                                <SwitchInput
+                                                    checked={dependente.cartao_vacina}
+                                                    onChange={(checked) => handleUpdateDependente(id, 'cartao_vacina', checked)}
+                                                />
+                                                <span style={{fontSize: '14px', color: '#374151'}}>Cartão de Vacina</span>
+                                            </div>
                                             <CampoTexto label="Número SUS" valor={dependente.nrosus} setValor={v => handleUpdateDependente(id, 'nrosus', v)} disabled={modoLeitura || isSaved} />
                                             <CampoTexto label="Número Nascido Vivo" valor={dependente.nronascidovivo} setValor={v => handleUpdateDependente(id, 'nronascidovivo', v)} disabled={modoLeitura || isSaved} />
-                                        </FormGrid>
-                                    </div>
-                                    
-                                    <div style={{marginTop: '24px'}}>
-                                        <h4 style={sectionTitleStyle}>Incidências</h4>
-                                        <FormGrid>
-                                            <CheckboxContainer
-                                                label="Incidência IRRF"
-                                                valor={dependente.incidencia_irrf}
-                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_irrf', checked)}
-                                                disabled={modoLeitura || isSaved}
-                                            />
-                                            <CheckboxContainer
-                                                label="Incidência INSS"
-                                                valor={dependente.incidencia_inss}
-                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_inss', checked)}
-                                                disabled={modoLeitura || isSaved}
-                                            />
-                                            <CheckboxContainer
-                                                label="Incidência Assistência Médica"
-                                                valor={dependente.incidencia_assist_medica}
-                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_assist_medica', checked)}
-                                                disabled={modoLeitura || isSaved}
-                                            />
-                                            <CheckboxContainer
-                                                label="Incidência Assistência Odontológica"
-                                                valor={dependente.incidencia_assist_odonto}
-                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_assist_odonto', checked)}
-                                                disabled={modoLeitura || isSaved}
-                                            />
-                                            <CheckboxContainer
-                                                label="Incidência Pensão"
-                                                valor={dependente.incidencia_pensao}
-                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_pensao', checked)}
-                                                disabled={modoLeitura || isSaved}
-                                            />
-                                            <CheckboxContainer
-                                                label="Incidência Salário Família"
-                                                valor={dependente.incidencia_sal_familia}
-                                                setValor={(checked) => handleUpdateDependente(id, 'incidencia_sal_familia', checked)}
-                                                disabled={modoLeitura || isSaved}
-                                            />
                                         </FormGrid>
                                     </div>
                                     
