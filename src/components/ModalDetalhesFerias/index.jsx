@@ -772,19 +772,21 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 .catch(error => console.log('Erro ao buscar parâmetros de férias:', error));
             
             // Buscar parâmetros de acessos
-            http.get('shared/parametros/por-assunto/?assunto=ACESSOS')
-                .then(response => {
-                    const parametrosAcessos = response.parametros || {};
-                    // Se COLABORADOR não existir ou for true, então pode aprovar
-                    const colaboradorParam = parametrosAcessos.COLABORADOR;
-                    const podeAprovar = colaboradorParam === true;
-                    setPodeAnalistaTenantAprovar(podeAprovar);
-                })
-                .catch(error => {
-                    console.log('Erro ao buscar parâmetros de acessos:', error);
-                    // Em caso de erro ou sem resposta, assume que não tem acesso
-                    setPodeAnalistaTenantAprovar(false);
-                });
+            if(!ArmazenadorToken.UserCompanyPublicId) {
+                http.get('shared/parametros/por-assunto/?assunto=ACESSOS')
+                    .then(response => {
+                        const parametrosAcessos = response.parametros || {};
+                        // Se COLABORADOR não existir ou for true, então pode aprovar
+                        const colaboradorParam = parametrosAcessos.COLABORADOR;
+                        const podeAprovar = colaboradorParam === true;
+                        setPodeAnalistaTenantAprovar(podeAprovar);
+                    })
+                    .catch(error => {
+                        console.log('Erro ao buscar parâmetros de acessos:', error);
+                        // Em caso de erro ou sem resposta, assume que não tem acesso
+                        setPodeAnalistaTenantAprovar(false);
+                    });
+            }
         }
     }, [opened, evento]);
 
