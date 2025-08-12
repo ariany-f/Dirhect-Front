@@ -11,7 +11,7 @@ import BotaoGrupo from '@components/BotaoGrupo';
 import BotaoVoltar from '@components/BotaoVoltar';
 import { useNavigate } from 'react-router-dom';
 import styles from './Registro.module.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import http from '@http';
 import CampoTexto from '@components/CampoTexto';
 import { ArmazenadorToken } from '@utils';
@@ -136,7 +136,8 @@ const PickListContainer = styled.div`
     }
     
     .p-picklist .p-picklist-list {
-        border: none !important;
+        border: 1px solid var(--neutro-200) !important;
+        border-radius: 4px !important;
     }
     
     .p-picklist .p-picklist-list .p-picklist-item {
@@ -221,47 +222,201 @@ function OperadorRegistroPermissoes () {
     const [selectedTenants, setSelectedTenants] = useState([]);
     const [loadingTenants, setLoadingTenants] = useState(false);
 
-    // Função para buscar permissões de um grupo específico
-    const buscarPermissoesGrupo = async (nomeGrupo) => {
-        try {
-            const response = await http.get(`permissao_grupo/?format=json&name=${nomeGrupo}`);
-            // A resposta vem como array, pegamos o primeiro item que contém as permissões
-            if (response && response.length > 0) {
-                return response[0].permissions;
-            }
-            return [];
-        } catch (error) {
-            console.log('Erro ao buscar permissões do grupo:', error);
-            return [];
-        }
-    }
-
     // Função para buscar permissões de todos os grupos
-    const buscarPermissoesTodosGrupos = async (grupos) => {
+    const buscarPermissoesTodosGrupos = useCallback(async (grupos) => {
         setLoading(true);
-        const gruposComPermissoes = [];
-        
-        for (const grupo of grupos) {
-            const permissoes = await buscarPermissoesGrupo(grupo);
-            gruposComPermissoes.push({
-                name: grupo,
-                permissions: permissoes
+        try {
+            // Buscar todas as permissões em paralelo
+            const promises = grupos.map(async (grupo) => {
+                try {
+                    const response = await http.get(`permissao_grupo/?format=json&name=${grupo}`);
+                    return {
+                        name: grupo,
+                        permissions: response && response.length > 0 ? response[0].permissions : []
+                    };
+                } catch (error) {
+                    console.log('Erro ao buscar permissões do grupo:', grupo, error);
+                    return {
+                        name: grupo,
+                        permissions: []
+                    };
+                }
             });
+            
+            const resultados = await Promise.all(promises);
+            setGruposComPermissoes(resultados);
+        } catch (error) {
+            console.log('Erro ao buscar permissões:', error);
+        } finally {
+            setLoading(false);
         }
-        
-        setGruposComPermissoes(gruposComPermissoes);
-        setLoading(false);
-    }
+    }, []);
 
     // Função para obter informações dos grupos selecionados
-    const getGruposSelecionadosInfo = () => {
+    const getGruposSelecionadosInfo = useCallback(() => {
         if (!selectedRoles.length) return [];
         return gruposComPermissoes.filter(g => selectedRoles.includes(g.name));
-    }
+    }, [selectedRoles, gruposComPermissoes]);
 
-    const gruposSelecionadosInfo = getGruposSelecionadosInfo();
+    const gruposSelecionadosInfo = useMemo(() => getGruposSelecionadosInfo(), [getGruposSelecionadosInfo]);
 
-    const adicionarOperador = () => {
+    // Template otimizado para renderização dos grupos
+    const gruposTemplate = useMemo(() => {
+        return gruposSelecionadosInfo.map((grupoInfo, index) => {
+            const permissoesPorApp = {};
+            if (grupoInfo.permissions && grupoInfo.permissions.length > 0) {
+                grupoInfo.permissions.forEach(permissao => {
+                    const app = permissao.app_label;
+                    if (!permissoesPorApp[app]) {
+                        permissoesPorApp[app] = [];
+                    }
+                    permissoesPorApp[app].push(permissao);
+                });
+            }
+
+            const appsPrincipais = Object.keys(permissoesPorApp).slice(0, 3);
+            
+            return (
+                <div key={grupoInfo.name} style={{ 
+                    padding: '12px', 
+                    backgroundColor: 'var(--neutro-50)', 
+                    borderRadius: '6px', 
+                    marginTop: index > 0 ? '8px' : '6px',
+                    border: '1px solid var(--neutro-200)'
+                }}>
+                    <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center', 
+                        marginBottom: '8px' 
+                    }}>
+                        <Texto size="12px" weight={600} style={{ color: 'var(--primaria)' }}>
+                            {grupoInfo.name}
+                        </Texto>
+                    </div>
+                    
+                    {grupoInfo.permissions && grupoInfo.permissions.length > 0 && (
+                        <div>
+                            {appsPrincipais.map(app => {
+                                const permissoesApp = permissoesPorApp[app];
+                                const temAdd = permissoesApp.some(p => p.codename.startsWith('add_'));
+                                const temEdit = permissoesApp.some(p => p.codename.startsWith('change_'));
+                                const temDelete = permissoesApp.some(p => p.codename.startsWith('delete_'));
+                                const temView = permissoesApp.some(p => p.codename.startsWith('view_'));
+
+                                return (
+                                    <div key={app} style={{ 
+                                        backgroundColor: 'white', 
+                                        padding: '8px', 
+                                        borderRadius: '4px',
+                                        border: '1px solid var(--neutro-200)',
+                                        marginBottom: '6px'
+                                    }}>
+                                        <div style={{ 
+                                            display: 'flex', 
+                                            justifyContent: 'space-between', 
+                                            alignItems: 'center', 
+                                            marginBottom: '4px' 
+                                        }}>
+                                            <Texto size="11px" weight={600} style={{ textTransform: 'capitalize' }}>
+                                                {app === 'admissao' ? 'Admissões' : 
+                                                 app === 'gestao' ? 'Gestão' :
+                                                 app === 'specific' ? 'Funcionários' :
+                                                 app === 'shared' ? 'Compartilhado' :
+                                                 app === 'integracao' ? 'Integração' :
+                                                 app === 'auth' ? 'Autenticação' :
+                                                 app === 'core' ? 'Usuários' :
+                                                 app}
+                                            </Texto>
+                                        </div>
+                                        
+                                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                                            {temAdd && (
+                                                <span style={{
+                                                    backgroundColor: 'var(--neutro-100)',
+                                                    color: 'var(--neutro-700)',
+                                                    padding: '2px 4px',
+                                                    borderRadius: '3px',
+                                                    fontSize: '9px',
+                                                    fontWeight: '500',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '2px'
+                                                }}>
+                                                    <FaPlus size={8} /> Criar
+                                                </span>
+                                            )}
+                                            {temEdit && (
+                                                <span style={{
+                                                    backgroundColor: 'var(--neutro-100)',
+                                                    color: 'var(--neutro-700)',
+                                                    padding: '2px 4px',
+                                                    borderRadius: '3px',
+                                                    fontSize: '9px',
+                                                    fontWeight: '500',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '2px'
+                                                }}>
+                                                    <FaEdit size={8} /> Editar
+                                                </span>
+                                            )}
+                                            {temDelete && (
+                                                <span style={{
+                                                    backgroundColor: 'var(--neutro-100)',
+                                                    color: 'var(--neutro-700)',
+                                                    padding: '2px 4px',
+                                                    borderRadius: '3px',
+                                                    fontSize: '9px',
+                                                    fontWeight: '500',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '2px'
+                                                }}>
+                                                    <FaTrash size={8} /> Excluir
+                                                </span>
+                                            )}
+                                            {temView && (
+                                                <span style={{
+                                                    backgroundColor: 'var(--neutro-100)',
+                                                    color: 'var(--neutro-700)',
+                                                    padding: '2px 4px',
+                                                    borderRadius: '3px',
+                                                    fontSize: '9px',
+                                                    fontWeight: '500',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '2px'
+                                                }}>
+                                                    <FaEye size={8} /> Visualizar
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            
+                            {Object.keys(permissoesPorApp).length > 3 && (
+                                <div style={{ 
+                                    textAlign: 'center', 
+                                    padding: '4px',
+                                    backgroundColor: 'var(--neutro-100)',
+                                    borderRadius: '4px',
+                                    border: '1px dashed var(--neutro-300)'
+                                }}>
+                                    <Texto size="10px" color="var(--neutro-600)">
+                                        +{Object.keys(permissoesPorApp).length - 3} módulos adicionais
+                                    </Texto>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        });
+    }, [gruposSelecionadosInfo]);
+
+    const adicionarOperador = useCallback(() => {
         // Encontrar as permissões de todos os grupos selecionados
         const permissoes = [];
         selectedRoles.forEach(role => {
@@ -285,46 +440,48 @@ function OperadorRegistroPermissoes () {
                 navegar('/operador/registro/sucesso')
             }
         })
-    } 
+    }, [selectedRoles, selectedTenants, gruposComPermissoes, setGroups, setTenants, submeterOperador, navegar, operador]);
 
     // Função para lidar com mudanças no PickList
-    const handlePickListChange = (event) => {
+    const handlePickListChange = useCallback((event) => {
         setSourceGroups(event.source);
         setTargetGroups(event.target);
         setSelectedRoles(event.target.map(item => item.name));
-    }
+    }, []);
 
     // Função para lidar com mudanças no PickList de tenants
-    const handleTenantsPickListChange = (event) => {
+    const handleTenantsPickListChange = useCallback((event) => {
         setSourceTenants(event.source);
         setTargetTenants(event.target);
         setSelectedTenants(event.target.map(item => item.id));
-    }
+    }, []);
 
     // Função para buscar tenants
-    const buscarTenants = async () => {
+    const buscarTenants = useCallback(async () => {
         setLoadingTenants(true);
         try {
             const response = await http.get('cliente/?format=json');
-            const tenantsCompletos = await Promise.all(response.map(async (cliente) => {
+            
+            // Buscar dados completos em paralelo
+            const promises = response.map(async (cliente) => {
                 try {
-                    const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
-                    const tenant = tenantResponse || {};
-                    
-                    const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
-                    const pessoaJuridica = pessoaJuridicaResponse || {};
+                    const [tenantResponse, pessoaJuridicaResponse] = await Promise.all([
+                        http.get(`client_tenant/${cliente.id_tenant}/?format=json`),
+                        http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`)
+                    ]);
 
                     return {
                         ...cliente,
-                        tenant,
-                        pessoaJuridica
+                        tenant: tenantResponse || {},
+                        pessoaJuridica: pessoaJuridicaResponse || {}
                     };
                 } catch (erro) {
                     console.error("Erro ao buscar dados do tenant:", erro);
                     return { ...cliente, tenant: {}, pessoaJuridica: {} };
                 }
-            }));
+            });
 
+            const tenantsCompletos = await Promise.all(promises);
             setTenantsState(tenantsCompletos);
             setSourceTenants(tenantsCompletos.map(tenant => ({ 
                 id: tenant.id_tenant, 
@@ -336,7 +493,7 @@ function OperadorRegistroPermissoes () {
         } finally {
             setLoadingTenants(false);
         }
-    }
+    }, []);
 
     useEffect(() => {
         // Verificar se há nome e email do operador
@@ -345,25 +502,30 @@ function OperadorRegistroPermissoes () {
             return;
         }
 
-        if(ArmazenadorToken.UserGroups) {
-            const gruposDisponiveis = ArmazenadorToken.UserGroups;
-            setGrupos(gruposDisponiveis);
-            setSourceGroups(gruposDisponiveis.map(grupo => ({ name: grupo, label: grupo })));
-            buscarPermissoesTodosGrupos(gruposDisponiveis);
-        }
-        else {
-            http.get('permissao_grupo/')
-                .then(response => {
-                    setGrupos(response);
-                    setSourceGroups(response.map(grupo => ({ name: grupo, label: grupo })));
-                    buscarPermissoesTodosGrupos(response);
-                })
-                .catch(error => console.log('Erro ao buscar grupos:', error));
+        // Buscar grupos apenas uma vez
+        if (grupos.length === 0) {
+            if(ArmazenadorToken.UserGroups) {
+                const gruposDisponiveis = ArmazenadorToken.UserGroups;
+                setGrupos(gruposDisponiveis);
+                setSourceGroups(gruposDisponiveis.map(grupo => ({ name: grupo, label: grupo })));
+                buscarPermissoesTodosGrupos(gruposDisponiveis);
+            }
+            else {
+                http.get('permissao_grupo/')
+                    .then(response => {
+                        setGrupos(response);
+                        setSourceGroups(response.map(grupo => ({ name: grupo, label: grupo })));
+                        buscarPermissoesTodosGrupos(response);
+                    })
+                    .catch(error => console.log('Erro ao buscar grupos:', error));
+            }
         }
         
-        // Buscar tenants
-        buscarTenants();
-    }, [operador.first_name, operador.email, navegar]);
+        // Buscar tenants apenas uma vez
+        if (tenants.length === 0) {
+            buscarTenants();
+        }
+    }, [operador.first_name, navegar, buscarPermissoesTodosGrupos, buscarTenants, grupos.length, tenants.length]);
 
     return (
         <div style={{ width: '100%'}}>
@@ -454,160 +616,7 @@ function OperadorRegistroPermissoes () {
                                 </Titulo>
                             </CardLine>
                             
-                            {gruposSelecionadosInfo.map((grupoInfo, index) => (
-                                <div key={grupoInfo.name} style={{ 
-                                    padding: '12px', 
-                                    backgroundColor: 'var(--neutro-50)', 
-                                    borderRadius: '6px', 
-                                    marginTop: index > 0 ? '8px' : '6px',
-                                    border: '1px solid var(--neutro-200)'
-                                }}>
-                                    <div style={{ 
-                                        display: 'flex', 
-                                        justifyContent: 'space-between', 
-                                        alignItems: 'center', 
-                                        marginBottom: '8px' 
-                                    }}>
-                                        <Texto size="12px" weight={600} style={{ color: 'var(--primaria)' }}>
-                                            {grupoInfo.name}
-                                        </Texto>
-                                    </div>
-                                    
-                                    {grupoInfo.permissions && grupoInfo.permissions.length > 0 && (
-                                        <div>
-                                            {/* Agrupar permissões por app_label */}
-                                            {(() => {
-                                                const permissoesPorApp = {};
-                                                grupoInfo.permissions.forEach(permissao => {
-                                                    const app = permissao.app_label;
-                                                    if (!permissoesPorApp[app]) {
-                                                        permissoesPorApp[app] = [];
-                                                    }
-                                                    permissoesPorApp[app].push(permissao);
-                                                });
-
-                                                const appsPrincipais = Object.keys(permissoesPorApp).slice(0, 3);
-                                                
-                                                return (
-                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                                        {appsPrincipais.map(app => {
-                                                            const permissoesApp = permissoesPorApp[app];
-                                                            const temAdd = permissoesApp.some(p => p.codename.startsWith('add_'));
-                                                            const temEdit = permissoesApp.some(p => p.codename.startsWith('change_'));
-                                                            const temDelete = permissoesApp.some(p => p.codename.startsWith('delete_'));
-                                                            const temView = permissoesApp.some(p => p.codename.startsWith('view_'));
-
-                                                            return (
-                                                                <div key={app} style={{ 
-                                                                    backgroundColor: 'white', 
-                                                                    padding: '8px', 
-                                                                    borderRadius: '4px',
-                                                                    border: '1px solid var(--neutro-200)'
-                                                                }}>
-                                                                    <div style={{ 
-                                                                        display: 'flex', 
-                                                                        justifyContent: 'space-between', 
-                                                                        alignItems: 'center', 
-                                                                        marginBottom: '4px' 
-                                                                    }}>
-                                                                        <Texto size="11px" weight={600} style={{ textTransform: 'capitalize' }}>
-                                                                            {app === 'admissao' ? 'Admissões' : 
-                                                                             app === 'gestao' ? 'Gestão' :
-                                                                             app === 'specific' ? 'Funcionários' :
-                                                                             app === 'shared' ? 'Compartilhado' :
-                                                                             app === 'integracao' ? 'Integração' :
-                                                                             app === 'auth' ? 'Autenticação' :
-                                                                             app === 'core' ? 'Usuários' :
-                                                                             app}
-                                                                        </Texto>
-                                                                    </div>
-                                                                    
-                                                                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                                                                        {temAdd && (
-                                                                            <span style={{
-                                                                                backgroundColor: 'var(--neutro-100)',
-                                                                                color: 'var(--neutro-700)',
-                                                                                padding: '2px 4px',
-                                                                                borderRadius: '3px',
-                                                                                fontSize: '9px',
-                                                                                fontWeight: '500',
-                                                                                display: 'flex',
-                                                                                alignItems: 'center',
-                                                                                gap: '2px'
-                                                                            }}>
-                                                                                <FaPlus size={8} /> Criar
-                                                                            </span>
-                                                                        )}
-                                                                        {temEdit && (
-                                                                            <span style={{
-                                                                                backgroundColor: 'var(--neutro-100)',
-                                                                                color: 'var(--neutro-700)',
-                                                                                padding: '2px 4px',
-                                                                                borderRadius: '3px',
-                                                                                fontSize: '9px',
-                                                                                fontWeight: '500',
-                                                                                display: 'flex',
-                                                                                alignItems: 'center',
-                                                                                gap: '2px'
-                                                                            }}>
-                                                                                <FaEdit size={8} /> Editar
-                                                                            </span>
-                                                                        )}
-                                                                        {temDelete && (
-                                                                            <span style={{
-                                                                                backgroundColor: 'var(--neutro-100)',
-                                                                                color: 'var(--neutro-700)',
-                                                                                padding: '2px 4px',
-                                                                                borderRadius: '3px',
-                                                                                fontSize: '9px',
-                                                                                fontWeight: '500',
-                                                                                display: 'flex',
-                                                                                alignItems: 'center',
-                                                                                gap: '2px'
-                                                                            }}>
-                                                                                <FaTrash size={8} /> Excluir
-                                                                            </span>
-                                                                        )}
-                                                                        {temView && (
-                                                                            <span style={{
-                                                                                backgroundColor: 'var(--neutro-100)',
-                                                                                color: 'var(--neutro-700)',
-                                                                                padding: '2px 4px',
-                                                                                borderRadius: '3px',
-                                                                                fontSize: '9px',
-                                                                                fontWeight: '500',
-                                                                                display: 'flex',
-                                                                                alignItems: 'center',
-                                                                                gap: '2px'
-                                                                            }}>
-                                                                                <FaEye size={8} /> Visualizar
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                            );
-                                                        })}
-                                                        
-                                                        {Object.keys(permissoesPorApp).length > 3 && (
-                                                            <div style={{ 
-                                                                textAlign: 'center', 
-                                                                padding: '4px',
-                                                                backgroundColor: 'var(--neutro-100)',
-                                                                borderRadius: '4px',
-                                                                border: '1px dashed var(--neutro-300)'
-                                                            }}>
-                                                                <Texto size="10px" color="var(--neutro-600)">
-                                                                    +{Object.keys(permissoesPorApp).length - 3} módulos adicionais
-                                                                </Texto>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })()}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                            {gruposTemplate}
                         </CardContainer>
                     )}
                     
