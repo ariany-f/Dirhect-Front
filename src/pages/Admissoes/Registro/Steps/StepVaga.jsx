@@ -3,7 +3,7 @@ import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
 import styled from 'styled-components';
-import CheckboxContainer from '@components/CheckboxContainer';
+import SwitchInput from '@components/SwitchInput';
 
 const GridContainer = styled.div`
     padding: 0 24px 24px 24px;
@@ -269,8 +269,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     }, [candidato.codigo_categoria_sefip_choices, opcoesDominio.codigo_categoria_sefip, formatarOpcoesChoices, formatarOpcoesDominio]);
     
     return (
+        <>
         <GridContainer>
-
             <SectionTitle>Estrutura Organizacional</SectionTitle>
             {/* Todos os Dropdowns agrupados */}
             <DropdownItens
@@ -506,38 +506,37 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 placeholder="Ex: 1.000,00"
                 disabled={modoLeitura}
             />
-            <div style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
-            {/* Todos os Checkboxes agrupados */}
-            <CheckboxContainer
-                label="Considerar Como Função/Emprego/Cargo Acumulável"
-                valor={candidato.funcao_emprego_cargoacumulavel || false}
-                setValor={(valor) => setCampo('funcao_emprego_cargoacumulavel', valor)}
-                name="funcao_emprego_cargoacumulavel"
-                disabled={modoLeitura}
-            />
-            <CheckboxContainer
-                label="Calcula INSS"
-                valor={candidato.calcula_inss !== undefined ? candidato.calcula_inss : true}
-                setValor={(valor) => setCampo('calcula_inss', valor)}
-                name="calcula_inss"
-                disabled={modoLeitura}
-            />
-            <CheckboxContainer
-                label="Calcula IRRF"
-                valor={candidato.calcula_irrf !== undefined ? candidato.calcula_irrf : true}
-                setValor={(valor) => setCampo('calcula_irrf', valor)}
-                name="calcula_irrf"
-                disabled={modoLeitura}
-            />
-            <CheckboxContainer
-                label="Possui Função de Confiança/Cargo em Comissão"
-                valor={candidato.confianca || false}
-                setValor={(valor) => setCampo('confianca', valor)}
-                name="confianca"
-                disabled={modoLeitura}
-            />
+            <div style={{display: 'flex',  gap: '12px', flexWrap: 'wrap', alignItems: 'space-between', width: '100%'}}>
+                {/* Todos os Switches agrupados */}
+                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 0'}}>
+                    <SwitchInput
+                        checked={candidato.funcao_emprego_cargoacumulavel || false}
+                        onChange={(valor) => setCampo('funcao_emprego_cargoacumulavel', valor)}
+                    />
+                    <span style={{fontSize: '14px', color: '#374151'}}>Considerar Como Função/Emprego/Cargo Acumulável</span>
+                </div>
+                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 0'}}>
+                    <SwitchInput
+                        checked={candidato.calcula_inss !== undefined ? candidato.calcula_inss : true}
+                        onChange={(valor) => setCampo('calcula_inss', valor)}
+                    />
+                    <span style={{fontSize: '14px', color: '#374151'}}>Calcula INSS</span>
+                </div>
+                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 0'}}>
+                    <SwitchInput
+                        checked={candidato.calcula_irrf !== undefined ? candidato.calcula_irrf : true}
+                        onChange={(valor) => setCampo('calcula_irrf', valor)}
+                    />
+                    <span style={{fontSize: '14px', color: '#374151'}}>Calcula IRRF</span>
+                </div>
+                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 0'}}>
+                    <SwitchInput
+                        checked={candidato.confianca || false}
+                        onChange={(valor) => setCampo('confianca', valor)}
+                    />
+                    <span style={{fontSize: '14px', color: '#374151'}}>Possui Função de Confiança/Cargo em Comissão</span>
+                </div>
             </div>
-            
             {Boolean(candidato.confianca) && (
                 <DropdownItens
                     camposVazios={isCampoEmErro('funcao_confianca') ? ['funcao_confianca'] : []}
@@ -550,7 +549,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                     disabled={modoLeitura}
                 />
             )}
-
+        </GridContainer>
+        <GridContainer>
             <SectionTitle>FGTS</SectionTitle>
 
             <DropdownItens
@@ -696,6 +696,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 disabled={modoLeitura}
             />
         </GridContainer>
+        </>
     );
 };
 
