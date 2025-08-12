@@ -29,7 +29,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, funcoes_confianca, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [], classError = [], marcarCampoSelecionado }) => {
+const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, funcoes_confianca, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [], classError = [], marcarCampoSelecionado, buscarSecoesPorFilial }) => {
     
     
     const { candidato, setCampo, vaga } = useCandidatoContext();
@@ -282,6 +282,18 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                         filial_id: valor.code,
                         filial_nome: valor.name
                     });
+                    
+                    // Buscar seções da filial selecionada
+                    buscarSecoesPorFilial(valor.code);
+                    
+                    // Limpar seção selecionada quando mudar a filial
+                    setCampo('dados_vaga', { 
+                        ...candidato.dados_vaga, 
+                        filial_id: valor.code,
+                        filial_nome: valor.name,
+                        secao_id: null,
+                        secao_nome: null
+                    });
                 }}
                 options={opcoesFiliais}
                 label="Filial"
@@ -305,7 +317,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={isCampoObrigatorio(secoes)}
                 search
                 filter
-                disabled={modoLeitura}
+                disabled={modoLeitura || !candidato?.dados_vaga?.filial_id}
+                placeholder={!candidato?.dados_vaga?.filial_id ? "Selecione uma filial primeiro" : "Selecione a seção"}
             />
             <DropdownItens
                 name="funcao"

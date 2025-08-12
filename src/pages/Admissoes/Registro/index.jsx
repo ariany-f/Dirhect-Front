@@ -487,6 +487,18 @@ const CandidatoRegistro = () => {
     const [departamentos, setDepartamentos] = useState([]);
     const [secoes, setSecoes] = useState([]);
     const [cargos, setCargos] = useState([]);
+    
+    // Função para buscar seções por filial
+    const buscarSecoesPorFilial = (filialId) => {
+        if (!filialId) {
+            setSecoes([]);
+            return;
+        }
+        
+        http.get(`secao/?format=json&filial=${filialId}`)
+            .then(response => setSecoes(response))
+            .catch(() => setSecoes([]));
+    };
     const [horarios, setHorarios] = useState([]);
     const [funcoes, setFuncoes] = useState([]);
     const [funcoes_confianca, setFuncoesConfianca] = useState([]);
@@ -685,7 +697,6 @@ const CandidatoRegistro = () => {
         const listasAuxiliares = [
             { endpoint: 'filial/?format=json', setter: setFiliais },
             { endpoint: 'departamento/?format=json', setter: setDepartamentos },
-            { endpoint: 'secao/?format=json', setter: setSecoes },
             { endpoint: 'cargo/?format=json', setter: setCargos },
             { endpoint: 'centro_custo/?format=json', setter: setCentrosCusto },
             { endpoint: 'sindicato/?format=json', setter: setSindicatos },
@@ -3137,6 +3148,7 @@ const CandidatoRegistro = () => {
                                             filiais={filiais}
                                             departamentos={departamentos}
                                             secoes={secoes}
+                                            buscarSecoesPorFilial={buscarSecoesPorFilial}
                                             cargos={cargos}
                                             centros_custo={centros_custo}
                                             horarios={horarios}
