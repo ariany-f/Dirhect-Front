@@ -554,7 +554,7 @@ function OperadorRegistroPermissoes () {
             <Titulo>
                 <h6>Permissões</h6>
                 <SubTitulo>
-                    Defina as permissões de uso da conta para seu operador:
+                    Selecione os grupos que deseja atribuir ao operador:
                 </SubTitulo>
             </Titulo>
             
@@ -567,11 +567,6 @@ function OperadorRegistroPermissoes () {
                             </div>
                         ) : (
                             <div style={{ padding: '12px' }}>
-                                <div style={{ marginBottom: '12px' }}>
-                                    <SubTitulo>
-                                        Selecione os grupos que deseja atribuir ao operador
-                                    </SubTitulo>
-                                </div>
                                 <PickListContainer>
                                     <PickList
                                         source={sourceGroups}
@@ -657,11 +652,6 @@ function OperadorRegistroPermissoes () {
                     </div>
                 ) : (
                     <div style={{ padding: '12px' }}>
-                        <div style={{ marginBottom: '12px' }}>
-                            <SubTitulo>
-                                Selecione as empresas que deseja atribuir ao operador
-                            </SubTitulo>
-                        </div>
                         <PickListContainer>
                             <PickList
                                 source={sourceTenants}
