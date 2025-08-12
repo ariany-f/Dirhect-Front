@@ -21,7 +21,8 @@ import {
     FaPlus,
     FaEdit,
     FaTrash,
-    FaEye
+    FaEye,
+    FaBuilding
 } from 'react-icons/fa';
 
 const ContainerButton = styled.div`
@@ -157,10 +158,28 @@ const PickListContainer = styled.div`
         background-color: var(--vermilion-600) !important;
     }
     
+    /* Remover botões de reordenação (setas para cima/baixo) */
+    .p-picklist .p-picklist-list .p-picklist-list-header .p-picklist-list-header-actions {
+        display: none !important;
+    }
+    
+    /* Mostrar apenas botões de transferência */
+    .p-picklist .p-picklist-buttons {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+    }
+    
     .p-picklist .p-picklist-buttons .p-button {
         background-color: var(--primaria) !important;
         border-color: var(--primaria) !important;
         color: white !important;
+        width: 32px !important;
+        height: 32px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     
     .p-picklist .p-picklist-buttons .p-button:hover {
@@ -184,6 +203,7 @@ function OperadorRegistroPermissoes () {
         operador,
         setGroups,
         setEmail,
+        setTenants,
         submeterOperador
     } = useOperadorContext()
 
@@ -194,6 +214,11 @@ function OperadorRegistroPermissoes () {
     const [loading, setLoading] = useState(false);
     const [sourceGroups, setSourceGroups] = useState([]);
     const [targetGroups, setTargetGroups] = useState([]);
+    const [tenants, setTenantsState] = useState([]);
+    const [sourceTenants, setSourceTenants] = useState([]);
+    const [targetTenants, setTargetTenants] = useState([]);
+    const [selectedTenants, setSelectedTenants] = useState([]);
+    const [loadingTenants, setLoadingTenants] = useState(false);
 
     // Função para buscar permissões de um grupo específico
     const buscarPermissoesGrupo = async (nomeGrupo) => {
@@ -250,6 +275,10 @@ function OperadorRegistroPermissoes () {
         operador.global_user = false
         operador.permissions = permissoes
         
+        // Adicionar tenants selecionados
+        setTenants(selectedTenants)
+        operador.tenants = selectedTenants
+        
         submeterOperador().then(response => {
             if(response) {
                 navegar('/operador/registro/sucesso')
@@ -262,6 +291,50 @@ function OperadorRegistroPermissoes () {
         setSourceGroups(event.source);
         setTargetGroups(event.target);
         setSelectedRoles(event.target.map(item => item.name));
+    }
+
+    // Função para lidar com mudanças no PickList de tenants
+    const handleTenantsPickListChange = (event) => {
+        setSourceTenants(event.source);
+        setTargetTenants(event.target);
+        setSelectedTenants(event.target.map(item => item.id));
+    }
+
+    // Função para buscar tenants
+    const buscarTenants = async () => {
+        setLoadingTenants(true);
+        try {
+            const response = await http.get('cliente/?format=json');
+            const tenantsCompletos = await Promise.all(response.map(async (cliente) => {
+                try {
+                    const tenantResponse = await http.get(`client_tenant/${cliente.id_tenant}/?format=json`);
+                    const tenant = tenantResponse || {};
+                    
+                    const pessoaJuridicaResponse = await http.get(`pessoa_juridica/${cliente.pessoa_juridica}/?format=json`);
+                    const pessoaJuridica = pessoaJuridicaResponse || {};
+
+                    return {
+                        ...cliente,
+                        tenant,
+                        pessoaJuridica
+                    };
+                } catch (erro) {
+                    console.error("Erro ao buscar dados do tenant:", erro);
+                    return { ...cliente, tenant: {}, pessoaJuridica: {} };
+                }
+            }));
+
+            setTenantsState(tenantsCompletos);
+            setSourceTenants(tenantsCompletos.map(tenant => ({ 
+                id: tenant.id_tenant, 
+                label: tenant.tenant?.nome || 'Empresa',
+                data: tenant 
+            })));
+        } catch (error) {
+            console.error('Erro ao buscar tenants:', error);
+        } finally {
+            setLoadingTenants(false);
+        }
     }
 
     useEffect(() => {
@@ -280,6 +353,9 @@ function OperadorRegistroPermissoes () {
                 })
                 .catch(error => console.log('Erro ao buscar grupos:', error));
         }
+        
+        // Buscar tenants
+        buscarTenants();
     }, []);
 
     return (
@@ -548,11 +624,65 @@ function OperadorRegistroPermissoes () {
                     )}
                 </RightColumn>
             </LayoutContainer>
+
+            {/* Seção de Seleção de Tenants */}
+            <Titulo>
+                <h6>Empresas</h6>
+                <SubTitulo>
+                    Selecione as empresas onde o operador terá acesso:
+                </SubTitulo>
+            </Titulo>
+            
+            <CardContainer>
+                {loadingTenants ? (
+                    <div style={{ padding: '16px', textAlign: 'center' }}>
+                        <Texto>Carregando empresas...</Texto>
+                    </div>
+                ) : (
+                    <div style={{ padding: '12px' }}>
+                        <div style={{ marginBottom: '12px' }}>
+                            <SubTitulo>
+                                Selecione as empresas que deseja atribuir ao operador
+                            </SubTitulo>
+                        </div>
+                        <PickListContainer>
+                            <PickList
+                                source={sourceTenants}
+                                target={targetTenants}
+                                onChange={handleTenantsPickListChange}
+                                sourceHeader="Empresas Disponíveis"
+                                targetHeader="Empresas Selecionadas"
+                                itemTemplate={(item) => (
+                                    <div style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: '8px',
+                                        padding: '8px 0'
+                                    }}>
+                                        <FaBuilding size={14} style={{ color: 'var(--neutro-600)' }} />
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <span style={{ fontWeight: '600', fontSize: '12px' }}>
+                                                {item.label}
+                                            </span>
+                                            <span style={{ fontSize: '10px', color: 'var(--neutro-500)' }}>
+                                                {item.data?.pessoaJuridica?.cnpj || item.data?.pessoa_juridica?.cnpj || ''}
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                                style={{ 
+                                    height: '300px'
+                                }}
+                            />
+                        </PickListContainer>
+                    </div>
+                )}
+            </CardContainer>
         </Frame>
 
             <BotaoGrupo align="space-between">
                 <Botao aoClicar={() => navegar(-1)} estilo="neutro" formMethod="dialog" size="medium" filled>Voltar</Botao>
-                <Botao estilo="vermilion" size="medium" filled disabled={loading || selectedRoles.length === 0} onClick={adicionarOperador}>
+                <Botao estilo="vermilion" size="medium" filled disabled={loading || loadingTenants || selectedRoles.length === 0 || selectedTenants.length === 0} onClick={adicionarOperador}>
                     Adicionar operador
                 </Botao>
             </BotaoGrupo>

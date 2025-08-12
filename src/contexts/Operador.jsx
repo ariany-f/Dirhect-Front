@@ -11,7 +11,8 @@ const OperadorInicial = {
     password: '',
     groups: {},
     global_user: false,
-    permissions: []
+    permissions: [],
+    tenants: []
 }
 
 export const OperadorContext = createContext({
@@ -23,6 +24,7 @@ export const OperadorContext = createContext({
     setTenantId: () => null,
     setUsername: () => null,
     setPassword: () => null,
+    setTenants: () => null,
     erros: {},
     submeterOperador: () => null
 })
@@ -100,6 +102,15 @@ export const OperadorProvider = ({ children }) => {
         })
     }
 
+    const setTenants = (tenants) => {
+        setOperador(estadoAnterior => {
+            return {
+                ...estadoAnterior,
+                tenants
+            }
+        })
+    }
+
     const submeterOperador = () => {
         return http.post('usuario/', operador)
         .then((response) => {
@@ -119,6 +130,7 @@ export const OperadorProvider = ({ children }) => {
         setTenantId,
         setUsername,
         setPassword,
+        setTenants,
         submeterOperador
     }
 
