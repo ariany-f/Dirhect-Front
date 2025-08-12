@@ -8,6 +8,7 @@ import DottedLine from '@components/DottedLine';
 import Loading from '@components/Loading';
 import styled from 'styled-components';
 import BotaoGrupo from '@components/BotaoGrupo';
+import BotaoVoltar from '@components/BotaoVoltar';
 import { useNavigate } from 'react-router-dom';
 import styles from './Registro.module.css'
 import { useState, useEffect } from 'react';
@@ -361,6 +362,7 @@ function OperadorRegistroPermissoes () {
     return (
         <div style={{ width: '100%'}}>
         <Frame gap="6px">
+            <BotaoVoltar />
             <Loading opened={loading} />
             <Texto weight={500} size="12px">Nome do operador</Texto>
             <Titulo>

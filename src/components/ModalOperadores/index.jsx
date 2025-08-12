@@ -6,6 +6,7 @@ import SubTitulo from "@components/SubTitulo";
 import { RiCloseFill } from 'react-icons/ri';
 import { useState } from "react";
 import styled from "styled-components";
+import BotaoGrupo from "@components/BotaoGrupo";
 import { Overlay, DialogEstilizado } from '@components/Modal/styles';
 
 const Col12 = styled.div`
@@ -109,11 +110,10 @@ function ModalOperadores({ opened = false, aoFechar, aoSalvar }) {
                                 />
                             </Col6>
                         </Col12>
-
-                        <Col12 style={{ justifyContent: 'flex-end' }}>
+                        <BotaoGrupo align="end">
                             <Botao estilo="neutro" size="medium" aoClicar={handleFechar} filled>Cancelar</Botao>
                             <Botao estilo="vermilion" size="medium" aoClicar={handleSalvar} filled>Salvar</Botao>
-                        </Col12>
+                        </BotaoGrupo>
                     </Frame>
                 </DialogEstilizado>
             </Overlay>
