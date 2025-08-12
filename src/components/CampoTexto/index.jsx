@@ -129,7 +129,7 @@ const CampoArea = styled(InputTextarea)`
     }
 `
 
-function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = false, numeroCaracteres = null, onEnter = null, padding = null, rows = null }) {
+function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = true, label, disabled = false, readonly = false, type='text',  setFocus, placeholder, valor = '', setValor, name, width = 'inherit', camposVazios = [], patternMask = [], reference=null, required = false, numeroCaracteres = null, onEnter = null, padding = null, rows = null, maskReverse = false }) {
 
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
@@ -245,8 +245,49 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                 try {
                     // Garante que valorCampo seja uma string válida antes de usar unMask
                     const valorString = typeof valorCampo === 'string' ? valorCampo : String(valorCampo || '');
-                    const valorUnmasked = unMask(valorString);
-                    setValor(masker(valorUnmasked, patternMask), evento.target.name);
+                 
+                    if (maskReverse) {
+                        // Para máscaras reversas, aplica formatação genérica
+                        const numeros = valorCampo.replace(/\D/g, '');
+                        
+                        if (!numeros) {
+                            setValor('', evento.target.name);
+                            return;
+                        }
+                        
+                        // Função genérica para aplicar máscara reversa
+                        const aplicarMascaraReversa = (mascara, numeros) => {
+                            const maxDigitos = (mascara.match(/9/g) || []).length;
+                            const numerosLimitados = numeros.slice(-maxDigitos);
+                            
+                            // Preenche a máscara com zeros primeiro
+                            let resultadoArray = mascara.split('').map(char => {
+                                return char === '9' ? '0' : char;
+                            });
+                            
+                            // Substitui da direita para a esquerda
+                            let mascaraIndex = mascara.length - 1;
+                            let numeroIndex = numerosLimitados.length - 1;
+                            
+                            while (numeroIndex >= 0 && mascaraIndex >= 0) {
+                                if (mascara[mascaraIndex] === '9') {
+                                    resultadoArray[mascaraIndex] = numerosLimitados[numeroIndex];
+                                    numeroIndex--;
+                                }
+                                mascaraIndex--;
+                            }
+                            
+                            return resultadoArray.join('');
+                        };
+                        
+                        const resultado = aplicarMascaraReversa(patternMask, numeros);
+                        
+                        setValor(resultado, evento.target.name);
+                    } else {
+                        // Lógica padrão para máscaras normais
+                        const valorUnmasked = unMask(valorString);
+                        setValor(masker(valorUnmasked, patternMask), evento.target.name);
+                    }
                 } catch (error) {
                     console.error('Erro ao processar máscara:', error);
                     setValor(valorCampo, evento.target.name);

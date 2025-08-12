@@ -492,6 +492,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 valor={candidato.jornada || ''}
                 setValor={(valor) => setCampo('jornada', valor)}
                 patternMask="999:99"
+                maskReverse={true}
                 placeholder="Ex: 220:30"
                 disabled={modoLeitura}
             />
