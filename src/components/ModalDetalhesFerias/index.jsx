@@ -453,7 +453,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             podeAnalistaTenantAprovar
         });
 
-        if (diffDays < diasMinimosAntecedencia) {
+        if (diffDays < (diasMinimosAntecedencia+1)) {
             setMostrarErro45Dias(true);
             // Desabilita o botão se não for perfil especial (analista, supervisor, gestor)
             setBotaoEnviarDesabilitado(!isPerfilEspecial);
