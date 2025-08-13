@@ -1247,8 +1247,8 @@ function ColaboradorDetalhes() {
                                 Nascimento
                             </InfoLabel>
                             <InfoValue>
-                                <InfoText>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR')}</InfoText>
-                                <CopyButton onClick={() => copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento).toLocaleDateString('pt-BR'))}>
+                                <InfoText>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento  + 'T00:00:00').toLocaleDateString('pt-BR')}</InfoText>
+                                <CopyButton onClick={() => copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento  + 'T00:00:00').toLocaleDateString('pt-BR'))}>
                                     <IoCopyOutline size={12} />
                                 </CopyButton>
                             </InfoValue>

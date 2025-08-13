@@ -166,7 +166,7 @@ function ColaboradorDadosContratuais() {
                             {colaborador && colaborador.situacao === 'D' &&
                                 <>
                                     <Texto>Data de Demissão</Texto>
-                                    <Texto weight="800">{colaborador.dt_demissao ? new Date(colaborador.dt_demissao).toLocaleDateString('pt-BR') : '---'}</Texto>
+                                    <Texto weight="800">{colaborador.dt_demissao ? new Date(colaborador.dt_demissao  + 'T00:00:00').toLocaleDateString('pt-BR') : '---'}</Texto>
                                
                                     <Texto>Tipo de Demissão</Texto>
                                     <Texto weight="800">{colaborador.tipo_demissao_descricao || '---'}</Texto>
