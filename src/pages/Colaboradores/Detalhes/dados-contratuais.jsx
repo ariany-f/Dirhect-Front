@@ -135,7 +135,7 @@ function ColaboradorDadosContratuais() {
                             <Texto>Data Admissão</Texto>
                             {!colaborador
                                 ? <Skeleton variant="rectangular" width={200} height={25} />
-                                : <Texto weight="800">{colaborador.dt_admissao ? new Date(colaborador.dt_admissao).toLocaleDateString('pt-BR') : '---'}</Texto>
+                                : <Texto weight="800">{colaborador.dt_admissao ? new Date(colaborador.dt_admissao + 'T00:00:00').toLocaleDateString('pt-BR') : '---'}</Texto>
                             }
                             <Texto>Tipo de Admissão</Texto>
                             {!colaborador
