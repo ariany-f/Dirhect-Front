@@ -506,7 +506,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         hoje.setHours(0, 0, 0, 0);
         const diffTime = dataInicio - hoje;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        const erroAntecedencia = diffDays < diasMinimosAntecedencia;
+        const erroAntecedencia = diffDays < (diasMinimosAntecedencia + 1);
 
         // Desabilitar botão se houver qualquer erro
         setBotaoEnviarDesabilitado(
@@ -672,7 +672,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                     const inicio = parseDateAsLocal(dataInicio);
                     const diffTime = inicio - hoje;
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    erroAntecedencia = diffDays < diasMinimosAntecedencia;
+                    erroAntecedencia = diffDays < (diasMinimosAntecedencia + 1);
                 }
                 
                 // Atualizar estado do botão
@@ -735,7 +735,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             const inicio = parseDateAsLocal(dataInicio);
             const diffTime = inicio - hoje;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            erroAntecedencia = diffDays < diasMinimosAntecedencia;
+            erroAntecedencia = diffDays < (diasMinimosAntecedencia + 1);
         }
         
         setBotaoEnviarDesabilitado(
@@ -819,7 +819,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                 const inicio = parseDateAsLocal(dataInicio);
                 const diffTime = inicio - hoje;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                erroAntecedencia = diffDays < diasMinimosAntecedencia;
+                erroAntecedencia = diffDays < (diasMinimosAntecedencia + 1);
             }
             
             // Atualizar estado do botão
@@ -1026,7 +1026,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             podeAnalistaTenantAprovar
         });
         
-        if (diffDays < diasMinimosAntecedencia) {
+        if (diffDays < (diasMinimosAntecedencia + 1)) {
             if (!isPerfilEspecial) {
                 // Calcular a data mínima permitida
                 const dataMinima = new Date();
@@ -1503,7 +1503,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                                 hoje.setHours(0, 0, 0, 0);
                                                                 const diffTime = dataInicioObj - hoje;
                                                                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                                                const erroAntecedencia = diffDays < diasMinimosAntecedencia;
+                                                                const erroAntecedencia = diffDays < (diasMinimosAntecedencia + 1);
                                                                 
                                                                 // Atualizar estado do botão
                                                                 setBotaoEnviarDesabilitado(
