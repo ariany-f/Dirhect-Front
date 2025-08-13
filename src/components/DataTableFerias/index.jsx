@@ -352,13 +352,16 @@ function DataTableFerias({
         if (resultado) {
             if (resultado.sucesso) {
                 toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
-                if (onUpdate) onUpdate(); // Chama callback de atualização
+                if (onUpdate) onUpdate(); // Chama callback de atualização apenas em caso de sucesso
             } else if (resultado.erro) {
                 toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
+                // Não chama onUpdate em caso de erro
             } else if (resultado.aviso) {
                 toast.current.show({ severity: 'warn', summary: 'Atenção', detail: resultado.mensagem, life: 3000 });
+                // Não chama onUpdate em caso de aviso
             } else if (resultado.info) {
                 toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
+                // Não chama onUpdate em caso de info
             }
         }
     };

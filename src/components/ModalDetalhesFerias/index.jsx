@@ -363,15 +363,6 @@ const AcoesContainer = styled.div`
     &::-webkit-scrollbar-thumb:hover {
         background: #a8a8a8;
     }
-    
-    & > ${Frame} {
-        background-color: #fff;
-        border: 1px solid #dee2e6;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 16px;
-    }
 `;
 
 const BotaoAprovarCustom = styled(Botao)`
@@ -1011,8 +1002,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
         // Validação do adiantamento do 13º salário
         if (adiantarDecimoTerceiro) {
-            const dataInicio = parseDateAsLocal(dataInicio);
-            const mesInicio = dataInicio.getMonth() + 1;
+            const dataInicioObj = parseDateAsLocal(dataInicio);
+            const mesInicio = dataInicioObj.getMonth() + 1;
             if (mesInicio === 1 || mesInicio === 12) {
                 fecharComLimpeza({ aviso: true, mensagem: 'O adiantamento do 13º salário não é permitido para férias em janeiro ou dezembro, conforme a Lei nº 4.749/65.' });
                 return;
@@ -1037,7 +1028,15 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         
         if (diffDays < diasMinimosAntecedencia) {
             if (!isPerfilEspecial) {
-                fecharComLimpeza({ aviso: true, mensagem: `A solicitação de férias deve ser feita com no mínimo ${diasMinimosAntecedencia} dias de antecedência.` });
+                // Calcular a data mínima permitida
+                const dataMinima = new Date();
+                dataMinima.setDate(dataMinima.getDate() + diasMinimosAntecedencia);
+                const dataMinimaFormatada = dataMinima.toLocaleDateString('pt-BR');
+                
+                fecharComLimpeza({ 
+                    aviso: true, 
+                    mensagem: `A solicitação de férias deve ser feita com no mínimo ${diasMinimosAntecedencia} dias de antecedência. Data mínima permitida: ${dataMinimaFormatada}` 
+                });
                 return;
             }
         }
@@ -1056,7 +1055,28 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
             fecharComLimpeza({ sucesso: true, mensagem: 'Solicitação de férias enviada com sucesso!' });
         } catch (error) {
             console.error("Erro ao solicitar férias", error);
-            const errorMessage = error.response?.data?.detail || 'Erro ao solicitar férias. Por favor, tente novamente.';
+            console.log("Estrutura completa do erro:", {
+                response: error.response,
+                data: error.response?.data,
+                status: error.response?.status
+            });
+            
+            let errorMessage = 'Erro ao solicitar férias. Por favor, tente novamente.';
+            
+            // Verificar diferentes formatos de erro da API
+            if (error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+            } else if (error.response?.data?.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (typeof error.response?.data === 'string') {
+                errorMessage = error.response.data;
+            } else if (error?.error) {
+                errorMessage = error.error;
+            }
+            
+            console.log("Mensagem de erro final:", errorMessage);
             fecharComLimpeza({ erro: true, mensagem: errorMessage });
         }
     };
@@ -1214,7 +1234,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
 
                         <AcoesContainer>
                             {(eventoCompletado.evento?.data_inicio || totalDias) && (
-                                <Frame>
+                                <Frame style={{
+                                    backgroundColor: '#fff',
+                                    border: '1px solid #dee2e6',
+                                    boxShadow: '0 8px 16px rgba(0,0,0,0.05)',
+                                    borderRadius: '12px',
+                                    padding: '24px',
+                                    marginBottom: '16px'
+                                }}>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>{tituloPeriodo}</DetalhesTitulo>
                                     <BlocoDatas>
                                         {eventoCompletado.evento?.data_inicio && (
@@ -1252,7 +1279,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                             
                             {/* Seção de detalhes adicionais para férias finalizadas, aprovadas ou marcadas */}
                             {(statusType === 'finalizada' || statusType === 'aprovada' || statusType === 'marcada' || statusType === 'passada' || statusType === 'acontecendo' || statusType === 'paga' || statusType === 'solicitada') && (
-                                <Frame>
+                                <Frame style={{
+                                    backgroundColor: '#fff',
+                                    border: '1px solid #dee2e6',
+                                    boxShadow: '0 8px 16px rgba(0,0,0,0.05)',
+                                    borderRadius: '12px',
+                                    padding: '24px',
+                                    marginBottom: '16px'
+                                }}>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>Detalhes Adicionais</DetalhesTitulo>
                                     <BlocoDatas>
                                         {/* Datas importantes */}
@@ -1311,7 +1345,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                 </Frame>
                             )}
                             {statusType === 'aSolicitar' && !temPermissaoAddFerias && (
-                                <Frame>
+                                <Frame style={{
+                                    backgroundColor: '#fff',
+                                    border: '1px solid #dee2e6',
+                                    boxShadow: '0 8px 16px rgba(0,0,0,0.05)',
+                                    borderRadius: '12px',
+                                    padding: '24px',
+                                    marginBottom: '16px'
+                                }}>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>Solicitar Período</DetalhesTitulo>
                                     <AlertaAviso>
                                         <FaExclamationCircle size={20} style={{ color: '#ffc107', flexShrink: 0 }}/>
@@ -1322,7 +1363,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                 </Frame>
                             )}
                             {podeSolicitar && (
-                                <Frame>
+                                <Frame style={{
+                                    backgroundColor: '#fff',
+                                    border: '1px solid #dee2e6',
+                                    boxShadow: '0 8px 16px rgba(0,0,0,0.05)',
+                                    borderRadius: '12px',
+                                    padding: '24px',
+                                    marginBottom: '16px'
+                                }}>
                                     <DetalhesTitulo style={{ marginTop: 0 }}>Solicitar Período</DetalhesTitulo>
                                     <div style={{display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '12px', width: '100%'}}>
                                         <div style={{display: 'flex', gap: 16}}>
@@ -1549,7 +1597,14 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                 </Frame>
                             )}
                             {podeAprovar && (
-                                <Frame estilo="end" padding={'20px 20px 0px 0px'}>
+                                <Frame style={{
+                                    backgroundColor: '#fff',
+                                    border: '1px solid #dee2e6',
+                                    boxShadow: '0 8px 16px rgba(0,0,0,0.05)',
+                                    borderRadius: '12px',
+                                    padding: '20px 20px 0px 0px',
+                                    marginBottom: '16px'
+                                }}>
                                     <BotaoGrupo style={{ marginTop: '12px' }}>
                                         <BotaoAprovarCustom size="small" aoClicar={aprovarFerias} largura="100%">
                                             <FaCheckCircle /> Aprovar

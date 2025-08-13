@@ -421,13 +421,16 @@ function FeriasListagem() {
                     if (resultado) {
                         if (resultado.sucesso) {
                             toast.current.show({ severity: 'success', summary: 'Sucesso', detail: resultado.mensagem, life: 3000 });
-                            setForceUpdate(p => p + 1);
+                            setForceUpdate(p => p + 1); // Atualiza apenas em caso de sucesso
                         } else if (resultado.erro) {
                             toast.current.show({ severity: 'error', summary: 'Erro', detail: resultado.mensagem, life: 3000 });
+                            // Não chama setForceUpdate em caso de erro
                         } else if (resultado.aviso) {
                             toast.current.show({ severity: 'warn', summary: 'Atenção', detail: resultado.mensagem, life: 3000 });
+                            // Não chama setForceUpdate em caso de aviso
                         } else if (resultado.info) {
                             toast.current.show({ severity: 'info', summary: 'Aviso', detail: resultado.mensagem, life: 3000 });
+                            // Não chama setForceUpdate em caso de info
                         }
                     }
                 }}
