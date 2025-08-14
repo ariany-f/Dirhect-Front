@@ -539,6 +539,10 @@ const CandidatoRegistro = () => {
     const [showConfirmacaoDependentes, setShowConfirmacaoDependentes] = useState(false);
     const [dependentesParaAdicionar, setDependentesParaAdicionar] = useState([]);
     const [acaoSalvamento, setAcaoSalvamento] = useState(null); // 'salvar' ou 'salvar_continuar'
+    const [showConfirmacaoNavegacao, setShowConfirmacaoNavegacao] = useState(false);
+    const [stepComErro, setStepComErro] = useState(null);
+    const [errosStep, setErrosStep] = useState([]);
+    const [acaoNavegacao, setAcaoNavegacao] = useState(null); // 'salvar' ou 'salvar_continuar'
     const [showImageModal, setShowImageModal] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [showHistoricoTarefa, setShowHistoricoTarefa] = useState(false);
@@ -926,6 +930,24 @@ const CandidatoRegistro = () => {
         }
     }, []);
 
+    const verificarErrosEmOutrosSteps = (acao) => {
+        const errosPorStep = validarTodosOsSteps();
+        const stepsComErro = Object.keys(errosPorStep).map(Number).filter(step => step !== activeIndex);
+        
+        if (stepsComErro.length > 0) {
+            const primeiroStepComErro = Math.min(...stepsComErro);
+            const errosDoStep = errosPorStep[primeiroStepComErro];
+            
+            setStepComErro(primeiroStepComErro);
+            setErrosStep(errosDoStep);
+            setAcaoNavegacao(acao);
+            setShowConfirmacaoNavegacao(true);
+            return true; // Há erros em outros steps
+        }
+        
+        return false; // Não há erros em outros steps
+    };
+
     const handleSalvarAdmissao = async () => {
         // Se estiver em modo leitura, apenas mostra mensagem
         if (modoLeitura) {
@@ -935,6 +957,11 @@ const CandidatoRegistro = () => {
                 detail: 'Os dados estão em modo de leitura. Não é possível salvar alterações.',
                 life: 3000
             });
+            return;
+        }
+
+        // Verificar se há erros em outros steps
+        if (verificarErrosEmOutrosSteps('salvar')) {
             return;
         }
 
@@ -967,6 +994,11 @@ const CandidatoRegistro = () => {
         if (modoLeitura) {
             stepperRef.current.nextCallback();
             setActiveIndex(prev => prev + 1);
+            return;
+        }
+
+        // Verificar se há erros em outros steps
+        if (verificarErrosEmOutrosSteps('salvar_continuar')) {
             return;
         }
 
@@ -1022,6 +1054,33 @@ const CandidatoRegistro = () => {
         }
         
         return index; // Dependentes
+    };
+
+    const getNomeStep = (stepIndex) => {
+        const nomesSteps = {
+            0: 'Documentos',
+            1: 'Dados Pessoais',
+            2: 'Dados Bancários',
+            3: 'Dados Contratuais',
+            [getStepEducacaoIndex()]: 'Educação'
+        };
+        
+        if (mostrarHabilidades) {
+            nomesSteps[getStepEducacaoIndex() + 1] = 'Habilidades';
+        }
+        
+        if (mostrarExperiencia) {
+            const indexExperiencia = getStepEducacaoIndex() + (mostrarHabilidades ? 2 : 1);
+            nomesSteps[indexExperiencia] = 'Experiência Profissional';
+        }
+        
+        nomesSteps[getStepDependentesIndex()] = 'Dependentes';
+        
+        if (self) {
+            nomesSteps[getStepDependentesIndex() + 1] = 'LGPD';
+        }
+        
+        return nomesSteps[stepIndex] || `Step ${stepIndex + 1}`;
     };
 
     // Normaliza os dados para comparação (remove propriedades que podem ser undefined/null)
@@ -1609,6 +1668,234 @@ const CandidatoRegistro = () => {
         return parseInt(pisLimpo[10]) === digitoVerificador;
     };
 
+    // Função para validar campos obrigatórios de todos os steps
+    const validarTodosOsSteps = () => {
+        const errosPorStep = {};
+        
+        // Step 0 - Documentos
+        const errosDocumentos = [];
+        if (candidato.documentos && Array.isArray(candidato.documentos)) {
+            const documentosObrigatoriosPendentes = candidato.documentos
+                .filter(doc => doc.obrigatorio && !doc.upload_feito)
+                .map(doc => doc.nome);
+            if (documentosObrigatoriosPendentes.length > 0) {
+                errosDocumentos.push(`Documentos obrigatórios pendentes: ${documentosObrigatoriosPendentes.join(', ')}`);
+            }
+        }
+        if (errosDocumentos.length > 0) {
+            errosPorStep[0] = errosDocumentos;
+        }
+        
+        // Step 1 - Dados Pessoais
+        const errosDadosPessoais = [];
+        const dadosCandidato = candidato || {};
+        const camposObrigatoriosDadosPessoais = [
+            { campo: 'nome', nome: 'Nome completo' },
+            { campo: 'cpf', nome: 'CPF' },
+            { campo: 'dt_nascimento', nome: 'Data de nascimento' },
+            { campo: 'genero', nome: 'Gênero' },
+            { campo: 'cor_raca', nome: 'Cor/Raça' },
+            { campo: 'estado_civil', nome: 'Estado Civil' },
+            { campo: 'estado_natal', nome: 'Estado Natal' },
+            { campo: 'naturalidade', nome: 'Naturalidade' },
+            { campo: 'cep', nome: 'CEP' },
+            { campo: 'tipo_rua', nome: 'Tipo de Logradouro' },
+            { campo: 'rua', nome: 'Logradouro' },
+            { campo: 'numero', nome: 'Número' },
+            { campo: 'bairro', nome: 'Bairro' },
+            { campo: 'tipo_bairro', nome: 'Tipo de Bairro' },
+            { campo: 'cidade', nome: 'Cidade' },
+            { campo: 'estado', nome: 'Estado' }
+        ];
+
+        camposObrigatoriosDadosPessoais.forEach(({ campo, nome }) => {
+            const valor = dadosCandidato[campo];
+            if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
+                errosDadosPessoais.push(nome);
+            }
+        });
+
+        // Validação de PIS
+        if (dadosCandidato.pispasep && dadosCandidato.pispasep.trim() !== '' && !validarPIS(dadosCandidato.pispasep)) {
+            errosDadosPessoais.push('PIS/PASEP (inválido)');
+        }
+
+        // Validação de campos baseados em documentos
+        if (dadosCandidato.documentos && Array.isArray(dadosCandidato.documentos)) {
+            const camposRequeridos = {};
+            dadosCandidato.documentos.forEach(documento => {
+                if (documento.obrigatorio === true && documento.campos_requeridos) {
+                    let camposObj = documento.campos_requeridos;
+                    if (typeof camposObj === 'string') {
+                        try {
+                            camposObj = JSON.parse(camposObj);
+                        } catch (error) {
+                            return;
+                        }
+                    }
+                    Object.entries(camposObj).forEach(([campo, obrigatorio]) => {
+                        if (obrigatorio === true) {
+                            camposRequeridos[campo] = true;
+                        }
+                    });
+                }
+            });
+
+            const nomesCampos = {
+                identidade: 'Identidade (RG)',
+                uf_identidade: 'UF da Identidade',
+                orgao_emissor_ident: 'Órgão Emissor da Identidade',
+                data_emissao_ident: 'Data de Emissão da Identidade',
+                titulo_eleitor: 'Título de Eleitor',
+                zona_titulo_eleitor: 'Zona do Título',
+                secao_titulo_eleitor: 'Seção do Título',
+                data_titulo_eleitor: 'Data do Título',
+                estado_emissor_tit_eleitor: 'Estado Emissor do Título',
+                carteira_trabalho: 'CTPS',
+                serie_carteira_trab: 'Série da CTPS',
+                uf_carteira_trab: 'UF da CTPS',
+                data_emissao_ctps: 'Data de Emissão da CTPS',
+                data_venc_ctps: 'Data de Vencimento da CTPS',
+                carteira_motorista: 'Carteira de Motorista',
+                tipo_carteira_habilit: 'Tipo da Carteira de Habilitação',
+                data_venc_habilit: 'Data de Vencimento da Habilitação',
+                data_emissao_cnh: 'Data de Emissão da CNH',
+                pispasep: 'PIS/PASEP',
+                dt_opcao_fgts: 'Data de Opção FGTS',
+                codigo_situacao_fgts: 'Código Situação FGTS',
+                numero_passaporte: 'Número do Passaporte',
+                pais_origem: 'País de Origem',
+                data_emissao_passaporte: 'Data de Emissão do Passaporte',
+                data_validade_passaporte: 'Data de Validade do Passaporte'
+            };
+
+            Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {
+                if (obrigatorio && !dadosCandidato[campo]?.toString().trim()) {
+                    const nomeCampo = nomesCampos[campo] || campo;
+                    if (!errosDadosPessoais.includes(nomeCampo)) {
+                        errosDadosPessoais.push(nomeCampo);
+                    }
+                }
+            });
+        }
+        
+        if (errosDadosPessoais.length > 0) {
+            errosPorStep[1] = errosDadosPessoais;
+        }
+        
+        // Step 2 - Dados Bancários
+        const errosDadosBancarios = [];
+        const camposObrigatoriosDadosBancarios = [
+            { campo: 'banco', nome: 'Banco' },
+            { campo: 'conta_corrente', nome: 'Número da Conta' }
+        ];
+
+        camposObrigatoriosDadosBancarios.forEach(({ campo, nome }) => {
+            const valor = candidato[campo];
+            if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
+                errosDadosBancarios.push(nome);
+            }
+        });
+        
+        if (errosDadosBancarios.length > 0) {
+            errosPorStep[2] = errosDadosBancarios;
+        }
+        
+        // Step 3 - Dados Contratuais (apenas se não for self)
+        if (!self) {
+            const errosDadosContratuais = [];
+            const dadosVaga = candidato.dados_vaga || {};
+            const camposObrigatoriosDadosContratuais = [
+                { campo: 'dt_admissao', nome: 'Data de Admissão' },
+                { campo: 'tipo_admissao', nome: 'Tipo de Admissão' },
+                { campo: 'motivo_admissao', nome: 'Motivo da Admissão' },
+                { campo: 'tipo_situacao', nome: 'Situação' },
+                { campo: 'tipo_funcionario', nome: 'Tipo de Funcionário' },
+                { campo: 'tipo_recebimento', nome: 'Tipo de Recebimento' },
+                { campo: 'jornada', nome: 'Jornada' },
+                { campo: 'salario', nome: 'Salário' },
+                { campo: 'codigo_situacao_fgts', nome: 'Situação FGTS' },
+                { campo: 'codigo_categoria_esocial', nome: 'Código Categoria eSocial' },
+                { campo: 'natureza_atividade_esocial', nome: 'Natureza da Atividade eSocial' }
+            ];
+
+            if (candidato.confianca) {
+                camposObrigatoriosDadosContratuais.push({ campo: 'funcao_confianca', nome: 'Função de Confiança/Cargo em Comissão' });
+            }
+
+            camposObrigatoriosDadosContratuais.forEach(({ campo, nome }) => {
+                const valor = candidato[campo];
+                if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
+                    errosDadosContratuais.push(nome);
+                }
+            });
+
+            if (filiais && filiais.length > 0 && !dadosVaga.filial_id) {
+                errosDadosContratuais.push('Filial');
+            }
+            if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
+                errosDadosContratuais.push('Centro de custo');
+            }
+            
+            if (errosDadosContratuais.length > 0) {
+                errosPorStep[3] = errosDadosContratuais;
+            }
+        }
+        
+        // Step Educação
+        const stepEducacaoIndex = getStepEducacaoIndex();
+        const errosEducacao = [];
+        const camposObrigatoriosEducacao = [
+            { campo: 'grau_instrucao', nome: 'Grau de Instrução' }
+        ];
+
+        camposObrigatoriosEducacao.forEach(({ campo, nome }) => {
+            const valor = candidato[campo];
+            if (!valor || (typeof valor === 'object' && !valor.id) || (typeof valor === 'string' && !valor.trim())) {
+                errosEducacao.push(nome);
+            }
+        });
+        
+        if (errosEducacao.length > 0) {
+            errosPorStep[stepEducacaoIndex] = errosEducacao;
+        }
+        
+        // Step Dependentes
+        const stepDependentesIndex = getStepDependentesIndex();
+        const errosDependentes = [];
+        if (candidato.dependentes && candidato.dependentes.length > 0) {
+            candidato.dependentes.forEach((dependente, index) => {
+                if (!dependente.nome_depend?.trim()) {
+                    errosDependentes.push(`Nome do dependente ${index + 1}`);
+                }
+                if (!dependente.grau_parentesco) {
+                    errosDependentes.push(`Grau de parentesco do dependente ${index + 1}`);
+                }
+                
+                const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
+                const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
+                                      dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
+                const naoEPaiOuMae = !grauRequerCPF;
+                
+                if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && !dependente.cpf?.trim()) {
+                    const motivo = grauRequerCPF ? 'há incidências de IRRF, Assistência Médica ou Assistência Odontológica' : 'o dependente não é Pai ou Mãe';
+                    errosDependentes.push(`CPF do dependente ${index + 1} (obrigatório quando ${motivo})`);
+                }
+                
+                if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && !dependente.dt_nascimento) {
+                    const motivo = grauRequerCPF ? 'há incidências de IRRF, Assistência Médica ou Assistência Odontológica' : 'o dependente não é Pai ou Mãe';
+                    errosDependentes.push(`Data de nascimento do dependente ${index + 1} (obrigatória quando ${motivo})`);
+                }
+            });
+        }
+        
+        if (errosDependentes.length > 0) {
+            errosPorStep[stepDependentesIndex] = errosDependentes;
+        }
+        
+        return errosPorStep;
+    };
+
     // Função para validar campos obrigatórios do step atual
     const validarCamposObrigatoriosStep = () => {
         // Limpa os erros anteriores
@@ -1808,6 +2095,7 @@ const CandidatoRegistro = () => {
             console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - Dependentes:', candidato.dependentes);
             if (candidato.dependentes && candidato.dependentes.length > 0) {
                 candidato.dependentes.forEach((dependente, index) => {
+                    // Validação básica de campos obrigatórios
                     if (!dependente.nome_depend?.trim()) {
                         camposObrigatorios.push(`Nome do dependente ${index + 1}`);
                         setClassError(prev => [...prev, `nome_depend_${index}`]);
@@ -1815,6 +2103,26 @@ const CandidatoRegistro = () => {
                     if (!dependente.grau_parentesco) {
                         camposObrigatorios.push(`Grau de parentesco do dependente ${index + 1}`);
                         setClassError(prev => [...prev, `grau_parentesco_${index}`]);
+                    }
+                    
+                    // Validação específica baseada em incidências e grau de parentesco
+                    const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
+                    const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
+                                          dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
+                    const naoEPaiOuMae = !grauRequerCPF; // Se NÃO for pai ou mãe, é obrigatório
+                    
+                    // Validação de CPF obrigatório
+                    if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && !dependente.cpf?.trim()) {
+                        const motivo = grauRequerCPF ? 'há incidências de IRRF, Assistência Médica ou Assistência Odontológica' : 'o dependente não é Pai ou Mãe';
+                        camposObrigatorios.push(`CPF do dependente ${index + 1} (obrigatório quando ${motivo})`);
+                        setClassError(prev => [...prev, `cpf_${index}`]);
+                    }
+                    
+                    // Validação de Data de Nascimento obrigatória
+                    if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && !dependente.dt_nascimento) {
+                        const motivo = grauRequerCPF ? 'há incidências de IRRF, Assistência Médica ou Assistência Odontológica' : 'o dependente não é Pai ou Mãe';
+                        camposObrigatorios.push(`Data de nascimento do dependente ${index + 1} (obrigatória quando ${motivo})`);
+                        setClassError(prev => [...prev, `dt_nascimento_${index}`]);
                     }
                 });
             }
@@ -2066,6 +2374,7 @@ const CandidatoRegistro = () => {
         if (e.target === e.currentTarget) {
             setShowModalConfirmacao(false);
             setShowConfirmacaoDependentes(false);
+            setShowConfirmacaoNavegacao(false);
         }
     };
 
@@ -2191,6 +2500,32 @@ const CandidatoRegistro = () => {
         setActiveIndex(prev => prev + 1);
     };
 
+    // Função para verificar se há dependentes com campos obrigatórios não preenchidos
+    const verificarDependentesIncompletos = useCallback(() => {
+        if (!candidato.dependentes || candidato.dependentes.length === 0) {
+            return false;
+        }
+        
+        return candidato.dependentes.some(dependente => {
+            // Verificar campos básicos obrigatórios
+            if (!dependente.nome_depend?.trim() || !dependente.grau_parentesco) {
+                return true;
+            }
+            
+            // Verificar campos obrigatórios baseados em incidências
+            const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
+            const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
+                                  dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
+            const naoEPaiOuMae = !grauRequerCPF;
+            
+            if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && (!dependente.cpf?.trim() || !dependente.dt_nascimento)) {
+                return true;
+            }
+            
+            return false;
+        });
+    }, [candidato.dependentes]);
+
     // Função para renderizar os botões baseado no step atual
     const renderFooterButtons = useCallback(() => {
         const isFirstStep = activeIndex === 0;
@@ -2226,6 +2561,10 @@ const CandidatoRegistro = () => {
         const tarefaPendente = obterTarefaPendente();
         const podeFinalizar = !self && tarefaPendente && !modoLeitura;
         
+        // Verificar se está no step de dependentes e se há dependentes incompletos
+        const isStepDependentes = activeIndex === getStepDependentesIndex();
+        const temDependentesIncompletos = isStepDependentes && verificarDependentesIncompletos();
+        
         return (
             <div style={{
                 position: 'fixed',
@@ -2251,7 +2590,7 @@ const CandidatoRegistro = () => {
                     )}
                 </div>
 
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center', flex: '1', minWidth: '0', justifyContent: 'flex-end' }}>
                     {/* Indicador de carregamento */}
                     {!dadosCarregados && (
                         <div style={{ 
@@ -2260,7 +2599,8 @@ const CandidatoRegistro = () => {
                             gap: '8px', 
                             color: '#6b7280', 
                             fontSize: '14px',
-                            fontStyle: 'italic'
+                            fontStyle: 'italic',
+                            flexShrink: 0
                         }}>
                             <div style={{
                                 width: '16px',
@@ -2274,27 +2614,49 @@ const CandidatoRegistro = () => {
                         </div>
                     )}
                     
+                    {/* Indicador de dependentes incompletos */}
+                    {temDependentesIncompletos && (
+                        <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '8px', 
+                            color: '#dc2626', 
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            flex: '1',
+                            minWidth: '0',
+                            marginRight: '16px'
+                        }}>
+                            <FaExclamationTriangle size={16} style={{ flexShrink: 0 }} />
+                            <span style={{ whiteSpace: 'nowrap' }}>
+                                Complete os campos obrigatórios dos dependentes para continuar
+                            </span>
+                        </div>
+                    )}
+                    
                     {/* Botões específicos por step */}
                     {activeIndex === 0 && (
-                        <Botao 
-                            size="small" 
-                            label="Next" 
-                            iconPos="right" 
-                            aoClicar={handleAvancar}
-                            disabled={!dadosCarregados}
-                        >
-                            <HiArrowRight fill="var(--secundaria)"/> Continuar
-                        </Botao>
+                        <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
+                            <Botao 
+                                size="small" 
+                                label="Next" 
+                                iconPos="right" 
+                                aoClicar={handleAvancar}
+                                disabled={!dadosCarregados}
+                            >
+                                <HiArrowRight fill="var(--secundaria)"/> Continuar
+                            </Botao>
+                        </div>
                     )}
                     
                     {/* Steps intermediários com salvar */}
                     {(activeIndex >= 1 && activeIndex < totalSteps - 1) && (
-                        <>
+                        <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                             <Botao 
                                 size="small" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarAdmissao}
-                                disabled={modoLeitura || !dadosCarregados}
+                                disabled={modoLeitura || !dadosCarregados || temDependentesIncompletos}
                             >
                                 <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
@@ -2303,16 +2665,16 @@ const CandidatoRegistro = () => {
                                 label="Next" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarEContinuar}
-                                disabled={!dadosCarregados}
+                                disabled={!dadosCarregados || temDependentesIncompletos}
                             >
                                 <HiArrowRight size={20} fill="var(--secundaria)"/> Próximo
                             </Botao>
-                        </>
+                        </div>
                     )}
                     
                     {/* Último step (Anotações) */}
                     {isLastStep && (
-                        <>
+                        <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                             <Botao 
                                 size="small" 
                                 iconPos="right" 
@@ -2340,12 +2702,12 @@ const CandidatoRegistro = () => {
                                     <RiExchangeFill fill="var(--secundaria)"/> Finalizar
                                 </Botao>
                             )}
-                        </>
+                        </div>
                     )}
                 </div>
             </div>
         );
-    }, [activeIndex, dadosCarregados, isVisible, sidebarOpened, self, mostrarHabilidades, mostrarExperiencia, modoLeitura, obterTarefaPendente, handleVoltar, handleAvancar, handleSalvarEContinuar, handleSalvarAdmissao, handleFinalizarDocumentos]);
+    }, [activeIndex, dadosCarregados, isVisible, sidebarOpened, self, mostrarHabilidades, mostrarExperiencia, modoLeitura, obterTarefaPendente, handleVoltar, handleAvancar, handleSalvarEContinuar, handleSalvarAdmissao, handleFinalizarDocumentos, verificarDependentesIncompletos]);
 
     // Detectar cliques nos headers do stepper - DESABILITADO TEMPORARIAMENTE
     // useEffect(() => {
@@ -2409,6 +2771,66 @@ const CandidatoRegistro = () => {
         } catch (error) {
             console.log("O salvamento foi interrompido devido a um erro ao adicionar dependentes.");
             // O toast de erro já foi exibido na função executarSalvamento
+        }
+    };
+
+    const handleConfirmarNavegacao = () => {
+        setShowConfirmacaoNavegacao(false);
+        
+        // Navegar para o step com erro
+        setActiveIndex(stepComErro);
+        
+        // Forçar a atualização do stepper usando uma abordagem mais robusta
+        setTimeout(() => {
+            if (stepperRef.current) {
+                // Tentar diferentes métodos do PrimeReact
+                if (stepperRef.current.setActiveStep) {
+                    stepperRef.current.setActiveStep(stepComErro);
+                } else if (stepperRef.current.goToStep) {
+                    stepperRef.current.goToStep(stepComErro);
+                } else {
+                    // Fallback: forçar re-renderização
+                    const stepperElement = stepperRef.current.getElement?.();
+                    if (stepperElement) {
+                        stepperElement.style.display = 'none';
+                        setTimeout(() => {
+                            stepperElement.style.display = '';
+                        }, 10);
+                    }
+                }
+            }
+        }, 100);
+        
+        // Mostrar toast informando que o usuário foi direcionado para o step com erro
+        toast.current.show({
+            severity: 'info',
+            summary: 'Navegação',
+            detail: `Você foi direcionado para o step "${getNomeStep(stepComErro)}" para corrigir os campos obrigatórios.`,
+            life: 4000
+        });
+    };
+
+    const handleCancelarNavegacao = () => {
+        setShowConfirmacaoNavegacao(false);
+        
+        // Executar a ação original sem salvar
+        if (acaoNavegacao === 'salvar_continuar') {
+            stepperRef.current.nextCallback();
+            setActiveIndex(prev => prev + 1);
+            
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Aviso',
+                detail: 'Você continuou sem salvar. Os dados não foram salvos.',
+                life: 3000
+            });
+        } else if (acaoNavegacao === 'salvar') {
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Aviso',
+                detail: 'Você cancelou o salvamento. Os dados não foram salvos.',
+                life: 3000
+            });
         }
     };
 
@@ -2861,7 +3283,7 @@ const CandidatoRegistro = () => {
             <Toast ref={toast} style={{ zIndex: 9999 }} />
             <ConfirmDialog />
             
-            {/* Estilo para desabilitar navegação pelo header do stepper */}
+            {/* Estilo para desabilitar navegação manual pelo header do stepper, mas permitir navegação programática */}
             <style>
                 {`
                     .p-stepper-header {
@@ -2873,6 +3295,14 @@ const CandidatoRegistro = () => {
                     }
                     .p-stepper-header:hover {
                         background-color: inherit !important;
+                    }
+                    
+                    /* Permitir navegação programática quando necessário */
+                    .p-stepper-header.navegacao-programatica {
+                        pointer-events: auto !important;
+                    }
+                    .p-stepper-header.navegacao-programatica * {
+                        pointer-events: auto !important;
                     }
                     
                     /* Estilos para modo leitura */
@@ -3250,6 +3680,7 @@ const CandidatoRegistro = () => {
                     headerPosition="top" 
                     ref={stepperRef} 
                     className="custom-stepper"
+                    activeIndex={activeIndex}
                 >
                     <StepperPanel header="Anexos">
                         <Container padding={'0'} gap="10px">
@@ -3586,6 +4017,78 @@ const CandidatoRegistro = () => {
                             </ModalButton>
                             <ModalButton className="primary" onClick={handleConfirmarDependentes}>
                                 <HiCheckCircle size={20} fill="var(--white)" /> Sim, salvar dependentes
+                            </ModalButton>
+                        </ModalFooter>
+                    </ModalContainer>
+                </ModalOverlay>
+            )}
+
+            {/* Modal de confirmação de navegação para step com erro */}
+            {showConfirmacaoNavegacao && (
+                <ModalOverlay onClick={handleOverlayClick}>
+                    <ModalContainer>
+                        <ModalHeader>
+                            <ModalTitle>
+                                <FaExclamationTriangle fill="#dc2626" /> Campos Obrigatórios Pendentes
+                            </ModalTitle>
+                            <CloseButton onClick={handleCancelarNavegacao}>
+                                <HiX />
+                            </CloseButton>
+                        </ModalHeader>
+                        <ModalContent>
+                            <IconContainer style={{ background: 'linear-gradient(135deg, #dc2626, #b91c1c)' }}>
+                                <FaExclamationTriangle />
+                            </IconContainer>
+                            <ModalMessage>
+                                <div style={{ marginBottom: '16px' }}>
+                                    Existem campos obrigatórios não preenchidos no step <strong>"{getNomeStep(stepComErro)}"</strong>.
+                                    <br /><br />
+                                    {acaoNavegacao === 'salvar' ? (
+                                        <>Deseja ir para o step com erro para corrigir os campos antes de salvar?</>
+                                    ) : (
+                                        <>Deseja ir para o step com erro para corrigir os campos antes de continuar?</>
+                                    )}
+                                </div>
+                                
+                                <div style={{ 
+                                    background: '#fef2f2', 
+                                    border: '1px solid #fecaca', 
+                                    borderRadius: '8px', 
+                                    padding: '12px', 
+                                    marginTop: '16px' 
+                                }}>
+                                    <div style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: '8px', 
+                                        marginBottom: '8px',
+                                        color: '#dc2626',
+                                        fontWeight: '600'
+                                    }}>
+                                        <FaExclamationTriangle size={16} />
+                                        <span>Campos pendentes:</span>
+                                    </div>
+                                    <div style={{ maxHeight: '120px', overflowY: 'auto' }}>
+                                        {errosStep.map((erro, index) => (
+                                            <div key={index} style={{ 
+                                                padding: '4px 0', 
+                                                borderBottom: index < errosStep.length - 1 ? '1px solid #fecaca' : 'none',
+                                                fontSize: '14px',
+                                                color: '#991b1b'
+                                            }}>
+                                                • {erro}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </ModalMessage>
+                        </ModalContent>
+                        <ModalFooter>
+                            <ModalButton className="secondary" onClick={handleCancelarNavegacao}>
+                                <HiX /> {acaoNavegacao === 'salvar' ? 'Não salvar' : 'Continuar sem salvar'}
+                            </ModalButton>
+                            <ModalButton className="primary" onClick={handleConfirmarNavegacao}>
+                                <HiCheckCircle size={20} fill="var(--white)" /> Sim, ir para o step com erro
                             </ModalButton>
                         </ModalFooter>
                     </ModalContainer>
