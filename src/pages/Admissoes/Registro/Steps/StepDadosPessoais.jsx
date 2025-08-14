@@ -38,7 +38,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opcoesDominio = {} }) => {
+const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitura = false, opcoesDominio = {} }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
     const [cidades, setCidades] = useState([]);
@@ -91,6 +91,24 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             }));
         };
     }, []);
+
+    // Função para remover erro de um campo quando ele é preenchido
+    const removerErroCampo = (campo, valor) => {
+        if (!setClassError) return;
+        
+        // Para strings, verifica se não está vazio após trim
+        // Para objetos (dropdowns), verifica se tem valor
+        // Para outros tipos, verifica se tem valor
+        const campoPreenchido = valor && (
+            typeof valor === 'string' ? valor.trim() !== '' : 
+            typeof valor === 'object' ? (valor.id || valor.code) : 
+            valor
+        );
+        
+        if (campoPreenchido) {
+            setClassError(prev => prev.filter(erro => erro !== campo));
+        }
+    };
 
     const getValorSelecionadoFromCandidato = useMemo(() => {
         return (campo, lista) => {
@@ -311,6 +329,8 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
     const handleCepChange = async (valor) => {
         // Atualiza o campo CEP normalmente
         setCampo('cep', valor);
+        removerErroCampo('cep', valor);
+        
         const cepLimpo = valor.replace(/\D/g, '');
         // Só busca se for 8 dígitos e diferente do último buscado
         if (cepLimpo.length === 8 && lastCepRef.current !== cepLimpo) {
@@ -393,7 +413,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="nome"
                 required={true}
                 valor={candidato?.nome ?? ''}
-                setValor={valor => setCampo('nome', valor)}
+                                        setValor={valor => {
+                            setCampo('nome', valor);
+                            removerErroCampo('nome', valor);
+                        }}
                 type="text"
                 label="Nome"
                 placeholder="Digite o nome"
@@ -405,7 +428,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 required={true}
                 name="cpf"
                 valor={candidato?.cpf ?? ''}
-                setValor={valor => setCampo('cpf', valor)}
+                                        setValor={valor => {
+                            setCampo('cpf', valor);
+                            removerErroCampo('cpf', valor);
+                        }}
                 patternMask="999.999.999-99"
                 label="CPF"
                 placeholder="Digite o CPF"
@@ -414,8 +440,12 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             <CampoTexto
                 camposVazios={classError}
                 name="email"
+                required={true}
                 valor={candidato?.email ?? ''}
-                setValor={valor => setCampo('email', valor)}
+                setValor={valor => {
+                    setCampo('email', valor);
+                    removerErroCampo('email', valor);
+                }}
                 type="text"
                 label="E-mail"
                 placeholder="Digite o email"
@@ -423,8 +453,12 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
             />
             <CampoTexto
                 name="telefone"
+                required={true}
                 valor={candidato?.telefone ?? ''}
-                setValor={valor => setCampo('telefone', valor)}
+                setValor={valor => {
+                    setCampo('telefone', valor);
+                    removerErroCampo('telefone', valor);
+                }}
                 label="Telefone"
                 disabled={modoLeitura}
             />
@@ -433,7 +467,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="dt_nascimento"
                 required={true}
                 valor={candidato?.dt_nascimento ?? ''}
-                setValor={valor => setCampo('dt_nascimento', valor)}
+                                        setValor={valor => {
+                            setCampo('dt_nascimento', valor);
+                            removerErroCampo('dt_nascimento', valor);
+                        }}
                 label="Data de Nascimento"
                 type="date"
                 disabled={modoLeitura}
@@ -444,7 +481,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 required={true}
                 label="Gênero"
                 valor={getValorSelecionadoFromCandidato('genero', opcoesGenero)}
-                setValor={(valor) => setCampo('genero', valor.code)}
+                                        setValor={(valor) => {
+                            setCampo('genero', valor.code);
+                            removerErroCampo('genero', valor);
+                        }}
                 options={opcoesGenero}
                 disabled={modoLeitura}
             />
@@ -454,7 +494,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 required={true}
                 label="Cor/Raça"
                 valor={getValorSelecionadoFromCandidato('cor_raca', opcoesCorRaca)}
-                setValor={(valor) => setCampo('cor_raca', valor.code)}
+                                        setValor={(valor) => {
+                            setCampo('cor_raca', valor.code);
+                            removerErroCampo('cor_raca', valor);
+                        }}
                 options={opcoesCorRaca}
                 disabled={modoLeitura}
             />
@@ -464,7 +507,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 required={true}
                 label="Estado Civil"
                 valor={getValorSelecionadoFromCandidato('estado_civil', opcoesEstadoCivil)}
-                setValor={(valor) => setCampo('estado_civil', valor.code)}
+                                        setValor={(valor) => {
+                            setCampo('estado_civil', valor.code);
+                            removerErroCampo('estado_civil', valor);
+                        }}
                 options={opcoesEstadoCivil}
                 disabled={modoLeitura}
             />
@@ -488,7 +534,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                         required={true}
                         label="Estado Natal"
                         valor={getEstadoFormatado('estado_natal')}
-                        setValor={valor => setCampo('estado_natal', valor.code)}
+                        setValor={valor => {
+                            setCampo('estado_natal', valor.code);
+                            removerErroCampo('estado_natal', valor);
+                        }}
                         options={estadosFiltrados}
                         placeholder="Selecione o estado natal"
                         disabled={modoLeitura || !candidato?.nacionalidade}
@@ -519,7 +568,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                         required={true}
                         label="Naturalidade"
                         valor={getNaturalidadeFormatada()}
-                        setValor={valor => setCampo('naturalidade', valor.code)}
+                        setValor={valor => {
+                            setCampo('naturalidade', valor.code);
+                            removerErroCampo('naturalidade', valor);
+                        }}
                         options={cidades}
                         placeholder={loadingCidades ? "Carregando cidades..." : "Selecione a naturalidade"}
                         disabled={modoLeitura || !candidato?.estado_natal || loadingCidades}
@@ -565,7 +617,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('carteira_trabalho') && isCampoEmErro('carteira_trabalho') ? ['carteira_trabalho'] : []}
                 name="carteira_trabalho"
                 valor={candidato?.carteira_trabalho ?? ''}
-                setValor={valor => setCampo('carteira_trabalho', valor)}
+                setValor={valor => {
+                    setCampo('carteira_trabalho', valor);
+                    removerErroCampo('carteira_trabalho', valor);
+                }}
                 patternMask="9999999"
                 label={`CTPS${isCampoObrigatorio('carteira_trabalho') ? '*' : ''}`}
                 placeholder="Digite o número da carteira"
@@ -576,7 +631,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="serie_carteira_trab"
                 maxCaracteres={5}
                 valor={candidato?.serie_carteira_trab ?? ''}
-                setValor={valor => setCampo('serie_carteira_trab', valor)}
+                setValor={valor => {
+                    setCampo('serie_carteira_trab', valor);
+                    removerErroCampo('serie_carteira_trab', valor);
+                }}
                 patternMask="999999"
                 label={`Série da CTPS${isCampoObrigatorio('serie_carteira_trab') ? '*' : ''}`}
                 placeholder="Digite a série"
@@ -587,7 +645,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="uf_carteira_trab"
                 label={`UF da CTPS${isCampoObrigatorio('uf_carteira_trab') ? '*' : ''}`}
                 valor={getEstadoFormatado('uf_carteira_trab')}
-                setValor={valor => setCampo('uf_carteira_trab', valor.code)}
+                setValor={valor => {
+                    setCampo('uf_carteira_trab', valor.code);
+                    removerErroCampo('uf_carteira_trab', valor);
+                }}
                 options={estados}
                 placeholder="Selecione a UF"
                 disabled={modoLeitura}
@@ -597,7 +658,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('data_emissao_ctps') && isCampoEmErro('data_emissao_ctps') ? ['data_emissao_ctps'] : []}
                 name="data_emissao_ctps"
                 valor={candidato?.data_emissao_ctps ?? ''}
-                setValor={valor => setCampo('data_emissao_ctps', valor)}
+                setValor={valor => {
+                    setCampo('data_emissao_ctps', valor);
+                    removerErroCampo('data_emissao_ctps', valor);
+                }}
                 type="date"
                 label={`Data de Emissão da CTPS${isCampoObrigatorio('data_emissao_ctps') ? '*' : ''}`}
                 disabled={modoLeitura}
@@ -609,7 +673,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('carteira_motorista') && isCampoEmErro('carteira_motorista') ? ['carteira_motorista'] : []}
                 name="carteira_motorista"
                 valor={candidato?.carteira_motorista ?? ''}
-                setValor={valor => setCampo('carteira_motorista', valor)}
+                setValor={valor => {
+                    setCampo('carteira_motorista', valor);
+                    removerErroCampo('carteira_motorista', valor);
+                }}
                 patternMask="99999999999"
                 label={`Número da CNH${isCampoObrigatorio('carteira_motorista') ? '*' : ''}`}
                 placeholder="Digite o número da CNH"
@@ -619,7 +686,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('data_emissao_cnh') && isCampoEmErro('data_emissao_cnh') ? ['data_emissao_cnh'] : []}
                 name="data_emissao_cnh"
                 valor={candidato?.data_emissao_cnh ?? ''}
-                setValor={valor => setCampo('data_emissao_cnh', valor)}
+                setValor={valor => {
+                    setCampo('data_emissao_cnh', valor);
+                    removerErroCampo('data_emissao_cnh', valor);
+                }}
                 type="date"
                 label={`Data de Emissão da CNH${isCampoObrigatorio('data_emissao_cnh') ? '*' : ''}`}
                 disabled={modoLeitura}
@@ -628,7 +698,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('tipo_carteira_habilit') && isCampoEmErro('tipo_carteira_habilit') ? ['tipo_carteira_habilit'] : []}
                 name="tipo_carteira_habilit"
                 valor={candidato?.tipo_carteira_habilit ?? ''}
-                setValor={valor => setCampo('tipo_carteira_habilit', valor)}
+                setValor={valor => {
+                    setCampo('tipo_carteira_habilit', valor);
+                    removerErroCampo('tipo_carteira_habilit', valor);
+                }}
                 label={`Tipo da CNH${isCampoObrigatorio('tipo_carteira_habilit') ? '*' : ''}`}
                 placeholder="Ex: A, B, C, D, E"
                 disabled={modoLeitura}
@@ -637,7 +710,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('data_venc_habilit') && isCampoEmErro('data_venc_habilit') ? ['data_venc_habilit'] : []}
                 name="data_venc_habilit"
                 valor={candidato?.data_venc_habilit ?? ''}
-                setValor={valor => setCampo('data_venc_habilit', valor)}
+                setValor={valor => {
+                    setCampo('data_venc_habilit', valor);
+                    removerErroCampo('data_venc_habilit', valor);
+                }}
                 type="date"
                 label={`Data de Vencimento da CNH${isCampoObrigatorio('data_venc_habilit') ? '*' : ''}`}
                 disabled={modoLeitura}
@@ -649,7 +725,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('identidade') && isCampoEmErro('identidade') ? ['identidade'] : []}
                 name="identidade"
                 valor={candidato?.identidade ?? ''}
-                setValor={valor => setCampo('identidade', valor)}
+                setValor={valor => {
+                    setCampo('identidade', valor);
+                    removerErroCampo('identidade', valor);
+                }}
                 patternMask="99999999S"
                 label={`Identidade (RG)${isCampoObrigatorio('identidade') ? '*' : ''}`}
                 placeholder="Digite o número do RG"
@@ -660,7 +739,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="uf_identidade"
                 label={`UF da Identidade${isCampoObrigatorio('uf_identidade') ? '*' : ''}`}
                 valor={getEstadoFormatado('uf_identidade')}
-                setValor={valor => setCampo('uf_identidade', valor.code)}
+                setValor={valor => {
+                    setCampo('uf_identidade', valor.code);
+                    removerErroCampo('uf_identidade', valor);
+                }}
                 options={estados}
                 placeholder="Selecione a UF"
                 disabled={modoLeitura}
@@ -670,7 +752,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('orgao_emissor_ident') && isCampoEmErro('orgao_emissor_ident') ? ['orgao_emissor_ident'] : []}
                 name="orgao_emissor_ident"
                 valor={candidato?.orgao_emissor_ident ?? ''}
-                setValor={valor => setCampo('orgao_emissor_ident', valor)}
+                setValor={valor => {
+                    setCampo('orgao_emissor_ident', valor);
+                    removerErroCampo('orgao_emissor_ident', valor);
+                }}
                 label={`Órgão Emissor da Identidade${isCampoObrigatorio('orgao_emissor_ident') ? '*' : ''}`}
                 placeholder="Ex: SSP, DETRAN"
                 disabled={modoLeitura}
@@ -679,7 +764,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('data_emissao_ident') && isCampoEmErro('data_emissao_ident') ? ['data_emissao_ident'] : []}
                 name="data_emissao_ident"
                 valor={candidato?.data_emissao_ident ?? ''}
-                setValor={valor => setCampo('data_emissao_ident', valor)}
+                setValor={valor => {
+                    setCampo('data_emissao_ident', valor);
+                    removerErroCampo('data_emissao_ident', valor);
+                }}
                 type="date"
                 label={`Data de Emissão da Identidade${isCampoObrigatorio('data_emissao_ident') ? '*' : ''}`}
                 disabled={modoLeitura}
@@ -691,7 +779,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('titulo_eleitor') && isCampoEmErro('titulo_eleitor') ? ['titulo_eleitor'] : []}
                 name="titulo_eleitor"
                 valor={candidato?.titulo_eleitor ?? ''}
-                setValor={valor => setCampo('titulo_eleitor', valor)}
+                setValor={valor => {
+                    setCampo('titulo_eleitor', valor);
+                    removerErroCampo('titulo_eleitor', valor);
+                }}
                 patternMask="999999999999"
                 label={`Título de Eleitor${isCampoObrigatorio('titulo_eleitor') ? '*' : ''}`}
                 placeholder="Digite o número do título"
@@ -701,7 +792,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('zona_titulo_eleitor') && isCampoEmErro('zona_titulo_eleitor') ? ['zona_titulo_eleitor'] : []}
                 name="zona_titulo_eleitor"
                 valor={candidato?.zona_titulo_eleitor ?? ''}
-                setValor={valor => setCampo('zona_titulo_eleitor', valor)}
+                setValor={valor => {
+                    setCampo('zona_titulo_eleitor', valor);
+                    removerErroCampo('zona_titulo_eleitor', valor);
+                }}
                 patternMask="999"
                 label={`Zona do Título${isCampoObrigatorio('zona_titulo_eleitor') ? '*' : ''}`}
                 placeholder="Digite a zona"
@@ -711,7 +805,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('secao_titulo_eleitor') && isCampoEmErro('secao_titulo_eleitor') ? ['secao_titulo_eleitor'] : []}
                 name="secao_titulo_eleitor"
                 valor={candidato?.secao_titulo_eleitor ?? ''}
-                setValor={valor => setCampo('secao_titulo_eleitor', valor)}
+                setValor={valor => {
+                    setCampo('secao_titulo_eleitor', valor);
+                    removerErroCampo('secao_titulo_eleitor', valor);
+                }}
                 patternMask="9999"
                 label={`Seção do Título${isCampoObrigatorio('secao_titulo_eleitor') ? '*' : ''}`}
                 placeholder="Digite a seção"
@@ -721,7 +818,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('data_titulo_eleitor') && isCampoEmErro('data_titulo_eleitor') ? ['data_titulo_eleitor'] : []}
                 name="data_titulo_eleitor"
                 valor={candidato?.data_titulo_eleitor ?? ''}
-                setValor={valor => setCampo('data_titulo_eleitor', valor)}
+                setValor={valor => {
+                    setCampo('data_titulo_eleitor', valor);
+                    removerErroCampo('data_titulo_eleitor', valor);
+                }}
                 type="date"
                 label={`Data do Título${isCampoObrigatorio('data_titulo_eleitor') ? '*' : ''}`}
                 disabled={modoLeitura}
@@ -731,7 +831,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="estado_emissor_tit_eleitor"
                 label={`Estado Emissor do Título${isCampoObrigatorio('estado_emissor_tit_eleitor') ? '*' : ''}`}
                 valor={getEstadoFormatado('estado_emissor_tit_eleitor')}
-                setValor={valor => setCampo('estado_emissor_tit_eleitor', valor.code)}
+                setValor={valor => {
+                    setCampo('estado_emissor_tit_eleitor', valor.code);
+                    removerErroCampo('estado_emissor_tit_eleitor', valor);
+                }}
                 options={estados}
                 placeholder="Selecione o estado"
                 disabled={modoLeitura}
@@ -744,7 +847,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('numero_passaporte') && isCampoEmErro('numero_passaporte') ? ['numero_passaporte'] : []}
                 name="numero_passaporte"
                 valor={candidato?.numero_passaporte ?? ''}
-                setValor={valor => setCampo('numero_passaporte', valor)}
+                setValor={valor => {
+                    setCampo('numero_passaporte', valor);
+                    removerErroCampo('numero_passaporte', valor);
+                }}
                 label={`Número do Passaporte${isCampoObrigatorio('numero_passaporte') ? '*' : ''}`}
                 placeholder="Digite o número do passaporte"
                 disabled={modoLeitura}
@@ -753,7 +859,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('pais_origem') && isCampoEmErro('pais_origem') ? ['pais_origem'] : []}
                 name="pais_origem"
                 valor={candidato?.pais_origem ?? ''}
-                setValor={valor => setCampo('pais_origem', valor)}
+                setValor={valor => {
+                    setCampo('pais_origem', valor);
+                    removerErroCampo('pais_origem', valor);
+                }}
                 label={`País de Origem${isCampoObrigatorio('pais_origem') ? '*' : ''}`}
                 placeholder="Digite o nome do país de origem"
                 disabled={modoLeitura}
@@ -762,7 +871,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('data_emissao_passaporte') && isCampoEmErro('data_emissao_passaporte') ? ['data_emissao_passaporte'] : []}
                 name="data_emissao_passaporte"
                 valor={candidato?.data_emissao_passaporte ?? ''}
-                setValor={valor => setCampo('data_emissao_passaporte', valor)}
+                setValor={valor => {
+                    setCampo('data_emissao_passaporte', valor);
+                    removerErroCampo('data_emissao_passaporte', valor);
+                }}
                 type="date"
                 label={`Data de Emissão do Passaporte${isCampoObrigatorio('data_emissao_passaporte') ? '*' : ''}`}
                 disabled={modoLeitura}
@@ -771,7 +883,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 camposVazios={isCampoObrigatorio('data_validade_passaporte') && isCampoEmErro('data_validade_passaporte') ? ['data_validade_passaporte'] : []}
                 name="data_validade_passaporte"
                 valor={candidato?.data_validade_passaporte ?? ''}
-                setValor={valor => setCampo('data_validade_passaporte', valor)}
+                setValor={valor => {
+                    setCampo('data_validade_passaporte', valor);
+                    removerErroCampo('data_validade_passaporte', valor);
+                }}
                 type="date"
                 label={`Data de Validade do Passaporte${isCampoObrigatorio('data_validade_passaporte') ? '*' : ''}`}
                 disabled={modoLeitura}
@@ -809,7 +924,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 required={true}
                 label="Tipo de Logradouro"
                 valor={getValorSelecionadoFromCandidato('tipo_rua', opcoesTipoRua)}
-                setValor={(valor) => setCampo('tipo_rua', valor.code)}
+                setValor={(valor) => {
+                    setCampo('tipo_rua', valor.code);
+                    removerErroCampo('tipo_rua', valor);
+                }}
                 options={opcoesTipoRua}
                 placeholder="Selecione o tipo"
                 disabled={modoLeitura}
@@ -820,7 +938,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="rua"
                 required={true}
                 valor={candidato?.rua ?? ''}
-                setValor={valor => setCampo('rua', valor)}
+                setValor={valor => {
+                    setCampo('rua', valor);
+                    removerErroCampo('rua', valor);
+                }}
                 label="Logradouro"
                 disabled={modoLeitura}
             />
@@ -829,7 +950,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="numero"
                 required={true}
                 valor={candidato?.numero ?? ''}
-                setValor={valor => setCampo('numero', valor)}
+                setValor={valor => {
+                    setCampo('numero', valor);
+                    removerErroCampo('numero', valor);
+                }}
                 label="Número"
                 disabled={modoLeitura}
             />
@@ -838,7 +962,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="bairro"
                 required={true}
                 valor={candidato?.bairro ?? ''}
-                setValor={valor => setCampo('bairro', valor)}
+                setValor={valor => {
+                    setCampo('bairro', valor);
+                    removerErroCampo('bairro', valor);
+                }}
                 label="Bairro"
                 disabled={modoLeitura}
             />
@@ -848,7 +975,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 required={true}
                 label="Tipo de Bairro"
                 valor={getValorSelecionadoFromCandidato('tipo_bairro', opcoesTipoBairro)}
-                setValor={(valor) => setCampo('tipo_bairro', valor.code)}
+                setValor={(valor) => {
+                    setCampo('tipo_bairro', valor.code);
+                    removerErroCampo('tipo_bairro', valor);
+                }}
                 options={opcoesTipoBairro}
                 placeholder="Selecione o tipo"
                 disabled={modoLeitura}
@@ -866,7 +996,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                 name="cidade"
                 required={true}
                 valor={candidato?.cidade ?? ''}
-                setValor={valor => setCampo('cidade', valor)}
+                setValor={valor => {
+                    setCampo('cidade', valor);
+                    removerErroCampo('cidade', valor);
+                }}
                 label="Cidade"
                 disabled={modoLeitura}
             />
@@ -876,7 +1009,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                     $margin={'10px'}
                     required={true}
                     valor={getEstadoFormatado('estado')}
-                    setValor={valor => setCampo('estado', valor.code)}
+                    setValor={valor => {
+                        setCampo('estado', valor.code);
+                        removerErroCampo('estado', valor);
+                    }}
                     options={estadosFiltrados}
                     name="state"
                     label="Estado"
@@ -890,7 +1026,10 @@ const StepDadosPessoais = ({ classError = [], estados, modoLeitura = false, opco
                     name="estado"
                     required={true}
                     valor={candidato?.estado ?? ''}
-                    setValor={valor => setCampo('estado', valor)}
+                    setValor={valor => {
+                        setCampo('estado', valor);
+                        removerErroCampo('estado', valor);
+                    }}
                     label="Estado/Província"
                     placeholder="Digite o estado ou província"
                     disabled={modoLeitura || !candidato?.pais}

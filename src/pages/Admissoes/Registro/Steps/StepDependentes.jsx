@@ -9,9 +9,9 @@ import SwitchInput from '@components/SwitchInput';
 import http from '@http';
 import BotaoSemBorda from '@components/BotaoSemBorda';
 import styled from 'styled-components';
-import { Toast } from 'primereact/toast';
+
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { useRef } from 'react';
+
 
 
 const FormGrid = styled.div`
@@ -52,15 +52,7 @@ const SaveButton = styled.button`
     }
 `;
 
-const StyledToast = styled(Toast)`
-    .p-toast {
-        z-index: 9999 !important;
-    }
-    
-    .p-toast-message {
-        z-index: 9999 !important;
-    }
-`;
+
 
 const SectionTitle = styled.div`
     grid-column: 1 / -1;
@@ -72,7 +64,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepDependentes = ({ classError = [], modoLeitura = false }) => {
+const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, toast }) => {
     const { candidato, setCandidato } = useCandidatoContext();
     const [grausParentesco, setGrausParentesco] = useState([]);
     const [generos, setGeneros] = useState([]);
@@ -97,7 +89,6 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
     const [modalSalvamentoVisible, setModalSalvamentoVisible] = useState(false);
     const [modalRemocaoVisible, setModalRemocaoVisible] = useState(false);
-    const toast = useRef(null);
 
     // Função para verificar se um campo está em erro
     const isCampoEmErro = useMemo(() => {
@@ -545,11 +536,33 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
     const handleUpdateDependente = (id, campo, valor) => {
         const novosDependentes = candidato.dependentes.map(dep => {
             if ((dep.id || dep.temp_id) === id) {
-                return { ...dep, [campo]: valor };
+                const dependenteAtualizado = { ...dep, [campo]: valor };
+                return dependenteAtualizado;
             }
             return dep;
         });
+        
         setCandidato({ ...candidato, dependentes: novosDependentes });
+        
+        // Remove o erro do campo quando ele é preenchido
+        const dependenteIndex = candidato.dependentes.findIndex(dep => (dep.id || dep.temp_id) === id);
+        if (dependenteIndex !== -1) {
+            const campoErro = `${campo}_${dependenteIndex}`;
+            
+            // Verifica se o campo está preenchido e remove o erro
+            // Para strings, verifica se não está vazio após trim
+            // Para objetos (dropdowns), verifica se tem valor
+            // Para outros tipos, verifica se tem valor
+            const campoPreenchido = valor && (
+                typeof valor === 'string' ? valor.trim() !== '' : 
+                typeof valor === 'object' ? (valor.id || valor.code) : 
+                valor
+            );
+            
+            if (campoPreenchido) {
+                setClassError(prev => prev.filter(erro => erro !== campoErro));
+            }
+        }
     };
 
     const podeSalvarDependente = (dependente) => {
@@ -585,7 +598,6 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
 
     return (
         <>
-            <StyledToast ref={toast} />
             <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', paddingTop: '10px'}}>
                 {(candidato.dependentes || []).map((dependente, idx) => {
                     const id = dependente.id || dependente.temp_id;
@@ -646,6 +658,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                         <SectionTitle>Identificação</SectionTitle>
 
                                         <CampoTexto
+                                            name={`nome_depend_${idx}`}
                                             camposVazios={isCampoEmErro(`nome_depend_${idx}`) ? [`nome_depend_${idx}`] : []}
                                             label="Nome Completo"
                                             required={true}
@@ -654,6 +667,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                             disabled={modoLeitura || isSaved}
                                         />
                                         <DropdownItens
+                                            name={`grau_parentesco_${idx}`}
                                             camposVazios={isCampoEmErro(`grau_parentesco_${idx}`) ? [`grau_parentesco_${idx}`] : []}
                                             label="Grau de Parentesco"
                                             required={true}
@@ -728,6 +742,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                     </div>
                                     <FormGrid>
                                         <CampoTexto
+                                            name={`cpf_${idx}`}
                                             camposVazios={isCampoEmErro(`cpf_${idx}`) || isCampoEmErroPorIncidencia(dependente, 'cpf') ? [`cpf_${idx}`] : []}
                                             label="CPF"
                                             required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto || !(dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7)}
@@ -737,6 +752,7 @@ const StepDependentes = ({ classError = [], modoLeitura = false }) => {
                                             disabled={modoLeitura || isSaved}
                                         />
                                         <CampoTexto
+                                            name={`dt_nascimento_${idx}`}
                                             camposVazios={isCampoEmErro(`dt_nascimento_${idx}`) || isCampoEmErroPorIncidencia(dependente, 'dt_nascimento') ? [`dt_nascimento_${idx}`] : []}
                                             label="Data de Nascimento"
                                             required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto || !(dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7)}

@@ -46,7 +46,7 @@ const InfoBox = styled.div`
     }
 `;
 
-const StepDadosBancarios = ({ modoLeitura = false, classError = [] }) => {
+const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassError }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const [bancos, setBancos] = useState([]);
     const [loadingBancos, setLoadingBancos] = useState(false);
@@ -61,6 +61,24 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [] }) => {
             return classError.includes(campo);
         };
     }, [classError]);
+
+    // Função para remover erro de um campo quando ele é preenchido
+    const removerErroCampo = (campo, valor) => {
+        if (!setClassError) return;
+        
+        // Para strings, verifica se não está vazio após trim
+        // Para objetos (dropdowns), verifica se tem valor
+        // Para outros tipos, verifica se tem valor
+        const campoPreenchido = valor && (
+            typeof valor === 'string' ? valor.trim() !== '' : 
+            typeof valor === 'object' ? (valor.id || valor.code) : 
+            valor
+        );
+        
+        if (campoPreenchido) {
+            setClassError(prev => prev.filter(erro => erro !== campo));
+        }
+    };
 
     useEffect(() => {
         // Se o candidato já tem uma agencia_nova, entra no modo de adição
@@ -147,6 +165,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [] }) => {
                     setCampo('agencia', '');
                     setCampo('agencia_nova', '');
                     setAdicionandoAgencia(false);
+                    removerErroCampo('banco', valor);
                 }}
                 options={bancos}
                 name="banco"
@@ -163,7 +182,10 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [] }) => {
                         <CampoTexto
                             name="agencia_nova"
                             valor={candidato?.agencia_nova || filtroAgencia}
-                            setValor={valor => setCampo('agencia_nova', valor)}
+                            setValor={valor => {
+                            setCampo('agencia_nova', valor);
+                            removerErroCampo('agencia_nova', valor);
+                        }}
                             label="Nova Agência"
                             placeholder="Digite o número da agência"
                         />
@@ -182,7 +204,10 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [] }) => {
                     <DropdownItens
                         $margin={'10px'}
                         valor={candidato?.agencia ? (agencias.find(a => a.code === candidato.agencia) || null) : null}
-                        setValor={valor => setCampo('agencia', valor.code)}
+                        setValor={valor => {
+                            setCampo('agencia', valor.code);
+                            removerErroCampo('agencia', valor);
+                        }}
                         options={agencias}
                         name="agencia"
                         label="Agência"
@@ -236,7 +261,10 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [] }) => {
                 valor={candidato?.conta_corrente ?? ''}
                 numeroCaracteres={10}
                 maxCaracteres={10}
-                setValor={valor => setCampo('conta_corrente', valor)}
+                setValor={valor => {
+                    setCampo('conta_corrente', valor);
+                    removerErroCampo('conta_corrente', valor);
+                }}
                 label="Número da Conta"
                 placeholder="Digite o número da conta (com dígito)"
                 disabled={modoLeitura}

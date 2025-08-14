@@ -7,7 +7,7 @@ import { GrAddCircle } from 'react-icons/gr';
 import { FaTrash, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import http from '@http';
 
-const StepEducacao = ({ classError = [] }) => {
+const StepEducacao = ({ classError = [], setClassError }) => {
     const { candidato, addArrayItem, updateArrayItem, removeArrayItem, setCandidato } = useCandidatoContext();
     const [abertos, setAbertos] = useState(() => {
         // Se não houver itens, retorna array vazio
@@ -170,6 +170,11 @@ const StepEducacao = ({ classError = [] }) => {
                             ...prev,
                             grau_instrucao: valor?.id || valor
                         }));
+                        
+                        // Remove o erro do campo quando ele é preenchido
+                        if (valor && (valor.id || valor.code)) {
+                            setClassError(prev => prev.filter(erro => erro !== 'grau_instrucao'));
+                        }
                     }}
                     options={Array.isArray(grausInstrucao) ? grausInstrucao : []}
                     placeholder="Selecione o grau de instrução"

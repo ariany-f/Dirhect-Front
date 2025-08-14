@@ -11,7 +11,7 @@ import styles from './../Candidatos.module.css'
 import { Stepper } from 'primereact/stepper';
 import { StepperPanel } from 'primereact/stepperpanel';
 import { ScrollPanel } from 'primereact/scrollpanel';
-import { HiArrowLeft, HiArrowRight, HiEye, HiCheckCircle, HiX } from 'react-icons/hi';
+import { HiArrowLeft, HiArrowRight, HiCheckCircle, HiX } from 'react-icons/hi';
 import { FaTrash, FaSave, FaEye, FaUpload, FaExclamation } from 'react-icons/fa';
 import { Toast } from 'primereact/toast';
 import { CandidatoProvider, useCandidatoContext } from '@contexts/Candidato';
@@ -539,10 +539,7 @@ const CandidatoRegistro = () => {
     const [showConfirmacaoDependentes, setShowConfirmacaoDependentes] = useState(false);
     const [dependentesParaAdicionar, setDependentesParaAdicionar] = useState([]);
     const [acaoSalvamento, setAcaoSalvamento] = useState(null); // 'salvar' ou 'salvar_continuar'
-    const [showConfirmacaoNavegacao, setShowConfirmacaoNavegacao] = useState(false);
-    const [stepComErro, setStepComErro] = useState(null);
-    const [errosStep, setErrosStep] = useState([]);
-    const [acaoNavegacao, setAcaoNavegacao] = useState(null); // 'salvar' ou 'salvar_continuar'
+
     const [showImageModal, setShowImageModal] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [showHistoricoTarefa, setShowHistoricoTarefa] = useState(false);
@@ -930,23 +927,7 @@ const CandidatoRegistro = () => {
         }
     }, []);
 
-    const verificarErrosEmOutrosSteps = (acao) => {
-        const errosPorStep = validarTodosOsSteps();
-        const stepsComErro = Object.keys(errosPorStep).map(Number).filter(step => step !== activeIndex);
-        
-        if (stepsComErro.length > 0) {
-            const primeiroStepComErro = Math.min(...stepsComErro);
-            const errosDoStep = errosPorStep[primeiroStepComErro];
-            
-            setStepComErro(primeiroStepComErro);
-            setErrosStep(errosDoStep);
-            setAcaoNavegacao(acao);
-            setShowConfirmacaoNavegacao(true);
-            return true; // Há erros em outros steps
-        }
-        
-        return false; // Não há erros em outros steps
-    };
+
 
     const handleSalvarAdmissao = async () => {
         // Se estiver em modo leitura, apenas mostra mensagem
@@ -957,11 +938,6 @@ const CandidatoRegistro = () => {
                 detail: 'Os dados estão em modo de leitura. Não é possível salvar alterações.',
                 life: 3000
             });
-            return;
-        }
-
-        // Verificar se há erros em outros steps
-        if (verificarErrosEmOutrosSteps('salvar')) {
             return;
         }
 
@@ -997,11 +973,6 @@ const CandidatoRegistro = () => {
             return;
         }
 
-        // Verificar se há erros em outros steps
-        if (verificarErrosEmOutrosSteps('salvar_continuar')) {
-            return;
-        }
-
         // Validação de campos obrigatórios do step atual
         const validacaoCampos = validarCamposObrigatoriosStep();
         if (!validacaoCampos) return;
@@ -1032,18 +1003,15 @@ const CandidatoRegistro = () => {
 
     // Função para calcular o índice do step de educação
     const getStepEducacaoIndex = () => {
-        let index = 4; // Base: Documentos, Dados Pessoais, Dados Bancários, Educação
-        
-        if (!self) {
-            index += 1; // Dados Cadastrais
-        }
-        
-        return index; // Educação
+        return 4; // Documentos, Dados Pessoais, Dados Bancários, Dados Contratuais, Educação
     };
 
     // Função para calcular o índice do step de dependentes
     const getStepDependentesIndex = () => {
         let index = getStepEducacaoIndex(); // Base: até Educação
+        
+        // Sempre adiciona pelo menos 1 para o step de dependentes
+        index += 1;
         
         if (mostrarHabilidades) {
             index += 1; // Habilidades
@@ -1053,35 +1021,11 @@ const CandidatoRegistro = () => {
             index += 1; // Experiência Profissional
         }
         
+        console.log('🔍 getStepDependentesIndex - índice final:', index);
         return index; // Dependentes
     };
 
-    const getNomeStep = (stepIndex) => {
-        const nomesSteps = {
-            0: 'Documentos',
-            1: 'Dados Pessoais',
-            2: 'Dados Bancários',
-            3: 'Dados Contratuais',
-            [getStepEducacaoIndex()]: 'Educação'
-        };
-        
-        if (mostrarHabilidades) {
-            nomesSteps[getStepEducacaoIndex() + 1] = 'Habilidades';
-        }
-        
-        if (mostrarExperiencia) {
-            const indexExperiencia = getStepEducacaoIndex() + (mostrarHabilidades ? 2 : 1);
-            nomesSteps[indexExperiencia] = 'Experiência Profissional';
-        }
-        
-        nomesSteps[getStepDependentesIndex()] = 'Dependentes';
-        
-        if (self) {
-            nomesSteps[getStepDependentesIndex() + 1] = 'LGPD';
-        }
-        
-        return nomesSteps[stepIndex] || `Step ${stepIndex + 1}`;
-    };
+
 
     // Normaliza os dados para comparação (remove propriedades que podem ser undefined/null)
     const normalizarObjeto = (obj) => {
@@ -1668,238 +1612,15 @@ const CandidatoRegistro = () => {
         return parseInt(pisLimpo[10]) === digitoVerificador;
     };
 
-    // Função para validar campos obrigatórios de todos os steps
-    const validarTodosOsSteps = () => {
-        const errosPorStep = {};
-        
-        // Step 0 - Documentos
-        const errosDocumentos = [];
-        if (candidato.documentos && Array.isArray(candidato.documentos)) {
-            const documentosObrigatoriosPendentes = candidato.documentos
-                .filter(doc => doc.obrigatorio && !doc.upload_feito)
-                .map(doc => doc.nome);
-            if (documentosObrigatoriosPendentes.length > 0) {
-                errosDocumentos.push(`Documentos obrigatórios pendentes: ${documentosObrigatoriosPendentes.join(', ')}`);
-            }
-        }
-        if (errosDocumentos.length > 0) {
-            errosPorStep[0] = errosDocumentos;
-        }
-        
-        // Step 1 - Dados Pessoais
-        const errosDadosPessoais = [];
-        const dadosCandidato = candidato || {};
-        const camposObrigatoriosDadosPessoais = [
-            { campo: 'nome', nome: 'Nome completo' },
-            { campo: 'cpf', nome: 'CPF' },
-            { campo: 'dt_nascimento', nome: 'Data de nascimento' },
-            { campo: 'genero', nome: 'Gênero' },
-            { campo: 'cor_raca', nome: 'Cor/Raça' },
-            { campo: 'estado_civil', nome: 'Estado Civil' },
-            { campo: 'estado_natal', nome: 'Estado Natal' },
-            { campo: 'naturalidade', nome: 'Naturalidade' },
-            { campo: 'cep', nome: 'CEP' },
-            { campo: 'tipo_rua', nome: 'Tipo de Logradouro' },
-            { campo: 'rua', nome: 'Logradouro' },
-            { campo: 'numero', nome: 'Número' },
-            { campo: 'bairro', nome: 'Bairro' },
-            { campo: 'tipo_bairro', nome: 'Tipo de Bairro' },
-            { campo: 'cidade', nome: 'Cidade' },
-            { campo: 'estado', nome: 'Estado' }
-        ];
 
-        camposObrigatoriosDadosPessoais.forEach(({ campo, nome }) => {
-            const valor = dadosCandidato[campo];
-            if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
-                errosDadosPessoais.push(nome);
-            }
-        });
-
-        // Validação de PIS
-        if (dadosCandidato.pispasep && dadosCandidato.pispasep.trim() !== '' && !validarPIS(dadosCandidato.pispasep)) {
-            errosDadosPessoais.push('PIS/PASEP (inválido)');
-        }
-
-        // Validação de campos baseados em documentos
-        if (dadosCandidato.documentos && Array.isArray(dadosCandidato.documentos)) {
-            const camposRequeridos = {};
-            dadosCandidato.documentos.forEach(documento => {
-                if (documento.obrigatorio === true && documento.campos_requeridos) {
-                    let camposObj = documento.campos_requeridos;
-                    if (typeof camposObj === 'string') {
-                        try {
-                            camposObj = JSON.parse(camposObj);
-                        } catch (error) {
-                            return;
-                        }
-                    }
-                    Object.entries(camposObj).forEach(([campo, obrigatorio]) => {
-                        if (obrigatorio === true) {
-                            camposRequeridos[campo] = true;
-                        }
-                    });
-                }
-            });
-
-            const nomesCampos = {
-                identidade: 'Identidade (RG)',
-                uf_identidade: 'UF da Identidade',
-                orgao_emissor_ident: 'Órgão Emissor da Identidade',
-                data_emissao_ident: 'Data de Emissão da Identidade',
-                titulo_eleitor: 'Título de Eleitor',
-                zona_titulo_eleitor: 'Zona do Título',
-                secao_titulo_eleitor: 'Seção do Título',
-                data_titulo_eleitor: 'Data do Título',
-                estado_emissor_tit_eleitor: 'Estado Emissor do Título',
-                carteira_trabalho: 'CTPS',
-                serie_carteira_trab: 'Série da CTPS',
-                uf_carteira_trab: 'UF da CTPS',
-                data_emissao_ctps: 'Data de Emissão da CTPS',
-                data_venc_ctps: 'Data de Vencimento da CTPS',
-                carteira_motorista: 'Carteira de Motorista',
-                tipo_carteira_habilit: 'Tipo da Carteira de Habilitação',
-                data_venc_habilit: 'Data de Vencimento da Habilitação',
-                data_emissao_cnh: 'Data de Emissão da CNH',
-                pispasep: 'PIS/PASEP',
-                dt_opcao_fgts: 'Data de Opção FGTS',
-                codigo_situacao_fgts: 'Código Situação FGTS',
-                numero_passaporte: 'Número do Passaporte',
-                pais_origem: 'País de Origem',
-                data_emissao_passaporte: 'Data de Emissão do Passaporte',
-                data_validade_passaporte: 'Data de Validade do Passaporte'
-            };
-
-            Object.entries(camposRequeridos).forEach(([campo, obrigatorio]) => {
-                if (obrigatorio && !dadosCandidato[campo]?.toString().trim()) {
-                    const nomeCampo = nomesCampos[campo] || campo;
-                    if (!errosDadosPessoais.includes(nomeCampo)) {
-                        errosDadosPessoais.push(nomeCampo);
-                    }
-                }
-            });
-        }
-        
-        if (errosDadosPessoais.length > 0) {
-            errosPorStep[1] = errosDadosPessoais;
-        }
-        
-        // Step 2 - Dados Bancários
-        const errosDadosBancarios = [];
-        const camposObrigatoriosDadosBancarios = [
-            { campo: 'banco', nome: 'Banco' },
-            { campo: 'conta_corrente', nome: 'Número da Conta' }
-        ];
-
-        camposObrigatoriosDadosBancarios.forEach(({ campo, nome }) => {
-            const valor = candidato[campo];
-            if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
-                errosDadosBancarios.push(nome);
-            }
-        });
-        
-        if (errosDadosBancarios.length > 0) {
-            errosPorStep[2] = errosDadosBancarios;
-        }
-        
-        // Step 3 - Dados Contratuais (apenas se não for self)
-        if (!self) {
-            const errosDadosContratuais = [];
-            const dadosVaga = candidato.dados_vaga || {};
-            const camposObrigatoriosDadosContratuais = [
-                { campo: 'dt_admissao', nome: 'Data de Admissão' },
-                { campo: 'tipo_admissao', nome: 'Tipo de Admissão' },
-                { campo: 'motivo_admissao', nome: 'Motivo da Admissão' },
-                { campo: 'tipo_situacao', nome: 'Situação' },
-                { campo: 'tipo_funcionario', nome: 'Tipo de Funcionário' },
-                { campo: 'tipo_recebimento', nome: 'Tipo de Recebimento' },
-                { campo: 'jornada', nome: 'Jornada' },
-                { campo: 'salario', nome: 'Salário' },
-                { campo: 'codigo_situacao_fgts', nome: 'Situação FGTS' },
-                { campo: 'codigo_categoria_esocial', nome: 'Código Categoria eSocial' },
-                { campo: 'natureza_atividade_esocial', nome: 'Natureza da Atividade eSocial' }
-            ];
-
-            if (candidato.confianca) {
-                camposObrigatoriosDadosContratuais.push({ campo: 'funcao_confianca', nome: 'Função de Confiança/Cargo em Comissão' });
-            }
-
-            camposObrigatoriosDadosContratuais.forEach(({ campo, nome }) => {
-                const valor = candidato[campo];
-                if (!valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim())) {
-                    errosDadosContratuais.push(nome);
-                }
-            });
-
-            if (filiais && filiais.length > 0 && !dadosVaga.filial_id) {
-                errosDadosContratuais.push('Filial');
-            }
-            if (centros_custo && centros_custo.length > 0 && !dadosVaga.centro_custo_id) {
-                errosDadosContratuais.push('Centro de custo');
-            }
-            
-            if (errosDadosContratuais.length > 0) {
-                errosPorStep[3] = errosDadosContratuais;
-            }
-        }
-        
-        // Step Educação
-        const stepEducacaoIndex = getStepEducacaoIndex();
-        const errosEducacao = [];
-        const camposObrigatoriosEducacao = [
-            { campo: 'grau_instrucao', nome: 'Grau de Instrução' }
-        ];
-
-        camposObrigatoriosEducacao.forEach(({ campo, nome }) => {
-            const valor = candidato[campo];
-            if (!valor || (typeof valor === 'object' && !valor.id) || (typeof valor === 'string' && !valor.trim())) {
-                errosEducacao.push(nome);
-            }
-        });
-        
-        if (errosEducacao.length > 0) {
-            errosPorStep[stepEducacaoIndex] = errosEducacao;
-        }
-        
-        // Step Dependentes
-        const stepDependentesIndex = getStepDependentesIndex();
-        const errosDependentes = [];
-        if (candidato.dependentes && candidato.dependentes.length > 0) {
-            candidato.dependentes.forEach((dependente, index) => {
-                if (!dependente.nome_depend?.trim()) {
-                    errosDependentes.push(`Nome do dependente ${index + 1}`);
-                }
-                if (!dependente.grau_parentesco) {
-                    errosDependentes.push(`Grau de parentesco do dependente ${index + 1}`);
-                }
-                
-                const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
-                const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
-                                      dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
-                const naoEPaiOuMae = !grauRequerCPF;
-                
-                if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && !dependente.cpf?.trim()) {
-                    const motivo = grauRequerCPF ? 'há incidências de IRRF, Assistência Médica ou Assistência Odontológica' : 'o dependente não é Pai ou Mãe';
-                    errosDependentes.push(`CPF do dependente ${index + 1} (obrigatório quando ${motivo})`);
-                }
-                
-                if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && !dependente.dt_nascimento) {
-                    const motivo = grauRequerCPF ? 'há incidências de IRRF, Assistência Médica ou Assistência Odontológica' : 'o dependente não é Pai ou Mãe';
-                    errosDependentes.push(`Data de nascimento do dependente ${index + 1} (obrigatória quando ${motivo})`);
-                }
-            });
-        }
-        
-        if (errosDependentes.length > 0) {
-            errosPorStep[stepDependentesIndex] = errosDependentes;
-        }
-        
-        return errosPorStep;
-    };
 
     // Função para validar campos obrigatórios do step atual
     const validarCamposObrigatoriosStep = () => {
-        // Limpa os erros anteriores
-        setClassError([]);
+        console.log('🚨🚨🚨 validarCamposObrigatoriosStep - INICIANDO 🚨🚨🚨');
+        console.log('🔍 validarCamposObrigatoriosStep - activeIndex:', activeIndex);
+        
+        // NÃO limpa os erros anteriores - vamos acumular
+        // setClassError([]);
         
         const dadosCandidato = candidato || {};
         const dadosVaga = candidato.dados_vaga || {};
@@ -1913,6 +1634,8 @@ const CandidatoRegistro = () => {
             const camposObrigatoriosDadosPessoais = [
                 { campo: 'nome', nome: 'Nome completo' },
                 { campo: 'cpf', nome: 'CPF' },
+                { campo: 'email', nome: 'Email' },
+                { campo: 'telefone', nome: 'Telefone' },
                 { campo: 'dt_nascimento', nome: 'Data de nascimento' },
                 { campo: 'genero', nome: 'Gênero' },
                 { campo: 'cor_raca', nome: 'Cor/Raça' },
@@ -2088,11 +1811,8 @@ const CandidatoRegistro = () => {
                 camposObrigatorios.push('Centro de custo');
                 setClassError(prev => [...prev, 'centro_custo_id']);
             }
-        } else if (activeIndex === getStepDependentesIndex()) { // Step Dependentes
-            // Validação de dependentes obrigatórios
-            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - Iniciando validação dos dependentes');
-            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - Candidato:', candidato);
-            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - Dependentes:', candidato.dependentes);
+        } else if (activeIndex === getStepDependentesIndex() && activeIndex !== getStepEducacaoIndex()) { // Step Dependentes (apenas se não for o mesmo que educação)
+           
             if (candidato.dependentes && candidato.dependentes.length > 0) {
                 candidato.dependentes.forEach((dependente, index) => {
                     // Validação básica de campos obrigatórios
@@ -2127,6 +1847,7 @@ const CandidatoRegistro = () => {
                 });
             }
         } else if (activeIndex === getStepEducacaoIndex()) { // Step Educação
+            console.log('🚨🚨🚨 VALIDAÇÃO STEP EDUCAÇÃO - INICIANDO 🚨🚨🚨');
             // Validação de educação obrigatória baseada no required={true}
             const camposObrigatoriosEducacao = [
                 { campo: 'grau_instrucao', nome: 'Grau de Instrução' }
@@ -2135,9 +1856,22 @@ const CandidatoRegistro = () => {
             camposObrigatoriosEducacao.forEach(({ campo, nome }) => {
                 // Verifica se o campo existe e tem valor (pode ser objeto ou string)
                 const valor = candidato[campo];
-                if (!valor || (typeof valor === 'object' && !valor.id) || (typeof valor === 'string' && !valor.trim())) {
+                
+                console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - campo:', campo);
+                console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - valor:', valor);
+                console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - tipo:', typeof valor);
+                
+                const isVazio = !valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim());
+                console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - isVazio:', isVazio);
+                
+                if (isVazio) {
+                    console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - ADICIONANDO ERRO para:', campo);
                     camposObrigatorios.push(nome);
-                    setClassError(prev => [...prev, campo]);
+                    setClassError(prev => {
+                        const novo = [...prev, campo];
+                        console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - classError atualizado:', novo);
+                        return novo;
+                    });
                 }
             });
         }
@@ -2374,7 +2108,6 @@ const CandidatoRegistro = () => {
         if (e.target === e.currentTarget) {
             setShowModalConfirmacao(false);
             setShowConfirmacaoDependentes(false);
-            setShowConfirmacaoNavegacao(false);
         }
     };
 
@@ -2502,13 +2235,24 @@ const CandidatoRegistro = () => {
 
     // Função para verificar se há dependentes com campos obrigatórios não preenchidos
     const verificarDependentesIncompletos = useCallback(() => {
+        console.log('🔍 verificarDependentesIncompletos - dependentes:', candidato.dependentes);
+        
         if (!candidato.dependentes || candidato.dependentes.length === 0) {
+            console.log('🔍 verificarDependentesIncompletos - sem dependentes, retornando false');
             return false;
         }
         
-        return candidato.dependentes.some(dependente => {
+        const resultado = candidato.dependentes.some(dependente => {
+            console.log('🔍 verificarDependentesIncompletos - verificando dependente:', dependente);
+            
             // Verificar campos básicos obrigatórios
-            if (!dependente.nome_depend?.trim() || !dependente.grau_parentesco) {
+            const nomeVazio = !dependente.nome_depend?.trim();
+            const grauVazio = !dependente.grau_parentesco;
+            
+            console.log('🔍 verificarDependentesIncompletos - nomeVazio:', nomeVazio, 'grauVazio:', grauVazio);
+            
+            if (nomeVazio || grauVazio) {
+                console.log('🔍 verificarDependentesIncompletos - campos básicos vazios, retornando true');
                 return true;
             }
             
@@ -2519,12 +2263,135 @@ const CandidatoRegistro = () => {
             const naoEPaiOuMae = !grauRequerCPF;
             
             if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && (!dependente.cpf?.trim() || !dependente.dt_nascimento)) {
+                console.log('🔍 verificarDependentesIncompletos - campos de incidência vazios, retornando true');
                 return true;
             }
             
+            console.log('🔍 verificarDependentesIncompletos - dependente válido, retornando false');
             return false;
         });
+        
+        console.log('🔍 verificarDependentesIncompletos - resultado final:', resultado);
+        return resultado;
     }, [candidato.dependentes]);
+
+    // Função para verificar se o step atual está válido
+    const verificarStepAtualValido = useCallback(() => {
+        // Se estiver em modo leitura, sempre permite navegação
+        if (modoLeitura) {
+            return true;
+        }
+
+        // Step 0 - Documentos
+        if (activeIndex === 0) {
+            if (!candidato.documentos || !Array.isArray(candidato.documentos)) {
+                return false;
+            }
+            // Verifica se todos os documentos obrigatórios foram enviados
+            const documentosObrigatoriosPendentes = candidato.documentos
+                .filter(doc => doc.obrigatorio && !doc.upload_feito);
+            return documentosObrigatoriosPendentes.length === 0;
+        }
+
+        // Step 1 - Dados Pessoais
+        if (activeIndex === 1) {
+            const camposObrigatorios = [
+                'nome', 'cpf', 'email', 'telefone', 'dt_nascimento', 'genero', 'cor_raca', 'estado_civil',
+                'estado_natal', 'naturalidade', 'cep', 'tipo_rua', 'rua', 'numero',
+                'bairro', 'tipo_bairro', 'cidade', 'estado'
+            ];
+            
+            return camposObrigatorios.every(campo => {
+                const valor = candidato[campo];
+                return valor && (typeof valor === 'object' ? (valor.id || valor.code) : valor.toString().trim());
+            });
+        }
+
+        // Step 2 - Dados Bancários
+        if (activeIndex === 2) {
+            const camposObrigatorios = ['banco', 'conta_corrente'];
+            return camposObrigatorios.every(campo => {
+                const valor = candidato[campo];
+                return valor && (typeof valor === 'object' ? (valor.id || valor.code) : valor.toString().trim());
+            });
+        }
+
+        // Step 3 - Dados Contratuais (apenas se não for self)
+        if (activeIndex === 3 && !self) {
+            const camposObrigatorios = [
+                'dt_admissao', 'tipo_admissao', 'motivo_admissao', 'tipo_situacao',
+                'tipo_funcionario', 'tipo_recebimento', 'jornada', 'salario',
+                'codigo_situacao_fgts', 'codigo_categoria_esocial', 'natureza_atividade_esocial'
+            ];
+            
+            // Adiciona funcao_confianca se confianca for true
+            if (candidato.confianca) {
+                camposObrigatorios.push('funcao_confianca');
+            }
+            
+            return camposObrigatorios.every(campo => {
+                const valor = candidato[campo];
+                return valor && (typeof valor === 'object' ? (valor.id || valor.code) : valor.toString().trim());
+            });
+        }
+
+        // Step Educação
+        if (activeIndex === getStepEducacaoIndex()) {
+            const valor = candidato.grau_instrucao;
+            
+            console.log('🔍 VALIDAÇÃO EDUCAÇÃO - valor:', valor);
+            console.log('🔍 VALIDAÇÃO EDUCAÇÃO - tipo:', typeof valor);
+            
+            if (!valor) {
+                console.log('🔍 VALIDAÇÃO EDUCAÇÃO - valor vazio, retornando false');
+                return false;
+            }
+            
+            if (typeof valor === 'object') {
+                const resultado = valor.id || valor.code;
+                console.log('🔍 VALIDAÇÃO EDUCAÇÃO - objeto, resultado:', resultado);
+                return !!resultado; // Força conversão para boolean
+            }
+            
+            const resultado = valor.toString().trim() !== '';
+            console.log('🔍 VALIDAÇÃO EDUCAÇÃO - string, resultado:', resultado);
+            return resultado;
+        }
+
+        // Step Dependentes
+        console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - activeIndex:', activeIndex);
+        console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - getStepDependentesIndex():', getStepDependentesIndex());
+        if (activeIndex === getStepDependentesIndex()) {
+            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - verificarDependentesIncompletos():', verificarDependentesIncompletos());
+            const resultado = !verificarDependentesIncompletos();
+            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - resultado:', resultado);
+            return resultado;
+        }
+
+        // Para outros steps (habilidades, experiência, anotações), sempre válido
+        return true;
+    }, [activeIndex, candidato, self, modoLeitura, verificarDependentesIncompletos]);
+
+    const handleValidarStep = () => {
+        console.log('🚨🚨🚨 handleValidarStep - INICIANDO VALIDAÇÃO 🚨🚨🚨');
+        console.log('🔍 handleValidarStep - activeIndex:', activeIndex);
+        console.log('🔍 handleValidarStep - getStepEducacaoIndex():', getStepEducacaoIndex());
+        
+        // Limpa o classError antes de validar
+        setClassError([]);
+        
+        // Executa a validação do step atual para mostrar quais campos estão faltando
+        const resultado = validarCamposObrigatoriosStep();
+        console.log('🔍 handleValidarStep - resultado da validação:', resultado);
+        
+        // Mostra um toast informativo
+        toast.current.show({
+            severity: 'warn',
+            summary: 'Campos obrigatórios pendentes',
+            detail: 'Os campos obrigatórios não preenchidos foram destacados em vermelho.',
+            life: 4000
+        });
+    };
 
     // Função para renderizar os botões baseado no step atual
     const renderFooterButtons = useCallback(() => {
@@ -2561,9 +2428,8 @@ const CandidatoRegistro = () => {
         const tarefaPendente = obterTarefaPendente();
         const podeFinalizar = !self && tarefaPendente && !modoLeitura;
         
-        // Verificar se está no step de dependentes e se há dependentes incompletos
-        const isStepDependentes = activeIndex === getStepDependentesIndex();
-        const temDependentesIncompletos = isStepDependentes && verificarDependentesIncompletos();
+        // Verificar se o step atual está válido
+        const stepAtualValido = verificarStepAtualValido();
         
         return (
             <div style={{
@@ -2583,7 +2449,7 @@ const CandidatoRegistro = () => {
             }}>
                 <div style={{ display: 'flex', gap: 12 }}>
                     {/* Botão Voltar - em todos os steps exceto o primeiro */}
-                    {!isFirstStep && (
+                    {!isFirstStep && stepAtualValido && (
                         <Botao size="small" estilo="neutro" aoClicar={handleVoltar}>
                             <HiArrowLeft/> Voltar
                         </Botao>
@@ -2614,8 +2480,8 @@ const CandidatoRegistro = () => {
                         </div>
                     )}
                     
-                    {/* Indicador de dependentes incompletos */}
-                    {temDependentesIncompletos && (
+                    {/* Indicador de step inválido */}
+                    {!stepAtualValido && !modoLeitura && (
                         <div style={{ 
                             display: 'flex', 
                             alignItems: 'center', 
@@ -2629,13 +2495,13 @@ const CandidatoRegistro = () => {
                         }}>
                             <FaExclamationTriangle size={16} style={{ flexShrink: 0 }} />
                             <span style={{ whiteSpace: 'nowrap' }}>
-                                Complete os campos obrigatórios dos dependentes para continuar
+                                Complete todos os campos obrigatórios para continuar
                             </span>
                         </div>
                     )}
                     
                     {/* Botões específicos por step */}
-                    {activeIndex === 0 && (
+                    {activeIndex === 0 && stepAtualValido && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                             <Botao 
                                 size="small" 
@@ -2650,13 +2516,13 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Steps intermediários com salvar */}
-                    {(activeIndex >= 1 && activeIndex < totalSteps - 1) && (
+                    {(activeIndex >= 1 && activeIndex < totalSteps - 1) && stepAtualValido && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                             <Botao 
                                 size="small" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarAdmissao}
-                                disabled={modoLeitura || !dadosCarregados || temDependentesIncompletos}
+                                disabled={modoLeitura || !dadosCarregados}
                             >
                                 <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
@@ -2665,7 +2531,7 @@ const CandidatoRegistro = () => {
                                 label="Next" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarEContinuar}
-                                disabled={!dadosCarregados || temDependentesIncompletos}
+                                disabled={!dadosCarregados}
                             >
                                 <HiArrowRight size={20} fill="var(--secundaria)"/> Próximo
                             </Botao>
@@ -2673,7 +2539,7 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Último step (Anotações) */}
-                    {isLastStep && (
+                    {isLastStep && stepAtualValido && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                             <Botao 
                                 size="small" 
@@ -2704,10 +2570,27 @@ const CandidatoRegistro = () => {
                             )}
                         </div>
                     )}
+                    
+                    {/* Botão Validar - aparece quando step não está válido */}
+                    {!stepAtualValido && !modoLeitura && (
+                        <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
+                            <Botao 
+                                size="small" 
+                                iconPos="right" 
+                                aoClicar={() => {
+                                    console.log('🚨🚨🚨 BOTÃO VALIDAR CLICADO 🚨🚨🚨');
+                                    handleValidarStep();
+                                }}
+                                disabled={!dadosCarregados}
+                            >
+                                <FaExclamationTriangle fill="var(--error)" /> Validar
+                            </Botao>
+                        </div>
+                    )}
                 </div>
             </div>
         );
-    }, [activeIndex, dadosCarregados, isVisible, sidebarOpened, self, mostrarHabilidades, mostrarExperiencia, modoLeitura, obterTarefaPendente, handleVoltar, handleAvancar, handleSalvarEContinuar, handleSalvarAdmissao, handleFinalizarDocumentos, verificarDependentesIncompletos]);
+    }, [activeIndex, dadosCarregados, isVisible, sidebarOpened, self, mostrarHabilidades, mostrarExperiencia, modoLeitura, obterTarefaPendente, handleVoltar, handleAvancar, handleSalvarEContinuar, handleSalvarAdmissao, handleFinalizarDocumentos, verificarStepAtualValido]);
 
     // Detectar cliques nos headers do stepper - DESABILITADO TEMPORARIAMENTE
     // useEffect(() => {
@@ -2774,65 +2657,7 @@ const CandidatoRegistro = () => {
         }
     };
 
-    const handleConfirmarNavegacao = () => {
-        setShowConfirmacaoNavegacao(false);
-        
-        // Navegar para o step com erro
-        setActiveIndex(stepComErro);
-        
-        // Forçar a atualização do stepper usando uma abordagem mais robusta
-        setTimeout(() => {
-            if (stepperRef.current) {
-                // Tentar diferentes métodos do PrimeReact
-                if (stepperRef.current.setActiveStep) {
-                    stepperRef.current.setActiveStep(stepComErro);
-                } else if (stepperRef.current.goToStep) {
-                    stepperRef.current.goToStep(stepComErro);
-                } else {
-                    // Fallback: forçar re-renderização
-                    const stepperElement = stepperRef.current.getElement?.();
-                    if (stepperElement) {
-                        stepperElement.style.display = 'none';
-                        setTimeout(() => {
-                            stepperElement.style.display = '';
-                        }, 10);
-                    }
-                }
-            }
-        }, 100);
-        
-        // Mostrar toast informando que o usuário foi direcionado para o step com erro
-        toast.current.show({
-            severity: 'info',
-            summary: 'Navegação',
-            detail: `Você foi direcionado para o step "${getNomeStep(stepComErro)}" para corrigir os campos obrigatórios.`,
-            life: 4000
-        });
-    };
 
-    const handleCancelarNavegacao = () => {
-        setShowConfirmacaoNavegacao(false);
-        
-        // Executar a ação original sem salvar
-        if (acaoNavegacao === 'salvar_continuar') {
-            stepperRef.current.nextCallback();
-            setActiveIndex(prev => prev + 1);
-            
-            toast.current.show({
-                severity: 'warn',
-                summary: 'Aviso',
-                detail: 'Você continuou sem salvar. Os dados não foram salvos.',
-                life: 3000
-            });
-        } else if (acaoNavegacao === 'salvar') {
-            toast.current.show({
-                severity: 'warn',
-                summary: 'Aviso',
-                detail: 'Você cancelou o salvamento. Os dados não foram salvos.',
-                life: 3000
-            });
-        }
-    };
 
     const handleCancelarDependentes = () => {
         setShowConfirmacaoDependentes(false);
@@ -3280,7 +3105,7 @@ const CandidatoRegistro = () => {
 
     return (
         <ConteudoFrame>
-            <Toast ref={toast} style={{ zIndex: 9999 }} />
+            <Toast ref={toast} style={{ zIndex: 99999 }} />
             <ConfirmDialog />
             
             {/* Estilo para desabilitar navegação manual pelo header do stepper, mas permitir navegação programática */}
@@ -3393,7 +3218,7 @@ const CandidatoRegistro = () => {
                     boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
                     position: 'sticky',
                     top: 0,
-                    zIndex: 5
+                    zIndex: 10
                 }}>
                     <div style={{
                         display: 'flex',
@@ -3610,66 +3435,7 @@ const CandidatoRegistro = () => {
                                 </span>
                             </div>
                             
-                            {/* Botão Visão do Candidato/Empresa movido para o header */}
-                            {!self ? 
-                                (import.meta.env.MODE === 'development' && (
-                                    <button
-                                        onClick={() => navegar(`/admissao/registro/${id}/true`)}
-                                        style={{
-                                            background: 'rgba(255, 255, 255, 0.2)',
-                                            border: '1px solid rgba(255, 255, 255, 0.3)',
-                                            borderRadius: 6,
-                                            padding: '6px 12px',
-                                            color: '#fff',
-                                            fontSize: 12,
-                                            fontWeight: 500,
-                                            cursor: 'pointer',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: 4,
-                                            transition: 'all 0.2s ease',
-                                            backdropFilter: 'blur(10px)'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                                        }}
-                                    >
-                                        <HiEye fill="var(--white)" size={14}/> Visão do Candidato
-                                    </button>
-                                ))
-                                :
-                                (import.meta.env.MODE === 'development' && (
-                                    <button
-                                        onClick={() => navegar(`/admissao/registro/${id}`)}
-                                        style={{
-                                            background: 'rgba(255, 255, 255, 0.2)',
-                                            border: '1px solid rgba(255, 255, 255, 0.3)',
-                                            borderRadius: 6,
-                                            padding: '6px 12px',
-                                            color: '#fff',
-                                            fontSize: 12,
-                                            fontWeight: 500,
-                                            cursor: 'pointer',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: 4,
-                                            transition: 'all 0.2s ease',
-                                            backdropFilter: 'blur(10px)'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                                        }}
-                                    >
-                                        <HiEye fill="var(--white)" size={14}/> Visão da Empresa
-                                    </button>
-                                ))
-                            }
+
                         </div>
                     </div>
                 </div>
@@ -3698,6 +3464,7 @@ const CandidatoRegistro = () => {
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
                                     <StepDadosPessoais 
                                         classError={classError} 
+                                        setClassError={setClassError}
                                         estados={estados} 
                                         modoLeitura={modoLeitura} 
                                         opcoesDominio={opcoesDominio}
@@ -3711,7 +3478,7 @@ const CandidatoRegistro = () => {
                         <Container padding={'0'} gap="10px">
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
-                                    <StepDadosBancarios modoLeitura={modoLeitura} classError={classError} />
+                                    <StepDadosBancarios modoLeitura={modoLeitura} classError={classError} setClassError={setClassError} />
                                 </ScrollPanel>
                             </div>
                         </Container>
@@ -3737,6 +3504,7 @@ const CandidatoRegistro = () => {
                                             opcoesDominio={opcoesDominio}
                                             availableDominioTables={availableDominioTables}
                                             classError={classError}
+                                            setClassError={setClassError}
                                             marcarCampoSelecionado={marcarCampoSelecionado}
                                         />
                                     </ScrollPanel>
@@ -3749,7 +3517,7 @@ const CandidatoRegistro = () => {
                         <ScrollPanel className="responsive-scroll-panel">
                             <div style={{paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
                                 <ScrollPanel className="responsive-inner-scroll">
-                                    <StepEducacao modoLeitura={modoLeitura} classError={classError} />
+                                    <StepEducacao modoLeitura={modoLeitura} classError={classError} setClassError={setClassError} />
                                 </ScrollPanel>
                             </div>
                         </ScrollPanel>
@@ -3784,7 +3552,7 @@ const CandidatoRegistro = () => {
                             <div className={styles.containerDadosPessoais} style={{ position: 'relative' }}>
                                 <ScrollPanel className="responsive-scroll-panel" style={{ marginBottom: 10 }}>
                                     <ScrollPanel className="responsive-inner-scroll">
-                                        <StepDependentes classError={classError} modoLeitura={modoLeitura} />
+                                        <StepDependentes classError={classError} setClassError={setClassError} modoLeitura={modoLeitura} toast={toast} />
                                     </ScrollPanel>
                             </ScrollPanel>
                             </div>
@@ -4023,77 +3791,7 @@ const CandidatoRegistro = () => {
                 </ModalOverlay>
             )}
 
-            {/* Modal de confirmação de navegação para step com erro */}
-            {showConfirmacaoNavegacao && (
-                <ModalOverlay onClick={handleOverlayClick}>
-                    <ModalContainer>
-                        <ModalHeader>
-                            <ModalTitle>
-                                <FaExclamationTriangle fill="#dc2626" /> Campos Obrigatórios Pendentes
-                            </ModalTitle>
-                            <CloseButton onClick={handleCancelarNavegacao}>
-                                <HiX />
-                            </CloseButton>
-                        </ModalHeader>
-                        <ModalContent>
-                            <IconContainer style={{ background: 'linear-gradient(135deg, #dc2626, #b91c1c)' }}>
-                                <FaExclamationTriangle />
-                            </IconContainer>
-                            <ModalMessage>
-                                <div style={{ marginBottom: '16px' }}>
-                                    Existem campos obrigatórios não preenchidos no step <strong>"{getNomeStep(stepComErro)}"</strong>.
-                                    <br /><br />
-                                    {acaoNavegacao === 'salvar' ? (
-                                        <>Deseja ir para o step com erro para corrigir os campos antes de salvar?</>
-                                    ) : (
-                                        <>Deseja ir para o step com erro para corrigir os campos antes de continuar?</>
-                                    )}
-                                </div>
-                                
-                                <div style={{ 
-                                    background: '#fef2f2', 
-                                    border: '1px solid #fecaca', 
-                                    borderRadius: '8px', 
-                                    padding: '12px', 
-                                    marginTop: '16px' 
-                                }}>
-                                    <div style={{ 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
-                                        gap: '8px', 
-                                        marginBottom: '8px',
-                                        color: '#dc2626',
-                                        fontWeight: '600'
-                                    }}>
-                                        <FaExclamationTriangle size={16} />
-                                        <span>Campos pendentes:</span>
-                                    </div>
-                                    <div style={{ maxHeight: '120px', overflowY: 'auto' }}>
-                                        {errosStep.map((erro, index) => (
-                                            <div key={index} style={{ 
-                                                padding: '4px 0', 
-                                                borderBottom: index < errosStep.length - 1 ? '1px solid #fecaca' : 'none',
-                                                fontSize: '14px',
-                                                color: '#991b1b'
-                                            }}>
-                                                • {erro}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </ModalMessage>
-                        </ModalContent>
-                        <ModalFooter>
-                            <ModalButton className="secondary" onClick={handleCancelarNavegacao}>
-                                <HiX /> {acaoNavegacao === 'salvar' ? 'Não salvar' : 'Continuar sem salvar'}
-                            </ModalButton>
-                            <ModalButton className="primary" onClick={handleConfirmarNavegacao}>
-                                <HiCheckCircle size={20} fill="var(--white)" /> Sim, ir para o step com erro
-                            </ModalButton>
-                        </ModalFooter>
-                    </ModalContainer>
-                </ModalOverlay>
-            )}
+
 
             {/* Modal de visualização da imagem */}
             {showImageModal && candidato.imagem && (

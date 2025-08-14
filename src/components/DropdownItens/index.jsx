@@ -32,6 +32,10 @@ const Select = styled(Dropdown)`
     height: ${ props => props.$height ?  props.$height : '46px' };
     max-width: ${ props => props.$maxWidth ?  props.$maxWidth : '100%' };
     margin-bottom: ${ props => props.$margin ?  props.$margin : '0px' };
+    ${props => props.$hasError && `
+        outline: .5px solid #dc2626;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2) !important;
+    `}
 
     & .p-dropdown-label {
         white-space: nowrap;
@@ -39,9 +43,7 @@ const Select = styled(Dropdown)`
         text-overflow: ellipsis;
     }
 
-    &.error {
-        outline: 1px solid var(--error);
-    }
+
 
     ~ .icon {
         box-sizing: initial;
@@ -149,6 +151,8 @@ function DropdownItens({
     const classeCampoVazio = camposVazios.filter((val) => {
         return val === name
     })
+    
+
 
     const validationSchema = Yup.object().shape({})
 
@@ -194,6 +198,7 @@ function DropdownItens({
                             filter
                             id={name}
                             $margin={$margin}
+                            $hasError={classeCampoVazio.length > 0}
                             placeholder={placeholder} 
                             options={options} 
                             value={valor} 
@@ -213,6 +218,7 @@ function DropdownItens({
                         $width={$width}
                         $height={$height}
                         $margin={$margin}
+                        $hasError={classeCampoVazio.length > 0}
                         id={name}
                         placeholder={placeholder} 
                         options={options} 

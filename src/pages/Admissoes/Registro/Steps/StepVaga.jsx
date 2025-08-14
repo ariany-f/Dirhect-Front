@@ -29,7 +29,7 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, funcoes_confianca, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [], classError = [], marcarCampoSelecionado, buscarSecoesPorFilial }) => {
+const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, funcoes, funcoes_confianca, sindicatos, modoLeitura = false, opcoesDominio = {}, availableDominioTables = [], classError = [], setClassError, marcarCampoSelecionado, buscarSecoesPorFilial }) => {
     
     
     const { candidato, setCampo, vaga } = useCandidatoContext();
@@ -82,6 +82,24 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             return classError.includes(campo);
         };
     }, [classError]);
+
+    // Função para remover erro de um campo quando ele é preenchido
+    const removerErroCampo = (campo, valor) => {
+        if (!setClassError) return;
+        
+        // Para strings, verifica se não está vazio após trim
+        // Para objetos (dropdowns), verifica se tem valor
+        // Para outros tipos, verifica se tem valor
+        const campoPreenchido = valor && (
+            typeof valor === 'string' ? valor.trim() !== '' : 
+            typeof valor === 'object' ? (valor.id || valor.code) : 
+            valor
+        );
+        
+        if (campoPreenchido) {
+            setClassError(prev => prev.filter(erro => erro !== campo));
+        }
+    };
 
     // Função para obter o valor selecionado no formato {name, code}
     const getValorSelecionado = useMemo(() => {
@@ -398,7 +416,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Data de Admissão"
                 valor={candidato.dt_admissao || ''}
-                setValor={(valor) => setCampo('dt_admissao', valor)}
+                setValor={(valor) => {
+                    setCampo('dt_admissao', valor);
+                    removerErroCampo('dt_admissao', valor);
+                }}
                 disabled={modoLeitura}
             />
             <DropdownItens
@@ -415,7 +436,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Tipo de Admissão"
                 valor={getValorSelecionadoFromCandidato('tipo_admissao', opcoesTipoAdmissao)}
-                setValor={(valor) => setCampo('tipo_admissao', valor.code)}
+                setValor={(valor) => {
+                    setCampo('tipo_admissao', valor.code);
+                    removerErroCampo('tipo_admissao', valor);
+                }}
                 options={opcoesTipoAdmissao} 
                 disabled={modoLeitura}
             />
@@ -425,7 +449,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Motivo da Admissão"
                 valor={getValorSelecionadoFromCandidato('motivo_admissao', opcoesMotivoAdmissao)}
-                setValor={(valor) => setCampo('motivo_admissao', valor.code)}
+                setValor={(valor) => {
+                    setCampo('motivo_admissao', valor.code);
+                    removerErroCampo('motivo_admissao', valor);
+                }}
                 options={opcoesMotivoAdmissao} 
                 disabled={modoLeitura}
             />
@@ -441,6 +468,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => {
                     setCampo('tipo_situacao', valor.code);
                     marcarCampoSelecionado('tipo_situacao');
+                    removerErroCampo('tipo_situacao', valor);
                 }}
                 options={opcoesTipoSituacao}
                 disabled={modoLeitura}
@@ -463,6 +491,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => {
                     setCampo('tipo_funcionario', valor.code);
                     marcarCampoSelecionado('tipo_funcionario');
+                    removerErroCampo('tipo_funcionario', valor);
                 }}
                 options={opcoesTipoFuncionario} 
                 disabled={modoLeitura}
@@ -485,6 +514,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => {
                     setCampo('tipo_recebimento', valor.code);
                     marcarCampoSelecionado('tipo_recebimento');
+                    removerErroCampo('tipo_recebimento', valor);
                 }}
                 options={opcoesTipoRecebimento}
                 disabled={modoLeitura}
@@ -503,7 +533,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Jornada (HHH:mm)"
                 valor={candidato.jornada || ''}
-                setValor={(valor) => setCampo('jornada', valor)}
+                setValor={(valor) => {
+                    setCampo('jornada', valor);
+                    removerErroCampo('jornada', valor);
+                }}
                 patternMask="999:99"
                 maskReverse={true}
                 placeholder="Ex: 220:30"
@@ -515,7 +548,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Salário"
                 valor={candidato.salario || ''}
-                setValor={(valor) => setCampo('salario', valor)}
+                setValor={(valor) => {
+                    setCampo('salario', valor);
+                    removerErroCampo('salario', valor);
+                }}
                 patternMask="BRL"
                 placeholder="Ex: 1.000,00"
                 disabled={modoLeitura}
@@ -558,7 +594,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                     required={true}
                     label="Função de Confiança/Cargo em Comissão"
                     valor={getValorSelecionadoFromCandidato('funcao_confianca', opcoesFuncaoConfianca)}
-                    setValor={(valor) => setCampo('funcao_confianca', valor.code)}
+                    setValor={(valor) => {
+                        setCampo('funcao_confianca', valor.code);
+                        removerErroCampo('funcao_confianca', valor);
+                    }}
                     options={opcoesFuncaoConfianca}
                     disabled={modoLeitura}
                 />
@@ -575,6 +614,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 valor={getValorSelecionadoFromCandidato('codigo_situacao_fgts', opcoesSituacaoFgts)}
                 setValor={(valor) => {
                     setCampo('codigo_situacao_fgts', valor.code);
+                    removerErroCampo('codigo_situacao_fgts', valor);
                 }}
                 options={opcoesSituacaoFgts}
                 disabled={modoLeitura}
@@ -648,6 +688,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 setValor={(valor) => {
                     setCampo('codigo_categoria_esocial', valor.code);
                     marcarCampoSelecionado('codigo_categoria_esocial');
+                    removerErroCampo('codigo_categoria_esocial', valor);
                 }}
                 options={opcoesCodigoCategoriaESocial}
                 disabled={modoLeitura}
@@ -659,7 +700,10 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={true}
                 label="Natureza da Atividade eSocial"
                 valor={getValorSelecionadoFromCandidato('natureza_atividade_esocial', opcoesNaturezaAtividadeESocial)}
-                setValor={(valor) => setCampo('natureza_atividade_esocial', valor.code)}
+                setValor={(valor) => {
+                    setCampo('natureza_atividade_esocial', valor.code);
+                    removerErroCampo('natureza_atividade_esocial', valor);
+                }}
                 options={opcoesNaturezaAtividadeESocial}
                 disabled={modoLeitura}
             />
