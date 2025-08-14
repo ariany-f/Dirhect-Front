@@ -182,7 +182,7 @@ function DropdownItens({
     }
 
     return (
-        <div>
+        <div style={{ width: '100%', maxWidth: '100%', minWidth: 0, overflow: 'hidden', flexShrink: 1, flexGrow: 0, boxSizing: 'border-box', paddingLeft: '0.2%', paddingRight: '0.1%'}}>
             <GlobalPanelStyle />
             <div className={styles.inputContainer}>
                 {(label) ?

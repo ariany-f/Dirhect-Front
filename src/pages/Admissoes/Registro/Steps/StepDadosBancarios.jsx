@@ -382,16 +382,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                                     setCampo('agencia', '');
                                 }}
                             >
-                                <div style={{ marginBottom: '4px', fontSize: '12px', color: '#666' }}>
-                                    50 agências carregadas
-                                </div>
-                                <div style={{ fontSize: '12px', color: '#666' }}>
-                                    Digite para buscar mais
-                                </div>
-                                <div style={{ marginTop: '8px', fontWeight: 'bold' }}>
-                                    <span style={{ marginRight: '8px' }}>+</span>
-                                    Adicionar Nova Agência
-                                </div>
+                                <span style={{ marginRight: '8px', fontWeight: 'bold' }}>+</span>
+                                Adicionar Nova Agência
                             </div>
                         }
                     />
