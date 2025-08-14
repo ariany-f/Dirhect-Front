@@ -571,6 +571,35 @@ const CandidatoRegistro = () => {
     // Estado para rastrear campos que foram explicitamente selecionados pelo usuário
     const [camposSelecionados, setCamposSelecionados] = useState(new Set());
     
+    // Função para formatar salário corretamente
+    const formatarSalario = (valor) => {
+        if (!valor) return '';
+        
+        // Se já é um número, retorna formatado
+        if (typeof valor === 'number') {
+            return valor.toFixed(2);
+        }
+        
+        // Se é string, remove formatação e converte
+        let valorLimpo = valor.toString();
+        
+        // Remove R$, espaços e outros caracteres não numéricos
+        valorLimpo = valorLimpo.replace(/[R$\s]/g, '');
+        
+        // Se tem vírgula (formato brasileiro: 15.000,00)
+        if (valorLimpo.includes(',')) {
+            // Remove pontos de milhar e troca vírgula por ponto
+            valorLimpo = valorLimpo.replace(/\./g, '').replace(',', '.');
+        }
+        
+        // Converte para número
+        const numero = parseFloat(valorLimpo);
+        
+        if (isNaN(numero)) return '';
+        
+        return numero.toFixed(2);
+    };
+    
     // Função para marcar um campo como selecionado pelo usuário
     const marcarCampoSelecionado = (campo) => {
         console.log(`🎯 marcarCampoSelecionado chamado para: ${campo}`);
@@ -902,6 +931,9 @@ const CandidatoRegistro = () => {
         if (id) {
             http.get(`admissao/${id}/`)
                 .then((data) => {
+                    console.log('📋 Dados recebidos da API:', data);
+                    console.log('📋 dados_vaga recebidos:', data.dados_vaga);
+                    
                     const fullCandidatoData = {
                         ...data,
                         educacao: data.educacao || [],
@@ -911,6 +943,9 @@ const CandidatoRegistro = () => {
                         anotacoes: data.anotacoes || '',
                         dados_vaga: data.dados_vaga || {}
                     };
+                    
+                    console.log('📋 fullCandidatoData.dados_vaga:', fullCandidatoData.dados_vaga);
+                    
                     // Atualiza o candidato com todos os dados
                     setCandidato(fullCandidatoData);
                     setVaga(data.dados_vaga || {});
@@ -941,6 +976,17 @@ const CandidatoRegistro = () => {
             return;
         }
 
+        // Step 0 (Documentos) - não faz nada
+        if (activeIndex === 0) {
+            toast.current.show({
+                severity: 'info',
+                summary: 'Informação',
+                detail: 'O step de documentos não requer salvamento.',
+                life: 3000
+            });
+            return;
+        }
+
         // Validação de campos obrigatórios do step atual
         const validacaoCampos = validarCamposObrigatoriosStep();
         if (!validacaoCampos) return;
@@ -957,8 +1003,9 @@ const CandidatoRegistro = () => {
             }
         }
         
-        // Se não há dependentes novos, salva normalmente
-        const salvamentoSucesso = await executarSalvamento();
+        // Se não há dependentes novos, salva normalmente com payload específico do step
+        const payloadStepAtual = obterPayloadStepAtual();
+        const salvamentoSucesso = await executarSalvamento(null, payloadStepAtual);
         if (salvamentoSucesso === false) {
             // ❌ ERRO DE VALIDAÇÃO - NÃO CONTINUA
             return;
@@ -968,6 +1015,13 @@ const CandidatoRegistro = () => {
     const handleSalvarEContinuar = async () => {
         // Se estiver em modo leitura, apenas avança para o próximo step
         if (modoLeitura) {
+            stepperRef.current.nextCallback();
+            setActiveIndex(prev => prev + 1);
+            return;
+        }
+
+        // Step 0 (Documentos) - passa direto sem validação nem salvamento
+        if (activeIndex === 0) {
             stepperRef.current.nextCallback();
             setActiveIndex(prev => prev + 1);
             return;
@@ -989,8 +1043,9 @@ const CandidatoRegistro = () => {
             }
         }
         
-        // Se não há dependentes novos, salva e continua normalmente
-        const salvamentoSucesso = await executarSalvamento();
+        // Se não há dependentes novos, salva e continua normalmente com payload específico do step
+        const payloadStepAtual = obterPayloadStepAtual();
+        const salvamentoSucesso = await executarSalvamento(null, payloadStepAtual);
         if (salvamentoSucesso === false) {
             // ❌ ERRO DE VALIDAÇÃO - NÃO CONTINUA PARA O PRÓXIMO STEP
             return;
@@ -1051,9 +1106,36 @@ const CandidatoRegistro = () => {
         });
         return normalizado;
     };
+    
+    // Função auxiliar para normalizar campos específicos de dados pessoais
+    const normalizarCampoPessoal = (valor, nomeCampo) => {
+        if (!valor) return '';
+        
+        // Se é um objeto com id ou code, retorna o id/code
+        if (typeof valor === 'object' && !Array.isArray(valor)) {
+            if (valor.id !== undefined) return valor.id;
+            if (valor.code !== undefined) return valor.code;
+            if (valor.descricao !== undefined) return valor.descricao;
+        }
+        
+        // Se é string, retorna trim
+        if (typeof valor === 'string') {
+            const valorTrim = valor.trim();
+            
+            // Tratamento específico para CPF - remove formatação
+            if (nomeCampo === 'cpf' || (valorTrim.length === 14 && valorTrim.includes('.'))) {
+                // Formato: 417.790.328-03 -> 41779032803
+                return valorTrim.replace(/\D/g, '');
+            }
+            
+            return valorTrim;
+        }
+        
+        return valor;
+    };
 
     // Função que executa o salvamento real
-    const executarSalvamento = async (candidatoOverride = null) => {
+    const executarSalvamento = async (candidatoOverride = null, payloadEspecifico = null) => {
         const candidatoAtual = candidatoOverride || candidato;
         if (!admissao?.id) return;
         
@@ -1068,7 +1150,7 @@ const CandidatoRegistro = () => {
         }
 
         // Se não for um override, verifica se houve mudanças
-        if (!candidatoOverride) {
+        if (!candidatoOverride && !payloadEspecifico) {
             const candidatoNormalizado = normalizarObjeto(candidatoAtual);
             const initialNormalizado = normalizarObjeto(initialCandidato);
             
@@ -1087,262 +1169,527 @@ const CandidatoRegistro = () => {
                 console.log('Nenhuma alteração detectada, salvamento pulado.');
                 return;
             }
+        } else {
+            // Log para mostrar quando está usando payload específico
+            console.log('🔍 EXECUTAR SALVAMENTO - Usando payload específico:', {
+                candidatoOverride: !!candidatoOverride,
+                payloadEspecifico: !!payloadEspecifico,
+                payloadKeys: payloadEspecifico ? Object.keys(payloadEspecifico) : []
+            });
+            
+            // Verificação específica para payload de dados contratuais
+            if (payloadEspecifico && activeIndex === 3) {
+                const candidatoNormalizado = normalizarObjeto(candidatoAtual);
+                const initialNormalizado = normalizarObjeto(initialCandidato);
+                
+                // Compara apenas os campos relevantes do step de dados contratuais
+                const camposContratuais = [
+                    'filial', 'id_secao', 'id_funcao', 'id_horario', 'centro_custo',
+                    'salario', 'ajuda_custo', 'arredondamento', 'media_sal_maternidade',
+                    'dt_admissao', 'jornada', 'tipo_admissao', 'motivo_admissao',
+                    'tipo_situacao', 'tipo_funcionario', 'tipo_recebimento',
+                    'codigo_situacao_fgts', 'codigo_categoria_esocial', 'natureza_atividade_esocial'
+                ];
+                
+                const candidatoContratual = {};
+                const initialContratual = {};
+                
+                camposContratuais.forEach(campo => {
+                    if (candidatoNormalizado[campo] !== undefined) {
+                        candidatoContratual[campo] = candidatoNormalizado[campo];
+                    }
+                    if (initialNormalizado[campo] !== undefined) {
+                        initialContratual[campo] = initialNormalizado[campo];
+                    }
+                });
+                
+                // Normalizar campos de salário para comparação
+                const normalizarCampoSalario = (valor) => {
+                    if (!valor) return '';
+                    
+                    // Se já é um número, retorna formatado
+                    if (typeof valor === 'number') {
+                        return valor.toFixed(2);
+                    }
+                    
+                    // Se é string, remove formatação e converte
+                    let valorLimpo = valor.toString();
+                    
+                    // Remove R$, espaços e outros caracteres não numéricos
+                    valorLimpo = valorLimpo.replace(/[R$\s]/g, '');
+                    
+                    // Se tem vírgula (formato brasileiro: 15.000,00)
+                    if (valorLimpo.includes(',')) {
+                        // Remove pontos de milhar e troca vírgula por ponto
+                        valorLimpo = valorLimpo.replace(/\./g, '').replace(',', '.');
+                    }
+                    
+                    // Converte para número
+                    const numero = parseFloat(valorLimpo);
+                    
+                    if (isNaN(numero)) return '';
+                    
+                    return numero.toFixed(2);
+                };
+                
+                // Normalizar campos de salário em ambos os objetos
+                const camposSalario = ['salario', 'ajuda_custo', 'arredondamento', 'media_sal_maternidade'];
+                camposSalario.forEach(campo => {
+                    if (candidatoContratual[campo] !== undefined) {
+                        candidatoContratual[campo] = normalizarCampoSalario(candidatoContratual[campo]);
+                    }
+                    if (initialContratual[campo] !== undefined) {
+                        initialContratual[campo] = normalizarCampoSalario(initialContratual[campo]);
+                    }
+                });
+                
+                console.log('🔍 VERIFICAÇÃO CONTRATUAL - Candidato atual (normalizado):', candidatoContratual);
+                console.log('🔍 VERIFICAÇÃO CONTRATUAL - Initial (normalizado):', initialContratual);
+                
+                if (JSON.stringify(candidatoContratual) === JSON.stringify(initialContratual)) {
+                    console.log('🔍 VERIFICAÇÃO CONTRATUAL - Nenhuma mudança detectada, salvamento pulado');
+                    toast.current.show({
+                        severity: 'info',
+                        summary: 'Informação',
+                        detail: 'Nenhuma alteração nos dados contratuais para salvar.',
+                        life: 3000
+                    });
+                    return;
+                } else {
+                    console.log('🔍 VERIFICAÇÃO CONTRATUAL - Mudanças detectadas, salvamento permitido');
+                }
+            }
+            
+            // Verificação específica para payload de educação
+            if (payloadEspecifico && activeIndex === getStepEducacaoIndex()) {
+                const candidatoNormalizado = normalizarObjeto(candidatoAtual);
+                const initialNormalizado = normalizarObjeto(initialCandidato);
+                
+                // Compara apenas os campos relevantes do step de educação
+                const camposEducacao = ['grau_instrucao'];
+                
+                const candidatoEducacao = {};
+                const initialEducacao = {};
+                
+                camposEducacao.forEach(campo => {
+                    if (candidatoNormalizado[campo] !== undefined) {
+                        candidatoEducacao[campo] = candidatoNormalizado[campo];
+                    }
+                    if (initialNormalizado[campo] !== undefined) {
+                        initialEducacao[campo] = initialNormalizado[campo];
+                    }
+                });
+                
+                console.log('🔍 VERIFICAÇÃO EDUCAÇÃO - Candidato atual:', candidatoEducacao);
+                console.log('🔍 VERIFICAÇÃO EDUCAÇÃO - Initial:', initialEducacao);
+                
+                if (JSON.stringify(candidatoEducacao) === JSON.stringify(initialEducacao)) {
+                    console.log('🔍 VERIFICAÇÃO EDUCAÇÃO - Nenhuma mudança detectada, salvamento pulado');
+                    toast.current.show({
+                        severity: 'info',
+                        summary: 'Informação',
+                        detail: 'Nenhuma alteração nos dados de educação para salvar.',
+                        life: 3000
+                    });
+                    return;
+                } else {
+                    console.log('🔍 VERIFICAÇÃO EDUCAÇÃO - Mudanças detectadas, salvamento permitido');
+                }
+            }
+            
+            // Verificação específica para payload de dependentes
+            if (payloadEspecifico && activeIndex === getStepDependentesIndex()) {
+                const candidatoNormalizado = normalizarObjeto(candidatoAtual);
+                const initialNormalizado = normalizarObjeto(initialCandidato);
+                
+                // Compara apenas os campos relevantes do step de dependentes
+                const camposDependentes = ['dependentes'];
+                
+                const candidatoDependentes = {};
+                const initialDependentes = {};
+                
+                camposDependentes.forEach(campo => {
+                    if (candidatoNormalizado[campo] !== undefined) {
+                        candidatoDependentes[campo] = candidatoNormalizado[campo];
+                    }
+                    if (initialNormalizado[campo] !== undefined) {
+                        initialDependentes[campo] = initialNormalizado[campo];
+                    }
+                });
+                
+                console.log('🔍 VERIFICAÇÃO DEPENDENTES - Candidato atual:', candidatoDependentes);
+                console.log('🔍 VERIFICAÇÃO DEPENDENTES - Initial:', initialDependentes);
+                
+                if (JSON.stringify(candidatoDependentes) === JSON.stringify(initialDependentes)) {
+                    console.log('🔍 VERIFICAÇÃO DEPENDENTES - Nenhuma mudança detectada, salvamento pulado');
+                    toast.current.show({
+                        severity: 'info',
+                        summary: 'Informação',
+                        detail: 'Nenhuma alteração nos dados de dependentes para salvar.',
+                        life: 3000
+                    });
+                    return;
+                } else {
+                    console.log('🔍 VERIFICAÇÃO DEPENDENTES - Mudanças detectadas, salvamento permitido');
+                }
+            }
+            
+            // Verificação específica para payload de dados bancários
+            if (payloadEspecifico && activeIndex === 2) {
+                const candidatoNormalizado = normalizarObjeto(candidatoAtual);
+                const initialNormalizado = normalizarObjeto(initialCandidato);
+                
+                // Compara apenas os campos relevantes do step de dados bancários
+                const camposBancarios = [
+                    'banco', 'agencia', 'agencia_nova', 'conta_corrente', 
+                    'tipo_conta', 'operacao', 'pix', 'pix_tipo'
+                ];
+                
+                const candidatoBancario = {};
+                const initialBancario = {};
+                
+                camposBancarios.forEach(campo => {
+                    if (candidatoNormalizado[campo] !== undefined) {
+                        candidatoBancario[campo] = candidatoNormalizado[campo];
+                    }
+                    if (initialNormalizado[campo] !== undefined) {
+                        initialBancario[campo] = initialNormalizado[campo];
+                    }
+                });
+                
+                console.log('🔍 VERIFICAÇÃO BANCÁRIOS - Candidato atual:', candidatoBancario);
+                console.log('🔍 VERIFICAÇÃO BANCÁRIOS - Initial:', initialBancario);
+                
+                if (JSON.stringify(candidatoBancario) === JSON.stringify(initialBancario)) {
+                    console.log('🔍 VERIFICAÇÃO BANCÁRIOS - Nenhuma mudança detectada, salvamento pulado');
+                    toast.current.show({
+                        severity: 'info',
+                        summary: 'Informação',
+                        detail: 'Nenhuma alteração nos dados bancários para salvar.',
+                        life: 3000
+                    });
+                    return;
+                } else {
+                    console.log('🔍 VERIFICAÇÃO BANCÁRIOS - Mudanças detectadas, salvamento permitido');
+                }
+            }
+            
+            // Verificação específica para payload de dados pessoais
+            if (payloadEspecifico && activeIndex === 1) {
+                const candidatoNormalizado = normalizarObjeto(candidatoAtual);
+                const initialNormalizado = normalizarObjeto(initialCandidato);
+                
+                // Compara apenas os campos relevantes do step de dados pessoais
+                const camposPessoais = [
+                    'nome', 'email', 'telefone', 'cpf', 'dt_nascimento', 'nome_mae', 'nome_pai',
+                    'naturalidade', 'estado_natal', 'nacionalidade', 'cor_raca', 'deficiente_fisico',
+                    'naturalizado', 'data_naturalizacao', 'pais_origem', 'tipo_visto', 'data_venc_visto',
+                    'nome_social', 'genero', 'estado_civil', 'cep', 'rua', 'numero', 'complemento',
+                    'bairro', 'tipo_rua', 'tipo_bairro', 'cidade', 'estado', 'pais', 'pispasep',
+                    // Documentos
+                    'orgao_emissor_ident', 'data_emissao_ident', 'titulo_eleitor', 'zona_titulo_eleitor',
+                    'secao_titulo_eleitor', 'data_titulo_eleitor', 'estado_emissor_tit_eleitor',
+                    'carteira_trabalho', 'serie_carteira_trab', 'uf_carteira_trab', 'data_emissao_ctps',
+                    'data_venc_ctps', 'nit', 'carteira_motorista', 'tipo_carteira_habilit',
+                    'data_venc_habilit', 'data_emissao_cnh', 'identidade', 'uf_identidade',
+                    'dt_opcao_fgts', 'codigo_situacao_fgts', 'numero_cartao_sus', 'certificado_reservista',
+                    'numero_passaporte', 'data_emissao_passaporte', 'data_validade_passaporte',
+                    'registro_profissional', 'uf_registro_profissional', 'data_emissao_registro_profissional',
+                    'tipo_sanguineo', 'circunscricao_militar', 'orgao_expedicao', 'regiao_militar',
+                    'situacao_militar', 'telefone1', 'telefone2', 'email_pessoal'
+                ];
+                
+                const candidatoPessoal = {};
+                const initialPessoal = {};
+                
+                camposPessoais.forEach(campo => {
+                    if (candidatoNormalizado[campo] !== undefined) {
+                        candidatoPessoal[campo] = normalizarCampoPessoal(candidatoNormalizado[campo], campo);
+                    }
+                    if (initialNormalizado[campo] !== undefined) {
+                        initialPessoal[campo] = normalizarCampoPessoal(initialNormalizado[campo], campo);
+                    }
+                });
+                
+                // Log detalhado de alguns campos importantes para debug
+                const camposDebug = ['nome', 'email', 'cpf', 'dt_nascimento', 'genero', 'estado_civil'];
+                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Debug campos importantes:');
+                camposDebug.forEach(campo => {
+                    console.log(`  ${campo}:`, {
+                        candidatoOriginal: candidatoAtual[campo],
+                        candidatoNormalizado: candidatoNormalizado[campo],
+                        initialOriginal: initialCandidato[campo],
+                        initialNormalizado: initialNormalizado[campo]
+                    });
+                });
+                
+                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Candidato atual:', candidatoPessoal);
+                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Initial:', initialPessoal);
+                
+                // Comparação detalhada para identificar diferenças
+                const candidatoString = JSON.stringify(candidatoPessoal);
+                const initialString = JSON.stringify(initialPessoal);
+                
+                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Candidato JSON:', candidatoString);
+                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Initial JSON:', initialString);
+                console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - São iguais?', candidatoString === initialString);
+                
+                if (candidatoString === initialString) {
+                    console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Nenhuma mudança detectada, salvamento pulado');
+                    toast.current.show({
+                        severity: 'info',
+                        summary: 'Informação',
+                        detail: 'Nenhuma alteração nos dados pessoais para salvar.',
+                        life: 3000
+                    });
+                    return;
+                } else {
+                    console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Mudanças detectadas, salvamento permitido');
+                    
+                    // Identificar exatamente quais campos são diferentes
+                    const camposDiferentes = [];
+                    Object.keys(candidatoPessoal).forEach(campo => {
+                        const valorAtual = candidatoPessoal[campo];
+                        const valorInicial = initialPessoal[campo];
+                        if (JSON.stringify(valorAtual) !== JSON.stringify(valorInicial)) {
+                            camposDiferentes.push({
+                                campo,
+                                atual: valorAtual,
+                                inicial: valorInicial
+                            });
+                        }
+                    });
+                    
+                    if (camposDiferentes.length > 0) {
+                        console.log('🔍 VERIFICAÇÃO DADOS PESSOAIS - Campos diferentes:', camposDiferentes);
+                    }
+                }
+            }
         }
 
         try {
-            // Monta o payload seguindo o padrão correto
-            const dadosCandidato = candidatoAtual || {};
-            const dadosVaga = candidatoAtual.dados_vaga || {};
+            let payload;
             
-            // Função para formatar salário corretamente
-            const formatarSalario = (valor) => {
-                console.log('formatarSalario - valor recebido:', valor, 'tipo:', typeof valor);
+            // Se foi fornecido um payload específico, usa ele
+            if (payloadEspecifico) {
+                payload = payloadEspecifico;
+            } else {
+                // Monta o payload completo (comportamento original)
+                const dadosCandidato = candidatoAtual || {};
+                const dadosVaga = candidatoAtual.dados_vaga || {};
                 
-                if (!valor) return '';
-                
-                // Se já é um número, retorna formatado
-                if (typeof valor === 'number') {
-                    console.log('formatarSalario - é número, retornando:', valor.toFixed(2));
-                    return valor.toFixed(2);
-                }
-                
-                // Se é string, remove formatação e converte
-                let valorLimpo = valor.toString();
-                console.log('formatarSalario - valor como string:', valorLimpo);
-                
-                // Remove R$, espaços e outros caracteres não numéricos
-                valorLimpo = valorLimpo.replace(/[R$\s]/g, '');
-                console.log('formatarSalario - após remover R$ e espaços:', valorLimpo);
-                
-                // Se tem vírgula (formato brasileiro: 15.000,00)
-                if (valorLimpo.includes(',')) {
-                    // Remove pontos de milhar e troca vírgula por ponto
-                    valorLimpo = valorLimpo.replace(/\./g, '').replace(',', '.');
-                    console.log('formatarSalario - após tratar vírgula:', valorLimpo);
-                }
-                
-                // Converte para número
-                const numero = parseFloat(valorLimpo);
-                console.log('formatarSalario - número convertido:', numero);
-                
-                if (isNaN(numero)) return '';
-                
-                const resultado = numero.toFixed(2);
-                console.log('formatarSalario - resultado final:', resultado);
-                return resultado;
-            };
 
-            // Função para formatar percentual corretamente
-            const formatarPercentual = (valor) => {
-                if (!valor) return '';
-                
-                // Se já é um número, retorna formatado
-                if (typeof valor === 'number') {
-                    return valor.toFixed(2);
-                }
-                
-                // Se é string, remove formatação e converte
-                let valorLimpo = valor.toString();
-                
-                // Remove %, espaços e outros caracteres não numéricos
-                valorLimpo = valorLimpo.replace(/[%\s]/g, '');
-                
-                // Se tem vírgula (formato brasileiro: 50,00)
-                if (valorLimpo.includes(',')) {
-                    // Troca vírgula por ponto
-                    valorLimpo = valorLimpo.replace(',', '.');
-                }
-                
-                // Converte para número
-                const numero = parseFloat(valorLimpo);
-                
-                if (isNaN(numero)) return '';
-                
-                return numero.toFixed(2);
-            };
-            
-            // Função para remover campos null, undefined ou string vazia
-            const removerCamposVazios = (obj) => {
-                if (Array.isArray(obj)) {
-                    return obj.map(item => removerCamposVazios(item));
-                }
-                
-                if (obj !== null && typeof obj === 'object') {
-                    const objLimpo = {};
-                    Object.keys(obj).forEach(key => {
-                        const valor = obj[key];
-                        if (valor !== null && valor !== undefined && valor !== '') {
-                            objLimpo[key] = removerCamposVazios(valor);
-                        }
-                    });
-                    return objLimpo;
-                }
-                
-                return obj;
-            };
 
-            const payloadCompleto = {
-                // Dados básicos da admissão
-                chapa: candidatoAtual.chapa,
-                dt_admissao: candidatoAtual.dt_admissao,
-                jornada: candidatoAtual.jornada,
-                pispasep: candidatoAtual.pispasep,
-                status: candidatoAtual.status,
-                grau_instrucao: candidatoAtual.grau_instrucao,
-                confianca: candidatoAtual.confianca,
-                funcao_confianca: candidatoAtual.funcao_confianca,
-                // Endereço
-                cep: candidatoAtual.cep,
-                rua: candidatoAtual.rua,
-                numero: candidatoAtual.numero,
-                complemento: candidatoAtual.complemento,
-                bairro: candidatoAtual.bairro,
-                tipo_rua: candidatoAtual.tipo_rua,
-                tipo_bairro: candidatoAtual.tipo_bairro,
-                cidade: candidatoAtual.cidade,
-                estado: candidatoAtual.estado,
-                pais: candidatoAtual.pais,
-                perc_adiantamento: formatarPercentual(candidatoAtual.perc_adiantamento),
-                ajuda_custo: formatarSalario(candidatoAtual.ajuda_custo),
-                arredondamento: formatarSalario(candidatoAtual.arredondamento),
-                media_sal_maternidade: formatarSalario(candidatoAtual.media_sal_maternidade),
-                // Dados do candidato
-                // candidato: {
-                nome: dadosCandidato.nome,
-                email: dadosCandidato.email,
-                telefone: dadosCandidato.telefone,
-                cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
-                dt_nascimento: dadosCandidato.dt_nascimento,
-                salario: (() => {
-                    const salarioCandidato = dadosCandidato?.salario;
-                    const salarioVaga = dadosVaga?.salario;
-                    const salarioPrincipal = candidatoAtual.salario;
+                // Função para formatar percentual corretamente
+                const formatarPercentual = (valor) => {
+                    if (!valor) return '';
                     
-                    const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
+                    // Se já é um número, retorna formatado
+                    if (typeof valor === 'number') {
+                        return valor.toFixed(2);
+                    }
                     
+                    // Se é string, remove formatação e converte
+                    let valorLimpo = valor.toString();
                     
-                    return formatarSalario(salarioParaFormatar);
-                })(),
-                // },
+                    // Remove %, espaços e outros caracteres não numéricos
+                    valorLimpo = valorLimpo.replace(/[%\s]/g, '');
+                    
+                    // Se tem vírgula (formato brasileiro: 50,00)
+                    if (valorLimpo.includes(',')) {
+                        // Troca vírgula por ponto
+                        valorLimpo = valorLimpo.replace(',', '.');
+                    }
+                    
+                    // Converte para número
+                    const numero = parseFloat(valorLimpo);
+                    
+                    if (isNaN(numero)) return '';
+                    
+                    return numero.toFixed(2);
+                };
                 
-                // Dados pessoais
-                nome_mae: candidatoAtual.nome_mae,
-                nome_pai: candidatoAtual.nome_pai,
-                naturalidade: candidatoAtual.naturalidade,
-                estado_natal: candidatoAtual.estado_natal,
-                nacionalidade: candidatoAtual.nacionalidade,
-                cor_raca: candidatoAtual.cor_raca,
-                deficiente_fisico: candidatoAtual.deficiente_fisico,
-                naturalizado: candidatoAtual.naturalizado,
-                data_naturalizacao: candidatoAtual.data_naturalizacao,
-                pais_origem: candidatoAtual.pais_origem,
-                tipo_visto: candidatoAtual.tipo_visto,
-                data_venc_visto: candidatoAtual.data_venc_visto,
-                nome_social: candidatoAtual.nome_social,
-                genero: candidatoAtual.genero,
-                estado_civil: candidatoAtual.estado_civil,
-                
-                // Documentos
-                orgao_emissor_ident: candidatoAtual.orgao_emissor_ident,
-                data_emissao_ident: candidatoAtual.data_emissao_ident,
-                titulo_eleitor: candidatoAtual.titulo_eleitor,
-                zona_titulo_eleitor: candidatoAtual.zona_titulo_eleitor,
-                secao_titulo_eleitor: candidatoAtual.secao_titulo_eleitor,
-                data_titulo_eleitor: candidatoAtual.data_titulo_eleitor,
-                estado_emissor_tit_eleitor: candidatoAtual.estado_emissor_tit_eleitor,
-                carteira_trabalho: candidatoAtual.carteira_trabalho,
-                serie_carteira_trab: candidatoAtual.serie_carteira_trab,
-                uf_carteira_trab: candidatoAtual.uf_carteira_trab,
-                data_emissao_ctps: candidatoAtual.data_emissao_ctps,
-                data_venc_ctps: candidatoAtual.data_venc_ctps,
-                nit: candidatoAtual.nit,
-                carteira_motorista: candidatoAtual.carteira_motorista,
-                tipo_carteira_habilit: candidatoAtual.tipo_carteira_habilit,
-                data_venc_habilit: candidatoAtual.data_venc_habilit,
-                data_emissao_cnh: candidatoAtual.data_emissao_cnh,
-                identidade: candidatoAtual.identidade,
-                uf_identidade: candidatoAtual.uf_identidade,
-                dt_opcao_fgts: candidatoAtual.dt_opcao_fgts,
-                codigo_situacao_fgts: candidatoAtual.codigo_situacao_fgts,
-                numero_cartao_sus: candidatoAtual.nrosus,
-                certificado_reservista: candidatoAtual.certificado_reservista,
-                numero_passaporte: candidatoAtual.numero_passaporte,
-                data_emissao_passaporte: candidatoAtual.data_emissao_passaporte,
-                data_validade_passaporte: candidatoAtual.data_validade_passaporte,
-                registro_profissional: candidatoAtual.registro_profissional,
-                uf_registro_profissional: candidatoAtual.uf_registro_profissional,
-                data_emissao_registro_profissional: candidatoAtual.data_emissao_registro_profissional,
-                tipo_sanguineo: candidatoAtual.tipo_sanguineo,
-                circunscricao_militar: candidatoAtual.circunscricao_militar,
-                orgao_expedicao: candidatoAtual.orgao_expedicao,
-                regiao_militar: candidatoAtual.regiao_militar,
-                situacao_militar: candidatoAtual.situacao_militar,
-                
-                // Contatos
-                telefone1: candidatoAtual.telefone1,
-                telefone2: candidatoAtual.telefone2,
-                email_pessoal: candidatoAtual.email_pessoal,
-                
-                // Dados bancários
-                banco: candidatoAtual.banco,
-                agencia: candidatoAtual.agencia,
-                agencia_nova: candidatoAtual.agencia_nova,
-                conta_corrente: candidatoAtual.conta_corrente,
-                tipo_conta: candidatoAtual.tipo_conta,
-                operacao: candidatoAtual.operacao,
-                pix: candidatoAtual.pix,
-                pix_tipo: candidatoAtual.pix_tipo,
-                
-                // Dados da vaga (apenas se não for self)
-                ...(self ? {} : {
-                    centro_custo: dadosVaga?.centro_custo_id ? dadosVaga.centro_custo_id : candidatoAtual.centro_custo,
-                    filial: dadosVaga?.filial_id ? dadosVaga.filial_id : candidatoAtual.filial,
-                    departamento: dadosVaga?.departamento_id ? dadosVaga.departamento_id : candidatoAtual.departamento,
-                    id_secao: dadosVaga?.secao_id ? dadosVaga.secao_id : candidatoAtual.id_secao,
-                    id_funcao: dadosVaga?.funcao_id ? dadosVaga.funcao_id : candidatoAtual.id_funcao,
-                    cargo: dadosVaga?.cargo_id ? dadosVaga.cargo_id : candidatoAtual.cargo,
-                    horario: dadosVaga?.horario_id ? dadosVaga.horario_id : candidatoAtual.horario,
-                    sindicato: dadosVaga?.sindicato_id ? dadosVaga.sindicato_id : candidatoAtual.sindicato,
-                }),
-                
-                // Dados adicionais
-                tipo_admissao: candidatoAtual.tipo_admissao,
-                codigo_ficha_registro: candidatoAtual.codigo_ficha_registro,
-                codigo_jornada: candidatoAtual.codigo_jornada,
-                tipo_funcionario: candidatoAtual.tipo_funcionario,
-                aceite_lgpd: candidatoAtual.aceite_lgpd,
-                anotacoes: candidatoAtual.anotacoes || '',
-                
-                // Novos campos
-                natureza_esocial: candidatoAtual.natureza_esocial,
-                codigo_ocorrencia_sefip: candidatoAtual.codigo_ocorrencia_sefip,
-                codigo_categoria_sefip: candidatoAtual.codigo_categoria_sefip,
-                motivo_admissao: candidatoAtual.motivo_admissao,
-                indicativo_admissao: candidatoAtual.indicativo_admissao,
-                codigo_categoria_esocial: candidatoAtual.codigo_categoria_esocial,
-                tipo_regime_trabalhista: candidatoAtual.tipo_regime_trabalhista,
-                funcao_emprego_cargoacumulavel: candidatoAtual.funcao_emprego_cargoacumulavel,
-                tipo_recebimento: candidatoAtual.tipo_recebimento,
-                mensal: candidatoAtual.mensal,
-                calcula_inss: candidatoAtual.calcula_inss,
-                calcula_irrf: candidatoAtual.calcula_irrf,
-                horario: candidatoAtual.horario,
-                letra: candidatoAtual.letra,
-                contrato_tempo_parcial: candidatoAtual.contrato_tempo_parcial,
-                tipo_regime_jornada: candidatoAtual.tipo_regime_jornada,
-                tipo_situacao: candidatoAtual.tipo_situacao,
-                tipo_regime_previdenciario: candidatoAtual.tipo_regime_previdenciario,
-                tipo_contrato_prazo_determinado: candidatoAtual.tipo_contrato_prazo_determinado,
-                tipo_contrato_trabalho: candidatoAtual.tipo_contrato_trabalho,
-                natureza_atividade_esocial: candidatoAtual.natureza_atividade_esocial
-            };
+                // Função para remover campos null, undefined ou string vazia
+                const removerCamposVazios = (obj) => {
+                    if (Array.isArray(obj)) {
+                        return obj.map(item => removerCamposVazios(item));
+                    }
+                    
+                    if (obj !== null && typeof obj === 'object') {
+                        const objLimpo = {};
+                        Object.keys(obj).forEach(key => {
+                            const valor = obj[key];
+                            if (valor !== null && valor !== undefined && valor !== '') {
+                                objLimpo[key] = removerCamposVazios(valor);
+                            }
+                        });
+                        return objLimpo;
+                    }
+                    
+                    return obj;
+                };
 
-            // Remove campos vazios do payload antes de enviar
-            const payload = removerCamposVazios(payloadCompleto);
+                const payloadCompleto = {
+                    // Dados básicos da admissão
+                    chapa: candidatoAtual.chapa,
+                    dt_admissao: candidatoAtual.dt_admissao,
+                    jornada: candidatoAtual.jornada,
+                    pispasep: candidatoAtual.pispasep,
+                    status: candidatoAtual.status,
+                    grau_instrucao: candidatoAtual.grau_instrucao,
+                    confianca: candidatoAtual.confianca,
+                    funcao_confianca: candidatoAtual.funcao_confianca,
+                    // Endereço
+                    cep: candidatoAtual.cep,
+                    rua: candidatoAtual.rua,
+                    numero: candidatoAtual.numero,
+                    complemento: candidatoAtual.complemento,
+                    bairro: candidatoAtual.bairro,
+                    tipo_rua: candidatoAtual.tipo_rua,
+                    tipo_bairro: candidatoAtual.tipo_bairro,
+                    cidade: candidatoAtual.cidade,
+                    estado: candidatoAtual.estado,
+                    pais: candidatoAtual.pais,
+                    perc_adiantamento: formatarPercentual(candidatoAtual.perc_adiantamento),
+                    ajuda_custo: formatarSalario(candidatoAtual.ajuda_custo),
+                    arredondamento: formatarSalario(candidatoAtual.arredondamento),
+                    media_sal_maternidade: formatarSalario(candidatoAtual.media_sal_maternidade),
+                    // Dados do candidato
+                    // candidato: {
+                    nome: dadosCandidato.nome,
+                    email: dadosCandidato.email,
+                    telefone: dadosCandidato.telefone,
+                    cpf: dadosCandidato.cpf ? dadosCandidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
+                    dt_nascimento: dadosCandidato.dt_nascimento,
+                    salario: (() => {
+                        const salarioCandidato = dadosCandidato?.salario;
+                        const salarioVaga = dadosVaga?.salario;
+                        const salarioPrincipal = candidatoAtual.salario;
+                        
+                        const salarioParaFormatar = salarioCandidato ? salarioCandidato : (salarioVaga ? salarioVaga : salarioPrincipal);
+                        
+                        
+                        return formatarSalario(salarioParaFormatar);
+                    })(),
+                    // },
+                    
+                    // Dados pessoais
+                    nome_mae: candidatoAtual.nome_mae,
+                    nome_pai: candidatoAtual.nome_pai,
+                    naturalidade: candidatoAtual.naturalidade,
+                    estado_natal: candidatoAtual.estado_natal,
+                    nacionalidade: candidatoAtual.nacionalidade,
+                    cor_raca: candidatoAtual.cor_raca,
+                    deficiente_fisico: candidatoAtual.deficiente_fisico,
+                    naturalizado: candidatoAtual.naturalizado,
+                    data_naturalizacao: candidatoAtual.data_naturalizacao,
+                    pais_origem: candidatoAtual.pais_origem,
+                    tipo_visto: candidatoAtual.tipo_visto,
+                    data_venc_visto: candidatoAtual.data_venc_visto,
+                    nome_social: candidatoAtual.nome_social,
+                    genero: candidatoAtual.genero,
+                    estado_civil: candidatoAtual.estado_civil,
+                    
+                    // Documentos
+                    orgao_emissor_ident: candidatoAtual.orgao_emissor_ident,
+                    data_emissao_ident: candidatoAtual.data_emissao_ident,
+                    titulo_eleitor: candidatoAtual.titulo_eleitor,
+                    zona_titulo_eleitor: candidatoAtual.zona_titulo_eleitor,
+                    secao_titulo_eleitor: candidatoAtual.secao_titulo_eleitor,
+                    data_titulo_eleitor: candidatoAtual.data_titulo_eleitor,
+                    estado_emissor_tit_eleitor: candidatoAtual.estado_emissor_tit_eleitor,
+                    carteira_trabalho: candidatoAtual.carteira_trabalho,
+                    serie_carteira_trab: candidatoAtual.serie_carteira_trab,
+                    uf_carteira_trab: candidatoAtual.uf_carteira_trab,
+                    data_emissao_ctps: candidatoAtual.data_emissao_ctps,
+                    data_venc_ctps: candidatoAtual.data_venc_ctps,
+                    nit: candidatoAtual.nit,
+                    carteira_motorista: candidatoAtual.carteira_motorista,
+                    tipo_carteira_habilit: candidatoAtual.tipo_carteira_habilit,
+                    data_venc_habilit: candidatoAtual.data_venc_habilit,
+                    data_emissao_cnh: candidatoAtual.data_emissao_cnh,
+                    identidade: candidatoAtual.identidade,
+                    uf_identidade: candidatoAtual.uf_identidade,
+                    dt_opcao_fgts: candidatoAtual.dt_opcao_fgts,
+                    codigo_situacao_fgts: candidatoAtual.codigo_situacao_fgts,
+                    numero_cartao_sus: candidatoAtual.nrosus,
+                    certificado_reservista: candidatoAtual.certificado_reservista,
+                    numero_passaporte: candidatoAtual.numero_passaporte,
+                    data_emissao_passaporte: candidatoAtual.data_emissao_passaporte,
+                    data_validade_passaporte: candidatoAtual.data_validade_passaporte,
+                    registro_profissional: candidatoAtual.registro_profissional,
+                    uf_registro_profissional: candidatoAtual.uf_registro_profissional,
+                    data_emissao_registro_profissional: candidatoAtual.data_emissao_registro_profissional,
+                    tipo_sanguineo: candidatoAtual.tipo_sanguineo,
+                    circunscricao_militar: candidatoAtual.circunscricao_militar,
+                    orgao_expedicao: candidatoAtual.orgao_expedicao,
+                    regiao_militar: candidatoAtual.regiao_militar,
+                    situacao_militar: candidatoAtual.situacao_militar,
+                    
+                    // Contatos
+                    telefone1: candidatoAtual.telefone1,
+                    telefone2: candidatoAtual.telefone2,
+                    email_pessoal: candidatoAtual.email_pessoal,
+                    
+                    // Dados bancários
+                    banco: candidatoAtual.banco,
+                    agencia: candidatoAtual.agencia,
+                    agencia_nova: candidatoAtual.agencia_nova,
+                    conta_corrente: candidatoAtual.conta_corrente,
+                    tipo_conta: candidatoAtual.tipo_conta,
+                    operacao: candidatoAtual.operacao,
+                    pix: candidatoAtual.pix,
+                    pix_tipo: candidatoAtual.pix_tipo,
+                    
+                    // Dados da vaga (apenas se não for self)
+                    ...(self ? {} : {
+                        centro_custo: dadosVaga?.centro_custo_id ? dadosVaga.centro_custo_id : candidatoAtual.centro_custo,
+                        filial: dadosVaga?.filial_id ? dadosVaga.filial_id : candidatoAtual.filial,
+                        departamento: dadosVaga?.departamento_id ? dadosVaga.departamento_id : candidatoAtual.departamento,
+                        id_secao: dadosVaga?.secao_id ? dadosVaga.secao_id : candidatoAtual.id_secao,
+                        id_funcao: dadosVaga?.funcao_id ? dadosVaga.funcao_id : candidatoAtual.id_funcao,
+                        cargo: dadosVaga?.cargo_id ? dadosVaga.cargo_id : candidatoAtual.cargo,
+                        horario: dadosVaga?.horario_id ? dadosVaga.horario_id : candidatoAtual.horario,
+                        sindicato: dadosVaga?.sindicato_id ? dadosVaga.sindicato_id : candidatoAtual.sindicato,
+                    }),
+                    
+                    // Dados adicionais
+                    tipo_admissao: candidatoAtual.tipo_admissao,
+                    codigo_ficha_registro: candidatoAtual.codigo_ficha_registro,
+                    codigo_jornada: candidatoAtual.codigo_jornada,
+                    tipo_funcionario: candidatoAtual.tipo_funcionario,
+                    aceite_lgpd: candidatoAtual.aceite_lgpd,
+                    anotacoes: candidatoAtual.anotacoes || '',
+                    
+                    // Novos campos
+                    natureza_esocial: candidatoAtual.natureza_esocial,
+                    codigo_ocorrencia_sefip: candidatoAtual.codigo_ocorrencia_sefip,
+                    codigo_categoria_sefip: candidatoAtual.codigo_categoria_sefip,
+                    motivo_admissao: candidatoAtual.motivo_admissao,
+                    indicativo_admissao: candidatoAtual.indicativo_admissao,
+                    codigo_categoria_esocial: candidatoAtual.codigo_categoria_esocial,
+                    tipo_regime_trabalhista: candidatoAtual.tipo_regime_trabalhista,
+                    funcao_emprego_cargoacumulavel: candidatoAtual.funcao_emprego_cargoacumulavel,
+                    tipo_recebimento: candidatoAtual.tipo_recebimento,
+                    mensal: candidatoAtual.mensal,
+                    calcula_inss: candidatoAtual.calcula_inss,
+                    calcula_irrf: candidatoAtual.calcula_irrf,
+                    horario: candidatoAtual.horario,
+                    letra: candidatoAtual.letra,
+                    contrato_tempo_parcial: candidatoAtual.contrato_tempo_parcial,
+                    tipo_regime_jornada: candidatoAtual.tipo_regime_jornada,
+                    tipo_situacao: candidatoAtual.tipo_situacao,
+                    tipo_regime_previdenciario: candidatoAtual.tipo_regime_previdenciario,
+                    tipo_contrato_prazo_determinado: candidatoAtual.tipo_contrato_prazo_determinado,
+                    tipo_contrato_trabalho: candidatoAtual.tipo_contrato_trabalho,
+                    natureza_atividade_esocial: candidatoAtual.natureza_atividade_esocial
+                };
+
+                // Remove campos vazios do payload antes de enviar
+                payload = removerCamposVazios(payloadCompleto);
+            }
 
             // Debug: verificar se há campos duplicados
-            console.log('Payload antes do envio:', payload);
-            console.log('Campo naturalidade no payload:', payload.naturalidade);
             const camposDuplicados = Object.keys(payload).filter((item, index) => Object.keys(payload).indexOf(item) !== index);
             if (camposDuplicados.length > 0) {
                 console.warn('Campos duplicados encontrados:', camposDuplicados);
@@ -1425,7 +1772,7 @@ const CandidatoRegistro = () => {
                         }
 
                     } else {
-                        console.log('Nenhum dependente novo para salvar');
+                        // Nenhum dependente novo para salvar
                     }
                 } catch (error) {
                     console.error('Erro ao salvar dependentes no endpoint específico:', error);
@@ -1616,9 +1963,6 @@ const CandidatoRegistro = () => {
 
     // Função para validar campos obrigatórios do step atual
     const validarCamposObrigatoriosStep = () => {
-        console.log('🚨🚨🚨 validarCamposObrigatoriosStep - INICIANDO 🚨🚨🚨');
-        console.log('🔍 validarCamposObrigatoriosStep - activeIndex:', activeIndex);
-        
         // NÃO limpa os erros anteriores - vamos acumular
         // setClassError([]);
         
@@ -1847,7 +2191,6 @@ const CandidatoRegistro = () => {
                 });
             }
         } else if (activeIndex === getStepEducacaoIndex()) { // Step Educação
-            console.log('🚨🚨🚨 VALIDAÇÃO STEP EDUCAÇÃO - INICIANDO 🚨🚨🚨');
             // Validação de educação obrigatória baseada no required={true}
             const camposObrigatoriosEducacao = [
                 { campo: 'grau_instrucao', nome: 'Grau de Instrução' }
@@ -1857,21 +2200,11 @@ const CandidatoRegistro = () => {
                 // Verifica se o campo existe e tem valor (pode ser objeto ou string)
                 const valor = candidato[campo];
                 
-                console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - campo:', campo);
-                console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - valor:', valor);
-                console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - tipo:', typeof valor);
-                
                 const isVazio = !valor || (typeof valor === 'object' && !valor.id && !valor.code) || (typeof valor === 'string' && !valor.trim());
-                console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - isVazio:', isVazio);
                 
                 if (isVazio) {
-                    console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - ADICIONANDO ERRO para:', campo);
                     camposObrigatorios.push(nome);
-                    setClassError(prev => {
-                        const novo = [...prev, campo];
-                        console.log('🔍 VALIDAÇÃO STEP EDUCAÇÃO - classError atualizado:', novo);
-                        return novo;
-                    });
+                    setClassError(prev => [...prev, campo]);
                 }
             });
         }
@@ -2024,7 +2357,12 @@ const CandidatoRegistro = () => {
 
         // Se for visão candidato (self = true), finaliza diretamente
         if (self) {
-            await handleSalvarAdmissao();
+            // Para self, usa payload específico do step atual
+            const payloadStepAtual = obterPayloadStepAtual();
+            const salvamentoSucesso = await executarSalvamento(null, payloadStepAtual);
+            if (salvamentoSucesso === false) {
+                return;
+            }
             await concluirTarefa('aguardar_documento');
             return;
         }
@@ -2060,7 +2398,12 @@ const CandidatoRegistro = () => {
     const handleConfirmarFinalizacao = async () => {
         try {
             setShowModalConfirmacao(false);
-            await handleSalvarAdmissao();
+            // Usa payload específico do step atual
+            const payloadStepAtual = obterPayloadStepAtual();
+            const salvamentoSucesso = await executarSalvamento(null, payloadStepAtual);
+            if (salvamentoSucesso === false) {
+                return;
+            }
             
             // Obter a tarefa pendente que o usuário pode concluir
             const tarefaPendente = obterTarefaPendente();
@@ -2119,9 +2462,10 @@ const CandidatoRegistro = () => {
                 aceite_lgpd: true
             }));
 
-            // Faz o upload do aceite na admissão
+            // Faz o upload do aceite na admissão com payload específico
+            const payloadLGPD = gerarPayloadStepLGPD();
             await http.put(`admissao/${admissao.id}/`, {
-                ...candidato,
+                ...payloadLGPD,
                 aceite_lgpd: true
             });
 
@@ -2210,19 +2554,20 @@ const CandidatoRegistro = () => {
             return;
         }
 
-        // Validação para o step de documentos (step 0)
+        // Step 0 (Documentos) - passa direto sem validação nem salvamento
         if (activeIndex === 0) {
-            // Validação de documentos
-            const validacaoDocumentos = await validarDocumentos();
-            if (!validacaoDocumentos) return;
-        } else {
-            // Validação para todos os outros steps
-            const validacaoCampos = validarCamposObrigatoriosStep();
-            if (!validacaoCampos) return;
+            stepperRef.current.nextCallback();
+            setActiveIndex(prev => prev + 1);
+            return;
         }
+
+        // Validação para todos os outros steps
+        const validacaoCampos = validarCamposObrigatoriosStep();
+        if (!validacaoCampos) return;
         
-        // ✅ SALVA DADOS ANTES DE AVANÇAR
-        const salvamentoSucesso = await executarSalvamento();
+        // ✅ SALVA DADOS ANTES DE AVANÇAR com payload específico do step
+        const payloadStepAtual = obterPayloadStepAtual();
+        const salvamentoSucesso = await executarSalvamento(null, payloadStepAtual);
         if (salvamentoSucesso === false) {
             // ❌ ERRO DE VALIDAÇÃO DA API - NÃO AVANÇA
             return;
@@ -2235,24 +2580,16 @@ const CandidatoRegistro = () => {
 
     // Função para verificar se há dependentes com campos obrigatórios não preenchidos
     const verificarDependentesIncompletos = useCallback(() => {
-        console.log('🔍 verificarDependentesIncompletos - dependentes:', candidato.dependentes);
-        
         if (!candidato.dependentes || candidato.dependentes.length === 0) {
-            console.log('🔍 verificarDependentesIncompletos - sem dependentes, retornando false');
             return false;
         }
         
         const resultado = candidato.dependentes.some(dependente => {
-            console.log('🔍 verificarDependentesIncompletos - verificando dependente:', dependente);
-            
             // Verificar campos básicos obrigatórios
             const nomeVazio = !dependente.nome_depend?.trim();
             const grauVazio = !dependente.grau_parentesco;
             
-            console.log('🔍 verificarDependentesIncompletos - nomeVazio:', nomeVazio, 'grauVazio:', grauVazio);
-            
             if (nomeVazio || grauVazio) {
-                console.log('🔍 verificarDependentesIncompletos - campos básicos vazios, retornando true');
                 return true;
             }
             
@@ -2263,15 +2600,12 @@ const CandidatoRegistro = () => {
             const naoEPaiOuMae = !grauRequerCPF;
             
             if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && (!dependente.cpf?.trim() || !dependente.dt_nascimento)) {
-                console.log('🔍 verificarDependentesIncompletos - campos de incidência vazios, retornando true');
                 return true;
             }
             
-            console.log('🔍 verificarDependentesIncompletos - dependente válido, retornando false');
             return false;
         });
         
-        console.log('🔍 verificarDependentesIncompletos - resultado final:', resultado);
         return resultado;
     }, [candidato.dependentes]);
 
@@ -2282,15 +2616,9 @@ const CandidatoRegistro = () => {
             return true;
         }
 
-        // Step 0 - Documentos
+        // Step 0 - Documentos - sempre válido (passa direto)
         if (activeIndex === 0) {
-            if (!candidato.documentos || !Array.isArray(candidato.documentos)) {
-                return false;
-            }
-            // Verifica se todos os documentos obrigatórios foram enviados
-            const documentosObrigatoriosPendentes = candidato.documentos
-                .filter(doc => doc.obrigatorio && !doc.upload_feito);
-            return documentosObrigatoriosPendentes.length === 0;
+            return true;
         }
 
         // Step 1 - Dados Pessoais
@@ -2339,32 +2667,22 @@ const CandidatoRegistro = () => {
         if (activeIndex === getStepEducacaoIndex()) {
             const valor = candidato.grau_instrucao;
             
-            console.log('🔍 VALIDAÇÃO EDUCAÇÃO - valor:', valor);
-            console.log('🔍 VALIDAÇÃO EDUCAÇÃO - tipo:', typeof valor);
-            
             if (!valor) {
-                console.log('🔍 VALIDAÇÃO EDUCAÇÃO - valor vazio, retornando false');
                 return false;
             }
             
             if (typeof valor === 'object') {
                 const resultado = valor.id || valor.code;
-                console.log('🔍 VALIDAÇÃO EDUCAÇÃO - objeto, resultado:', resultado);
                 return !!resultado; // Força conversão para boolean
             }
             
             const resultado = valor.toString().trim() !== '';
-            console.log('🔍 VALIDAÇÃO EDUCAÇÃO - string, resultado:', resultado);
             return resultado;
         }
 
         // Step Dependentes
-        console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - activeIndex:', activeIndex);
-        console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - getStepDependentesIndex():', getStepDependentesIndex());
         if (activeIndex === getStepDependentesIndex()) {
-            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - verificarDependentesIncompletos():', verificarDependentesIncompletos());
             const resultado = !verificarDependentesIncompletos();
-            console.log('🔍 VALIDAÇÃO STEP DEPENDENTES - resultado:', resultado);
             return resultado;
         }
 
@@ -2373,16 +2691,11 @@ const CandidatoRegistro = () => {
     }, [activeIndex, candidato, self, modoLeitura, verificarDependentesIncompletos]);
 
     const handleValidarStep = () => {
-        console.log('🚨🚨🚨 handleValidarStep - INICIANDO VALIDAÇÃO 🚨🚨🚨');
-        console.log('🔍 handleValidarStep - activeIndex:', activeIndex);
-        console.log('🔍 handleValidarStep - getStepEducacaoIndex():', getStepEducacaoIndex());
-        
         // Limpa o classError antes de validar
         setClassError([]);
         
         // Executa a validação do step atual para mostrar quais campos estão faltando
         const resultado = validarCamposObrigatoriosStep();
-        console.log('🔍 handleValidarStep - resultado da validação:', resultado);
         
         // Mostra um toast informativo
         toast.current.show({
@@ -2640,7 +2953,8 @@ const CandidatoRegistro = () => {
     const handleConfirmarDependentes = async () => {
         try {
             setShowConfirmacaoDependentes(false);
-            const salvamentoSucesso = await executarSalvamento();
+            const payloadStepAtual = obterPayloadStepAtual();
+            const salvamentoSucesso = await executarSalvamento(null, payloadStepAtual);
             
             if (salvamentoSucesso === false) {
                 // ❌ ERRO DE VALIDAÇÃO - NÃO CONTINUA
@@ -2673,8 +2987,9 @@ const CandidatoRegistro = () => {
         // Atualiza o estado do contexto para refletir a remoção na UI
         setCandidato(candidatoAtualizado);
 
-        // Executa o salvamento com o objeto atualizado, pulando a verificação de "nenhuma alteração"
-        const salvamentoSucesso = await executarSalvamento(candidatoAtualizado);
+        // Executa o salvamento com payload específico do step atual
+        const payloadStepAtual = obterPayloadStepAtual();
+        const salvamentoSucesso = await executarSalvamento(candidatoAtualizado, payloadStepAtual);
         
         if (salvamentoSucesso === false) {
             // ❌ ERRO DE VALIDAÇÃO - NÃO CONTINUA
@@ -3101,6 +3416,290 @@ const CandidatoRegistro = () => {
                 });
             }
         });
+    };
+
+    // Funções para gerar payloads específicos por step
+    const gerarPayloadStepDocumentos = () => {
+        // Step 0 - Documentos: não envia dados específicos, apenas valida
+        return {};
+    };
+
+    const gerarPayloadStepDadosPessoais = () => {
+        // Step 1 - Dados Pessoais
+        const payload = {
+            nome: candidato.nome,
+            email: candidato.email,
+            telefone: candidato.telefone,
+            cpf: candidato.cpf ? candidato.cpf.replace(/\D/g, '').substring(0, 11) : '',
+            dt_nascimento: candidato.dt_nascimento,
+            nome_mae: candidato.nome_mae,
+            nome_pai: candidato.nome_pai,
+            naturalidade: candidato.naturalidade,
+            estado_natal: candidato.estado_natal,
+            nacionalidade: candidato.nacionalidade,
+            cor_raca: candidato.cor_raca,
+            deficiente_fisico: candidato.deficiente_fisico,
+            naturalizado: candidato.naturalizado,
+            data_naturalizacao: candidato.data_naturalizacao,
+            pais_origem: candidato.pais_origem,
+            tipo_visto: candidato.tipo_visto,
+            data_venc_visto: candidato.data_venc_visto,
+            nome_social: candidato.nome_social,
+            genero: candidato.genero,
+            estado_civil: candidato.estado_civil,
+            // Endereço
+            cep: candidato.cep,
+            rua: candidato.rua,
+            numero: candidato.numero,
+            complemento: candidato.complemento,
+            bairro: candidato.bairro,
+            tipo_rua: candidato.tipo_rua,
+            tipo_bairro: candidato.tipo_bairro,
+            cidade: candidato.cidade,
+            estado: candidato.estado,
+            pais: candidato.pais,
+            // Documentos
+            orgao_emissor_ident: candidato.orgao_emissor_ident,
+            data_emissao_ident: candidato.data_emissao_ident,
+            titulo_eleitor: candidato.titulo_eleitor,
+            zona_titulo_eleitor: candidato.zona_titulo_eleitor,
+            secao_titulo_eleitor: candidato.secao_titulo_eleitor,
+            data_titulo_eleitor: candidato.data_titulo_eleitor,
+            estado_emissor_tit_eleitor: candidato.estado_emissor_tit_eleitor,
+            carteira_trabalho: candidato.carteira_trabalho,
+            serie_carteira_trab: candidato.serie_carteira_trab,
+            uf_carteira_trab: candidato.uf_carteira_trab,
+            data_emissao_ctps: candidato.data_emissao_ctps,
+            data_venc_ctps: candidato.data_venc_ctps,
+            nit: candidato.nit,
+            carteira_motorista: candidato.carteira_motorista,
+            tipo_carteira_habilit: candidato.tipo_carteira_habilit,
+            data_venc_habilit: candidato.data_venc_habilit,
+            data_emissao_cnh: candidato.data_emissao_cnh,
+            identidade: candidato.identidade,
+            uf_identidade: candidato.uf_identidade,
+            dt_opcao_fgts: candidato.dt_opcao_fgts,
+            codigo_situacao_fgts: candidato.codigo_situacao_fgts,
+            numero_cartao_sus: candidato.nrosus,
+            certificado_reservista: candidato.certificado_reservista,
+            numero_passaporte: candidato.numero_passaporte,
+            data_emissao_passaporte: candidato.data_emissao_passaporte,
+            data_validade_passaporte: candidato.data_validade_passaporte,
+            registro_profissional: candidato.registro_profissional,
+            uf_registro_profissional: candidato.uf_registro_profissional,
+            data_emissao_registro_profissional: candidato.data_emissao_registro_profissional,
+            tipo_sanguineo: candidato.tipo_sanguineo,
+            circunscricao_militar: candidato.circunscricao_militar,
+            orgao_expedicao: candidato.orgao_expedicao,
+            regiao_militar: candidato.regiao_militar,
+            situacao_militar: candidato.situacao_militar,
+            // Contatos
+            telefone1: candidato.telefone1,
+            telefone2: candidato.telefone2,
+            email_pessoal: candidato.email_pessoal,
+            // PIS/PASEP
+            pispasep: candidato.pispasep
+        };
+        
+        console.log('🔍 STEP DADOS PESSOAIS - Dados atuais:', {
+            nome: candidato.nome,
+            email: candidato.email,
+            telefone: candidato.telefone,
+            cpf: candidato.cpf,
+            dt_nascimento: candidato.dt_nascimento,
+            genero: candidato.genero,
+            estado_civil: candidato.estado_civil,
+            cep: candidato.cep,
+            cidade: candidato.cidade,
+            estado: candidato.estado
+        });
+        
+        console.log('🔍 STEP DADOS PESSOAIS - Payload que será enviado:', payload);
+        
+        return payload;
+    };
+
+    const gerarPayloadStepDadosBancarios = () => {
+        // Step 2 - Dados Bancários
+        const payload = {
+            banco: candidato.banco,
+            agencia: candidato.agencia,
+            agencia_nova: candidato.agencia_nova,
+            conta_corrente: candidato.conta_corrente,
+            tipo_conta: candidato.tipo_conta,
+            operacao: candidato.operacao,
+            pix: candidato.pix,
+            pix_tipo: candidato.pix_tipo
+        };
+        
+        console.log('🔍 STEP DADOS BANCÁRIOS - Dados atuais:', {
+            banco: candidato.banco,
+            agencia: candidato.agencia,
+            agencia_nova: candidato.agencia_nova,
+            conta_corrente: candidato.conta_corrente,
+            tipo_conta: candidato.tipo_conta,
+            operacao: candidato.operacao,
+            pix: candidato.pix,
+            pix_tipo: candidato.pix_tipo
+        });
+        
+        console.log('🔍 STEP DADOS BANCÁRIOS - Payload que será enviado:', payload);
+        
+        return payload;
+    };
+
+    const gerarPayloadStepDadosContratuais = () => {
+        // Step 3 - Dados Contratuais (apenas se não for self)
+        if (self) return {};
+        
+        const dadosVaga = candidato.dados_vaga || {};
+        
+        console.log('🔍 STEP DADOS CONTRATUAIS - Dados atuais:', {
+            candidato: {
+                filial: candidato.filial,
+                id_secao: candidato.id_secao,
+                id_funcao: candidato.id_funcao,
+                id_horario: candidato.id_horario,
+                centro_custo: candidato.centro_custo,
+                salario: candidato.salario,
+                ajuda_custo: candidato.ajuda_custo,
+                arredondamento: candidato.arredondamento,
+                media_sal_maternidade: candidato.media_sal_maternidade
+            },
+            dados_vaga: {
+                filial_id: dadosVaga.filial_id,
+                secao_id: dadosVaga.secao_id,
+                funcao_id: dadosVaga.funcao_id,
+                horario_id: dadosVaga.horario_id,
+                centro_custo_id: dadosVaga.centro_custo_id
+            }
+        });
+        
+        return {
+            // Dados básicos da admissão
+            chapa: candidato.chapa,
+            dt_admissao: candidato.dt_admissao,
+            jornada: candidato.jornada,
+            status: candidato.status,
+            grau_instrucao: candidato.grau_instrucao,
+            confianca: candidato.confianca,
+            funcao_confianca: candidato.funcao_confianca,
+            // Dados da vaga - apenas se foram explicitamente selecionados pelo usuário
+            // Para centro de custo, prioriza o campo direto do candidato, depois dados_vaga
+            ...(candidato.centro_custo ? { centro_custo: candidato.centro_custo } : (dadosVaga?.centro_custo_id ? { centro_custo: dadosVaga.centro_custo_id } : {})),
+            // Para filial, prioriza o campo direto do candidato, depois dados_vaga
+            ...(candidato.filial ? { filial: candidato.filial } : (dadosVaga?.filial_id ? { filial: dadosVaga.filial_id } : {})),
+            ...(dadosVaga?.departamento_id ? { departamento: dadosVaga.departamento_id } : {}),
+            // Para seção, prioriza o campo direto do candidato, depois dados_vaga
+            ...(candidato.id_secao ? { id_secao: candidato.id_secao } : (dadosVaga?.secao_id ? { id_secao: dadosVaga.secao_id } : {})),
+            // Para função, prioriza o campo direto do candidato, depois dados_vaga
+            ...(candidato.id_funcao ? { id_funcao: candidato.id_funcao } : (dadosVaga?.funcao_id ? { id_funcao: dadosVaga.funcao_id } : {})),
+            ...(dadosVaga?.cargo_id ? { cargo: dadosVaga.cargo_id } : {}),
+            // Para horário, prioriza o campo direto do candidato, depois dados_vaga
+            ...(candidato.id_horario ? { horario: candidato.id_horario } : (dadosVaga?.horario_id ? { horario: dadosVaga.horario_id } : {})),
+            ...(dadosVaga?.sindicato_id ? { sindicato: dadosVaga.sindicato_id } : {}),
+            // Dados adicionais
+            tipo_admissao: candidato.tipo_admissao,
+            codigo_ficha_registro: candidato.codigo_ficha_registro,
+            codigo_jornada: candidato.codigo_jornada,
+            tipo_funcionario: candidato.tipo_funcionario,
+            // Novos campos
+            natureza_esocial: candidato.natureza_esocial,
+            codigo_ocorrencia_sefip: candidato.codigo_ocorrencia_sefip,
+            codigo_categoria_sefip: candidato.codigo_categoria_sefip,
+            motivo_admissao: candidato.motivo_admissao,
+            indicativo_admissao: candidato.indicativo_admissao,
+            codigo_categoria_esocial: candidato.codigo_categoria_esocial,
+            tipo_regime_trabalhista: candidato.tipo_regime_trabalhista,
+            funcao_emprego_cargoacumulavel: candidato.funcao_emprego_cargoacumulavel,
+            tipo_recebimento: candidato.tipo_recebimento,
+            mensal: candidato.mensal,
+            calcula_inss: candidato.calcula_inss,
+            calcula_irrf: candidato.calcula_irrf,
+            letra: candidato.letra,
+            contrato_tempo_parcial: candidato.contrato_tempo_parcial,
+            tipo_regime_jornada: candidato.tipo_regime_jornada,
+            tipo_situacao: candidato.tipo_situacao,
+            tipo_regime_previdenciario: candidato.tipo_regime_previdenciario,
+            tipo_contrato_prazo_determinado: candidato.tipo_contrato_prazo_determinado,
+            tipo_contrato_trabalho: candidato.tipo_contrato_trabalho,
+            natureza_atividade_esocial: candidato.natureza_atividade_esocial,
+            // Dados adicionais
+            perc_adiantamento: candidato.perc_adiantamento,
+            ajuda_custo: formatarSalario(candidato.ajuda_custo),
+            arredondamento: formatarSalario(candidato.arredondamento),
+            media_sal_maternidade: formatarSalario(candidato.media_sal_maternidade),
+            // Salário
+            salario: formatarSalario(candidato.salario)
+        };
+        
+        console.log('🔍 STEP DADOS CONTRATUAIS - Payload que será enviado:', payload);
+        
+        return payload;
+    };
+
+    const gerarPayloadStepEducacao = () => {
+        // Step 4 - Educação
+        const payload = {
+            grau_instrucao: candidato.grau_instrucao
+        };
+        
+        console.log('🔍 STEP EDUCAÇÃO - Dados atuais:', {
+            grau_instrucao: candidato.grau_instrucao
+        });
+        
+        console.log('🔍 STEP EDUCAÇÃO - Payload que será enviado:', payload);
+        
+        return payload;
+    };
+
+    const gerarPayloadStepDependentes = () => {
+        // Step Dependentes: não envia dados específicos, apenas valida
+        const payload = {};
+        
+        console.log('🔍 STEP DEPENDENTES - Dados atuais:', {
+            dependentes: candidato.dependentes,
+            totalDependentes: candidato.dependentes?.length || 0
+        });
+        
+        console.log('🔍 STEP DEPENDENTES - Payload que será enviado:', payload);
+        
+        return payload;
+    };
+
+    const gerarPayloadStepAnotacoes = () => {
+        // Step Anotações
+        return {
+            anotacoes: candidato.anotacoes || ''
+        };
+    };
+
+    const gerarPayloadStepLGPD = () => {
+        // Step LGPD
+        return {
+            aceite_lgpd: candidato.aceite_lgpd
+        };
+    };
+
+    // Função para obter o payload específico baseado no step atual
+    const obterPayloadStepAtual = () => {
+        switch (activeIndex) {
+            case 0: // Documentos
+                return gerarPayloadStepDocumentos();
+            case 1: // Dados Pessoais
+                return gerarPayloadStepDadosPessoais();
+            case 2: // Dados Bancários
+                return gerarPayloadStepDadosBancarios();
+            case 3: // Dados Contratuais
+                return gerarPayloadStepDadosContratuais();
+            case getStepEducacaoIndex(): // Educação
+                return gerarPayloadStepEducacao();
+            case getStepDependentesIndex(): // Dependentes
+                return gerarPayloadStepDependentes();
+            default:
+                // Para outros steps (habilidades, experiência, etc.)
+                return {};
+        }
     };
 
     return (

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
@@ -33,6 +33,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     
     
     const { candidato, setCampo, vaga } = useCandidatoContext();
+    
+
 
 
 
@@ -106,10 +108,249 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         return (campo, lista) => {
             if (!Array.isArray(lista)) return '';
             
+            // Para filial, prioriza o campo direto do candidato
+            if (campo === 'filial_id') {
+                // Primeiro tenta pegar do candidato.filial (campo direto)
+                const filialCandidato = candidato?.filial;
+                
+                if (filialCandidato) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === filialCandidato || item.id === Number(filialCandidato) || String(item.id) === String(filialCandidato));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === filialCandidato || item.id_origem === String(filialCandidato) || String(item.id_origem) === String(filialCandidato));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar no candidato.filial, tenta pegar do dados_vaga.filial_id
+                const filialDadosVaga = candidato?.dados_vaga?.filial_id;
+                
+                if (filialDadosVaga) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === filialDadosVaga || item.id === Number(filialDadosVaga) || String(item.id) === String(filialDadosVaga));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === filialDadosVaga || item.id_origem === String(filialDadosVaga) || String(item.id_origem) === String(filialDadosVaga));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar em nenhum lugar, retorna vazio
+                return '';
+            }
+            
+            // Para seção, prioriza o campo direto do candidato
+            if (campo === 'secao_id') {
+                // Primeiro tenta pegar do candidato.id_secao (campo direto)
+                const secaoCandidato = candidato?.id_secao;
+                
+                if (secaoCandidato) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === secaoCandidato || item.id === Number(secaoCandidato) || String(item.id) === String(secaoCandidato));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem == secaoCandidato || item.id_origem === String(secaoCandidato) || String(item.id_origem) === String(secaoCandidato));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar no candidato.secao_id_origem, tenta pegar do dados_vaga.secao_id
+                const secaoDadosVaga = candidato?.dados_vaga?.secao_id;
+                
+                if (secaoDadosVaga) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === secaoDadosVaga || item.id === Number(secaoDadosVaga) || String(item.id) === String(secaoDadosVaga));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === secaoDadosVaga || item.id_origem === String(secaoDadosVaga) || String(item.id_origem) === String(secaoDadosVaga));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar em nenhum lugar, retorna vazio
+                return '';
+            }
+            
+            // Para função, prioriza o campo direto do candidato
+            if (campo === 'funcao_id') {
+                // Primeiro tenta pegar do candidato.id_funcao (campo direto)
+                const funcaoCandidato = candidato?.id_funcao;
+                
+                if (funcaoCandidato) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === funcaoCandidato || item.id === Number(funcaoCandidato) || String(item.id) === String(funcaoCandidato));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === funcaoCandidato || item.id_origem === String(funcaoCandidato) || String(item.id_origem) === String(funcaoCandidato));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar no candidato.id_funcao, tenta pegar do dados_vaga.funcao_id
+                const funcaoDadosVaga = candidato?.dados_vaga?.funcao_id;
+                
+                if (funcaoDadosVaga) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === funcaoDadosVaga || item.id === Number(funcaoDadosVaga) || String(item.id) === String(funcaoDadosVaga));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === funcaoDadosVaga || item.id_origem === String(funcaoDadosVaga) || String(item.id_origem) === String(funcaoDadosVaga));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar em nenhum lugar, retorna vazio
+                return '';
+            }
+            
+            // Para horário, prioriza o campo direto do candidato
+            if (campo === 'horario_id') {
+                // Primeiro tenta pegar do candidato.id_horario (campo direto)
+                const horarioCandidato = candidato?.id_horario;
+                
+                if (horarioCandidato) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === horarioCandidato || item.id === Number(horarioCandidato) || String(item.id) === String(horarioCandidato));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === horarioCandidato || item.id_origem === String(horarioCandidato) || String(item.id_origem) === String(horarioCandidato));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar no candidato.id_horario, tenta pegar do dados_vaga.horario_id
+                const horarioDadosVaga = candidato?.dados_vaga?.horario_id;
+                
+                if (horarioDadosVaga) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === horarioDadosVaga || item.id === Number(horarioDadosVaga) || String(item.id) === String(horarioDadosVaga));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === horarioDadosVaga || item.id_origem === String(horarioDadosVaga) || String(item.id_origem) === String(horarioDadosVaga));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar em nenhum lugar, retorna vazio
+                return '';
+            }
+            
+            // Para centro de custo, prioriza o campo direto do candidato
+            if (campo === 'centro_custo_id') {
+                // Primeiro tenta pegar do candidato.centro_custo (campo direto)
+                const centroCustoCandidato = candidato?.centro_custo;
+                
+                if (centroCustoCandidato) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === centroCustoCandidato || item.id === Number(centroCustoCandidato) || String(item.id) === String(centroCustoCandidato));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === centroCustoCandidato || item.id_origem === String(centroCustoCandidato) || String(item.id_origem) === String(centroCustoCandidato));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar no candidato.centro_custo, tenta pegar do dados_vaga.centro_custo_id
+                const centroCustoDadosVaga = candidato?.dados_vaga?.centro_custo_id;
+                
+                if (centroCustoDadosVaga) {
+                    // Tenta encontrar por ID exato (comparação numérica e string)
+                    let item = lista.find(item => item.id === centroCustoDadosVaga || item.id === Number(centroCustoDadosVaga) || String(item.id) === String(centroCustoDadosVaga));
+                    
+                    // Se não encontrar por ID, tenta por id_origem
+                    if (!item) {
+                        item = lista.find(item => item.id_origem === centroCustoDadosVaga || item.id_origem === String(centroCustoDadosVaga) || String(item.id_origem) === String(centroCustoDadosVaga));
+                    }
+                    
+                    if (item) {
+                        return {
+                            name: item.nome || item.descricao,
+                            code: item.id
+                        };
+                    }
+                }
+                
+                // Se não encontrar em nenhum lugar, retorna vazio
+                return '';
+            }
+            
+            // Para outros campos, mantém a lógica original
             // Primeiro tenta pegar do dados_vaga
             const id = candidato?.dados_vaga?.[campo];
+            
             if (id) {
-                const item = lista.find(item => item.id === id);
+                // Tenta encontrar por ID exato (comparação numérica e string)
+                let item = lista.find(item => item.id === id || item.id === Number(id) || String(item.id) === String(id));
+                
+                // Se não encontrar por ID, tenta por id_origem
+                if (!item) {
+                    item = lista.find(item => item.id_origem === id || item.id_origem === String(id) || String(item.id_origem) === String(id));
+                }
+                
                 if (item) {
                     return {
                         name: item.nome || item.descricao,
@@ -120,8 +361,16 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             
             // Se não encontrar no dados_vaga, tenta pegar da vaga
             const vagaId = vaga?.[campo.replace('_id', '')];
+            
             if (vagaId) {
-                const item = lista.find(item => item.id === vagaId);
+                // Tenta encontrar por ID exato (comparação numérica e string)
+                let item = lista.find(item => item.id === vagaId || item.id === Number(vagaId) || String(item.id) === String(vagaId));
+                
+                // Se não encontrar por ID, tenta por id_origem
+                if (!item) {
+                    item = lista.find(item => item.id_origem === vagaId || item.id_origem === String(vagaId) || String(item.id_origem) === String(vagaId));
+                }
+                
                 if (item) {
                     return {
                         name: item.nome || item.descricao,
@@ -132,7 +381,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
 
             return '';
         };
-    }, [candidato?.dados_vaga, vaga]);
+    }, [candidato?.dados_vaga, candidato?.filial, candidato?.id_secao, candidato?.id_funcao, candidato?.id_horario, candidato?.centro_custo, candidato?.dados_vaga?.filial_id, vaga]);
 
     // Função para obter o valor selecionado no formato {name, code} para tabelas de domínio
     const getValorSelecionadoFromCandidato = useMemo(() => {
@@ -272,6 +521,16 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         }
     }, [candidato.calcula_inss, candidato.calcula_irrf, setCampo]);
     
+    // Carregar seções automaticamente quando a filial for carregada (apenas uma vez)
+    useEffect(() => {
+        // Verifica se há uma filial selecionada (prioriza candidato.filial sobre dados_vaga.filial_id)
+        const filialSelecionada = candidato?.filial || candidato?.dados_vaga?.filial_id;
+        
+        if (filialSelecionada && buscarSecoesPorFilial) {
+            buscarSecoesPorFilial(filialSelecionada);
+        }
+    }, []); // Executa apenas uma vez na montagem do componente
+    
     const opcoesCodigoOcorrenciaSefip = useMemo(() => {
         if (candidato.codigo_ocorrencia_sefip_choices) {
             return formatarOpcoesChoices(candidato.codigo_ocorrencia_sefip_choices);
@@ -295,16 +554,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 name="filial"
                 valor={getValorSelecionado('filial_id', filiais)}
                 setValor={valor => {
-                    setCampo('dados_vaga', { 
-                        ...candidato.dados_vaga, 
-                        filial_id: valor.code,
-                        filial_nome: valor.name
-                    });
-                    
-                    // Buscar seções da filial selecionada
-                    buscarSecoesPorFilial(valor.code);
-                    
-                    // Limpar seção selecionada quando mudar a filial
+                    // Salvar tanto no campo direto quanto no dados_vaga para garantir consistência
+                    setCampo('filial', valor.code);
                     setCampo('dados_vaga', { 
                         ...candidato.dados_vaga, 
                         filial_id: valor.code,
@@ -312,6 +563,9 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                         secao_id: null,
                         secao_nome: null
                     });
+                    
+                    // Buscar seções da filial selecionada
+                    buscarSecoesPorFilial(valor.code);
                 }}
                 options={opcoesFiliais}
                 label="Filial"
@@ -324,6 +578,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 name="secao"
                 valor={getValorSelecionado('secao_id', secoes)}
                 setValor={valor => {
+                    // Salvar tanto no campo direto quanto no dados_vaga para garantir consistência
+                    setCampo('id_secao', valor.code);
                     setCampo('dados_vaga', { 
                         ...candidato.dados_vaga, 
                         secao_id: valor.code,
@@ -335,13 +591,15 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 required={isCampoObrigatorio(secoes)}
                 search
                 filter
-                disabled={modoLeitura || !candidato?.dados_vaga?.filial_id}
-                placeholder={!candidato?.dados_vaga?.filial_id ? "Selecione uma filial primeiro" : "Selecione a seção"}
+                disabled={modoLeitura || !(candidato?.filial || candidato?.dados_vaga?.filial_id)}
+                placeholder={!(candidato?.filial || candidato?.dados_vaga?.filial_id) ? "Selecione uma filial primeiro" : "Selecione a seção"}
             />
             <DropdownItens
                 name="funcao"
                 valor={getValorSelecionado('funcao_id', funcoes)}
                 setValor={valor => {
+                    // Salvar tanto no campo direto quanto no dados_vaga para garantir consistência
+                    setCampo('id_funcao', valor.code);
                     setCampo('dados_vaga', { 
                         ...candidato.dados_vaga, 
                         funcao_id: valor.code,
@@ -359,6 +617,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 name="centro_custo"
                 valor={getValorSelecionado('centro_custo_id', centros_custo)}
                 setValor={valor => {
+                    // Salvar tanto no campo direto quanto no dados_vaga para garantir consistência
+                    setCampo('centro_custo', valor.code);
                     setCampo('dados_vaga', { 
                         ...candidato.dados_vaga, 
                         centro_custo_id: valor.code,
@@ -376,6 +636,8 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 name="horario"
                 valor={getValorSelecionado('horario_id', horarios)}
                 setValor={valor => {
+                    // Salvar tanto no campo direto quanto no dados_vaga para garantir consistência
+                    setCampo('id_horario', valor.code);
                     setCampo('dados_vaga', { 
                         ...candidato.dados_vaga, 
                         horario_id: valor.code,
