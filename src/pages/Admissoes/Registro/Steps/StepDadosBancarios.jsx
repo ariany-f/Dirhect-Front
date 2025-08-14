@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useCandidatoContext } from '@contexts/Candidato';
 import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
@@ -46,6 +46,23 @@ const InfoBox = styled.div`
     }
 `;
 
+// Função para debounce
+const useDebounce = (value, delay) => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+};
+
 const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassError }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const [bancos, setBancos] = useState([]);
@@ -54,6 +71,21 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
     const [loadingAgencias, setLoadingAgencias] = useState(false);
     const [filtroAgencia, setFiltroAgencia] = useState('');
     const [adicionandoAgencia, setAdicionandoAgencia] = useState(false);
+    
+    // Estados para busca otimizada de bancos
+    const [bancosCarregados, setBancosCarregados] = useState([]);
+    const [buscaBanco, setBuscaBanco] = useState('');
+    const [carregandoBuscaBanco, setCarregandoBuscaBanco] = useState(false);
+    
+    // Estados para busca otimizada de agências
+    const [agenciasCarregadas, setAgenciasCarregadas] = useState([]);
+    const [buscaAgencia, setBuscaAgencia] = useState('');
+    const [carregandoBusca, setCarregandoBusca] = useState(false);
+    const [mostrarTodas, setMostrarTodas] = useState(false);
+    
+    // Debounce para as buscas
+    const buscaBancoDebounced = useDebounce(buscaBanco, 50);
+    const buscaDebounced = useDebounce(buscaAgencia, 50);
 
     // Função para verificar se um campo está em erro
     const isCampoEmErro = useMemo(() => {
@@ -80,55 +112,135 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         }
     };
 
+    // Função otimizada para carregar bancos iniciais (apenas os mais comuns)
+    const carregarBancosIniciais = useCallback(async () => {
+        setLoadingBancos(true);
+        try {
+            // Carrega apenas os 50 bancos mais comuns (sem ordering=uso)
+            const response = await http.get('banco/?limit=50');
+            const formattedBancos = response.map(b => ({
+                code: b.id,
+                name: `${b.id} - ${b.nome_completo || b.nome}`
+            }));
+            setBancosCarregados(formattedBancos);
+            setBancos(formattedBancos);
+        } catch (error) {
+            console.error("Erro ao carregar bancos iniciais:", error);
+            setBancosCarregados([]);
+            setBancos([]);
+        } finally {
+            setLoadingBancos(false);
+        }
+    }, []);
+
+    // Função para busca inteligente de bancos
+    const buscarBancos = useCallback(async (termo) => {
+        if (!termo || termo.length < 2) {
+            // Se não há termo de busca, mostra os bancos iniciais
+            setBancos(bancosCarregados);
+            return;
+        }
+        
+        setCarregandoBuscaBanco(true);
+        try {
+            const response = await http.get(`banco/?search=${termo}&limit=100`);
+            const formattedBancos = response.map(b => ({
+                code: b.id,
+                name: `${b.id} - ${b.nome_completo || b.nome}`
+            }));
+            setBancos(formattedBancos);
+        } catch (error) {
+            console.error("Erro na busca de bancos:", error);
+            setBancos([]);
+        } finally {
+            setCarregandoBuscaBanco(false);
+        }
+    }, [bancosCarregados]);
+
+    // Função otimizada para carregar agências iniciais (apenas as mais comuns)
+    const carregarAgenciasIniciais = useCallback(async () => {
+        if (!candidato?.banco) return;
+        
+        setLoadingAgencias(true);
+        try {
+            // Carrega apenas as 50 agências mais comuns (sem ordering=uso)
+            const response = await http.get(`agencia/?banco_id=${candidato.banco}&limit=50`);
+            const formattedAgencias = response.map(ag => ({
+                code: ag.id,
+                name: `${ag.num_agencia} - ${ag.nome || 'Agência'}`
+            }));
+            setAgenciasCarregadas(formattedAgencias);
+            setAgencias(formattedAgencias);
+        } catch (error) {
+            console.error("Erro ao carregar agências iniciais:", error);
+            setAgenciasCarregadas([]);
+            setAgencias([]);
+        } finally {
+            setLoadingAgencias(false);
+        }
+    }, [candidato?.banco]);
+
+    // Função para busca inteligente de agências
+    const buscarAgencias = useCallback(async (termo) => {
+        if (!candidato?.banco) return;
+        
+        if (!termo || termo.length < 2) {
+            // Se não há termo de busca, mostra as agências iniciais
+            setAgencias(agenciasCarregadas);
+            return;
+        }
+        
+        setCarregandoBusca(true);
+        try {
+            const response = await http.get(`agencia/?banco_id=${candidato.banco}&search=${termo}&limit=100`);
+            const formattedAgencias = response.map(ag => ({
+                code: ag.id,
+                name: `${ag.num_agencia} - ${ag.nome || 'Agência'}`
+            }));
+            setAgencias(formattedAgencias);
+        } catch (error) {
+            console.error("Erro na busca de agências:", error);
+            setAgencias([]);
+        } finally {
+            setCarregandoBusca(false);
+        }
+    }, [candidato?.banco, agenciasCarregadas]);
+
+    // Efeito para carregar bancos iniciais
+    useEffect(() => {
+        carregarBancosIniciais();
+    }, [carregarBancosIniciais]);
+
+    // Efeito para carregar agências iniciais quando o banco muda
+    useEffect(() => {
+        if (candidato?.banco && !adicionandoAgencia) {
+            carregarAgenciasIniciais();
+        } else {
+            setAgencias([]);
+            setAgenciasCarregadas([]);
+        }
+    }, [candidato?.banco, adicionandoAgencia, carregarAgenciasIniciais]);
+
+    // Efeito para busca de bancos com debounce
+    useEffect(() => {
+        if (buscaBancoDebounced !== buscaBanco) {
+            buscarBancos(buscaBancoDebounced);
+        }
+    }, [buscaBancoDebounced, buscarBancos]);
+
+    // Efeito para busca de agências com debounce
+    useEffect(() => {
+        if (buscaDebounced !== buscaAgencia) {
+            buscarAgencias(buscaDebounced);
+        }
+    }, [buscaDebounced, buscarAgencias]);
+
     useEffect(() => {
         // Se o candidato já tem uma agencia_nova, entra no modo de adição
         if (candidato?.agencia_nova) {
             setAdicionandoAgencia(true);
         }
     }, [candidato?.agencia_nova]);
-
-    useEffect(() => {
-        setLoadingBancos(true);
-        http.get('banco/?ordering=id')
-            .then(response => {
-                const formattedBancos = response.map(b => ({
-                    code: b.id,
-                    name: `${b.id} - ${b.nome_completo || b.nome}`
-                }));
-                setBancos(formattedBancos);
-            })
-            .catch(error => {
-                console.error("Erro ao buscar bancos:", error);
-                setBancos([]);
-            })
-            .finally(() => {
-                setLoadingBancos(false);
-            });
-    }, []);
-
-    useEffect(() => {
-        if (candidato?.banco && !adicionandoAgencia) {
-            setLoadingAgencias(true);
-            setAgencias([]);
-            http.get(`agencia/?banco_id=${candidato.banco}&ordering=id`)
-                .then(response => {
-                    const formattedAgencias = response.map(ag => ({
-                        code: ag.id,
-                        name: `${ag.num_agencia} - ${ag.nome || 'Agência'}`
-                    }));
-                    setAgencias(formattedAgencias);
-                })
-                .catch(error => {
-                    console.error("Erro ao buscar agências:", error);
-                    setAgencias([]);
-                })
-                .finally(() => {
-                    setLoadingAgencias(false);
-                });
-        } else {
-            setAgencias([]);
-        }
-    }, [candidato?.banco, adicionandoAgencia]);
 
     // Tipos de conta
     const tiposConta = [
@@ -145,13 +257,25 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         { code: 'chave_aleatoria', name: 'Chave Aleatória' }
     ];
 
+    // Handler para filtro de bancos
+    const handleFilterBancos = (e) => {
+        setBuscaBanco(e.filter);
+    };
+
+    // Handler para filtro de agências
+    const handleFilterAgencias = (e) => {
+        setBuscaAgencia(e.filter);
+        setFiltroAgencia(e.filter);
+    };
+
     return (
         <GridContainer data-tour="panel-step-2">
             <InfoBox>
                 <strong>Informações importantes:</strong><br />
                 • Os dados bancários são utilizados para crédito de salário e benefícios<br />
                 • Certifique-se de que os dados estão corretos para evitar problemas no pagamento<br />
-                • A conta preferencialmente deve estar no nome do colaborador
+                • A conta preferencialmente deve estar no nome do colaborador<br />
+                • <strong>Performance:</strong> Carregamos 50 bancos/agências mais comuns. Digite para buscar mais registros.
             </InfoBox>
 
             <DropdownItens
@@ -165,16 +289,27 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                     setCampo('agencia', '');
                     setCampo('agencia_nova', '');
                     setAdicionandoAgencia(false);
+                    setBuscaAgencia('');
+                    setFiltroAgencia('');
                     removerErroCampo('banco', valor);
                 }}
                 options={bancos}
                 name="banco"
                 label="Banco"
-                placeholder={loadingBancos ? "Carregando..." : "Selecione o banco"}
-                disabled={modoLeitura || loadingBancos}
+                placeholder={
+                    carregandoBuscaBanco ? "Buscando..." 
+                    : loadingBancos ? "Carregando..." 
+                    : "Selecione o banco"
+                }
+                disabled={modoLeitura || loadingBancos || carregandoBuscaBanco}
                 search
                 filter
+                onFilter={handleFilterBancos}
+                emptyFilterMessage="Nenhum banco encontrado. Tente outro termo."
+                emptyMessage="Digite para buscar bancos..."
             />
+            
+
 
             {adicionandoAgencia ? (
                 <div style={{ display: 'flex', width: '100%', alignItems: 'start', gap: '16px', justifyContent: 'start' }}>
@@ -212,15 +347,16 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                         name="agencia"
                         label="Agência"
                         placeholder={
-                            loadingAgencias ? "Carregando..." 
+                            carregandoBusca ? "Buscando..." 
+                            : loadingAgencias ? "Carregando..." 
                             : !candidato?.banco ? "Selecione um banco"
                             : agencias.length === 0 ? "Nenhuma agência para este banco"
                             : "Selecione a agência"
                         }
-                        disabled={modoLeitura || !candidato?.banco || loadingAgencias}
+                        disabled={modoLeitura || !candidato?.banco || loadingAgencias || carregandoBusca}
                         search
                         filter
-                        onFilter={(e) => setFiltroAgencia(e.filter)}
+                        onFilter={handleFilterAgencias}
                         emptyFilterMessage={
                             <div style={{ padding: '10px', textAlign: 'center' }}>
                                 <span>Nenhuma agência encontrada.</span>
@@ -246,11 +382,21 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                                     setCampo('agencia', '');
                                 }}
                             >
-                                <span style={{ marginRight: '8px', fontWeight: 'bold' }}>+</span>
-                                Adicionar Nova Agência
+                                <div style={{ marginBottom: '4px', fontSize: '12px', color: '#666' }}>
+                                    50 agências carregadas
+                                </div>
+                                <div style={{ fontSize: '12px', color: '#666' }}>
+                                    Digite para buscar mais
+                                </div>
+                                <div style={{ marginTop: '8px', fontWeight: 'bold' }}>
+                                    <span style={{ marginRight: '8px' }}>+</span>
+                                    Adicionar Nova Agência
+                                </div>
                             </div>
                         }
                     />
+                    
+
                 </div>
             )}
 
