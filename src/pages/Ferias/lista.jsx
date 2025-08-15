@@ -313,26 +313,34 @@ function FeriasListagem() {
                         <Texto color={tab === 'lista' ? 'white' : '#000'}>Lista</Texto>
                     </TabButton>
                 </TabPanel>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', paddingTop: '2px' }}>
-                    <BotaoGrupo verticalalign='flex-start'>
-                        {loading && (
-                            <div style={{
-                                display: 'flex',
-                                marginTop: '10px',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                <FaSpinner 
-                                    size={24} 
-                                    color="var(--gradient-secundaria)" 
-                                    style={{
-                                        animation: 'spin 1s linear infinite'
-                                    }}
-                                />
-                            </div>
-                        )}
-                        {tab === 'lista' && 
-                            <>
+                <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: '1fr 1fr 1fr 1fr', 
+                    gap: '16px', 
+                    paddingTop: '2px',
+                    width: '100%',
+                    maxWidth: '800px'
+                }}>
+                    {loading && (
+                        <div style={{
+                            display: 'flex',
+                            marginTop: '10px',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gridColumn: '1 / -1'
+                        }}>
+                            <FaSpinner 
+                                size={24} 
+                                color="var(--gradient-secundaria)" 
+                                style={{
+                                    animation: 'spin 1s linear infinite'
+                                }}
+                            />
+                        </div>
+                    )}
+                    {tab === 'lista' && 
+                        <>
+                            <div style={{ width: '100%', minWidth: 0 }}>
                                 <DropdownItens
                                     valor={anoSelecionado}
                                     setValor={setAnoSelecionado}
@@ -342,6 +350,8 @@ function FeriasListagem() {
                                     $height="40px"
                                     allowClear={false}
                                 />
+                            </div>
+                            <div style={{ width: '100%', minWidth: 0 }}>
                                 <DropdownItens
                                     valor={periodoAberto}
                                     setValor={setPeriodoAberto}
@@ -351,21 +361,32 @@ function FeriasListagem() {
                                     $height="40px"
                                     allowClear={false}
                                 />
-                            </>
-                        }
-                        <div style={{ width: '250px' }}>
-                            <CampoTexto
-                                valor={searchTerm}
-                                setValor={setSearchTerm}
-                                placeholder="Buscar por colaborador..."
-                                type="search"
-                                padding="8px 16px"
-                            />
+                            </div>
+                        </>
+                    }
+                    <div style={{ width: '100%', minWidth: 0 }}>
+                        <CampoTexto
+                            valor={searchTerm}
+                            setValor={setSearchTerm}
+                            placeholder="Buscar por colaborador..."
+                            type="search"
+                            padding="8px 16px"
+                        />
+                    </div>
+                    {(ArmazenadorToken.hasPermission('add_ferias') || usuario.tipo === 'colaborador') && (
+                        <div style={{ width: '100%', minWidth: 0 }}>
+                            <Botao 
+                                aoClicar={() => setModalSelecaoColaboradorOpened(true)} 
+                                estilo="vermilion" 
+                                size="small" 
+                                tab
+                                style={{ width: '100%' }}
+                            >
+                                <FaUmbrellaBeach fill='var(--secundaria)' color='var(--secundaria)' className={styles.icon}/> 
+                                Solicitar Férias
+                            </Botao>
                         </div>
-                        {(ArmazenadorToken.hasPermission('add_ferias') || usuario.tipo === 'colaborador') && (
-                            <Botao aoClicar={() => setModalSelecaoColaboradorOpened(true)} estilo="vermilion" size="small" tab><FaUmbrellaBeach fill='var(--secundaria)' color='var(--secundaria)' className={styles.icon}/> Solicitar Férias</Botao>
-                        )}
-                    </BotaoGrupo>
+                    )}
                 </div>
             </HeaderRow>
             <Wrapper>
