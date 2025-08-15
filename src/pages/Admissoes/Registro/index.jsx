@@ -2549,7 +2549,11 @@ const CandidatoRegistro = () => {
 
         // Step 0 (Documentos) - só permite avançar se todos os obrigatórios estiverem enviados
         if (activeIndex === 0) {
-            if (!candidato?.documentos || candidato.documentos.length === 0) return true;
+            if (!candidato?.documentos || candidato.documentos.length === 0) {
+               stepperRef.current.nextCallback();
+               setActiveIndex(prev => prev + 1);
+               return;
+            }
             const obrigatoriosPendentes = candidato.documentos.filter(doc => doc.obrigatorio && (!doc.upload_feito || !doc.itens || doc.itens.some(item => !item.upload_feito)));
             
             if(obrigatoriosPendentes.length > 0) 
