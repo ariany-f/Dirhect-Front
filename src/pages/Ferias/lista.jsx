@@ -61,6 +61,7 @@ const HeaderRow = styled.div`
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 24px;
+    width: 100%;
 `;
 
 const TabPanel = styled.div`
@@ -314,12 +315,13 @@ function FeriasListagem() {
                     </TabButton>
                 </TabPanel>
                 <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: '1fr 1fr 1fr 1fr', 
-                    gap: '16px', 
+                    display: 'flex', 
+                    gap: '8px', 
                     paddingTop: '2px',
-                    width: '100%',
-                    maxWidth: '800px'
+                    width: '90%',
+                    marginLeft: 'auto',
+                    alignItems: 'center',
+                    justifyContent: 'end'
                 }}>
                     {loading && (
                         <div style={{
@@ -327,7 +329,7 @@ function FeriasListagem() {
                             marginTop: '10px',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gridColumn: '1 / -1'
+                            width: '100%'
                         }}>
                             <FaSpinner 
                                 size={24} 
@@ -340,7 +342,7 @@ function FeriasListagem() {
                     )}
                     {tab === 'lista' && 
                         <>
-                            <div style={{ width: '100%', minWidth: 0 }}>
+                            <div style={{flexShrink: 0 }}>
                                 <DropdownItens
                                     valor={anoSelecionado}
                                     setValor={setAnoSelecionado}
@@ -351,7 +353,7 @@ function FeriasListagem() {
                                     allowClear={false}
                                 />
                             </div>
-                            <div style={{ width: '100%', minWidth: 0 }}>
+                            <div style={{flexShrink: 0 }}>
                                 <DropdownItens
                                     valor={periodoAberto}
                                     setValor={setPeriodoAberto}
@@ -364,17 +366,18 @@ function FeriasListagem() {
                             </div>
                         </>
                     }
-                    <div style={{ width: '100%', minWidth: 0 }}>
+                    <div style={{flexShrink: 0 }}>
                         <CampoTexto
                             valor={searchTerm}
                             setValor={setSearchTerm}
-                            placeholder="Buscar por colaborador..."
+                            placeholder="Buscar por colaborador"
                             type="search"
-                            padding="8px 16px"
+                            $width="120px"
+                            padding="2px 2px"
                         />
                     </div>
                     {(ArmazenadorToken.hasPermission('add_ferias') || usuario.tipo === 'colaborador') && (
-                        <div style={{ width: '100%', minWidth: 0 }}>
+                        <div style={{flexShrink: 0 }}>
                             <Botao 
                                 aoClicar={() => setModalSelecaoColaboradorOpened(true)} 
                                 estilo="vermilion" 

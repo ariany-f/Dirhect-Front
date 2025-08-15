@@ -140,7 +140,7 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
     return (
         <OverlayRight $opened={opened}>
             <Toast ref={toast} />
-            <DialogEstilizadoRight $align="flex-start" $width="40vw" open={opened} $opened={opened}>
+            <DialogEstilizadoRight $align="flex-start" $width="40vw" open={opened} $opened={opened} style={{ alignItems: 'flex-start' }}>
                 <Frame>
                     <Titulo>
                         <button className="close" onClick={aoFechar}>
@@ -150,7 +150,7 @@ function ModalOperadoras({ opened = false, aoFechar, aoSalvar, operadora }) {
                     </Titulo>
                 </Frame>
                 <br/>
-                <Frame padding="24px">
+                <Frame padding="24px" style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                     <CampoTexto
                         name="nome"
                         valor={nome}
