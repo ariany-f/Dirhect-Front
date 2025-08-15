@@ -890,464 +890,472 @@ function ColaboradorDetalhes() {
     };
 
     return (
-        <Frame>
-            <GlobalStyle />
-            <Toast ref={toast} />
-            <ConfirmDialog />
-            
-            {/* Botão voltar acima do header */}
-            {colaborador?.funcionario_pessoa_fisica?.nome && (
-                <div style={{ marginBottom: '16px' }}>
-                    <BotaoVoltar linkFixo="/colaborador" />
-                </div>
-            )}
-            
-            {/* Header com informações do colaborador - similar ao da admissão */}
-            {colaborador?.funcionario_pessoa_fisica && (
-                <div style={{
-                    background: 'linear-gradient(to bottom, var(--black), var(--gradient-secundaria))',
-                    borderRadius: 8,
-                    padding: '12px 16px',
-                    marginBottom: 0,
-                    marginRight: '-24px', // Compensa o padding do Frame
-                    color: '#fff',
-                    boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
-                    position: 'sticky',
-                    top: 0,
-                    width: '100%'
-                }}>
+        <>
+            <Frame>
+                <GlobalStyle />
+                <Toast ref={toast} />
+                <ConfirmDialog />
+                
+                {/* Botão voltar acima do header */}
+                {colaborador?.funcionario_pessoa_fisica?.nome && (
+                    <div style={{ marginBottom: '16px' }}>
+                        <BotaoVoltar linkFixo="/colaborador" />
+                    </div>
+                )}
+                
+                {/* Header com informações do colaborador - similar ao da admissão */}
+                {colaborador?.funcionario_pessoa_fisica && (
                     <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        flexWrap: 'wrap',
-                        gap: 10
+                        background: 'linear-gradient(to bottom, var(--black), var(--gradient-secundaria))',
+                        borderRadius: 8,
+                        padding: '12px 16px',
+                        marginBottom: 0,
+                        marginRight: '-24px', // Compensa o padding do Frame
+                        color: '#fff',
+                        boxShadow: '0 2px 8px rgba(12, 0, 76, 0.3)',
+                        position: 'sticky',
+                        top: 0,
+                        width: '100%'
                     }}>
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
+                            justifyContent: 'space-between',
+                            flexWrap: 'wrap',
                             gap: 10
                         }}>
-                            <div>
-                                <h2 style={{
-                                    margin: 0,
-                                    fontSize: 16,
-                                    fontWeight: 700,
-                                    color: '#fff',
-                                    textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                                }}>
-                                    {colaborador.chapa} - {colaborador.funcionario_pessoa_fisica.nome}
-                                </h2>
-                                <p style={{
-                                    margin: 0,
-                                    fontSize: 12,
-                                    color: '#fff',
-                                    opacity: 0.9,
-                                    fontWeight: 400,
-                                    textAlign: 'left'
-                                }}>
-                                    CPF: {formatarCPF(colaborador.funcionario_pessoa_fisica.cpf)}
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 6,
-                                background: 'rgba(255, 255, 255, 0.15)',
-                                padding: '4px 8px',
-                                borderRadius: 6,
-                                backdropFilter: 'blur(10px)'
+                                gap: 10
                             }}>
-                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                    <span style={{
-                                        background: 'rgba(255, 255, 255, 0.2)',
+                                <div>
+                                    <h2 style={{
+                                        margin: 0,
+                                        fontSize: 16,
+                                        fontWeight: 700,
                                         color: '#fff',
-                                        padding: '4px 8px',
-                                        borderRadius: 12,
+                                        textShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                                    }}>
+                                        {colaborador.chapa} - {colaborador.funcionario_pessoa_fisica.nome}
+                                    </h2>
+                                    <p style={{
+                                        margin: 0,
+                                        fontSize: 12,
+                                        color: '#fff',
+                                        opacity: 0.9,
+                                        fontWeight: 400,
+                                        textAlign: 'left'
+                                    }}>
+                                        CPF: {formatarCPF(colaborador.funcionario_pessoa_fisica.cpf)}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                    background: 'rgba(255, 255, 255, 0.15)',
+                                    padding: '4px 8px',
+                                    borderRadius: 6,
+                                    backdropFilter: 'blur(10px)'
+                                }}>
+                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                        <span style={{
+                                            background: 'rgba(255, 255, 255, 0.2)',
+                                            color: '#fff',
+                                            padding: '4px 8px',
+                                            borderRadius: 12,
+                                            fontSize: 11,
+                                            fontWeight: 600,
+                                            textTransform: 'capitalize'
+                                        }}>
+                                            {colaborador.funcao_nome || 'Função não informada'}
+                                        </span>
+                                    <span style={{
                                         fontSize: 11,
                                         fontWeight: 600,
-                                        textTransform: 'capitalize'
-                                    }}>
-                                        {colaborador.funcao_nome || 'Função não informada'}
-                                    </span>
-                                <span style={{
-                                    fontSize: 11,
-                                    fontWeight: 600,
-                                    color: '#fff',
-                                    opacity: 0.9
-                                }}>
-                                    Status:
-                                </span>
-                                    <span style={{
-                                        background: colaborador.tipo_situacao_descricao === 'Ativo' ? '#4CAF50' : '#FF9800',
                                         color: '#fff',
-                                        padding: '4px 8px',
-                                        borderRadius: 12,
-                                        fontSize: 11,
-                                        fontWeight: 400,
-                                        textTransform: 'capitalize'
+                                        opacity: 0.9
                                     }}>
-                                        {colaborador.tipo_situacao_descricao || 'Status não informado'}
+                                        Status:
                                     </span>
-                                    {colaborador.marcado_demissao && ['analista_tenant','analista', 'supervisor', 'gestor'].includes(ArmazenadorToken.UserProfile) && (
                                         <span style={{
-                                            background: '#dc2626',
+                                            background: colaborador.tipo_situacao_descricao === 'Ativo' ? '#4CAF50' : '#FF9800',
                                             color: '#fff',
                                             padding: '4px 8px',
                                             borderRadius: 12,
                                             fontSize: 11,
                                             fontWeight: 400,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px'
+                                            textTransform: 'capitalize'
                                         }}>
-                                            <FaUserTimes fill='var(--white)' size={12} />
-                                            Demissão Solicitada
+                                            {colaborador.tipo_situacao_descricao || 'Status não informado'}
                                         </span>
-                                    )}
+                                        {colaborador.marcado_demissao && ['analista_tenant','analista', 'supervisor', 'gestor'].includes(ArmazenadorToken.UserProfile) && (
+                                            <span style={{
+                                                background: '#dc2626',
+                                                color: '#fff',
+                                                padding: '4px 8px',
+                                                borderRadius: 12,
+                                                fontSize: 11,
+                                                fontWeight: 400,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '4px'
+                                            }}>
+                                                <FaUserTimes fill='var(--white)' size={12} />
+                                                Demissão Solicitada
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
+                                
+                                {colaborador?.tipo_situacao_descricao == 'Ativo' && 
+                                 ArmazenadorToken.hasPermission('add_demissao') && 
+                                 !colaborador.marcado_demissao && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Botao
+                                            aoClicar={() => setModalDemissaoAberto(true)}
+                                            estilo="danger"
+                                            size="small"
+                                            disabled={estabilidadeBloqueada}
+                                        >
+                                            <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} />
+                                            Solicitar Demissão
+                                        </Botao>
+                                            
+                                        {estabilidadeBloqueada && (
+                                            <FaExclamationTriangle
+                                                size={18}
+                                                fill='#dc2626'
+                                                style={{ cursor: 'pointer', marginLeft: 8 }}
+                                                title="Demissão bloqueada por estabilidade"
+                                                onClick={() => toast.current.show({
+                                                    severity: 'warn',
+                                                    summary: 'Estabilidade ativa',
+                                                    detail: mensagemEstabilidade,
+                                                    life: 6000
+                                                })}
+                                            />
+                                        )}
+                                        {colaborador?.membro_cipa && (
+                                            <span style={{
+                                                background: '#721c24',
+                                                color: '#fff',
+                                                padding: '4px 8px',
+                                                borderRadius: '4px',
+                                                fontSize: '11px',
+                                                fontWeight: '600',
+                                                whiteSpace: 'nowrap'
+                                            }}>
+                                                MEMBRO CIPA
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                            
-                            {colaborador?.tipo_situacao_descricao == 'Ativo' && 
-                             ArmazenadorToken.hasPermission('add_demissao') && 
-                             !colaborador.marcado_demissao && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <Botao
-                                        aoClicar={() => setModalDemissaoAberto(true)}
-                                        estilo="danger"
-                                        size="small"
-                                        disabled={estabilidadeBloqueada}
-                                    >
-                                        <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} />
-                                        Solicitar Demissão
-                                    </Botao>
-                                        
-                                    {estabilidadeBloqueada && (
-                                        <FaExclamationTriangle
-                                            size={18}
-                                            fill='#dc2626'
-                                            style={{ cursor: 'pointer', marginLeft: 8 }}
-                                            title="Demissão bloqueada por estabilidade"
-                                            onClick={() => toast.current.show({
-                                                severity: 'warn',
-                                                summary: 'Estabilidade ativa',
-                                                detail: mensagemEstabilidade,
-                                                life: 6000
-                                            })}
-                                        />
-                                    )}
-                                    {colaborador?.membro_cipa && (
-                                        <span style={{
-                                            background: '#721c24',
-                                            color: '#fff',
-                                            padding: '4px 8px',
-                                            borderRadius: '4px',
-                                            fontSize: '11px',
-                                            fontWeight: '600',
-                                            whiteSpace: 'nowrap'
-                                        }}>
-                                            MEMBRO CIPA
-                                        </span>
-                                    )}
-                                </div>
-                            )}
                         </div>
                     </div>
-                </div>
-            )}
-
-            {/* Conteúdo original simplificado */}
-            <HeaderContainer gap="24px" alinhamento="space-between">
-                {!colaborador?.funcionario_pessoa_fisica?.nome && (
-                    <>
-                        <Skeleton variant="rectangular" width={'70%'} height={'20%'} />
-                        <ContainerHorizontal gap="16px" align="start">
-                            <Skeleton variant="rectangular" width={'50%'} height={40} />
-                            <Skeleton variant="rectangular" width={70} height={30} />
-                        </ContainerHorizontal>
-                    </>
                 )}
-            </HeaderContainer>
-            <Col12Vertical>
-                {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
-                    <Col4Vertical>
-                        {/* Imagem do Colaborador */}
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            marginBottom: '4px',
-                            paddingBottom: '0',
-                            borderBottom: '1px solid #f1f5f9'
-                        }}>
-                            <div style={{ marginBottom: colaborador.imagem && ArmazenadorToken.hasPermission('change_funcionario') ? '12px' : '0' }}>
-                                {colaborador.imagem ? (
-                                    <ImageContainer>
-                                        <img 
-                                            src={colaborador.imagem}
-                                            alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`}
-                                            style={{
-                                                width: '160px',
-                                                height: '150px',
-                                                borderRadius: '12px',
-                                                objectFit: 'cover',
-                                                border: '2px solid #f8fafc',
-                                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                                                cursor: 'pointer',
-                                                transition: 'filter 0.3s ease'
-                                            }}
-                                            onClick={() => setShowImageModal(true)}
-                                            onError={(e) => {
-                                                e.target.style.display = 'none';
-                                                e.target.nextSibling.style.display = 'flex';
-                                            }}
-                                        />
-                                        {ArmazenadorToken.hasPermission('change_funcionario') && (
+
+                {/* Conteúdo original simplificado */}
+                <HeaderContainer gap="24px" alinhamento="space-between">
+                    {!colaborador?.funcionario_pessoa_fisica?.nome && (
+                        <>
+                            <Skeleton variant="rectangular" width={'70%'} height={'20%'} />
+                            <ContainerHorizontal gap="16px" align="start">
+                                <Skeleton variant="rectangular" width={'50%'} height={40} />
+                                <Skeleton variant="rectangular" width={70} height={30} />
+                            </ContainerHorizontal>
+                        </>
+                    )}
+                </HeaderContainer>
+                <Col12Vertical>
+                    {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
+                        <Col4Vertical>
+                            {/* Imagem do Colaborador */}
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                marginBottom: '4px',
+                                paddingBottom: '0',
+                                borderBottom: '1px solid #f1f5f9'
+                            }}>
+                                <div style={{ marginBottom: colaborador.imagem && ArmazenadorToken.hasPermission('change_funcionario') ? '12px' : '0' }}>
+                                    {colaborador.imagem ? (
+                                        <ImageContainer>
+                                            <img 
+                                                src={colaborador.imagem}
+                                                alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`}
+                                                style={{
+                                                    width: '160px',
+                                                    height: '150px',
+                                                    borderRadius: '12px',
+                                                    objectFit: 'cover',
+                                                    border: '2px solid #f8fafc',
+                                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                                                    cursor: 'pointer',
+                                                    transition: 'filter 0.3s ease'
+                                                }}
+                                                onClick={() => setShowImageModal(true)}
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.nextSibling.style.display = 'flex';
+                                                }}
+                                            />
+                                            {ArmazenadorToken.hasPermission('change_funcionario') && (
+                                                <>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={handleImageUpload}
+                                                        style={{ display: 'none' }}
+                                                        id="colaborador-image-change-hover"
+                                                    />
+                                                    <button
+                                                        className="hover-button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            document.getElementById('colaborador-image-change-hover').click();
+                                                        }}
+                                                        disabled={uploading}
+                                                        title="Alterar imagem"
+                                                    >
+                                                        <RiUpload2Fill size={20} />
+                                                    </button>
+                                                </>
+                                            )}
+                                        </ImageContainer>
+                                    ) : (
+                                        // Se não tem imagem e usuário tem permissão, mostra área de upload
+                                        ArmazenadorToken.hasPermission('change_funcionario') ? (
                                             <>
                                                 <input
                                                     type="file"
                                                     accept="image/*"
                                                     onChange={handleImageUpload}
+                                                    ref={fileInputRef}
                                                     style={{ display: 'none' }}
-                                                    id="colaborador-image-change-hover"
+                                                    id="colaborador-image-upload"
                                                 />
-                                                <button
-                                                    className="hover-button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        document.getElementById('colaborador-image-change-hover').click();
-                                                    }}
-                                                    disabled={uploading}
-                                                    title="Alterar imagem"
-                                                >
-                                                    <RiUpload2Fill size={20} />
-                                                </button>
-                                            </>
-                                        )}
-                                    </ImageContainer>
-                                ) : (
-                                    // Se não tem imagem e usuário tem permissão, mostra área de upload
-                                    ArmazenadorToken.hasPermission('change_funcionario') ? (
-                                        <>
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={handleImageUpload}
-                                                ref={fileInputRef}
-                                                style={{ display: 'none' }}
-                                                id="colaborador-image-upload"
-                                            />
-                                            <UploadArea htmlFor="colaborador-image-upload">
-                                                {uploading ? (
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        flexDirection: 'column',
-                                                        alignItems: 'center',
-                                                        color: 'var(--primaria)'
-                                                    }}>
+                                                <UploadArea htmlFor="colaborador-image-upload">
+                                                    {uploading ? (
                                                         <div style={{
-                                                            border: '2px solid var(--primaria)',
-                                                            borderTop: '2px solid transparent',
-                                                            borderRadius: '50%',
-                                                            width: '24px',
-                                                            height: '24px',
-                                                            animation: 'spin 1s linear infinite'
-                                                        }}></div>
-                                                        <UploadText style={{ marginTop: '8px' }}>Enviando...</UploadText>
-                                                    </div>
-                                                ) : (
-                                                    <UploadIcon>
-                                                        <RiUpload2Fill />
-                                                        <UploadText>Adicionar foto</UploadText>
-                                                        <UploadText>PNG, JPG</UploadText>
-                                                    </UploadIcon>
-                                                )}
-                                            </UploadArea>
-                                        </>
-                                    ) : (
-                                        // Se não tem permissão, mostra apenas o avatar com inicial
-                                        <div style={{
-                                            width: '160px',
-                                            height: '150px',
-                                            borderRadius: '12px',
-                                            background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontSize: '52px',
-                                            fontWeight: 'bold',
-                                            color: '#64748b',
-                                            border: '2px solid #f8fafc',
-                                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                                        }}>
-                                            {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
-                                        </div>
-                                    )
-                                )}
-                                {/* Fallback para quando a imagem falha ao carregar */}
-                                <div style={{
-                                    width: '160px',
-                                    height: '150px',
-                                    borderRadius: '12px',
-                                    background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
-                                    display: 'none',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '52px',
-                                    fontWeight: 'bold',
-                                    color: '#64748b',
-                                    border: '2px solid #f8fafc',
-                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                                }}>
-                                    {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            alignItems: 'center',
+                                                            color: 'var(--primaria)'
+                                                        }}>
+                                                            <div style={{
+                                                                border: '2px solid var(--primaria)',
+                                                                borderTop: '2px solid transparent',
+                                                                borderRadius: '50%',
+                                                                width: '24px',
+                                                                height: '24px',
+                                                                animation: 'spin 1s linear infinite'
+                                                            }}></div>
+                                                            <UploadText style={{ marginTop: '8px' }}>Enviando...</UploadText>
+                                                        </div>
+                                                    ) : (
+                                                        <UploadIcon>
+                                                            <RiUpload2Fill />
+                                                            <UploadText>Adicionar foto</UploadText>
+                                                            <UploadText>PNG, JPG</UploadText>
+                                                        </UploadIcon>
+                                                    )}
+                                                </UploadArea>
+                                            </>
+                                        ) : (
+                                            // Se não tem permissão, mostra apenas o avatar com inicial
+                                            <div style={{
+                                                width: '160px',
+                                                height: '150px',
+                                                borderRadius: '12px',
+                                                background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '52px',
+                                                fontWeight: 'bold',
+                                                color: '#64748b',
+                                                border: '2px solid #f8fafc',
+                                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                                            }}>
+                                                {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                            </div>
+                                        )
+                                    )}
+                                    {/* Fallback para quando a imagem falha ao carregar */}
+                                    <div style={{
+                                        width: '160px',
+                                        height: '150px',
+                                        borderRadius: '12px',
+                                        background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)',
+                                        display: 'none',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '52px',
+                                        fontWeight: 'bold',
+                                        color: '#64748b',
+                                        border: '2px solid #f8fafc',
+                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                                    }}>
+                                        {colaborador.funcionario_pessoa_fisica.nome?.charAt(0)?.toUpperCase() || 'C'}
+                                    </div>
                                 </div>
-                            </div>
 
-                            {/* Botão de remover quando há imagem e usuário tem permissão */}
-                            {colaborador.imagem && ArmazenadorToken.hasPermission('change_funcionario') && (
-                                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    <button
-                                        onClick={handleRemoveImage}
-                                        disabled={uploading}
-                                        style={{
-                                            background: 'transparent',
-                                            border: 'none',
-                                            color: '#64748b',
-                                            fontSize: '12px',
-                                            fontWeight: '500',
-                                            cursor: 'pointer',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px',
-                                            padding: '4px 8px',
-                                            borderRadius: '4px',
-                                            transition: 'all 0.2s ease',
-                                            opacity: uploading ? 0.6 : 1
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            if (!uploading) {
-                                                e.target.style.color = '#ef4444';
-                                                e.target.style.background = '#fef2f2';
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            if (!uploading) {
-                                                e.target.style.color = '#64748b';
-                                                e.target.style.background = 'transparent';
-                                            }
-                                        }}
-                                    >
-                                        <HiX size={12} /> Remover
-                                    </button>
-                                </div>
-                            )}
-                        </div>
+                                {/* Botão de remover quando há imagem e usuário tem permissão */}
+                                {colaborador.imagem && ArmazenadorToken.hasPermission('change_funcionario') && (
+                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <button
+                                            onClick={handleRemoveImage}
+                                            disabled={uploading}
+                                            style={{
+                                                background: 'transparent',
+                                                border: 'none',
+                                                color: '#64748b',
+                                                fontSize: '12px',
+                                                fontWeight: '500',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '4px',
+                                                padding: '4px 8px',
+                                                borderRadius: '4px',
+                                                transition: 'all 0.2s ease',
+                                                opacity: uploading ? 0.6 : 1
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                if (!uploading) {
+                                                    e.target.style.color = '#ef4444';
+                                                    e.target.style.background = '#fef2f2';
+                                                }
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                if (!uploading) {
+                                                    e.target.style.color = '#64748b';
+                                                    e.target.style.background = 'transparent';
+                                                }
+                                            }}
+                                        >
+                                            <HiX size={12} /> Remover
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            <InfoItem>
+                                <InfoLabel>
+                                    Nome Social
+                                </InfoLabel>
+                                <InfoValue>
+                                    <GenderIcon gender={colaborador?.funcionario_pessoa_fisica?.sexo}>
+                                        {representativeGeneroTemplate()}
+                                    </GenderIcon>
+                                    <InfoText>{colaborador?.funcionario_pessoa_fisica?.nome_social || 'Não informado'}</InfoText>
+                                    <CopyButton onClick={() => copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}>
+                                        <IoCopyOutline size={12} />
+                                    </CopyButton>
+                                </InfoValue>
+                            </InfoItem>
                         
-                        <InfoItem>
-                            <InfoLabel>
-                                Nome Social
-                            </InfoLabel>
-                            <InfoValue>
-                                <GenderIcon gender={colaborador?.funcionario_pessoa_fisica?.sexo}>
-                                    {representativeGeneroTemplate()}
-                                </GenderIcon>
-                                <InfoText>{colaborador?.funcionario_pessoa_fisica?.nome_social || 'Não informado'}</InfoText>
-                                <CopyButton onClick={() => copiarTexto(colaborador?.funcionario_pessoa_fisica?.nome_social)}>
-                                    <IoCopyOutline size={12} />
-                                </CopyButton>
-                            </InfoValue>
-                        </InfoItem>
-                    
-                        <InfoItem>
-                            <InfoLabel>
-                                CPF
-                            </InfoLabel>
-                            <InfoValue>
-                                <InfoText>{formataCPF(colaborador?.funcionario_pessoa_fisica?.cpf)}</InfoText>
-                                <CopyButton onClick={() => copiarTexto(colaborador?.funcionario_pessoa_fisica?.cpf)}>
-                                    <IoCopyOutline size={12} />
-                                </CopyButton>
-                            </InfoValue>
-                        </InfoItem>
-                    
-                        <InfoItem>
-                            <InfoLabel>
-                                Nascimento
-                            </InfoLabel>
-                            <InfoValue>
-                                <InfoText>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento  + 'T00:00:00').toLocaleDateString('pt-BR')}</InfoText>
-                                <CopyButton onClick={() => copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento  + 'T00:00:00').toLocaleDateString('pt-BR'))}>
-                                    <IoCopyOutline size={12} />
-                                </CopyButton>
-                            </InfoValue>
-                        </InfoItem>
-                    </Col4Vertical>
-                : <Skeleton variant="rectangular" width={'23%'} height={420} />
-                }
-                {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
-                <Col8Vertical>
-                <BotaoGrupo tabs gap="8px">
-                    {ArmazenadorToken.hasPermission('view_pedido') &&
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Benefícios</Botao>
-                    </Link>}
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-contratuais`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-contratuais` ? 'black':''} size="small" tab>Dados Contratuais</Botao>
-                    </Link>
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-pessoais`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-pessoais` ? 'black':''} size="small" tab>Dados Pessoais</Botao>
-                    </Link>
-                    {ArmazenadorToken.hasPermission('view_dependente') &&
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/dependentes`}>
-                        <Botao 
-                            estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
-                            size="small" 
-                            tab
-                        >
-                            Dependentes
-                        </Botao>
-                    </Link>}
-                    {ArmazenadorToken.hasPermission('view_ferias') &&
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
-                    </Link>}
-                    {ArmazenadorToken.hasPermission('view_ausencia') &&
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
-                    </Link>}
-                    {ArmazenadorToken.hasPermission('view_estabilidade') &&
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/estabilidade`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/estabilidade` ? 'black':''} size="small" tab>Estabilidade</Botao>
-                    </Link>}
-                    {ArmazenadorToken.hasPermission('view_ciclos') &&
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos</Botao>
-                    </Link>}
-                    {ArmazenadorToken.hasPermission('view_esocial') &&
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>E-Social</Botao>
-                    </Link>}
-                    {ArmazenadorToken.hasPermission('view_pedidos') &&
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
-                    </Link>}
-                    {ArmazenadorToken.hasPermission('view_movimentos') &&
-                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/movimentos`}>
-                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
-                    </Link>}
-                </BotaoGrupo>
-                <Outlet context={colaborador}/>
-                </Col8Vertical>
-                : <Container gap="8px">
-                        <Skeleton variant="rectangular" width={'100%'} height={30} />
-                        <Skeleton variant="rectangular" width={'100%'} height={420} />
-                  </Container>
-                }
-            </Col12Vertical>
-        </Frame>
+                            <InfoItem>
+                                <InfoLabel>
+                                    CPF
+                                </InfoLabel>
+                                <InfoValue>
+                                    <InfoText>{formataCPF(colaborador?.funcionario_pessoa_fisica?.cpf)}</InfoText>
+                                    <CopyButton onClick={() => copiarTexto(colaborador?.funcionario_pessoa_fisica?.cpf)}>
+                                        <IoCopyOutline size={12} />
+                                    </CopyButton>
+                                </InfoValue>
+                            </InfoItem>
+                        
+                            <InfoItem>
+                                <InfoLabel>
+                                    Nascimento
+                                </InfoLabel>
+                                <InfoValue>
+                                    <InfoText>{new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento  + 'T00:00:00').toLocaleDateString('pt-BR')}</InfoText>
+                                    <CopyButton onClick={() => copiarTexto(new Date(colaborador?.funcionario_pessoa_fisica?.data_nascimento  + 'T00:00:00').toLocaleDateString('pt-BR'))}>
+                                        <IoCopyOutline size={12} />
+                                    </CopyButton>
+                                </InfoValue>
+                            </InfoItem>
+                        </Col4Vertical>
+                    : <Skeleton variant="rectangular" width={'23%'} height={420} />
+                    }
+                    {colaborador && colaborador?.funcionario_pessoa_fisica?.nome ? 
+                    <Col8Vertical>
+                    <BotaoGrupo tabs gap="8px">
+                        {ArmazenadorToken.hasPermission('view_pedido') &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}` ? 'black':''} size="small" tab>Benefícios</Botao>
+                        </Link>}
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-contratuais`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-contratuais` ? 'black':''} size="small" tab>Dados Contratuais</Botao>
+                        </Link>
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/dados-pessoais`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/dados-pessoais` ? 'black':''} size="small" tab>Dados Pessoais</Botao>
+                        </Link>
+                        {ArmazenadorToken.hasPermission('view_dependente') &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/dependentes`}>
+                            <Botao 
+                                estilo={location.pathname.startsWith(`/colaborador/detalhes/${id}/dependentes`) ? 'black' : ''} 
+                                size="small" 
+                                tab
+                            >
+                                Dependentes
+                            </Botao>
+                        </Link>}
+                        {ArmazenadorToken.hasPermission('view_ferias') &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ferias`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ferias` ? 'black':''} size="small" tab>Férias</Botao>
+                        </Link>}
+                        {ArmazenadorToken.hasPermission('view_ausencia') &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ausencias`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ausencias` ? 'black':''} size="small" tab>Ausências</Botao>
+                        </Link>}
+                        {ArmazenadorToken.hasPermission('view_estabilidade') &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/estabilidade`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/estabilidade` ? 'black':''} size="small" tab>Estabilidade</Botao>
+                        </Link>}
+                        {ArmazenadorToken.hasPermission('view_ciclos') &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos</Botao>
+                        </Link>}
+                        {ArmazenadorToken.hasPermission('view_esocial') &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>E-Social</Botao>
+                        </Link>}
+                        {ArmazenadorToken.hasPermission('view_pedidos') &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
+                        </Link>}
+                        {ArmazenadorToken.hasPermission('view_movimentos') &&
+                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/movimentos`}>
+                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
+                        </Link>}
+                    </BotaoGrupo>
+                    <Outlet context={colaborador}/>
+                    </Col8Vertical>
+                    : <Container gap="8px">
+                            <Skeleton variant="rectangular" width={'100%'} height={30} />
+                            <Skeleton variant="rectangular" width={'100%'} height={420} />
+                      </Container>
+                    }
+                </Col12Vertical>
+            </Frame>
+            <ModalDemissao
+                opened={modalDemissaoAberto}
+                colaborador={colaborador}
+                aoFechar={() => setModalDemissaoAberto(false)}
+                aoSalvar={handleSalvarDemissao}
+            />
+        </>
     );
 }
 

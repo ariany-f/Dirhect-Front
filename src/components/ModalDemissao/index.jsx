@@ -324,7 +324,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                     <DialogEstilizadoRight
                         open={opened}
                         $opened={opened}
-                        $width="50vw"
+                        $width="60vw"
                         onClick={e => e.stopPropagation()}
                     >
                         <Cabecalho>
