@@ -234,10 +234,12 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
 
     // Efeito para busca de agências com debounce
     useEffect(() => {
-        if (buscaDebounced !== buscaAgencia) {
+        if (buscaDebounced && buscaDebounced.length >= 2) {
             buscarAgencias(buscaDebounced);
+        } else if (!buscaDebounced) {
+            setAgencias(agenciasCarregadas);
         }
-    }, [buscaDebounced, buscarAgencias]);
+    }, [buscaDebounced, buscarAgencias, agenciasCarregadas]);
 
     useEffect(() => {
         // Se o candidato já tem uma agencia_nova, entra no modo de adição
