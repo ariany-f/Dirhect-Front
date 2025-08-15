@@ -34,10 +34,6 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
     
     const { candidato, setCampo, vaga } = useCandidatoContext();
     
-
-
-
-
     // Formata as opções para o formato esperado pelo DropdownItens
     const formatarOpcoes = useMemo(() => {
         return (opcoes, useDescription = false) => {
@@ -529,6 +525,15 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         if (filialSelecionada && buscarSecoesPorFilial) {
             buscarSecoesPorFilial(filialSelecionada);
         }
+
+        if (candidato?.dados_vaga) {
+            const dv = candidato.dados_vaga;
+            if (!candidato.filial && dv.filial_id) setCampo('filial', dv.filial_id);
+            if (!candidato.id_secao && dv.secao_id) setCampo('id_secao', dv.secao_id);
+            if (!candidato.id_funcao && dv.funcao_id) setCampo('id_funcao', dv.funcao_id);
+            if (!candidato.centro_custo && dv.centro_custo_id) setCampo('centro_custo', dv.centro_custo_id);
+            if (!candidato.id_horario && dv.horario_id) setCampo('id_horario', dv.horario_id);
+        }
     }, []); // Executa apenas uma vez na montagem do componente
     
     const opcoesCodigoOcorrenciaSefip = useMemo(() => {
@@ -544,6 +549,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         }
         return formatarOpcoesDominio(opcoesDominio.codigo_categoria_sefip);
     }, [candidato.codigo_categoria_sefip_choices, opcoesDominio.codigo_categoria_sefip, formatarOpcoesChoices, formatarOpcoesDominio]);
+    
     
     return (
         <>

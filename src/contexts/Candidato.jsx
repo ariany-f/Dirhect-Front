@@ -145,6 +145,7 @@ const candidatoInicial = {
     departamento: null,
     id_secao: null,
     id_funcao: null,
+    id_horario: null,
     tipo_funcionario: null,
     tipo_situacao: null,
     banco: null,

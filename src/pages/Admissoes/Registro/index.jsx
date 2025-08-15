@@ -491,7 +491,7 @@ const UploadIcon = styled.div`
 const CandidatoRegistro = () => {
 
     let { id, self = false } = useParams()
-    const { candidato, setCandidato, admissao, setAdmissao, vaga, setVaga } = useCandidatoContext()
+    const { candidato, setCandidato, admissao, setAdmissao, vaga, setVaga, setCampo } = useCandidatoContext()
     const { sidebarOpened } = useOutletContext() || { sidebarOpened: true }
     const [classError, setClassError] = useState([])
     const stepperRef = useRef(null);
@@ -961,8 +961,6 @@ const CandidatoRegistro = () => {
                 });
         }
     }, []);
-
-
 
     const handleSalvarAdmissao = async () => {
         // Se estiver em modo leitura, apenas mostra mensagem
@@ -1674,6 +1672,7 @@ const CandidatoRegistro = () => {
                     mensal: candidatoAtual.mensal,
                     calcula_inss: candidatoAtual.calcula_inss,
                     calcula_irrf: candidatoAtual.calcula_irrf,
+                    id_horario: candidatoAtual.id_horario,
                     horario: candidatoAtual.horario,
                     letra: candidatoAtual.letra,
                     contrato_tempo_parcial: candidatoAtual.contrato_tempo_parcial,
@@ -2651,16 +2650,84 @@ const CandidatoRegistro = () => {
                 'tipo_funcionario', 'tipo_recebimento', 'jornada', 'salario',
                 'codigo_situacao_fgts', 'codigo_categoria_esocial', 'natureza_atividade_esocial'
             ];
-            
+            // Estrutura organizacional
+            // Filial
+            const temFiliais = filiais && filiais.length > 0;
+            if (temFiliais) camposObrigatorios.push('filial');
+
+            // Seção (só se houver filial selecionada e seções válidas)
+            const filialSelecionada = candidato?.filial || candidato?.dados_vaga?.filial_id;
+            const secoesFiltradas = secoes && filialSelecionada
+                ? secoes.filter(sec => String(sec.filial) === String(filialSelecionada))
+                : [];
+            if (filialSelecionada && secoesFiltradas.length > 0) camposObrigatorios.push('id_secao');
+            console.log('🔍 SEÇÕES FILTRADAS:', secoesFiltradas);
+            // Função
+            const temFuncoes = funcoes && funcoes.length > 0;
+            if (temFuncoes) camposObrigatorios.push('id_funcao');
+
+            // Centro de custo
+            const temCentrosCusto = centros_custo && centros_custo.length > 0;
+            if (temCentrosCusto) camposObrigatorios.push('centro_custo');
+
+            // Horário
+            const temHorarios = horarios && horarios.length > 0;
+            if (temHorarios) camposObrigatorios.push('id_horario');
+
             // Adiciona funcao_confianca se confianca for true
             if (candidato.confianca) {
                 camposObrigatorios.push('funcao_confianca');
             }
-            
-            return camposObrigatorios.every(campo => {
-                const valor = candidato[campo];
-                return valor && (typeof valor === 'object' ? (valor.id || valor.code) : valor.toString().trim());
+            console.log('🔍 CAMPOS OBRIGATÓRIOS:', camposObrigatorios);
+
+            // Checar quais campos não estão preenchidos
+            const mapaCamposVaga = {
+                id_secao: 'secao_id',
+                id_funcao: 'funcao_id',
+                id_horario: 'horario_id',
+                centro_custo: 'centro_custo_id',
+                filial: 'filial_id'
+            };
+            const camposNaoPreenchidos = camposObrigatorios.filter(campo => {
+                const valorDireto = candidato[campo];
+                const valorVaga = candidato.dados_vaga && mapaCamposVaga[campo] ? candidato.dados_vaga[mapaCamposVaga[campo]] : undefined;
+                const preenchido = (
+                    (valorDireto && (typeof valorDireto === 'object' ? (valorDireto.id || valorDireto.code) : valorDireto.toString().trim())) ||
+                    (valorVaga && (typeof valorVaga === 'object' ? (valorVaga.id || valorVaga.code) : valorVaga.toString().trim()))
+                );
+                return !preenchido;
             });
+            if (camposNaoPreenchidos.length > 0) {
+                const nomesCampos = {
+                    filial: 'Filial',
+                    id_secao: 'Seção',
+                    id_funcao: 'Função',
+                    centro_custo: 'Centro de Custo',
+                    id_horario: 'Horário',
+                    dt_admissao: 'Data de Admissão',
+                    tipo_admissao: 'Tipo de Admissão',
+                    motivo_admissao: 'Motivo de Admissão',
+                    tipo_situacao: 'Tipo de Situação',
+                    tipo_funcionario: 'Tipo de Funcionário',
+                    tipo_recebimento: 'Tipo de Recebimento',
+                    jornada: 'Jornada',
+                    salario: 'Salário',
+                    codigo_situacao_fgts: 'Situação FGTS',
+                    codigo_categoria_esocial: 'Categoria eSocial',
+                    natureza_atividade_esocial: 'Natureza Atividade eSocial',
+                    funcao_confianca: 'Função de Confiança'
+                };
+                const listaCampos = camposNaoPreenchidos.map(campo => nomesCampos[campo] || campo).join(', ');
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Campos obrigatórios pendentes',
+                    detail: `Preencha os campos obrigatórios destacados em vermelho.\nFaltando: ${listaCampos}`,
+                    life: 4000
+                });
+                return false;
+            }
+
+            return true;
         }
 
         // Step Educação
@@ -3595,6 +3662,7 @@ const CandidatoRegistro = () => {
             // Para função, prioriza o campo direto do candidato, depois dados_vaga
             ...(candidato.id_funcao ? { id_funcao: candidato.id_funcao } : (dadosVaga?.funcao_id ? { id_funcao: dadosVaga.funcao_id } : {})),
             ...(dadosVaga?.cargo_id ? { cargo: dadosVaga.cargo_id } : {}),
+            ...(candidato.id_horario ? { id_horario: candidato.id_horario } : (dadosVaga?.horario_id ? { id_horario: dadosVaga.horario_id } : {})),
             // Para horário, prioriza o campo direto do candidato, depois dados_vaga
             ...(candidato.id_horario ? { horario: candidato.id_horario } : (dadosVaga?.horario_id ? { horario: dadosVaga.horario_id } : {})),
             ...(dadosVaga?.sindicato_id ? { sindicato: dadosVaga.sindicato_id } : {}),
