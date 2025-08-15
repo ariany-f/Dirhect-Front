@@ -753,7 +753,20 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
         if (opened && evento) {
             const saldoDisponivel = evento?.evento?.saldo_dias ?? evento?.evento?.nrodiasferias ?? 30;
             setNumeroDiasFerias(saldoDisponivel.toString());
-            
+
+            // Se houver data_minima_solicitacao, setar como valor inicial de dataInicio
+            const rawMin = evento?.evento?.data_minima_solicitacao;
+            if (rawMin) {
+                let minDate = rawMin;
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(rawMin)) {
+                    const d = new Date(rawMin);
+                    if (!isNaN(d)) minDate = d.toISOString().split('T')[0];
+                }
+                setDataInicio(minDate);
+            } else {
+                setDataInicio('');
+            }
+
             // Buscar parâmetros de férias quando o modal abrir
             http.get('parametros/por-assunto/?assunto=FERIAS')
                 .then(response => {
@@ -761,7 +774,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                     setParametrosFerias(response.parametros || {});
                 })
                 .catch(error => console.log('Erro ao buscar parâmetros de férias:', error));
-            
+
             // Buscar parâmetros de acessos
             if(!ArmazenadorToken.UserCompanyPublicId) {
                 http.get('shared/parametros/por-assunto/?assunto=ACESSOS')
@@ -1380,7 +1393,18 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                                     type="date" 
                                                     value={dataInicio} 
                                                     onChange={handleDataInicioChange}
-                                                    min={new Date().toISOString().split('T')[0]}
+                                                    min={(() => {
+                                                        
+                                                        const raw = evento?.evento?.data_minima_solicitacao;
+                                                        if (raw) {
+                                                            // Se já está no formato yyyy-MM-dd, retorna direto
+                                                            if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+                                                            // Se vier em outro formato, tenta converter
+                                                            const d = new Date(raw);
+                                                            if (!isNaN(d)) return d.toISOString().split('T')[0];
+                                                        }
+                                                        return new Date().toISOString().split('T')[0];
+                                                    })()}
                                                 />
                                             </Linha>
                                             <Linha style={{flex: 1}}>

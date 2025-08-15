@@ -470,6 +470,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     periodo_aberto: item.periodo_aberto || false,
                     periodo_perdido: item.periodo_perdido || false,
                     datapagamento: item.datapagamento || null,
+                    data_minima_solicitacao: item.data_minima_solicitacao || null,
+                    data_minima_solicitacao_formatada: item.data_minima_solicitacao_formatada || null,
+                    dias_antecedencia_necessarios: item.dias_antecedencia_necessarios || 0,
                     fimperaquis: item.fimperaquis || null,
                     tarefas: item.tarefas || [] // Tarefas agora vêm diretamente do item
                 });
@@ -492,6 +495,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     ferias_coletivas: item.ferias_coletivas || false,
                     periodo_aberto: item.periodo_aberto || false,
                     datapagamento: item.datapagamento || null,
+                    data_minima_solicitacao: item.data_minima_solicitacao || null,
+                    data_minima_solicitacao_formatada: item.data_minima_solicitacao_formatada || null,
+                    dias_antecedencia_necessarios: item.dias_antecedencia_necessarios || 0,
                     tarefas: item.tarefas || [] // Tarefas agora vêm diretamente do item
                 });
             }
@@ -905,6 +911,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                             periodo_aquisitivo_fim: fimPeriodo,
                                                             limite: limiteSolicitacao,
                                                             saldo_dias: aus.nrodiasferias || 30,
+                                                            data_minima_solicitacao: aus.data_minima_solicitacao || null,
+                                                            data_minima_solicitacao_formatada: aus.data_minima_solicitacao_formatada || null,
+                                                            dias_antecedencia_necessarios: aus.dias_antecedencia_necessarios || 0,
                                                             aviso_ferias: aus.aviso_ferias || null,
                                                             abono_pecuniario: aus.abono_pecuniario || false,
                                                             ferias_coletivas: aus.ferias_coletivas || false,
@@ -953,6 +962,9 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                             ...aus,
                                             periodo_aquisitivo_inicio: aus.periodo_aquisitivo_inicio,
                                             periodo_aquisitivo_fim: aus.periodo_aquisitivo_fim,
+                                            data_minima_solicitacao: aus.data_minima_solicitacao || null,
+                                            data_minima_solicitacao_formatada: aus.data_minima_solicitacao_formatada || null,
+                                            dias_antecedencia_necessarios: aus.dias_antecedencia_necessarios || 0,
                                             tarefas: aus.tarefas
                                         };
                                         
