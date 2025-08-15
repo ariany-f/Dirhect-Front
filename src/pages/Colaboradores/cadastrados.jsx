@@ -59,10 +59,12 @@ function ColaboradoresCadastrados() {
         
         const orderParam = (sort && sort !== '-null') ? `&ordering=${sort}` : '';
         url += orderParam;
+    
+        console.log('🔍 currentFilters:', currentFilters);
 
         const situacaoFilter = currentFilters?.['situacao']?.value;
         if (situacaoFilter) {
-            url += `&situacao=${encodeURIComponent(situacaoFilter)}`;
+            url += `&tipo_situacao=${encodeURIComponent(situacaoFilter)}`;
         }
 
         http.get(url)
@@ -84,7 +86,7 @@ function ColaboradoresCadastrados() {
             try {
                 const response = await http.get('tabela_dominio/tipo_situacao/');
                 const registros = response.registros || [];
-                const unicas = registros.map(s => ({ label: s.descricao, value: s.id_origem }));
+                const unicas = registros.map(s => ({ label: s.descricao, value: s.id }));
                 setSituacoesUnicas(unicas);
             } catch (error) {
                 console.error("Erro ao buscar situações:", error);
