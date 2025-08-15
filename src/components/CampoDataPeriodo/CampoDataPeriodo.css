@@ -2,8 +2,15 @@
 .p-calendar.p-component {
     width: 100% !important;
 }
-
+.p-calendar > .p-inputtext {
+    font-weight: 600 !important;
+}
 .p-calendar:not(.p-calendar-disabled).p-focus > .p-inputtext {
+    border-color: var(--primaria) !important;
+    box-shadow: none !important;
+}
+
+.p-inputtext:enabled:focus {
     border-color: var(--primaria) !important;
     box-shadow: none !important;
 }
