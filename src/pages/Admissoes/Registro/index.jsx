@@ -1674,9 +1674,7 @@ const CandidatoRegistro = () => {
                     })(),
                     ajuda_custo: formatarSalario(candidatoAtual.ajuda_custo),
                     arredondamento: formatarSalario(candidatoAtual.arredondamento),
-                    media_sal_maternidade: formatarSalario(candidatoAtual.media_sal_maternidade),
-                    // Salário
-                    salario: formatarSalario(candidatoAtual.salario)
+                    media_sal_maternidade: formatarSalario(candidatoAtual.media_sal_maternidade)
                 };
 
                 // Remove campos vazios do payload antes de enviar
