@@ -24,10 +24,8 @@ function CampoDataPeriodo({
     placeholder = '',
     disabled = false,
     readonly = false,
-    reference = null,
-    ...rest
+    reference = null
 }) {
-    console.log('minDate', minDate)
     return (
         <div className={styles.inputContainer + ' '}>
             {label && (
