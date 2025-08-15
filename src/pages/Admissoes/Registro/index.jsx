@@ -1180,81 +1180,66 @@ const CandidatoRegistro = () => {
                 const candidatoNormalizado = normalizarObjeto(candidatoAtual);
                 const initialNormalizado = normalizarObjeto(initialCandidato);
                 
-                // Compara apenas os campos relevantes do step de dados contratuais
-                const camposContratuais = [
+                // Comparar TODOS os campos do step de Vaga, não só os obrigatórios
+                const camposVaga = [
                     'filial', 'id_secao', 'id_funcao', 'id_horario', 'centro_custo',
                     'salario', 'ajuda_custo', 'arredondamento', 'media_sal_maternidade',
-                    'dt_admissao', 'jornada', 'tipo_admissao', 'motivo_admissao',
-                    'tipo_situacao', 'tipo_funcionario', 'tipo_recebimento',
-                    'codigo_situacao_fgts', 'codigo_categoria_esocial', 'natureza_atividade_esocial'
+                    'dt_admissao', 'indicativo_admissao', 'tipo_admissao', 'motivo_admissao',
+                    'tipo_situacao', 'tipo_funcionario', 'tipo_regime_trabalhista', 'tipo_regime_previdenciario',
+                    'tipo_recebimento', 'tipo_regime_jornada', 'jornada', 'funcao_emprego_cargoacumulavel',
+                    'calcula_inss', 'calcula_irrf', 'confianca', 'funcao_confianca',
+                    'codigo_situacao_fgts', 'dt_opcao_fgts', 'codigo_ocorrencia_sefip', 'codigo_categoria_sefip',
+                    'contrato_tempo_parcial', 'tipo_contrato_prazo_determinado', 'tipo_contrato_trabalho',
+                    'codigo_categoria_esocial', 'natureza_atividade_esocial', 'letra',
+                    'perc_adiantamento',
+                    // Adicione outros campos do StepVaga conforme necessário
                 ];
                 
-                const candidatoContratual = {};
-                const initialContratual = {};
+                const candidatoVaga = {};
+                const initialVaga = {};
                 
-                camposContratuais.forEach(campo => {
+                camposVaga.forEach(campo => {
                     if (candidatoNormalizado[campo] !== undefined) {
-                        candidatoContratual[campo] = candidatoNormalizado[campo];
+                        candidatoVaga[campo] = candidatoNormalizado[campo];
                     }
                     if (initialNormalizado[campo] !== undefined) {
-                        initialContratual[campo] = initialNormalizado[campo];
+                        initialVaga[campo] = initialNormalizado[campo];
                     }
                 });
                 
                 // Normalizar campos de salário para comparação
                 const normalizarCampoSalario = (valor) => {
                     if (!valor) return '';
-                    
-                    // Se já é um número, retorna formatado
                     if (typeof valor === 'number') {
                         return valor.toFixed(2);
                     }
-                    
-                    // Se é string, remove formatação e converte
                     let valorLimpo = valor.toString();
-                    
-                    // Remove R$, espaços e outros caracteres não numéricos
                     valorLimpo = valorLimpo.replace(/[R$\s]/g, '');
-                    
-                    // Se tem vírgula (formato brasileiro: 15.000,00)
                     if (valorLimpo.includes(',')) {
-                        // Remove pontos de milhar e troca vírgula por ponto
                         valorLimpo = valorLimpo.replace(/\./g, '').replace(',', '.');
                     }
-                    
-                    // Converte para número
                     const numero = parseFloat(valorLimpo);
-                    
                     if (isNaN(numero)) return '';
-                    
                     return numero.toFixed(2);
                 };
-                
-                // Normalizar campos de salário em ambos os objetos
                 const camposSalario = ['salario', 'ajuda_custo', 'arredondamento', 'media_sal_maternidade'];
                 camposSalario.forEach(campo => {
-                    if (candidatoContratual[campo] !== undefined) {
-                        candidatoContratual[campo] = normalizarCampoSalario(candidatoContratual[campo]);
+                    if (candidatoVaga[campo] !== undefined) {
+                        candidatoVaga[campo] = normalizarCampoSalario(candidatoVaga[campo]);
                     }
-                    if (initialContratual[campo] !== undefined) {
-                        initialContratual[campo] = normalizarCampoSalario(initialContratual[campo]);
+                    if (initialVaga[campo] !== undefined) {
+                        initialVaga[campo] = normalizarCampoSalario(initialVaga[campo]);
                     }
                 });
                 
-                console.log('🔍 VERIFICAÇÃO CONTRATUAL - Candidato atual (normalizado):', candidatoContratual);
-                console.log('🔍 VERIFICAÇÃO CONTRATUAL - Initial (normalizado):', initialContratual);
-                
-                if (JSON.stringify(candidatoContratual) === JSON.stringify(initialContratual)) {
-                    console.log('🔍 VERIFICAÇÃO CONTRATUAL - Nenhuma mudança detectada, salvamento pulado');
+                if (JSON.stringify(candidatoVaga) === JSON.stringify(initialVaga)) {
                     toast.current.show({
                         severity: 'info',
                         summary: 'Informação',
-                        detail: 'Nenhuma alteração nos dados contratuais para salvar.',
+                        detail: 'Nenhuma alteração nos dados da vaga para salvar.',
                         life: 3000
                     });
                     return;
-                } else {
-                    console.log('🔍 VERIFICAÇÃO CONTRATUAL - Mudanças detectadas, salvamento permitido');
                 }
             }
             
@@ -1340,7 +1325,7 @@ const CandidatoRegistro = () => {
                 // Compara apenas os campos relevantes do step de dados bancários
                 const camposBancarios = [
                     'banco', 'agencia', 'agencia_nova', 'conta_corrente', 
-                    'tipo_conta', 'operacao', 'pix', 'pix_tipo'
+                    'tipo_conta', 'conta_operacao', 'pix', 'pix_tipo'
                 ];
                 
                 const candidatoBancario = {};
@@ -1610,7 +1595,7 @@ const CandidatoRegistro = () => {
                     uf_identidade: candidatoAtual.uf_identidade,
                     dt_opcao_fgts: candidatoAtual.dt_opcao_fgts,
                     codigo_situacao_fgts: candidatoAtual.codigo_situacao_fgts,
-                    numero_cartao_sus: candidatoAtual.nrosus,
+                    numero_cartao_sus: candidatoAtual.numero_cartao_sus || candidatoAtual.nrosus,
                     certificado_reservista: candidatoAtual.certificado_reservista,
                     numero_passaporte: candidatoAtual.numero_passaporte,
                     data_emissao_passaporte: candidatoAtual.data_emissao_passaporte,
@@ -1635,7 +1620,7 @@ const CandidatoRegistro = () => {
                     agencia_nova: candidatoAtual.agencia_nova,
                     conta_corrente: candidatoAtual.conta_corrente,
                     tipo_conta: candidatoAtual.tipo_conta,
-                    operacao: candidatoAtual.operacao,
+                    conta_operacao: candidatoAtual.conta_operacao,
                     pix: candidatoAtual.pix,
                     pix_tipo: candidatoAtual.pix_tipo,
                     
@@ -1681,7 +1666,21 @@ const CandidatoRegistro = () => {
                     tipo_regime_previdenciario: candidatoAtual.tipo_regime_previdenciario,
                     tipo_contrato_prazo_determinado: candidatoAtual.tipo_contrato_prazo_determinado,
                     tipo_contrato_trabalho: candidatoAtual.tipo_contrato_trabalho,
-                    natureza_atividade_esocial: candidatoAtual.natureza_atividade_esocial
+                    natureza_atividade_esocial: candidatoAtual.natureza_atividade_esocial,
+                    // Dados adicionais
+                    perc_adiantamento: (() => {
+                        let perc = candidatoAtual.perc_adiantamento;
+                        if (typeof perc === 'string') {
+                            perc = perc.replace('%', '').replace(',', '.').trim();
+                            if (perc !== '') perc = parseFloat(perc);
+                        }
+                        return isNaN(perc) ? null : perc;
+                    })(),
+                    ajuda_custo: formatarSalario(candidatoAtual.ajuda_custo),
+                    arredondamento: formatarSalario(candidatoAtual.arredondamento),
+                    media_sal_maternidade: formatarSalario(candidatoAtual.media_sal_maternidade),
+                    // Salário
+                    salario: formatarSalario(candidatoAtual.salario)
                 };
 
                 // Remove campos vazios do payload antes de enviar
@@ -1732,7 +1731,8 @@ const CandidatoRegistro = () => {
                             nrolivro: dep.nrolivro || null,
                             nrofolha: dep.nrofolha || null,
                             cartao_vacina: dep.cartao_vacina || false,
-                            nrosus: dep.nrosus || null,
+                            nrosus: dep.nrosus || dep.numero_cartao_sus || null,
+                            numero_cartao_sus: dep.nrosus || dep.numero_cartao_sus || null,
                             nronascidovivo: dep.nronascidovivo || null,
                             nome_mae: dep.nome_mae || null,
                             id_admissao: candidatoAtual.id,
@@ -3547,7 +3547,7 @@ const CandidatoRegistro = () => {
             uf_identidade: candidato.uf_identidade,
             dt_opcao_fgts: candidato.dt_opcao_fgts,
             codigo_situacao_fgts: candidato.codigo_situacao_fgts,
-            numero_cartao_sus: candidato.nrosus,
+            numero_cartao_sus: candidato.numero_cartao_sus || candidato.nrosus,
             certificado_reservista: candidato.certificado_reservista,
             numero_passaporte: candidato.numero_passaporte,
             data_emissao_passaporte: candidato.data_emissao_passaporte,
@@ -3594,7 +3594,7 @@ const CandidatoRegistro = () => {
             agencia_nova: candidato.agencia_nova,
             conta_corrente: candidato.conta_corrente,
             tipo_conta: candidato.tipo_conta,
-            operacao: candidato.operacao,
+            conta_operacao: candidato.conta_operacao,
             pix: candidato.pix,
             pix_tipo: candidato.pix_tipo
         };
@@ -3605,7 +3605,7 @@ const CandidatoRegistro = () => {
             agencia_nova: candidato.agencia_nova,
             conta_corrente: candidato.conta_corrente,
             tipo_conta: candidato.tipo_conta,
-            operacao: candidato.operacao,
+            conta_operacao: candidato.conta_operacao,
             pix: candidato.pix,
             pix_tipo: candidato.pix_tipo
         });
@@ -3694,7 +3694,14 @@ const CandidatoRegistro = () => {
             tipo_contrato_trabalho: candidato.tipo_contrato_trabalho,
             natureza_atividade_esocial: candidato.natureza_atividade_esocial,
             // Dados adicionais
-            perc_adiantamento: candidato.perc_adiantamento,
+            perc_adiantamento: (() => {
+                let perc = candidato.perc_adiantamento;
+                if (typeof perc === 'string') {
+                    perc = perc.replace('%', '').replace(',', '.').trim();
+                    if (perc !== '') perc = parseFloat(perc);
+                }
+                return isNaN(perc) ? null : perc;
+            })(),
             ajuda_custo: formatarSalario(candidato.ajuda_custo),
             arredondamento: formatarSalario(candidato.arredondamento),
             media_sal_maternidade: formatarSalario(candidato.media_sal_maternidade),

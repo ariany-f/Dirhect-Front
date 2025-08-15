@@ -423,9 +423,9 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
             />
 
             <CampoTexto
-                name="operacao"
-                valor={candidato?.operacao ?? ''}
-                setValor={valor => setCampo('operacao', valor)}
+                name="conta_operacao"
+                valor={candidato?.conta_operacao ?? ''}
+                setValor={valor => setCampo('conta_operacao', valor)}
                 label="Operação (se houver)"
                 placeholder="Digite a operação"
                 disabled={modoLeitura}

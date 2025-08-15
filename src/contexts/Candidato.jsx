@@ -134,6 +134,7 @@ const candidatoInicial = {
     nome_social: null,
     pispasep: null,
     dt_opcao_fgts: null,
+    conta_operacao: null,
     codigo_situacao_fgts: null,
     numero_cartao_sus: null,
     candidato: null,
