@@ -12,7 +12,7 @@ import ContainerHorizontal from "@components/ContainerHorizontal"
 import Container from "@components/Container"
 import styles from './Colaboradores.module.css'
 import { Skeleton } from 'primereact/skeleton'
-import { FaCopy, FaTrash, FaUserTimes } from 'react-icons/fa'
+import { FaCopy, FaTrash, FaUserTimes, FaExclamationTriangle } from 'react-icons/fa'
 import { IoMdFemale, IoMdMale } from "react-icons/io";
 import { Toast } from 'primereact/toast'
 import http from '@http'
@@ -451,6 +451,10 @@ function ColaboradorDetalhes() {
     const toast = useRef(null)
     const fileInputRef = useRef(null)
     const modalFileInputRef = useRef(null);
+    const [temEstabilidade, setTemEstabilidade] = useState(false);
+    const [estabilidadeBloqueada, setEstabilidadeBloqueada] = useState(false);
+    const [mensagemEstabilidade, setMensagemEstabilidade] = useState('');
+    const [mostrarMotivoEstabilidade, setMostrarMotivoEstabilidade] = useState(false);
 
     const {usuario} = useSessaoUsuarioContext()
 
@@ -812,7 +816,14 @@ function ColaboradorDetalhes() {
                 })
                 .catch(erro => console.log(erro))
         }
-        
+        // Chama a API de estabilidade e loga a resposta
+        http.get(`estabilidade/verificar-estabilidade/${id}/`)
+            .then(response => {
+                console.log('🔍 Estabilidade do colaborador:', response);
+                setEstabilidadeBloqueada(!!response.bloqueado);
+                setMensagemEstabilidade(response.mensagem || '');
+            })
+            .catch(erro => console.log('Erro ao verificar estabilidade:', erro));
     }, [colaborador])
 
     const desativarColaborador = () => {
@@ -1003,25 +1014,57 @@ function ColaboradorDetalhes() {
                             {colaborador?.tipo_situacao_descricao == 'Ativo' && 
                              ArmazenadorToken.hasPermission('add_demissao') && 
                              !colaborador.marcado_demissao && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="danger" size="small">
-                                        <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> 
-                                        Solicitar Demissão
-                                    </Botao>
-                                    {colaborador?.membro_cipa && (
-                                        <span style={{
-                                            background: '#721c24',
-                                            color: '#fff',
-                                            padding: '4px 8px',
-                                            borderRadius: '4px',
-                                            fontSize: '11px',
-                                            fontWeight: '600',
-                                            whiteSpace: 'nowrap'
-                                        }}>
-                                            MEMBRO CIPA
-                                        </span>
-                                    )}
-                                </div>
+                                estabilidadeBloqueada ? (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, position: 'relative' }}>
+                                        <FaExclamationTriangle 
+                                            color="#dc2626" 
+                                            size={22} 
+                                            style={{ cursor: 'pointer' }}
+                                            title="Demissão bloqueada por estabilidade"
+                                            onClick={() => setMostrarMotivoEstabilidade(m => !m)}
+                                        />
+                                        {mostrarMotivoEstabilidade && (
+                                            <div style={{
+                                                background: '#fff',
+                                                color: '#dc2626',
+                                                border: '1px solid #dc2626',
+                                                borderRadius: 8,
+                                                padding: '12px 16px',
+                                                fontWeight: 600,
+                                                position: 'absolute',
+                                                zIndex: 100,
+                                                marginLeft: 8,
+                                                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                                                top: 30
+                                            }}>
+                                                {mensagemEstabilidade}
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="danger" size="small">
+                                            <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> 
+                                            Solicitar Demissão
+                                        </Botao>
+                                        {colaborador?.membro_cipa && (
+                                            <span style={{
+                                                background: '#721c24',
+                                                color: '#fff',
+                                                padding: '4px 8px',
+                                                borderRadius: '4px',
+                                                fontSize: '11px',
+                                                fontWeight: '600',
+                                                whiteSpace: 'nowrap'
+                                            }}>
+                                                MEMBRO CIPA
+                                            </span>
+                                        )}
+                                    </div>
+                                )
+                            )}
+                            {estabilidadeBloqueada && mensagemEstabilidade && (
+                                <div style={{ color: '#dc2626', fontWeight: 600, marginTop: 8 }}>{mensagemEstabilidade}</div>
                             )}
                         </div>
                     </div>

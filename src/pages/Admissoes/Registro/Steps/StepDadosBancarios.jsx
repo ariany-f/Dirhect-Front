@@ -116,8 +116,11 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
     const carregarBancosIniciais = useCallback(async () => {
         setLoadingBancos(true);
         try {
-            // Carrega apenas os 15 bancos mais comuns (sem ordering=uso)
-            const response = await http.get('banco/?page_size=15');
+            let url = 'banco/?page_size=15';
+            if (candidato?.banco) {
+                url += `&search=${candidato.banco}`;
+            }
+            const response = await http.get(url);
             const bancosArray = response.results || response;
             const formattedBancos = bancosArray.map(b => ({
                 code: b.id,
@@ -132,7 +135,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         } finally {
             setLoadingBancos(false);
         }
-    }, []);
+    }, [candidato?.banco]);
 
     // Função para busca inteligente de bancos
     const buscarBancos = useCallback(async (termo) => {
@@ -165,8 +168,11 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         
         setLoadingAgencias(true);
         try {
-            // Carrega apenas as 15 agências mais comuns (sem ordering=uso)
-            const response = await http.get(`agencia/?banco_id=${candidato.banco}&page_size=15`);
+            let url = `agencia/?banco_id=${candidato.banco}&page_size=15`;
+            if (candidato?.agencia) {
+                url += `&search=${candidato.agencia}`;
+            }
+            const response = await http.get(url);
             const agenciasArray = response.results || response;
             const formattedAgencias = agenciasArray.map(ag => ({
                 code: ag.id,
@@ -181,7 +187,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         } finally {
             setLoadingAgencias(false);
         }
-    }, [candidato?.banco]);
+    }, [candidato?.banco, candidato?.agencia]);
 
     // Função para busca inteligente de agências
     const buscarAgencias = useCallback(async (termo) => {
