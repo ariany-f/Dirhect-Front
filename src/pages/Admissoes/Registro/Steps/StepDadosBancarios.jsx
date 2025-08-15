@@ -84,8 +84,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
     const [mostrarTodas, setMostrarTodas] = useState(false);
     
     // Debounce para as buscas
-    const buscaBancoDebounced = useDebounce(buscaBanco, 50);
-    const buscaDebounced = useDebounce(buscaAgencia, 50);
+    const buscaBancoDebounced = useDebounce(buscaBanco, 15);
+    const buscaDebounced = useDebounce(buscaAgencia, 15);
 
     // Função para verificar se um campo está em erro
     const isCampoEmErro = useMemo(() => {
@@ -116,8 +116,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
     const carregarBancosIniciais = useCallback(async () => {
         setLoadingBancos(true);
         try {
-            // Carrega apenas os 50 bancos mais comuns (sem ordering=uso)
-            const response = await http.get('banco/?limit=50');
+            // Carrega apenas os 15 bancos mais comuns (sem ordering=uso)
+            const response = await http.get('banco/?limit=15');
             const formattedBancos = response.map(b => ({
                 code: b.id,
                 name: `${b.id} - ${b.nome_completo || b.nome}`
@@ -163,8 +163,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         
         setLoadingAgencias(true);
         try {
-            // Carrega apenas as 50 agências mais comuns (sem ordering=uso)
-            const response = await http.get(`agencia/?banco_id=${candidato.banco}&limit=50`);
+            // Carrega apenas as 15 agências mais comuns (sem ordering=uso)
+            const response = await http.get(`agencia/?banco_id=${candidato.banco}&limit=15`);
             const formattedAgencias = response.map(ag => ({
                 code: ag.id,
                 name: `${ag.num_agencia} - ${ag.nome || 'Agência'}`
@@ -275,7 +275,7 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                 • Os dados bancários são utilizados para crédito de salário e benefícios<br />
                 • Certifique-se de que os dados estão corretos para evitar problemas no pagamento<br />
                 • A conta preferencialmente deve estar no nome do colaborador<br />
-                • <strong>Performance:</strong> Carregamos 50 bancos/agências mais comuns. Digite para buscar mais registros.
+                • <strong>Performance:</strong> Carregamos 15 bancos/agências mais comuns. Digite para buscar mais registros.
             </InfoBox>
 
             <DropdownItens
