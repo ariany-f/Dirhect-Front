@@ -3669,7 +3669,7 @@ const CandidatoRegistro = () => {
             // Dados adicionais
             tipo_admissao: candidato.tipo_admissao,
             codigo_ficha_registro: candidato.codigo_ficha_registro,
-            codigo_situacao_ficha_registro: candidato.codigo_situacao_ficha_registro,
+            codigo_situacao_fgts: candidato.codigo_situacao_fgts,
             codigo_jornada: candidato.codigo_jornada,
             tipo_funcionario: candidato.tipo_funcionario,
             // Novos campos
