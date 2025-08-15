@@ -2547,11 +2547,26 @@ const CandidatoRegistro = () => {
             return;
         }
 
-        // Step 0 (Documentos) - passa direto sem validação nem salvamento
+        // Step 0 (Documentos) - só permite avançar se todos os obrigatórios estiverem enviados
         if (activeIndex === 0) {
-            stepperRef.current.nextCallback();
-            setActiveIndex(prev => prev + 1);
-            return;
+            if (!candidato?.documentos || candidato.documentos.length === 0) return true;
+            const obrigatoriosPendentes = candidato.documentos.filter(doc => doc.obrigatorio && (!doc.upload_feito || !doc.itens || doc.itens.some(item => !item.upload_feito)));
+            
+            if(obrigatoriosPendentes.length > 0) 
+            {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Documentos pendentes',
+                    detail: `Preencha os documentos obrigatórios para avançar.`,
+                    life: 4000
+                });
+            } else {
+                 // ✅ SALVAMENTO SUCESSO - AVANÇA PARA O PRÓXIMO STEP
+                stepperRef.current.nextCallback();
+                setActiveIndex(prev => prev + 1);
+            }
+
+            return obrigatoriosPendentes.length === 0;
         }
 
         // Validação para todos os outros steps

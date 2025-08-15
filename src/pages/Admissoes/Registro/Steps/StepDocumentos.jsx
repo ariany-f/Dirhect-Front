@@ -107,21 +107,38 @@ const StepDocumentos = ({ toast }) => {
 
             const response = await http.post(`admissao/${candidato.id}/upload_documento/`, formData);
 
-            const novosItens = [...documento.itens];
-            novosItens[itemIndex] = {
-                ...novosItens[itemIndex],
-                arquivo: response.arquivo,
-                upload_feito: true
-            };
+            // Validação do response
+            if (!response || !response.arquivo) {
+                toast.current.show({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Falha ao receber confirmação do upload. Tente novamente.',
+                    life: 3000
+                });
+                return;
+            }
 
+            // Atualiza o item enviado
+            const novosItens = documento.itens.map((item, idx) => {
+                if (idx === itemIndex) {
+                    return {
+                        ...item,
+                        arquivo: response.arquivo,
+                        upload_feito: true
+                    };
+                }
+                return item;
+            });
+
+            // Atualiza o status do documento
             const todosUploadFeitos = novosItens.every(item => item.upload_feito);
-
             const novoDocumento = {
                 ...documento,
                 itens: novosItens,
                 upload_feito: todosUploadFeitos
             };
 
+            // Atualiza o array de documentos do candidato
             const index = candidato.documentos.findIndex(doc => doc.id === documentoId);
             updateArrayItem('documentos', index, novoDocumento);
 
@@ -131,7 +148,6 @@ const StepDocumentos = ({ toast }) => {
                 detail: 'Documento enviado com sucesso!',
                 life: 3000
             });
-
         } catch (error) {
             console.error('Erro ao fazer upload:', error);
             toast.current.show({
