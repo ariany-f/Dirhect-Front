@@ -1533,10 +1533,6 @@ const CandidatoRegistro = () => {
                     cidade: candidatoAtual.cidade,
                     estado: candidatoAtual.estado,
                     pais: candidatoAtual.pais,
-                    perc_adiantamento: formatarPercentual(candidatoAtual.perc_adiantamento),
-                    ajuda_custo: formatarSalario(candidatoAtual.ajuda_custo),
-                    arredondamento: formatarSalario(candidatoAtual.arredondamento),
-                    media_sal_maternidade: formatarSalario(candidatoAtual.media_sal_maternidade),
                     // Dados do candidato
                     // candidato: {
                     nome: dadosCandidato.nome,
