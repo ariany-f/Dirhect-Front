@@ -272,6 +272,12 @@ const VagasRegistro = () => {
         }
     };
 
+    // Filtro de seções por filial selecionada
+    const secoesFiltradas = React.useMemo(() => {
+        if (!filial) return [];
+        return secoes.filter(sec => String(sec.filial) === String(filial.code));
+    }, [secoes, filial]);
+
     return (
         <Frame gap="10px">
             <Toast ref={toast} />
@@ -413,7 +419,16 @@ const VagasRegistro = () => {
                                 camposVazios={classError}
                                 name="filial" 
                                 valor={filial}
-                                setValor={setFilial} 
+                                setValor={valor => {
+                                    setFilial(valor);
+                                    setSecao(null); // Limpa a seção ao trocar a filial
+                                    if (valor && valor.code) {
+                                        http.get(`secao/?format=json&filial=${valor.code}`)
+                                            .then(response => setSecoes(response));
+                                    } else {
+                                        setSecoes([]); // Limpa se desmarcar a filial
+                                    }
+                                }}
                                 options={filiais.map(filial => ({
                                     name: `${filial.id_origem} - ${filial.nome}`,
                                     code: filial.id
@@ -438,7 +453,9 @@ const VagasRegistro = () => {
                                 label="Seção"
                                 placeholder="Seção"
                                 required={isCampoObrigatorio(secoes)}
-                                allowClear={true} />
+                                allowClear={true}
+                                disabled={!filial}
+                            />
                         </Col6>
                     </Col12>
 
