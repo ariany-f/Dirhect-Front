@@ -337,6 +337,9 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     }
     const datasBloqueadas = gerarDatasBloqueadas();
 
+    // Antes do return, converta a data mínima:
+    const minDateDemissao = colaborador?.data_minima_solicitacao_demissao ? new Date(colaborador.data_minima_solicitacao_demissao) : null;
+
     return(
         <>
             <Toast ref={toast} />
@@ -437,7 +440,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                 <CampoDataPeriodo
                                                     label="Data da Demissão"
                                                     name="data_demissao"
-                                                    value={dataDemissao ? (() => { const d = new Date(dataDemissao); d.setHours(0,0,0,0); return d; })() : null}
+                                                    value={dataDemissao ? new Date(dataDemissao + 'T00:00:00') : null}
                                                     onChange={e => {
                                                         const novaData = e.value;
                                                         if (datasBloqueadas.some(bloq => bloq.getTime() === novaData?.setHours(0,0,0,0))) {
@@ -449,8 +452,14 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                             });
                                                             return;
                                                         }
-                                                        handleDataDemissaoChange(novaData ? novaData.toISOString().split('T')[0] : '');
+                                                        // Salvar sempre como yyyy-MM-dd
+                                                        if (novaData instanceof Date && !isNaN(novaData)) {
+                                                            handleDataDemissaoChange(novaData.toISOString().split('T')[0]);
+                                                        } else {
+                                                            handleDataDemissaoChange('');
+                                                        }
                                                     }}
+                                                    minDate={minDateDemissao}
                                                     disabledDates={datasBloqueadas}
                                                     placeholder="Selecione a data"
                                                     required

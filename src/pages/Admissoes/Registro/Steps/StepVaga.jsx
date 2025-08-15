@@ -4,6 +4,7 @@ import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
 import styled from 'styled-components';
 import SwitchInput from '@components/SwitchInput';
+import http from '@http';
 
 const GridContainer = styled.div`
     padding: 0 24px 24px 24px;
@@ -550,6 +551,52 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         return formatarOpcoesDominio(opcoesDominio.codigo_categoria_sefip);
     }, [candidato.codigo_categoria_sefip_choices, opcoesDominio.codigo_categoria_sefip, formatarOpcoesChoices, formatarOpcoesDominio]);
     
+    const [opcoesLetraHorario, setOpcoesLetraHorario] = useState([]);
+
+    // Buscar letras/índices do horário selecionado (manual)
+    const handleHorarioChange = async (valor) => {
+        setCampo('id_horario', valor.code);
+        setCampo('dados_vaga', { 
+            ...candidato.dados_vaga, 
+            horario_id: valor.code,
+            horario_nome: valor.name
+        });
+        try {
+            const detalhesHorario = await http.get(`horario_indice/?horario__id=${valor.code}/`);
+            // Montar opções para o dropdown de letra
+            const opcoes = (detalhesHorario || []).map(item => ({
+                code: item.indice,
+                name: item.descricao_letra ? `${item.indice} - ${item.descricao_letra}` : `${item.indice}`
+            }));
+            setOpcoesLetraHorario(opcoes);
+        } catch (err) {
+            setOpcoesLetraHorario([]);
+            console.error('Erro ao buscar detalhes do horário:', err);
+        }
+    };
+
+    // Buscar letras/índices do horário selecionado (carregamento automático)
+    useEffect(() => {
+        const horarioId = candidato?.id_horario || candidato?.dados_vaga?.horario_id;
+        if (horarioId) {
+            (async () => {
+                try {
+                    const detalhesHorario = await http.get(`horario_indice/?horario__id=${horarioId}/`);
+                    const opcoes = (detalhesHorario || []).map(item => ({
+                        code: item.indice,
+                        name: item.descricao_letra ? `${item.indice} - ${item.descricao_letra}` : `${item.indice}`
+                    }));
+                    setOpcoesLetraHorario(opcoes);
+                } catch (err) {
+                    setOpcoesLetraHorario([]);
+                    console.error('Erro ao buscar detalhes do horário (carregamento automático):', err);
+                }
+            })();
+        } else {
+            setOpcoesLetraHorario([]);
+        }
+    }, [candidato?.id_horario, candidato?.dados_vaga?.horario_id]);
+    
     
     return (
         <>
@@ -641,7 +688,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             <DropdownItens
                 name="horario"
                 valor={getValorSelecionado('horario_id', horarios)}
-                setValor={valor => {
+                setValor={async valor => {
                     // Salvar tanto no campo direto quanto no dados_vaga para garantir consistência
                     setCampo('id_horario', valor.code);
                     setCampo('dados_vaga', { 
@@ -649,6 +696,13 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                         horario_id: valor.code,
                         horario_nome: valor.name
                     });
+                    // Buscar detalhes do horário
+                    try {
+                        const detalhesHorario = await http.get(`horario_indice/?horario__id=${valor.code}/`);
+                        console.log('Detalhes do horário:', detalhesHorario);
+                    } catch (err) {
+                        console.error('Erro ao buscar detalhes do horário:', err);
+                    }
                 }}
                 options={opcoesHorarios}
                 label="Horário"
@@ -673,6 +727,16 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 search
                 filter
                 disabled={modoLeitura}
+            />
+            <DropdownItens
+                camposVazios={isCampoEmErro('letra') ? ['letra'] : []}
+                name="letra"
+                required={true}
+                label="Letra"
+                valor={opcoesLetraHorario.find(l => l.code === candidato.letra) || null}
+                setValor={valor => setCampo('letra', valor.code)}
+                options={opcoesLetraHorario}
+                disabled={modoLeitura || opcoesLetraHorario.length === 0}
             />
             
             <SectionTitle>Admissão</SectionTitle>
@@ -973,16 +1037,6 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                     removerErroCampo('natureza_atividade_esocial', valor);
                 }}
                 options={opcoesNaturezaAtividadeESocial}
-                disabled={modoLeitura}
-            />
-            <DropdownItens
-                camposVazios={isCampoEmErro('letra') ? ['letra'] : []}
-                name="letra"
-                required={true}
-                label="Letra"
-                valor={getValorSelecionadoFromCandidato('letra', opcoesLetra)}
-                setValor={(valor) => setCampo('letra', valor.code)}
-                options={opcoesLetra}
                 disabled={modoLeitura}
             />
             

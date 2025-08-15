@@ -2095,6 +2095,7 @@ const CandidatoRegistro = () => {
                 { campo: 'tipo_recebimento', nome: 'Tipo de Recebimento' },
                 { campo: 'jornada', nome: 'Jornada' },
                 { campo: 'salario', nome: 'Salário' },
+                { campo: 'letra', nome: 'Letra' },
                 { campo: 'codigo_situacao_fgts', nome: 'Situação FGTS' },
                 { campo: 'codigo_categoria_esocial', nome: 'Código Categoria eSocial' },
                 { campo: 'natureza_atividade_esocial', nome: 'Natureza da Atividade eSocial' },
@@ -2660,7 +2661,7 @@ const CandidatoRegistro = () => {
         if (activeIndex === 3 && !self) {
             const camposObrigatorios = [
                 'dt_admissao', 'tipo_admissao', 'motivo_admissao', 'tipo_situacao',
-                'tipo_funcionario', 'tipo_recebimento', 'jornada', 'salario',
+                'tipo_funcionario', 'tipo_recebimento', 'jornada', 'salario', 'letra',
                 'codigo_situacao_fgts', 'codigo_categoria_esocial', 'natureza_atividade_esocial'
             ];
             // Estrutura organizacional
@@ -2685,7 +2686,9 @@ const CandidatoRegistro = () => {
 
             // Horário
             const temHorarios = horarios && horarios.length > 0;
-            if (temHorarios) camposObrigatorios.push('id_horario');
+            if (temHorarios) {
+                camposObrigatorios.push('id_horario');
+            }
 
             // Adiciona funcao_confianca se confianca for true
             if (candidato.confianca) {
@@ -2725,18 +2728,14 @@ const CandidatoRegistro = () => {
                     tipo_recebimento: 'Tipo de Recebimento',
                     jornada: 'Jornada',
                     salario: 'Salário',
+                    letra: 'Letra',
                     codigo_situacao_fgts: 'Situação FGTS',
                     codigo_categoria_esocial: 'Categoria eSocial',
                     natureza_atividade_esocial: 'Natureza Atividade eSocial',
                     funcao_confianca: 'Função de Confiança'
                 };
                 const listaCampos = camposNaoPreenchidos.map(campo => nomesCampos[campo] || campo).join(', ');
-                toast.current.show({
-                    severity: 'error',
-                    summary: 'Campos obrigatórios pendentes',
-                    detail: `Preencha os campos obrigatórios destacados em vermelho.\nFaltando: ${listaCampos}`,
-                    life: 4000
-                });
+
                 return false;
             }
 

@@ -519,7 +519,7 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                         $width={width}
                         id={name}
                         name={name}
-                        value={valor ? (() => { try { return new Date(valor); } catch { return null; } })() : null}
+                        value={valor ? (() => { try { return new Date(valor + 'T00:00:00'); } catch { return null; } })() : null}
                         onChange={(evento) => {
                             if (evento?.value instanceof Date) {
                                 const d = evento.value;
