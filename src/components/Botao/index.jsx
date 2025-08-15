@@ -23,6 +23,7 @@ const BotaoEstilizado = styled.button`
     &:disabled {
         opacity: 0.5;
         background-color: var(--neutro-200);
+        color: var(--neutro-500);
         cursor: not-allowed;
     }
 `

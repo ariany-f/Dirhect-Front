@@ -12,7 +12,7 @@ import ContainerHorizontal from "@components/ContainerHorizontal"
 import Container from "@components/Container"
 import styles from './Colaboradores.module.css'
 import { Skeleton } from 'primereact/skeleton'
-import { FaCopy, FaTrash, FaUserTimes, FaExclamationTriangle } from 'react-icons/fa'
+import { FaCopy, FaTrash, FaUserTimes, FaExclamationTriangle, FaExclamation, FaExclamationCircle } from 'react-icons/fa'
 import { IoMdFemale, IoMdMale } from "react-icons/io";
 import { Toast } from 'primereact/toast'
 import http from '@http'
@@ -1014,57 +1014,45 @@ function ColaboradorDetalhes() {
                             {colaborador?.tipo_situacao_descricao == 'Ativo' && 
                              ArmazenadorToken.hasPermission('add_demissao') && 
                              !colaborador.marcado_demissao && (
-                                estabilidadeBloqueada ? (
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, position: 'relative' }}>
-                                        <FaExclamationTriangle 
-                                            color="#dc2626" 
-                                            size={22} 
-                                            style={{ cursor: 'pointer' }}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <Botao
+                                        aoClicar={() => setModalDemissaoAberto(true)}
+                                        estilo="danger"
+                                        size="small"
+                                        disabled={estabilidadeBloqueada}
+                                    >
+                                        <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} />
+                                        Solicitar Demissão
+                                    </Botao>
+                                        
+                                    {estabilidadeBloqueada && (
+                                        <FaExclamationTriangle
+                                            size={18}
+                                            fill='#dc2626'
+                                            style={{ cursor: 'pointer', marginLeft: 8 }}
                                             title="Demissão bloqueada por estabilidade"
-                                            onClick={() => setMostrarMotivoEstabilidade(m => !m)}
+                                            onClick={() => toast.current.show({
+                                                severity: 'warn',
+                                                summary: 'Estabilidade ativa',
+                                                detail: mensagemEstabilidade,
+                                                life: 6000
+                                            })}
                                         />
-                                        {mostrarMotivoEstabilidade && (
-                                            <div style={{
-                                                background: '#fff',
-                                                color: '#dc2626',
-                                                border: '1px solid #dc2626',
-                                                borderRadius: 8,
-                                                padding: '12px 16px',
-                                                fontWeight: 600,
-                                                position: 'absolute',
-                                                zIndex: 100,
-                                                marginLeft: 8,
-                                                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                                                top: 30
-                                            }}>
-                                                {mensagemEstabilidade}
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Botao aoClicar={() => setModalDemissaoAberto(true)} estilo="danger" size="small">
-                                            <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} /> 
-                                            Solicitar Demissão
-                                        </Botao>
-                                        {colaborador?.membro_cipa && (
-                                            <span style={{
-                                                background: '#721c24',
-                                                color: '#fff',
-                                                padding: '4px 8px',
-                                                borderRadius: '4px',
-                                                fontSize: '11px',
-                                                fontWeight: '600',
-                                                whiteSpace: 'nowrap'
-                                            }}>
-                                                MEMBRO CIPA
-                                            </span>
-                                        )}
-                                    </div>
-                                )
-                            )}
-                            {estabilidadeBloqueada && mensagemEstabilidade && (
-                                <div style={{ color: '#dc2626', fontWeight: 600, marginTop: 8 }}>{mensagemEstabilidade}</div>
+                                    )}
+                                    {colaborador?.membro_cipa && (
+                                        <span style={{
+                                            background: '#721c24',
+                                            color: '#fff',
+                                            padding: '4px 8px',
+                                            borderRadius: '4px',
+                                            fontSize: '11px',
+                                            fontWeight: '600',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            MEMBRO CIPA
+                                        </span>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </div>
@@ -1334,248 +1322,33 @@ function ColaboradorDetalhes() {
                     <Link className={styles.link} to={`/colaborador/detalhes/${id}/estabilidade`}>
                         <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/estabilidade` ? 'black':''} size="small" tab>Estabilidade</Botao>
                     </Link>}
-                    {(usuario.tipo == 'cliente' || usuario.tipo == 'equipeFolhaPagamento') &&
-                        <>
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos de Folha</Botao>
-                        </Link>
-                        <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
-                            <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>ESocial</Botao>
-                        </Link>
-                        </>
-                    }
-
-                    {(usuario.tipo == 'grupo_rh' || usuario.tipo == 'global') && 
-                        <>
-                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
-                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
-                            </Link>
-                            <Link className={styles.link} to={`/colaborador/detalhes/${id}/movimentos`}>
-                                <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
-                            </Link>
-                        </>
-                    }
+                    {ArmazenadorToken.hasPermission('view_ciclos') &&
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/ciclos`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/ciclos` ? 'black':''} size="small" tab>Ciclos</Botao>
+                    </Link>}
+                    {ArmazenadorToken.hasPermission('view_esocial') &&
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/esocial`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/esocial` ? 'black':''} size="small" tab>E-Social</Botao>
+                    </Link>}
+                    {ArmazenadorToken.hasPermission('view_pedidos') &&
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/pedidos`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/pedidos` ? 'black':''} size="small" tab>Pedidos</Botao>
+                    </Link>}
+                    {ArmazenadorToken.hasPermission('view_movimentos') &&
+                    <Link className={styles.link} to={`/colaborador/detalhes/${id}/movimentos`}>
+                        <Botao estilo={location.pathname == `/colaborador/detalhes/${id}/movimentos` ? 'black':''} size="small" tab>Movimentos</Botao>
+                    </Link>}
                 </BotaoGrupo>
                 <Outlet context={colaborador}/>
-            </Col8Vertical>
-            : <Container gap="8px">
-                    <Skeleton variant="rectangular" width={'100%'} height={30} />
-                    <Skeleton variant="rectangular" width={'100%'} height={420} />
-                </Container>
-            }
-        </Col12Vertical>
-        <ModalDemissao 
-            opened={modalDemissaoAberto}
-            aoFechar={() => setModalDemissaoAberto(false)}
-            colaborador={colaborador}
-            aoSalvar={handleSalvarDemissao}
-            mostrarColaborador={false}
-        />
-
-        {/* Modal de visualização da imagem */}
-        {showImageModal && colaborador.imagem && (
-            <ImageModal onClick={(e) => {
-                if (e.target === e.currentTarget) {
-                    setShowImageModal(false);
+                </Col8Vertical>
+                : <Container gap="8px">
+                        <Skeleton variant="rectangular" width={'100%'} height={30} />
+                        <Skeleton variant="rectangular" width={'100%'} height={420} />
+                  </Container>
                 }
-            }}>
-                <ImageModalContent>
-                    <ImageModalImage 
-                        src={colaborador.imagem} 
-                        alt={`Foto de ${colaborador.funcionario_pessoa_fisica.nome}`} 
-                    />
-                    <div style={{display: 'flex', gap: '12px'}}>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            ref={modalFileInputRef}
-                            onChange={handleImageUpload}
-                            style={{ display: 'none' }}
-                            id="colaborador-image-change-modal"
-                        />
-                         <ImageModalButton onClick={() => modalFileInputRef.current.click()}>
-                            <RiUpload2Fill /> Alterar Imagem
-                        </ImageModalButton>
-                        <ImageModalButton onClick={handleRemoveImage} style={{background: '#ef4444', color: 'white'}}>
-                            <FaTrash fill='var(--white)'/> Remover Imagem
-                        </ImageModalButton>
-                        <ImageModalButton onClick={() => setShowImageModal(false)}>
-                            <HiX /> Fechar
-                        </ImageModalButton>
-                    </div>
-                </ImageModalContent>
-            </ImageModal>
-        )}
-
-        {/* Modal de Corte de Imagem */}
-        {showCropModal && (
-            <div style={{
-                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                zIndex: 10001, padding: '20px'
-            }} onClick={(e) => e.target === e.currentTarget && handleCancelCrop()}>
-                <div style={{
-                    background: '#fff', borderRadius: '12px',
-                    maxWidth: '90vw', maxHeight: '90vh', width: '800px',
-                    display: 'flex', flexDirection: 'column', overflow: 'hidden'
-                }}>
-                    {/* Header */}
-                    <div style={{
-                        padding: '16px 20px', borderBottom: '1px solid #e5e7eb',
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-                    }}>
-                        <h3 style={{ margin: 0, color: '#374151', fontSize: '18px' }}>Cortar Imagem</h3>
-                        <button onClick={handleCancelCrop} style={{
-                            background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer',
-                            color: '#6b7280'
-                        }}>×</button>
-                    </div>
-
-                    {/* Content */}
-                    <div style={{
-                        padding: '20px', display: 'flex', gap: '20px',
-                        flex: 1, minHeight: 0
-                    }}>
-                        {/* Imagem Original ou Cortada */}
-                        <div style={{
-                            flex: showCropSelection && !isCropped ? 0.5 : 1,
-                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                            background: '#f9fafb', borderRadius: '8px', padding: '20px', minHeight: '400px'
-                        }}>
-                             {isCropped ? (
-                                <img src={croppedImageSrc} alt="Cortada" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                            ) : (
-                                <img ref={setImageRef} src={imageSrc} alt="Original" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                            )}
-                        </div>
-                        
-                        {/* Área de Seleção */}
-                        {showCropSelection && !isCropped && (
-                            <div style={{
-                                flex: 0.5, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                                background: '#f0f9ff', borderRadius: '8px', padding: '20px', minHeight: '400px',
-                                border: '2px dashed #0ea5e9'
-                            }}>
-                                <ReactCrop
-                                    crop={crop}
-                                    onChange={handleCropChange}
-                                    onComplete={handleCropComplete}
-                                    aspect={1}
-                                    minWidth={30}
-                                    minHeight={30}
-                                    keepSelection
-                                    ruleOfThirds
-                                >
-                                    <img src={imageSrc} alt="Para Cortar" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                                </ReactCrop>
-                            </div>
-                        )}
-
-                        {/* Controles */}
-                        <div style={{
-                            width: '250px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '16px'
-                        }}>
-                           {!isCropped ? (
-                                <>
-                                    {!showCropSelection ? (
-                                        <button
-                                            onClick={() => setShowCropSelection(true)}
-                                            style={{ width: '100%', background: '#374151', border: 'none', borderRadius: '6px', padding: '12px', cursor: 'pointer', fontSize: '14px', color: '#fff', transition: 'all 0.2s ease' }}
-                                            onMouseEnter={(e) => e.target.style.background = '#1f2937'}
-                                            onMouseLeave={(e) => e.target.style.background = '#374151'}
-                                        >
-                                            ✂️ Cortar
-                                        </button>
-                                    ) : (
-                                        <>
-                                            <button
-                                                onClick={applyCrop}
-                                                disabled={!hasCropChanged}
-                                                style={{ width: '100%', background: !hasCropChanged ? '#9ca3af' : '#059669', border: 'none', borderRadius: '6px', padding: '12px', cursor: !hasCropChanged ? 'not-allowed' : 'pointer', fontSize: '14px', color: '#fff', transition: 'all 0.2s ease' }}
-                                                onMouseEnter={(e) => { if (hasCropChanged) e.target.style.background = '#047857'; }}
-                                                onMouseLeave={(e) => { if (hasCropChanged) e.target.style.background = '#059669'; }}
-                                            >
-                                                ✅ Aplicar Corte
-                                            </button>
-                                            <button
-                                                onClick={() => setShowCropSelection(false)}
-                                                style={{ width: '100%', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px', cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease' }}
-                                                onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
-                                                onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
-                                            >
-                                                🔄 Resetar Seleção
-                                            </button>
-                                        </>
-                                    )}
-                                     {/* Instruções */}
-                                     <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
-                                        <strong style={{ color: '#374151' }}>Como usar:</strong><br/>
-                                        {!showCropSelection ? 'Clique em "Cortar" para começar.' : 'Arraste para selecionar e clique em "Aplicar Corte".'}
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                <button
-                                    onClick={() => { setIsCropped(false); setCroppedImageSrc(''); setShowCropSelection(true); }}
-                                    style={{ width: '100%', background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px', cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease' }}
-                                    onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
-                                    onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
-                                >
-                                    🔄 Voltar e Editar
-                                </button>
-                                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '12px', fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
-                                    <strong style={{ color: '#374151' }}>Pronto!</strong><br/>
-                                    Clique em "Salvar" para finalizar ou volte para editar.
-                                </div>
-                                </>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Footer */}
-                    <div style={{
-                        padding: '16px 20px', borderTop: '1px solid #e5e7eb',
-                        display: 'flex', justifyContent: 'flex-end', gap: '12px'
-                    }}>
-                        <button 
-                            onClick={handleCancelCrop} 
-                            style={{ background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: '6px', padding: '10px 16px', cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s ease' }}
-                            onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
-                            onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
-                        >
-                            × Cancelar
-                        </button>
-                        <button 
-                            onClick={handleCropImage} 
-                            disabled={uploading || (showCropSelection && !isCropped)} 
-                            style={{ 
-                                background: uploading || (showCropSelection && !isCropped) ? '#9ca3af' : '#374151', 
-                                border: 'none', 
-                                borderRadius: '6px', 
-                                padding: '10px 16px', 
-                                cursor: uploading || (showCropSelection && !isCropped) ? 'not-allowed' : 'pointer', 
-                                fontSize: '14px', 
-                                color: '#fff', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: '8px', 
-                                transition: 'all 0.2s ease' 
-                            }}
-                            onMouseEnter={(e) => { if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#1f2937'; }}
-                            onMouseLeave={(e) => { if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#374151'; }}
-                        >
-                            {uploading ? 'Processando...' : (showCropSelection && !isCropped) ? 'Aplique ou cancele o corte' : (isCropped ? 'Salvar' : 'Salvar Imagem Original')}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        )}
-    </Frame>
-)
+            </Col12Vertical>
+        </Frame>
+    );
 }
 
-export default ColaboradorDetalhes
+export default ColaboradorDetalhes;
