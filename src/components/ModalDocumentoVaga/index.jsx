@@ -26,12 +26,18 @@ const Col12 = styled.div`
 `
 
 const Col6 = styled.div`
-    flex: 1 1 calc(50% - 8px);
+    width: calc(50% - 8px);
+    min-width: 0;
+    flex-shrink: 0;
+    flex-grow: 0;
 `
 
 const Col6Centered = styled.div`
     display: flex;
-    flex: 1 1 calc(50% - 8px);
+    width: calc(50% - 8px);
+    min-width: 0;
+    flex-shrink: 0;
+    flex-grow: 0;
     justify-content: start;
     padding-top: 14px;
     align-items: center;
@@ -110,7 +116,7 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
         <>
             {opened && (
                 <Overlay>
-                    <DialogEstilizado open={opened}>
+                    <DialogEstilizado $width="50vw" open={opened}>
                         <Frame>
                             <Titulo>
                                 <button className="close" onClick={aoFechar}>
@@ -137,7 +143,6 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
                             <Col12>
                                 <Col12>
                                     <Col6>
-                                        <div style={{ width: '100%' }}>
                                             <label style={{ fontWeight: 600, marginBottom: 4, display: 'block' }}>Documento*</label>
                                             <DropdownItens 
                                                 valor={documentoSelecionado} 
@@ -164,7 +169,6 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
                                                     Criar Novo Padrão
                                                 </BotaoSemBorda>
                                             </div>
-                                        </div>
                                     </Col6>
                                     <Col6>
                                         <CampoTexto

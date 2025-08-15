@@ -143,7 +143,8 @@ function DropdownItens({
     required = false, // Adiciona a prop required
     onFilter,
     emptyFilterMessage,
-    emptyMessage
+    emptyMessage,
+    optionLabel = "name" // Adiciona prop para customizar o campo de label
 }) {
 
     const { t } = useTranslation('common')
@@ -202,7 +203,7 @@ function DropdownItens({
                             placeholder={placeholder} 
                             options={options} 
                             value={valor} 
-                            optionLabel="name" 
+                            optionLabel={optionLabel || "name"}
                             onChange={changeValor}
                             itemTemplate={optionTemplate} // Template para os itens da lista
                             valueTemplate={optionTemplate} // Template para o valor selecionado
@@ -223,7 +224,7 @@ function DropdownItens({
                         placeholder={placeholder} 
                         options={options} 
                         value={valor} 
-                        optionLabel="name" 
+                        optionLabel={optionLabel || "name"}
                         onChange={changeValor}
                         itemTemplate={optionTemplate} // Template para os itens da lista
                         valueTemplate={optionTemplate} // Template para o valor selecionado
