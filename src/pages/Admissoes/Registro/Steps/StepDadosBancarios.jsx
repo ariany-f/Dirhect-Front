@@ -290,10 +290,10 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
                 camposVazios={isCampoEmErro('banco') ? ['banco'] : []}
                 $margin={'28px'}
                 required={true}
-                valor={candidato?.banco ? (bancos.find(b => b.code === candidato.banco) || null) : null}
+                valor={candidato?.banco ? (bancos.find(b => String(b.code) === String(candidato.banco)) || null) : null}
                 setValor={valor => {
-                    setCampo('banco', valor.code);
-                    setCampo('banco_codigo', valor.code);
+                    setCampo('banco', String(valor.code));
+                    setCampo('banco_codigo', String(valor.code));
                     setCampo('agencia', '');
                     setCampo('agencia_nova', '');
                     setAdicionandoAgencia(false);
