@@ -1,0 +1,9 @@
+
+.p-calendar.p-component {
+    width: 100% !important;
+}
+
+.p-calendar:not(.p-calendar-disabled).p-focus > .p-inputtext {
+    border-color: var(--primaria) !important;
+    box-shadow: none !important;
+}

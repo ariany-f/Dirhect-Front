@@ -37,12 +37,12 @@ const ConteudoContainer = styled.div`
 `;
 
 const DetalhesContainer = styled.div`
-    flex: 1 1 50%;
-    max-width: calc(50% - 24px);
+    flex: 1 1 30%;
+    max-width: calc(30% - 24px);
 `;
 
 const AcoesContainer = styled.div`
-    flex: 1 1 calc(50% - 24px);
+    flex: 1 1 calc(70% - 12px);
     width: 100%;
     display: flex;
     flex-direction: column;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar } from 'primereact/calendar';
 import styles from '../CampoTexto/CampoTexto.module.css';
-import periodStyles from './CampoDataPeriodo.module.css';
+import periodStyles from './CampoDataPeriodo.css';
 import { addLocale } from 'primereact/api';
 
 function CampoDataPeriodo({
@@ -29,7 +29,7 @@ function CampoDataPeriodo({
 }) {
     console.log('minDate', minDate)
     return (
-        <div className={styles.inputContainer + ' ' + (periodStyles.inputContainer || '')}>
+        <div className={styles.inputContainer + ' '}>
             {label && (
                 <label htmlFor={name} className={styles.label} style={{ marginBottom: '4px', display: 'block' }}>
                     {label}{required && <span style={{ color: 'var(--error)' }}> *</span>}
