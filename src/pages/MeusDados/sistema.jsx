@@ -11,7 +11,7 @@ import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import styled from 'styled-components';
 import { ColorPicker } from 'primereact/colorpicker';
 import { RiUpload2Fill } from 'react-icons/ri';
-import { Dropdown } from 'primereact/dropdown';
+import DropdownItens from '@components/DropdownItens';
 import BrandColors from '@utils/brandColors';
 import SwitchInput from '@components/SwitchInput';
 import ReactCrop from 'react-image-crop';
@@ -711,22 +711,25 @@ function MeusDadosSistema() {
                         {loading ? <Skeleton width={200} height={25} /> : (
                             <>
                                 <Texto>Timezone</Texto>
-                                <Dropdown
-                                    value={timezones.find(tz => tz.value === sistema.timezone) || timezones[0]}
+                                <DropdownItens
+                                    valor={timezones.find(tz => tz.value === sistema.timezone) || timezones[0]}
+                                    setValor={e => handleChange('timezone', e.value)}
                                     options={timezones}
-                                    onChange={e => handleChange('timezone', e.value.value)}
-                                    optionLabel="label"
                                     placeholder="Selecione o timezone"
-                                    style={{ width: '100%', height: 65, display: 'flex', alignItems: 'center', marginBottom: 16 }}
+                                    name="timezone"
+                                    $height="65px"
+                                    $margin="16px"
+                                    optionLabel="label"
                                 />
                                 <Texto>Idioma padrão</Texto>
-                                <Dropdown
-                                    value={languages.find(lang => lang.code === sistema.idioma)}
+                                <DropdownItens
+                                    valor={languages.find(lang => lang.code === sistema.idioma)}
+                                    setValor={e => handleChange('idioma', e.code)}
                                     options={languages}
-                                    onChange={e => handleChange('idioma', e.value.code)}
-                                    optionLabel="name"
                                     placeholder="Selecione o idioma"
-                                    style={{ width: '100%', height: 65, display: 'flex', alignItems: 'center' }}
+                                    name="idioma"
+                                    $height="65px"
+                                    optionLabel="name"
                                 />
                             </>
                         )}
@@ -734,22 +737,27 @@ function MeusDadosSistema() {
                         {loading ? <Skeleton width={200} height={25} /> : (
                             <>
                                 <Texto>Tipo de feriado</Texto>
-                                <Dropdown 
-                                    value={sistema.feriadosTipo}
+                                <DropdownItens 
+                                    valor={sistema.feriadosTipo}
+                                    setValor={e => handleChange('feriadosTipo', e)}
                                     options={feriadosOptions}
-                                    onChange={e => handleChange('feriadosTipo', e.value)}
                                     placeholder="Selecione o tipo de feriado"
-                                    style={{ width: '100%', marginBottom: 16, height: 65, display: 'flex', alignItems: 'center' }}
+                                    name="feriadosTipo"
+                                    $height="65px"
+                                    $margin="16px"
+                                    optionLabel="label"
                                 />
                                 {sistema.feriadosTipo === 'estaduais' && (
                                     <>
                                         <Texto>Estado (UF)</Texto>
-                                        <Dropdown
-                                            value={sistema.feriadosUF}
+                                        <DropdownItens
+                                            valor={sistema.feriadosUF}
+                                            setValor={e => handleChange('feriadosUF', e)}
                                             options={estados}
-                                            onChange={e => handleChange('feriadosUF', e.value)}
                                             placeholder="Selecione o estado"
-                                            style={{ width: '100%', height: 65, display: 'flex', alignItems: 'center' }}
+                                            name="feriadosUF"
+                                            $height="65px"
+                                            optionLabel="label"
                                         />
                                     </>
                                 )}

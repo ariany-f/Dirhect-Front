@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import CampoTexto from '@components/CampoTexto';
-import { Dropdown } from 'primereact/dropdown';
+import DropdownItens from '@components/DropdownItens';
 import SwitchInput from '@components/SwitchInput';
 import Botao from '@components/Botao';
 import BotaoSemBorda from '@components/BotaoSemBorda';
@@ -137,23 +137,23 @@ function ModalDocumentoVaga({ opened = false, vaga = null, aoFechar, aoSalvar, d
                             <Col12>
                                 <Col12>
                                     <Col6>
-                                        <div>
+                                        <div style={{ width: '100%' }}>
                                             <label style={{ fontWeight: 600, marginBottom: 4, display: 'block' }}>Documento*</label>
-                                            <Dropdown 
-                                                value={documentoSelecionado} 
-                                                options={documentosRequeridos} 
-                                                onChange={e => {
-                                                    setDocumentoSelecionado(e.value);
+                                            <DropdownItens 
+                                                valor={documentoSelecionado} 
+                                                setValor={e => {
+                                                    setDocumentoSelecionado(e);
                                                     // Preenche automaticamente o nome com o nome do documento selecionado
-                                                    if (e.value) {
-                                                        setDocumentoNome(e.value.nome);
+                                                    if (e) {
+                                                        setDocumentoNome(e.nome);
                                                     }
                                                 }} 
-                                                optionLabel="nome"
+                                                options={documentosRequeridos} 
                                                 placeholder="Selecione o documento" 
-                                                style={{ width: '100%' }} 
-                                                className={classError.includes('documento') ? 'p-invalid' : ''}
+                                                name="documento"
                                                 disabled={vagaTransferida}
+                                                $hasError={classError.includes('documento')}
+                                                optionLabel="nome"
                                             />
                                             <div style={{ marginTop: '8px' }}>
                                                 <BotaoSemBorda 

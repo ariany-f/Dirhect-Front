@@ -18,10 +18,10 @@ const GlobalPanelStyle = createGlobalStyle`
 
 const Select = styled(Dropdown)`
     border-radius: 4px;
-    outline: .4px solid var(--neutro-400);
+    border: 1px solid var(--neutro-400);
     background: var(--background-label);
     padding: 12px 16px;
-    border: none;
+    outline: none;
     display: flex;
     align-items: center;
     text-align: left;
@@ -33,7 +33,7 @@ const Select = styled(Dropdown)`
     max-width: ${ props => props.$maxWidth ?  props.$maxWidth : '100%' };
     margin-bottom: ${ props => props.$margin ?  props.$margin : '0px' };
     ${props => props.$hasError && `
-        outline: .5px solid #dc2626;
+        border: 1px solid #dc2626;
         box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2) !important;
     `}
 
@@ -86,12 +86,12 @@ const Select = styled(Dropdown)`
     }
 
     &:active {
-        outline-color: var(--primaria);
+        border-color: var(--primaria);
         background: var(--white);
     }
 
     &:focus {
-        outline-color: var(--primaria);
+        border-color: var(--primaria);
         background: var(--white);
     }
 
@@ -182,7 +182,7 @@ function DropdownItens({
     }
 
     return (
-        <div style={{ width: '100%', maxWidth: '100%', minWidth: 0, overflow: 'hidden', flexShrink: 1, flexGrow: 0, boxSizing: 'border-box', paddingLeft: '0.2%', paddingRight: '0.1%'}}>
+        <div style={{ width: '100%', maxWidth: '100%', minWidth: 0, overflow: 'hidden', flexShrink: 1, flexGrow: 0, boxSizing: 'border-box'}}>
             <GlobalPanelStyle />
             <div className={styles.inputContainer}>
                 {(label) ?
