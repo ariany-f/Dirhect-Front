@@ -338,7 +338,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     const datasBloqueadas = gerarDatasBloqueadas();
 
     // Antes do return, converta a data mínima:
-    const minDateDemissao = colaborador?.data_minima_solicitacao_demissao ? new Date(colaborador.data_minima_solicitacao_demissao) : null;
+    const minDateDemissao = colaborador?.data_minima_solicitacao_demissao ? new Date(colaborador.data_minima_solicitacao_demissao + 'T00:00:00') : null;
 
     return(
         <>
