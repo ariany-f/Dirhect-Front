@@ -256,6 +256,9 @@ function FeriasListagem() {
                     aviso_ferias: feria.aviso_ferias || null,
                     abono_pecuniario: feria.abono_pecuniario || false,
                     ferias_coletivas: feria.ferias_coletivas || false,
+                    data_minima_solicitacao: feria.data_minima_solicitacao || null,
+                    data_minima_solicitacao_formatada: feria.data_minima_solicitacao_formatada || null,
+                    dias_antecedencia_necessarios: feria.dias_antecedencia_necessarios || 0,
                     tarefas: feria.tarefas
                 },
                 tipo: 'aSolicitar'
