@@ -15,7 +15,6 @@ import BotaoSemBorda from "@components/BotaoSemBorda"
 import { Toast } from 'primereact/toast'
 import DataTableTarefasDetalhes from '@components/DataTableTarefasDetalhes'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
-import { addLocale } from 'primereact/api'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'
 import { Real } from '@utils/formats'

@@ -2,6 +2,8 @@
     "options": "Options",
     "see_more": "See more",
     "see_all": "See all",
+    "accept": "Yes",
+    "reject": "No",
     "add": "Add",
     "back": "Back",
     "users": "Users",
@@ -9,6 +11,7 @@
     "settings": "Settings",
     "loading...": "Loading...",
     "nexts": "Nexts",
+    "firstDayOfWeek": "Sunday",
     "expireds": "Expireds",
     "no_data": "No data",
     "logout": "Logout",
@@ -67,6 +70,18 @@
     "now_happening": "What is happening now?",
     "average_time": "Average time",
     "sla": "SLA",
+    "monthNames": [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ],
+    "monthNamesShort": [
+        "jan", "feb", "mar", "apr", "may", "jun",
+        "jul", "aug", "sep", "oct", "nov", "dec"
+    ],
+    "today": "Today",
+    "clear": "Clear",
+    "dateFormat": "dd/mm/yy",
+    "weekHeader": "Sm",
     "no_processes_in_progress": "No processes in progress",
     "completed": "Completed",
     "termination_reasons": "Termination reasons"

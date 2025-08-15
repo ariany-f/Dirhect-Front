@@ -6,6 +6,7 @@ import { FaEnvelope } from 'react-icons/fa'
 import { BsSearch } from 'react-icons/bs'
 import {FloatLabel} from 'primereact/floatlabel'
 import { InputText } from "primereact/inputtext";
+import CampoDataPeriodo from '@components/CampoDataPeriodo'
 import { InputTextarea } from "primereact/inputtextarea";
 import * as Yup from 'yup'
 import { currency, mask as masker, unMask } from "remask"
@@ -506,7 +507,52 @@ function CampoTexto({ maxCaracteres = null, marginTop = null, validateError = tr
                         {label}{required && <span style={{color: 'var(--error)'}}> *</span>}
                     </label>
                 }
-                <Campo ref={reference} disabled={disabled} readOnly={readonly} className={(classeCampoVazio.includes(name) ? 'error' : '')} onFocus={(setFocus) ? (evento) => setFocus(evento) : null} onKeyDown={(evento) => validateKey(evento)} $padding={padding} $width={width} id={name} name={name} type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} value={valor} onChange={(evento) => changeValor(evento, patternMask)} placeholder={placeholder} autoComplete="on" maxLength={maxCaracteres}></Campo>
+                {type === 'date' ? (
+                    <CampoDataPeriodo
+                        ref={reference}
+                        disabled={disabled}
+                        readOnly={readonly}
+                        className={(classeCampoVazio.includes(name) ? 'error' : '')}
+                        onFocus={(setFocus) ? (evento) => setFocus(evento) : null}
+                        onKeyDown={(evento) => validateKey(evento)}
+                        $padding={padding}
+                        $width={width}
+                        id={name}
+                        name={name}
+                        value={valor ? (() => { try { return new Date(valor); } catch { return null; } })() : null}
+                        onChange={(evento) => {
+                            if (evento?.value instanceof Date) {
+                                const d = evento.value;
+                                const str = d.toISOString().split('T')[0];
+                                setValor(str, name);
+                            } else {
+                                changeValor(evento, patternMask);
+                            }
+                        }}
+                        placeholder={placeholder}
+                        autoComplete="on"
+                        maxLength={maxCaracteres}
+                    />
+                ) : (
+                    <Campo 
+                        ref={reference} 
+                        disabled={disabled} 
+                        readOnly={readonly} 
+                        className={(classeCampoVazio.includes(name) ? 'error' : '')} 
+                        onFocus={(setFocus) ? (evento) => setFocus(evento) : null} 
+                        onKeyDown={(evento) => validateKey(evento)} 
+                        $padding={padding} 
+                        $width={width} 
+                        id={name} 
+                        name={name} 
+                        type={type == 'password' ? (visibilityPassword ? 'text' : type) : type} 
+                        value={valor} 
+                        onChange={(evento) => changeValor(evento, patternMask)} 
+                        placeholder={placeholder} 
+                        autoComplete="on" 
+                        maxLength={maxCaracteres}
+                    ></Campo>
+                )}
                 {temIcone(type, visibilityPassword)}
                 {numeroCaracteres &&
                     <small>{`${(valor && typeof valor === 'string' ? valor.length : 0)}/${numeroCaracteres}`}</small>

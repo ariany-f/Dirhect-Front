@@ -16,7 +16,6 @@ import { useColaboradorContext } from "@contexts/Colaborador"
 import { useRef, useState } from "react"
 import DottedLine from "@components/DottedLine"
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
-import { addLocale } from "primereact/api"
 import { FaTrash } from "react-icons/fa"
 import { Overlay, DialogEstilizado } from '@components/Modal/styles'
 
@@ -27,11 +26,6 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
     const [loading, setLoading] = useState(false)
     
     const ref = useRef(planilha)
-
-    addLocale('pt', {
-        accept: 'Sim',
-        reject: 'Importar outra planilha'
-    })
 
     const submeterPlanilha = () => {
         

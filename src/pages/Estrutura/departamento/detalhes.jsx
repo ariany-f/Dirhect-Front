@@ -18,7 +18,6 @@ import { AiFillQuestionCircle } from 'react-icons/ai'
 import { GrAddCircle } from 'react-icons/gr'
 import Loading from '@components/Loading'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
-import { addLocale } from 'primereact/api'
 import ModalDepartamentoAdicionarBeneficio from '@components/ModalDepartamentoAdicionarBeneficio'
 
 const ConteudoFrame = styled.div`
@@ -37,11 +36,6 @@ function DepartamentoDetalhes() {
     const location = useLocation()
     const navegar = useNavigate()
     const toast = useRef(null)
-
-    addLocale('pt', {
-        accept: 'Sim',
-        reject: 'Não'
-    })
 
     useEffect(() => {
         if(!departamento) {

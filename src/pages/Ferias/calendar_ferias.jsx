@@ -9,6 +9,7 @@ import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import colaboradoresFake from '@json/ferias.json'; // Dados fake para exemplos de renderização
 import DropdownItens from '@components/DropdownItens'
 import CampoTexto from '@components/CampoTexto';
+import http from '@http';
 
 const GRADIENT = 'linear-gradient(to left, var(--black), var(--gradient-secundaria))';
 
@@ -473,6 +474,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     data_minima_solicitacao: item.data_minima_solicitacao || null,
                     data_minima_solicitacao_formatada: item.data_minima_solicitacao_formatada || null,
                     dias_antecedencia_necessarios: item.dias_antecedencia_necessarios || 0,
+                    funcionario_tipo_situacao_id: item.funcionario_tipo_situacao_id || null,
+                    funcionario_situacao_padrao: item.funcionario_situacao_padrao || false,
                     fimperaquis: item.fimperaquis || null,
                     tarefas: item.tarefas || [] // Tarefas agora vêm diretamente do item
                 });
@@ -498,6 +501,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                     data_minima_solicitacao: item.data_minima_solicitacao || null,
                     data_minima_solicitacao_formatada: item.data_minima_solicitacao_formatada || null,
                     dias_antecedencia_necessarios: item.dias_antecedencia_necessarios || 0,
+                    funcionario_tipo_situacao_id: item.funcionario_tipo_situacao_id || null,
+                    funcionario_situacao_padrao: item.funcionario_situacao_padrao || false,
                     tarefas: item.tarefas || [] // Tarefas agora vêm diretamente do item
                 });
             }
@@ -859,8 +864,11 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                         });
 
                                     return registrosOrdenados.map((aus, i) => {
+                                        console.log(aus)
                                         // Se não tem dt_inicio e dt_fim, mas tem fimperaquis, verifica se pode solicitar ou se está perdido
                                         if (!aus.data_inicio && !aus.data_fim && aus.fimperaquis) {
+                                            // NOVA REGRA: não exibe "a solicitar" se funcionario_marcado_demissao ou tipo_situacao Demitido
+                                            if (colab.funcionario_marcado_demissao === true || aus.funcionario_situacao_padrao === true) return null;
                                             const fimPeriodo = parseDateAsLocal(aus.fimperaquis);
                                             const inicioPeriodo = new Date(fimPeriodo.getFullYear(), 0, 1); // 01/01 do mesmo ano
                                             const limiteSolicitacao = new Date(fimPeriodo.getFullYear(), fimPeriodo.getMonth() + 11, fimPeriodo.getDate()); // 11 meses após o fim
@@ -897,6 +905,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                     </EventBar>
                                                 );
                                             } else {
+                                                // NOVA REGRA: não exibe "a solicitar" se funcionario_marcado_demissao
+                                                if (colab.funcionario_marcado_demissao === true) return null;
                                                 // Ainda pode solicitar
                                                 const tooltip = `Período Aquisitivo: ${format(inicioPeriodo, 'dd/MM/yyyy')} até ${format(fimPeriodo, 'dd/MM/yyyy')}\nLimite para solicitar: ${format(limiteSolicitacao, 'dd/MM/yyyy')}`;
                                                 return (
@@ -914,6 +924,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                                             data_minima_solicitacao: aus.data_minima_solicitacao || null,
                                                             data_minima_solicitacao_formatada: aus.data_minima_solicitacao_formatada || null,
                                                             dias_antecedencia_necessarios: aus.dias_antecedencia_necessarios || 0,
+                                                            funcionario_tipo_situacao_id: aus.funcionario_tipo_situacao_id || null,
+                                                            funcionario_situacao_padrao: aus.funcionario_situacao_padrao || false,
                                                             aviso_ferias: aus.aviso_ferias || null,
                                                             abono_pecuniario: aus.abono_pecuniario || false,
                                                             ferias_coletivas: aus.ferias_coletivas || false,
@@ -965,6 +977,8 @@ const CalendarFerias = ({ colaboradores, onUpdate }) => {
                                             data_minima_solicitacao: aus.data_minima_solicitacao || null,
                                             data_minima_solicitacao_formatada: aus.data_minima_solicitacao_formatada || null,
                                             dias_antecedencia_necessarios: aus.dias_antecedencia_necessarios || 0,
+                                            funcionario_tipo_situacao_id: aus.funcionario_tipo_situacao_id || null,
+                                            funcionario_situacao_padrao: aus.funcionario_situacao_padrao || false,
                                             tarefas: aus.tarefas
                                         };
                                         

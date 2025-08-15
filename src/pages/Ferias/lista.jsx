@@ -247,6 +247,7 @@ function FeriasListagem() {
                     id: colaborador.id,
                     nome: colaborador.nome || colaborador.funcionario_nome || colaborador.funcionario_pessoa_fisica?.nome,
                     gestor: colaborador.gestor,
+                    funcionario_situacao_padrao: colaborador.funcionario_situacao_padrao === true // garante booleano
                 },
                 evento: {
                     periodo_aquisitivo_inicio: dataInicioRow,
@@ -259,6 +260,7 @@ function FeriasListagem() {
                     data_minima_solicitacao: feria.data_minima_solicitacao || null,
                     data_minima_solicitacao_formatada: feria.data_minima_solicitacao_formatada || null,
                     dias_antecedencia_necessarios: feria.dias_antecedencia_necessarios || 0,
+                    funcionario_situacao_padrao: feria.funcionario_situacao_padrao || false,
                     tarefas: feria.tarefas
                 },
                 tipo: 'aSolicitar'
@@ -439,6 +441,7 @@ function FeriasListagem() {
                 opened={modalSelecaoColaboradorOpened} 
                 aoFechar={() => setModalSelecaoColaboradorOpened(false)} 
                 aoSelecionar={handleColaboradorSelecionado}
+                demitidos={false}
             />
             <ModalDetalhesFerias 
                 opened={!!eventoSelecionado} 

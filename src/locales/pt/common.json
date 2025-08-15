@@ -2,6 +2,8 @@
     "options": "Opções",
     "see_more": "Ver mais",
     "see_all": "Ver tudo",
+    "accept": "Sim",
+    "reject": "Não",
     "add": "Adicionar",
     "back": "Voltar",
     "users": "Usuários",
@@ -9,6 +11,7 @@
     "settings": "Configurações",
     "loading...": "Carregando...",
     "nexts": "Próximos",
+    "firstDayOfWeek": "Domingo",
     "expireds": "Vencidos",
     "no_data": "Sem dados",
     "logout": "Sair",
@@ -67,6 +70,18 @@
     "now_happening": "O que está acontecendo agora?",
     "average_time": "Tempo Médio",
     "sla": "SLA",
+    "monthNames": [
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ],
+    "monthNamesShort": [
+        "jan", "fev", "mar", "abr", "mai", "jun",
+        "jul", "ago", "set", "out", "nov", "dez"
+    ],
+    "today": "Hoje",
+    "clear": "Limpar",
+    "dateFormat": "dd/mm/yy",
+    "weekHeader": "Sm",
     "no_processes_in_progress": "Nenhum processo em andamento",
     "completed": "Concluída",
     "termination_reasons": "Motivos de Demissão"

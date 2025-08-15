@@ -16,7 +16,6 @@ import { Toast } from 'primereact/toast'
 import http from '@http'
 import { useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
-import { addLocale } from 'primereact/api'
 import { Tag } from 'primereact/tag';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { RiEditBoxFill, RiGasStationFill, RiShoppingCartFill } from 'react-icons/ri';
@@ -53,11 +52,6 @@ function ColaboradorDependenteDetalhes() {
     const toast = useRef(null)
 
     const {usuario} = useSessaoUsuarioContext()
-
-    addLocale('pt', {
-        accept: 'Sim',
-        reject: 'Não'
-    })
 
     useEffect(() => {
         if(!dependente)

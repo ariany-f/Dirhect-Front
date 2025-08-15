@@ -17,6 +17,7 @@ import { ArmazenadorToken } from '@utils';
 import ModalDetalhesFerias from '@components/ModalDetalhesFerias';
 import { Toast } from 'primereact/toast';
 import styled from 'styled-components';
+import http from '@http';
 
 // Styled component para o status seguindo o formato do botão
 const StatusTag = styled.span`
@@ -185,7 +186,7 @@ function DataTableFerias({
             eventoParaModal.tipo = 'aSolicitar';
         }
     
-        setEventoSelecionado(eventoParaModal);
+        setEventoSelecionado({ ...eventoParaModal, colab: { ...eventoParaModal.colab, funcionario_situacao_padrao: rowData.funcionario_situacao_padrao === true } });
         setModalDetalhesFeriasOpened(true);
     }
 
@@ -445,12 +446,15 @@ function DataTableFerias({
     }
 
     const representativeSituacaoTemplate = (rowData) => {
-        if (!rowData.dt_fim && !rowData.dt_inicio) {
+        // Busca o id da situação "Demitido" na lista de tipoSituacao
+        const isDemitido = rowData.funcionario_situacao_padrao === true;
+        console.log(rowData)
+        if (!rowData.dt_fim && !rowData.dt_inicio && (rowData.funcionario_marcado_demissao === false)) {
             // Férias a solicitar
             if (ArmazenadorToken.hasPermission('add_ferias')) {
                 return (
                     <p style={{fontWeight: '400', fontSize: '11px'}}>
-                        <Botao aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab>
+                        <Botao disabled={isDemitido} aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab>
                             <FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar
                         </Botao>
                     </p>
@@ -624,21 +628,6 @@ function DataTableFerias({
         )
     }
 
-    useEffect(() => {
-        if(ferias)
-        {
-            if(colaborador)
-            {
-                // setFilteredData(ferias.filter(feria => feria.funcionario_id == colaborador))
-            }
-            else
-            {
-                // setFilteredData(ferias)
-            }
-        }
-        
-     }, [colaborador, ferias])
-
     // Função para lidar com mudanças de página
     const onPageChange = (event) => {
         const newPage = event.page + 1;
@@ -695,7 +684,7 @@ function DataTableFerias({
                 <Column body={representativeFeriasColetivasTemplate} field="ferias_coletivas" header="Coletiva" style={{ width: '8%' }}></Column>
                 <Column body={representativeSituacaoTemplate} field="situacaoferias" header="Situação" style={{ width: '18%' }}></Column>
             </DataTable>
-            <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={fecharModal} />
+            <ModalDetalhesFerias opened={modalDetalhesFeriasOpened} evento={eventoSelecionado} aoFechar={fecharModal} isDemitido={eventoSelecionado?.colab?.funcionario_situacao_padrao === true} />
         </>
     )
 }

@@ -16,6 +16,7 @@ import { Toast } from 'primereact/toast'
 import SwitchInput from "@components/SwitchInput"
 import { FaUpload } from 'react-icons/fa'
 import { HiX } from 'react-icons/hi'
+import CampoDataPeriodo from '@components/CampoDataPeriodo';
 
 const Cabecalho = styled.div`
     padding: 24px 32px;
@@ -117,16 +118,16 @@ const FormGroup = styled.div`
     display: flex;
     flex-direction: column;
     gap: 8px;
-    ${props => props.fullWidth && `
+    ${props => props.$fullWidth && `
         width: 100%;
     `}
-    ${props => props.flex3 && `
+    ${props => props.$flex3 && `
         flex: 3;
     `}
-    ${props => props.flex2 && `
+    ${props => props.$flex2 && `
         flex: 2;
     `}
-    ${props => props.flex1 && `
+    ${props => props.$flex1 && `
         flex: 1;
     `}
 `;
@@ -315,6 +316,27 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     }
 
+    // Gera lista de todas as datas bloqueadas (para o Calendar) a partir de colaborador.periodos_bloqueados_demissao
+    function gerarDatasBloqueadas() {
+        const datas = [];
+        const periodos = colaborador?.periodos_bloqueados_demissao || [];
+        periodos.forEach(periodo => {
+            if (!periodo.data_inicio || !periodo.data_fim) return;
+            let atual = new Date(periodo.data_inicio);
+            atual.setHours(0,0,0,0);
+            const fim = new Date(periodo.data_fim);
+            fim.setHours(0,0,0,0);
+            while (atual <= fim) {
+                const d = new Date(atual);
+                d.setHours(0,0,0,0);
+                datas.push(d);
+                atual.setDate(atual.getDate() + 1);
+            }
+        });
+        return datas;
+    }
+    const datasBloqueadas = gerarDatasBloqueadas();
+
     return(
         <>
             <Toast ref={toast} />
@@ -397,7 +419,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                 {!bloquearFormulario && (
                                     <FormContainer>
                                         <FormRow>
-                                            <FormGroup fullWidth>
+                                            <FormGroup $fullWidth>
                                                 <DropdownItens
                                                     valor={tipoDemissao}
                                                     setValor={setTipoDemissao}
@@ -411,17 +433,30 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                         </FormRow>
 
                                         <FormRow>
-                                            <FormGroup flex1>
-                                                <CampoTexto
-                                                    name="data_demissao"
-                                                    valor={dataDemissao}
-                                                    setValor={handleDataDemissaoChange}
-                                                    type="date"
+                                            <FormGroup $flex1>
+                                                <CampoDataPeriodo
                                                     label="Data da Demissão"
+                                                    name="data_demissao"
+                                                    value={dataDemissao ? (() => { const d = new Date(dataDemissao); d.setHours(0,0,0,0); return d; })() : null}
+                                                    onChange={e => {
+                                                        const novaData = e.value;
+                                                        if (datasBloqueadas.some(bloq => bloq.getTime() === novaData?.setHours(0,0,0,0))) {
+                                                            toast.current.show({
+                                                                severity: 'warn',
+                                                                summary: 'Data inválida',
+                                                                detail: 'Não é permitido selecionar uma data de demissão dentro de um período bloqueado.',
+                                                                life: 4000
+                                                            });
+                                                            return;
+                                                        }
+                                                        handleDataDemissaoChange(novaData ? novaData.toISOString().split('T')[0] : '');
+                                                    }}
+                                                    disabledDates={datasBloqueadas}
                                                     placeholder="Selecione a data"
+                                                    required
                                                 />
                                             </FormGroup>
-                                            <FormGroup flex1>
+                                            <FormGroup $flex1>
                                                 <CampoTexto
                                                     name="data_pagamento"
                                                     valor={dataPagamento}
@@ -434,7 +469,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                         </FormRow>
 
                                         <FormRow>
-                                            <FormGroup flex2>
+                                            <FormGroup $flex2>
                                                 <CampoTexto
                                                     name="data_inicio_aviso"
                                                     valor={dataInicioAviso}
@@ -444,14 +479,14 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                                     placeholder="Selecione a data"
                                                 />
                                             </FormGroup>
-                                            <FormGroup flex1>
+                                            <FormGroup $flex1>
                                                 <FormLabel>Aviso Indenizado</FormLabel>
                                                 <SwitchInput
                                                     checked={avisoIndenizado}
                                                     onChange={setAvisoIndenizado}
                                                 />
                                             </FormGroup>
-                                            <FormGroup flex2>
+                                            <FormGroup $flex2>
                                                 <DropdownItens
                                                     valor={motivoDemissao}
                                                     setValor={setMotivoDemissao}
@@ -464,7 +499,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                             </FormGroup>
                                         </FormRow>
 
-                                        <FormGroup fullWidth>
+                                        <FormGroup $fullWidth>
                                             <FormLabel>Anexo</FormLabel>
                                             <div style={{
                                                 border: '2px dashed #aaa',
@@ -569,7 +604,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                             </div>
                                         </FormGroup>
 
-                                        <FormGroup fullWidth>
+                                        <FormGroup $fullWidth>
                                             <FormLabel>Observação</FormLabel>
                                             <TextArea
                                                 value={observacao}

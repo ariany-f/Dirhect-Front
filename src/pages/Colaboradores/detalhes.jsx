@@ -18,7 +18,6 @@ import { Toast } from 'primereact/toast'
 import http from '@http'
 import { useEffect, useRef, useState } from 'react'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
-import { addLocale } from 'primereact/api'
 import { Tag } from 'primereact/tag';
 import { useSessaoUsuarioContext } from '@contexts/SessaoUsuario';
 import { RiFileCopy2Line, RiGasStationFill, RiShoppingCartFill, RiUpload2Fill } from 'react-icons/ri';
@@ -457,11 +456,6 @@ function ColaboradorDetalhes() {
     const [mostrarMotivoEstabilidade, setMostrarMotivoEstabilidade] = useState(false);
 
     const {usuario} = useSessaoUsuarioContext()
-
-    addLocale('pt', {
-        accept: 'Sim',
-        reject: 'Não'
-    })
 
     // Função para verificar se uma aba é válida para o usuário
     const isAbaValida = (pathname) => {

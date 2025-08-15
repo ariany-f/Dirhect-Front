@@ -17,7 +17,6 @@ import { Toast } from 'primereact/toast'
 import { useVagasContext } from '@contexts/VagasContext'; // Importando o contexto
 import DataTableMovimentosDetalhes from '@components/DataTableMovimentosDetalhes'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
-import { addLocale } from 'primereact/api'
 import movimentos from '@json/movimentos.json'
 import FrameVertical from '@components/FrameVertical'
 import { Tag } from 'primereact/tag'

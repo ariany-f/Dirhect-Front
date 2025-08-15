@@ -181,7 +181,7 @@ const formataCPF = (cpf) => {
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 };
 
-function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) {
+function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar, demitidos = true }) {
     const [colaboradores, setColaboradores] = useState([]);
     const [busca, setBusca] = useState('');
     const [colaboradorSelecionado, setColaboradorSelecionado] = useState(null);
@@ -194,7 +194,11 @@ function ModalSelecionarColaborador({ opened = false, aoFechar, aoSelecionar }) 
     const loadColaboradores = (currentPage, searchTerm = '') => {
         setLoading(true);
         const searchParam = searchTerm ? `&search=${searchTerm}` : '';
-        http.get(`funcionario/?format=json&page=${currentPage}&page_size=${pageSize}${searchParam}`)
+        let url = `funcionario/?format=json&page=${currentPage}&page_size=${pageSize}${searchParam}`;
+        if(demitidos === false) {
+             url += `&tipo_situacao__situacao_padrao=${demitidos}`
+        }
+        http.get(url)
             .then(response => {
                 setColaboradores(response.results || response);
                 setTotalRecords(response.count || 0);

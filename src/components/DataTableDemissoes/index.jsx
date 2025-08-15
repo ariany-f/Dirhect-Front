@@ -241,6 +241,7 @@ function DataTableDemissao({
                 opened={modalSelecaoAberto}
                 aoFechar={() => setModalSelecaoAberto(false)}
                 aoSelecionar={handleColaboradorSelecionado}
+                demitidos={false}
             />
             {modalDemissaoAberto && (
                 <ModalDemissao 

@@ -393,7 +393,7 @@ const BotaoReprovarCustom = styled(Botao)`
     }
 `;
 
-export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
+export default function ModalDetalhesFerias({ opened, evento, aoFechar, isDemitido = false }) {
 
     const [dataInicio, setDataInicio] = useState('');
     const [dataFim, setDataFim] = useState('');
@@ -980,7 +980,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
       );
     }
     const temPermissaoAddFerias = ArmazenadorToken.hasPermission('add_ferias');
-    const podeSolicitar = statusType === 'aSolicitar' && temPermissaoAddFerias;
+    const podeSolicitar = statusType === 'aSolicitar' && temPermissaoAddFerias && !isDemitido;
     const solicitarFerias = async () => {
         if (!dataInicio || !dataFim || !numeroDiasFerias) {
             fecharComLimpeza({ aviso: true, mensagem: 'Por favor, preencha as datas de início e fim e o número de dias.' });
@@ -1177,7 +1177,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         </span>
                                     </AlertaErro>
                                 )}
-
                                 {mostrarErroDiasMinimos && (
                                     <AlertaErro>
                                         <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
@@ -1186,7 +1185,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         </span>
                                     </AlertaErro>
                                 )}
-
                                 {mostrarErroSaldoDias && (
                                     <AlertaErro>
                                         <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
@@ -1195,7 +1193,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         </span>
                                     </AlertaErro>
                                 )}
-
                                 {mostrarErroAbono && (
                                     <AlertaErro>
                                         <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
@@ -1204,7 +1201,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         </span>
                                     </AlertaErro>
                                 )}
-
                                 {mostrarErroSaldoTotal && (
                                     <AlertaErro>
                                         <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
@@ -1213,7 +1209,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         </span>
                                     </AlertaErro>
                                 )}
-
                                 {mostrarErroAdiantamento13 && (
                                     <AlertaErro>
                                         <FaExclamationCircle size={20} style={{ color: '#dc2626', flexShrink: 0 }}/>
@@ -1222,7 +1217,6 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                         </span>
                                     </AlertaErro>
                                 )}
-
                                 {mostrarErroAntecedencia && (
                                     !isPerfilEspecial ? (
                                         <AlertaErro>
@@ -1291,7 +1285,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                             )}
                             
                             {/* Seção de detalhes adicionais para férias finalizadas, aprovadas ou marcadas */}
-                            {(statusType === 'finalizada' || statusType === 'aprovada' || statusType === 'marcada' || statusType === 'passada' || statusType === 'acontecendo' || statusType === 'paga' || statusType === 'solicitada') && (
+                            {(statusType === 'finalizada' || statusType === 'aprovada' || statusType === 'marcada' || statusType === 'passada' || statusType === 'acontecendo' || statusType === 'paga' || statusType === 'solicitada' || isDemitido) && (
                                 <Frame style={{
                                     backgroundColor: '#fff',
                                     border: '1px solid #dee2e6',
@@ -1357,7 +1351,8 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                     </BlocoDatas>
                                 </Frame>
                             )}
-                            {statusType === 'aSolicitar' && !temPermissaoAddFerias && (
+                            {/* Não renderiza formulário de solicitação se isDemitido for true */}
+                            {(!isDemitido && statusType === 'aSolicitar' && !temPermissaoAddFerias) && (
                                 <Frame style={{
                                     backgroundColor: '#fff',
                                     border: '1px solid #dee2e6',
@@ -1375,7 +1370,7 @@ export default function ModalDetalhesFerias({ opened, evento, aoFechar }) {
                                     </AlertaAviso>
                                 </Frame>
                             )}
-                            {podeSolicitar && (
+                            {(!isDemitido && podeSolicitar) && (
                                 <Frame style={{
                                     backgroundColor: '#fff',
                                     border: '1px solid #dee2e6',

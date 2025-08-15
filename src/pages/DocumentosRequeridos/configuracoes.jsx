@@ -10,7 +10,6 @@ import Frame from '@components/Frame';
 import BotaoVoltar from '@components/BotaoVoltar';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { addLocale } from 'primereact/api';
 import { ArmazenadorToken } from '@utils';
 
 const Container = styled.div`
@@ -36,11 +35,6 @@ function DocumentosConfiguracoes() {
     useEffect(() => {
         fetchDocumentos();
     }, []);
-
-    addLocale('pt', {
-        accept: 'Sim',
-        reject: 'Não',
-    });
 
     const fetchDocumentos = async () => {
         try {
