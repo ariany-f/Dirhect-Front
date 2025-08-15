@@ -118,7 +118,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         try {
             // Carrega apenas os 15 bancos mais comuns (sem ordering=uso)
             const response = await http.get('banco/?page_size=15');
-            const formattedBancos = response.map(b => ({
+            const bancosArray = response.results || response;
+            const formattedBancos = bancosArray.map(b => ({
                 code: b.id,
                 name: `${b.id} - ${b.nome_completo || b.nome}`
             }));
@@ -144,7 +145,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         setCarregandoBuscaBanco(true);
         try {
             const response = await http.get(`banco/?search=${termo}&page_size=100`);
-            const formattedBancos = response.map(b => ({
+            const bancosArray = response.results || response;
+            const formattedBancos = bancosArray.map(b => ({
                 code: b.id,
                 name: `${b.id} - ${b.nome_completo || b.nome}`
             }));
@@ -165,7 +167,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         try {
             // Carrega apenas as 15 agências mais comuns (sem ordering=uso)
             const response = await http.get(`agencia/?banco_id=${candidato.banco}&page_size=15`);
-            const formattedAgencias = response.map(ag => ({
+            const agenciasArray = response.results || response;
+            const formattedAgencias = agenciasArray.map(ag => ({
                 code: ag.id,
                 name: `${ag.num_agencia} - ${ag.nome || 'Agência'}`
             }));
@@ -193,7 +196,8 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
         setCarregandoBusca(true);
         try {
             const response = await http.get(`agencia/?banco_id=${candidato.banco}&search=${termo}&page_size=100`);
-            const formattedAgencias = response.map(ag => ({
+            const agenciasArray = response.results || response;
+            const formattedAgencias = agenciasArray.map(ag => ({
                 code: ag.id,
                 name: `${ag.num_agencia} - ${ag.nome || 'Agência'}`
             }));
