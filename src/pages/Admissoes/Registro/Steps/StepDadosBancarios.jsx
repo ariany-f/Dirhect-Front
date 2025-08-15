@@ -227,10 +227,12 @@ const StepDadosBancarios = ({ modoLeitura = false, classError = [], setClassErro
 
     // Efeito para busca de bancos com debounce
     useEffect(() => {
-        if (buscaBancoDebounced !== buscaBanco) {
+        if (buscaBancoDebounced && buscaBancoDebounced.length >= 2) {
             buscarBancos(buscaBancoDebounced);
+        } else if (!buscaBancoDebounced) {
+            setBancos(bancosCarregados);
         }
-    }, [buscaBancoDebounced, buscarBancos]);
+    }, [buscaBancoDebounced, buscarBancos, bancosCarregados]);
 
     // Efeito para busca de agências com debounce
     useEffect(() => {
