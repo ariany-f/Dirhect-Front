@@ -155,8 +155,7 @@ export class BrandColors {
     // Obter logo da marca
     static getPoweredByLogo() {
       const layoutColors = JSON.parse(localStorage.getItem('layoutColors')) || {};
-      const storedLogo = localStorage.getItem('brandLogo');
-      return storedLogo || layoutColors.LOGO_POWERED_BY || import.meta.env.VITE_BRAND_LOGO_POWERED_BY || '/imagens/powered_by.png';
+      return layoutColors.LOGO_POWERED_BY || import.meta.env.VITE_BRAND_LOGO_POWERED_BY || '/imagens/powered_by.png';
     }
 
     // Obter logo da marca
