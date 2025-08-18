@@ -452,6 +452,9 @@ function DetalhesVaga() {
             });
     };
 
+    // Verifica se há candidato aprovado
+    const temCandidatoAprovado = vaga?.candidatos_aprovados.length > 0;
+    
     return (
         <>
         <Frame>
@@ -633,8 +636,11 @@ function DetalhesVaga() {
                         <Botao 
                             size="small" 
                             aoClicar={() => { setDocumentoEditando(null); setModalDocumentoAberto(true); }}
-                            disabled={vaga?.status === 'T'}
-                            title={vaga?.status === 'T' ? "Não é possível adicionar documentos em vagas transferidas" : ""}
+                            disabled={vaga?.status === 'T' || temCandidatoAprovado}
+                            title={
+                                vaga?.status === 'T' ? "Não é possível adicionar documentos em vagas transferidas" :
+                                temCandidatoAprovado ? "Não é possível adicionar documentos pois já existe candidato aprovado" : ""
+                            }
                         >
                             <GrAddCircle stroke="var(--secundaria)" /> Adicionar documento requerido
                         </Botao>
