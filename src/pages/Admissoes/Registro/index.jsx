@@ -2894,14 +2894,16 @@ const CandidatoRegistro = () => {
                     {/* Steps intermediários com salvar */}
                     {(activeIndex >= 1 && activeIndex < totalSteps - 1) && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
-                            <Botao 
-                                size="small" 
-                                iconPos="right" 
-                                aoClicar={handleSalvarAdmissao}
-                                disabled={modoLeitura || !dadosCarregados || !isDirty}
-                            >
-                                <FaSave fill="var(--secundaria)"/> Salvar
-                            </Botao>
+                            {activeIndex !== getStepDependentesIndex() && (
+                                <Botao 
+                                    size="small" 
+                                    iconPos="right" 
+                                    aoClicar={handleSalvarAdmissao}
+                                    disabled={modoLeitura || !dadosCarregados || !isDirty}
+                                >
+                                    <FaSave fill="var(--secundaria)"/> Salvar
+                                </Botao>
+                            )}
                             <Botao 
                                 size="small" 
                                 label="Next" 
@@ -3777,8 +3779,8 @@ const CandidatoRegistro = () => {
     return (
         <>
         <Toast ref={toast} style={{ zIndex: '99999!important' }} />
+        <ConfirmDialog />
         <ConteudoFrame>
-            <ConfirmDialog />
             
             {/* Estilo para desabilitar navegação manual pelo header do stepper, mas permitir navegação programática */}
             <style>
@@ -4249,366 +4251,414 @@ const CandidatoRegistro = () => {
 
             {/* Footer fixo com botões */}
             {renderFooterButtons()}
+        </ConteudoFrame>
 
-            {/* Modal de confirmação */}
-            {showModalConfirmacao && (
-                <ModalOverlay onClick={handleOverlayClick}>
-                    <ModalContainer>
-                        <ModalHeader>
-                            <ModalTitle>
-                                <HiCheckCircle fill="var(--secundaria)" /> Confirmação de Finalização
-                            </ModalTitle>
-                            <CloseButton onClick={handleCancelarFinalizacao}>
-                                <HiX />
-                            </CloseButton>
-                        </ModalHeader>
-                        <ModalContent>
-                            <IconContainer>
-                                <HiCheckCircle />
-                            </IconContainer>
-                            <ModalMessage>
-                                {(() => {
-                                    const tarefaPendente = obterTarefaPendente();
-                                    
-                                    // analista_tenant=RH
-                                    // analista=Outsourcing
-                                    const perfil = ArmazenadorToken.UserProfile;
-                                    
-                                    if (tarefaPendente?.tipo_codigo === 'aguardar_documento') {
-                                        return (
-                                            <>
-                                                Após esta confirmação, os <strong>documentos do candidato</strong> <strong>{candidato?.nome || 'Candidato'}</strong> serão aprovados e encaminhados para aprovação da admissão.
-                                                <br /><br />
-                                                Esta ação irá:
-                                                <br />
-                                                • Aprovar a tarefa de preenchimento de documentos
-                                                <br />
-                                                • Encaminhar para aprovação da admissão
-                                                <br />
-                                                • Aguardar aprovação de analista/supervisor/gestor
-                                                <br /><br />
-                                                Deseja continuar com a finalização?
-                                            </>
-                                        );
-                                    } else if (tarefaPendente?.tipo_codigo === 'aprovar_admissao') {
-                                        return (
-                                            <>
-                                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
-                                                <br /><br />
-                                                Esta ação irá:
-                                                <br />
-                                                • Aprovar a admissão do candidato
-                                                <br />
-                                                • Iniciar o processo de integração
-                                                <br />
-                                                • Incluir o colaborador no sistema
-                                                <br /><br />
-                                                Deseja continuar com a finalização?
-                                            </>
-                                        );
-                                    } else if (tarefaPendente?.tipo_codigo === 'integrar_admissao_correcao') {
-                                        return (
-                                            <>
-                                                Após esta confirmação, será realizada uma nova <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
-                                                <br /><br />
-                                                Esta ação irá:
-                                                <br />
-                                                • Aprovar a admissão do candidato
-                                                <br />
-                                                • Iniciar o processo de integração
-                                                <br />
-                                                • Incluir o colaborador no sistema
-                                                <br /><br />
-                                                Deseja continuar com a finalização?
-                                            </>
-                                        );
-                                    } else {
-                                        return (
-                                            <>
-                                                Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
-                                                <br /><br />
-                                                Esta ação irá:
-                                                <br />
-                                                • Aprovar a tarefa de preenchimento de documentos
-                                                <br />
-                                                • Iniciar o processo de integração
-                                                <br />
-                                                • Incluir o colaborador no sistema
-                                                <br /><br />
-                                                Deseja continuar com a finalização?
-                                            </>
-                                        );
-                                    }
-                                })()}
-                            </ModalMessage>
-                        </ModalContent>
-                        <ModalFooter>
-                            <ModalButton className="secondary" onClick={handleCancelarFinalizacao}>
-                                <HiX /> Cancelar
-                            </ModalButton>
-                            <ModalButton className="primary" onClick={handleConfirmarFinalizacao}>
-                                <HiCheckCircle fill="var(--secundaria)" /> Sim, finalizar
-                            </ModalButton>
-                        </ModalFooter>
-                    </ModalContainer>
-                </ModalOverlay>
-            )}
-
-            {/* Modal de confirmação para salvar dependentes */}
-            {showConfirmacaoDependentes && (
-                <ModalOverlay onClick={handleOverlayClick}>
-                    <ModalContainer>
-                        <ModalHeader>
-                            <ModalTitle>
-                                <HiCheckCircle fill="var(--secundaria)" /> Confirmação de Salvamento de Dependentes
-                            </ModalTitle>
-                            <CloseButton onClick={handleCancelarDependentes}>
-                                <HiX />
-                            </CloseButton>
-                        </ModalHeader>
-                        <ModalContent>
-                            <IconContainer>
-                                <HiCheckCircle />
-                            </IconContainer>
-                            <ModalMessage>
-                                <div style={{ marginBottom: '16px' }}>
-                                    {acaoSalvamento === 'salvar' ? (
-                                        <>
-                                            Você tem <strong>{dependentesParaAdicionar.length}</strong> dependente(s) pendente(s) de salvar.
-                                            <br /><br />
-                                            Deseja salvar estes dependentes agora?
-                                        </>
-                                    ) : (
-                                        <>
-                                            Você tem <strong>{dependentesParaAdicionar.length}</strong> dependente(s) pendente(s) de salvar.
-                                            <br /><br />
-                                            Deseja salvar estes dependentes agora e continuar para o próximo passo?
-                                        </>
-                                    )}
-                                </div>
+        {/* Modal de confirmação */}
+        {showModalConfirmacao && (
+            <ModalOverlay onClick={handleOverlayClick}>
+                <ModalContainer>
+                    <ModalHeader>
+                        <ModalTitle>
+                            <HiCheckCircle fill="var(--secundaria)" /> Confirmação de Finalização
+                        </ModalTitle>
+                        <CloseButton onClick={handleCancelarFinalizacao}>
+                            <HiX />
+                        </CloseButton>
+                    </ModalHeader>
+                    <ModalContent>
+                        <IconContainer>
+                            <HiCheckCircle />
+                        </IconContainer>
+                        <ModalMessage>
+                            {(() => {
+                                const tarefaPendente = obterTarefaPendente();
                                 
+                                // analista_tenant=RH
+                                // analista=Outsourcing
+                                const perfil = ArmazenadorToken.UserProfile;
+                                
+                                if (tarefaPendente?.tipo_codigo === 'aguardar_documento') {
+                                    return (
+                                        <>
+                                            Após esta confirmação, os <strong>documentos do candidato</strong> <strong>{candidato?.nome || 'Candidato'}</strong> serão aprovados e encaminhados para aprovação da admissão.
+                                            <br /><br />
+                                            Esta ação irá:
+                                            <br />
+                                            • Aprovar a tarefa de preenchimento de documentos
+                                            <br />
+                                            • Encaminhar para aprovação da admissão
+                                            <br />
+                                            • Aguardar aprovação de analista/supervisor/gestor
+                                            <br /><br />
+                                            Deseja continuar com a finalização?
+                                        </>
+                                    );
+                                } else if (tarefaPendente?.tipo_codigo === 'aprovar_admissao') {
+                                    return (
+                                        <>
+                                            Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
+                                            <br /><br />
+                                            Esta ação irá:
+                                            <br />
+                                            • Aprovar a admissão do candidato
+                                            <br />
+                                            • Iniciar o processo de integração
+                                            <br />
+                                            • Incluir o colaborador no sistema
+                                            <br /><br />
+                                            Deseja continuar com a finalização?
+                                        </>
+                                    );
+                                } else if (tarefaPendente?.tipo_codigo === 'integrar_admissao_correcao') {
+                                    return (
+                                        <>
+                                            Após esta confirmação, será realizada uma nova <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
+                                            <br /><br />
+                                            Esta ação irá:
+                                            <br />
+                                            • Aprovar a admissão do candidato
+                                            <br />
+                                            • Iniciar o processo de integração
+                                            <br />
+                                            • Incluir o colaborador no sistema
+                                            <br /><br />
+                                            Deseja continuar com a finalização?
+                                        </>
+                                    );
+                                } else {
+                                    return (
+                                        <>
+                                            Após esta confirmação, será realizada a <strong>integração do colaborador</strong> <strong>{candidato?.nome || 'Candidato'}</strong> ao sistema.
+                                            <br /><br />
+                                            Esta ação irá:
+                                            <br />
+                                            • Aprovar a tarefa de preenchimento de documentos
+                                            <br />
+                                            • Iniciar o processo de integração
+                                            <br />
+                                            • Incluir o colaborador no sistema
+                                            <br /><br />
+                                            Deseja continuar com a finalização?
+                                        </>
+                                    );
+                                }
+                            })()}
+                        </ModalMessage>
+                    </ModalContent>
+                    <ModalFooter>
+                        <ModalButton className="secondary" onClick={handleCancelarFinalizacao}>
+                            <HiX /> Cancelar
+                        </ModalButton>
+                        <ModalButton className="primary" onClick={handleConfirmarFinalizacao}>
+                            <HiCheckCircle fill="var(--secundaria)" /> Sim, finalizar
+                        </ModalButton>
+                    </ModalFooter>
+                </ModalContainer>
+            </ModalOverlay>
+        )}
+
+        {/* Modal de confirmação para salvar dependentes */}
+        {showConfirmacaoDependentes && (
+            <ModalOverlay onClick={handleOverlayClick}>
+                <ModalContainer>
+                    <ModalHeader>
+                        <ModalTitle>
+                            <HiCheckCircle fill="var(--secundaria)" /> Confirmação de Salvamento de Dependentes
+                        </ModalTitle>
+                        <CloseButton onClick={handleCancelarDependentes}>
+                            <HiX />
+                        </CloseButton>
+                    </ModalHeader>
+                    <ModalContent>
+                        <IconContainer>
+                            <HiCheckCircle />
+                        </IconContainer>
+                        <ModalMessage>
+                            <div style={{ marginBottom: '16px' }}>
+                                {acaoSalvamento === 'salvar' ? (
+                                    <>
+                                        Você tem <strong>{dependentesParaAdicionar.length}</strong> dependente(s) pendente(s) de salvar.
+                                        <br /><br />
+                                        Deseja salvar estes dependentes agora?
+                                    </>
+                                ) : (
+                                    <>
+                                        Você tem <strong>{dependentesParaAdicionar.length}</strong> dependente(s) pendente(s) de salvar.
+                                        <br /><br />
+                                        Deseja salvar estes dependentes agora e continuar para o próximo passo?
+                                    </>
+                                )}
+                            </div>
+                            
+                            <div style={{ 
+                                background: '#fef3c7', 
+                                border: '1px solid #fde68a', 
+                                borderRadius: '8px', 
+                                padding: '12px', 
+                                marginTop: '16px' 
+                            }}>
                                 <div style={{ 
-                                    background: '#fef3c7', 
-                                    border: '1px solid #fde68a', 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '8px', 
+                                    marginBottom: '8px',
+                                    color: '#d97706',
+                                    fontWeight: '600'
+                                }}>
+                                    <i className="pi pi-exclamation-triangle" style={{ fontSize: '16px' }}></i>
+                                    <span>Importante</span>
+                                </div>
+                                <p style={{ 
+                                    margin: 0, 
+                                    fontSize: '14px', 
+                                    color: '#92400e', 
+                                    lineHeight: '1.5' 
+                                }}>
+                                    <strong>Dependentes já salvos não podem ser editados.</strong> Para fazer alterações, será necessário excluir o dependente e adicionar um novo.
+                                </p>
+                            </div>
+                            
+                            {dependentesParaAdicionar.length > 0 && (
+                                <div style={{ 
+                                    background: '#f8fafc', 
+                                    border: '1px solid #e2e8f0', 
                                     borderRadius: '8px', 
                                     padding: '12px', 
                                     marginTop: '16px' 
                                 }}>
                                     <div style={{ 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
-                                        gap: '8px', 
+                                        fontWeight: '600', 
                                         marginBottom: '8px',
-                                        color: '#d97706',
-                                        fontWeight: '600'
+                                        color: '#374151'
                                     }}>
-                                        <i className="pi pi-exclamation-triangle" style={{ fontSize: '16px' }}></i>
-                                        <span>Importante</span>
+                                        Dependentes que serão salvos:
                                     </div>
-                                    <p style={{ 
-                                        margin: 0, 
-                                        fontSize: '14px', 
-                                        color: '#92400e', 
-                                        lineHeight: '1.5' 
-                                    }}>
-                                        <strong>Dependentes já salvos não podem ser editados.</strong> Para fazer alterações, será necessário excluir o dependente e adicionar um novo.
-                                    </p>
+                                    <div style={{ maxHeight: '120px', overflowY: 'auto' }}>
+                                        {dependentesParaAdicionar.map((dep, index) => (
+                                            <div key={index} style={{ 
+                                                padding: '6px 0', 
+                                                borderBottom: index < dependentesParaAdicionar.length - 1 ? '1px solid #e5e7eb' : 'none',
+                                                fontSize: '14px',
+                                                color: '#6b7280'
+                                            }}>
+                                                <strong>{dep.nome_depend || 'Sem nome'}</strong>
+                                                {dep.cpf && ` - CPF: ${dep.cpf}`}
+                                                {dep.dt_nascimento && ` - Nasc: ${dep.dt_nascimento}`}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                                
-                                {dependentesParaAdicionar.length > 0 && (
-                                    <div style={{ 
-                                        background: '#f8fafc', 
-                                        border: '1px solid #e2e8f0', 
-                                        borderRadius: '8px', 
-                                        padding: '12px', 
-                                        marginTop: '16px' 
-                                    }}>
-                                        <div style={{ 
-                                            fontWeight: '600', 
-                                            marginBottom: '8px',
-                                            color: '#374151'
-                                        }}>
-                                            Dependentes que serão salvos:
-                                        </div>
-                                        <div style={{ maxHeight: '120px', overflowY: 'auto' }}>
-                                            {dependentesParaAdicionar.map((dep, index) => (
-                                                <div key={index} style={{ 
-                                                    padding: '6px 0', 
-                                                    borderBottom: index < dependentesParaAdicionar.length - 1 ? '1px solid #e5e7eb' : 'none',
-                                                    fontSize: '14px',
-                                                    color: '#6b7280'
-                                                }}>
-                                                    <strong>{dep.nome_depend || 'Sem nome'}</strong>
-                                                    {dep.cpf && ` - CPF: ${dep.cpf}`}
-                                                    {dep.dt_nascimento && ` - Nasc: ${dep.dt_nascimento}`}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </ModalMessage>
-                        </ModalContent>
-                        <ModalFooter>
-                            <ModalButton className="secondary" onClick={handleCancelarDependentes}>
-                                <HiX /> Cancelar
-                            </ModalButton>
-                            <ModalButton className="danger" onClick={handleRemoverDependentesESalvar}>
-                                <FaTrash fill="var(--error)" /> Remover
-                            </ModalButton>
-                            <ModalButton className="primary" onClick={handleConfirmarDependentes}>
-                                <HiCheckCircle size={20} fill="var(--white)" /> Sim, salvar dependentes
-                            </ModalButton>
-                        </ModalFooter>
-                    </ModalContainer>
-                </ModalOverlay>
-            )}
-
-
-
-            {/* Modal de visualização da imagem */}
-            {showImageModal && candidato.imagem && (
-                <ImageModal onClick={(e) => {
-                    if (e.target === e.currentTarget) {
-                        setShowImageModal(false);
-                    }
-                }}>
-                    <ImageModalContent>
-                        <ImageModalImage 
-                            src={candidato.imagem} 
-                            alt={`Foto de ${candidato?.nome}`} 
-                        />
-                        <ImageModalControls>
-                            {ArmazenadorToken.hasPermission('change_admissao') && !modoLeitura && (
-                                <>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        ref={modalFileInputRef}
-                                        onChange={handleImageUpload}
-                                        style={{ display: 'none' }}
-                                        id="candidato-image-change"
-                                    />
-                                    <ImageModalButton onClick={() => modalFileInputRef.current.click()}>
-                                        <RiUpload2Fill /> Alterar Imagem
-                                    </ImageModalButton>
-                                    <ImageModalButton className="danger" onClick={handleRemoveImage}>
-                                        <HiX fill="var(--white)" /> Remover Imagem
-                                    </ImageModalButton>
-                                </>
                             )}
-                            <ImageModalButton onClick={() => setShowImageModal(false)}>
-                                <HiX /> Fechar
-                            </ImageModalButton>
-                        </ImageModalControls>
-                    </ImageModalContent>
-                </ImageModal>
-            )}
+                        </ModalMessage>
+                    </ModalContent>
+                    <ModalFooter>
+                        <ModalButton className="secondary" onClick={handleCancelarDependentes}>
+                            <HiX /> Cancelar
+                        </ModalButton>
+                        <ModalButton className="danger" onClick={handleRemoverDependentesESalvar}>
+                            <FaTrash fill="var(--error)" /> Remover
+                        </ModalButton>
+                        <ModalButton className="primary" onClick={handleConfirmarDependentes}>
+                            <HiCheckCircle size={20} fill="var(--white)" /> Sim, salvar dependentes
+                        </ModalButton>
+                    </ModalFooter>
+                </ModalContainer>
+            </ModalOverlay>
+        )}
 
-            {/* Modal de Corte de Imagem */}
-            {showCropModal && (
+
+
+        {/* Modal de visualização da imagem */}
+        {showImageModal && candidato.imagem && (
+            <ImageModal onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                    setShowImageModal(false);
+                }
+            }}>
+                <ImageModalContent>
+                    <ImageModalImage 
+                        src={candidato.imagem} 
+                        alt={`Foto de ${candidato?.nome}`} 
+                    />
+                    <ImageModalControls>
+                        {ArmazenadorToken.hasPermission('change_admissao') && !modoLeitura && (
+                            <>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    ref={modalFileInputRef}
+                                    onChange={handleImageUpload}
+                                    style={{ display: 'none' }}
+                                    id="candidato-image-change"
+                                />
+                                <ImageModalButton onClick={() => modalFileInputRef.current.click()}>
+                                    <RiUpload2Fill /> Alterar Imagem
+                                </ImageModalButton>
+                                <ImageModalButton className="danger" onClick={handleRemoveImage}>
+                                    <HiX fill="var(--white)" /> Remover Imagem
+                                </ImageModalButton>
+                            </>
+                        )}
+                        <ImageModalButton onClick={() => setShowImageModal(false)}>
+                            <HiX /> Fechar
+                        </ImageModalButton>
+                    </ImageModalControls>
+                </ImageModalContent>
+            </ImageModal>
+        )}
+
+        {/* Modal de Corte de Imagem */}
+        {showCropModal && (
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 10001,
+                padding: '20px'
+            }} onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                    handleCancelCrop();
+                }
+            }}>
                 <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    background: '#fff',
+                    borderRadius: '12px',
+                    maxWidth: '90vw',
+                    maxHeight: '90vh',
+                    width: '800px',
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 10001,
-                    padding: '20px'
-                }} onClick={(e) => {
-                    if (e.target === e.currentTarget) {
-                        handleCancelCrop();
-                    }
+                    flexDirection: 'column',
+                    overflow: 'hidden'
                 }}>
+                    {/* Header */}
                     <div style={{
-                        background: '#fff',
-                        borderRadius: '12px',
-                        maxWidth: '90vw',
-                        maxHeight: '90vh',
-                        width: '800px',
+                        padding: '16px 20px',
+                        borderBottom: '1px solid #e5e7eb',
                         display: 'flex',
-                        flexDirection: 'column',
-                        overflow: 'hidden'
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
                     }}>
-                        {/* Header */}
-                        <div style={{
-                            padding: '16px 20px',
-                            borderBottom: '1px solid #e5e7eb',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between'
-                        }}>
-                            <h3 style={{ margin: 0, color: '#374151', fontSize: '18px' }}>
-                                Cortar Imagem
-                            </h3>
-                            <button
-                                onClick={handleCancelCrop}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    fontSize: '24px',
-                                    cursor: 'pointer',
-                                    color: '#6b7280',
-                                    padding: '4px',
-                                    borderRadius: '4px',
-                                    transition: 'all 0.2s ease'
-                                }}
-                                onMouseEnter={(e) => e.target.style.color = '#374151'}
-                                onMouseLeave={(e) => e.target.style.color = '#6b7280'}
-                            >
-                                ×
-                            </button>
-                        </div>
+                        <h3 style={{ margin: 0, color: '#374151', fontSize: '18px' }}>
+                            Cortar Imagem
+                        </h3>
+                        <button
+                            onClick={handleCancelCrop}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                fontSize: '24px',
+                                cursor: 'pointer',
+                                color: '#6b7280',
+                                padding: '4px',
+                                borderRadius: '4px',
+                                transition: 'all 0.2s ease'
+                            }}
+                            onMouseEnter={(e) => e.target.style.color = '#374151'}
+                            onMouseLeave={(e) => e.target.style.color = '#6b7280'}
+                        >
+                            ×
+                        </button>
+                    </div>
 
-                        {/* Content */}
+                    {/* Content */}
+                    <div style={{
+                        padding: '20px',
+                        display: 'flex',
+                        gap: '20px',
+                        flex: 1,
+                        minHeight: 0
+                    }}>
+                        {/* Área de Imagem Original */}
                         <div style={{
-                            padding: '20px',
+                            flex: showCropSelection && !isCropped ? 0.5 : 1,
                             display: 'flex',
-                            gap: '20px',
-                            flex: 1,
-                            minHeight: 0
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: '#f9fafb',
+                            borderRadius: '8px',
+                            padding: '20px',
+                            minHeight: '400px'
                         }}>
-                            {/* Área de Imagem Original */}
+                            {showCropSelection && !isCropped && (
+                                <div style={{
+                                    marginBottom: '10px',
+                                    fontSize: '14px',
+                                    fontWeight: 'bold',
+                                    color: '#374151'
+                                }}>
+                                    📷 Imagem Original
+                                </div>
+                            )}
+                            {isCropped ? (
+                                // Mostrar imagem cortada
+                                <img
+                                    src={croppedImageSrc}
+                                    alt="Imagem cortada"
+                                    style={{
+                                        maxWidth: '100%',
+                                        maxHeight: '100%',
+                                        objectFit: 'contain',
+                                        borderRadius: '8px'
+                                    }}
+                                />
+                            ) : (
+                                // Mostrar imagem original
+                                <img
+                                    ref={setImageRef}
+                                    src={imageSrc}
+                                    alt="Imagem para cortar"
+                                    style={{
+                                        maxWidth: '100%',
+                                        maxHeight: '100%',
+                                        objectFit: 'contain'
+                                    }}
+                                />
+                            )}
+                        </div>
+                        
+                        {/* Área de Seleção de Corte */}
+                        {showCropSelection && !isCropped && (
                             <div style={{
-                                flex: showCropSelection && !isCropped ? 0.5 : 1,
+                                flex: 0.5,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                background: '#f9fafb',
+                                background: '#f0f9ff',
                                 borderRadius: '8px',
                                 padding: '20px',
-                                minHeight: '400px'
+                                minHeight: '400px',
+                                border: '2px dashed #0ea5e9'
                             }}>
-                                {showCropSelection && !isCropped && (
-                                    <div style={{
-                                        marginBottom: '10px',
-                                        fontSize: '14px',
-                                        fontWeight: 'bold',
-                                        color: '#374151'
-                                    }}>
-                                        📷 Imagem Original
-                                    </div>
-                                )}
-                                {isCropped ? (
-                                    // Mostrar imagem cortada
+                                <div style={{
+                                    marginBottom: '10px',
+                                    fontSize: '14px',
+                                    fontWeight: 'bold',
+                                    color: '#0ea5e9'
+                                }}>
+                                    ✂️ Área de Seleção
+                                </div>
+                                <ReactCrop
+                                    crop={crop}
+                                    onChange={handleCropChange}
+                                    onComplete={handleCropComplete}
+                                    aspect={1}
+                                    minWidth={50}
+                                    minHeight={50}
+                                    maxWidth={90}
+                                    maxHeight={90}
+                                    keepSelection
+                                    locked={false}
+                                    ruleOfThirds
+                                >
                                     <img
-                                        src={croppedImageSrc}
-                                        alt="Imagem cortada"
-                                        style={{
-                                            maxWidth: '100%',
-                                            maxHeight: '100%',
-                                            objectFit: 'contain',
-                                            borderRadius: '8px'
-                                        }}
-                                    />
-                                ) : (
-                                    // Mostrar imagem original
-                                    <img
-                                        ref={setImageRef}
                                         src={imageSrc}
                                         alt="Imagem para cortar"
                                         style={{
@@ -4617,276 +4667,227 @@ const CandidatoRegistro = () => {
                                             objectFit: 'contain'
                                         }}
                                     />
-                                )}
+                                </ReactCrop>
                             </div>
-                            
-                            {/* Área de Seleção de Corte */}
-                            {showCropSelection && !isCropped && (
-                                <div style={{
-                                    flex: 0.5,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    background: '#f0f9ff',
-                                    borderRadius: '8px',
-                                    padding: '20px',
-                                    minHeight: '400px',
-                                    border: '2px dashed #0ea5e9'
-                                }}>
-                                    <div style={{
-                                        marginBottom: '10px',
-                                        fontSize: '14px',
-                                        fontWeight: 'bold',
-                                        color: '#0ea5e9'
-                                    }}>
-                                        ✂️ Área de Seleção
-                                    </div>
-                                    <ReactCrop
-                                        crop={crop}
-                                        onChange={handleCropChange}
-                                        onComplete={handleCropComplete}
-                                        aspect={1}
-                                        minWidth={50}
-                                        minHeight={50}
-                                        maxWidth={90}
-                                        maxHeight={90}
-                                        keepSelection
-                                        locked={false}
-                                        ruleOfThirds
-                                    >
-                                        <img
-                                            src={imageSrc}
-                                            alt="Imagem para cortar"
-                                            style={{
-                                                maxWidth: '100%',
-                                                maxHeight: '100%',
-                                                objectFit: 'contain'
-                                            }}
-                                        />
-                                    </ReactCrop>
-                                </div>
-                            )}
+                        )}
 
-                            {/* Controles */}
-                            <div style={{
-                                width: '250px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '16px'
-                            }}>
-                                {!isCropped ? (
-                                    // Controles para imagem original
-                                    <>
-                                        {!showCropSelection ? (
-                                            // Botão para ativar seleção de corte
+                        {/* Controles */}
+                        <div style={{
+                            width: '250px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '16px'
+                        }}>
+                            {!isCropped ? (
+                                // Controles para imagem original
+                                <>
+                                    {!showCropSelection ? (
+                                        // Botão para ativar seleção de corte
+                                        <button
+                                            onClick={() => setShowCropSelection(true)}
+                                            style={{
+                                                width: '100%',
+                                                background: '#374151',
+                                                border: 'none',
+                                                borderRadius: '6px',
+                                                padding: '12px',
+                                                cursor: 'pointer',
+                                                fontSize: '14px',
+                                                color: '#fff',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.background = '#1f2937'}
+                                            onMouseLeave={(e) => e.target.style.background = '#374151'}
+                                        >
+                                            ✂️ Cortar
+                                        </button>
+                                    ) : (
+                                        // Controles quando seleção está ativa
+                                        <>
                                             <button
-                                                onClick={() => setShowCropSelection(true)}
+                                                onClick={applyCrop}
+                                                disabled={!hasCropChanged}
                                                 style={{
                                                     width: '100%',
-                                                    background: '#374151',
+                                                    background: !hasCropChanged ? '#9ca3af' : '#059669',
                                                     border: 'none',
                                                     borderRadius: '6px',
                                                     padding: '12px',
-                                                    cursor: 'pointer',
+                                                    cursor: !hasCropChanged ? 'not-allowed' : 'pointer',
                                                     fontSize: '14px',
                                                     color: '#fff',
                                                     transition: 'all 0.2s ease'
                                                 }}
-                                                onMouseEnter={(e) => e.target.style.background = '#1f2937'}
-                                                onMouseLeave={(e) => e.target.style.background = '#374151'}
+                                                onMouseEnter={(e) => {
+                                                    if (hasCropChanged) e.target.style.background = '#047857';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    if (hasCropChanged) e.target.style.background = '#059669';
+                                                }}
                                             >
-                                                ✂️ Cortar
+                                                ✅ Aplicar Corte
                                             </button>
-                                        ) : (
-                                            // Controles quando seleção está ativa
+                                            
+                                            <button
+                                                onClick={() => setShowCropSelection(false)}
+                                                style={{
+                                                    width: '100%',
+                                                    background: '#f3f4f6',
+                                                    border: '1px solid #d1d5db',
+                                                    borderRadius: '6px',
+                                                    padding: '10px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '14px',
+                                                    transition: 'all 0.2s ease'
+                                                }}
+                                                onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
+                                                onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
+                                            >
+                                                🔄 Resetar Seleção
+                                            </button>
+                                        </>
+                                    )}
+                                    
+                                    {/* Instruções */}
+                                    <div style={{
+                                        background: '#f8fafc',
+                                        border: '1px solid #e2e8f0',
+                                        borderRadius: '8px',
+                                        padding: '12px',
+                                        fontSize: '13px',
+                                        color: '#6b7280',
+                                        lineHeight: '1.5'
+                                    }}>
+                                        <strong style={{ color: '#374151' }}>Como usar:</strong><br/>
+                                        {!showCropSelection ? (
                                             <>
-                                                <button
-                                                    onClick={applyCrop}
-                                                    disabled={!hasCropChanged}
-                                                    style={{
-                                                        width: '100%',
-                                                        background: !hasCropChanged ? '#9ca3af' : '#059669',
-                                                        border: 'none',
-                                                        borderRadius: '6px',
-                                                        padding: '12px',
-                                                        cursor: !hasCropChanged ? 'not-allowed' : 'pointer',
-                                                        fontSize: '14px',
-                                                        color: '#fff',
-                                                        transition: 'all 0.2s ease'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        if (hasCropChanged) e.target.style.background = '#047857';
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        if (hasCropChanged) e.target.style.background = '#059669';
-                                                    }}
-                                                >
-                                                    ✅ Aplicar Corte
-                                                </button>
-                                                
-                                                <button
-                                                    onClick={() => setShowCropSelection(false)}
-                                                    style={{
-                                                        width: '100%',
-                                                        background: '#f3f4f6',
-                                                        border: '1px solid #d1d5db',
-                                                        borderRadius: '6px',
-                                                        padding: '10px',
-                                                        cursor: 'pointer',
-                                                        fontSize: '14px',
-                                                        transition: 'all 0.2s ease'
-                                                    }}
-                                                    onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
-                                                    onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
-                                                >
-                                                    🔄 Resetar Seleção
-                                                </button>
+                                                • Clique em "Ativar Seleção de Corte" para cortar<br/>
+                                                • Ou clique em "Salvar" para usar a imagem inteira
+                                            </>
+                                        ) : (
+                                            <>
+                                                • Arraste para selecionar a área quadrada (1:1)<br/>
+                                                • A seleção mantém sempre proporção quadrada<br/>
+                                                • Clique em "Aplicar Corte" para ver o resultado<br/>
+                                                • Ou clique em "Resetar" para cancelar
                                             </>
                                         )}
-                                        
-                                        {/* Instruções */}
-                                        <div style={{
-                                            background: '#f8fafc',
-                                            border: '1px solid #e2e8f0',
-                                            borderRadius: '8px',
-                                            padding: '12px',
-                                            fontSize: '13px',
-                                            color: '#6b7280',
-                                            lineHeight: '1.5'
-                                        }}>
-                                            <strong style={{ color: '#374151' }}>Como usar:</strong><br/>
-                                            {!showCropSelection ? (
-                                                <>
-                                                    • Clique em "Ativar Seleção de Corte" para cortar<br/>
-                                                    • Ou clique em "Salvar" para usar a imagem inteira
-                                                </>
-                                            ) : (
-                                                <>
-                                                    • Arraste para selecionar a área quadrada (1:1)<br/>
-                                                    • A seleção mantém sempre proporção quadrada<br/>
-                                                    • Clique em "Aplicar Corte" para ver o resultado<br/>
-                                                    • Ou clique em "Resetar" para cancelar
-                                                </>
-                                            )}
-                                        </div>
-                                    </>
-                                ) : (
-                                    // Controles para imagem cortada
-                                    <>
-                                        <button
-                                            onClick={() => {
-                                                setIsCropped(false);
-                                                setCroppedImageSrc('');
-                                                setShowCropSelection(false);
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                background: '#f3f4f6',
-                                                border: '1px solid #d1d5db',
-                                                borderRadius: '6px',
-                                                padding: '10px',
-                                                cursor: 'pointer',
-                                                fontSize: '14px',
-                                                transition: 'all 0.2s ease'
-                                            }}
-                                            onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
-                                            onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
-                                        >
-                                            🔄 Voltar e Editar
-                                        </button>
-                                        
-                                        {/* Instruções */}
-                                        <div style={{
-                                            background: '#f8fafc',
-                                            border: '1px solid #e2e8f0',
-                                            borderRadius: '8px',
-                                            padding: '12px',
-                                            fontSize: '13px',
-                                            color: '#6b7280',
-                                            lineHeight: '1.5'
-                                        }}>
-                                            <strong style={{ color: '#374151' }}>Corte aplicado!</strong><br/>
-                                            • Clique em "Salvar" para fazer upload<br/>
-                                            • Ou clique em "Voltar e Editar" para ajustar
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Footer */}
-                        <div style={{
-                            padding: '16px 20px',
-                            borderTop: '1px solid #e5e7eb',
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            gap: '12px'
-                        }}>
-                            <button
-                                onClick={handleCancelCrop}
-                                style={{
-                                    background: '#f3f4f6',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '6px',
-                                    padding: '10px 16px',
-                                    cursor: 'pointer',
-                                    fontSize: '14px',
-                                    transition: 'all 0.2s ease'
-                                }}
-                                onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
-                                onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
-                            >
-                                × Cancelar
-                            </button>
-                            <button
-                                onClick={handleCropImage}
-                                disabled={uploading || (showCropSelection && !isCropped)}
-                                style={{
-                                    background: uploading || (showCropSelection && !isCropped) ? '#9ca3af' : '#374151',
-                                    border: 'none',
-                                    borderRadius: '6px',
-                                    padding: '10px 16px',
-                                    cursor: uploading || (showCropSelection && !isCropped) ? 'not-allowed' : 'pointer',
-                                    fontSize: '14px',
-                                    color: '#fff',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    transition: 'all 0.2s ease'
-                                }}
-                                onMouseEnter={(e) => {
-                                    if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#1f2937';
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#374151';
-                                }}
-                            >
-                                {uploading ? (
-                                    <>
-                                        <div style={{
-                                            border: '2px solid white',
-                                            borderTop: '2px solid transparent',
-                                            borderRadius: '50%',
-                                            width: '16px',
-                                            height: '16px',
-                                            animation: 'spin 1s linear infinite'
-                                        }}></div>
-                                        Processando...
-                                    </>
-                                ) : (
-                                    <>
-                                        <HiCheckCircle fill="var(--secundaria)" /> 
-                                        {showCropSelection && !isCropped ? 'Aplique ou cancele o corte' : (isCropped ? 'Salvar' : 'Salvar Imagem Original')}
-                                    </>
-                                )}
-                            </button>
+                                    </div>
+                                </>
+                            ) : (
+                                // Controles para imagem cortada
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            setIsCropped(false);
+                                            setCroppedImageSrc('');
+                                            setShowCropSelection(false);
+                                        }}
+                                        style={{
+                                            width: '100%',
+                                            background: '#f3f4f6',
+                                            border: '1px solid #d1d5db',
+                                            borderRadius: '6px',
+                                            padding: '10px',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                        onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
+                                        onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
+                                    >
+                                        🔄 Voltar e Editar
+                                    </button>
+                                    
+                                    {/* Instruções */}
+                                    <div style={{
+                                        background: '#f8fafc',
+                                        border: '1px solid #e2e8f0',
+                                        borderRadius: '8px',
+                                        padding: '12px',
+                                        fontSize: '13px',
+                                        color: '#6b7280',
+                                        lineHeight: '1.5'
+                                    }}>
+                                        <strong style={{ color: '#374151' }}>Corte aplicado!</strong><br/>
+                                        • Clique em "Salvar" para fazer upload<br/>
+                                        • Ou clique em "Voltar e Editar" para ajustar
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
-                </div>
-            )}
-        </ConteudoFrame>
 
+                    {/* Footer */}
+                    <div style={{
+                        padding: '16px 20px',
+                        borderTop: '1px solid #e5e7eb',
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        gap: '12px'
+                    }}>
+                        <button
+                            onClick={handleCancelCrop}
+                            style={{
+                                background: '#f3f4f6',
+                                border: '1px solid #d1d5db',
+                                borderRadius: '6px',
+                                padding: '10px 16px',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                                transition: 'all 0.2s ease'
+                            }}
+                            onMouseEnter={(e) => e.target.style.background = '#e5e7eb'}
+                            onMouseLeave={(e) => e.target.style.background = '#f3f4f6'}
+                        >
+                            × Cancelar
+                        </button>
+                        <button
+                            onClick={handleCropImage}
+                            disabled={uploading || (showCropSelection && !isCropped)}
+                            style={{
+                                background: uploading || (showCropSelection && !isCropped) ? '#9ca3af' : '#374151',
+                                border: 'none',
+                                borderRadius: '6px',
+                                padding: '10px 16px',
+                                cursor: uploading || (showCropSelection && !isCropped) ? 'not-allowed' : 'pointer',
+                                fontSize: '14px',
+                                color: '#fff',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                transition: 'all 0.2s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                                if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#1f2937';
+                            }}
+                            onMouseLeave={(e) => {
+                                if (!uploading && !(showCropSelection && !isCropped)) e.target.style.background = '#374151';
+                            }}
+                        >
+                            {uploading ? (
+                                <>
+                                    <div style={{
+                                        border: '2px solid white',
+                                        borderTop: '2px solid transparent',
+                                        borderRadius: '50%',
+                                        width: '16px',
+                                        height: '16px',
+                                        animation: 'spin 1s linear infinite'
+                                    }}></div>
+                                    Processando...
+                                </>
+                            ) : (
+                                <>
+                                    <HiCheckCircle fill="var(--secundaria)" /> 
+                                    {showCropSelection && !isCropped ? 'Aplique ou cancele o corte' : (isCropped ? 'Salvar' : 'Salvar Imagem Original')}
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
         {/* Modal de Histórico de Tarefa */}
         <ModalHistoricoTarefa 
             opened={showHistoricoTarefa}
