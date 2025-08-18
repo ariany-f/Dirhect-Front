@@ -4885,15 +4885,15 @@ const CandidatoRegistro = () => {
                     </div>
                 </div>
             )}
-
-            {/* Modal de Histórico de Tarefa */}
-            <ModalHistoricoTarefa 
-                opened={showHistoricoTarefa}
-                aoFechar={() => setShowHistoricoTarefa(false)}
-                tarefa={null}
-                logs={selectedTarefaLogs}
-            />
         </ConteudoFrame>
+
+        {/* Modal de Histórico de Tarefa */}
+        <ModalHistoricoTarefa 
+            opened={showHistoricoTarefa}
+            aoFechar={() => setShowHistoricoTarefa(false)}
+            tarefa={null}
+            logs={selectedTarefaLogs}
+        />
         </>
     );
 };
