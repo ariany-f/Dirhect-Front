@@ -435,7 +435,7 @@ function DataTableCandidatos({ candidatos, vagaId = null, documentos = [], onCan
                         />
                     </>
                 )}
-                {!vagaEncerrada && !vagaTransferida && vagaConfigurada?.status !== 'R' && (
+                {!vagaEncerrada && !vagaTransferida && vagaConfigurada?.status !== 'R' && vagaConfigurada?.status !== 'A' && (
                     <>
                         <Tooltip target=".rejeitar" mouseTrack mouseTrackLeft={10} />
                         <FaTimes 
