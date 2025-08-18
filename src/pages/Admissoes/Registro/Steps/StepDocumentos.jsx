@@ -89,12 +89,12 @@ const ArquivoAcoes = styled.div`
 `;
 
 const StepDocumentos = ({ toast }) => {
-    const { candidato, updateArrayItem } = useCandidatoContext();
+    const { candidato, updateArrayItem, setCampo } = useCandidatoContext();
 
     // Opções de campos requeridos organizados por categoria
     const camposPrincipais = useMemo(() => [
         // CNH
-        { name: 'Carteira de Motorista', code: 'carteira_motorista', categoria: 'CNH' },
+        { name: 'Carteira de Motorista', code: 'carteira_motorista', fieldType:'driversLicense', categoria: 'CNH' },
         
         // CTPS
         { name: 'Carteira de Trabalho', code: 'carteira_trabalho', categoria: 'CTPS' },
@@ -106,7 +106,7 @@ const StepDocumentos = ({ toast }) => {
         { name: 'Seção Título Eleitor', code: 'secao_titulo_eleitor', categoria: 'TÍTULO DE ELEITOR' },
         
         // RG
-        { name: 'Identidade', code: 'identidade', categoria: 'RG' },
+        { name: 'Identidade', code: 'identidade', fieldType:'federalID', categoria: 'RG' },
     ], []);
 
     // Mapeamento entre campos do sistema e campos do OCR
@@ -118,7 +118,9 @@ const StepDocumentos = ({ toast }) => {
         zona_titulo_eleitor: 'electoralWard', // Título de Eleitor
         secao_titulo_eleitor: 'pollingStation', // Título de Eleitor
         identidade: 'documentId', // RG
-        data_emissao_identidade: 'issuedAt', // RG
+        uf_identidade: 'headerState', // RG
+        orgao_emissor_ident: 'orgaoEmissor', // RG (ajustar conforme resposta real do OCR)
+        data_emissao_ident: 'issuedAt', // RG
         // Adicione outros campos conforme necessário
     };
 
@@ -187,7 +189,7 @@ const StepDocumentos = ({ toast }) => {
                 try {
                     const ocrResult = await buscarDadosOCR(arquivo);
                     const enhanced = ocrResult?.data?.[0]?.enhanced;
-                    // Normaliza camposRequeridos para array
+                    // Normaliza camposRequeridos para array de obrigatórios
                     let camposRequeridos = documento.campos_requeridos;
                     if (!camposRequeridos) {
                         camposRequeridos = [];
@@ -197,7 +199,7 @@ const StepDocumentos = ({ toast }) => {
                             if (Array.isArray(parsed)) {
                                 camposRequeridos = parsed;
                             } else if (typeof parsed === 'object' && parsed !== null) {
-                                camposRequeridos = Object.keys(parsed);
+                                camposRequeridos = Object.keys(parsed).filter(key => parsed[key] === true);
                             } else {
                                 camposRequeridos = [];
                             }
@@ -205,27 +207,34 @@ const StepDocumentos = ({ toast }) => {
                             camposRequeridos = [];
                         }
                     } else if (typeof camposRequeridos === 'object' && camposRequeridos !== null && !Array.isArray(camposRequeridos)) {
-                        camposRequeridos = Object.keys(camposRequeridos);
+                        camposRequeridos = Object.keys(camposRequeridos).filter(key => camposRequeridos[key]);
                     } else if (!Array.isArray(camposRequeridos)) {
                         camposRequeridos = [];
                     }
+                    console.log('camposRequeridos', camposRequeridos);
                     let camposPreenchidos = {};
                     camposRequeridos.forEach((campo) => {
                         const campoInfo = camposPrincipais.find(c => c.code === campo);
-                        if (campoInfo && enhanced) {
+                        console.log('campoInfo', campoInfo);
+                        if (campoInfo && enhanced && (campoInfo.fieldType && enhanced.schemaName == campoInfo.fieldType)) {
                             // Busca o nome do campo no OCR
                             const nomeCampoOCR = mapeamentoCamposOCR[campo] || campo;
+                            console.log('nomeCampoOCR', nomeCampoOCR);
                             let valor = null;
                             if (enhanced.person && enhanced.person[nomeCampoOCR]) {
                                 valor = enhanced.person[nomeCampoOCR];
                             } else if (enhanced.otherFields && enhanced.otherFields[nomeCampoOCR]) {
                                 valor = enhanced.otherFields[nomeCampoOCR];
                             }
+                            console.log('valor', valor);
                             if (valor) {
                                 camposPreenchidos[campo] = valor;
+                                setCampo(campo, valor);
                             }
                         }
                     });
+
+                    console.log('camposPreenchidos', camposPreenchidos);
                     // Atualiza o documento do candidato com os campos preenchidos
                     if (Object.keys(camposPreenchidos).length > 0) {
                         const novosItensPreenchidos = documento.itens.map((item, idx) => {
@@ -241,17 +250,14 @@ const StepDocumentos = ({ toast }) => {
                             ...documento,
                             itens: novosItensPreenchidos
                         };
+                        console.log('novoDocumentoPreenchido', novoDocumentoPreenchido);
                         const indexDoc = candidato.documentos.findIndex(doc => doc.id === documentoId);
                         updateArrayItem('documentos', indexDoc, novoDocumentoPreenchido);
                     }
                     // Exemplo de exibição: alert, console.log ou toast
                     console.log('Campos requeridos:', documento.campos_requeridos);
                     console.log('Resultado OCR:', ocrResult);
-                    alert(
-                        'Campos requeridos para este documento: ' + JSON.stringify(documento.campos_requeridos) + '\n' +
-                        'Retorno do OCR: ' + JSON.stringify(ocrResult) + '\n' +
-                        'Campos preenchidos: ' + JSON.stringify(camposPreenchidos)
-                    );
+
                 } catch (ocrError) {
                     console.error('Erro ao buscar dados OCR:', ocrError);
                     toast.current.show({

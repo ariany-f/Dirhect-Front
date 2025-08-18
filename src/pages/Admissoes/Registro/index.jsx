@@ -571,6 +571,42 @@ const CandidatoRegistro = () => {
     // Estado para rastrear campos que foram explicitamente selecionados pelo usuário
     const [camposSelecionados, setCamposSelecionados] = useState(new Set());
     
+    
+
+
+
+    // Normaliza os dados para comparação (remove propriedades que podem ser undefined/null)
+    const normalizarObjeto = (obj) => {
+        if (!obj || typeof obj !== 'object') return obj;
+        
+        const normalizado = {};
+        Object.keys(obj).forEach(key => {
+            const valor = obj[key];
+            if (valor !== undefined && valor !== null && valor !== '') {
+                if (typeof valor === 'object' && !Array.isArray(valor)) {
+                    // Se é um objeto com id (como grau_instrucao, tipo_situacao, etc.), converte para o id
+                    if (valor.id !== undefined) {
+                        normalizado[key] = valor.id;
+                    } else if (valor.code !== undefined) {
+                        normalizado[key] = valor.code;
+                    } else {
+                        normalizado[key] = normalizarObjeto(valor);
+                    }
+                } else {
+                    normalizado[key] = valor;
+                }
+            }
+        });
+        return normalizado;
+    };
+    
+    const isDirty = React.useMemo(() => {
+        if (!initialCandidato || !candidato) return false;
+        const candidatoNormalizado = normalizarObjeto(candidato);
+        const initialNormalizado = normalizarObjeto(initialCandidato);
+        return JSON.stringify(candidatoNormalizado) !== JSON.stringify(initialNormalizado);
+    }, [candidato, initialCandidato]);
+
     // Função para formatar salário corretamente
     const formatarSalario = (valor) => {
         if (!valor) return '';
@@ -958,12 +994,14 @@ const CandidatoRegistro = () => {
 
         // Validação de campos obrigatórios do step atual
         const validacaoCampos = validarCamposObrigatoriosStep();
-        if (!validacaoCampos) return;
+        if (!validacaoCampos) {
+            // Exibe o erro, mas permite salvar mesmo assim
+            // return; // REMOVIDO: permite salvar mesmo com erro
+        }
 
         // Verifica se há dependentes novos para adicionar
         if (candidato.dependentes && candidato.dependentes.length > 0) {
             const dependentesNovos = candidato.dependentes.filter(dep => !dep.id);
-            
             if (dependentesNovos.length > 0) {
                 setDependentesParaAdicionar(dependentesNovos);
                 setAcaoSalvamento('salvar');
@@ -971,14 +1009,9 @@ const CandidatoRegistro = () => {
                 return;
             }
         }
-        
         // Se não há dependentes novos, salva normalmente com payload específico do step
         const payloadStepAtual = obterPayloadStepAtual();
-        const salvamentoSucesso = await executarSalvamento(null, payloadStepAtual);
-        if (salvamentoSucesso === false) {
-            // ❌ ERRO DE VALIDAÇÃO - NÃO CONTINUA
-            return;
-        }
+        await executarSalvamento(null, payloadStepAtual);
     };
 
     const handleSalvarEContinuar = async () => {
@@ -1047,33 +1080,6 @@ const CandidatoRegistro = () => {
         
         console.log('🔍 getStepDependentesIndex - índice final:', index);
         return index; // Dependentes
-    };
-
-
-
-    // Normaliza os dados para comparação (remove propriedades que podem ser undefined/null)
-    const normalizarObjeto = (obj) => {
-        if (!obj || typeof obj !== 'object') return obj;
-        
-        const normalizado = {};
-        Object.keys(obj).forEach(key => {
-            const valor = obj[key];
-            if (valor !== undefined && valor !== null && valor !== '') {
-                if (typeof valor === 'object' && !Array.isArray(valor)) {
-                    // Se é um objeto com id (como grau_instrucao, tipo_situacao, etc.), converte para o id
-                    if (valor.id !== undefined) {
-                        normalizado[key] = valor.id;
-                    } else if (valor.code !== undefined) {
-                        normalizado[key] = valor.code;
-                    } else {
-                        normalizado[key] = normalizarObjeto(valor);
-                    }
-                } else {
-                    normalizado[key] = valor;
-                }
-            }
-        });
-        return normalizado;
     };
     
     // Função auxiliar para normalizar campos específicos de dados pessoais
@@ -2176,7 +2182,7 @@ const CandidatoRegistro = () => {
         
         if (camposObrigatorios.length > 0) {
             toast.current.show({
-                severity: 'error',
+                severity: 'warn',
                 summary: 'Campos obrigatórios não preenchidos',
                 detail: `Os seguintes campos são obrigatórios: ${camposObrigatorios.join(', ')}`,
                 life: 5000
@@ -2300,7 +2306,7 @@ const CandidatoRegistro = () => {
         
         if (camposObrigatorios.length > 0) {
             toast.current.show({
-                severity: 'error',
+                severity: 'warn',
                 summary: 'Campos obrigatórios não preenchidos',
                 detail: `Os seguintes campos são obrigatórios: ${camposObrigatorios.join(', ')}`,
                 life: 5000
@@ -2817,6 +2823,12 @@ const CandidatoRegistro = () => {
                             <HiArrowLeft/> Voltar
                         </Botao>
                     )}
+                    {/* Se step inválido, botão voltar fica desabilitado */}
+                    {!isFirstStep && !stepAtualValido && (
+                        <Botao size="small" estilo="neutro" disabled>
+                            <HiArrowLeft/> Voltar
+                        </Botao>
+                    )}
                 </div>
 
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center', flex: '1', minWidth: '0', justifyContent: 'flex-end' }}>
@@ -2879,13 +2891,13 @@ const CandidatoRegistro = () => {
                     )}
                     
                     {/* Steps intermediários com salvar */}
-                    {(activeIndex >= 1 && activeIndex < totalSteps - 1) && stepAtualValido && (
+                    {(activeIndex >= 1 && activeIndex < totalSteps - 1) && (
                         <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
                             <Botao 
                                 size="small" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarAdmissao}
-                                disabled={modoLeitura || !dadosCarregados}
+                                disabled={modoLeitura || !dadosCarregados || !isDirty}
                             >
                                 <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
@@ -2894,7 +2906,7 @@ const CandidatoRegistro = () => {
                                 label="Next" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarEContinuar}
-                                disabled={!dadosCarregados}
+                                disabled={!dadosCarregados || !stepAtualValido}
                             >
                                 <HiArrowRight size={20} fill="var(--secundaria)"/> Próximo
                             </Botao>
@@ -2908,7 +2920,7 @@ const CandidatoRegistro = () => {
                                 size="small" 
                                 iconPos="right" 
                                 aoClicar={handleSalvarAdmissao}
-                                disabled={modoLeitura || !dadosCarregados}
+                                disabled={modoLeitura || !dadosCarregados || !isDirty}
                             >
                                 <FaSave fill="var(--secundaria)"/> Salvar
                             </Botao>
@@ -2953,7 +2965,7 @@ const CandidatoRegistro = () => {
                 </div>
             </div>
         );
-    }, [activeIndex, dadosCarregados, isVisible, sidebarOpened, self, mostrarHabilidades, mostrarExperiencia, modoLeitura, obterTarefaPendente, handleVoltar, handleAvancar, handleSalvarEContinuar, handleSalvarAdmissao, handleFinalizarDocumentos, verificarStepAtualValido]);
+    }, [activeIndex, dadosCarregados, isVisible, sidebarOpened, self, mostrarHabilidades, mostrarExperiencia, modoLeitura, obterTarefaPendente, handleVoltar, handleAvancar, handleSalvarEContinuar, handleSalvarAdmissao, handleFinalizarDocumentos, verificarStepAtualValido, isDirty]);
 
     // Detectar cliques nos headers do stepper - DESABILITADO TEMPORARIAMENTE
     // useEffect(() => {
