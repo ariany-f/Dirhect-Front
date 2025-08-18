@@ -51,7 +51,7 @@ function MeusDados() {
   useEffect(() => {
     // Verifica a permissão para alterar cliente
     setPodeAlterarCliente(ArmazenadorToken.hasPermission('change_cliente'));
-    setKitAdmissional(import.meta.env.VITE_OPTIONS_KIT_ADMISSIONAL);
+    setKitAdmissional(import.meta.env.VITE_OPTIONS_KIT_ADMISSIONAL === 'true');
 
     setLoading(true);
   }, []);
