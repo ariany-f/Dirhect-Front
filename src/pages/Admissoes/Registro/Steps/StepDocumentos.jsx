@@ -7,6 +7,8 @@ import http from '@http';
 import { useRef } from 'react';
 import { FaCheck, FaFile, FaEye } from 'react-icons/fa';
 import Texto from '@components/Texto';
+import { buscarDadosOCR } from '@utils/ocr';
+import { useMemo } from 'react';
 
 const DocumentoContainer = styled.div`
     border: 1px solid var(--surface-border);
@@ -89,8 +91,39 @@ const ArquivoAcoes = styled.div`
 const StepDocumentos = ({ toast }) => {
     const { candidato, updateArrayItem } = useCandidatoContext();
 
+    // Opções de campos requeridos organizados por categoria
+    const camposPrincipais = useMemo(() => [
+        // CNH
+        { name: 'Carteira de Motorista', code: 'carteira_motorista', categoria: 'CNH' },
+        
+        // CTPS
+        { name: 'Carteira de Trabalho', code: 'carteira_trabalho', categoria: 'CTPS' },
+        { name: 'Série Carteira Trabalho', code: 'serie_carteira_trab', categoria: 'CTPS' },
+        
+        // TÍTULO DE ELEITOR
+        { name: 'Título de Eleitor', code: 'titulo_eleitor', categoria: 'TÍTULO DE ELEITOR' },
+        { name: 'Zona Título Eleitor', code: 'zona_titulo_eleitor', categoria: 'TÍTULO DE ELEITOR' },
+        { name: 'Seção Título Eleitor', code: 'secao_titulo_eleitor', categoria: 'TÍTULO DE ELEITOR' },
+        
+        // RG
+        { name: 'Identidade', code: 'identidade', categoria: 'RG' },
+    ], []);
+
+    // Mapeamento entre campos do sistema e campos do OCR
+    const mapeamentoCamposOCR = {
+        carteira_motorista: 'registerNumber', // CNH
+        carteira_trabalho: 'workCardNumber', // Exemplo, ajustar conforme resposta real
+        serie_carteira_trab: 'workCardSeries', // Exemplo, ajustar conforme resposta real
+        titulo_eleitor: 'registrationNumber', // Título de Eleitor
+        zona_titulo_eleitor: 'electoralWard', // Título de Eleitor
+        secao_titulo_eleitor: 'pollingStation', // Título de Eleitor
+        identidade: 'documentId', // RG
+        data_emissao_identidade: 'issuedAt', // RG
+        // Adicione outros campos conforme necessário
+    };
+
     const handleUpload = async (documentoId, itemIndex, arquivo) => {
-        console.log(arquivo);
+        
         if (!arquivo || !candidato.id) return;
 
         const documento = candidato.documentos.find(doc => doc.id === documentoId);
@@ -148,6 +181,88 @@ const StepDocumentos = ({ toast }) => {
                 detail: 'Documento enviado com sucesso!',
                 life: 3000
             });
+
+            // --- INTEGRAÇÃO OCR ---
+            if (import.meta.env.VITE_BUSCAR_DADOS_OCR === 'true') {
+                try {
+                    const ocrResult = await buscarDadosOCR(arquivo);
+                    const enhanced = ocrResult?.data?.[0]?.enhanced;
+                    // Normaliza camposRequeridos para array
+                    let camposRequeridos = documento.campos_requeridos;
+                    if (!camposRequeridos) {
+                        camposRequeridos = [];
+                    } else if (typeof camposRequeridos === 'string') {
+                        try {
+                            const parsed = JSON.parse(camposRequeridos);
+                            if (Array.isArray(parsed)) {
+                                camposRequeridos = parsed;
+                            } else if (typeof parsed === 'object' && parsed !== null) {
+                                camposRequeridos = Object.keys(parsed);
+                            } else {
+                                camposRequeridos = [];
+                            }
+                        } catch (e) {
+                            camposRequeridos = [];
+                        }
+                    } else if (typeof camposRequeridos === 'object' && camposRequeridos !== null && !Array.isArray(camposRequeridos)) {
+                        camposRequeridos = Object.keys(camposRequeridos);
+                    } else if (!Array.isArray(camposRequeridos)) {
+                        camposRequeridos = [];
+                    }
+                    let camposPreenchidos = {};
+                    camposRequeridos.forEach((campo) => {
+                        const campoInfo = camposPrincipais.find(c => c.code === campo);
+                        if (campoInfo && enhanced) {
+                            // Busca o nome do campo no OCR
+                            const nomeCampoOCR = mapeamentoCamposOCR[campo] || campo;
+                            let valor = null;
+                            if (enhanced.person && enhanced.person[nomeCampoOCR]) {
+                                valor = enhanced.person[nomeCampoOCR];
+                            } else if (enhanced.otherFields && enhanced.otherFields[nomeCampoOCR]) {
+                                valor = enhanced.otherFields[nomeCampoOCR];
+                            }
+                            if (valor) {
+                                camposPreenchidos[campo] = valor;
+                            }
+                        }
+                    });
+                    // Atualiza o documento do candidato com os campos preenchidos
+                    if (Object.keys(camposPreenchidos).length > 0) {
+                        const novosItensPreenchidos = documento.itens.map((item, idx) => {
+                            if (idx === itemIndex) {
+                                return {
+                                    ...item,
+                                    ...camposPreenchidos
+                                };
+                            }
+                            return item;
+                        });
+                        const novoDocumentoPreenchido = {
+                            ...documento,
+                            itens: novosItensPreenchidos
+                        };
+                        const indexDoc = candidato.documentos.findIndex(doc => doc.id === documentoId);
+                        updateArrayItem('documentos', indexDoc, novoDocumentoPreenchido);
+                    }
+                    // Exemplo de exibição: alert, console.log ou toast
+                    console.log('Campos requeridos:', documento.campos_requeridos);
+                    console.log('Resultado OCR:', ocrResult);
+                    alert(
+                        'Campos requeridos para este documento: ' + JSON.stringify(documento.campos_requeridos) + '\n' +
+                        'Retorno do OCR: ' + JSON.stringify(ocrResult) + '\n' +
+                        'Campos preenchidos: ' + JSON.stringify(camposPreenchidos)
+                    );
+                } catch (ocrError) {
+                    console.error('Erro ao buscar dados OCR:', ocrError);
+                    toast.current.show({
+                        severity: 'warn',
+                        summary: 'OCR',
+                        detail: 'Não foi possível processar o OCR deste documento.',
+                        life: 3000
+                    });
+                }
+            }
+            // --- FIM INTEGRAÇÃO OCR ---
         } catch (error) {
             console.error('Erro ao fazer upload:', error);
             toast.current.show({
