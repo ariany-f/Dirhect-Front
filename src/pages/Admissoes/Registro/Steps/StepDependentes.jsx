@@ -676,14 +676,14 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                                                 if (dependente.id) {
                                                     const valorEncontrado = grausParentesco.find(g => {
                                                         // Tenta buscar por code (number) e id_origem (string)
-                                                        return g.code == dependente.grau_parentesco || g.id_origem == dependente.grau_parentesco;
+                                                        return g.code == dependente.grau_parentesco_id_origem || g.id_origem == dependente.grau_parentesco_id_origem;
                                                     });
                                                     return valorEncontrado || '';
                                                 }
                                                 // Para dependentes novos, busca na lista filtrada
                                                 const opcoesDisponiveis = getGrausParentescoDisponiveis(dependente);
                                                 const valorEncontrado = opcoesDisponiveis.find(g => {
-                                                    return g.code == dependente.grau_parentesco || g.id_origem == dependente.grau_parentesco;
+                                                    return g.code == dependente.grau_parentesco_id_origem || g.id_origem == dependente.grau_parentesco_id_origem;
                                                 });
                                                 return valorEncontrado || '';
                                             })()}
