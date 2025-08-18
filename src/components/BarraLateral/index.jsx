@@ -161,7 +161,11 @@ const Logo = styled.img`
 
 const StyledLink = styled(Link)`
     position: relative;
+    transition: all .5s ease;
     overflow: hidden;
+    & ~ {
+        transition: all .5s ease;
+    }
 `
 
 function capitalizeTipo(tipo) {
@@ -620,19 +624,19 @@ function BarraLateral({ $sidebarOpened }) {
                         </NavTitulo>
                         <ListaEstilizada>
                             <div className="links" style={{ height: (whiteLabel ? '90%' : '100%') }}>
-                            {menusOrdenados.map((item) => (
-                                <StyledLink 
-                                    key={item.id} 
-                                    className="link p-ripple" 
-                                    to={item.url}
-                                    onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
-                                    <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
-                                        {item.icone}
-                                        {item.itemTitulo}
-                                    </ItemNavegacao>
-                                    <Ripple />
-                                </StyledLink>
-                            ))}
+                                {menusOrdenados.map((item) => (
+                                    <StyledLink 
+                                        key={item.id} 
+                                        className="link p-ripple" 
+                                        to={item.url}
+                                        onClick={() => window.innerWidth <= 760 && setBarraLateralOpened(false)}>
+                                        <ItemNavegacao ativo={item.url === "/" ? location.pathname === "/" : location.pathname.startsWith(item.url)}>
+                                            {item.icone}
+                                            {item.itemTitulo}
+                                        </ItemNavegacao>
+                                        <Ripple />
+                                    </StyledLink>
+                                ))}
                             </div>
                             {whiteLabel && (
                               <img 
