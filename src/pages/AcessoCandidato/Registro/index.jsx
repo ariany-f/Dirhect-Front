@@ -579,7 +579,7 @@ const RegistroContent = ({ candidatoData, token, tourSteps }) => {
     return (
       <ConteudoFrame>
         <Toast ref={toast} style={{ zIndex: 9999 }} />
-        <ConfirmDialog />
+        <ConfirmDialog locale="pt" />
         {/* Header com informações do candidato */}
         {candidato?.nome && (
           <div style={{

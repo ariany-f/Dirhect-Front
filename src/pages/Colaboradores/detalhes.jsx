@@ -888,7 +888,7 @@ function ColaboradorDetalhes() {
             <Frame>
                 <GlobalStyle />
                 <Toast ref={toast} />
-                <ConfirmDialog />
+                <ConfirmDialog locale="pt" />
                 
                 {/* Botão voltar acima do header */}
                 {colaborador?.funcionario_pessoa_fisica?.nome && (
@@ -1014,7 +1014,6 @@ function ColaboradorDetalhes() {
                                             aoClicar={() => setModalDemissaoAberto(true)}
                                             estilo="danger"
                                             size="small"
-                                            disabled={estabilidadeBloqueada}
                                         >
                                             <FaUserTimes fill='var(--white)' size={16} style={{marginRight: '8px'}} />
                                             Solicitar Demissão
@@ -1346,6 +1345,8 @@ function ColaboradorDetalhes() {
             <ModalDemissao
                 opened={modalDemissaoAberto}
                 colaborador={colaborador}
+                estabilidadeBloqueada={estabilidadeBloqueada}
+                estabilidadeBloqueadaMessage={mensagemEstabilidade}
                 aoFechar={() => setModalDemissaoAberto(false)}
                 aoSalvar={handleSalvarDemissao}
             />

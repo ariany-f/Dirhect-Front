@@ -74,7 +74,7 @@ function DetalhesOperadoras() {
         <Frame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog />
+            <ConfirmDialog locale="pt" />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/operadoras" />
                 {operadora && operadora?.nome ?

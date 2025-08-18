@@ -85,7 +85,7 @@ function DocumentosConfiguracoes() {
     return (
         <Frame gap="16px">
             <Toast ref={toast} />
-            <ConfirmDialog />
+            <ConfirmDialog locale="pt" />
             <BotaoVoltar />
             <Container>
                 <Header>

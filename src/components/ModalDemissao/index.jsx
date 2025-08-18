@@ -17,6 +17,7 @@ import SwitchInput from "@components/SwitchInput"
 import { FaUpload } from 'react-icons/fa'
 import { HiX } from 'react-icons/hi'
 import CampoDataPeriodo from '@components/CampoDataPeriodo';
+import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 
 const Cabecalho = styled.div`
     padding: 24px 32px;
@@ -192,7 +193,7 @@ const TextArea = styled.textarea`
     }
 `;
 
-function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostrarColaborador = true }) {
+function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostrarColaborador = true, estabilidadeBloqueada = false, estabilidadeBloqueadaMessage = '' }) {
     const [dataDemissao, setDataDemissao] = useState('');
     const [tipoDemissao, setTipoDemissao] = useState(null);
     const [motivoDemissao, setMotivoDemissao] = useState(null);
@@ -255,17 +256,38 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
             toast.current.show({ severity: 'warn', summary: 'Aviso', detail: 'Por favor, preencha todos os campos obrigatórios.' });
             return;
         }
-        
-        aoSalvar({
-            dt_demissao: dataDemissao,
-            tipo_demissao: tipoDemissao.code,
-            motivo_demissao: motivoDemissao.code,
-            observacao: observacao,
-            anexo: anexo,
-            data_inicio_aviso: dataInicioAviso,
-            aviso_indenizado: Boolean(avisoIndenizado),
-            data_pagamento: dataPagamento,
-        });
+
+
+        if(estabilidadeBloqueada) {
+            confirmDialog({
+                message: (estabilidadeBloqueadaMessage ? (estabilidadeBloqueadaMessage + ' Deseja Continuar?') :  'Este colaborador tem estabilidade registrada. Deseja continuar com a demissão?'),
+                header: 'Demissão',
+                icon: 'pi pi-info-circle',
+                accept: () => {
+                    aoSalvar({
+                        dt_demissao: dataDemissao,
+                        tipo_demissao: tipoDemissao.code,
+                        motivo_demissao: motivoDemissao.code,
+                        observacao: observacao,
+                        anexo: anexo,
+                        data_inicio_aviso: dataInicioAviso,
+                        aviso_indenizado: Boolean(avisoIndenizado),
+                        data_pagamento: dataPagamento,
+                    });
+                }
+            });
+        } else {
+            aoSalvar({
+                dt_demissao: dataDemissao,
+                tipo_demissao: tipoDemissao.code,
+                motivo_demissao: motivoDemissao.code,
+                observacao: observacao,
+                anexo: anexo,
+                data_inicio_aviso: dataInicioAviso,
+                aviso_indenizado: Boolean(avisoIndenizado),
+                data_pagamento: dataPagamento,
+            });
+        }
     }
 
     const calcularDataInicioAviso = (dataDemissao) => {
@@ -343,6 +365,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     return(
         <>
             <Toast ref={toast} />
+            <ConfirmDialog locale="pt" />
             {opened &&
             <>
                 <OverlayRight $opened={opened} onClick={aoFechar}>
@@ -425,6 +448,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                             <FormGroup $fullWidth>
                                                 <DropdownItens
                                                     valor={tipoDemissao}
+                                                    required={true}
                                                     setValor={setTipoDemissao}
                                                     options={tiposDemissaoOptions}
                                                     label="Tipo de Demissão"
@@ -498,6 +522,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
                                             <FormGroup $flex2>
                                                 <DropdownItens
                                                     valor={motivoDemissao}
+                                                    required={true}
                                                     setValor={setMotivoDemissao}
                                                     options={motivosDemissaoOptions}
                                                     label="Motivo da Demissão"

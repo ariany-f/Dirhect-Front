@@ -386,7 +386,7 @@ function DataTableBeneficios({
 
     return (
         <>
-            <ConfirmDialog />
+            <ConfirmDialog locale="pt" />
             <Toast ref={toast} />
             <BotaoGrupo align="space-between" wrap>
                 <div className="flex justify-content-end">

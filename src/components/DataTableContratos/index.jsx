@@ -435,7 +435,7 @@ function DataTableContratos({
         <>
             <div className="flex justify-content-end">
                 <Toast ref={toast} />
-                <ConfirmDialog />
+                <ConfirmDialog locale="pt" />
                 <BotaoGrupo align="space-between">
                     <span className="p-input-icon-left">
                         <CampoTexto 

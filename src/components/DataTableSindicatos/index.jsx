@@ -173,7 +173,7 @@ function DataTableSindicatos({
     return (
         <>
             <Toast ref={toast} />
-            <ConfirmDialog />
+            <ConfirmDialog locale="pt" />
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">

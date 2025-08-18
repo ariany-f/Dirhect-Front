@@ -109,7 +109,7 @@ function ColaboradorDependenteDetalhes() {
         <Frame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog />
+            <ConfirmDialog locale="pt" />
             <Container gap="32px">
                 {!dependente ?
                     <Skeleton variant="rectangular" width={300} height={40} />

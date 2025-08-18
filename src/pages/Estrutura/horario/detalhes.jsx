@@ -79,7 +79,7 @@ function HorarioDetalhes() {
         <ConteudoFrame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog />
+            <ConfirmDialog locale="pt" />
             <BotaoVoltar linkFixo="/elegibilidade" />
             <Texto weight={500} size="12px">Horário</Texto>
             {departamento?.descricao ?

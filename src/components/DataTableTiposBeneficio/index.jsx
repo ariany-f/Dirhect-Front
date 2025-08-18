@@ -345,7 +345,7 @@ function DataTableTiposBeneficio({
 
     return (
         <>
-            <ConfirmDialog />
+            <ConfirmDialog locale="pt" />
             <Toast ref={toast} />
             <BotaoGrupo align="space-between">
                 <CampoTexto  
