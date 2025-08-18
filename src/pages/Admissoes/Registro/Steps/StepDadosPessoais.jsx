@@ -931,7 +931,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
                     return opcoesTipoRua.find(item => String(item.code) === String(code)) || null;
                 })()}
                 setValor={(valor) => {
-                    setCampo('tipo_rua', valor.code);
+                    setCampo('tipo_rua', valor.id_origem || valor.code);
                     removerErroCampo('tipo_rua', valor);
                 }}
                 options={opcoesTipoRua}
@@ -988,7 +988,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
                     return opcoesTipoBairro.find(item => String(item.code) === String(code)) || null;
                 })()}
                 setValor={(valor) => {
-                    setCampo('tipo_bairro', valor.code);
+                    setCampo('tipo_bairro', valor.id_origem || valor.code);
                     removerErroCampo('tipo_bairro', valor);
                 }}
                 options={opcoesTipoBairro}
