@@ -448,13 +448,13 @@ function DataTableFerias({
     const representativeSituacaoTemplate = (rowData) => {
         // Busca o id da situação "Demitido" na lista de tipoSituacao
         const isDemitido = rowData.funcionario_situacao_padrao === true;
-        console.log(rowData)
-        if (!rowData.dt_fim && !rowData.dt_inicio && (rowData.funcionario_marcado_demissao === false)) {
+        const isMarcadoDemissao = rowData.funcionario_marcado_demissao === true;
+        if (!rowData.dt_fim && !rowData.dt_inicio) {
             // Férias a solicitar
             if (ArmazenadorToken.hasPermission('add_ferias')) {
                 return (
                     <p style={{fontWeight: '400', fontSize: '11px'}}>
-                        <Botao disabled={isDemitido} aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab>
+                        <Botao disabled={isDemitido || isMarcadoDemissao} aoClicar={() => verDetalhes(rowData)} estilo="vermilion" size="small" tab>
                             <FaUmbrellaBeach fill="var(--secundaria)" color="var(--secundaria)" size={16}/>Solicitar
                         </Botao>
                     </p>
@@ -570,7 +570,7 @@ function DataTableFerias({
                 <StatusTag $type={statusType}>
                     {statusIcons[statusType]} {statusText}
                 </StatusTag>
-                {textosDiferentes && (
+                {/* {textosDiferentes && (
                     <p style={{
                         fontWeight: '400', 
                         fontSize: '11px', 
@@ -580,7 +580,7 @@ function DataTableFerias({
                     }}>
                         {statusOriginalText}
                     </p>
-                )}
+                )} */}
             </div>
         );
     }
