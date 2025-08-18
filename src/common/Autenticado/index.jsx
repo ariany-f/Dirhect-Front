@@ -127,7 +127,6 @@ function Autenticado() {
     useEffect(() => { 
         if((!tenants) && ((!empresas) || empresas.length == 0))
         {
-            console.log('1')
             // Tentar recuperar do cache primeiro
             const cachedTenants = ArmazenadorToken.getTenantsCache();
             const cachedCompanies = ArmazenadorToken.getCompaniesCache();
@@ -138,9 +137,7 @@ function Autenticado() {
                 setTenants(cachedTenants);
                 setEmpresas(cachedCompanies);
                 setCompanies(cachedCompanies);
-                console.log('selected', selected)
                 if(selected == '') {
-                    console.log('selectedCompany', selectedCompany)
                     if(selectedCompany) {
                         setSelected(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.id_tenant || '');
                         setEmpresa(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.nome || '');
@@ -164,7 +161,6 @@ function Autenticado() {
                             });
                         }
                     } else {
-                        console.log('cachedCompanies', cachedCompanies)
                         setSelected(cachedCompanies[0]?.id_tenant || '');
                         setEmpresa(cachedCompanies[0]?.tenant.nome || '');
                         setSessionCompany(cachedCompanies[0]?.id_tenant || '');
@@ -190,7 +186,6 @@ function Autenticado() {
                     }
                 }
                 else {
-                    console.log('selectedCompany', selectedCompany)
                     setSelected(selectedCompany);
                     setEmpresa(cachedCompanies.find(company => company.id_tenant == selectedCompany)?.tenant.nome || '');
                     setSessionCompany(selectedCompany);
@@ -257,12 +252,10 @@ function Autenticado() {
 
         if(((!empresas) || empresas.length == 0) && tenants)
         {
-            console.log('2')
             // Tentar recuperar domains do cache
             const cachedDomains = ArmazenadorToken.getDomainsCache();
             
             if (cachedDomains && ArmazenadorToken.isCacheValido()) {
-                console.log('cachedDomains', cachedDomains)
                 // Usar domains do cache
                 const tenantsWithDomain = tenants.map(tenant => ({
                     ...tenant,
@@ -273,9 +266,6 @@ function Autenticado() {
                 setCompanies(tenantsWithDomain);
                 ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
 
-                console.log('selected', selected)
-                console.log('tenantsWithDomain', tenantsWithDomain)
-                console.log('ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId)
                 if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                     setSelected(tenantsWithDomain[0]?.id_tenant || '');
                     setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
@@ -297,7 +287,6 @@ function Autenticado() {
                     }
                 }
                 else {
-                    console.log('ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId)
                     setSelected(ArmazenadorToken.UserCompanyPublicId);
                     setEmpresa(tenants.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
                     setSimbolo(tenants.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
@@ -318,7 +307,6 @@ function Autenticado() {
                     }
                 }
             } else {
-                console.log('buscando domains do servidor')
                 // Buscar domains do servidor
                 http.get(`client_domain/?format=json`)
                 .then(domains => {
@@ -335,15 +323,12 @@ function Autenticado() {
                     setCompanies(tenantsWithDomain);
                     ArmazenadorToken.salvarCompaniesCache(tenantsWithDomain);
 
-                    console.log('selected', selected)
-                    console.log('tenantsWithDomain', tenantsWithDomain)
                     if(selected == '' && !ArmazenadorToken.UserCompanyPublicId) {
                         setSelected(tenantsWithDomain[0]?.id_tenant || '');
                         setEmpresa(tenantsWithDomain[0]?.tenant.nome || '');
                         setSimbolo(tenantsWithDomain[0]?.tenant.simbolo || '');
                         setLogo(tenantsWithDomain[0]?.tenant.logo || '');
                     } else {
-                        console.log('ArmazenadorToken.UserCompanyPublicId', ArmazenadorToken.UserCompanyPublicId)
                         setSelected(ArmazenadorToken.UserCompanyPublicId);
                         setEmpresa(tenantsWithDomain.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.nome || '');
                         setSimbolo(tenantsWithDomain.find(tenant => tenant.id_tenant == ArmazenadorToken.UserCompanyPublicId)?.tenant.simbolo || '');
@@ -359,9 +344,7 @@ function Autenticado() {
         var comp = [];
         if(selected && empresas && empresas.length > 0)
         {
-            console.log('3')
             comp = empresas.filter(company => company.id_tenant == selected);
-            console.log('comp', comp)
             if(comp.length > 0 && comp[0].id_tenant)
             {
                 setEmpresa(comp[0].tenant.nome)

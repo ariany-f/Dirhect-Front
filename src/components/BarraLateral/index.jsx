@@ -32,7 +32,7 @@ const ListaEstilizada = styled.ul`
     padding: 0;
     margin: 0;
     width: 245px;
-    height: calc(100vh - 200px);
+    height: 100%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
@@ -42,6 +42,34 @@ const ListaEstilizada = styled.ul`
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+
+    & .links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        position: relative;
+        transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0);
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+    }
 
     &::-webkit-scrollbar {
         width: 6px;
@@ -84,7 +112,7 @@ const BarraLateralEstilizada = styled.aside`
 
 const NavEstilizada = styled.nav`
    
-        height: calc(100vh - 150px);
+        height: calc(100vh - 250px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
@@ -154,6 +182,8 @@ function BarraLateral({ $sidebarOpened }) {
     const [grupos, setGrupos] = useState([]);
     const [parametrosMenus, setParametrosMenus] = useState({});
 
+    const [whiteLabel, setWhiteLabel] = useState(false)
+
     const {
         usuario,
         setCompanies,
@@ -165,6 +195,9 @@ function BarraLateral({ $sidebarOpened }) {
         ArmazenadorToken.UserGroups.filter(grupo => !grupo.startsWith('_')) : [];
     const temApenasUmPerfil = gruposValidos.length <= 1;
 
+    useEffect(() => {
+        setWhiteLabel(import.meta.env.VITE_OPTIONS_WHITE_LABEL === 'true')
+    }, [])
     
     useEffect(() => {
         if(usuario.tipo) {
@@ -183,7 +216,6 @@ function BarraLateral({ $sidebarOpened }) {
             // Buscar parâmetros de menus
             http.get('parametros/por-assunto/?assunto=MENUS')
                 .then(response => {
-                    console.log('Parâmetros de menus:', response);
                     setParametrosMenus(response.parametros || {});
                 })
                 .catch(error => console.log('Erro ao buscar parâmetros de menus:', error));
@@ -446,19 +478,6 @@ function BarraLateral({ $sidebarOpened }) {
             return undefined;
         };
         
-        console.log(`Verificando menu: ${menu.itemTitulo}`, {
-            originalName: menu.itemTitulo,
-            translatedName: menuNameTranslated,
-            perfilMenu,
-            todosMenu,
-            perfilMenuSingular,
-            perfilMenuPlural,
-            todosMenuSingular,
-            todosMenuPlural,
-            perfilValue: buscarParametro(perfilMenu) || buscarParametro(perfilMenuSingular) || buscarParametro(perfilMenuPlural),
-            todosValue: buscarParametro(todosMenu) || buscarParametro(todosMenuSingular) || buscarParametro(todosMenuPlural)
-        });
-        
         // Verifica se existe parâmetro específico para o perfil (original, singular e plural)
         const perfilValue = buscarParametro(perfilMenu) || buscarParametro(perfilMenuSingular) || buscarParametro(perfilMenuPlural);
         if (perfilValue !== undefined) {
@@ -537,6 +556,7 @@ function BarraLateral({ $sidebarOpened }) {
                             </Link>
                         )}
                         <ListaEstilizada>
+                            <div className="links" style={{ height: (whiteLabel ? '90%' : '100%') }}>
                             {alwaysVisible.map((item) => (
                                 <StyledLink 
                                     key={item.id} 
@@ -550,6 +570,8 @@ function BarraLateral({ $sidebarOpened }) {
                                     <Ripple />
                                 </StyledLink>
                             ))}
+                            </div>
+                            {whiteLabel && <img style={{ width: '245px', paddingLeft: '35%', paddingRight: '35%' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
                         </ListaEstilizada>
                     </NavEstilizada>
                 </div>
@@ -580,6 +602,7 @@ function BarraLateral({ $sidebarOpened }) {
                             )}
                         </NavTitulo>
                         <ListaEstilizada>
+                            <div className="links" style={{ height: (whiteLabel ? '90%' : '100%') }}>
                             {menusOrdenados.map((item) => (
                                 <StyledLink 
                                     key={item.id} 
@@ -593,6 +616,8 @@ function BarraLateral({ $sidebarOpened }) {
                                     <Ripple />
                                 </StyledLink>
                             ))}
+                            </div>
+                            {whiteLabel && <img style={{ width: '245px', paddingLeft: '35%', paddingRight: '35%' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
                         </ListaEstilizada>
                     </NavEstilizada>
                 </div>

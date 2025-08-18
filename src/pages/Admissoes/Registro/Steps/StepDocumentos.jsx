@@ -185,7 +185,7 @@ const StepDocumentos = ({ toast }) => {
             });
 
             // --- INTEGRAÇÃO OCR ---
-            if (import.meta.env.VITE_BUSCAR_DADOS_OCR === 'true') {
+            if (import.meta.env.VITE_OPTIONS_BUSCAR_DADOS_OCR === 'true') {
                 try {
                     const ocrResult = await buscarDadosOCR(arquivo);
                     const enhanced = ocrResult?.data?.[0]?.enhanced;

@@ -140,7 +140,7 @@ export class BrandColors {
         console.log('🎨 Variações geradas:', colorVariations);
       }
     }
-  
+
     // Aplicar cores da marca quando o DOM estiver pronto
     static applyBrandColorsWhenReady() {
       if (document.readyState === 'loading') {
@@ -150,6 +150,13 @@ export class BrandColors {
       } else {
         this.applyBrandColors();
       }
+    }
+
+    // Obter logo da marca
+    static getPoweredByLogo() {
+      const layoutColors = JSON.parse(localStorage.getItem('layoutColors')) || {};
+      const storedLogo = localStorage.getItem('brandLogo');
+      return storedLogo || layoutColors.LOGO_POWERED_BY || import.meta.env.VITE_BRAND_LOGO_POWERED_BY || '/imagens/powered_by.png';
     }
 
     // Obter logo da marca
