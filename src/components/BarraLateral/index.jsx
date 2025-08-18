@@ -574,7 +574,7 @@ function BarraLateral({ $sidebarOpened }) {
                                 </StyledLink>
                             ))}
                             </div>
-                            {whiteLabel && <img style={{ width: '90px', margin: 'auto' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
+                            {whiteLabel && <img style={{ width: '70px', margin: 'auto' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
                         </ListaEstilizada>
                     </NavEstilizada>
                 </div>
@@ -620,7 +620,7 @@ function BarraLateral({ $sidebarOpened }) {
                                 </StyledLink>
                             ))}
                             </div>
-                            {whiteLabel && <img style={{ width: '90px', margin: 'auto' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
+                            {whiteLabel && <img style={{ width: '70px', margin: 'auto' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
                         </ListaEstilizada>
                     </NavEstilizada>
                 </div>
