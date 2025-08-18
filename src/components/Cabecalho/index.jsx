@@ -120,7 +120,7 @@ const HeaderEstilizado = styled.header`
   height: fit-content;
   padding: 2vh 4vw 2vh 4vw;
   width: inherit;
-  z-index: 7;
+  z-index: 8;
   background-color: var(--white);
   box-shadow: 0px 1px 5px 0px lightgrey;
   -webkit-box-sizing: border-box;

@@ -282,7 +282,7 @@ const ConteudoFrame = styled.div`
     gap: 8px;
     width: 100%;
     position: relative;
-    z-index: 3;
+    z-index: 7;
 
     .custom-stepper {
         display: flex;
@@ -3775,8 +3775,9 @@ const CandidatoRegistro = () => {
     };
 
     return (
+        <>
+        <Toast ref={toast} style={{ zIndex: '99999!important' }} />
         <ConteudoFrame>
-            <Toast ref={toast} style={{ zIndex: 99999 }} />
             <ConfirmDialog />
             
             {/* Estilo para desabilitar navegação manual pelo header do stepper, mas permitir navegação programática */}
@@ -4893,6 +4894,7 @@ const CandidatoRegistro = () => {
                 logs={selectedTarefaLogs}
             />
         </ConteudoFrame>
+        </>
     );
 };
 
