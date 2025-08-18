@@ -923,7 +923,13 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
                 name="tipo_rua"
                 required={true}
                 label="Tipo de Logradouro"
-                valor={getValorSelecionadoFromCandidato('tipo_rua', opcoesTipoRua)}
+                valor={(() => {
+                    if (!candidato?.tipo_rua) return null;
+                    const code = typeof candidato.tipo_rua === 'object'
+                        ? candidato.tipo_rua.id
+                        : candidato.tipo_rua;
+                    return opcoesTipoRua.find(item => String(item.code) === String(code)) || null;
+                })()}
                 setValor={(valor) => {
                     setCampo('tipo_rua', valor.code);
                     removerErroCampo('tipo_rua', valor);
@@ -974,7 +980,13 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
                 name="tipo_bairro"
                 required={true}
                 label="Tipo de Bairro"
-                valor={getValorSelecionadoFromCandidato('tipo_bairro', opcoesTipoBairro)}
+                valor={(() => {
+                    if (!candidato?.tipo_bairro) return null;
+                    const code = typeof candidato.tipo_bairro === 'object'
+                        ? candidato.tipo_bairro.id
+                        : candidato.tipo_bairro;
+                    return opcoesTipoBairro.find(item => String(item.code) === String(code)) || null;
+                })()}
                 setValor={(valor) => {
                     setCampo('tipo_bairro', valor.code);
                     removerErroCampo('tipo_bairro', valor);
