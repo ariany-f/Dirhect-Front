@@ -26,10 +26,10 @@ const MarginContainer = styled.div`
     flex-direction: column;
     height: initial;
     align-items: flex-start;
-    margin-left: 4vw;
-    margin-right: 4vw;
-    margin-top: 14vh;
-    margin-bottom: 4vh;
+    margin-left: 2vw;
+    margin-right: 2vw;
+    margin-top: 12vh;
+    margin-bottom: 2vh;
 `
 
 function Autenticado() {   
