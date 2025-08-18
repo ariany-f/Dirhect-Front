@@ -767,9 +767,15 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 name="tipo_admissao"
                 required={true}
                 label="Tipo de Admissão"
-                valor={getValorSelecionadoFromCandidato('tipo_admissao', opcoesTipoAdmissao)}
-                setValor={(valor) => {
-                    setCampo('tipo_admissao', valor.code);
+                valor={(() => {
+                    if (!candidato?.tipo_admissao) return null;
+                    const code = typeof candidato.tipo_admissao === 'object'
+                        ? candidato.tipo_admissao.id_origem
+                        : candidato.tipo_admissao;
+                    return opcoesTipoAdmissao.find(item => String(item.code) === String(code)) || null;
+                })()}
+                setValor={valor => {
+                    setCampo('tipo_admissao', valor.id_origem || valor.code);
                     removerErroCampo('tipo_admissao', valor);
                 }}
                 options={opcoesTipoAdmissao} 
