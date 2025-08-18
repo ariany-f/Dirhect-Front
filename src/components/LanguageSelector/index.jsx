@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 import { useState, useEffect } from 'react';
 import brFlag from '@assets/br.svg';
 import usFlag from '@assets/us.svg';
-import { locale, locales } from 'primereact/api';
+import { locale } from 'primereact/api';
 
 const StyledDropdown = styled(Dropdown)`
   .p-dropdown {
@@ -105,14 +105,16 @@ function LanguageSelector() {
     { code: 'pt', name: 'Português', flag: brFlag, emoji: '🇧🇷' },
   ];
 
+  const supportedLocales = ['en', 'pt'];
+
   // Sincronizar estado local com i18n
   useEffect(() => {
     setCurrentLanguage(i18n.language);
 
     let lang = i18n.language;
-    if (!locales[lang]) {
+    if (!supportedLocales.includes(lang)) {
       const baseLang = lang.split('-')[0];
-      if (locales[baseLang]) {
+      if (supportedLocales.includes(baseLang)) {
         lang = baseLang;
       } else {
         lang = 'en';
@@ -126,9 +128,9 @@ function LanguageSelector() {
     setCurrentLanguage(code);
 
     let lang = code;
-    if (!locales[lang]) {
+    if (!supportedLocales.includes(lang)) {
       const baseLang = lang.split('-')[0];
-      if (locales[baseLang]) {
+      if (supportedLocales.includes(baseLang)) {
         lang = baseLang;
       } else {
         lang = 'en';
