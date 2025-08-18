@@ -365,7 +365,7 @@ function ModalDemissao({ opened = false, colaborador, aoFechar, aoSalvar, mostra
     return(
         <>
             <Toast ref={toast} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             {opened &&
             <>
                 <OverlayRight $opened={opened} onClick={aoFechar}>

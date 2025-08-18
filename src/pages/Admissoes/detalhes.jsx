@@ -263,7 +263,7 @@ function DetalhesAdmissao() {
         <Frame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/admissao/validar" />
                     {candidate?.nome ? 

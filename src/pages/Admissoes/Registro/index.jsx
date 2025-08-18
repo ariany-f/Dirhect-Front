@@ -3779,7 +3779,7 @@ const CandidatoRegistro = () => {
     return (
         <>
         <Toast ref={toast} style={{ zIndex: '99999!important' }} />
-        <ConfirmDialog locale="pt" />
+        <ConfirmDialog  />
         <ConteudoFrame>
             
             {/* Estilo para desabilitar navegação manual pelo header do stepper, mas permitir navegação programática */}

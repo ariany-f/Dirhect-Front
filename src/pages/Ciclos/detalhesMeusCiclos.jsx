@@ -76,7 +76,7 @@ function DetalhesMeusCiclos() {
         <Frame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <Container gap="32px">
                 <BotaoVoltar linkFixo={`/ciclos/${colaborador}`} />
                 {ciclo && ciclo?.tipo ?

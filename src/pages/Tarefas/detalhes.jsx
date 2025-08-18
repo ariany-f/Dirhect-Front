@@ -359,7 +359,7 @@ function DetalhesTarefas() {
         <Frame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <Container gap="18px">
                 <BotaoVoltar linkFixo="/tarefas" />
                 {tarefa ?

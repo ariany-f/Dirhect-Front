@@ -239,7 +239,7 @@ function DataTableOperadoras({ operadoras, search = true, onSelectionChange, onA
     return (
         <div style={{ width: '100%' }}>
             <Toast ref={toast} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <DataTable 
                 value={operadoras} 
                 filters={filters} 

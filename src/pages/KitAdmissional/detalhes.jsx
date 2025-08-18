@@ -153,7 +153,7 @@ function KitAdmissionalDetalhes() {
         <Frame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <Container gap="16px">
                 <BotaoVoltar linkFixo="/usuario/kit-admissional" />
                 {kit ? (

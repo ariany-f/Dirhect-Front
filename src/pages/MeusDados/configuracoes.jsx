@@ -189,7 +189,7 @@ function ConfiguracoesEmails() {
     return (
         <Frame gap="16px">
             <Toast ref={toast} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <Container>
                 <Header>
                     <h3>Configurações de Emails</h3>

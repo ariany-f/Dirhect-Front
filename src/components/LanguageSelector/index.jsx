@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 import { useState, useEffect } from 'react';
 import brFlag from '@assets/br.svg';
 import usFlag from '@assets/us.svg';
+import { locale } from 'primereact/api';
 
 const StyledDropdown = styled(Dropdown)`
   .p-dropdown {
@@ -107,11 +108,13 @@ function LanguageSelector() {
   // Sincronizar estado local com i18n
   useEffect(() => {
     setCurrentLanguage(i18n.language);
+    locale(i18n.language);
   }, [i18n.language]);
   
   const changeLanguage = (code) => {
     i18n.changeLanguage(code);
     setCurrentLanguage(code);
+    locale(code);
   };
 
   const handleImageError = (code) => {

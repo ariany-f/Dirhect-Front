@@ -79,7 +79,7 @@ function SindicatoDetalhes() {
         <ConteudoFrame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <BotaoVoltar linkFixo="/elegibilidade" />
             <Texto weight={500} size="12px">Sindicato</Texto>
             {departamento?.descricao ?

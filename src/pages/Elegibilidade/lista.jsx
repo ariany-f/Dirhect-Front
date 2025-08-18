@@ -267,7 +267,7 @@ const ElegibilidadeLista = () => {
         <ConteudoFrame style={{ position: 'relative' }}>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <div style={{ position: 'absolute', top: 2, right: 32, zIndex: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <SwitchInput checked={mostrarTodas} onChange={setMostrarTodas} />
                 <span style={{ whiteSpace: 'nowrap' }}>

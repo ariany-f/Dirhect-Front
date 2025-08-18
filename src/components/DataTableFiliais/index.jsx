@@ -193,7 +193,7 @@ function DataTableFiliais({ filiais, showSearch = true, pagination = true, rows,
     return (
         <>
             <Toast ref={toast} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             {showSearch && 
                 <div className="flex justify-content-end">
                     <span className="p-input-icon-left">

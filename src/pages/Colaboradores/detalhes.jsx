@@ -888,7 +888,7 @@ function ColaboradorDetalhes() {
             <Frame>
                 <GlobalStyle />
                 <Toast ref={toast} />
-                <ConfirmDialog locale="pt" />
+                <ConfirmDialog  />
                 
                 {/* Botão voltar acima do header */}
                 {colaborador?.funcionario_pessoa_fisica?.nome && (

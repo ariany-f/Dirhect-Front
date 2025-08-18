@@ -90,7 +90,7 @@ function DataTableOperadores({ operadores, onDelete, sortField, sortOrder, onSor
 
     return (
         <>
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <Toast ref={toast} />
             <BotaoGrupo align="space-between">
                 <div className="flex justify-content-end">

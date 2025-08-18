@@ -111,7 +111,7 @@ function DetalhesContratos() {
         <Frame>
             <Toast ref={toast} />
             <Loading opened={loading} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <Container gap="16px">
                 <BotaoVoltar linkFixo="/contratos" />
                 {contrato && contrato?.dados_operadora?.nome ?

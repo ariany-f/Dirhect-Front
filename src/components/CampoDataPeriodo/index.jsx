@@ -49,7 +49,6 @@ function CampoDataPeriodo({
                 maxDate={maxDate}
                 disabled={disabled}
                 readOnlyInput={readonly}
-                locale="pt"
                 className={errorMessage ? 'error' : ''}
                 onFocus={onFocus}
                 onKeyDown={onKeyDown}

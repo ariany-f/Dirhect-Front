@@ -62,7 +62,7 @@ function ModalImportarPlanilha({ opened = false, aoClicar, aoFechar }) {
         <>
             {opened &&
             <Overlay>
-                <ConfirmDialog locale="pt" />
+                <ConfirmDialog  />
                 <Loading opened={loading} />
                 <DialogEstilizado id="modal-add-departamento" open={opened}>
                     <Frame>

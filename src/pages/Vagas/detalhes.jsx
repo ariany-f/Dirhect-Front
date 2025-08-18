@@ -459,7 +459,7 @@ function DetalhesVaga() {
         <>
         <Frame>
             <Toast ref={toast} />
-            <ConfirmDialog locale="pt" />
+            <ConfirmDialog  />
             <Container gap="32px">
                 <BotaoVoltar linkFixo="/vagas" />
                 <ConteudoFrame>
