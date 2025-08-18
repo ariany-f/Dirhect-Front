@@ -316,7 +316,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
   const [menuAberto, setMenuAberto] = useState(false);
   const { usuario } = useSessaoUsuarioContext();
   const menuRef = useRef(null);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
   const { t } = useTranslation('common');
 
   // Verificar se o usuário tem apenas um perfil
@@ -327,7 +327,7 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
 
   useEffect(() => {
     const handleResize = () => {
-      setIsDesktop(window.innerWidth > 768);
+      setIsDesktop(window.innerWidth > 1024);
     };
 
     window.addEventListener("resize", handleResize);
@@ -504,22 +504,56 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
                 {simbolo && simbolo !== null && simbolo !== 'null' ? 
                   <>
                     <CustomImage src={simbolo} title={nomeEmpresa} width={20} height={20} borderRadius={6} />
-                    {nomeEmpresa}
+                    <span
+                      style={{
+                        fontSize: window.innerWidth <= 1024 ? '12px' : '14px',
+                        maxWidth: window.innerWidth <= 1024 ? '80px' : '200px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        display: 'inline-block',
+                        verticalAlign: 'middle',
+                        marginLeft: 4
+                      }}
+                    >
+                      {nomeEmpresa}
+                    </span>
                   </>
                 : logo && logo !== null && logo !== 'null' ? 
                   <>
                     <CustomImage src={logo} title={nomeEmpresa} width={65} height={20} borderRadius={6} />
                   </>
-                : nomeEmpresa}
+                : <span
+                    style={{
+                      fontSize: window.innerWidth <= 1024 ? '12px' : '14px',
+                      maxWidth: window.innerWidth <= 1024 ? '80px' : '200px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      display: 'inline-block',
+                      verticalAlign: 'middle',
+                    }}
+                  >
+                    {nomeEmpresa}
+                  </span>}
                 <BsArrowLeftRight />
               </ItemEmpresa>
             )}
             <ItemPerfil 
               onClick={temApenasUmPerfil ? undefined : () => window.location.href = '/login/selecionar-grupo'}
               disabled={temApenasUmPerfil}
+              style={{
+                minWidth: 'unset',
+                padding: isDesktop ? undefined : '8px',
+                fontSize: isDesktop ? undefined : '13px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: isDesktop ? '6px' : '0',
+                justifyContent: 'center',
+              }}
             >
               <FaUser size={16} />
-              {usuario.tipo || 'Perfil'}
+              {isDesktop && (usuario.tipo || 'Perfil')}
               {!temApenasUmPerfil && <BsArrowLeftRight />}
             </ItemPerfil>
             <LanguageSelector />

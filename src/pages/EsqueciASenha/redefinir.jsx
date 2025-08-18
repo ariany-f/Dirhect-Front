@@ -12,7 +12,27 @@ import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import Loading from "@components/Loading"
 import Input from "@components/Input"
 import { useForm } from "react-hook-form"
+import styled from "styled-components"
 
+
+
+
+const WrapperOut = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    align-self: stretch;
+    width: 100%;
+    @media (max-width: 768px) {
+        margin-left: 0px;
+        margin-right: 0px;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 0 4vw;
+    }
+`;
 function RedefinirSenha() {
     
     const {uid, token} = useParams()
@@ -112,7 +132,7 @@ function RedefinirSenha() {
     }
 
     return (
-        <>
+        <WrapperOut>
             {ready ? 
                 error ?
                     <>
@@ -186,7 +206,7 @@ function RedefinirSenha() {
             :
                 <Loading opened={true}/>
             }
-        </>
+        </WrapperOut>
     )
 }
 

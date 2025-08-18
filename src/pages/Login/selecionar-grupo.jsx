@@ -24,6 +24,13 @@ const WrapperProfiles = styled.div`
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    @media (max-width: 600px) {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 2px;
+        overflow-y: auto;
+        justify-items: center;
+        text-align: center;
+    }
 `;
 
 const ProfileCard = styled.div`
@@ -39,10 +46,9 @@ const ProfileCard = styled.div`
     border-radius: 16px;
     border: 1px solid ${props => props.$active ? 'var(--primaria)' : 'transparent'};
     background: ${props => props.$active ? 'var(--primaria-50)' : '#fff'};
-    
-    &:hover {
-        transform: translateY(-2px);
-        border-color: var(--primaria);
+    margin-bottom: 0px;
+    @media (max-width: 600px) {
+        width: 49%;
     }
 `;
 
@@ -58,11 +64,11 @@ const ProfileIcon = styled.div`
     font-size: 32px;
     transition: all 0.3s ease;
     border: 3px solid ${props => props.$active ? 'var(--primaria)' : 'var(--neutro-200)'};
-    
-    ${ProfileCard}:hover & {
-        background: var(--primaria);
-        color: #fff;
-        border-color: var(--primaria);
+    @media (max-width: 600px) {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+        border-width: 2px;
     }
 `;
 
@@ -73,7 +79,9 @@ const ProfileName = styled.h6`
     text-align: center;
     margin: 0;
     transition: color 0.3s ease;
-    
+    @media (max-width: 600px) {
+        font-size: 13px;
+    }
     ${ProfileCard}:hover & {
         color: var(--primaria);
     }
@@ -90,6 +98,9 @@ const WrapperOut = styled.div`
     @media (max-width: 768px) {
         margin-left: 0px;
         margin-right: 0px;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 0 4vw;
     }
 `;
 

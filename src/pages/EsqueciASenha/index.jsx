@@ -11,7 +11,25 @@ import { toast } from 'react-toastify'
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario"
 import http from "@http"
 import { ArmazenadorToken } from '@utils';
+import styled from "styled-components"
 
+
+const WrapperOut = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    align-self: stretch;
+    width: 100%;
+    @media (max-width: 768px) {
+        margin-left: 0px;
+        margin-right: 0px;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 0 4vw;
+    }
+`;
 function EsqueciASenha() {
     
     const [classError, setClassError] = useState([])
@@ -135,7 +153,7 @@ function EsqueciASenha() {
     }
 
     return (
-        <div style={{ width: '100%' }}>
+        <WrapperOut>
             <Loading opened={loading} />
             <Frame gap="16px">
                 <BotaoVoltar />
@@ -152,7 +170,7 @@ function EsqueciASenha() {
                 </Frame>
             </form>
             <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
-        </div>
+        </WrapperOut>
     )
 }
 

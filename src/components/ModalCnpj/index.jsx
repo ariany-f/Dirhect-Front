@@ -302,7 +302,7 @@ function ModalCnpj({ opened = false, aoClicar, aoFechar }) {
                         </Frame>
                     </Frame>
                     <form method="dialog">
-                        <BotaoGrupo>
+                        <BotaoGrupo align="center">
                             <Botao aoClicar={aoFechar} estilo="neutro" formMethod="dialog" filled>{t('cancel')}</Botao>
                             <Botao aoClicar={selectCompany} estilo="vermilion" filled>{t('change')}</Botao>
                         </BotaoGrupo>

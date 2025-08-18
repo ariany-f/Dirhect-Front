@@ -83,6 +83,15 @@ const StyledDropdown = styled(Dropdown)`
       }
     }
   }
+
+  @media (max-width: 768px) {
+    .p-dropdown-trigger {
+      width: .5rem;
+    }
+    img.flag, .flag-emoji {
+      margin-right: 2px;
+    }
+  }
 `;
 
 function LanguageSelector() {
