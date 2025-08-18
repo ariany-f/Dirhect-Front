@@ -22,13 +22,13 @@ const LogoDiv = styled.div`
 `
 const LogoWrapper = styled.div`
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
 `;
 
 const LogoImg = styled.img`
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
     filter: grayscale(1);
     opacity: 0.3;
@@ -40,8 +40,8 @@ const LogoColorFill = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background: linear-gradient(
         to right,
         var(--primaria) ${({ $progress }) => $progress * 100}%,
