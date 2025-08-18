@@ -165,6 +165,11 @@ export class BrandColors {
       return storedLogo || layoutColors.LOGO_URL || import.meta.env.VITE_BRAND_LOGO_URL || '/imagens/logo.png';
     }
 
+    static getLoadingLogo() {
+      const layoutColors = JSON.parse(localStorage.getItem('layoutColors')) || {};
+      return layoutColors.LOGO_LOADING || import.meta.env.VITE_BRAND_LOGO_LOADING || '/imagens/loading.png';
+    }
+
     // Salvar logo da marca
     static setBrandLogo(logoUrl) {
         if (logoUrl) {

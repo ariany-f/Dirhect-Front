@@ -211,7 +211,7 @@ function MeusDadosSistema() {
         timezone: 'America/Sao_Paulo',
         feriadosTipo: 'nacionais',
         feriadosUF: '',
-        idioma: 'pt-BR',
+        idioma: 'pt',
     });
     const toast = useRef(null);
     const fileInputRef = useRef(null);
