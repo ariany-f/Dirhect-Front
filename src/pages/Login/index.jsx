@@ -289,7 +289,7 @@ function Login() {
                 <h2>{t('welcome')}</h2>
                 {!errorMessage && (
                     <SubTitulo>
-                        {t('choose_profile')}
+                        {t('insert_credentials')}
                     </SubTitulo>
                 )}
             </Titulo>
