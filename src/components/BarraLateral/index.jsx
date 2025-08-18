@@ -42,6 +42,9 @@ const ListaEstilizada = styled.ul`
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
 
     & .links {
         list-style: none;
@@ -571,7 +574,7 @@ function BarraLateral({ $sidebarOpened }) {
                                 </StyledLink>
                             ))}
                             </div>
-                            {whiteLabel && <img style={{ width: '240px', paddingLeft: '30%', paddingRight: '30%' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
+                            {whiteLabel && <img style={{ width: '90px', margin: 'auto' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
                         </ListaEstilizada>
                     </NavEstilizada>
                 </div>
@@ -617,7 +620,7 @@ function BarraLateral({ $sidebarOpened }) {
                                 </StyledLink>
                             ))}
                             </div>
-                            {whiteLabel && <img style={{ width: '240px', paddingLeft: '30%', paddingRight: '30%' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
+                            {whiteLabel && <img style={{ width: '90px', margin: 'auto' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
                         </ListaEstilizada>
                     </NavEstilizada>
                 </div>
