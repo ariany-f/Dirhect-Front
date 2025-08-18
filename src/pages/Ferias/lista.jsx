@@ -2,7 +2,7 @@ import http from '@http'
 import { useEffect, useState, useRef } from "react"
 import Botao from '@components/Botao'
 import BotaoGrupo from '@components/BotaoGrupo'
-
+import Loading from '@components/Loading'
 import { GrAddCircle } from 'react-icons/gr'
 import styles from './Contratos.module.css'
 import styled from "styled-components"
@@ -307,6 +307,7 @@ function FeriasListagem() {
 
     return (
         <ConteudoFrame>
+            <Loading opened={loading} />
             <Toast ref={toast} />
             <HeaderRow>
                 <TabPanel>
@@ -328,23 +329,7 @@ function FeriasListagem() {
                     alignItems: 'center',
                     justifyContent: 'end'
                 }}>
-                    {loading && (
-                        <div style={{
-                            display: 'flex',
-                            marginTop: '10px',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '100%'
-                        }}>
-                            <FaSpinner 
-                                size={24} 
-                                color="var(--gradient-secundaria)" 
-                                style={{
-                                    animation: 'spin 1s linear infinite'
-                                }}
-                            />
-                        </div>
-                    )}
+                
                     {tab === 'lista' && 
                         <>
                             <div style={{flexShrink: 0 }}>
@@ -399,17 +384,7 @@ function FeriasListagem() {
             </HeaderRow>
             <Wrapper>
                 {loading ? (
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '200px',
-                        fontSize: '16px',
-                        color: 'var(--neutro-500)',
-                        fontWeight: '500'
-                    }}>
-                        Carregando...
-                    </div>
+                    <></>
                 ) : (ferias ? (
                     <>
                         {tab === 'calendario' && <CalendarFerias 
