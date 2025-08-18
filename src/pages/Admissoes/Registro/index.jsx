@@ -1709,8 +1709,11 @@ const CandidatoRegistro = () => {
                             nome_mae: dep.nome_mae || null,
                             id_admissao: candidatoAtual.id,
                             genero: dep.genero || null,
-                            estadocivil: dep.estadocivil || null,
+                            genero_id_origem: dep.genero_id_origem || null,
+                            estado_civil_id_origem: dep.estado_civil_id_origem || null,
+                            estadocivil: ((dep.estadocivil  && dep.estadocivil !== '') ? dep.estadocivil : null),
                             grau_parentesco: dep.grau_parentesco || null,
+                            grau_parentesco_id_origem: dep.grau_parentesco_id_origem || null,
                             incidencia_irrf: dep.incidencia_irrf || false,
                             incidencia_inss: dep.incidencia_inss || false,
                             incidencia_assist_medica: dep.incidencia_assist_medica || false,
@@ -2136,15 +2139,15 @@ const CandidatoRegistro = () => {
                         camposObrigatorios.push(`Nome do dependente ${index + 1}`);
                         setClassError(prev => [...prev, `nome_depend_${index}`]);
                     }
-                    if (!dependente.grau_parentesco) {
+                    if (!dependente.grau_parentesco_id_origem) {
                         camposObrigatorios.push(`Grau de parentesco do dependente ${index + 1}`);
-                        setClassError(prev => [...prev, `grau_parentesco_${index}`]);
+                        setClassError(prev => [...prev, `grau_parentesco_id_origem_${index}`]);
                     }
                     
                     // Validação específica baseada em incidências e grau de parentesco
                     const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
-                    const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
-                                          dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
+                    const grauRequerCPF = dependente.grau_parentesco_id_origem === '6' || dependente.grau_parentesco_id_origem === '7' || 
+                                          dependente.grau_parentesco_id_origem === 6 || dependente.grau_parentesco_id_origem === 7;
                     const naoEPaiOuMae = !grauRequerCPF; // Se NÃO for pai ou mãe, é obrigatório
                     
                     // Validação de CPF obrigatório
@@ -2578,7 +2581,7 @@ const CandidatoRegistro = () => {
         const resultado = candidato.dependentes.some(dependente => {
             // Verificar campos básicos obrigatórios
             const nomeVazio = !dependente.nome_depend?.trim();
-            const grauVazio = !dependente.grau_parentesco;
+            const grauVazio = !dependente.grau_parentesco_id_origem;
             
             if (nomeVazio || grauVazio) {
                 return true;
@@ -2586,8 +2589,8 @@ const CandidatoRegistro = () => {
             
             // Verificar campos obrigatórios baseados em incidências
             const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
-            const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
-                                  dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
+            const grauRequerCPF = dependente.grau_parentesco_id_origem === '6' || dependente.grau_parentesco_id_origem === '7' || 
+                                  dependente.grau_parentesco_id_origem === 6 || dependente.grau_parentesco_id_origem === 7;
             const naoEPaiOuMae = !grauRequerCPF;
             
             if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && (!dependente.cpf?.trim() || !dependente.dt_nascimento)) {

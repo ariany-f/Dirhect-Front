@@ -100,8 +100,8 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
     // Função para verificar se um campo é obrigatório baseado nas incidências ou grau de parentesco
     const isCampoObrigatorioPorIncidencia = (dependente, campo) => {
         const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
-        const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
-                              dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
+        const grauRequerCPF = dependente.grau_parentesco_id_origem === '6' || dependente.grau_parentesco_id_origem === '7' || 
+                              dependente.grau_parentesco_id_origem === 6 || dependente.grau_parentesco_id_origem === 7;
         const naoEPaiOuMae = !grauRequerCPF; // Se NÃO for pai ou mãe, é obrigatório
         
         if (campo === 'cpf' || campo === 'dt_nascimento') {
@@ -184,7 +184,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
         }
 
         // Para dependentes novos, verificar se está completo
-        const isCompleto = dependente.nome_depend && dependente.grau_parentesco && dependente.nrodepend;
+        const isCompleto = dependente.nome_depend && dependente.grau_parentesco_id_origem && dependente.nrodepend;
         if (!isCompleto && abertos.includes(idx)) {
             return;
         }
@@ -208,7 +208,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
             return;
         }
         
-        const parentescoNome = grausParentesco.find(g => g.code === dependente.grau_parentesco)?.name || 'Não informado';
+        const parentescoNome = grausParentesco.find(g => g.code === dependente.grau_parentesco_id_origem)?.name || 'Não informado';
         
         setModalSalvamentoVisible(true);
         confirmDialog({
@@ -251,7 +251,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
     };
 
     const executarSalvarDependente = async (dependente) => {
-        if (!dependente.nome_depend || !dependente.grau_parentesco || !dependente.nrodepend) {
+        if (!dependente.nome_depend || !dependente.grau_parentesco_id_origem || !dependente.nrodepend) {
             toast.current?.show({
                 severity: 'warn',
                 summary: 'Atenção',
@@ -263,8 +263,8 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
 
         // Verifica se alguma incidência que requer CPF e data de nascimento está marcada
         const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
-        const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
-                              dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
+        const grauRequerCPF = dependente.grau_parentesco_id_origem === '6' || dependente.grau_parentesco_id_origem === '7' || 
+                              dependente.grau_parentesco_id_origem === 6 || dependente.grau_parentesco_id_origem === 7;
         const naoEPaiOuMae = !grauRequerCPF; // Se NÃO for pai ou mãe, é obrigatório
         
         if ((incidenciasQueRequeremCPF || naoEPaiOuMae) && (!dependente.cpf || !dependente.dt_nascimento)) {
@@ -302,9 +302,11 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                 nrosus: dependente.nrosus || null,
                 nronascidovivo: dependente.nronascidovivo || null,
                 nome_mae: dependente.nome_mae || null,
-                grau_parentesco: dependente.grau_parentesco,
-                genero: dependente.genero,
-                estadocivil: dependente.estadocivil,
+                grau_parentesco_id_origem: dependente.grau_parentesco_id_origem,
+                genero: dependente.genero || null,
+                genero_id_origem: dependente.genero_id_origem || null,
+                estadocivil: dependente.estadocivil || null,
+                estado_civil_id_origem: dependente.estado_civil_id_origem || null,
                 incidencia_irrf: dependente.incidencia_irrf || false,
                 incidencia_inss: dependente.incidencia_inss || false,
                 incidencia_assist_medica: dependente.incidencia_assist_medica || false,
@@ -369,7 +371,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
             nome_depend: '',
             cpf: '',
             dt_nascimento: '',
-            grau_parentesco: grauSugerido,
+            grau_parentesco_id_origem: grauSugerido,
             nrodepend: proximoNumero.toString(),
             nome_mae: '',
             cartorio: '',
@@ -380,7 +382,9 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
             nrosus: '',
             nronascidovivo: '',
             genero: '',
+            genero_id_origem: '',
             estadocivil: '',
+            estado_civil_id_origem: '',
             incidencia_irrf: false,
             incidencia_inss: false,
             incidencia_assist_medica: false,
@@ -397,7 +401,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
 
     const determinarGrauParentescoSugerido = () => {
         const dependentesExistentes = candidato.dependentes || [];
-        const grausExistentes = dependentesExistentes.map(dep => dep.grau_parentesco).filter(Boolean);
+        const grausExistentes = dependentesExistentes.map(dep => dep.grau_parentesco_id_origem).filter(Boolean);
         
         // Se não há dependentes, não sugere nada
         if (grausExistentes.length === 0) {
@@ -452,7 +456,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
             (dep.id || dep.temp_id) !== (dependenteAtual.id || dependenteAtual.temp_id)
         );
         
-        const grausJaUsados = dependentesExistentes.map(dep => dep.grau_parentesco).filter(Boolean);
+        const grausJaUsados = dependentesExistentes.map(dep => dep.grau_parentesco_id_origem).filter(Boolean);
         
         // Filtrar graus que são únicos (como cônjuge)
         return grausParentesco.filter(grau => {
@@ -566,7 +570,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
     };
 
     const podeSalvarDependente = (dependente) => {
-        const camposObrigatorios = dependente.nome_depend && dependente.grau_parentesco && dependente.nrodepend;
+        const camposObrigatorios = dependente.nome_depend && dependente.grau_parentesco_id_origem && dependente.nrodepend;
         
         if (!camposObrigatorios || dependente.id) {
             return false;
@@ -574,8 +578,8 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
 
         // Verifica se alguma incidência que requer CPF e data de nascimento está marcada
         const incidenciasQueRequeremCPF = dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto;
-        const grauRequerCPF = dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || 
-                              dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7;
+        const grauRequerCPF = dependente.grau_parentesco_id_origem === '6' || dependente.grau_parentesco_id_origem === '7' || 
+                              dependente.grau_parentesco_id_origem === 6 || dependente.grau_parentesco_id_origem === 7;
         const naoEPaiOuMae = !grauRequerCPF; // Se NÃO for pai ou mãe, é obrigatório
         
         if (incidenciasQueRequeremCPF || naoEPaiOuMae) {
@@ -586,7 +590,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
     };
 
     const ResumoDependente = ({ dep }) => {
-        const parentesco = grausParentesco.find(g => g.code === dep.grau_parentesco)?.name;
+        const parentesco = grausParentesco.find(g => g.code === dep.grau_parentesco_id_origem)?.name;
         return (
             <div style={{ display: 'flex', gap: '8px', color: 'var(--text-color-secondary)' }}>
                 <span><strong>{dep.nome_depend || 'Novo Dependente'}</strong></span>
@@ -667,8 +671,8 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                                             disabled={modoLeitura || isSaved}
                                         />
                                         <DropdownItens
-                                            name={`grau_parentesco_${idx}`}
-                                            camposVazios={isCampoEmErro(`grau_parentesco_${idx}`) ? [`grau_parentesco_${idx}`] : []}
+                                            name={`grau_parentesco_id_origem_${idx}`}
+                                            camposVazios={isCampoEmErro(`grau_parentesco_id_origem_${idx}`) ? [`grau_parentesco_id_origem_${idx}`] : []}
                                             label="Grau de Parentesco"
                                             required={true}
                                             valor={(() => {
@@ -683,11 +687,11 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                                                 // Para dependentes novos, busca na lista filtrada
                                                 const opcoesDisponiveis = getGrausParentescoDisponiveis(dependente);
                                                 const valorEncontrado = opcoesDisponiveis.find(g => {
-                                                    return g.code == dependente.grau_parentesco || g.id_origem == dependente.grau_parentesco_id_origem;
+                                                    return g.id_origem == dependente.grau_parentesco_id_origem;
                                                 });
                                                 return valorEncontrado || '';
                                             })()}
-                                            setValor={(valor) => handleUpdateDependente(id, 'grau_parentesco', valor.code)}
+                                            setValor={(valor) => handleUpdateDependente(id, 'grau_parentesco_id_origem', valor.code)}
                                             options={dependente.id ? grausParentesco : getGrausParentescoDisponiveis(dependente)}
                                             $margin="0px"
                                             disabled={modoLeitura || isSaved}
@@ -745,7 +749,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                                             name={`cpf_${idx}`}
                                             camposVazios={isCampoEmErro(`cpf_${idx}`) || isCampoEmErroPorIncidencia(dependente, 'cpf') ? [`cpf_${idx}`] : []}
                                             label="CPF"
-                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto || !(dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7)}
+                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto || !(dependente.grau_parentesco_id_origem === '6' || dependente.grau_parentesco_id_origem === '7' || dependente.grau_parentesco_id_origem === 6 || dependente.grau_parentesco_id_origem === 7)}
                                             valor={dependente.cpf}
                                             setValor={(valor) => handleUpdateDependente(id, 'cpf', valor)}
                                             patternMask="999.999.999-99"
@@ -755,7 +759,7 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                                             name={`dt_nascimento_${idx}`}
                                             camposVazios={isCampoEmErro(`dt_nascimento_${idx}`) || isCampoEmErroPorIncidencia(dependente, 'dt_nascimento') ? [`dt_nascimento_${idx}`] : []}
                                             label="Data de Nascimento"
-                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto || !(dependente.grau_parentesco === '6' || dependente.grau_parentesco === '7' || dependente.grau_parentesco === 6 || dependente.grau_parentesco === 7)}
+                                            required={dependente.incidencia_irrf || dependente.incidencia_assist_medica || dependente.incidencia_assist_odonto || !(dependente.grau_parentesco_id_origem === '6' || dependente.grau_parentesco_id_origem === '7' || dependente.grau_parentesco_id_origem === 6 || dependente.grau_parentesco_id_origem === 7)}
                                             valor={dependente.dt_nascimento}
                                             setValor={(valor) => handleUpdateDependente(id, 'dt_nascimento', valor)}
                                             type="date"
@@ -765,12 +769,11 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                                             label="Gênero"
                                             valor={(() => {
                                                 const valorEncontrado = generos.find(g => {
-                                                    return g.code == dependente.genero || g.id_origem == dependente.genero;
+                                                    return g.code == dependente.genero_id_origem || g.id_origem == dependente.genero_id_origem;
                                                 });
                                                 return valorEncontrado || '';
                                             })()}
-                                            required={true}
-                                            setValor={(valor) => handleUpdateDependente(id, 'genero', valor.code)}
+                                            setValor={(valor) => handleUpdateDependente(id, 'genero_id_origem', valor.code)}
                                             options={generos}
                                             placeholder="Selecione o gênero"
                                             disabled={modoLeitura || isSaved}
@@ -778,14 +781,13 @@ const StepDependentes = ({ classError = [], setClassError, modoLeitura = false, 
                                         />
                                         <DropdownItens
                                             label="Estado Civil"
-                                            required={true}
                                             valor={(() => {
                                                 const valorEncontrado = estadosCivis.find(g => {
-                                                    return g.code == dependente.estadocivil || g.id_origem == dependente.estadocivil;
+                                                    return g.code == dependente.estado_civil_id_origem || g.id_origem == dependente.estado_civil_id_origem;
                                                 });
-                                                return valorEncontrado || '';
+                                                return valorEncontrado || null;
                                             })()}
-                                            setValor={(valor) => handleUpdateDependente(id, 'estadocivil', valor.code)}
+                                            setValor={(valor) => handleUpdateDependente(id, 'estado_civil_id_origem', (valor.code || null))}
                                             options={estadosCivis}
                                             placeholder="Selecione o estado civil"
                                             disabled={modoLeitura || isSaved}
