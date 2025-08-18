@@ -583,7 +583,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                 try {
                     const detalhesHorario = await http.get(`horario_indice/?horario_id=${horarioId}`);
                     const opcoes = (detalhesHorario || []).map(item => ({
-                        code: item.indice,
+                        code: item.id,
                         name: item.descricao_letra ? `${item.indice} - ${item.descricao_letra}` : `${item.indice}`
                     }));
                     setOpcoesLetraHorario(opcoes);
