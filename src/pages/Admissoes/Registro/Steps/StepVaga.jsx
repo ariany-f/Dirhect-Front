@@ -562,7 +562,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
             horario_nome: valor.name
         });
         try {
-            const detalhesHorario = await http.get(`horario_indice/?horario_id=${valor.code}`);
+            const detalhesHorario = await http.get(`horario_indice/?id_horario=${valor.code}`);
             // Montar opções para o dropdown de letra
             const opcoes = (detalhesHorario || []).map(item => ({
                 code: item.id,
@@ -581,7 +581,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
         if (horarioId) {
             (async () => {
                 try {
-                    const detalhesHorario = await http.get(`horario_indice/?horario_id=${horarioId}`);
+                    const detalhesHorario = await http.get(`horario_indice/?id_horario=${horarioId}`);
                     const opcoes = (detalhesHorario || []).map(item => ({
                         code: item.id,
                         name: item.descricao_letra ? `${item.indice} - ${item.descricao_letra}` : `${item.indice}`
@@ -698,7 +698,7 @@ const StepVaga = ({ filiais, departamentos, secoes, centros_custo, horarios, fun
                     });
                     // Buscar detalhes do horário
                     try {
-                        const detalhesHorario = await http.get(`horario_indice/?horario_id=${valor.code}`);
+                        const detalhesHorario = await http.get(`horario_indice/?id_horario=${valor.code}`);
                         console.log('Detalhes do horário:', detalhesHorario);
                     } catch (err) {
                         console.error('Erro ao buscar detalhes do horário:', err);
