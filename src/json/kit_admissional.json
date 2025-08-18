@@ -7,22 +7,22 @@
     "dt_inicio": "2025-01-01",
     "dt_fim": "2025-12-31",
     "observacao": "Documento obrigatório para admissão",
-    "elegibilidades": [
+    "itens": [
       {
         "id": 101,
         "nome": "DIRETORIA SP",
-        "dt_inicio": "2025-01-01",
-        "dt_fim": "2025-12-31",
         "status": "A",
-        "observacao": "Apenas diretoria da filial SP"
+        "observacao": "Apenas diretoria da filial SP",
+        "arquivo": "diretoria_sp.pdf",
+        "elegibilidades": []
       },
       {
         "id": 102,
         "nome": "OPERACIONAL BH",
-        "dt_inicio": "2025-01-01",
-        "dt_fim": "2025-12-31",
         "status": "A",
-        "observacao": "Operacional de BH"
+        "observacao": "Operacional de BH",
+        "arquivo": "operacional_bh.pdf",
+        "elegibilidades": []
       }
     ]
   },
@@ -34,14 +34,14 @@
     "dt_inicio": "2025-01-01",
     "dt_fim": "2025-12-31",
     "observacao": "Termo de consentimento LGPD",
-    "elegibilidades": [
+    "itens": [
       {
         "id": 201,
         "nome": "ADMINISTRATIVO RJ",
-        "dt_inicio": "2025-01-01",
-        "dt_fim": "2025-12-31",
         "status": "A",
-        "observacao": "Administração do RJ"
+        "observacao": "Administração do RJ",
+        "arquivo": "adm_rj.pdf",
+        "elegibilidades": []
       }
     ]
   },
@@ -53,14 +53,14 @@
     "dt_inicio": "2025-01-01",
     "dt_fim": "2025-12-31",
     "observacao": "Aceite de recebimento de notebook",
-    "elegibilidades": [
+    "itens": [
       {
         "id": 301,
         "nome": "TI MATRIZ",
-        "dt_inicio": "2025-01-01",
-        "dt_fim": "2025-12-31",
         "status": "A",
-        "observacao": "Equipe de TI da matriz"
+        "observacao": "Equipe de TI da matriz",
+        "arquivo": "ti_matriz.pdf",
+        "elegibilidades": []
       }
     ]
   }

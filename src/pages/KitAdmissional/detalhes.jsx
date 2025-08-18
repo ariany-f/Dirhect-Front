@@ -29,6 +29,7 @@ import { useTranslation } from 'react-i18next'
 import { TbSitemap, TbSitemapOff } from 'react-icons/tb'
 import ModalAdicionarElegibilidadeItemKitAdmissional from '@components/ModalAdicionarElegibilidadeItemKitAdmissional';
 import { FaPen } from 'react-icons/fa';
+import ModalItemKitAdmissional from '@components/ModalItemKitAdmissional';
 
 const ConteudoFrame = styled.div`
     display: flex;
@@ -67,6 +68,8 @@ function KitAdmissionalDetalhes() {
     const [modalOpened, setModalOpened] = useState(false)
     const { t } = useTranslation('common');
     const [versaoSelecionada, setVersaoSelecionada] = useState(null);
+    const [modalItemOpened, setModalItemOpened] = useState(false);
+    const [itemEditando, setItemEditando] = useState(null);
 
     useEffect(() => {
         setLoading(true);
@@ -101,6 +104,50 @@ function KitAdmissionalDetalhes() {
         setVersaoSelecionada(null);
     }
 
+    // Função para editar item existente
+    const editarItem = (item) => {
+        setItemEditando(item);
+        setModalItemOpened(true);
+    };
+
+    // Função para salvar novo ou editar item
+    const salvarNovoItem = ({ nome, arquivo }) => {
+        setKit(prevKit => {
+            if (!prevKit) return prevKit;
+            // Se for edição
+            if (itemEditando) {
+                return {
+                    ...prevKit,
+                    itens: prevKit.itens.map(i =>
+                        i.id === itemEditando.id
+                            ? { ...i, nome, arquivo: arquivo ? arquivo.name : i.arquivo }
+                            : i
+                    )
+                };
+            }
+            // Se for novo
+            const novoId = Math.max(0, ...(prevKit.itens?.map(i => i.id) || [])) + 1;
+            return {
+                ...prevKit,
+                itens: [
+                    ...(prevKit.itens || []),
+                    {
+                        id: novoId,
+                        nome,
+                        dt_inicio: '',
+                        dt_fim: '',
+                        status: 'A',
+                        observacao: '',
+                        arquivo: arquivo ? arquivo.name : '',
+                        elegibilidades: []
+                    }
+                ]
+            };
+        });
+        setModalItemOpened(false);
+        setItemEditando(null);
+    };
+
     return (
         <>
         <Frame>
@@ -124,7 +171,7 @@ function KitAdmissionalDetalhes() {
                                     </ContainerHorizontal>
                                 </FrameVertical>
                             </Frame>
-                            <Botao aoClicar={() => setModalOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="black" color="black"/> {t('add')} Versão do Documento</Botao>
+                            <Botao aoClicar={() => setModalItemOpened(true)} estilo="neutro" size="small" tab><GrAddCircle fill="black" color="black"/> {t('add')} Item do Kit Admissional</Botao>
                         </BotaoGrupo>
                         <InfoBox>
                             <strong className="main-title">Sobre elegibilidade:</strong><br />
@@ -138,27 +185,41 @@ function KitAdmissionalDetalhes() {
                                     <tr style={{background: '#f8fafc'}}>
                                         <th style={{padding: '10px 8px', fontWeight: 700, fontSize: 15, color: '#222'}}>ID</th>
                                         <th style={{padding: '10px 8px', fontWeight: 700, fontSize: 15, color: '#222'}}>Nome</th>
-                                        <th style={{padding: '10px 8px', fontWeight: 700, fontSize: 15, color: '#222'}}>Data Início</th>
-                                        <th style={{padding: '10px 8px', fontWeight: 700, fontSize: 15, color: '#222'}}>Data Fim</th>
                                         <th style={{padding: '10px 8px', fontWeight: 700, fontSize: 15, color: '#222'}}>Status</th>
                                         <th style={{padding: '10px 8px', fontWeight: 700, fontSize: 15, color: '#222'}}>Observação</th>
+                                        <th style={{padding: '10px 8px', fontWeight: 700, fontSize: 15, color: '#222'}}>Arquivo</th>
                                         <th style={{padding: '10px 8px', fontWeight: 700, fontSize: 15, color: '#222', textAlign: 'center'}}>Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {kit.elegibilidades && kit.elegibilidades.map(eleg => {
+                                    {kit.itens && kit.itens.map(item => {
                                         return (
-                                            <tr key={eleg.id} style={{borderBottom: '1px solid #e5e7eb', background: '#fff'}}>
-                                                <td style={{padding: '10px 8px', fontWeight: 500}}>{eleg.id}</td>
-                                                <td style={{padding: '10px 8px'}}>{eleg.nome}</td>
-                                                <td style={{padding: '10px 8px'}}>{eleg.dt_inicio ? new Date(eleg.dt_inicio).toLocaleDateString('pt-BR') : ''}</td>
-                                                <td style={{padding: '10px 8px'}}>{eleg.dt_fim ? new Date(eleg.dt_fim).toLocaleDateString('pt-BR') : ''}</td>
-                                                <td style={{padding: '10px 8px'}}>{eleg.status === 'A' ? <Tag severity="success" value="Ativo" /> : <Tag severity="danger" value="Inativo" />}</td>
-                                                <td style={{padding: '10px 8px'}}>{eleg.observacao}</td>
+                                            <tr key={item.id} style={{borderBottom: '1px solid #e5e7eb', background: '#fff'}}>
+                                                <td style={{padding: '10px 8px', fontWeight: 500}}>{item.id}</td>
+                                                <td style={{padding: '10px 8px'}}>{item.nome}</td>
+                                                <td style={{padding: '10px 8px'}}>{item.status === 'A' ? <Tag severity="success" value="Ativo" /> : <Tag severity="danger" value="Inativo" />}</td>
+                                                <td style={{padding: '10px 8px'}}>{item.observacao}</td>
+                                                <td style={{padding: '10px 8px', textAlign: 'center'}}>
+                                                    {item.arquivo ? (
+                                                        <a href={item.arquivo} target="_blank" rel="noopener noreferrer" download style={{ color: '#2563eb', textDecoration: 'none' }} title="Baixar arquivo">
+                                                            <FaDownload size={18} />
+                                                        </a>
+                                                    ) : (
+                                                        <span style={{ color: '#888' }}>-</span>
+                                                    )}
+                                                </td>
                                                 <td style={{padding: '10px 8px', textAlign: 'center'}}>
                                                     <span
+                                                        style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', marginRight: 8 }}
+                                                        onClick={() => editarItem(item)}
+                                                        data-pr-tooltip="Editar item"
+                                                    >
+                                                        <FaPen size={16} />
+                                                    </span>
+                                                    <Tooltip target="[data-pr-tooltip='Editar item']" />
+                                                    <span
                                                         style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}
-                                                        onClick={() => { setVersaoSelecionada(eleg); setModalOpened(true); }}
+                                                        onClick={() => { setVersaoSelecionada(item); setModalOpened(true); }}
                                                         data-pr-tooltip="Editar elegibilidade"
                                                     >
                                                         <MdSettings style={{ marginRight: 0, verticalAlign: 'middle', color: '#22c55e', fontSize: 22 }} />
@@ -176,6 +237,12 @@ function KitAdmissionalDetalhes() {
                             aoFechar={() => { setModalOpened(false); setVersaoSelecionada(null); }} 
                             aoSalvar={salvarElegibilidadeVersao}
                             item={versaoSelecionada}
+                        />
+                        <ModalItemKitAdmissional
+                            opened={modalItemOpened}
+                            aoFechar={() => { setModalItemOpened(false); setItemEditando(null); }}
+                            aoSalvar={salvarNovoItem}
+                            item={itemEditando}
                         />
                     </>
                 ) : null}

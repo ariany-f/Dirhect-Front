@@ -15,7 +15,7 @@ import { Tag } from 'primereact/tag';
 import { GrAddCircle } from 'react-icons/gr';
 import { RiDeleteBin6Line, RiEditBoxLine } from 'react-icons/ri';
 import http from '@http'
-import ModalContratos from '@components/ModalContratos'
+import ModalKitAdmissional from '@components/ModalKitAdmissional'
 import { Toast } from 'primereact/toast'
 import { Real } from '@utils/formats'
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -323,13 +323,13 @@ function DataTableKitAdmissional({
             });
     };
     
-    const excluirContrato = (id) => {
+    const excluirKitAdmissional = (id) => {
         confirmDialog({
             message: 'Tem certeza que deseja excluir este contrato?',
             header: 'Deletar',
             icon: 'pi pi-info-circle',
             accept: () => {
-                http.delete(`/contrato/${id}/?format=json`)
+                http.delete(`/kit/${id}/?format=json`)
                 .then(() => {
                     toast.current.show({
                         severity: 'success',
@@ -384,7 +384,7 @@ function DataTableKitAdmissional({
                 <Tooltip target=".edit" mouseTrack mouseTrackLeft={10} />
                 <FaPen
                     className="edit"
-                    data-pr-tooltip="Editar Contrato"
+                    data-pr-tooltip="Editar Kit Admissional"
                     size={16}
                     onClick={(e) => {
                         e.stopPropagation();
@@ -398,12 +398,12 @@ function DataTableKitAdmissional({
                 <Tooltip target=".delete" mouseTrack mouseTrackLeft={10} />
                 <RiDeleteBin6Line 
                     className="delete" 
-                    data-pr-tooltip="Excluir Contrato" 
+                    data-pr-tooltip="Excluir Kit Admissional" 
                     size={16} 
                     onClick={(e) => {
                         if (rowData.delete_validation?.can_delete === false) return;
                         e.stopPropagation();
-                        excluirContrato(rowData.id);
+                        excluirKitAdmissional(rowData.id);
                     }}
                     style={{
                         cursor: rowData.delete_validation?.can_delete === false ? 'not-allowed' : 'pointer',
@@ -497,7 +497,7 @@ function DataTableKitAdmissional({
                 <Column body={representativeActionsTemplate} header="" style={{ width: '20%', textAlign: 'center' }}></Column>
             </DataTable>
             
-            <ModalContratos 
+            <ModalKitAdmissional 
                 aoSalvar={salvarContrato}
                 opened={modalOpened} 
                 aoFechar={() => {
