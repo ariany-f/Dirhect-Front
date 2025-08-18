@@ -282,6 +282,7 @@ const ConteudoFrame = styled.div`
     gap: 8px;
     width: 100%;
     position: relative;
+    z-index: 3;
 
     .custom-stepper {
         display: flex;
