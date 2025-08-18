@@ -40,6 +40,7 @@ function MeusDados() {
   const toast = useRef(null);
   const location = useLocation();
   const [podeAlterarCliente, setPodeAlterarCliente] = useState(false);
+  const [kitAdmissional, setKitAdmissional] = useState(false);
 
   const {
       usuario,
@@ -50,6 +51,7 @@ function MeusDados() {
   useEffect(() => {
     // Verifica a permissão para alterar cliente
     setPodeAlterarCliente(ArmazenadorToken.hasPermission('change_cliente'));
+    setKitAdmissional(import.meta.env.VITE_OPTIONS_KIT_ADMISSIONAL);
 
     setLoading(true);
   }, []);
@@ -99,6 +101,11 @@ function MeusDados() {
           <Link className={styles.link} to="/usuario/email">
             <Botao estilo={location.pathname == '/usuario/email'?'black':''} size="small" tab>Emails</Botao>
           </Link>
+          {kitAdmissional && (
+            <Link className={styles.link} to="/usuario/kit-admissional">
+              <Botao estilo={location.pathname.startsWith('/usuario/kit-admissional') ? 'black' : ''} size="small" tab>Kit Admissional</Botao>
+            </Link>
+          )}
           {podeAlterarCliente && (
             <Link className={styles.link} to="/usuario/empresa">
                 <Botao estilo={location.pathname == '/usuario/empresa'?'black':''} size="small" tab>{companyName || 'Empresa'}</Botao>

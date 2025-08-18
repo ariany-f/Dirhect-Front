@@ -92,6 +92,9 @@ import SecoesLista from '@pages/Estrutura/secoes'
 import HorariosLista from './pages/Estrutura/horarios'
 import Contratos from '@pages/Contratos'
 import ContratosListagem from '@pages/Contratos/lista'
+import KitAdmissional from '@pages/KitAdmissional'
+import KitAdmissionalLista from '@pages/KitAdmissional/lista'
+import KitAdmissionalDetalhes from '@pages/KitAdmissional/detalhes'
 import ColaboradorDependentes from '@pages/Colaboradores/Detalhes/dependentes'
 import Dependentes from '@pages/Dependentes'
 import DependentesListagem from '@pages/Dependentes/lista'
@@ -498,6 +501,10 @@ function AppRouter() {
                   <Route path="sistema" element={<MeusDadosSistema />} />
                   <Route path="email" element={<ConfiguracoesEmails />} />
                   <Route path="empresa" element={<MeusDadosEmpresa />} />
+                  <Route path="kit-admissional" element={<KitAdmissional />} >
+                    <Route index element={<KitAdmissionalLista />} />
+                    <Route path="detalhes/:id" element={<KitAdmissionalDetalhes />} />
+                  </Route>
               </Route>
             </Route>
             <Route path="*" element={<NaoEncontrada />}></Route>
