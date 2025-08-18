@@ -180,39 +180,40 @@ function DataTableTarefas({
                     }
                 `}
             </style>
-            {showSearch && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'space-between', width: '100%'}}>
-                    <CampoTexto width={'220px'} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
-                    {onRefresh && (
-                        <button
-                            onClick={onRefresh}
-                            disabled={loading}
-                            title="Atualizar dados"
-                            style={{
-                                background: 'transparent',
-                                border: 'none',
-                                cursor: loading ? 'not-allowed' : 'pointer',
-                                padding: '8px',
-                                borderRadius: '4px',
-                                transition: 'background-color 0.2s',
-                                opacity: loading ? 0.5 : 1
-                            }}
-                            onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--neutro-100)')}
-                            onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
-                        >
-                            <FaSync 
-                                size={16} 
-                                color="var(--gradient-secundaria)" 
-                                style={{
-                                    animation: loading ? 'spin 1s linear infinite' : 'none'
-                                }}
-                            />
-                        </button>
-                    )}
-                </div>
-            )}
-            <div style={{display: 'flex', gap: 16, alignItems: 'flex-start'}}>
-                <BotaoGrupo align={'space-between'} wrap>
+            <BotaoGrupo align={'space-between'} wrap>
+                <div style={{display: 'flex', gap: 16, alignItems: 'center'}}>
+                {showSearch && (
+                    <CampoTexto width={"320px"} valor={globalFilterValue} setValor={onGlobalFilterChange} type="search" label="" placeholder="Buscar" />
+                )}
+                {onRefresh && (
+                <button
+                    onClick={onRefresh}
+                    disabled={loading}
+                    title="Atualizar dados"
+                    style={{
+                        background: 'transparent',
+                        border: 'none',
+                            cursor: loading ? 'not-allowed' : 'pointer',
+                            padding: '8px',
+                            borderRadius: '4px',
+                            transition: 'background-color 0.2s',
+                            opacity: loading ? 0.5 : 1
+                        }}
+                    onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--neutro-100)')}
+                    onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+                >
+                    <FaSync 
+                        size={16} 
+                        color="var(--gradient-secundaria)" 
+                        style={{
+                            animation: loading ? 'spin 1s linear infinite' : 'none'
+                        }}
+                        />
+                </button>
+            )}</div>
+            </BotaoGrupo>
+            <div style={{display: 'flex', gap: 16, alignItems: 'flex-start', justifyContent: 'flex-end'}}>
+                <BotaoGrupo align={'end'} wrap>
                     {!colaborador && (
                         <>
                             <BotaoGrupo align="end" gap="8px">

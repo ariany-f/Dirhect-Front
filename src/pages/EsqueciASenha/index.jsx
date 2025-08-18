@@ -135,7 +135,7 @@ function EsqueciASenha() {
     }
 
     return (
-        <>
+        <div style={{ width: '100%' }}>
             <Loading opened={loading} />
             <Frame gap="16px">
                 <BotaoVoltar />
@@ -148,11 +148,11 @@ function EsqueciASenha() {
             </Frame>
             <form>
                 <Frame>
-                    <CampoTexto tipo="email" camposVazios={classError} name="email" valor={usuario.email} setValor={setEmail} label="E-mail do responsável" placeholder="Digite o E-mail do responsável" />
+                    <CampoTexto $width="100%" tipo="email" camposVazios={classError} name="email" valor={usuario.email} setValor={setEmail} label="E-mail do responsável" placeholder="Digite o E-mail do responsável" />
                 </Frame>
             </form>
             <Botao aoClicar={sendData} estilo="vermilion" size="medium" filled>Confirmar</Botao>
-        </>
+        </div>
     )
 }
 

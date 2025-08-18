@@ -45,6 +45,19 @@ function Publico() {
                         <RightContainer>
                             <MainContainer>
                                 <Outlet />
+                                {import.meta.env.VITE_OPTIONS_WHITE_LABEL === 'true' && (
+                                    <img 
+                                        style={{ 
+                                            width: '70px', 
+                                            margin: '0px auto', 
+                                            filter: 'grayscale(1) brightness(0.8) opacity(0.8)', 
+                                            WebkitFilter: 'grayscale(1) brightness(0.8) opacity(0.8)',
+                                            mixBlendMode: 'multiply'
+                                        }} 
+                                        src={BrandColors.getPoweredByLogo()} 
+                                        alt="Powered by" 
+                                    />
+                                )}
                             </MainContainer>
                         </RightContainer>
                         <BannerMini />

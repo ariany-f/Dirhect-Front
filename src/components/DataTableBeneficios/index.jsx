@@ -388,15 +388,19 @@ function DataTableBeneficios({
         <>
             <ConfirmDialog />
             <Toast ref={toast} />
-            <BotaoGrupo align="space-between">
-                <CampoTexto  
-                    width={'320px'} 
-                    valor={globalFilterValue}
-                    setValor={onGlobalFilterChange}
-                    type="search" 
-                    label="" 
-                    placeholder="Buscar benefício" 
-                />
+            <BotaoGrupo align="space-between" wrap>
+                <div className="flex justify-content-end">
+                    <span className="p-input-icon-left">
+                        <CampoTexto  
+                            width={'150px'} 
+                            valor={globalFilterValue}
+                            setValor={onGlobalFilterChange}
+                            type="search" 
+                            label="" 
+                            placeholder="Buscar benefício" 
+                        />
+                        </span>
+                </div>
                 <BotaoGrupo align="end">
                     <BotaoSemBorda color="var(--terciaria)">
                         <FaMapPin/><Link to={'/beneficio/onde-usar'} className={styles.link}>Onde usar</Link>
