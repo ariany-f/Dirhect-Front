@@ -574,7 +574,21 @@ function BarraLateral({ $sidebarOpened }) {
                                 </StyledLink>
                             ))}
                             </div>
-                            {whiteLabel && <img style={{ width: '70px', margin: 'auto' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
+                            {whiteLabel && (
+                              <img 
+                                style={{ 
+                                  width: '70px', 
+                                  margin: 'auto', 
+                                  opacity: 0.30, 
+                                  pointerEvents: 'none', 
+                                  filter: 'blur(0.1px)',
+                                  userSelect: 'none',
+                                  display: 'block',
+                                }} 
+                                src={BrandColors.getPoweredByLogo()} 
+                                alt="Powered by" 
+                              />
+                            )}
                         </ListaEstilizada>
                     </NavEstilizada>
                 </div>
@@ -620,7 +634,21 @@ function BarraLateral({ $sidebarOpened }) {
                                 </StyledLink>
                             ))}
                             </div>
-                            {whiteLabel && <img style={{ width: '70px', margin: 'auto' }} src={BrandColors.getPoweredByLogo()} alt="Powered by" />}
+                            {whiteLabel && (
+                              <img 
+                                style={{ 
+                                  width: '70px', 
+                                  margin: 'auto', 
+                                  opacity: 0.30, 
+                                  pointerEvents: 'none', 
+                                  filter: 'blur(0.2px)',
+                                  userSelect: 'none',
+                                  display: 'block',
+                                }} 
+                                src={BrandColors.getPoweredByLogo()} 
+                                alt="Powered by" 
+                              />
+                            )}
                         </ListaEstilizada>
                     </NavEstilizada>
                 </div>
