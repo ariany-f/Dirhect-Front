@@ -524,6 +524,7 @@ const CandidatoRegistro = () => {
     const [funcoes_confianca, setFuncoesConfianca] = useState([]);
     const [sindicatos, setSindicatos] = useState([]);
     const [estados, setEstados] = useState([]);
+    const [paises, setPaises] = useState([]);
     const [opcoesDominio, setOpcoesDominio] = useState({});
     const [availableDominioTables, setAvailableDominioTables] = useState([]);
     const [dadosCarregados, setDadosCarregados] = useState(false);
@@ -787,17 +788,43 @@ const CandidatoRegistro = () => {
             setCarregamentoEmAndamento(true);
             setDadosCarregados(false);
             
-            // Carregar estados apenas se não estiverem carregados
-            if (!estados.length) {
+            // Carregar apenas países na inicialização
+            if (!paises.length) {
                 try {
-                    const response = await http.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados');
-                    const novosEstados = response.map((item) => ({
-                        name: item.nome,
-                        code: item.sigla
-                    }));
-                    setEstados(novosEstados);
+                    const paisesResponse = await http.get('pais/?format=json');
+                    
+                    // Verifica se a resposta tem a estrutura esperada
+                    let dadosPaises = paisesResponse;
+                    if (paisesResponse && paisesResponse.results && Array.isArray(paisesResponse.results)) {
+                        dadosPaises = paisesResponse.results;
+                    } else if (paisesResponse && Array.isArray(paisesResponse)) {
+                        dadosPaises = paisesResponse;
+                    } else {
+                        dadosPaises = [];
+                    }
+                    
+                    if (dadosPaises.length > 0) {
+                        const paisesFormatados = dadosPaises
+                            .filter(pais => pais.nome !== 'Brasil' && pais.descricao !== 'Brasil') // Remove Brasil da lista
+                            .map(pais => ({
+                                name: pais.nome || pais.descricao,
+                                code: pais.codigo || pais.id
+                            }))
+                            .sort((a, b) => a.name.localeCompare(b.name)); // Ordena alfabeticamente
+                        
+                        // Adiciona Brasil no início da lista
+                        paisesFormatados.unshift({
+                            name: 'Brasil',
+                            code: '76'
+                        });
+                        
+                        setPaises(paisesFormatados);
+                    } else {
+                        setPaises([]);
+                    }
                 } catch (error) {
-                    console.error('Erro ao carregar estados:', error);
+                    console.error('Erro ao carregar países:', error);
+                    setPaises([]);
                 }
             }
 
@@ -4142,7 +4169,7 @@ const CandidatoRegistro = () => {
                                     <StepDadosPessoais 
                                         classError={classError} 
                                         setClassError={setClassError}
-                                        estados={estados} 
+                                        paises={paises}
                                         modoLeitura={modoLeitura} 
                                         opcoesDominio={opcoesDominio}
                                     />

@@ -4,6 +4,7 @@ import CampoTexto from '@components/CampoTexto';
 import DropdownItens from '@components/DropdownItens';
 import SwitchInput from '@components/SwitchInput';
 import axios from 'axios';
+import http from '@http';
 import styled from 'styled-components';
 
 const GridContainer = styled.div`
@@ -38,14 +39,14 @@ const SectionTitle = styled.div`
     border-bottom: 1px solid #e2e8f0;
 `;
 
-const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitura = false, opcoesDominio = {} }) => {
+const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLeitura = false, opcoesDominio = {} }) => {
     const { candidato, setCampo } = useCandidatoContext();
     const lastCepRef = useRef('');
+    const [estados, setEstados] = useState([]);
+    const [loadingEstados, setLoadingEstados] = useState(false);
     const [cidades, setCidades] = useState([]);
     const [loadingCidades, setLoadingCidades] = useState(false);
-    const [paises, setPaises] = useState([]);
-    const [loadingPaises, setLoadingPaises] = useState(false);
-    const [estadosFiltrados, setEstadosFiltrados] = useState(estados);
+    const [estadosFiltrados, setEstadosFiltrados] = useState([]);
 
     const formatarOpcoesDominio = useMemo(() => {
         return (opcoes) => {
@@ -207,11 +208,22 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
         
         setLoadingCidades(true);
         try {
-            const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado}/municipios`);
-            if (response.data && Array.isArray(response.data)) {
-                const cidadesFormatadas = response.data.map(cidade => ({
-                    name: cidade.nome,
-                    code: cidade.nome
+            const response = await http.get(`municipio/?format=json&estado=${estado}`);
+            
+            // Verifica se a resposta tem a estrutura esperada
+            let dados = response;
+            if (response && response.results && Array.isArray(response.results)) {
+                dados = response.results;
+            } else if (response && Array.isArray(response)) {
+                dados = response;
+            } else {
+                dados = [];
+            }
+            
+            if (dados.length > 0) {
+                const cidadesFormatadas = dados.map(cidade => ({
+                    name: cidade.nome || cidade.descricao,
+                    code: cidade.nome || cidade.descricao
                 }));
                 setCidades(cidadesFormatadas);
             } else {
@@ -225,50 +237,52 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
         }
     };
 
-    // Função para buscar países da API do IBGE
-    const buscarPaises = async () => {
-        setLoadingPaises(true);
-        try {
-            const response = await axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/paises');
-            if (response.data && Array.isArray(response.data)) {
-                const paisesFormatados = response.data
-                    .filter(pais => pais.nome !== 'Brasil') // Remove Brasil da lista
-                    .map(pais => ({
-                        name: pais.nome,
-                        code: pais.id
-                    }))
-                    .sort((a, b) => a.name.localeCompare(b.name)); // Ordena alfabeticamente
-                
-                // Adiciona Brasil no início da lista com descrição correta
-                paisesFormatados.unshift({
-                    name: 'Brasil',
-                    code: '76'
-                });
-                
-                setPaises(paisesFormatados);
-            } else {
-                setPaises([]);
-            }
-        } catch (error) {
-            console.error('Erro ao buscar países:', error);
-            setPaises([]);
-        } finally {
-            setLoadingPaises(false);
-        }
-    };
+
 
     // Função para buscar estados por país
     const buscarEstadosPorPais = async (paisId) => {
         if (!paisId) {
-            setEstadosFiltrados(estados);
+            setEstadosFiltrados([]);
             return;
         }
         
-        // Se for Brasil (código 76), usa a lista de estados brasileiros
+        // Se for Brasil (código 76), busca os estados
         if (paisId === '76') {
-            setEstadosFiltrados(estados);
+            setLoadingEstados(true);
+            try {
+                const response = await http.get('estado/?format=json');
+                
+                // Verifica se a resposta tem a estrutura esperada
+                let dados = response;
+                if (response && response.results && Array.isArray(response.results)) {
+                    dados = response.results;
+                } else if (response && Array.isArray(response)) {
+                    dados = response;
+                } else {
+                    dados = [];
+                }
+                
+                if (dados.length > 0) {
+                    const estadosFormatados = dados.map(estado => ({
+                        name: estado.nome || estado.descricao,
+                        code: estado.sigla || estado.codigo
+                    }));
+                    setEstados(estadosFormatados);
+                    setEstadosFiltrados(estadosFormatados);
+                } else {
+                    setEstados([]);
+                    setEstadosFiltrados([]);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar estados:', error);
+                setEstados([]);
+                setEstadosFiltrados([]);
+            } finally {
+                setLoadingEstados(false);
+            }
         } else {
             // Para outros países, deixa vazio para permitir digitação livre
+            setEstados([]);
             setEstadosFiltrados([]);
         }
     };
@@ -286,19 +300,16 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
         }
     }, [candidato?.estado_natal, candidato?.nacionalidade, opcoesNacionalidade]);
 
-    // Carrega países na inicialização
-    useEffect(() => {
-        buscarPaises();
-    }, []);
+
 
     // Filtra estados quando o país muda
     useEffect(() => {
         if (candidato?.pais) {
             buscarEstadosPorPais(candidato.pais);
         } else {
-            setEstadosFiltrados(estados);
+            setEstadosFiltrados([]);
         }
-    }, [candidato?.pais, estados]);
+    }, [candidato?.pais]);
 
     // Monitora mudanças na nacionalidade para carregar estados quando selecionar Brasil
     useEffect(() => {
@@ -369,8 +380,9 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
         const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
         
         if (isBrasil) {
-            // Se for Brasil, busca na lista de estados
-            const estadoEncontrado = estadosFiltrados.find(e => e.code === candidato[campo]);
+            // Se for Brasil, busca na lista de estados filtrados ou na lista completa
+            const estadoEncontrado = estadosFiltrados.find(e => e.code === candidato[campo]) || 
+                                   estados.find(e => e.code === candidato[campo]);
             return estadoEncontrado || '';
         } else {
             // Para outros países, retorna o valor como texto
@@ -539,8 +551,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
                             removerErroCampo('estado_natal', valor);
                         }}
                         options={estadosFiltrados}
-                        placeholder="Selecione o estado natal"
-                        disabled={modoLeitura || !candidato?.nacionalidade}
+                        placeholder={loadingEstados ? "Carregando estados..." : "Selecione o estado natal"}
+                        disabled={modoLeitura || !candidato?.nacionalidade || loadingEstados}
                         filter
                     />
                 ) : (
@@ -904,8 +916,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
                     setCampo('estado', '');
                 }}
                 options={paises}
-                placeholder={loadingPaises ? "Carregando países..." : "Selecione o país"}
-                disabled={modoLeitura || loadingPaises}
+                placeholder="Selecione o país"
+                disabled={modoLeitura}
                 filter
             />
             <CampoTexto
@@ -1028,8 +1040,8 @@ const StepDadosPessoais = ({ classError = [], setClassError, estados, modoLeitur
                     options={estadosFiltrados}
                     name="state"
                     label="Estado"
-                    placeholder="Selecione o estado"
-                    disabled={modoLeitura || !candidato?.pais}
+                    placeholder={loadingEstados ? "Carregando estados..." : "Selecione o estado"}
+                    disabled={modoLeitura || !candidato?.pais || loadingEstados}
                     filter
                 />
             ) : (
