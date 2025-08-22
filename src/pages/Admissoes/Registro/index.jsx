@@ -792,24 +792,31 @@ const CandidatoRegistro = () => {
             if (!paises.length) {
                 try {
                     const paisesResponse = await http.get('pais/?format=json');
+                    console.log('Resposta da API de países:', paisesResponse);
                     
                     // Verifica se a resposta tem a estrutura esperada
-                    let dadosPaises = paisesResponse;
+                    let dadosPaises = [];
                     if (paisesResponse && paisesResponse.results && Array.isArray(paisesResponse.results)) {
                         dadosPaises = paisesResponse.results;
                     } else if (paisesResponse && Array.isArray(paisesResponse)) {
                         dadosPaises = paisesResponse;
+                    } else if (paisesResponse && typeof paisesResponse === 'object') {
+                        // Se for um objeto único, converte para array
+                        dadosPaises = [paisesResponse];
                     } else {
                         dadosPaises = [];
                     }
                     
+                    console.log('Dados de países processados:', dadosPaises);
                     if (dadosPaises.length > 0) {
                         const paisesFormatados = dadosPaises
-                            .filter(pais => pais.nome !== 'Brasil' && pais.descricao !== 'Brasil') // Remove Brasil da lista
+                            .filter(pais => pais && pais.nome_por) // Filtra países válidos com nome
+                            .filter(pais => pais.nome_por !== 'Brasil') // Remove Brasil da lista
                             .map(pais => ({
-                                name: pais.nome || pais.descricao,
-                                code: pais.codigo || pais.id
+                                name: pais.nome_por || pais.nome_ing || pais.nome_esp,
+                                code: pais.sigla || pais.id
                             }))
+                            .filter(pais => pais.name && pais.code) // Remove países sem nome ou código
                             .sort((a, b) => a.name.localeCompare(b.name)); // Ordena alfabeticamente
                         
                         // Adiciona Brasil no início da lista
@@ -820,7 +827,11 @@ const CandidatoRegistro = () => {
                         
                         setPaises(paisesFormatados);
                     } else {
-                        setPaises([]);
+                        // Se não há dados, pelo menos adiciona Brasil
+                        setPaises([{
+                            name: 'Brasil',
+                            code: '76'
+                        }]);
                     }
                 } catch (error) {
                     console.error('Erro ao carregar países:', error);
