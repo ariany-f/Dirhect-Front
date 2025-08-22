@@ -141,7 +141,6 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
     const opcoesGenero = useMemo(() => formatarOpcoesDominio(opcoesDominio.genero), [opcoesDominio.genero, formatarOpcoesDominio]);
     const opcoesCorRaca = useMemo(() => formatarOpcoesDominio(opcoesDominio.cor_raca), [opcoesDominio.cor_raca, formatarOpcoesDominio]);
     const opcoesEstadoCivil = useMemo(() => formatarOpcoesDominio(opcoesDominio.estado_civil), [opcoesDominio.estado_civil, formatarOpcoesDominio]);
-    const opcoesNacionalidade = useMemo(() => formatarOpcoesDominio(opcoesDominio.nacionalidade), [opcoesDominio.nacionalidade, formatarOpcoesDominio]);
     const opcoesTipoRua = useMemo(() => formatarOpcoesTipoRua(opcoesDominio.tipo_rua), [opcoesDominio.tipo_rua, formatarOpcoesTipoRua]);
     const opcoesTipoBairro = useMemo(() => formatarOpcoesTipoBairro(opcoesDominio.tipo_bairro), [opcoesDominio.tipo_bairro, formatarOpcoesTipoBairro]);
 
@@ -290,7 +289,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
     // Carrega cidades quando o estado natal muda
     useEffect(() => {
         // Verifica se a nacionalidade é Brasil
-        const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+        const nacionalidadeSelecionada = paises.find(n => n.code === candidato?.nacionalidade);
         const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
         
         if (isBrasil && candidato?.estado_natal) {
@@ -298,7 +297,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
         } else {
             setCidades([]);
         }
-    }, [candidato?.estado_natal, candidato?.nacionalidade, opcoesNacionalidade]);
+    }, [candidato?.estado_natal, candidato?.nacionalidade, paises]);
 
 
 
@@ -315,7 +314,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
     useEffect(() => {
         if (candidato?.nacionalidade) {
             // Verifica se a nacionalidade selecionada é Brasil
-            const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato.nacionalidade);
+            const nacionalidadeSelecionada = paises.find(n => n.code === candidato.nacionalidade);
             if (nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil')) {
                 // Se selecionou Brasil, define o país como Brasil e carrega os estados
                 if (candidato.pais !== '76') {
@@ -334,7 +333,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
                 }
             }
         }
-    }, [candidato?.nacionalidade, opcoesNacionalidade, candidato?.pais, setCampo]);
+    }, [candidato?.nacionalidade, paises, candidato?.pais, setCampo]);
 
     // Função para buscar endereço pelo CEP
     const handleCepChange = async (valor) => {
@@ -376,7 +375,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
         }
         
         // Verifica se a nacionalidade é Brasil
-        const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+        const nacionalidadeSelecionada = paises.find(n => n.code === candidato?.nacionalidade);
         const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
         
         if (isBrasil) {
@@ -402,7 +401,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
         if (!candidato?.naturalidade) return '';
         
         // Verifica se a nacionalidade é Brasil
-        const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+        const nacionalidadeSelecionada = paises.find(n => n.code === candidato?.nacionalidade);
         const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
         
         if (isBrasil) {
@@ -529,14 +528,14 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
             <DropdownItens
                 name="nacionalidade"
                 label="Nacionalidade"
-                valor={getValorSelecionadoFromCandidato('nacionalidade', opcoesNacionalidade)}
+                valor={getValorSelecionadoFromCandidato('nacionalidade', paises)}
                 setValor={(valor) => setCampo('nacionalidade', valor.code)}
-                options={opcoesNacionalidade}
+                options={paises}
                 disabled={modoLeitura}
                 filter
             />
             {(() => {
-                const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+                const nacionalidadeSelecionada = paises.find(n => n.code === candidato?.nacionalidade);
                 const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
                 
                 return isBrasil ? (
@@ -570,7 +569,7 @@ const StepDadosPessoais = ({ classError = [], setClassError, paises = [], modoLe
                 );
             })()}
             {(() => {
-                const nacionalidadeSelecionada = opcoesNacionalidade.find(n => n.code === candidato?.nacionalidade);
+                const nacionalidadeSelecionada = paises.find(n => n.code === candidato?.nacionalidade);
                 const isBrasil = nacionalidadeSelecionada && (nacionalidadeSelecionada.name === 'Brasil' || nacionalidadeSelecionada.name === 'Brazil');
                 
                 return isBrasil ? (
