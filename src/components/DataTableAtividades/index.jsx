@@ -266,6 +266,7 @@ function DataTableAtividades({
                             label={getButtonText()}
                             severity={getButtonSeverity()}
                             size="small"
+                            disabled={rowData.status === 'concluida' || rowData.status === 'aprovada' || rowData.status === 'em_andamento' || rowData.status === 'erro'}
                             onClick={() => handleChange(true)}
                             style={{ 
                                 fontSize: '12px', 
