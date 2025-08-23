@@ -948,6 +948,17 @@ const CandidatoRegistro = () => {
         };
     }, [showModalConfirmacao, showImageModal, showCropModal]);
 
+    // Expor funções para o StepDocumentos usar
+    useEffect(() => {
+        window.handleImageUploadFromStep = handleImageUploadFromStep;
+        window.handleShowImageModal = handleShowImageModal;
+        
+        return () => {
+            delete window.handleImageUploadFromStep;
+            delete window.handleShowImageModal;
+        };
+    }, []);
+
     const ChangeCep = (value) => 
     {
         setCep(value)
@@ -3170,6 +3181,28 @@ const CandidatoRegistro = () => {
                 life: 3000 
             });
         }
+    };
+
+    // Função para ser chamada pelo StepDocumentos
+    const handleImageUploadFromStep = (file) => {
+        if (file && file.type.match('image.*')) {
+            setSelectedFile(file);
+            const reader = new FileReader();
+            reader.onload = () => {
+                setImageSrc(reader.result);
+                setShowCropModal(true);
+                setShowCropSelection(false);
+                setIsCropped(false);
+                setCroppedImageSrc('');
+                setHasCropChanged(false);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // Função para abrir modal de visualização da imagem
+    const handleShowImageModal = () => {
+        setShowImageModal(true);
     };
 
     const handleCropChange = (crop, percentCrop) => {
