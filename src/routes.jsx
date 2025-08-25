@@ -193,6 +193,7 @@ import DePara from './pages/TabelasSistema/depara'
 import MeusDadosEmpresa from './pages/MeusDados/empresa'
 import usePageMetadata from '@hooks/usePageMetadata';
 import ColaboradorEstabilidade from './pages/Colaboradores/Detalhes/estabilidade'
+import Metadados from './pages/Metadados'
 
 function AppRouter() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
@@ -322,6 +323,8 @@ function AppRouter() {
                 <Route path="codigo-situacao-rais" element={<CodigoSituacaoRais />} />
               </Route>
             
+              <Route path="metadados" element={<Metadados />} />
+
               <Route path="estrutura" element={<EstruturaOrganizacional />} >
                 <Route index element={<FiliaisLista />} />
                 <Route path="departamentos" element={<DepartamentoLista />} />

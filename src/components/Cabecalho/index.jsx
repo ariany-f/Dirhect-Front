@@ -9,7 +9,7 @@ import { MdOutlineKeyboardArrowDown, MdShoppingCart } from 'react-icons/md';
 import Menu from "@components/Menu";
 import { useState, useRef, useEffect } from "react";
 import { useSessaoUsuarioContext } from "@contexts/SessaoUsuario";
-import { FaBuilding, FaBusAlt } from "react-icons/fa";
+import { FaBuilding, FaBusAlt, FaDatabase } from "react-icons/fa";
 import { FaBars } from "react-icons/fa6";
 import { TbLayoutSidebarLeftCollapseFilled } from "react-icons/tb";
 import { LuSparkles } from "react-icons/lu";
@@ -410,6 +410,11 @@ const Cabecalho = ({ menuOpened, setMenuOpened, nomeEmpresa, aoClicar = null, si
           label: t("organizational_structure"), 
           url: '/estrutura',
           icon: <RiOrganizationChart size={18}/>
+        },
+        { 
+          label: 'Metadados', 
+          url: '/metadados',
+          icon: <FaDatabase size={18}/>
         },
         { 
           label: 'Tabelas de Sistema', 
