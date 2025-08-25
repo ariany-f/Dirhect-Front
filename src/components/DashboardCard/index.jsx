@@ -29,6 +29,7 @@ import { useEffect, useState } from 'react'
 import { Real } from '@utils/formats'
 import { useTranslation } from 'react-i18next';
 import http from '@http'
+import { ArmazenadorToken } from '@utils'
 
 function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], tipoUsuario = 'RH', funcionariosDashboard = {} }){
    
@@ -43,12 +44,12 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
     const { t } = useTranslation('common');
 
     // Definições de variáveis do dashboard de funcionários
-    const totalColaboradores = funcionariosDashboard.total_funcionarios || 0;
-    const novosColaboradoresMes = funcionariosDashboard.admitidos_no_mes || 0;
-    const demitidos = funcionariosDashboard.funcionarios_demitidos || [];
-    const totalDemitidos = funcionariosDashboard.total_demitidos || 0;
-    const demitidosNoMes = funcionariosDashboard.demitidos_no_mes || 0;
-    const funcionariosPorMotivoDemissao = funcionariosDashboard.funcionarios_por_motivo_demissao || [];
+    const totalColaboradores = funcionariosDashboard?.total_funcionarios || 0;
+    const novosColaboradoresMes = funcionariosDashboard?.admitidos_no_mes || 0;
+    const demitidos = funcionariosDashboard?.funcionarios_demitidos || [];
+    const totalDemitidos = funcionariosDashboard?.total_demitidos || 0;
+    const demitidosNoMes = funcionariosDashboard?.demitidos_no_mes || 0;
+    const funcionariosPorMotivoDemissao = funcionariosDashboard?.funcionarios_por_motivo_demissao || [];
     
     // Dados de teste para verificar se o problema é nos dados ou no processamento
     const dadosTesteMotivos = [
@@ -97,80 +98,94 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
         const carregarTodosOsDados = async () => {
             try {
                 
+                // Preparar array de promises baseado nas permissões
+                const promises = [];
+                const promiseNames = [];
+                
+                // Adicionar férias apenas se tiver permissão
+                if (ArmazenadorToken.hasPermission('view_ferias')) {
+                    promises.push(http.get('ferias/?format=json'));
+                    promiseNames.push('ferias');
+                }
+                
+                // Adicionar admissões
+                promises.push(http.get('admissao/?format=json'));
+                promiseNames.push('admissoes');
+                
+                // Adicionar vagas apenas se tiver permissão
+                if (ArmazenadorToken.hasPermission('view_vagas')) {
+                    promises.push(http.get('vagas/?format=json'));
+                    promiseNames.push('vagas');
+                }
+                
+                // Adicionar processos
+                promises.push(http.get('processos/?format=json'));
+                promiseNames.push('processos');
+                
+                // Adicionar tarefas
+                promises.push(http.get('tarefas/?format=json'));
+                promiseNames.push('tarefas');
+                
                 // Carregar todos os dados em paralelo
-                const [feriasResponse, admissoesResponse, vagasResponse, processosResponse, tarefasResponse] = await Promise.allSettled([
-                    http.get('ferias/?format=json'),
-                    http.get('admissao/?format=json'),
-                    http.get('vagas/?format=json'),
-                    http.get('processos/?format=json'),
-                    http.get('tarefas/?format=json')
-                ]);
+                const responses = await Promise.allSettled(promises);
 
-                // Processar resposta de férias
-                if (feriasResponse.status === 'fulfilled') {
-                    let dadosFerias = feriasResponse.value;
-                    if (dadosFerias && dadosFerias.results) {
-                        dadosFerias = dadosFerias.results;
-                    } else if (!Array.isArray(dadosFerias)) {
-                        dadosFerias = [];
+                // Processar respostas baseado nas permissões
+                responses.forEach((response, index) => {
+                    const responseName = promiseNames[index];
+                    
+                    if (response.status === 'fulfilled') {
+                        let dados = response.value;
+                        if (dados && dados.results) {
+                            dados = dados.results;
+                        } else if (!Array.isArray(dados)) {
+                            dados = [];
+                        }
+                        
+                        switch (responseName) {
+                            case 'ferias':
+                                setFeriasData(dados);
+                                break;
+                            case 'admissoes':
+                                setAdmissoesData(dados);
+                                break;
+                            case 'vagas':
+                                setVagasData(dados);
+                                break;
+                            case 'processos':
+                                setProcessosData(dados);
+                                break;
+                            case 'tarefas':
+                                setTarefasData(dados);
+                                break;
+                        }
+                    } else {
+                        // Definir dados vazios em caso de erro
+                        switch (responseName) {
+                            case 'ferias':
+                                setFeriasData([]);
+                                break;
+                            case 'admissoes':
+                                setAdmissoesData([]);
+                                break;
+                            case 'vagas':
+                                setVagasData([]);
+                                break;
+                            case 'processos':
+                                setProcessosData([]);
+                                break;
+                            case 'tarefas':
+                                setTarefasData([]);
+                                break;
+                        }
                     }
-                    setFeriasData(dadosFerias);
-                } else {
+                });
+                
+                // Definir dados vazios para endpoints não chamados por falta de permissão
+                if (!ArmazenadorToken.hasPermission('view_ferias')) {
                     setFeriasData([]);
                 }
-
-                // Processar resposta de admissões
-                if (admissoesResponse.status === 'fulfilled') {
-                    let dadosAdmissoes = admissoesResponse.value;
-                    if (dadosAdmissoes && dadosAdmissoes.results) {
-                        dadosAdmissoes = dadosAdmissoes.results;
-                    } else if (!Array.isArray(dadosAdmissoes)) {
-                        dadosAdmissoes = [];
-                    }
-                    setAdmissoesData(dadosAdmissoes);
-                } else {
-                    setAdmissoesData([]);
-                }
-
-                // Processar resposta de vagas
-                if (vagasResponse.status === 'fulfilled') {
-                    let dadosVagas = vagasResponse.value;
-                    if (dadosVagas && dadosVagas.results) {
-                        dadosVagas = dadosVagas.results;
-                    } else if (!Array.isArray(dadosVagas)) {
-                        dadosVagas = [];
-                    }
-                    setVagasData(dadosVagas);
-                } else {
+                if (!ArmazenadorToken.hasPermission('view_vagas')) {
                     setVagasData([]);
-                }
-
-
-
-                // Processar resposta de processos
-                if (processosResponse.status === 'fulfilled') {
-                    let dadosProcessos = processosResponse.value;
-                    if (dadosProcessos && dadosProcessos.results) {
-                        dadosProcessos = dadosProcessos.results;
-                    } else if (!Array.isArray(dadosProcessos)) {
-                        dadosProcessos = [];
-                    }
-                    setProcessosData(dadosProcessos);
-                } else {
-                    setProcessosData([]);
-                }
-
-                // Processar resposta de tarefas (último para otimizar gráficos)
-                if (tarefasResponse.status === 'fulfilled') {
-                    let dadosTarefas = tarefasResponse.value;
-                    if (dadosTarefas && dadosTarefas.results) {
-                        dadosTarefas = dadosTarefas.results;
-                    } else if (!Array.isArray(dadosTarefas)) {
-                        dadosTarefas = [];
-                    }
-                    setTarefasData(dadosTarefas);
-                } else {
-                    setTarefasData([]);
                 }
                 
                 // Marcar dados como prontos após um pequeno delay para garantir que todos os estados foram atualizados
@@ -650,7 +665,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     // Calcular distribuição por filial usando dados do dashboard
     const calcularDistribuicaoFilial = () => {
-        if (!funcionariosDashboard.funcionarios_por_filial || funcionariosDashboard.funcionarios_por_filial.length === 0) {
+        if (!funcionariosDashboard?.funcionarios_por_filial || funcionariosDashboard.funcionarios_por_filial.length === 0) {
             return {};
         }
 
@@ -666,7 +681,7 @@ function DashboardCard({ dashboardData, colaboradores = [], atividadesRaw = [], 
 
     // Calcular distribuição por tipo de funcionário usando dados do dashboard
     const calcularDistribuicaoTipoFuncionario = () => {
-        if (!funcionariosDashboard.funcionarios_por_tipo || funcionariosDashboard.funcionarios_por_tipo.length === 0) {
+        if (!funcionariosDashboard?.funcionarios_por_tipo || funcionariosDashboard.funcionarios_por_tipo.length === 0) {
             return {};
         }
 

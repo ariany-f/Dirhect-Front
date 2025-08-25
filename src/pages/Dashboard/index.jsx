@@ -193,18 +193,24 @@ function Dashboard() {
                 }
 
                 // Para outros tipos de usuário, carregar todos os dados normalmente
-                // Carregar dados do dashboard de funcionários
-                await http.get('funcionario/dashboard/')
-                    .then(response => {
-                        setFuncionariosDashboard(response);
-                        // Usar total_funcionarios como colaboradores para manter compatibilidade
-                        setColaboradores(Array(response.total_funcionarios).fill(null));
-                    })
-                    .catch(error => {
-                        console.error('Erro ao carregar dashboard de funcionários:', error);
-                        setFuncionariosDashboard(null);
-                        setColaboradores(null);
-                    });
+                // Carregar dados do dashboard de funcionários apenas se tiver permissão
+                if (ArmazenadorToken.hasPermission('view_funcionario')) {
+                    await http.get('funcionario/dashboard/')
+                        .then(response => {
+                            setFuncionariosDashboard(response);
+                            // Usar total_funcionarios como colaboradores para manter compatibilidade
+                            setColaboradores(Array(response.total_funcionarios).fill(null));
+                        })
+                        .catch(error => {
+                            console.error('Erro ao carregar dashboard de funcionários:', error);
+                            setFuncionariosDashboard(null);
+                            setColaboradores(null);
+                        });
+                } else {
+                    // Se não tem permissão, definir valores padrão
+                    setFuncionariosDashboard(null);
+                    setColaboradores([]);
+                }
                 
                 if(ArmazenadorToken.hasPermission('view_tarefa')) {
                     // Carregar outras informações apenas se necessário
