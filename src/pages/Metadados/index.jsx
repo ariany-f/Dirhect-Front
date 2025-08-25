@@ -310,7 +310,8 @@ function Metadados() {
             assunto: selectedRegra,
             chave: novaChave,
             valor: '',
-            descricao: ''
+            descricao: '',
+            modulo: 'integracao'
           };
 
           // Chamar o endpoint para criar nova linha
@@ -459,6 +460,7 @@ function Metadados() {
       const dadosParaEnviar = {
         assunto: selectedRegra,
         chave: chaveAtualizada,
+        modulo: 'integracao',
         valor: parametro.valor,
         descricao: parametro.descricao || ''
       };
@@ -499,6 +501,7 @@ function Metadados() {
 
       const dadosParaEnviar = {
         assunto: selectedRegra,
+        modulo: 'integracao',
         chave: parametro.chave_desserializada,
         valor: valor,
         descricao: parametro.descricao || ''
@@ -561,16 +564,19 @@ function Metadados() {
             return;
           }
           
-          // Preparar dados para envio
-          const dadosParaEnviar = {
-            assunto: selectedRegra,
-            parametros: [
-              // Parâmetros existentes (excluindo removidos)
-              ...parametros.filter(param => !removedRows.includes(param.id))
-            ]
-          };
+          // Salvar cada parâmetro individualmente
+          
+          for (const parametro of parametrosParaSalvar) {
+            const dadosParaEnviar = {
+              assunto: selectedRegra,
+              modulo: 'integracao',
+              chave: parametro.chave_desserializada,
+              valor: parametro.valor,
+              descricao: parametro.descricao || ''
+            };
 
-          await http.put(`parametros/desserializar-por-assunto/?assunto=${selectedRegra}`, dadosParaEnviar);
+            await http.put(`parametros/criar-com-chave-serializada/`, dadosParaEnviar);
+          }
       
       toast.current.show({
         severity: 'success',
@@ -718,6 +724,7 @@ function Metadados() {
 
       const dadosParaEnviar = {
         assunto: editingParametro.assunto,
+        modulo: 'integracao',
         chave: editingParametro.chave,
         valor: editingParametro.valor,
         descricao: editingParametro.descricao || ''
