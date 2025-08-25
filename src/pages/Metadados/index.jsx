@@ -796,8 +796,8 @@ function Metadados() {
     setCreatingNewRegra(true);
     setNewRegraInline({
       nome: '',
-      colunas: ['Parâmetro 1'], // Sempre começa com um parâmetro
-      linhas: [{ 'Parâmetro 1': '', valor: '' }] // Linha inicial com o primeiro parâmetro e valor
+      colunas: [''], // Começa com um parâmetro vazio para ser editado
+      linhas: [{ '': '', valor: '' }] // Linha inicial com o primeiro parâmetro e valor
     });
     setNewParametroName('');
     setShowNewParametroInput(false);
@@ -808,8 +808,8 @@ function Metadados() {
     setCreatingNewRegra(false);
     setNewRegraInline({
       nome: '',
-      colunas: ['Parâmetro 1'],
-      linhas: [{ 'Parâmetro 1': '', valor: '' }]
+      colunas: [''],
+      linhas: [{ '': '', valor: '' }]
     });
     setNewParametroName('');
     setShowNewParametroInput(false);
@@ -874,6 +874,18 @@ function Metadados() {
           severity: 'warn',
           summary: 'Atenção',
           detail: 'Adicione pelo menos um parâmetro',
+          life: 3000
+        });
+        return;
+      }
+
+      // Validação 2.1: Verificar se todos os nomes dos parâmetros estão preenchidos
+      const parametrosVazios = newRegraInline.colunas.filter(coluna => !coluna || coluna.trim() === '');
+      if (parametrosVazios.length > 0) {
+        toast.current.show({
+          severity: 'warn',
+          summary: 'Atenção',
+          detail: 'Todos os nomes dos parâmetros devem estar preenchidos',
           life: 3000
         });
         return;
@@ -1155,13 +1167,39 @@ function Metadados() {
                       border: '1px solid #e9ecef',
                       textAlign: 'center'
                     }}>
-                      <span style={{ 
-                        fontSize: '14px', 
-                        fontWeight: '600',
-                        color: '#495057'
-                      }}>
-                        Parâmetro {index + 1}
-                      </span>
+                      <InputText
+                        value={coluna}
+                        onChange={(e) => {
+                          const novoNome = e.target.value;
+                          // Atualizar o nome da coluna
+                          setNewRegraInline(prev => ({
+                            ...prev,
+                            colunas: prev.colunas.map((col, idx) => 
+                              idx === index ? novoNome : col
+                            ),
+                            // Atualizar todas as linhas para usar o novo nome
+                            linhas: prev.linhas.map(linha => {
+                              const novaLinha = { ...linha };
+                              if (linha[coluna] !== undefined) {
+                                novaLinha[novoNome] = linha[coluna];
+                                delete novaLinha[coluna];
+                              }
+                              return novaLinha;
+                            })
+                          }));
+                        }}
+                        placeholder={`Nome do parâmetro ${index + 1}`}
+                        style={{
+                          width: '100%',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          border: 'none',
+                          background: 'transparent',
+                          outline: 'none',
+                          textAlign: 'center',
+                          color: '#495057'
+                        }}
+                      />
                     </div>
                   ))}
                   
