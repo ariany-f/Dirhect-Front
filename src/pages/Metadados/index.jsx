@@ -942,36 +942,23 @@ function Metadados() {
         
         <BotaoGrupo>
           <Botao 
-            size="small" 
+            size="medium" 
             aoClicar={() => setShowSearchModal(true)}
             disabled={creatingNewRegra || editingExistingRegra}
-            style={{
-              background: 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)',
-              border: 'none',
-              color: 'white',
-              boxShadow: '0 2px 8px rgba(23, 162, 184, 0.3)',
-              opacity: (creatingNewRegra || editingExistingRegra) ? 0.6 : 1
-            }}
           >
-            <FaSearch /> Buscar
+            <FaSearch size={14} /> Buscar
           </Botao>
           
           {selectedRegra && !creatingNewRegra && !editingExistingRegra && (
             <>
               <Botao 
-                size="small" 
+                size="medium" 
                 aoClicar={iniciarEdicaoRegra}
-                style={{
-                  background: 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)',
-                  border: 'none',
-                  color: 'white',
-                  boxShadow: '0 2px 8px rgba(23, 162, 184, 0.3)'
-                }}
               >
-                <FaEdit /> Editar
+                <FaEdit size={14} /> Editar
               </Botao>
               <Botao 
-                size="small" 
+                size="medium" 
                 estilo="danger"
                 aoClicar={abrirConfirmacaoExclusao}
                 style={{
@@ -981,7 +968,7 @@ function Metadados() {
                   boxShadow: '0 2px 8px rgba(220, 53, 69, 0.3)'
                 }}
               >
-                <FaTrash fill="#fff"/> Excluir
+                <FaTrash size={14} fill="#fff"/> Excluir
               </Botao>
             </>
           )}
@@ -990,7 +977,7 @@ function Metadados() {
           
           {!creatingNewRegra && !editingExistingRegra ? (
             <Botao 
-              size="small" 
+              size="medium" 
               aoClicar={iniciarCriacaoRegra}
               style={{
                 background: 'linear-gradient(135deg, #fd7e14 0%, #e55a00 100%)',
@@ -999,60 +986,37 @@ function Metadados() {
                 boxShadow: '0 2px 8px rgba(253, 126, 20, 0.3)'
               }}
             >
-              <GrAddCircle /> Regra
+              <GrAddCircle size={14} /> Regra
             </Botao>
           ) : creatingNewRegra ? (
             <>
               <Botao 
-                size="small" 
+                size="medium" 
                 aoClicar={cancelarCriacaoRegra}
-                style={{
-                  background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
-                  border: 'none',
-                  color: 'white',
-                  boxShadow: '0 2px 8px rgba(108, 117, 125, 0.3)'
-                }}
               >
                 Cancelar
               </Botao>
               <Botao 
-                size="small" 
+                size="medium" 
                 aoClicar={salvarNovaRegra}
-                style={{
-                  background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-                  border: 'none',
-                  color: 'white',
-                  boxShadow: '0 2px 8px rgba(40, 167, 69, 0.3)'
-                }}
               >
-                <FaSave /> Salvar
+                <FaSave size={14} /> Salvar
               </Botao>
             </>
           ) : editingExistingRegra ? (
             <>
               <Botao 
-                size="small" 
+                size="medium" 
+                estilo="danger"
                 aoClicar={cancelarCriacaoRegra}
-                style={{
-                  background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
-                  border: 'none',
-                  color: 'white',
-                  boxShadow: '0 2px 8px rgba(108, 117, 125, 0.3)'
-                }}
               >
                 Cancelar
               </Botao>
               <Botao 
-                size="small" 
+                size="medium" 
                 aoClicar={salvarNovaRegra}
-                style={{
-                  background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-                  border: 'none',
-                  color: 'white',
-                  boxShadow: '0 2px 8px rgba(40, 167, 69, 0.3)'
-                }}
               >
-                <FaSave /> Atualizar
+                <FaSave size={30} /> Atualizar
               </Botao>
             </>
           ) : null}
@@ -1065,7 +1029,7 @@ function Metadados() {
             <TableHeader>
               <SectionHeader style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'space-between' }}>
                 <span style={{ fontSize: '16px', fontWeight: '600', color: '#fff' }}>
-                  {editingExistingRegra ? 'Editar Regra' : 'Parâmetros'}
+                  Parâmetros
                 </span>
                 <FaPlus fill="#fff" size={20} style={{ cursor: 'pointer'}} onClick={() => {
                   // Adicionar nova coluna
@@ -1845,13 +1809,13 @@ function Metadados() {
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', paddingTop: '20px', borderTop: '1px solid #dee2e6' }}>
           <Botao
-            size="small"
+            size="medium"
             aoClicar={() => setShowEditModal(false)}
           >
             Cancelar
           </Botao>
           <Botao
-            size="small"
+            size="medium"
             aoClicar={salvarEdicao}
             loading={savingEdit}
           >
