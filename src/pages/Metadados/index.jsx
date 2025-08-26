@@ -163,9 +163,7 @@ function Metadados() {
   const [selectedRegra, setSelectedRegra] = useState(null);
   const [parametros, setParametros] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [newRows, setNewRows] = useState([]);
-  const [removedRows, setRemovedRows] = useState([]);
+
 
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -179,25 +177,11 @@ function Metadados() {
   const [savingEdit, setSavingEdit] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [creatingNewRegra, setCreatingNewRegra] = useState(false);
-  const [newParametroName, setNewParametroName] = useState('');
-  const [showNewParametroInput, setShowNewParametroInput] = useState(false);
+  const [editingExistingRegra, setEditingExistingRegra] = useState(false);
 
-  // Estilo do botão + para adicionar parâmetro
-  const botaoAdicionarParametroStyle = {
-    width: '40px',
-    height: '40px',
-    padding: '0',
-    minWidth: '40px',
-    background: '#17a2b8',
-    border: 'none',
-    color: 'white',
-    borderRadius: '6px',
-    fontSize: '14px',
-    fontWeight: '600',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  };
+
+
+
   const [newRegraInline, setNewRegraInline] = useState({
     nome: '',
     colunas: [],
@@ -245,330 +229,52 @@ function Metadados() {
   // Carregar parâmetros quando regra é selecionada
   useEffect(() => {
     if (selectedRegra) {
-      carregarParametros(selectedRegra);
+      const carregarParametros = async () => {
+        try {
+          setLoading(true);
+          const response = await http.get(`parametros/desserializar-por-assunto/?assunto=${selectedRegra}`);
+          setParametros(response?.parametros || []);
+        } catch (error) {
+          console.error('Erro ao carregar parâmetros:', error);
+          toast.current.show({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao carregar parâmetros da regra selecionada',
+            life: 3000
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+      carregarParametros();
     } else {
       setParametros([]);
-      setNewRows([]);
-      setRemovedRows([]);
     }
   }, [selectedRegra]);
 
-  const carregarParametros = async (regra) => {
-    try {
-      setLoading(true);
-      const response = await http.get(`parametros/desserializar-por-assunto/?assunto=${regra}`);
-      setParametros(response?.parametros || []);
-      setNewRows([]);
-      setRemovedRows([]);
-      setHasChanges(false);
-      setNewParametroName('');
-      setShowNewParametroInput(false);
-    } catch (error) {
-      console.error('Erro ao carregar parâmetros:', error);
-      toast.current.show({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Erro ao carregar parâmetros da regra selecionada',
-        life: 3000
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Obter chaves únicas de todos os parâmetros
-  const getChavesUnicas = () => {
-    const chaves = new Set();
-    
-    // Adicionar chaves dos parâmetros existentes
-    parametros.forEach(param => {
-      if (param.chave_desserializada) {
-        Object.keys(param.chave_desserializada).forEach(chave => chaves.add(chave));
-      }
-    });
-    
-    // Adicionar chaves das novas linhas
-    newRows.forEach(row => {
-      Object.keys(row.chave_desserializada || {}).forEach(chave => chaves.add(chave));
-    });
-    
-    return Array.from(chaves);
-  };
-
-  const chavesUnicas = getChavesUnicas();
-
-        // Adicionar nova linha
-      const adicionarLinha = async () => {
-        try {
-          // Preparar dados para criar nova linha
-          const novaChave = {};
-          chavesUnicas.forEach(chave => {
-            novaChave[chave] = '';
-          });
-
-          const dadosParaEnviar = {
-            assunto: selectedRegra,
-            chave: novaChave,
-            valor: '',
-            descricao: '',
-            modulo: 'integracao'
-          };
-
-          // Chamar o endpoint para criar nova linha
-          const response = await http.put('parametros/criar-com-chave-serializada/', dadosParaEnviar);
-      
-      toast.current.show({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: 'Nova linha criada com sucesso',
-        life: 3000
-      });
-
-                      // Atualizar estado local
-      const novaChaveLocal = {};
-      chavesUnicas.forEach(chave => {
-        novaChaveLocal[chave] = '';
-      });
-      
-      const novoParametro = {
-        id: Date.now(), // ID temporário
-        chave_desserializada: novaChaveLocal,
-        valor: '',
-        descricao: ''
-      };
-      
-      setParametros([...parametros, novoParametro]);
-      setHasChanges(true);
-      
-    } catch (error) {
-      console.error('Erro ao criar nova linha:', error);
-      toast.current.show({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Erro ao criar nova linha',
-        life: 3000
-      });
-    }
-  };
-
-  // Lidar com mudança no input de novo parâmetro
-  const handleNovoParametroChange = (e) => {
-    const valor = e.target.value;
-    setNewParametroName(valor);
-    
-    // Se o usuário pressionou Enter, adiciona o parâmetro
-    if (e.key === 'Enter' && valor.trim()) {
-      adicionarNovoParametro();
-    }
-  };
-
-  // Adicionar novo parâmetro
-  const adicionarNovoParametro = (nome = null) => {
-    const novoNome = nome || newParametroName.trim();
-    
-    if (!novoNome) {
-      return; // Se estiver vazio, não faz nada
-    }
-
-    if (creatingNewRegra) {
-      // Se estiver criando nova regra, adicionar à novaRegraInline
-      setNewRegraInline(prev => ({
-        ...prev,
-        colunas: [...prev.colunas, novoNome],
-        linhas: prev.linhas.map(linha => ({
-          ...linha,
-          [novoNome]: '',
-          valor: linha.valor || '' // Garantir que a propriedade valor seja mantida
-        }))
-      }));
-      
-      // Limpar o estado do novo parâmetro
-      setNewParametroName('');
-      setShowNewParametroInput(false);
-    } else {
-      // Se estiver editando regra existente, adicionar aos parâmetros
-      const parametrosAtualizados = parametros.map(parametro => ({
-        ...parametro,
-        chave_desserializada: {
-          ...parametro.chave_desserializada,
-          [novoNome]: ''
-        }
-      }));
-
-      setParametros(parametrosAtualizados);
-      setHasChanges(true);
-      
-      // Limpar o estado do novo parâmetro
-      setNewParametroName('');
-      setShowNewParametroInput(false);
-    }
-  };
-
-  // Adicionar novo parâmetro automaticamente
-  const adicionarNovoParametroAuto = () => {
-    if (newParametroName.trim()) {
-      adicionarNovoParametro();
-    }
-  };
 
 
 
 
 
-  // Excluir parâmetro
-  const excluirParametro = async (parametroId) => {
-    try {
-      // Se é um parâmetro novo (ID temporário), apenas remove do estado local
-      if (parametroId > 1000000000) { // IDs temporários são baseados em Date.now()
-        setParametros(parametros.filter(param => param.id !== parametroId));
-        setHasChanges(true);
-        return;
-      }
-      
-      await http.delete(`parametros/${parametroId}/`);
-      
-      // Recarregar parâmetros
-      await carregarParametros(selectedRegra);
-      
-      toast.current.show({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: 'Combinação da regra excluída com sucesso',
-        life: 3000
-      });
-    } catch (error) {
-      console.error('Erro ao excluir parâmetro:', error);
-      toast.current.show({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Erro ao excluir combinação da regra',
-        life: 3000
-      });
-    }
-  };
 
 
 
-  // Atualizar valor de uma chave
-  const atualizarChave = (rowId, chave, valor) => {
-    // Encontrar o parâmetro
-    const parametro = parametros.find(param => param.id === rowId);
-    if (!parametro) return;
 
-    // Preparar dados atualizados
-    const chaveAtualizada = {
-      ...parametro.chave_desserializada,
-      [chave]: valor
-    };
 
-    // Atualizar apenas o estado local
-    setParametros(parametros.map(param => {
-      if (param.id === rowId) {
-        return {
-          ...param,
-          chave_desserializada: chaveAtualizada
-        };
-      }
-      return param;
-    }));
-    
-    setHasChanges(true);
-  };
 
-  // Atualizar valor
-  const atualizarValor = (rowId, valor) => {
-    // Encontrar o parâmetro
-    const parametro = parametros.find(param => param.id === rowId);
-    if (!parametro) return;
 
-    // Atualizar apenas o estado local
-    setParametros(parametros.map(param => {
-      if (param.id === rowId) {
-        return { ...param, valor };
-      }
-      return param;
-    }));
-    
-    setHasChanges(true);
-  };
 
-        // Salvar alterações
-      const salvarAlteracoes = async () => {
-        try {
-          setSaving(true);
-          
-          // Verificar se há um novo parâmetro sendo adicionado
-          if (showNewParametroInput && newParametroName.trim()) {
-            toast.current.show({
-              severity: 'warn',
-              summary: 'Atenção',
-              detail: 'Complete a adição do novo parâmetro antes de salvar',
-              life: 3000
-            });
-            return;
-          }
 
-          // Verificar se todos os parâmetros estão preenchidos
-          const parametrosParaSalvar = parametros.filter(param => !removedRows.includes(param.id));
-          const parametrosVazios = parametrosParaSalvar.filter(param => {
-            const chavesVazias = Object.entries(param.chave_desserializada || {}).filter(([key, value]) => !value || value.trim() === '');
-            return chavesVazias.length > 0;
-          });
 
-          if (parametrosVazios.length > 0) {
-            toast.current.show({
-              severity: 'warn',
-              summary: 'Atenção',
-              detail: 'Todos os parâmetros devem estar preenchidos antes de salvar',
-              life: 3000
-            });
-            return;
-          }
-          
-          // Salvar cada parâmetro individualmente
-          
-          for (const parametro of parametrosParaSalvar) {
-            const dadosParaEnviar = {
-              id: parametro.id,
-              assunto: selectedRegra,
-              modulo: 'integracao',
-              chave: parametro.chave_desserializada,
-              valor: parametro.valor,
-              descricao: parametro.descricao || ''
-            };
 
-            await http.put(`parametros/criar-com-chave-serializada/`, dadosParaEnviar);
-          }
-      
-      toast.current.show({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: 'Parâmetros salvos com sucesso',
-        life: 3000
-      });
 
-                // Recarregar dados
-          await carregarParametros(selectedRegra);
-          setHasChanges(false);
-    } catch (error) {
-      console.error('Erro ao salvar parâmetros:', error);
-      toast.current.show({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Erro ao salvar parâmetros',
-        life: 3000
-      });
-    } finally {
-      setSaving(false);
-    }
-  };
 
-  // Obter todas as linhas (existentes - removidas)
-  const getAllRows = () => {
-    return parametros.filter(param => !removedRows.includes(param.id));
-  };
 
-  const allRows = getAllRows();
+
+
+
+
 
 
 
@@ -621,7 +327,7 @@ function Metadados() {
     try {
       setSearching(true);
       
-      const response = await http.post('parametros/buscar-por-chave-objeto/', {
+      const response = await http.post('parametros/buscar-por-chave-objeto/?assunto=' + encodeURIComponent(selectedRegra), {
         chave: chaveObjeto
       });
       
@@ -769,20 +475,85 @@ function Metadados() {
       colunas: ['Parâmetro 1'], // Começa com um nome padrão para o primeiro parâmetro
       linhas: [{ 'Parâmetro 1': '', valor: '' }] // Linha inicial com o primeiro parâmetro e valor
     });
-    setNewParametroName('');
-    setShowNewParametroInput(false);
   };
 
-  // Cancelar criação de nova regra
+  // Iniciar edição de regra existente (criar cópia)
+  const iniciarEdicaoRegra = async () => {
+    if (!selectedRegra) {
+      toast.current.show({
+        severity: 'warn',
+        summary: 'Atenção',
+        detail: 'Selecione uma regra para editar',
+        life: 3000
+      });
+      return;
+    }
+
+    try {
+      // Carregar parâmetros da regra selecionada
+      const response = await http.get(`parametros/desserializar-por-assunto/?assunto=${selectedRegra}`);
+      const parametrosExistentes = response?.parametros || [];
+      
+      if (parametrosExistentes.length === 0) {
+        toast.current.show({
+          severity: 'warn',
+          summary: 'Atenção',
+          detail: 'Regra selecionada não possui parâmetros',
+          life: 3000
+        });
+        return;
+      }
+
+      // Obter chaves únicas dos parâmetros existentes
+      const chavesUnicas = new Set();
+      parametrosExistentes.forEach(param => {
+        if (param.chave_desserializada) {
+          Object.keys(param.chave_desserializada).forEach(chave => {
+            if (!chave.includes('novo_parametro_temp') && 
+                !chave.includes('temp_') && 
+                chave.trim() !== '' && 
+                chave !== 'novo_parametro_temp') {
+              chavesUnicas.add(chave);
+            }
+          });
+        }
+      });
+      
+      // Criar cópia da regra existente
+      setNewRegraInline({
+        nome: selectedRegra,
+        colunas: Array.from(chavesUnicas),
+        linhas: parametrosExistentes.map(param => {
+          const linha = {};
+          Array.from(chavesUnicas).forEach(chave => {
+            linha[chave] = param.chave_desserializada?.[chave] || '';
+          });
+          linha.valor = param.valor || '';
+          return linha;
+        })
+      });
+
+      setEditingExistingRegra(true);
+    } catch (error) {
+      console.error('Erro ao carregar parâmetros para edição:', error);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Erro ao carregar parâmetros da regra',
+        life: 3000
+      });
+    }
+  };
+
+  // Cancelar criação/edição de regra
   const cancelarCriacaoRegra = () => {
     setCreatingNewRegra(false);
+    setEditingExistingRegra(false);
     setNewRegraInline({
       nome: '',
       colunas: ['Parâmetro 1'],
       linhas: [{ 'Parâmetro 1': '', valor: '' }]
     });
-    setNewParametroName('');
-    setShowNewParametroInput(false);
   };
 
 
@@ -820,12 +591,10 @@ function Metadados() {
     });
   };
 
-  // Salvar nova regra com suas linhas
+  // Salvar nova regra ou atualizar regra existente
   const salvarNovaRegra = async () => {
     try {
-      // Limpar variáveis de novo parâmetro para garantir
-      setShowNewParametroInput(false);
-      setNewParametroName('');
+
       
       // Validação 1: Nome da regra
       if (!newRegraInline.nome.trim()) {
@@ -914,11 +683,7 @@ function Metadados() {
         return;
       }
 
-      // Validação 5: Verificar se há um novo parâmetro sendo adicionado
-      // Se há um novo parâmetro sendo adicionado, adicionar automaticamente
-      if (showNewParametroInput && newParametroName && newParametroName.trim()) {
-        adicionarNovoParametro();
-      }
+
 
       // Se passou por todas as validações, prosseguir com o salvamento
       toast.current.show({
@@ -927,6 +692,35 @@ function Metadados() {
         detail: 'Salvando nova regra...',
         life: 2000
       });
+
+      // Se estiver editando uma regra existente, excluir a original primeiro
+      if (editingExistingRegra) {
+        try {
+          // Excluir todos os parâmetros da regra original
+          const response = await http.get(`parametros/desserializar-por-assunto/?assunto=${selectedRegra}`);
+          const parametrosExistentes = response?.parametros || [];
+          
+          for (const parametro of parametrosExistentes) {
+            await http.delete(`parametros/${parametro.id}/`);
+          }
+          
+          toast.current.show({
+            severity: 'info',
+            summary: 'Atualizando',
+            detail: 'Regra original excluída, criando nova versão...',
+            life: 2000
+          });
+        } catch (error) {
+          console.error('Erro ao excluir regra original:', error);
+          toast.current.show({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao excluir regra original',
+            life: 3000
+          });
+          return;
+        }
+      }
 
       // Criar as linhas da regra
       for (const linha of newRegraInline.linhas) {
@@ -952,7 +746,7 @@ function Metadados() {
       toast.current.show({
         severity: 'success',
         summary: 'Sucesso',
-        detail: 'Nova regra criada com sucesso',
+        detail: editingExistingRegra ? 'Regra atualizada com sucesso' : 'Nova regra criada com sucesso',
         life: 3000
       });
 
@@ -1033,36 +827,36 @@ function Metadados() {
           <Botao 
             size="small" 
             aoClicar={() => setShowSearchModal(true)}
-            disabled={creatingNewRegra}
+            disabled={creatingNewRegra || editingExistingRegra}
             style={{
               background: 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)',
               border: 'none',
               color: 'white',
               boxShadow: '0 2px 8px rgba(23, 162, 184, 0.3)',
-              opacity: creatingNewRegra ? 0.6 : 1
+              opacity: (creatingNewRegra || editingExistingRegra) ? 0.6 : 1
             }}
           >
             <FaSearch /> Buscar
           </Botao>
           
-          {hasChanges && selectedRegra && !creatingNewRegra && (
+          {selectedRegra && !creatingNewRegra && !editingExistingRegra && (
             <Botao 
               size="small" 
-              aoClicar={salvarAlteracoes}
-              disabled={saving}
+              aoClicar={iniciarEdicaoRegra}
               style={{
-                background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                background: 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)',
                 border: 'none',
                 color: 'white',
-                boxShadow: '0 2px 8px rgba(40, 167, 69, 0.3)',
-                opacity: saving ? 0.6 : 1
+                boxShadow: '0 2px 8px rgba(23, 162, 184, 0.3)'
               }}
             >
-              <FaSave /> Salvar Alterações
+              <FaEdit /> Editar
             </Botao>
           )}
           
-          {!creatingNewRegra ? (
+
+          
+          {!creatingNewRegra && !editingExistingRegra ? (
             <Botao 
               size="small" 
               aoClicar={iniciarCriacaoRegra}
@@ -1075,7 +869,7 @@ function Metadados() {
             >
               <GrAddCircle /> Regra
             </Botao>
-          ) : (
+          ) : creatingNewRegra ? (
             <>
               <Botao 
                 size="small" 
@@ -1102,25 +896,56 @@ function Metadados() {
                 <FaSave /> Salvar
               </Botao>
             </>
-          )}
+          ) : editingExistingRegra ? (
+            <>
+              <Botao 
+                size="small" 
+                aoClicar={cancelarCriacaoRegra}
+                style={{
+                  background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
+                  border: 'none',
+                  color: 'white',
+                  boxShadow: '0 2px 8px rgba(108, 117, 125, 0.3)'
+                }}
+              >
+                Cancelar
+              </Botao>
+              <Botao 
+                size="small" 
+                aoClicar={salvarNovaRegra}
+                style={{
+                  background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                  border: 'none',
+                  color: 'white',
+                  boxShadow: '0 2px 8px rgba(40, 167, 69, 0.3)'
+                }}
+              >
+                <FaSave /> Atualizar
+              </Botao>
+            </>
+          ) : null}
         </BotaoGrupo>
       </Header>
 
-      {creatingNewRegra ? (
+      {creatingNewRegra || editingExistingRegra ? (
         <>
           <TableContainer style={{ width: '100%', minHeight: '400px' }}>
             <TableHeader>
               <SectionHeader style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'space-between' }}>
-                <span style={{ fontSize: '16px', fontWeight: '600', color: '#fff' }}>Parâmetros</span>
+                <span style={{ fontSize: '16px', fontWeight: '600', color: '#fff' }}>
+                  {editingExistingRegra ? 'Editar Regra' : 'Parâmetros'}
+                </span>
                 <FaPlus fill="#fff" size={20} style={{ cursor: 'pointer'}} onClick={() => {
-                  // Se já há um input visível, processar o valor atual primeiro
-                  if (showNewParametroInput && newParametroName.trim()) {
-                    adicionarNovoParametro();
-                  }
-                  
-                  // Limpar e mostrar novo input
-                  setNewParametroName('');
-                  setShowNewParametroInput(true);
+                  // Adicionar nova coluna
+                  const novoNome = `Parâmetro ${newRegraInline.colunas.length + 1}`;
+                  setNewRegraInline(prev => ({
+                    ...prev,
+                    colunas: [...prev.colunas, novoNome],
+                    linhas: prev.linhas.map(linha => ({
+                      ...linha,
+                      [novoNome]: ''
+                    }))
+                  }));
                 }} />
               </SectionHeader>
               <SectionHeader>Valor da Combinação</SectionHeader>
@@ -1182,31 +1007,7 @@ function Metadados() {
                     </div>
                   ))}
                   
-                  {/* Campo para novo parâmetro */}
-                  {showNewParametroInput && (
-                    <div style={{ 
-                      flex: 1,
-                      padding: '8px 12px',
-                      background: 'white',
-                      borderRadius: '6px',
-                      border: '1px solid #e9ecef'
-                    }}>
-                      <InputText
-                        value={newParametroName}
-                        onChange={(e) => setNewParametroName(e.target.value)}
-                        placeholder="Nome do novo parâmetro"
-                        style={{
-                          width: '100%',
-                          fontSize: '14px',
-                          border: 'none',
-                          background: 'transparent',
-                          outline: 'none'
-                        }}
-                        onKeyPress={(e) => e.key === 'Enter' && adicionarNovoParametroAuto()}
-                        autoFocus
-                      />
-                    </div>
-                  )}
+
                 </div>
 
                 {/* Linhas de dados */}
@@ -1236,29 +1037,7 @@ function Metadados() {
                       />
                     ))}
                     
-                    {/* Campo para o novo parâmetro sendo adicionado */}
-                    {showNewParametroInput && (
-                      <Input
-                        key={`${linhaIndex}-novo-parametro`}
-                        value={linha[newParametroName] || ''}
-                        placeholder="Digite o valor do parâmetro"
-                        onChange={(e) => {
-                          // Atualizar apenas a linha atual
-                          atualizarLinhaNovaRegra(linhaIndex, newParametroName || 'novo_parametro', e.target.value);
-                        }}
-                        onKeyPress={(e) => e.key === 'Enter' && adicionarNovoParametroAuto()}
-                        style={{
-                          flex: 1,
-                          border: '2px solid #17a2b8',
-                          borderRadius: '8px',
-                          padding: '12px 16px',
-                          fontSize: '14px',
-                          transition: 'all 0.2s ease',
-                          background: 'white'
-                        }}
-                        autoFocus
-                      />
-                    )}
+
                   </div>
                 ))}
               </SectionBody>
@@ -1340,18 +1119,35 @@ function Metadados() {
             </div>
           </TableContainer>
         </>
-      ) : selectedRegra ? (
+      ) : selectedRegra && !editingExistingRegra ? (
         <>
           <TableContainer>
             <TableHeader>
-              <SectionHeader>Parâmetros</SectionHeader>
+              <SectionHeader style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'space-between' }}>
+                <span style={{ fontSize: '16px', fontWeight: '600', color: '#fff' }}>Parâmetros (Somente Leitura)</span>
+              </SectionHeader>
               <SectionHeader>Valor da Combinação</SectionHeader>
             </TableHeader>
             
             <TableBody>
               <SectionBody>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', borderBottom: '1px solid #dee2e6' }}>
-                  {chavesUnicas.map(chave => (
+                  {(() => {
+                    const chaves = new Set();
+                    parametros.forEach(param => {
+                      if (param.chave_desserializada) {
+                        Object.keys(param.chave_desserializada).forEach(chave => {
+                          if (!chave.includes('novo_parametro_temp') && 
+                              !chave.includes('temp_') && 
+                              chave.trim() !== '' && 
+                              chave !== 'novo_parametro_temp') {
+                            chaves.add(chave);
+                          }
+                        });
+                      }
+                    });
+                    return Array.from(chaves);
+                  })().map(chave => (
                     <div key={chave} style={{ 
                       flex: 1,
                       padding: '8px 12px', 
@@ -1361,36 +1157,15 @@ function Metadados() {
                       border: '1px solid #e9ecef',
                       textAlign: 'center'
                     }}>
-                      {chave}
+                      <span style={{ fontWeight: '600', color: '#495057' }}>
+                        {chave}
+                      </span>
                     </div>
                   ))}
                   
-                  {/* Campo para novo parâmetro */}
-                  {showNewParametroInput && (
-                    <div key="novo-parametro-header-existente" style={{ 
-                      flex: 1,
-                      padding: '8px 12px',
-                      background: 'white',
-                      borderRadius: '6px',
-                      border: '1px solid #e9ecef'
-                    }}>
-                      <InputText
-                        key="input-novo-parametro-existente"
-                        value={newParametroName}
-                        onChange={(e) => setNewParametroName(e.target.value)}
-                        placeholder="Nome do novo parâmetro"
-                        style={{
-                          width: '100%',
-                          fontSize: '14px',
-                          border: 'none',
-                          background: 'transparent',
-                          outline: 'none'
-                        }}
-                        onKeyPress={(e) => e.key === 'Enter' && adicionarNovoParametroAuto()}
-                        autoFocus
-                      />
-                    </div>
-                  )}
+
+                  
+
                 </div>
 
               </SectionBody>
@@ -1404,7 +1179,7 @@ function Metadados() {
 
             <TableBody>
               <SectionBody>
-                {allRows.map(row => (
+                {parametros.map(row => (
                   <div key={row.id} style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -1412,119 +1187,69 @@ function Metadados() {
                     padding: '16px', 
                     borderBottom: '1px solid #f1f3f4'
                   }}>
-                    {chavesUnicas.map(chave => (
-                      <Input
+                    {(() => {
+                      const chaves = new Set();
+                      parametros.forEach(param => {
+                        if (param.chave_desserializada) {
+                          Object.keys(param.chave_desserializada).forEach(chave => {
+                            if (!chave.includes('novo_parametro_temp') && 
+                                !chave.includes('temp_') && 
+                                chave.trim() !== '' && 
+                                chave !== 'novo_parametro_temp') {
+                              chaves.add(chave);
+                            }
+                          });
+                        }
+                      });
+                      return Array.from(chaves);
+                    })().map(chave => (
+                      <div
                         key={`${row.id}-${chave}`}
-                        value={row.chave_desserializada?.[chave] || ''}
-                        onChange={(e) => atualizarChave(row.id, chave, e.target.value)}
-                        placeholder={chave}
                         style={{
                           flex: 1,
                           border: '2px solid #e9ecef',
                           borderRadius: '8px',
                           padding: '12px 16px',
                           fontSize: '14px',
-                          transition: 'all 0.2s ease',
-                          background: 'white'
+                          background: '#f8f9fa',
+                          color: '#495057',
+                          display: 'flex',
+                          alignItems: 'center'
                         }}
-                      />
+                      >
+                        {row.chave_desserializada?.[chave] || ''}
+                      </div>
                     ))}
                     
-                    {/* Campo para o novo parâmetro sendo adicionado */}
-                    {showNewParametroInput && (
-                      <Input
-                        key={`${row.id}-novo-parametro`}
-                        value={row.chave_desserializada?.[newParametroName] || ''}
-                        placeholder="Digite o valor do parâmetro"
-                        onChange={(e) => {
-                          // Atualizar apenas a linha atual
-                          atualizarChave(row.id, newParametroName || 'novo_parametro', e.target.value);
-                        }}
-                        onKeyPress={(e) => e.key === 'Enter' && adicionarNovoParametroAuto()}
-                        style={{
-                          flex: 1,
-                          border: '2px solid #17a2b8',
-                          borderRadius: '8px',
-                          padding: '12px 16px',
-                          fontSize: '14px',
-                          transition: 'all 0.2s ease',
-                          background: 'white'
-                        }}
-                        autoFocus
-                      />
-                    )}
+
                   </div>
                 ))}
               </SectionBody>
               
               <SectionBody>
-                {allRows.map(row => (
-                  <Row key={row.id} columns="1fr auto">
-                    <Input
-                      key={`${row.id}-valor`}
-                      value={row.valor || ''}
-                      onChange={(e) => atualizarValor(row.id, e.target.value)}
-                      placeholder="Valor"
+                {parametros.map(row => (
+                  <Row key={row.id} columns="1fr">
+                    <div
                       style={{
                         width: '100%',
                         border: '2px solid #e9ecef',
                         borderRadius: '8px',
                         padding: '12px 16px',
                         fontSize: '14px',
-                        transition: 'all 0.2s ease',
-                        background: 'white'
+                        background: '#f8f9fa',
+                        color: '#495057',
+                        display: 'flex',
+                        alignItems: 'center'
                       }}
-                    />
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                      <Botao 
-                        size="small" 
-                        aoClicar={() => excluirParametro(row.id)}
-                        style={{ 
-                          padding: '8px 10px', 
-                          minWidth: 'auto', 
-                          background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
-                          border: 'none',
-                          color: 'white',
-                          borderRadius: '8px',
-                          boxShadow: '0 2px 6px rgba(220, 53, 69, 0.3)',
-                          transition: 'all 0.2s ease'
-                        }}
-                      >
-                        <FaTrash />
-                      </Botao>
+                    >
+                      {row.valor || ''}
                     </div>
                   </Row>
                 ))}
               </SectionBody>
             </TableBody>
             
-            {/* Botão de adicionar linha embaixo da tabela */}
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              padding: '24px',
-              borderTop: '1px solid #e9ecef',
-              background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-              borderRadius: '0 0 16px 16px'
-            }}>
-              <Botao 
-                size="small" 
-                aoClicar={adicionarLinha}
-                disabled={loading}
-                style={{
-                  background: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)',
-                  border: 'none',
-                  padding: '12px 24px',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 12px rgba(46, 125, 50, 0.3)',
-                  transition: 'all 0.2s ease',
-                  fontSize: '14px',
-                  fontWeight: '600'
-                }}
-              >
-                <GrAddCircle /> Adicionar Combinação na Regra
-              </Botao>
-            </div>
+
           </TableContainer>
         </>
       ) : (
