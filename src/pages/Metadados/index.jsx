@@ -189,6 +189,7 @@ function Metadados() {
     colunas: [],
     linhas: []
   });
+  const [descricaoRegra, setDescricaoRegra] = useState('');
 
   const toast = React.useRef();
 
@@ -236,6 +237,15 @@ function Metadados() {
           setLoading(true);
           const response = await http.get(`parametros/desserializar-por-assunto/?assunto=${selectedRegra}`);
           setParametros(response?.parametros || []);
+          
+          // Carregar descrição da regra
+          try {
+            const descricaoResponse = await http.get(`parametros/assuntos/${encodeURIComponent(selectedRegra)}/descricao`);
+            setDescricaoRegra(descricaoResponse?.descricao || '');
+          } catch (descricaoError) {
+            console.warn('Erro ao carregar descrição da regra:', descricaoError);
+            setDescricaoRegra('');
+          }
         } catch (error) {
           console.error('Erro ao carregar parâmetros:', error);
           toast.current.show({
@@ -251,6 +261,7 @@ function Metadados() {
       carregarParametros();
     } else {
       setParametros([]);
+      setDescricaoRegra('');
     }
   }, [selectedRegra]);
 
@@ -624,6 +635,15 @@ function Metadados() {
         })
       });
 
+      // Carregar descrição da regra (se existir)
+      try {
+        const descricaoResponse = await http.get(`parametros/assuntos/${encodeURIComponent(selectedRegra)}/descricao`);
+        setDescricaoRegra(descricaoResponse?.descricao || '');
+      } catch (descricaoError) {
+        console.warn('Erro ao carregar descrição da regra:', descricaoError);
+        setDescricaoRegra('');
+      }
+
       setEditingExistingRegra(true);
     } catch (error) {
       console.error('Erro ao carregar parâmetros para edição:', error);
@@ -846,7 +866,7 @@ function Metadados() {
           chave: chaveFiltrada,
           modulo: 'integracao',
           valor: linha.valor || '',
-          descricao: ''
+          descricao: descricaoRegra || ''
         };
 
         await http.post('parametros/criar-com-chave-serializada/', dadosLinha);
@@ -932,6 +952,63 @@ function Metadados() {
                     />
                 )}
             </DropdownContainer>
+            
+            {/* Campo de Descrição */}
+            {selectedRegra && !creatingNewRegra && (
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '4px',
+                minWidth: '300px',
+                maxWidth: '400px'
+              }}>
+                <label style={{ 
+                  fontSize: '12px', 
+                  fontWeight: '600', 
+                  color: '#495057',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  Descrição
+                </label>
+                {editingExistingRegra ? (
+                  <textarea
+                    value={descricaoRegra}
+                    onChange={(e) => setDescricaoRegra(e.target.value)}
+                    placeholder="Digite a descrição da regra..."
+                    style={{
+                      width: '100%',
+                      minHeight: '60px',
+                      maxHeight: '120px',
+                      border: '2px solid #e9ecef',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '13px',
+                      fontFamily: 'inherit',
+                      resize: 'vertical',
+                      outline: 'none',
+                      transition: 'border-color 0.2s ease'
+                    }}
+                  />
+                ) : (
+                  <div style={{
+                    width: '100%',
+                    minHeight: '60px',
+                    maxHeight: '120px',
+                    border: '2px solid #e9ecef',
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    fontSize: '13px',
+                    background: '#f8f9fa',
+                    color: '#495057',
+                    overflowY: 'auto',
+                    wordBreak: 'break-word'
+                  }}>
+                    {descricaoRegra || 'Nenhuma descrição disponível'}
+                  </div>
+                )}
+              </div>
+            )}
             
             {selectedRegra && !creatingNewRegra && !editingExistingRegra && (
               <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' , alignItems: 'center'}}>
