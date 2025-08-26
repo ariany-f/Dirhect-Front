@@ -79,7 +79,7 @@ const TableContainer = styled.div`
 const TableHeader = styled.div`
   display: grid;
   grid-template-columns: 3fr 1fr;
-  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  background: var(--primaria);
   border-bottom: 1px solid #e9ecef;
 `;
 
