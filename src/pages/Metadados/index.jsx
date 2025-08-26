@@ -477,6 +477,66 @@ function Metadados() {
     });
   };
 
+  // Excluir regra
+  const excluirRegra = async () => {
+    if (!selectedRegra) {
+      toast.current.show({
+        severity: 'warn',
+        summary: 'Atenção',
+        detail: 'Selecione uma regra para excluir',
+        life: 3000
+      });
+      return;
+    }
+
+    // Confirmar exclusão
+    if (!confirm(`Tem certeza que deseja excluir a regra "${selectedRegra}"? Esta ação não pode ser desfeita.`)) {
+      return;
+    }
+
+    try {
+      // Carregar parâmetros da regra para excluir todos
+      const response = await http.get(`parametros/desserializar-por-assunto/?assunto=${selectedRegra}`);
+      const parametrosExistentes = response?.parametros || [];
+      
+      // Excluir todos os parâmetros da regra
+      for (const parametro of parametrosExistentes) {
+        await http.delete(`parametros/${parametro.id}/`);
+      }
+      
+      toast.current.show({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: `Regra "${selectedRegra}" excluída com sucesso`,
+        life: 3000
+      });
+
+      // Recarregar lista de regras
+      const regrasResponse = await http.get('parametros/assuntos/?modulo=integracao');
+      const regrasArray = regrasResponse?.assuntos || [];
+      const regrasFormatadas = Array.isArray(regrasArray) 
+        ? regrasArray.map(regra => ({
+            label: regra,
+            value: regra
+          }))
+        : [];
+      setRegras(regrasFormatadas);
+
+      // Limpar seleção
+      setSelectedRegra(null);
+      setParametros([]);
+
+    } catch (error) {
+      console.error('Erro ao excluir regra:', error);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Erro ao excluir regra',
+        life: 3000
+      });
+    }
+  };
+
   // Iniciar edição de regra existente (criar cópia)
   const iniciarEdicaoRegra = async () => {
     if (!selectedRegra) {
@@ -858,18 +918,33 @@ function Metadados() {
           </Botao>
           
           {selectedRegra && !creatingNewRegra && !editingExistingRegra && (
-            <Botao 
-              size="small" 
-              aoClicar={iniciarEdicaoRegra}
-              style={{
-                background: 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)',
-                border: 'none',
-                color: 'white',
-                boxShadow: '0 2px 8px rgba(23, 162, 184, 0.3)'
-              }}
-            >
-              <FaEdit /> Editar
-            </Botao>
+            <>
+              <Botao 
+                size="small" 
+                aoClicar={iniciarEdicaoRegra}
+                style={{
+                  background: 'linear-gradient(135deg, #17a2b8 0%, #138496 100%)',
+                  border: 'none',
+                  color: 'white',
+                  boxShadow: '0 2px 8px rgba(23, 162, 184, 0.3)'
+                }}
+              >
+                <FaEdit /> Editar
+              </Botao>
+              <Botao 
+                size="small" 
+                estilo="danger"
+                aoClicar={excluirRegra}
+                style={{
+                  background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
+                  border: 'none',
+                  color: 'white',
+                  boxShadow: '0 2px 8px rgba(220, 53, 69, 0.3)'
+                }}
+              >
+                <FaTrash fill="#fff"/> Excluir
+              </Botao>
+            </>
           )}
           
 
