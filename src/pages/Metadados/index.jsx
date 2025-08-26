@@ -450,90 +450,46 @@ function Metadados() {
 
 
   // Atualizar valor de uma chave
-  const atualizarChave = async (rowId, chave, valor) => {
-    try {
-      // Encontrar o parâmetro
-      const parametro = parametros.find(param => param.id === rowId);
-      if (!parametro) return;
+  const atualizarChave = (rowId, chave, valor) => {
+    // Encontrar o parâmetro
+    const parametro = parametros.find(param => param.id === rowId);
+    if (!parametro) return;
 
-      // Preparar dados atualizados
-      const chaveAtualizada = {
-        ...parametro.chave_desserializada,
-        [chave]: valor
-      };
+    // Preparar dados atualizados
+    const chaveAtualizada = {
+      ...parametro.chave_desserializada,
+      [chave]: valor
+    };
 
-      const dadosParaEnviar = {
-        assunto: selectedRegra,
-        chave: chaveAtualizada,
-        modulo: 'integracao',
-        valor: parametro.valor,
-        descricao: parametro.descricao || ''
-      };
-
-      // Atualizar via API
-      await http.put('parametros/criar-com-chave-serializada/', dadosParaEnviar);
-      
-      // Atualizar estado local
-      setParametros(parametros.map(param => {
-        if (param.id === rowId) {
-          return {
-            ...param,
-            chave_desserializada: chaveAtualizada
-          };
-        }
-        return param;
-      }));
-      
-      setHasChanges(true);
-      
-    } catch (error) {
-      console.error('Erro ao atualizar chave:', error);
-      toast.current.show({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Erro ao atualizar chave',
-        life: 3000
-      });
-    }
+    // Atualizar apenas o estado local
+    setParametros(parametros.map(param => {
+      if (param.id === rowId) {
+        return {
+          ...param,
+          chave_desserializada: chaveAtualizada
+        };
+      }
+      return param;
+    }));
+    
+    setHasChanges(true);
   };
 
   // Atualizar valor
-  const atualizarValor = async (rowId, valor) => {
-    try {
-      // Encontrar o parâmetro
-      const parametro = parametros.find(param => param.id === rowId);
-      if (!parametro) return;
+  const atualizarValor = (rowId, valor) => {
+    // Encontrar o parâmetro
+    const parametro = parametros.find(param => param.id === rowId);
+    if (!parametro) return;
 
-      const dadosParaEnviar = {
-        assunto: selectedRegra,
-        modulo: 'integracao',
-        chave: parametro.chave_desserializada,
-        valor: valor,
-        descricao: parametro.descricao || ''
-      };
-
-      // Atualizar via API
-      await http.put('parametros/criar-com-chave-serializada/', dadosParaEnviar);
-      
-      // Atualizar estado local
-      setParametros(parametros.map(param => {
-        if (param.id === rowId) {
-          return { ...param, valor };
-        }
-        return param;
-      }));
-      
-      setHasChanges(true);
-      
-    } catch (error) {
-      console.error('Erro ao atualizar valor:', error);
-      toast.current.show({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Erro ao atualizar valor',
-        life: 3000
-      });
-    }
+    // Atualizar apenas o estado local
+    setParametros(parametros.map(param => {
+      if (param.id === rowId) {
+        return { ...param, valor };
+      }
+      return param;
+    }));
+    
+    setHasChanges(true);
   };
 
         // Salvar alterações
@@ -573,6 +529,7 @@ function Metadados() {
           
           for (const parametro of parametrosParaSalvar) {
             const dadosParaEnviar = {
+              id: parametro.id,
               assunto: selectedRegra,
               modulo: 'integracao',
               chave: parametro.chave_desserializada,
@@ -728,6 +685,7 @@ function Metadados() {
       }
 
       const dadosParaEnviar = {
+        id: editingParametro.id,
         assunto: editingParametro.assunto,
         modulo: 'integracao',
         chave: editingParametro.chave,
@@ -1253,7 +1211,7 @@ function Metadados() {
 
                 {/* Linhas de dados */}
                 {newRegraInline.linhas.map((linha, linhaIndex) => (
-                  <div key={linhaIndex} style={{ 
+                  <div key={`linha-parametros-${linhaIndex}`} style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
                     gap: '8px',
@@ -1331,12 +1289,12 @@ function Metadados() {
 
                 {/* Campos de resultado */}
                 {newRegraInline.linhas.map((linha, linhaIndex) => (
-                  <div key={linhaIndex} style={{ 
+                  <div key={`linha-valor-${linhaIndex}`} style={{ 
                     padding: '8px 16px',
                     borderBottom: '1px solid #f1f3f4'
                   }}>
                     <Input
-                      key={`${linhaIndex}-valor`}
+                      key={`input-valor-${linhaIndex}`}
                       value={linha.valor || ''}
                       onChange={(e) => atualizarLinhaNovaRegra(linhaIndex, 'valor', e.target.value)}
                       placeholder="Valor da Combinação"
