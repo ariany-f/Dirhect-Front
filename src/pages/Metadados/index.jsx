@@ -116,7 +116,7 @@ const Row = styled.div`
   display: grid;
   grid-template-columns: ${props => props.columns};
   gap: 12px;
-  padding: 16px 24px;
+  padding: 16px;
   border-bottom: 1px solid #f8f9fa;
   align-items: center;
   transition: all 0.2s ease;
@@ -381,6 +381,10 @@ function Metadados() {
           valor: linha.valor || '' // Garantir que a propriedade valor seja mantida
         }))
       }));
+      
+      // Limpar o estado do novo parâmetro
+      setNewParametroName('');
+      setShowNewParametroInput(false);
     } else {
       // Se estiver editando regra existente, adicionar aos parâmetros
       const parametrosAtualizados = parametros.map(parametro => ({
@@ -393,10 +397,11 @@ function Metadados() {
 
       setParametros(parametrosAtualizados);
       setHasChanges(true);
+      
+      // Limpar o estado do novo parâmetro
+      setNewParametroName('');
+      setShowNewParametroInput(false);
     }
-
-    setNewParametroName('');
-    setShowNewParametroInput(false);
   };
 
   // Adicionar novo parâmetro automaticamente
@@ -803,8 +808,8 @@ function Metadados() {
     setCreatingNewRegra(true);
     setNewRegraInline({
       nome: '',
-      colunas: [''], // Começa com um parâmetro vazio para ser editado
-      linhas: [{ '': '', valor: '' }] // Linha inicial com o primeiro parâmetro e valor
+      colunas: ['Parâmetro 1'], // Começa com um nome padrão para o primeiro parâmetro
+      linhas: [{ 'Parâmetro 1': '', valor: '' }] // Linha inicial com o primeiro parâmetro e valor
     });
     setNewParametroName('');
     setShowNewParametroInput(false);
@@ -815,8 +820,8 @@ function Metadados() {
     setCreatingNewRegra(false);
     setNewRegraInline({
       nome: '',
-      colunas: [''],
-      linhas: [{ '': '', valor: '' }]
+      colunas: ['Parâmetro 1'],
+      linhas: [{ 'Parâmetro 1': '', valor: '' }]
     });
     setNewParametroName('');
     setShowNewParametroInput(false);
@@ -1149,7 +1154,16 @@ function Metadados() {
             <TableHeader>
               <SectionHeader style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'space-between' }}>
                 <span style={{ fontSize: '16px', fontWeight: '600', color: '#fff' }}>Parâmetros</span>
-                <FaPlus fill="#fff" size={20} style={{ cursor: 'pointer'}} onClick={() => setShowNewParametroInput(true)} />
+                <FaPlus fill="#fff" size={20} style={{ cursor: 'pointer'}} onClick={() => {
+                  // Se já há um input visível, processar o valor atual primeiro
+                  if (showNewParametroInput && newParametroName.trim()) {
+                    adicionarNovoParametro();
+                  }
+                  
+                  // Limpar e mostrar novo input
+                  setNewParametroName('');
+                  setShowNewParametroInput(true);
+                }} />
               </SectionHeader>
               <SectionHeader>Valor da Combinação</SectionHeader>
             </TableHeader>
@@ -1166,7 +1180,7 @@ function Metadados() {
                   background: '#f8f9fa'
                 }}>
                   {newRegraInline.colunas.map((coluna, index) => (
-                    <div key={coluna} style={{ 
+                    <div key={`coluna-${index}`} style={{ 
                       flex: 1,
                       padding: '8px 12px',
                       background: 'white',
@@ -1243,12 +1257,12 @@ function Metadados() {
                     display: 'flex', 
                     alignItems: 'center', 
                     gap: '8px',
-                    padding: '16px',
+                    padding: '8px 16px',
                     borderBottom: '1px solid #f1f3f4'
                   }}>
                     {newRegraInline.colunas.map((coluna, index) => (
                       <Input
-                        key={`${linhaIndex}-${coluna}`}
+                        key={`${linhaIndex}-${index}`}
                         value={linha[coluna] || ''}
                         onChange={(e) => atualizarLinhaNovaRegra(linhaIndex, coluna, e.target.value)}
                         placeholder={`Digite o valor do ${coluna}`}
@@ -1267,6 +1281,7 @@ function Metadados() {
                     {/* Campo para o novo parâmetro sendo adicionado */}
                     {showNewParametroInput && (
                       <Input
+                        key={`${linhaIndex}-novo-parametro`}
                         value={linha[newParametroName] || ''}
                         placeholder="Digite o valor do parâmetro"
                         onChange={(e) => {
@@ -1293,12 +1308,12 @@ function Metadados() {
               <SectionBody>
                 {/* Header do valor da combinação */}
                 <div style={{ 
-                  padding: '16px',
+                  padding: '8px 16px',
                   borderBottom: '1px solid #e9ecef',
                   background: '#f8f9fa'
                 }}>
                   <div style={{ 
-                    padding: '8px 12px',
+                    padding: '20px 12px',
                     background: 'white',
                     borderRadius: '6px',
                     border: '1px solid #e9ecef',
@@ -1317,10 +1332,11 @@ function Metadados() {
                 {/* Campos de resultado */}
                 {newRegraInline.linhas.map((linha, linhaIndex) => (
                   <div key={linhaIndex} style={{ 
-                    padding: '16px',
+                    padding: '8px 16px',
                     borderBottom: '1px solid #f1f3f4'
                   }}>
                     <Input
+                      key={`${linhaIndex}-valor`}
                       value={linha.valor || ''}
                       onChange={(e) => atualizarLinhaNovaRegra(linhaIndex, 'valor', e.target.value)}
                       placeholder="Valor da Combinação"
@@ -1393,7 +1409,7 @@ function Metadados() {
                   
                   {/* Campo para novo parâmetro */}
                   {showNewParametroInput && (
-                    <div style={{ 
+                    <div key="novo-parametro-header-existente" style={{ 
                       flex: 1,
                       padding: '8px 12px',
                       background: 'white',
@@ -1401,6 +1417,7 @@ function Metadados() {
                       border: '1px solid #e9ecef'
                     }}>
                       <InputText
+                        key="input-novo-parametro-existente"
                         value={newParametroName}
                         onChange={(e) => setNewParametroName(e.target.value)}
                         placeholder="Nome do novo parâmetro"
@@ -1434,12 +1451,12 @@ function Metadados() {
                     display: 'flex', 
                     alignItems: 'center', 
                     gap: '8px', 
-                    padding: '12px 16px', 
+                    padding: '16px', 
                     borderBottom: '1px solid #f1f3f4'
                   }}>
                     {chavesUnicas.map(chave => (
                       <Input
-                        key={chave}
+                        key={`${row.id}-${chave}`}
                         value={row.chave_desserializada?.[chave] || ''}
                         onChange={(e) => atualizarChave(row.id, chave, e.target.value)}
                         placeholder={chave}
@@ -1458,11 +1475,12 @@ function Metadados() {
                     {/* Campo para o novo parâmetro sendo adicionado */}
                     {showNewParametroInput && (
                       <Input
-                        value={linha[newParametroName] || ''}
+                        key={`${row.id}-novo-parametro`}
+                        value={row.chave_desserializada?.[newParametroName] || ''}
                         placeholder="Digite o valor do parâmetro"
                         onChange={(e) => {
                           // Atualizar apenas a linha atual
-                          atualizarLinhaNovaRegra(linhaIndex, newParametroName || 'novo_parametro', e.target.value);
+                          atualizarChave(row.id, newParametroName || 'novo_parametro', e.target.value);
                         }}
                         onKeyPress={(e) => e.key === 'Enter' && adicionarNovoParametroAuto()}
                         style={{
@@ -1485,6 +1503,7 @@ function Metadados() {
                 {allRows.map(row => (
                   <Row key={row.id} columns="1fr auto">
                     <Input
+                      key={`${row.id}-valor`}
                       value={row.valor || ''}
                       onChange={(e) => atualizarValor(row.id, e.target.value)}
                       placeholder="Valor"
