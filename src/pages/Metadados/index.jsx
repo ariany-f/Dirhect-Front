@@ -1518,51 +1518,226 @@ function Metadados() {
           </Botao>
 
           {searchResults.length > 0 && (
-            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              <h4 style={{ marginBottom: '12px' }}>Resultados ({searchResults.length})</h4>
-              {searchResults.map((parametro, index) => (
-                <div key={index} style={{
-                  border: '1px solid #dee2e6',
-                  borderRadius: '8px',
-                  padding: '16px',
-                  marginBottom: '12px',
-                  background: 'white'
+            <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '12px', 
+                marginBottom: '20px',
+                padding: '16px',
+                background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+                borderRadius: '12px',
+                border: '1px solid #dee2e6'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                    <div>
-                      <strong>ID:</strong> {parametro.id} | <strong>Assunto:</strong> {parametro.assunto}
-                    </div>
-                    <Botao
-                      size="small"
-                      aoClicar={() => abrirEdicao(parametro)}
-                      style={{ padding: '4px 8px', minWidth: 'auto' }}
-                    >
-                      <FaEdit />
-                    </Botao>
-                  </div>
-                  
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Chave Original:</strong> {parametro.chave_original}
-                  </div>
-                  
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Chave Desserializada:</strong>
-                    <pre style={{
-                      background: '#f8f9fa',
-                      padding: '8px',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      margin: '4px 0'
-                    }}>
-                      {JSON.stringify(parametro.chave_desserializada, null, 2)}
-                    </pre>
-                  </div>
-                  
-                  <div>
-                    <strong>Valor:</strong> {parametro.valor}
-                  </div>
+                  <FaSearch size={16} color="white" />
                 </div>
-              ))}
+                <div>
+                  <h4 style={{ 
+                    margin: '0 0 4px 0', 
+                    fontSize: '18px', 
+                    fontWeight: '600',
+                    color: '#495057'
+                  }}>
+                    Resultados Encontrados
+                  </h4>
+                  <p style={{ 
+                    margin: 0, 
+                    fontSize: '14px', 
+                    color: '#6c757d',
+                    fontWeight: '500'
+                  }}>
+                    {searchResults.length} parâmetro{searchResults.length !== 1 ? 's' : ''} encontrado{searchResults.length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+              </div>
+              
+              <div style={{ display: 'grid', gap: '16px' }}>
+                {searchResults.map((parametro, index) => (
+                  <div key={index} style={{
+                    border: '1px solid #e9ecef',
+                    borderRadius: '16px',
+                    padding: '20px',
+                    background: 'white',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+                    transition: 'all 0.2s ease',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}>
+                    {/* Header do resultado */}
+                    <div style={{ 
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                      marginBottom: '16px',
+                      paddingBottom: '16px',
+                      borderBottom: '1px solid #f1f3f4'
+                    }}>
+                      <div>
+                        <div style={{ 
+                          fontSize: '18px', 
+                          fontWeight: '800',
+                          color: 'var(--primaria)',
+                          marginBottom: '4px'
+                        }}>
+                          {parametro.valor}
+                        </div>
+                      </div>
+                      <div style={{ 
+                        textAlign: 'right'
+                      }}>
+                        <div style={{ 
+                          fontSize: '14px', 
+                          fontWeight: '600',
+                          color: '#495057',
+                          marginBottom: '2px'
+                        }}>
+                          {parametro.assunto}
+                        </div>
+                        <div style={{ 
+                          fontSize: '12px', 
+                          color: '#6c757d',
+                          fontWeight: '500'
+                        }}>
+                          ID: {parametro.id}
+                        </div>
+                      </div>
+                    </div>
+                    
+                                        {/* Chave Desserializada */}
+                    <div style={{ marginBottom: '16px' }}>
+                      <div style={{ 
+                        fontSize: '14px', 
+                        fontWeight: '600',
+                        color: '#495057',
+                        marginBottom: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <div style={{
+                          width: '6px',
+                          height: '6px',
+                          borderRadius: '50%',
+                          background: '#28a745'
+                        }}></div>
+                        Chave Desserializada
+                      </div>
+                      <div style={{
+                        background: 'white',
+                        border: '1px solid #e9ecef',
+                        borderRadius: '8px',
+                        overflow: 'hidden'
+                      }}>
+                        <table style={{
+                          width: '100%',
+                          borderCollapse: 'collapse',
+                          fontSize: '13px'
+                        }}>
+                          <thead>
+                            <tr style={{
+                              background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+                              borderBottom: '1px solid #dee2e6'
+                            }}>
+                              <th style={{
+                                padding: '10px 12px',
+                                textAlign: 'left',
+                                fontWeight: '600',
+                                color: '#495057',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.5px'
+                              }}>
+                                Chave
+                              </th>
+                              <th style={{
+                                padding: '10px 12px',
+                                textAlign: 'left',
+                                fontWeight: '600',
+                                color: '#495057',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.5px'
+                              }}>
+                                Valor
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {Object.entries(parametro.chave_desserializada || {}).map(([chave, valor], index) => (
+                              <tr key={chave} style={{
+                                borderBottom: index < Object.keys(parametro.chave_desserializada || {}).length - 1 ? '1px solid #f1f3f4' : 'none',
+                                background: index % 2 === 0 ? 'white' : '#fafbfc'
+                              }}>
+                                <td style={{
+                                  padding: '10px 12px',
+                                  fontWeight: '600',
+                                  color: '#495057',
+                                  fontSize: '13px',
+                                  borderRight: '1px solid #f1f3f4'
+                                }}>
+                                  {chave}
+                                </td>
+                                <td style={{
+                                  padding: '10px 12px',
+                                  color: '#6c757d',
+                                  fontSize: '13px',
+                                  fontFamily: 'monospace'
+                                }}>
+                                  {valor}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    
+                    {/* Chave Original */}
+                    <div style={{ marginBottom: '16px' }}>
+                      <div style={{ 
+                        fontSize: '14px', 
+                        fontWeight: '600',
+                        color: '#495057',
+                        marginBottom: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <div style={{
+                          width: '6px',
+                          height: '6px',
+                          borderRadius: '50%',
+                          background: '#6c757d'
+                        }}></div>
+                        Chave Original
+                      </div>
+                      <div style={{
+                        background: '#f8f9fa',
+                        border: '1px solid #e9ecef',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        fontSize: '13px',
+                        fontFamily: 'monospace',
+                        color: '#495057',
+                        wordBreak: 'break-all'
+                      }}>
+                        {parametro.chave_original}
+                      </div>
+                    </div>
+                    
+                    
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
