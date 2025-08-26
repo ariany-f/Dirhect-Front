@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
@@ -10,6 +9,7 @@ import http from '@http';
 import styled from 'styled-components';
 import Botao from '@components/Botao';
 import BotaoGrupo from '@components/BotaoGrupo';
+import DropdownItens from '@components/DropdownItens';
 
 const MetadadosContainer = styled.div`
   padding: 32px;
@@ -53,7 +53,7 @@ const Subtitle = styled.p`
 `;
 
 const DropdownContainer = styled.div`
-  min-width: 300px;
+  padding: 24px 0px 0px 0px;
 `;
 
 const DropdownLabel = styled.label`
@@ -903,44 +903,57 @@ function Metadados() {
                 <HeaderLeft>
           <Title>Metadados</Title>
           <Subtitle>Gerencie os parâmetros e configurações do sistema</Subtitle>
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-end' }}>
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <DropdownContainer>
                 {!creatingNewRegra && 
-                    <Dropdown
-                        value={selectedRegra}
+                    <DropdownItens
+                        valor={selectedRegra}
+                        setValor={setSelectedRegra}
                         options={regras}
-                        onChange={(e) => setSelectedRegra(e.value)}
                         placeholder="Escolha uma regra para gerenciar"
-                        loading={loading}
+                        name="regra"
+                        $width="250px"
                         disabled={creatingNewRegra || newRegraInline.nome.trim() !== ''}
-                        style={{ 
-                        width: '300px',
-                        border: '2px solid #e9ecef',
-                        borderRadius: '8px',
-                        padding: '12px 16px',
-                        opacity: (creatingNewRegra || newRegraInline.nome.trim() !== '') ? 0.6 : 1
-                        }}
+                        optionLabel="label"
                     />
                 }
                 {creatingNewRegra && (
-                                        <InputText
-                      value={newRegraInline.nome}
-                      onChange={(e) => setNewRegraInline(prev => ({ ...prev, nome: e.target.value }))}
-                      placeholder="Digite o nome da regra"
-                      style={{ 
-                        width: '300px',
-                        border: `2px solid ${(!newRegraInline.nome || newRegraInline.nome.trim() === '') ? '#dc3545' : '#2e7d32'}`,
+                    <InputText
+                    value={newRegraInline.nome}
+                    onChange={(e) => setNewRegraInline(prev => ({ ...prev, nome: e.target.value }))}
+                    placeholder="Digite o nome da regra"
+                    style={{ 
+                        width: '250px',
+                        border: `2px solid ${(!newRegraInline.nome || newRegraInline.nome.trim() !== '') ? '#dc3545' : '#2e7d32'}`,
                         borderRadius: '8px',
-                        padding: '12px 16px',
+                        padding: '10px 14px',
                         background: (!newRegraInline.nome || newRegraInline.nome.trim() === '') ? '#fff5f5' : 'white'
-                      }}
+                    }}
                     />
                 )}
             </DropdownContainer>
+            
+            {selectedRegra && !creatingNewRegra && !editingExistingRegra && (
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' , alignItems: 'center'}}>
+                <Botao 
+                  size="medium" 
+                  aoClicar={iniciarEdicaoRegra}
+                >
+                  <FaEdit size={14} /> Editar
+                </Botao>
+                <Botao 
+                  size="medium" 
+                  estilo="danger"
+                  aoClicar={abrirConfirmacaoExclusao}
+                >
+                  <FaTrash size={14} fill="#fff"/> Excluir
+                </Botao>
+              </div>
+            )}
           </div>
         </HeaderLeft>
         
-        <BotaoGrupo>
+                <BotaoGrupo>
           <Botao 
             size="medium" 
             aoClicar={() => setShowSearchModal(true)}
@@ -948,32 +961,6 @@ function Metadados() {
           >
             <FaSearch size={14} /> Buscar
           </Botao>
-          
-          {selectedRegra && !creatingNewRegra && !editingExistingRegra && (
-            <>
-              <Botao 
-                size="medium" 
-                aoClicar={iniciarEdicaoRegra}
-              >
-                <FaEdit size={14} /> Editar
-              </Botao>
-              <Botao 
-                size="medium" 
-                estilo="danger"
-                aoClicar={abrirConfirmacaoExclusao}
-                style={{
-                  background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
-                  border: 'none',
-                  color: 'white',
-                  boxShadow: '0 2px 8px rgba(220, 53, 69, 0.3)'
-                }}
-              >
-                <FaTrash size={14} fill="#fff"/> Excluir
-              </Botao>
-            </>
-          )}
-          
-
           
           {!creatingNewRegra && !editingExistingRegra ? (
             <Botao 
@@ -993,6 +980,7 @@ function Metadados() {
               <Botao 
                 size="medium" 
                 aoClicar={cancelarCriacaoRegra}
+                estilo="danger"
               >
                 Cancelar
               </Botao>
