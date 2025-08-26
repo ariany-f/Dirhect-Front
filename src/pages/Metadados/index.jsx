@@ -167,6 +167,8 @@ function Metadados() {
 
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [regraToDelete, setRegraToDelete] = useState(null);
   const [searchQuery, setSearchQuery] = useState({
     assunto: '',
     chave_parcial: ''
@@ -477,8 +479,8 @@ function Metadados() {
     });
   };
 
-  // Excluir regra
-  const excluirRegra = async () => {
+  // Abrir dialog de confirmação de exclusão
+  const abrirConfirmacaoExclusao = () => {
     if (!selectedRegra) {
       toast.current.show({
         severity: 'warn',
@@ -488,26 +490,51 @@ function Metadados() {
       });
       return;
     }
+    
+    setRegraToDelete(selectedRegra);
+    setShowDeleteConfirmModal(true);
+  };
 
-    // Confirmar exclusão
-    if (!confirm(`Tem certeza que deseja excluir a regra "${selectedRegra}"? Esta ação não pode ser desfeita.`)) {
-      return;
-    }
+  // Confirmar exclusão da regra
+  const confirmarExclusaoRegra = async () => {
+    if (!regraToDelete) return;
 
     try {
-      // Carregar parâmetros da regra para excluir todos
-      const response = await http.get(`parametros/desserializar-por-assunto/?assunto=${selectedRegra}`);
+      // Carregar parâmetros da regra para verificar se existem
+      const response = await http.get(`parametros/por-assunto/?assunto=${regraToDelete}`);
       const parametrosExistentes = response?.parametros || [];
+      console.log(parametrosExistentes);
       
-      // Excluir todos os parâmetros da regra
-      for (const parametro of parametrosExistentes) {
-        await http.delete(`parametros/${parametro.id}/`);
+      // Se a regra tem parâmetros, excluir todos
+      if (parametrosExistentes.length > 0) {
+        for (const parametro of parametrosExistentes) {
+          await http.delete(`parametros/${parametro.id}/`);
+        }
       }
+
+      // Excluir o assunto da regra
+      try {
+        await http.delete(`parametros/assuntos/${encodeURIComponent(regraToDelete)}/?modulo=integracao`);
+      } catch (assuntoError) {
+        console.warn('Erro ao excluir assunto:', assuntoError);
+        toast.current.show({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao excluir assunto da regra',
+          life: 3000
+        });
+        return;
+      }
+      
+      // Mensagem de sucesso baseada na existência de parâmetros
+      const mensagemSucesso = parametrosExistentes.length > 0 
+        ? `Regra "${regraToDelete}" e todos os seus parâmetros foram excluídos com sucesso`
+        : `Regra "${regraToDelete}" foi excluída com sucesso`;
       
       toast.current.show({
         severity: 'success',
         summary: 'Sucesso',
-        detail: `Regra "${selectedRegra}" excluída com sucesso`,
+        detail: mensagemSucesso,
         life: 3000
       });
 
@@ -525,6 +552,10 @@ function Metadados() {
       // Limpar seleção
       setSelectedRegra(null);
       setParametros([]);
+
+      // Fechar dialog
+      setShowDeleteConfirmModal(false);
+      setRegraToDelete(null);
 
     } catch (error) {
       console.error('Erro ao excluir regra:', error);
@@ -842,6 +873,14 @@ function Metadados() {
       // Selecionar a nova regra
       setSelectedRegra(newRegraInline.nome);
 
+      // Recarregar parâmetros da regra (seja nova ou editada)
+      try {
+        const parametrosResponse = await http.get(`parametros/buscar-com-chave-desserializada/?assunto=${newRegraInline.nome}`);
+        setParametros(parametrosResponse?.parametros || []);
+      } catch (error) {
+        console.error('Erro ao recarregar parâmetros:', error);
+      }
+
       // Limpar e sair do modo de criação
       cancelarCriacaoRegra();
 
@@ -934,7 +973,7 @@ function Metadados() {
               <Botao 
                 size="small" 
                 estilo="danger"
-                aoClicar={excluirRegra}
+                aoClicar={abrirConfirmacaoExclusao}
                 style={{
                   background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
                   border: 'none',
@@ -1136,7 +1175,7 @@ function Metadados() {
               <SectionBody>
                 {/* Header do valor da combinação */}
                 <div style={{ 
-                  padding: '8px 16px',
+                  padding: '14px 16px',
                   borderBottom: '1px solid #e9ecef',
                   background: '#f8f9fa'
                 }}>
@@ -1163,7 +1202,7 @@ function Metadados() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    padding: '8px 16px',
+                    padding: '16px',
                     borderBottom: '1px solid #f1f3f4'
                   }}>
                     <Input
@@ -1249,18 +1288,20 @@ function Metadados() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', borderBottom: '1px solid #dee2e6' }}>
                   {(() => {
                     const chaves = new Set();
-                    parametros.forEach(param => {
-                      if (param.chave_desserializada) {
-                        Object.keys(param.chave_desserializada).forEach(chave => {
-                          if (!chave.includes('novo_parametro_temp') && 
-                              !chave.includes('temp_') && 
-                              chave.trim() !== '' && 
-                              chave !== 'novo_parametro_temp') {
-                            chaves.add(chave);
-                          }
-                        });
-                      }
-                    });
+                    if (Array.isArray(parametros)) {
+                      parametros.forEach(param => {
+                        if (param.chave_desserializada) {
+                          Object.keys(param.chave_desserializada).forEach(chave => {
+                            if (!chave.includes('novo_parametro_temp') && 
+                                !chave.includes('temp_') && 
+                                chave.trim() !== '' && 
+                                chave !== 'novo_parametro_temp') {
+                              chaves.add(chave);
+                            }
+                          });
+                        }
+                      });
+                    }
                     return Array.from(chaves);
                   })().map(chave => (
                     <div key={chave} style={{ 
@@ -1294,7 +1335,7 @@ function Metadados() {
 
             <TableBody>
               <SectionBody>
-                {parametros.map(row => (
+                {Array.isArray(parametros) ? parametros.map(row => (
                   <div key={row.id} style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -1304,18 +1345,20 @@ function Metadados() {
                   }}>
                     {(() => {
                       const chaves = new Set();
-                      parametros.forEach(param => {
-                        if (param.chave_desserializada) {
-                          Object.keys(param.chave_desserializada).forEach(chave => {
-                            if (!chave.includes('novo_parametro_temp') && 
-                                !chave.includes('temp_') && 
-                                chave.trim() !== '' && 
-                                chave !== 'novo_parametro_temp') {
-                              chaves.add(chave);
-                            }
-                          });
-                        }
-                      });
+                      if (Array.isArray(parametros)) {
+                        parametros.forEach(param => {
+                          if (param.chave_desserializada) {
+                            Object.keys(param.chave_desserializada).forEach(chave => {
+                              if (!chave.includes('novo_parametro_temp') && 
+                                  !chave.includes('temp_') && 
+                                  chave.trim() !== '' && 
+                                  chave !== 'novo_parametro_temp') {
+                                chaves.add(chave);
+                              }
+                            });
+                          }
+                        });
+                      }
                       return Array.from(chaves);
                     })().map(chave => (
                       <div
@@ -1338,11 +1381,11 @@ function Metadados() {
                     
 
                   </div>
-                ))}
+                )) : null}
               </SectionBody>
               
               <SectionBody>
-                {parametros.map(row => (
+                {Array.isArray(parametros) ? parametros.map(row => (
                   <Row key={row.id} columns="1fr">
                     <div
                       style={{
@@ -1360,7 +1403,7 @@ function Metadados() {
                       {row.valor || ''}
                     </div>
                   </Row>
-                ))}
+                )) : null}
               </SectionBody>
             </TableBody>
             
@@ -1638,6 +1681,140 @@ function Metadados() {
             loading={savingEdit}
           >
             <FaSave /> Salvar Alterações
+          </Botao>
+        </div>
+      </Dialog>
+
+      {/* Modal de Confirmação de Exclusão */}
+      <Dialog
+        header="Confirmar Exclusão"
+        visible={showDeleteConfirmModal}
+        onHide={() => {
+          setShowDeleteConfirmModal(false);
+          setRegraToDelete(null);
+        }}
+        style={{ width: '500px' }}
+        modal
+        closeOnEscape
+        closable
+      >
+        <div style={{ padding: '20px 0' }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '16px',
+            marginBottom: '24px'
+          }}>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <FaTrash size={20} color="white" />
+            </div>
+            <div>
+              <h3 style={{ 
+                fontSize: '18px', 
+                fontWeight: '600', 
+                color: '#495057',
+                margin: '0 0 8px 0'
+              }}>
+                Excluir Regra
+              </h3>
+              <p style={{ 
+                fontSize: '14px', 
+                color: '#6c757d',
+                margin: 0,
+                lineHeight: '1.5'
+              }}>
+                Tem certeza que deseja excluir a regra <strong>"{regraToDelete}"</strong>?
+              </p>
+            </div>
+          </div>
+          
+          <div style={{
+            background: '#fff3cd',
+            border: '1px solid #ffeaa7',
+            borderRadius: '8px',
+            padding: '16px',
+            marginBottom: '24px'
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'flex-start', 
+              gap: '12px'
+            }}>
+              <div style={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                background: '#ffc107',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                marginTop: '2px'
+              }}>
+                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#856404' }}>!</span>
+              </div>
+              <div>
+                <p style={{ 
+                  fontSize: '14px', 
+                  color: '#856404',
+                  margin: '0 0 8px 0',
+                  fontWeight: '600'
+                }}>
+                  Atenção
+                </p>
+                <p style={{ 
+                  fontSize: '13px', 
+                  color: '#856404',
+                  margin: 0,
+                  lineHeight: '1.4'
+                }}>
+                  Esta ação irá excluir permanentemente a regra e todos os seus parâmetros. 
+                  Esta operação não pode ser desfeita.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          gap: '12px', 
+          paddingTop: '20px', 
+          borderTop: '1px solid #dee2e6' 
+        }}>
+          <Botao
+            size="small"
+            aoClicar={() => {
+              setShowDeleteConfirmModal(false);
+              setRegraToDelete(null);
+            }}
+            style={{
+              background: 'linear-gradient(135deg, #6c757d 0%, #5a6268 100%)',
+              border: 'none',
+              color: 'white'
+            }}
+          >
+            Cancelar
+          </Botao>
+          <Botao
+            size="small"
+            aoClicar={confirmarExclusaoRegra}
+            style={{
+              background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
+              border: 'none',
+              color: 'white'
+            }}
+          >
+            <FaTrash /> Excluir Regra
           </Botao>
         </div>
       </Dialog>
