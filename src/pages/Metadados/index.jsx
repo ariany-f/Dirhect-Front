@@ -1416,7 +1416,7 @@ function Metadados() {
               borderRadius: '12px'
             }}
           >
-            <GrAddCircle stroke="white" /> Criar Primeira Regra
+            <GrAddCircle /> Criar Regra
           </Botao>
         </div>
       )}
