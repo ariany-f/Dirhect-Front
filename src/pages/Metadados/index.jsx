@@ -576,6 +576,24 @@ function Metadados() {
     }));
   };
 
+  // Remover linha da regra sendo criada/editada
+  const removerLinhaNovaRegra = (linhaIndex) => {
+    if (newRegraInline.linhas.length <= 1) {
+      toast.current.show({
+        severity: 'warn',
+        summary: 'Atenção',
+        detail: 'A regra deve ter pelo menos uma combinação',
+        life: 3000
+      });
+      return;
+    }
+
+    setNewRegraInline(prev => ({
+      ...prev,
+      linhas: prev.linhas.filter((_, index) => index !== linhaIndex)
+    }));
+  };
+
   // Atualizar valor de uma linha da nova regra
   const atualizarLinhaNovaRegra = (linhaIndex, coluna, valor) => {
     setNewRegraInline(prev => {
@@ -1036,8 +1054,6 @@ function Metadados() {
                         }}
                       />
                     ))}
-                    
-
                   </div>
                 ))}
               </SectionBody>
@@ -1069,6 +1085,9 @@ function Metadados() {
                 {/* Campos de resultado */}
                 {newRegraInline.linhas.map((linha, linhaIndex) => (
                   <div key={`linha-valor-${linhaIndex}`} style={{ 
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
                     padding: '8px 16px',
                     borderBottom: '1px solid #f1f3f4'
                   }}>
@@ -1078,7 +1097,7 @@ function Metadados() {
                       onChange={(e) => atualizarLinhaNovaRegra(linhaIndex, 'valor', e.target.value)}
                       placeholder="Valor da Combinação"
                       style={{
-                        width: '100%',
+                        flex: 1,
                         border: `2px solid ${(!linha.valor || linha.valor.trim() === '') ? '#dc3545' : '#1976d2'}`,
                         borderRadius: '8px',
                         padding: '12px 16px',
@@ -1087,6 +1106,27 @@ function Metadados() {
                         background: (!linha.valor || linha.valor.trim() === '') ? '#fff5f5' : 'white'
                       }}
                     />
+                    
+                    {/* Botão de remover linha */}
+                    <div
+                      onClick={() => removerLinhaNovaRegra(linhaIndex)}
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: '#dc3545',
+                        color: 'white',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        fontSize: '12px'
+                      }}
+                      title="Remover linha"
+                    >
+                      <FaTrash size={12} />
+                    </div>
                   </div>
                 ))}
               </SectionBody>
