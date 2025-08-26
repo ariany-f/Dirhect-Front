@@ -1239,7 +1239,7 @@ function Metadados() {
                       }}
                       title="Remover linha"
                     >
-                      <FaTrash size={12} />
+                      <FaTrash fill="#fff" size={12} />
                     </div>
                   </div>
                 ))}
