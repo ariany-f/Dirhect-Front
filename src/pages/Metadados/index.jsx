@@ -190,6 +190,7 @@ function Metadados() {
     linhas: []
   });
   const [descricaoRegra, setDescricaoRegra] = useState('');
+  const [idAssunto, setIdAssunto] = useState(null);
 
   const toast = React.useRef();
 
@@ -238,14 +239,19 @@ function Metadados() {
           const response = await http.get(`parametros/desserializar-por-assunto/?assunto=${selectedRegra}`);
           setParametros(response?.parametros || []);
           
-          // Carregar descrição da regra
-          try {
-            const descricaoResponse = await http.get(`parametros/assuntos/${encodeURIComponent(selectedRegra)}/descricao`);
-            setDescricaoRegra(descricaoResponse?.descricao || '');
-          } catch (descricaoError) {
-            console.warn('Erro ao carregar descrição da regra:', descricaoError);
-            setDescricaoRegra('');
-          }
+                                  // Carregar descrição da regra
+            try {
+              const descricaoResponse = await http.get(`assunto_parametro/?nome=${encodeURIComponent(selectedRegra)}`);
+              console.log(descricaoResponse);
+              // A resposta é um array, pegamos o primeiro item
+              const regraInfo = Array.isArray(descricaoResponse) && descricaoResponse.length > 0 ? descricaoResponse[0] : null;
+              setDescricaoRegra(regraInfo?.descricao || '');
+              setIdAssunto(regraInfo?.id || null);
+            } catch (descricaoError) {
+              console.warn('Erro ao carregar descrição da regra:', descricaoError);
+              setDescricaoRegra('');
+              setIdAssunto(null);
+            }
         } catch (error) {
           console.error('Erro ao carregar parâmetros:', error);
           toast.current.show({
@@ -262,6 +268,7 @@ function Metadados() {
     } else {
       setParametros([]);
       setDescricaoRegra('');
+      setIdAssunto(null);
     }
   }, [selectedRegra]);
 
@@ -523,9 +530,14 @@ function Metadados() {
         }
       }
 
-      // Excluir o assunto da regra
+      // Excluir o assunto da regra usando ID
       try {
-        await http.delete(`parametros/assuntos/${encodeURIComponent(regraToDelete)}/?modulo=integracao`);
+        if (idAssunto) {
+          await http.delete(`assunto_parametro/${idAssunto}/`);
+        } else {
+          // Fallback para o método antigo se não tiver ID
+          await http.delete(`parametros/assuntos/${encodeURIComponent(regraToDelete)}/?modulo=integracao`);
+        }
       } catch (assuntoError) {
         console.warn('Erro ao excluir assunto:', assuntoError);
         toast.current.show({
@@ -637,11 +649,15 @@ function Metadados() {
 
       // Carregar descrição da regra (se existir)
       try {
-        const descricaoResponse = await http.get(`parametros/assuntos/${encodeURIComponent(selectedRegra)}/descricao`);
-        setDescricaoRegra(descricaoResponse?.descricao || '');
+        const descricaoResponse = await http.get(`assunto_parametro/?nome=${encodeURIComponent(selectedRegra)}`);
+        // A resposta é um array, pegamos o primeiro item
+        const regraInfo = Array.isArray(descricaoResponse) && descricaoResponse.length > 0 ? descricaoResponse[0] : null;
+        setDescricaoRegra(regraInfo?.descricao || '');
+        setIdAssunto(regraInfo?.id || null);
       } catch (descricaoError) {
         console.warn('Erro ao carregar descrição da regra:', descricaoError);
         setDescricaoRegra('');
+        setIdAssunto(null);
       }
 
       setEditingExistingRegra(true);
@@ -870,6 +886,19 @@ function Metadados() {
         };
 
         await http.post('parametros/criar-com-chave-serializada/', dadosLinha);
+      }
+
+      // Atualizar descrição do assunto se estiver editando
+      if (editingExistingRegra && idAssunto) {
+        try {
+          await http.put(`assunto_parametro/${idAssunto}/`, {
+            nome: newRegraInline.nome,
+            modulo: 'integracao',
+            descricao: descricaoRegra || ''
+          });
+        } catch (updateError) {
+          console.warn('Erro ao atualizar descrição do assunto:', updateError);
+        }
       }
 
       toast.current.show({
