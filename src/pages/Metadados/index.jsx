@@ -1230,7 +1230,7 @@ function Metadados() {
           <TableContainer>
             <TableHeader>
               <SectionHeader style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'space-between' }}>
-                <span style={{ fontSize: '16px', fontWeight: '600', color: '#fff' }}>Parâmetros (Somente Leitura)</span>
+                <span style={{ fontSize: '16px', fontWeight: '600', color: '#fff' }}>Parâmetros</span>
               </SectionHeader>
               <SectionHeader>Valor da Combinação</SectionHeader>
             </TableHeader>
